@@ -1,38 +1,33 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: process-evidence
  * Category: conservative
  * Memory Bank: PRG_ROM
  * Priority: 150
  * Redis Type: aiAnalysis
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 import type { RequestHandler } from './$types.js'
-
 /*
  * Enhanced AI Evidence Processing Endpoint
  * Optimized for Gemma3-legal-latest model with native Windows integration
  * Full-stack architecture: PostgreSQL + pgvector + Neo4j + Redis + Ollama
  */
-
 import { json } from '@sveltejs/kit'
 import { getUser } from '$lib/server/auth'
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-
 // Enhanced RAG service integration (port 8094)
 const ENHANCED_RAG_URL = 'http://localhost:8094'
 const OLLAMA_URL = 'http://localhost:11434'
 }
-
 export interface ProcessEvidenceRequest {
   caseId: string
   evidence: any[]
@@ -43,7 +38,6 @@ export interface ProcessEvidenceRequest {
   maxTokens?: number
   stream?: boolean
 }
-
 export interface LegalAnalysisResponse {
   summary: string
   sources: Array<any>
@@ -51,56 +45,49 @@ export interface LegalAnalysisResponse {
   legalConcepts: string[]
   recommendations: string[]
   riskAssessment?: {
-    level: 'low' | 'medium' | 'high'
+    level: 'low' | 'medium' | 'high',
     factors: string[]
   }
   processingTime: number
   tokenCount: number
 }
-
 const originalPOSTHandler: RequestHandler = async ({ request, cookies }) => {
   const startTime = performance.now()
-  
   try {
     // Authentication check
     const { user } = await getUser({ request, cookies } as any)
     if (!user) {
       return json({ error: 'Authentication required' }, { status: 401 })
     }
-
     // Parse request body
     const body: ProcessEvidenceRequest = await request.json()
-    const { 
-      caseId, 
-      evidence, 
-      userId, 
+    const {
+      caseId,
+      evidence,
+      userId,
       model = 'gemma3-legal:latest',
       analysisType = 'summary',
       temperature = 0.3, // Lower for legal precision
       maxTokens = 2048,
-      stream = false 
+      stream = false
     } = body
-
     // Validate required fields
     if (!caseId || !evidence || !userId) {
-      return json({ 
-        error: 'Missing required fields: caseId, evidence, userId' 
+      return json({
+        error: 'Missing required fields: caseId, evidence, userId'
       }, { status: 400 })
     }
-
     // Verify user matches authenticated user
     if (userId !== user.id) {
       return json({ error: 'User ID mismatch' }, { status: 403 })
     }
-
     // Check Ollama model availability
     const modelCheck = await checkOllamaModel(model)
     if (!modelCheck.available) {
-      return json({ 
-        error: `Model ${model} not available. Available models: ${modelCheck.available.join(', ')}` 
+      return json({
+        error: `Model ${model} not available. Available models: ${modelCheck.available.join(', ')}`
       }, { status: 503 })
     }
-
     // Prepare enhanced context for legal analysis
     const enhancedContext = {
       caseId,
@@ -118,29 +105,26 @@ const originalPOSTHandler: RequestHandler = async ({ request, cookies }) => {
         timestamp: new Date().toISOString()
       }
     }
-
     // Route to Enhanced RAG service GPU processing
     const ragResponse = await fetch(`${ENHANCED_RAG_URL}/api/gpu/compute`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-User-ID': userId,
+        'X-User-ID': userId
         'X-Case-ID': caseId
       },
-      body: JSON.stringify({
-        input_data: enhancedContext,
+      body: JSON.stringify({,
+        input_data: enhancedContext
         operation: 'legal_analysis',
-        model: model,
+        model: model
         context: enhancedContext
       })
     })
-
     if (!ragResponse.ok) {
       // Fallback to direct Ollama if RAG service unavailable
       console.warn('Enhanced RAG service unavailable, falling back to direct Ollama')
       return await processWithDirectOllama(enhancedContext, startTime)
     }
-
     let ragResult
     try {
       ragResult = await ragResponse.json()
@@ -148,7 +132,6 @@ const originalPOSTHandler: RequestHandler = async ({ request, cookies }) => {
       console.warn('RAG service response parsing failed, falling back to direct Ollama')
       return await processWithDirectOllama(enhancedContext, startTime)
     }
-    
     // Enhance response with additional legal analysis
     const enhancedResult: LegalAnalysisResponse = {
       summary: ragResult.summary || ragResult.response,
@@ -160,7 +143,6 @@ const originalPOSTHandler: RequestHandler = async ({ request, cookies }) => {
       processingTime: performance.now() - startTime,
       tokenCount: ragResult.tokenCount || estimateTokenCount(ragResult.summary || '')
     }
-
     // Log analysis for audit trail
     await logAnalysis({
       userId,
@@ -170,12 +152,9 @@ const originalPOSTHandler: RequestHandler = async ({ request, cookies }) => {
       confidence: enhancedResult.confidence,
       processingTime: enhancedResult.processingTime
     })
-
     return json(enhancedResult)
-
   } catch (error: any) {
     console.error('Evidence processing error:', error)
-    
     return json({
       error: 'Failed to process evidence',
       details: error instanceof Error ? error.message: 'Unknown error',
@@ -183,7 +162,6 @@ const originalPOSTHandler: RequestHandler = async ({ request, cookies }) => {
     }, { status: 500 })
   }
 }
-
 // Check Ollama model availability
 async function checkOllamaModel(model: string): Promise<any> {
   try {
@@ -191,10 +169,8 @@ async function checkOllamaModel(model: string): Promise<any> {
     if (!(response as { ok?: any; json?: any }).ok) {
       return { available: false, models: [] }
     }
-    
     const data = await (response as { ok?: any; json?: any }).json()
     const availableModels = (data as { models?: any }).models?.map((m: any) => m.name) || []
-    
     return {
       available: availableModels.includes(model),
       models: availableModels
@@ -204,43 +180,35 @@ async function checkOllamaModel(model: string): Promise<any> {
     return { available: false, models: [] }
   }
 }
-
 // Get specialized system prompt for legal analysis
 function getLegalSystemPrompt(analysisType: string): string {
-  const basePrompt = `You are a specialized legal AI assistant trained on legal documents, case law, and statutory materials. 
+  const basePrompt = `You are a specialized legal AI assistant trained on legal documents, case law, and statutory materials.
 Provide accurate, precise analysis following legal standards and best practices.
 Always cite relevant sources and indicate confidence levels.`
-
   const typeSpecificPrompts = {
     summary: `${basePrompt}
 Focus on: Key legal issues, relevant facts, applicable law, and case conclusions.
 Format: Clear, structured summary suitable for legal professionals.`,
-
     risk_analysis: `${basePrompt}
 Focus on: Legal risks, potential liabilities, compliance issues, and mitigation strategies.
 Format: Risk assessment with severity levels and actionable recommendations.`,
-
     legal_research: `${basePrompt}
 Focus on: Applicable statutes, case precedents, legal principles, and jurisdictional considerations.
 Format: Comprehensive research memo with citations and legal analysis.`,
-
     case_comparison: `${basePrompt}
 Focus on: Similarities/differences in facts, legal issues, holdings, and reasoning.
 Format: Comparative analysis highlighting relevant patterns and distinctions.`
   }
-
   return typeSpecificPrompts[analysisType] || typeSpecificPrompts.summary
 }
-
 // Fallback processing with direct Ollama integration
 async function processWithDirectOllama(context: any, startTime: number): Promise<any> {
   try {
     const prompt = createLegalPrompt(context)
-    
     const ollamaResponse = await fetch(`${OLLAMA_URL}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      body: JSON.stringify({,
         model: context?.model || "unknown" // @ts-ignore - Model property access,
         prompt,
         system: context.systemPrompt,
@@ -253,13 +221,10 @@ async function processWithDirectOllama(context: any, startTime: number): Promise
         stream: false
       })
     })
-
     if (!ollamaResponse.ok) {
       throw new Error(`Ollama error: ${ollamaResponse.status}`)
     }
-
     const result = await ollamaResponse.json()
-    
     return json({
       summary: (result as { response?: any; summary?: any }).response,
       sources: [],
@@ -269,28 +234,22 @@ async function processWithDirectOllama(context: any, startTime: number): Promise
       processingTime: performance.now() - startTime,
       tokenCount: estimateTokenCount((result as { response?: any; summary?: any }).response)
     })
-
   } catch (error: any) {
     throw new Error(`Direct Ollama processing failed: ${error.message}`)
   }
 }
-
 // Create optimized prompt for legal analysis
 function createLegalPrompt(context: any): string {
   const evidenceText = context.evidence
     .map((item: any, index: number) => `Evidence ${index + 1}: ${JSON.stringify(item)}`)
     .join('\n\n')
-
   return `Case ID: ${context.caseId}
 Analysis Type: ${context.analysisType}
-
 Evidence to Analyze:
 ${evidenceText}
-
 Please provide a comprehensive ${context.analysisType.replace('_', ' ')} of this evidence.
 Include relevant legal principles, potential issues, and actionable insights.`
 }
-
 // Extract legal concepts from analysis text
 function extractLegalConcepts(text: string): string[] {
   const legalTerms = [
@@ -299,17 +258,13 @@ function extractLegalConcepts(text: string): string[] {
     'precedent', 'case law', 'statutory', 'constitutional', 'procedural',
     'substantive', 'discovery', 'motion', 'pleading', 'settlement'
   ]
-
   const concepts = legalTerms.filter(item => item.includes(term.toLowerCase()
   )
-
   return [...new Set(concepts)]; // Remove duplicates
 }
-
 // Generate contextual recommendations
 function generateRecommendations(result: any, analysisType: string): string[] {
   const recommendations: string[] = []
-
   if (analysisType === 'risk_analysis') {
     recommendations.push(
       'Review insurance coverage for identified risks',
@@ -323,22 +278,17 @@ function generateRecommendations(result: any, analysisType: string): string[] {
       'Consult specialized legal databases'
     )
   }
-
   return recommendations
 }
-
 // Assess legal risk level
 function assessLegalRisk(result: any, evidence: any[]) {
   // Simple heuristic - in production, use more sophisticated analysis
   const riskKeywords = ['negligence', 'breach', 'violation', 'damages', 'liability']
   const text = ((result as { response?: any; summary?: any }).summary || '').toLowerCase()
-  
   const riskCount = riskKeywords.filter(keyword => text.includes(keyword)).length
   const evidenceCount = evidence.length
-
   let level: 'low' | 'medium' | 'high' = 'low'
   const factors: string[] = []
-
   if (riskCount > 2 || evidenceCount > 10) {
     level = 'high'
     factors.push('Multiple risk indicators identified', 'Substantial evidence volume')
@@ -348,15 +298,12 @@ function assessLegalRisk(result: any, evidence: any[]) {
   } else {
     factors.push('Limited risk indicators', 'Manageable evidence volume')
   }
-
   return { level, factors }
 }
-
 // Estimate token count (rough approximation)
 function estimateTokenCount(text: string): number {
   return Math.ceil(text.split(/\s+/).length * 1.3); // Rough token estimation
 }
-
 // Log analysis for audit trail
 async function logAnalysis(data: any): Promise<any> {
   try {
@@ -369,5 +316,4 @@ async function logAnalysis(data: any): Promise<any> {
     console.warn('Failed to log analysis:', error)
   }
 }
-
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)

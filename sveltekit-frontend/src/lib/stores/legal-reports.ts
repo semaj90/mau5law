@@ -2,63 +2,53 @@
  * Legal Reports Generation and Management System
  * AI-powered report generation with templates, automation, and collaboration
  */
-
 import { writable, derived } from 'svelte/store';
 import { browser } from '$app/environment';
 import { fastParse, fastStringify, createSIMDJSONCache } from '$lib/utils/simd-json-cache';
 import { createWorkerPool } from '$lib/workers/legal-ai-worker-pool';
 import type { LegalCitation } from './legal-citations';
 import type { LegalNote } from './enhanced-saved-notes';
-
 // Report Types and Interfaces
 export interface LegalReport {
   id: string;
   type: 'case_summary' | 'legal_brief' | 'motion' | 'discovery_response' | 'settlement_demand' |
         'legal_memo' | 'court_filing' | 'evidence_summary' | 'expert_report' | 'investigation_report' |
         'compliance_report' | 'risk_assessment' | 'due_diligence' | 'custom';
-
   // Core Information
   title: string;
   subtitle?: string;
   description: string;
   caseId?: string;
   clientId?: string;
-
   // Content Structure
-  template: string; // Template ID used
+  template: string; // Template ID used,
   sections: ReportSection[];
-
   // Document Properties
   status: 'draft' | 'review' | 'approved' | 'filed' | 'archived';
   version: number;
   language: string;
   jurisdiction: string;
   court?: string;
-
   // Content Generation
   aiGenerated: boolean;
   aiModel?: string;
   generationPrompt?: string;
   confidence?: number;
-
   // Data Sources
-  sourceCitations: string[]; // Citation IDs
+  sourceCitations: string[]; // Citation IDs,
   sourceNotes: string[]; // Note IDs
-  sourceDocuments: string[]; // Document IDs
+  sourceDocuments: string[]; // Document IDs,
   evidenceItems: string[]; // Evidence IDs
   witnessStatements: string[]; // Witness IDs
-
   // Collaboration
   assignedTo: string[];
   reviewers: string[];
   collaborators: string[];
   comments: ReportComment[];
-
   // Processing
   processingStatus: 'pending' | 'generating' | 'reviewing' | 'completed' | 'failed';
   processingJobId?: string;
   lastGenerated?: Date;
-
   // Export Options
   exportFormats: {
     pdf?: boolean;
@@ -66,31 +56,26 @@ export interface LegalReport {
     html?: boolean;
     markdown?: boolean;
   };
-
   // Metadata
   tags: string[];
   priority: 'low' | 'medium' | 'high' | 'urgent';
   deadline?: Date;
   wordCount?: number;
   pageCount?: number;
-
   // Database Integration
   neo4jNodeId?: string;
   postgresId?: string;
   minioPath?: string; // Generated document storage
-
   // Audit Trail
   createdAt: Date;
   updatedAt: Date;
   createdBy: string;
   lastModifiedBy: string;
   generationHistory: GenerationEntry[];
-
   // Security
   confidentiality: 'public' | 'confidential' | 'privileged' | 'work_product';
   accessLevel: 'open' | 'restricted' | 'confidential';
 }
-
 export interface ReportSection {
   id: string;
   title: string;
@@ -99,7 +84,7 @@ export interface ReportSection {
   content: string;
   aiGenerated: boolean;
   prompt?: string;
-  variables?: Record<string, any>; // Template variables
+  variables?: { [key: string]: any }; // Template variables
   styling?: {
     fontSize?: string;
     fontFamily?: string;
@@ -109,7 +94,6 @@ export interface ReportSection {
     underline?: boolean;
   };
 }
-
 export interface ReportComment {
   id: string;
   sectionId?: string; // Section this comment relates to
@@ -120,7 +104,6 @@ export interface ReportComment {
   createdAt: Date;
   parentCommentId?: string; // For threaded comments
 }
-
 export interface GenerationEntry {
   timestamp: Date;
   version: number;
@@ -130,7 +113,6 @@ export interface GenerationEntry {
   changes: string[];
   generatedBy: string;
 }
-
 export interface ReportTemplate {
   id: string;
   name: string;
@@ -146,7 +128,6 @@ export interface ReportTemplate {
   createdBy: string;
   createdAt: Date;
 }
-
 export interface TemplateSectionDefinition {
   id: string;
   title: string;
@@ -157,7 +138,6 @@ export interface TemplateSectionDefinition {
   aiPrompt?: string;
   variables?: string[]; // Variable names used in this section
 }
-
 export interface TemplateVariable {
   name: string;
   type: 'text' | 'number' | 'date' | 'boolean' | 'list' | 'object';
@@ -166,7 +146,6 @@ export interface TemplateVariable {
   description: string;
   validation?: string; // Regex pattern for validation
 }
-
 export interface ReportFilters {
   search: string;
   type: string;
@@ -178,7 +157,6 @@ export interface ReportFilters {
   dateRange?: [Date, Date];
   tags: string[];
 }
-
 export interface ReportStats {
   total: number;
   byType: Record<string, number>;
@@ -190,7 +168,6 @@ export interface ReportStats {
   recentlyCreated: number;
   averageWordCount: number;
 }
-
 // Stores
 export const legalReports = writable<LegalReport[]>([]);
 export const reportTemplates = writable<ReportTemplate[]>([]);
@@ -201,16 +178,14 @@ export const reportFilters = writable<ReportFilters>({
   assignedTo: '',
   caseId: '',
   priority: '',
-  confidentiality: '',;
+  confidentiality: '',
   tags: []
 });
-
 // Filtered reports
 export const filteredReports = derived(
   [legalReports, reportFilters],
   ([$reports, $filters]) => {
     let reports = $reports;
-
     // Apply filters
     if ($filters.type) {
       reports = reports.filter(r => r.type === $filters.type);
@@ -242,7 +217,6 @@ export const filteredReports = derived(
         return reportDate >= start && reportDate <= end;
       });
     }
-
     // Search
     if ($filters.search.trim()) {
       const searchTerm = $filters.search.toLowerCase();
@@ -256,7 +230,6 @@ export const filteredReports = derived(
         ].some(field => field?.toLowerCase().includes(searchTerm));
       });
     }
-
     // Sort by priority and date
     return reports.sort((a, b) => {
       // Priority first
@@ -264,20 +237,17 @@ export const filteredReports = derived(
       const aPriority = priorityOrder[a.priority];
       const bPriority = priorityOrder[b.priority];
       if (aPriority !== bPriority) return bPriority - aPriority;
-
       // Then by deadline
       if (a.deadline && b.deadline) {
         return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
       }
       if (a.deadline && !b.deadline) return -1;
       if (!a.deadline && b.deadline) return 1;
-
       // Finally by update date
       return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
     });
   }
 );
-
 // Report statistics
 export const reportStats = derived(legalReports, ($reports): ReportStats => {
   const stats: ReportStats = {
@@ -286,80 +256,66 @@ export const reportStats = derived(legalReports, ($reports): ReportStats => {
     byStatus: {},
     byPriority: {},
     aiGenerated: 0,
-    pendingReview: 0,;
+    pendingReview: 0,
     overdue: 0,
     recentlyCreated: 0,
     averageWordCount: 0
   };
-
   const now = Date.now();
   const recentThreshold = now - (7 * 24 * 60 * 60 * 1000); // 7 days
   let totalWordCount = 0;
   let wordCountReports = 0;
-
   for (const report of $reports) {
     // Count by type
     stats.byType[report.type] = (stats.byType[report.type] || 0) + 1;
-
     // Count by status
     stats.byStatus[report.status] = (stats.byStatus[report.status] || 0) + 1;
-
     // Count by priority
     stats.byPriority[report.priority] = (stats.byPriority[report.priority] || 0) + 1;
-
     // AI generated count
     if (report.aiGenerated) stats.aiGenerated++;
-
     // Pending review count
     if (report.status === 'review') stats.pendingReview++;
-
     // Overdue count
     if (report.deadline && new Date(report.deadline).getTime() < now && report.status !== 'completed') {
       stats.overdue++;
     }
-
     // Recently created count
     const createdTime = new Date(report.createdAt).getTime();
     if (createdTime > recentThreshold) stats.recentlyCreated++;
-
     // Word count average
     if (report.wordCount) {
       totalWordCount += report.wordCount;
       wordCountReports++;
     }
   }
-
   stats.averageWordCount = wordCountReports > 0 ? Math.round(totalWordCount / wordCountReports) : 0;
-
   return stats;
 });
-
 class LegalReportsManager {
   private static instance: LegalReportsManager;
   private dbPrefix = "legal-report-";
   private templatePrefix = "report-template-";
   private simdCache = createSIMDJSONCache({
     defaultTTL: 3600,
-    compressionEnabled: true,
+    compressionEnabled: true
     enableMetrics: true
   });
   private workerPool = createWorkerPool({
     maxWorkers: 6,
-    enableSIMD: true,
+    enableSIMD: true
     redisCache: true
   });
-
   static getInstance(): LegalReportsManager {
     if (!LegalReportsManager.instance) {
       LegalReportsManager.instance = new LegalReportsManager();
     }
     return LegalReportsManager.instance;
   }
-
   // Generate report using AI
   async generateReport(
-    template: ReportTemplate,
-    variables: Record<string, any>,;
+    template: ReportTemplate
+    variables: { [key: string]: any },
     options: {
       caseId?: string;
       clientId?: string;
@@ -369,10 +325,9 @@ class LegalReportsManager {
     } = {}
   ): Promise<LegalReport> {
     const reportId = `report-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
     // Create initial report structure
     const report: LegalReport = {
-      id: reportId,
+      id: reportId
       type: template.type as any,
       title: this.processTemplate(template.name, variables),
       description: this.processTemplate(template.description, variables),
@@ -385,7 +340,7 @@ class LegalReportsManager {
       language: 'en',
       jurisdiction: template.jurisdiction,
       court: template.court,
-      aiGenerated: true,
+      aiGenerated: true
       aiModel: options.aiModel || 'gemma3:legal-latest',
       sourceCitations: options.sourceCitations || [],
       sourceNotes: options.sourceNotes || [],
@@ -398,13 +353,13 @@ class LegalReportsManager {
       comments: [],
       processingStatus: 'generating',
       exportFormats: {
-        pdf: true,
-        docx: true,
-        html: true,
+        pdf: true
+        docx: true
+        html: true
         markdown: true
       },
       tags: [],
-      priority: 'medium',;
+      priority: 'medium',
       confidentiality: 'confidential',
       accessLevel: 'restricted',
       createdAt: new Date(),
@@ -413,37 +368,30 @@ class LegalReportsManager {
       lastModifiedBy: 'ai-generator',
       generationHistory: []
     };
-
     try {
       // Generate sections using AI
       for (const sectionDef of template.sections) {
         const section = await this.generateSection(sectionDef, variables, template.aiPrompts[sectionDef.id], options);
         report.sections.push(section);
       }
-
       // Calculate word count
       report.wordCount = this.calculateWordCount(report.sections);
       report.pageCount = Math.ceil(report.wordCount / 250); // Approximate pages
-
       // Add generation history entry
       report.generationHistory.push({
         timestamp: new Date(),
         version: 1,
         model: report.aiModel!,
         prompt: `Generated full report using template: ${template.name}`,
-        generationType: 'full',;
+        generationType: 'full',
         changes: ['Initial report generation'],
         generatedBy: 'ai-generator'
       });
-
       report.processingStatus = 'completed';
       report.lastGenerated = new Date();
-
       // Save report
       await this.saveReport(report);
-
       return report;
-
     } catch (error) {
       console.error('Report generation failed:', error);
       report.processingStatus = 'failed';
@@ -451,63 +399,53 @@ class LegalReportsManager {
       throw error;
     }
   }
-
   // Generate individual section
   private async generateSection(
-    sectionDef: TemplateSectionDefinition,
-    variables: Record<string, any>,
-    aiPrompt?: string,
+    sectionDef: TemplateSectionDefinition
+    variables: { [key: string]: any },
+    aiPrompt?: string
     options: any = {}
   ): Promise<ReportSection> {
     const section: ReportSection = {
       id: `section-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       title: this.processTemplate(sectionDef.title, variables),
       order: sectionDef.order,
-      type: sectionDef.type,;
+      type: sectionDef.type,
       content: sectionDef.defaultContent || '',
-      aiGenerated: false,
+      aiGenerated: false
       variables
     };
-
     if (aiPrompt) {
       try {
         // Process AI prompt with variables
         const processedPrompt = this.processTemplate(aiPrompt, variables);
         section.prompt = processedPrompt;
-
         // Generate content using AI
         const generationResult = await this.workerPool.analyzeDocument(
           processedPrompt,
           'legal_section_generation',
           options.aiModel || 'gemma3:legal-latest'
         );
-
         if (generationResult.success) {
           section.content = generationResult.data.content || generationResult.data.text || '';
           section.aiGenerated = true;
         }
-
       } catch (error) {
         console.warn(`Failed to generate section ${sectionDef.title}:`, error);
         section.content = sectionDef.defaultContent || `[Error generating content for ${sectionDef.title}]`;
       }
     }
-
     return section;
   }
-
   // Process template with variables
-  private processTemplate(template: string, variables: Record<string, any>): string {
+  private processTemplate(template: string, variables: { [key: string]: any }): string {
     let processed = template;
-
     for (const [key, value] of Object.entries(variables)) {
       const placeholder = new RegExp(`\\{\\{${key}\\}\\}`, 'g');
       processed = processed.replace(placeholder, String(value || ''));
     }
-
     return processed;
   }
-
   // Calculate word count
   private calculateWordCount(sections: ReportSection[]): number {
     return sections.reduce((total, section) => {
@@ -515,12 +453,10 @@ class LegalReportsManager {
       return total + words;
     }, 0);
   }
-
   // Save report
   async saveReport(report: LegalReport): Promise<void> {
     const now = new Date();
     report.updatedAt = now;
-
     // Update store
     legalReports.update((reports) => {
       const existingIndex = reports.findIndex(r => r.id === report.id);
@@ -531,7 +467,6 @@ class LegalReportsManager {
         return [report, ...reports];
       }
     });
-
     // Save to storage
     if (browser) {
       try {
@@ -541,34 +476,30 @@ class LegalReportsManager {
         console.warn('Failed to save report to storage:', error);
       }
     }
-
     // Store in Neo4j
     await this.storeInNeo4j(report);
-
     // Sync to server
     this.syncReportToServer(report);
   }
-
   // Store report in Neo4j
   private async storeInNeo4j(report: LegalReport): Promise<void> {
     try {
       const response = await fetch('/api/graph/neo4j/reports', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           reportId: report.id,
           type: report.type,
           title: report.title,
           caseId: report.caseId,
           clientId: report.clientId,
-          status: report.status,;
+          status: report.status,
           confidentiality: report.confidentiality,
           assignedTo: report.assignedTo,
           sourceCitations: report.sourceCitations,
           sourceNotes: report.sourceNotes
         })
       });
-
       if (response.ok) {
         const result = await response.json();
         report.neo4jNodeId = result.nodeId;
@@ -577,14 +508,11 @@ class LegalReportsManager {
       console.warn('Neo4j report storage failed:', error);
     }
   }
-
   // Load reports from storage
   async loadReports(): Promise<void> {
     if (!browser) return;
-
     try {
       const reports: LegalReport[] = [];
-
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key?.startsWith(this.dbPrefix)) {
@@ -604,23 +532,18 @@ class LegalReportsManager {
           }
         }
       }
-
       legalReports.set(reports.sort((a, b) =>
         new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
       ));
-
     } catch (error) {
       console.error('Failed to load reports:', error);
     }
   }
-
   // Load templates
   async loadTemplates(): Promise<void> {
     if (!browser) return;
-
     try {
       const templates: ReportTemplate[] = [];
-
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key?.startsWith(this.templatePrefix)) {
@@ -638,107 +561,88 @@ class LegalReportsManager {
           }
         }
       }
-
       // Load default templates if none exist
       if (templates.length === 0) {
         await this.loadDefaultTemplates();
       } else {
         reportTemplates.set(templates);
       }
-
     } catch (error) {
       console.error('Failed to load templates:', error);
     }
   }
-
   // Export report to various formats
   async exportReport(reportId: string, format: 'pdf' | 'docx' | 'html' | 'markdown'): Promise<Blob> {
     const report = await this.getReport(reportId);
     if (!report) {
       throw new Error('Report not found');
     }
-
     const response = await fetch('/api/reports/export', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         reportId,
-        format,;
+        format,
         report: report
       })
     });
-
     if (!response.ok) {
       throw new Error(`Export failed: ${response.statusText}`);
     }
-
     return await response.blob();
   }
-
   // Add comment to report
   async addComment(reportId: string, comment: Omit<ReportComment, 'id' | 'createdAt'>): Promise<void> {
     const report = await this.getReport(reportId);
     if (!report) return;
-
     const newComment: ReportComment = {
       ...comment,
       id: `comment-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       createdAt: new Date()
     };
-
     report.comments.push(newComment);
     await this.saveReport(report);
   }
-
   // Update report status
   async updateReportStatus(reportId: string, status: LegalReport['status'], reviewer?: string): Promise<void> {
     const report = await this.getReport(reportId);
     if (!report) return;
-
     report.status = status;
     report.lastModifiedBy = reviewer || 'system';
-
     if (status === 'approved' && reviewer) {
       // Add approval comment
       await this.addComment(reportId, {
-        author: reviewer,
+        author: reviewer
         content: 'Report approved',
-        type: 'approval',;
+        type: 'approval',
         resolved: true
       });
     }
-
     await this.saveReport(report);
   }
-
   // Create collaborative editing session
   async createCollaborationSession(reportId: string, collaborators: string[]): Promise<string> {
     const sessionId = `collab-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
     try {
       const response = await fetch('/api/reports/collaborate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },;
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           sessionId,
           reportId,
           collaborators
         })
       });
-
       if (response.ok) {
         const result = await response.json();
         return result.sessionId;
       }
-
       throw new Error('Failed to create collaboration session');
-
     } catch (error) {
       console.error('Collaboration session creation failed:', error);
       throw error;
     }
   }
-
   // Utility functions
   private async getReport(reportId: string): Promise<LegalReport | null> {
     return new Promise((resolve) => {
@@ -749,7 +653,6 @@ class LegalReportsManager {
       });
     });
   }
-
   private isValidReport(obj: any): obj is LegalReport {
     return (
       obj &&
@@ -759,7 +662,6 @@ class LegalReportsManager {
       Array.isArray(obj.sections)
     );
   }
-
   private isValidTemplate(obj: any): obj is ReportTemplate {
     return (
       obj &&
@@ -768,19 +670,17 @@ class LegalReportsManager {
       Array.isArray(obj.sections)
     );
   }
-
   private async syncReportToServer(report: LegalReport): Promise<void> {
     try {
       await fetch('/api/reports/sync', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },;
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(report)
       });
     } catch (error) {
       console.warn('Failed to sync report to server:', error);
     }
   }
-
   // Load default templates
   private async loadDefaultTemplates(): Promise<void> {
     const defaultTemplates: ReportTemplate[] = [
@@ -796,7 +696,7 @@ class LegalReportsManager {
             title: 'Executive Summary',
             order: 1,
             type: 'text',
-            required: true,
+            required: true
             aiPrompt: 'Write a comprehensive executive summary for the case {{case_name}} involving {{legal_issues}}. Include key facts, legal arguments, and recommendations.'
           },
           {
@@ -804,7 +704,7 @@ class LegalReportsManager {
             title: 'Factual Background',
             order: 2,
             type: 'text',
-            required: true,
+            required: true
             aiPrompt: 'Provide a detailed factual background for {{case_name}}, including chronology of events, parties involved, and relevant circumstances.'
           },
           {
@@ -812,7 +712,7 @@ class LegalReportsManager {
             title: 'Legal Analysis',
             order: 3,
             type: 'text',
-            required: true,
+            required: true
             aiPrompt: 'Analyze the legal issues in {{case_name}}, including applicable law, precedents, and legal arguments for both sides.'
           },
           {
@@ -820,7 +720,7 @@ class LegalReportsManager {
             title: 'Recommendations',
             order: 4,
             type: 'text',
-            required: true,
+            required: true
             aiPrompt: 'Provide strategic recommendations for {{case_name}}, including next steps, potential risks, and suggested actions.'
           },
           {
@@ -835,24 +735,24 @@ class LegalReportsManager {
           {
             name: 'case_name',
             type: 'text',
-            required: true,
+            required: true
             description: 'Name or title of the case'
           },
           {
             name: 'legal_issues',
             type: 'text',
-            required: true,
+            required: true
             description: 'Primary legal issues involved'
           },
           {
             name: 'client_name',
             type: 'text',
-            required: false,
+            required: false
             description: 'Client name'
           }
         ],
         aiPrompts: {},
-        isPublic: true,
+        isPublic: true
         createdBy: 'system',
         createdAt: new Date()
       },
@@ -868,7 +768,7 @@ class LegalReportsManager {
             title: 'Memorandum Header',
             order: 1,
             type: 'text',
-            required: true,
+            required: true
             defaultContent: 'MEMORANDUM\n\nTO: {{recipient}}\nFROM: {{author}}\nDATE: {{date}}\nRE: {{subject}}'
           },
           {
@@ -876,7 +776,7 @@ class LegalReportsManager {
             title: 'Question Presented',
             order: 2,
             type: 'text',
-            required: true,
+            required: true
             aiPrompt: 'Draft a clear and concise question presented for the legal issue: {{legal_question}}'
           },
           {
@@ -884,7 +784,7 @@ class LegalReportsManager {
             title: 'Brief Answer',
             order: 3,
             type: 'text',
-            required: true,
+            required: true
             aiPrompt: 'Provide a brief answer to the question: {{legal_question}}. Include conclusion and key reasoning.'
           },
           {
@@ -892,7 +792,7 @@ class LegalReportsManager {
             title: 'Discussion',
             order: 4,
             type: 'text',
-            required: true,
+            required: true
             aiPrompt: 'Write a detailed legal analysis discussing {{legal_question}}. Include relevant law, precedents, analysis, and application to facts.'
           },
           {
@@ -900,7 +800,7 @@ class LegalReportsManager {
             title: 'Conclusion',
             order: 5,
             type: 'text',
-            required: true,
+            required: true
             aiPrompt: 'Write a conclusion that summarizes the analysis and restates the answer to {{legal_question}}'
           }
         ],
@@ -908,35 +808,34 @@ class LegalReportsManager {
           {
             name: 'recipient',
             type: 'text',
-            required: true,
+            required: true
             description: 'Memo recipient'
           },
           {
             name: 'author',
             type: 'text',
-            required: true,
+            required: true
             description: 'Memo author'
           },
           {
             name: 'legal_question',
             type: 'text',
-            required: true,
+            required: true
             description: 'Legal question to analyze'
           },
           {
             name: 'subject',
             type: 'text',
-            required: true,;
+            required: true
             description: 'Subject line for memo'
           }
         ],
         aiPrompts: {},
-        isPublic: true,
+        isPublic: true
         createdBy: 'system',
         createdAt: new Date()
       }
     ];
-
     // Save default templates
     for (const template of defaultTemplates) {
       try {
@@ -946,18 +845,14 @@ class LegalReportsManager {
         console.warn('Failed to save default template:', error);
       }
     }
-
     reportTemplates.set(defaultTemplates);
   }
-
   // Remove report
   async removeReport(reportId: string): Promise<void> {
     legalReports.update((reports) => reports.filter(r => r.id !== reportId));
-
     if (browser) {
       localStorage.removeItem(`${this.dbPrefix}${reportId}`);
     }
-
     try {
       await fetch(`/api/reports/${reportId}`, { method: 'DELETE' });
     } catch (error) {
@@ -965,51 +860,40 @@ class LegalReportsManager {
     }
   }
 }
-
 // Export singleton
 export const reportsManager = LegalReportsManager.getInstance();
-
 // Convenience functions
 export async function generateReport(
-  template: ReportTemplate,;
-  variables: Record<string, any>,
+  template: ReportTemplate
+  variables: { [key: string]: any },
   options?: any
 ): Promise<LegalReport> {
   return reportsManager.generateReport(template, variables, options);
 }
-
 export async function saveReport(report: LegalReport): Promise<void> {
   await reportsManager.saveReport(report);
 }
-
 export async function loadReports(): Promise<void> {
   await reportsManager.loadReports();
 }
-
 export async function loadReportTemplates(): Promise<void> {
   await reportsManager.loadTemplates();
 }
-
 export async function exportReport(reportId: string, format: 'pdf' | 'docx' | 'html' | 'markdown'): Promise<Blob> {
   return reportsManager.exportReport(reportId, format);
 }
-
 export async function addReportComment(reportId: string, comment: Omit<ReportComment, 'id' | 'createdAt'>): Promise<void> {
   await reportsManager.addComment(reportId, comment);
 }
-
 export async function updateReportStatus(reportId: string, status: LegalReport['status'], reviewer?: string): Promise<void> {
   await reportsManager.updateReportStatus(reportId, status, reviewer);
 }
-
 export async function removeReport(reportId: string): Promise<void> {
   await reportsManager.removeReport(reportId);
 }
-
 export function setReportFilter(filter: Partial<ReportFilters>): void {
   reportFilters.update((current) => ({ ...current, ...filter }));
 }
-
 export function clearReportFilters(): void {
   reportFilters.set({
     search: '',
@@ -1018,9 +902,8 @@ export function clearReportFilters(): void {
     assignedTo: '',
     caseId: '',
     priority: '',
-    confidentiality: '',;
+    confidentiality: '',
     tags: []
   });
 }
-
 export default reportsManager;

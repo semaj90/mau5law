@@ -1,17 +1,13 @@
 import type { RequestHandler } from './$types.js'
-
 /*
  * Unified GPU/WASM Integration API Endpoint
  * Provides centralized access to GPU services and WASM bridge
  * Integrates FlashAttention2, LLVM-WASM bridge, and GPU error processor
  */
-
 import { gpuServiceIntegration, GPUServiceUtils, type GPUProcessingTask, type GPUServiceStatus } from '$lib/services/gpu-service-integration'
 import { llvmWasmBridge, initializeLLVMIntegration, type LLVMWASMBridge } from '$lib/wasm/llvm-wasm-bridge'
 import { flashAttention2Service, gpuErrorProcessor, type GPUErrorContext } from '$lib/services/flashattention2-rtx3060'
 import { URL } from "url"
-}
-
 export interface IntegrationStatus {
   gpuService: {
     available: boolean
@@ -21,7 +17,7 @@ export interface IntegrationStatus {
   wasmBridge: {
     available: boolean
     initialized: boolean
-    modules: Record<string, any>
+    modules: { [key: string]: any }
   }
   flashAttention: {
     available: boolean
@@ -37,55 +33,43 @@ export interface IntegrationStatus {
     integrationScore: number
   }
 }
-
 // Initialize services on startup
 let initializationPromise: Promise<void> | null = null
-
 function getInitializationPromise(): Promise<void> {
   if (!initializationPromise) {
     initializationPromise = initializeServices()
   }
   return initializationPromise
 }
-
 async function initializeServices(): Promise<void> {
   try {
     console.log('🚀 Initializing GPU/WASM integration services...')
-    
     // Initialize all services concurrently
     await Promise.all([
       gpuServiceIntegration.initialize(),
       initializeLLVMIntegration(),
       flashAttention2Service.initialize()
     ])
-    
     console.log('✅ GPU/WASM integration services initialized')
   } catch (error: any) {
     console.error('❌ Service initialization failed:', error)
     throw error
   }
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'status'
-  
   try {
     // Ensure services are initialized
     await getInitializationPromise()
-    
     switch (action) {
       case 'status':
         return json(await getIntegrationStatus()
-        
       case 'health':
         return json(await getHealthCheck()
-        
       case 'modules':
         return json(await getModuleInformation()
-        
       case 'metrics':
         return json(await getPerformanceMetrics()
-        
       default:
         return json({ error: 'Invalid action parameter' }, { status: 400 })
     }
@@ -98,35 +82,25 @@ export const GET: RequestHandler = async ({ url }) => {
     }, { status: 503 })
   }
 }
-
 export const POST: RequestHandler = async ({ request, url }) => {
   const action = url.searchParams.get('action') || 'process'
-  
   try {
     // Ensure services are initialized
     await getInitializationPromise()
-    
     const body = await request.json().catch(() => ({})
-    
     switch (action) {
       case 'process':
         return await handleProcessing(body)
-        
       case 'legal-analysis':
         return await handleLegalAnalysis(body)
-        
       case 'embedding':
         return await handleEmbeddingGeneration(body)
-        
       case 'error-processing':
         return await handleErrorProcessing(body)
-        
       case 'compile-wasm':
         return await handleWASMCompilation(body)
-        
       case 'test':
         return await handleIntegrationTest(body)
-        
       default:
         return json({ error: 'Invalid action parameter' }, { status: 400 })
     }
@@ -139,7 +113,6 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }, { status: 500 })
   }
 }
-
 async function getIntegrationStatus(): Promise<IntegrationStatus> {
   try {
     // Get status from all services
@@ -149,7 +122,6 @@ async function getIntegrationStatus(): Promise<IntegrationStatus> {
       flashAttention2Service.getStatus(),
       gpuErrorProcessor.getCacheStats()
     ])
-    
     const integrationScore = calculateIntegrationScore({
       gpuAvailable: gpuStatus.available,
       gpuInitialized: gpuStatus.initialized,
@@ -157,7 +129,6 @@ async function getIntegrationStatus(): Promise<IntegrationStatus> {
       flashAttentionReady: flashStatus.initialized,
       errorProcessorReady: errorStats.cacheSize >= 0
     })
-    
     return {
       gpuService: {
         available: gpuStatus.available,
@@ -174,7 +145,7 @@ async function getIntegrationStatus(): Promise<IntegrationStatus> {
         status: flashStatus
       },
       errorProcessor: {
-        available: true,
+        available: true
         cacheStats: errorStats
       },
       overall: {
@@ -188,7 +159,6 @@ async function getIntegrationStatus(): Promise<IntegrationStatus> {
     throw error
   }
 }
-
 function calculateIntegrationScore(metrics: {
   gpuAvailable: boolean
   gpuInitialized: boolean
@@ -198,19 +168,15 @@ function calculateIntegrationScore(metrics: {
 }): number {
   let score = 0
   const maxScore = 5
-  
   if (metrics.gpuAvailable) score += 1
   if (metrics.gpuInitialized) score += 1
   if (metrics.wasmModulesLoaded > 0) score += Math.min(1, metrics.wasmModulesLoaded / 4)
   if (metrics.flashAttentionReady) score += 1
   if (metrics.errorProcessorReady) score += 1
-  
   return score / maxScore
 }
-
 async function getHealthCheck(): Promise<any> {
   const status = await getIntegrationStatus()
-  
   return {
     status: status.overall.healthy ? 'healthy' : 'degraded',
     services: {
@@ -224,11 +190,9 @@ async function getHealthCheck(): Promise<any> {
     timestamp: new Date().toISOString()
   }
 }
-
 async function getModuleInformation(): Promise<any> {
   const wasmModules = llvmWasmBridge.getModuleStats()
   const gpuStatus = await gpuServiceIntegration.getStatus()
-  
   return {
     wasmModules,
     gpuServiceConfig: {
@@ -245,10 +209,8 @@ async function getModuleInformation(): Promise<any> {
     ]
   }
 }
-
 async function getPerformanceMetrics(): Promise<any> {
   const status = await getIntegrationStatus()
-  
   return {
     gpu: {
       utilization: status.gpuService.status.currentLoad,
@@ -262,7 +224,7 @@ async function getPerformanceMetrics(): Promise<any> {
       memoryUsage: Object.values(status.wasmBridge.modules)
         .reduce((sum: number, module: any) => sum + (module.performance?.memoryUsage || 0), 0),
       avgCompileTime: Object.values(status.wasmBridge.modules)
-        .reduce((sum: number, module: any) => sum + (module.performance?.compileTimeMs || 0), 0) / 
+        .reduce((sum: number, module: any) => sum + (module.performance?.compileTimeMs || 0), 0) /
         Math.max(1, Object.keys(status.wasmBridge.modules).length)
     },
     flashAttention: {
@@ -274,14 +236,11 @@ async function getPerformanceMetrics(): Promise<any> {
     timestamp: new Date().toISOString()
   }
 }
-
 async function handleProcessing(body: any): Promise<any> {
   const { type, data, priority = 'medium', metadata = {} } = body
-  
   if (!type || !data) {
     return json({ error: 'Missing type or data parameters' }, { status: 400 })
   }
-  
   const taskId = await gpuServiceIntegration.submitTask({
     type,
     data,
@@ -292,55 +251,47 @@ async function handleProcessing(body: any): Promise<any> {
       source: 'gpu-wasm-integration-api'
     }
   })
-  
   return json({
-    success: true,
+    success: true
     taskId,
     status: 'queued',
     message: `Task ${taskId} submitted for ${type} processing`,
     timestamp: new Date().toISOString()
   })
 }
-
 async function handleLegalAnalysis(body: any): Promise<any> {
   const { text, context = [], analysisType = 'legal' } = body
-  
   if (!text || typeof text !== 'string') {
     return json({ error: 'Missing or invalid text parameter' }, { status: 400 })
   }
-  
   try {
     // Use both GPU service and WASM bridge for comprehensive analysis
     const [gpuResult, wasmResult] = await Promise.allSettled([
       gpuServiceIntegration.processLegalText(text, context, analysisType),
       llvmWasmBridge.processLegalText(text, {
-        extractCitations: true,
-        analyzePrecedents: true,
+        extractCitations: true
+        analyzePrecedents: true
         riskAssessment: false
       })
     ])
-    
     const response: any = {
-      success: true,
-      analysis: Record<string, any>,
+      success: true
+      analysis: { [key: string]: any },
       processingTime: 0,
       sources: []
     }
-    
     // Combine results from GPU processing
     if (gpuResult.status === 'fulfilled') {
       (response as { analysis?: any; processingTime?: any; sources?: any }).analysis.gpu = gpuResult.value
       (response as { analysis?: any; processingTime?: any; sources?: any }).processingTime += gpuResult.value.processingTime || 0
       (response as { analysis?: any; processingTime?: any; sources?: any }).sources.push('gpu-flash-attention')
     }
-    
     // Combine results from WASM processing
     if (wasmResult.status === 'fulfilled') {
       (response as { analysis?: any; processingTime?: any; sources?: any }).analysis.wasm = wasmResult.value
       (response as { analysis?: any; processingTime?: any; sources?: any }).processingTime += wasmResult.value.processingTime || 0
       (response as { analysis?: any; processingTime?: any; sources?: any }).sources.push('llvm-wasm-bridge')
     }
-    
     // Create unified result
     (response as { analysis?: any; processingTime?: any; sources?: any }).analysis.unified = {
       confidence: Math.max(
@@ -352,30 +303,25 @@ async function handleLegalAnalysis(body: any): Promise<any> {
       conceptClusters: (response as { analysis?: any; processingTime?: any; sources?: any }).analysis.gpu?.legalAnalysis?.conceptClusters || [],
       processedText: (response as { analysis?: any; processingTime?: any; sources?: any }).analysis.wasm?.processedText || text
     }
-    
     return json(response)
   } catch (error: any) {
     return json({
-      success: false,
+      success: false
       error: 'Legal analysis failed',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })
   }
 }
-
 async function handleEmbeddingGeneration(body: any): Promise<any> {
   const { texts, dimensions = 384 } = body
-  
   if (!texts || !Array.isArray(texts)) {
     return json({ error: 'Missing or invalid texts parameter (must be array)' }, { status: 400 })
   }
-  
   try {
     // Try GPU service first, fallback to WASM
     let embeddings: Float32Array[] = []
     let processingTime = 0
     let source = ''
-    
     try {
       const startTime = performance.now()
       embeddings = await gpuServiceIntegration.generateEmbeddings(texts)
@@ -383,7 +329,6 @@ async function handleEmbeddingGeneration(body: any): Promise<any> {
       source = 'gpu-service'
     } catch (gpuError) {
       console.warn('GPU embedding failed, trying WASM:', gpuError)
-      
       // Fallback to WASM processing
       const results = await Promise.all(texts.map(async (text: string) => {
           const result = await llvmWasmBridge.computeEmbedding(
@@ -394,13 +339,11 @@ async function handleEmbeddingGeneration(body: any): Promise<any> {
           return new Float32Array((result as { processingTime?: any; embedding?: any; resolved?: any }).embedding)
         })
       )
-      
       embeddings = results
       source = 'wasm-bridge'
     }
-    
     return json({
-      success: true,
+      success: true
       embeddings: embeddings.map(emb => Array.from(emb)),
       dimensions,
       processingTime,
@@ -409,24 +352,20 @@ async function handleEmbeddingGeneration(body: any): Promise<any> {
     })
   } catch (error: any) {
     return json({
-      success: false,
+      success: false
       error: 'Embedding generation failed',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })
   }
 }
-
 async function handleErrorProcessing(body: any): Promise<any> {
   const { errorContext } = body
-  
   if (!errorContext) {
     return json({ error: 'Missing errorContext parameter' }, { status: 400 })
   }
-  
   try {
     // Process error using GPU error processor
     const result = await gpuServiceIntegration.processGPUError(errorContext)
-    
     return json({
       success: (result as { processingTime?: any; embedding?: any; resolved?: any }).resolved,
       result,
@@ -434,20 +373,17 @@ async function handleErrorProcessing(body: any): Promise<any> {
     })
   } catch (error: any) {
     return json({
-      success: false,
+      success: false
       error: 'Error processing failed',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })
   }
 }
-
 async function handleWASMCompilation(body: any): Promise<any> {
   const { moduleId, sources, options = {} } = body
-  
   if (!moduleId || !sources) {
     return json({ error: 'Missing moduleId or sources parameters' }, { status: 400 })
   }
-  
   try {
     // Compile WASM module using LLVM bridge
     const module = await llvmWasmBridge.compileLegalModule(
@@ -459,13 +395,11 @@ async function handleWASMCompilation(body: any): Promise<any> {
         memoryRequired: options.memoryRequired || 1024 * 1024
       }
     )
-    
     if (!module) {
       throw new Error('Module compilation failed')
     }
-    
     return json({
-      success: true,
+      success: true
       module: {
         id: module.id,
         name: module.name,
@@ -477,34 +411,30 @@ async function handleWASMCompilation(body: any): Promise<any> {
     })
   } catch (error: any) {
     return json({
-      success: false,
+      success: false
       error: 'WASM compilation failed',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })
   }
 }
-
 async function handleIntegrationTest(body: any): Promise<any> {
   const { testType = 'comprehensive' } = body
-  
   try {
     const results: any = {
       testType,
       timestamp: new Date().toISOString(),
-      tests: Record<string, any>
+      tests: { [key: string]: any }
     }
-    
     // Test GPU service integration
     try {
       const gpuTest = await GPUServiceUtils.testIntegration()
       results.tests.gpuService = gpuTest
     } catch (error: any) {
       results.tests.gpuService = {
-        success: false,
+        success: false
         details: error instanceof Error ? error.message: String(error)
       }
     }
-    
     // Test WASM bridge
     try {
       const testText = 'This is a sample legal document for testing purposes.'
@@ -512,16 +442,15 @@ async function handleIntegrationTest(body: any): Promise<any> {
         extractCitations: true
       })
       results.tests.wasmBridge = {
-        success: true,
+        success: true
         details: `Processed ${testText.length} characters in ${wasmTest.processingTime.toFixed(2)}ms`
       }
     } catch (error: any) {
       results.tests.wasmBridge = {
-        success: false,
+        success: false
         details: error instanceof Error ? error.message: String(error)
       }
     }
-    
     // Test FlashAttention2
     try {
       const flashStatus = flashAttention2Service.getStatus()
@@ -531,11 +460,10 @@ async function handleIntegrationTest(body: any): Promise<any> {
       }
     } catch (error: any) {
       results.tests.flashAttention = {
-        success: false,
+        success: false
         details: error instanceof Error ? error.message: String(error)
       }
     }
-    
     // Calculate overall success
     const testResults = Object.values(results.tests)
     const successfulTests = testResults.filter((test: any) => test.success).length
@@ -544,11 +472,10 @@ async function handleIntegrationTest(body: any): Promise<any> {
       successRate: successfulTests / testResults.length,
       summary: `${successfulTests}/${testResults.length} tests passed`
     }
-    
     return json(results)
   } catch (error: any) {
     return json({
-      success: false,
+      success: false
       error: 'Integration test failed',
       details: error instanceof Error ? error.message: String(error),
       timestamp: new Date().toISOString()

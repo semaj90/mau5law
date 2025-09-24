@@ -3,23 +3,19 @@ https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script>
   // Svelte 5 runes are auto-imported
-
   // Component props
   let { ...props }: unknown = $props();
-
 </script>
   import { onMount } from 'svelte';
-  
   let demoResults = $state(null);
   let loading = $state(false);
   let selectedOperation = $state('benchmark');
   let systemCapabilities = $state(null);
   let errorMessage = $state('');
-  
   // Demo configuration
   let config = $state({
     batchSize: 64,
-    iterations: 10,;
+    iterations: 10,
     concurrency: 25,
     tensorSize: 512,
     textSamples: [
@@ -29,20 +25,17 @@ https://svelte.dev/e/expected_token -->
       'AI-powered legal research accelerates document review and case preparation processes.'
     ];
   });
-  
   $effect(() => {
     (async () => {
 await loadSystemCapabilities();
     })();
   });
-  
   async function loadSystemCapabilities() {
     try {
       const response = await fetch('/api/v1/webgpu/cache-demo');
       const data = await (response as { json?: unknown }).json();
-      
       if ((data as { success?: unknown; capabilities?: unknown; error?: unknown; result?: unknown }).success) {
-        systemCapabilities = (data as { success?: unknown; capabilities?: unknown; error?: unknown; result?: unknown }).capabilities;
+        systemCapabilities = (data as { success?: unknown; capabilities?: unknown; error?: unknown; result?: unknown }).capabilitie;
       } else {
         errorMessage = (data as { success?: unknown; capabilities?: unknown; error?: unknown; result?: unknown }).error || 'Failed to load system capabilities';
       }
@@ -50,41 +43,35 @@ await loadSystemCapabilities();
       errorMessage = `System check failed: ${error.message}`;
     }
   }
-  
   async function runDemo() {
     if (loading) return;
-    
     loading = true;
     errorMessage = '';
     demoResults = null;
-    
     try {
       const requestData = {
-        operation: selectedOperation,;
+        operation: selectedOperation
         data: {
           batchSize: config.batchSize,
           iterations: config.iterations,
           concurrency: config.concurrency,
           tensorSize: config.tensorSize,
-          textSamples: config.textSamples;
-        },;
+          textSamples: config.textSample;
+        },
         options: {
-          useWebGPU: true,
-          enableCompression: true,
+          useWebGPU: true
+          enableCompression: true
           parallelProcessing: true
         }
       };
-      
       const response = await fetch('/api/v1/webgpu/cache-demo', {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },;
+        },
         body: JSON.stringify(requestData);
       });
-      
       const data = await (response as { json?: unknown }).json();
-      
       if ((data as { success?: unknown; capabilities?: unknown; error?: unknown; result?: unknown }).success) {
         demoResults = (data as { success?: unknown; capabilities?: unknown; error?: unknown; result?: unknown }).result;
       } else {
@@ -96,24 +83,20 @@ await loadSystemCapabilities();
       loading = false;
     }
   }
-  
   function formatDuration(ms) {
     if (ms < 1000) return `${ms.toFixed(1)}ms`;
     return `${(ms / 1000).toFixed(2)}s`;
   }
-  
   function formatThroughput(ops) {
     if (ops > 1000) return `${(ops / 1000).toFixed(1)}K ops/s`;
     return `${ops.toFixed(0)} ops/s`;
   }
 </script>
-
 <div class="webgpu-cache-demo">
   <div class="demo-header">
     <h2>🚀 WebGPU Redis Cache Optimizer Demo</h2>
     <p>Experience GPU-accelerated caching with thread optimization and data parallelism</p>
   </div>
-  
   {#if systemCapabilities}
     <div class="system-status">
       <h3>📊 System Capabilities</h3>
@@ -145,10 +128,8 @@ await loadSystemCapabilities();
       </div>
     </div>
   {/if}
-  
   <div class="demo-controls">
     <h3>🎮 Demo Controls</h3>
-    
     <div class="control-group">
       <label>
         <span>Operation Type:</span>
@@ -161,7 +142,6 @@ await loadSystemCapabilities();
         </select>
       </label>
     </div>
-    
     {#if selectedOperation === 'benchmark' || selectedOperation === 'batch'}
       <div class="config-row">
         <label>
@@ -174,7 +154,6 @@ await loadSystemCapabilities();
         </label>
       </div>
     {/if}
-    
     {#if selectedOperation === 'stress-test'}
       <div class="config-row">
         <label>
@@ -187,40 +166,35 @@ await loadSystemCapabilities();
         </label>
       </div>
     {/if}
-    
     {#if selectedOperation === 'tensor'}
       <div class="text-samples">
         <label>Text Samples for Embedding:</label>
         {#each config.textSamples as sample, i}
-          <input 
-            type="text" 
+          <input
+            type="text"
             bind:value={config.textSamples[i]}
             placeholder="Enter legal text sample..."
           />
         {/each}
       </div>
     {/if}
-    
-    <button 
-      class="run-demo-btn" 
-      onclick={runDemo} 
+    <button
+      class="run-demo-btn"
+      onclick={runDemo}
       disabled={loading}
     >
       {loading ? '🔄 Running Demo...' : '🚀 Run Demo'}
     </button>
   </div>
-  
   {#if errorMessage}
     <div class="error-message">
       <h3>❌ Error</h3>
       <p>{errorMessage}</p>
     </div>
   {/if}
-  
   {#if demoResults}
     <div class="demo-results">
       <h3>📊 Demo Results</h3>
-      
       {#if selectedOperation === 'benchmark'}
         <div class="benchmark-results">
           <h4>Performance Benchmarks</h4>
@@ -247,7 +221,6 @@ await loadSystemCapabilities();
               </div>
             </div>
           {/each}
-          
           <div class="summary">
             <h5>Summary</h5>
             <p><strong>Average Speedup:</strong> {demoResults.summary.averageSpeedupRatio.toFixed(2)}x</p>
@@ -256,7 +229,6 @@ await loadSystemCapabilities();
           </div>
         </div>
       {/if}
-      
       {#if selectedOperation === 'tensor'}
         <div class="tensor-results">
           <h4>Tensor Processing Results</h4>
@@ -278,7 +250,6 @@ await loadSystemCapabilities();
               <span class="value">{demoResults.performance.throughput.toFixed(1)} embeddings/s</span>
             </div>
           </div>
-          
           <div class="similarities">
             <h5>Top Similarities</h5>
             {#each demoResults.similarities.slice(0, 3) as sim}
@@ -290,7 +261,6 @@ await loadSystemCapabilities();
           </div>
         </div>
       {/if}
-      
       {#if selectedOperation === 'batch'}
         <div class="batch-results">
           <h4>Batch Processing Results</h4>
@@ -314,7 +284,6 @@ await loadSystemCapabilities();
           </div>
         </div>
       {/if}
-      
       {#if selectedOperation === 'stress-test'}
         <div class="stress-results">
           <h4>Stress Test Results</h4>
@@ -338,7 +307,6 @@ await loadSystemCapabilities();
           </div>
         </div>
       {/if}
-      
       {#if selectedOperation === 'stats'}
         <div class="stats-results">
           <h4>System Statistics</h4>
@@ -348,30 +316,25 @@ await loadSystemCapabilities();
     </div>
   {/if}
 </div>
-
 <style>
-  .webgpu-cache-demo {;
+  .webgpu-cache-demo {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
     font-family: system-ui, -apple-system, sans-serif;
   }
-  
   .demo-header {
     text-align: center;
     margin-bottom: 2rem;
   }
-  
   .demo-header h2 {
     color: #2563eb;
     margin: 0 0 0.5rem 0;
   }
-  
   .demo-header p {
     color: #6b7280;
     margin: 0;
   }
-  
   .system-status {
     background: #f9fafb;
     border: 1px solid #e5e7eb;
@@ -379,18 +342,15 @@ await loadSystemCapabilities();
     padding: 1.5rem;
     margin-bottom: 2rem;
   }
-  
   .system-status h3 {
     margin: 0 0 1rem 0;
     color: #374151;
   }
-  
   .status-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
   }
-  
   .status-item {
     display: flex;
     align-items: center;
@@ -400,11 +360,9 @@ await loadSystemCapabilities();
     border-radius: 0.375rem;
     border: 1px solid #e5e7eb;
   }
-  
   .status-.enabled .icon {
     color: #10b981;
   }
-  
   .demo-controls {
     background: white;
     border: 1px solid #e5e7eb;
@@ -412,56 +370,46 @@ await loadSystemCapabilities();
     padding: 1.5rem;
     margin-bottom: 2rem;
   }
-  
   .demo-controls h3 {
     margin: 0 0 1rem 0;
     color: #374151;
   }
-  
   .control-group, .config-row {
     margin-bottom: 1rem;
   }
-  
   .config-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
   }
-  
   .control-group label, .config-row label {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-  
   .control-group label span, .config-row label span {
     font-weight: 500;
     color: #374151;
   }
-  
   select, input[type="number"], input[type="text"] {
     padding: 0.5rem;
     border: 1px solid #d1d5db;
     border-radius: 0.375rem;
     font-size: 0.875rem;
   }
-  
   .text-samples {
     margin: 1rem 0;
   }
-  
   .text-samples label {
     display: block;
     font-weight: 500;
     color: #374151;
     margin-bottom: 0.5rem;
   }
-  
   .text-samples input {
     width: 100%;
     margin-bottom: 0.5rem;
   }
-  
   .run-demo-btn {
     background: #2563eb;
     color: white;
@@ -470,18 +418,15 @@ await loadSystemCapabilities();
     padding: 0.75rem 1.5rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2;
   }
-  
-  .run-demo-btn:hover:not(:disabled) {
+  .run-demo-btn:hover:not(:disabled) {,
     background: #1d4ed8;
   }
-  
   .run-demo-btn:disabled {
     background: #9ca3af;
     cursor: not-allowed;
   }
-  
   .error-message {
     background: #fef2f2;
     border: 1px solid #fecaca;
@@ -490,85 +435,70 @@ await loadSystemCapabilities();
     padding: 1rem;
     margin-bottom: 2rem;
   }
-  
   .error-message h3 {
     margin: 0 0 0.5rem 0;
   }
-  
   .demo-results {
     background: white;
     border: 1px solid #e5e7eb;
     border-radius: 0.5rem;
     padding: 1.5rem;
   }
-  
   .demo-results h3 {
     margin: 0 0 1.5rem 0;
     color: #374151;
   }
-  
   .benchmark-item {
     margin-bottom: 2rem;
     border: 1px solid #e5e7eb;
     border-radius: 0.375rem;
     padding: 1rem;
   }
-  
   .benchmark-item h5 {
     margin: 0 0 1rem 0;
     color: #374151;
-    text-transform: capitalize;
+    text-transform: capitaliz;
   }
-  
   .benchmark-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
   }
-  
   .stat {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     padding: 0.5rem 0;
     border-bottom: 1px solid #f3f4f6;
   }
-  
   .stat.speedup.positive .value {
     color: #10b981;
     font-weight: 600;
   }
-  
   .stat .label {
     color: #6b7280;
     font-weight: 500;
   }
-  
   .stat .value {
     font-weight: 600;
     color: #374151;
   }
-  
   .summary {
     background: #f9fafb;
     border-radius: 0.375rem;
     padding: 1rem;
     margin-top: 1rem;
   }
-  
   .summary h5 {
     margin: 0 0 0.5rem 0;
     color: #374151;
   }
-  
   .summary p {
     margin: 0.25rem 0;
     color: #6b7280;
   }
-  
   .similarities {
     margin-top: 1rem;
   }
-  
   .similarity-item {
     display: flex;
     align-items: center;
@@ -576,13 +506,11 @@ await loadSystemCapabilities();
     padding: 0.5rem 0;
     border-bottom: 1px solid #f3f4f6;
   }
-  
   .similarity-score {
     font-weight: 600;
     color: #2563eb;
     min-width: 60px;
   }
-  
   .stats-results pre {
     background: #f9fafb;
     border: 1px solid #e5e7eb;
@@ -592,20 +520,16 @@ await loadSystemCapabilities();
     font-size: 0.75rem;
     line-height: 1.4;
   }
-  
   @media (max-width: 768px) {
     .webgpu-cache-demo {
       padding: 1rem;
     }
-    
     .config-row {
       grid-template-columns: 1fr;
     }
-    
     .status-grid {
       grid-template-columns: 1fr;
     }
-    
     .benchmark-stats {
       grid-template-columns: 1fr;
     }

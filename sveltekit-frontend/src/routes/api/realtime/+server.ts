@@ -1,20 +1,15 @@
 import stream from "stream"
 import type { RequestHandler } from './$types.js'
-
-
 // Minimal SSE endpoint: emits keepalive and relays posted messages to connected clients
 const clients = new Set<WritableStreamDefaultWriter<string>()
-
 export const GET: RequestHandler = async () => {
   const stream = new TransformStream()
   const writer = stream.writable.getWriter()
   clients.add(writer)
-
   // Send welcome and keepalive
   const send = (obj: any) =>
     writer.write(`data: ${JSON.stringify(obj)}\n\n`)
   send({ type: "welcome", ts: Date.now() })
-
   const keep = setInterval(
     () => send({ type: "keepalive", ts: Date.now() }),
     30000
@@ -26,7 +21,6 @@ export const GET: RequestHandler = async () => {
     writer.close().catch(() => {})
   }
   abort.signal.addEventListener("abort", onAbort)
-
   return new Response(stream.readable, {
     headers: {
       "Content-Type": "text/event-stream",
@@ -35,7 +29,6 @@ export const GET: RequestHandler = async () => {
     }
   })
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const data = await request.json()

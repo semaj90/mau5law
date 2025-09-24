@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   	import { onMount } from 'svelte';
   	// Debounce + streaming support
   let debounceMs = $state(400);
@@ -24,14 +23,12 @@ https://svelte.dev/e/js_parse_error -->
   let results = $state<any[] >([]);
   let responseMeta = $state<any >(null);
   let errorMsg = $state<string | null >(null);
-
   	function reset() {
   		results = [];
   		responseMeta = null;
   		errorMsg = null;
   		streamedCount = 0;
   	}
-
   	function scheduleDebounced() {
   		if (!autoSearch) return;
   		if (lastTimer) clearTimeout(lastTimer);
@@ -39,7 +36,6 @@ https://svelte.dev/e/js_parse_error -->
   			if (query.trim()) runSearch();
   		}, debounceMs);
   	}
-
   	async function runSearch() {
   		if (!query.trim()) return;
   		reset();
@@ -56,9 +52,9 @@ https://svelte.dev/e/js_parse_error -->
   		}
   		try {
   			const res = await fetch('/api/ai/vector-search', {
-  				method: 'POST',;
+  				method: 'POST',
   				headers: { 'Content-Type': 'application/json' },
-  				body: JSON.stringify(body),;
+  				body: JSON.stringify(body),
   				signal: controller.signal;
   			});
   			if (!res.ok) {
@@ -74,7 +70,6 @@ https://svelte.dev/e/js_parse_error -->
   			loading = false;
   		}
   	}
-
   	async function runStreaming(body: unknown) {
   		streaming = true;
   		try {
@@ -96,7 +91,7 @@ https://svelte.dev/e/js_parse_error -->
   				while ((idx = buffer.indexOf('\n\n')) !== -1) {
   					const raw = buffer.slice(0, idx).trim();
   					buffer = buffer.slice(idx + 2);
-  					if (!raw) continue;
+  					if (!raw) continu;
   					const lines = raw.split('\n');
   let event = 'message';
   let dataStr = '';
@@ -119,7 +114,6 @@ https://svelte.dev/e/js_parse_error -->
   			loading = false;
   		}
   	}
-
   	function handleStreamEvent(event: string, data: unknown) {
   		if (event === 'meta') {
   			responseMeta = { ...(responseMeta || {}), ...data };
@@ -132,25 +126,21 @@ https://svelte.dev/e/js_parse_error -->
   			responseMeta = { ...(responseMeta || {}), ...data, count: results.length };
   		}
   	}
-
   	function submit(e: Event) {
   		e.preventDefault();
   		runSearch();
   	}
-
   	function abort() {
   		controller?.abort();
   		loading = false;
   		streaming = false;
   	}
-
   	$effect(() => {
   		if (autoFocus) {
   			const el = document.getElementById('query-input');
   			el?.focus();
   		}
   	});
-
   	function scoreClass(score: number){
   		if (score == null) return 'bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200';
   		if (score >= 0.90) return 'score-top';
@@ -159,13 +149,11 @@ https://svelte.dev/e/js_parse_error -->
   		return 'score-low';
   	}
 </script>
-
 <div class="mx-auto max-w-5xl p-6 space-y-6">
 	<header class="space-y-2">
 		<h1 class="text-2xl font-semibold tracking-tight">Enhanced Vector Search</h1>
 		<p class="text-sm text-neutral-500 dark:text-neutral-400">Interact with the unified pgvector + (stub) enhanced RAG pipeline. Choose simple (direct similarity) or enhanced (RAG fallback) mode.</p>
 	</header>
-
 	<form class="grid gap-4 md:grid-cols-7 items-end bg-neutral-50 dark:bg-neutral-900/40 p-4 rounded-lg border border-neutral-200 dark:border-neutral-700" onsubmit={(e) => { e.preventDefault(); submit(); }}>
 		<div class="md:col-span-3 flex flex-col gap-1">
 			<label for="query-input" class="text-xs font-medium uppercase tracking-wide">Query</label>
@@ -209,11 +197,9 @@ https://svelte.dev/e/js_parse_error -->
 			<button type="button" onclick={reset} class="px-3 py-2 rounded border border-neutral-300 dark:border-neutral-600 text-sm">Clear</button>
 		</div>
 	</form>
-
 	{#if errorMsg}
 		<div class="p-3 rounded border border-red-300 bg-red-50 dark:border-red-700 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-300">{errorMsg}</div>
 	{/if}
-
 	{#if responseMeta}
 		<section class="space-y-4">
 			<div class="flex flex-wrap gap-4 text-xs text-neutral-600 dark:text-neutral-400">
@@ -234,7 +220,6 @@ https://svelte.dev/e/js_parse_error -->
 			{/if}
 		</section>
 	{/if}
-
 	{#if results.length > 0}
 		<section class="space-y-3">
 			<h2 class="text-lg font-semibold">Results</h2>
@@ -257,11 +242,9 @@ https://svelte.dev/e/js_parse_error -->
 			</ul>
 		</section>
 	{/if}
-
 	{#if !loading && !results.length && !errorMsg && query}
 		<p class="text-sm italic text-neutral-500 dark:text-neutral-400">No results returned.</p>
 	{/if}
-
 	<footer class="pt-8 text-[11px] text-neutral-500 dark:text-neutral-500 space-y-2">
 		<p>API: <code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">POST /api/ai/vector-search</code></p>
 		<p>Body fields: <code>{'{ query, limit?, threshold?, model?, mode?, caseId? }'}</code></p>
@@ -271,9 +254,8 @@ https://svelte.dev/e/js_parse_error -->
 		{/if}
 	</footer>
 </div>
-
 <style>
-	:global(body){background:var(--background,transparent);}
+	:global(body){background:var(--background,transparent)}
 	.score-low { background:#fee2e2; color:#991b1b; }
 	.score-mid { background:#fef3c7; color:#92400e; }
 	.score-high { background:#dcfce7; color:#065f46; }

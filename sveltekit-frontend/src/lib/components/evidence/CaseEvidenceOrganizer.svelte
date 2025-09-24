@@ -1,22 +1,18 @@
 <!--
   Case-Level Evidence Organizer Component
-  
   Comprehensive evidence organization system for legal cases with:
   - Hierarchical evidence categorization
-  - Timeline-based organization  
+  - Timeline-based organization
   - AI-powered clustering with Gemma embeddings
   - Real-time collaborative sorting via WebSocket
   - Chain of custody tracking
   - Evidence relationship mapping
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy,   } from "svelte";
   import { page } from '$app/state';
   import DetectiveWebSocketManager from '$lib/websocket/DetectiveWebSocketManager.js';
-  
   // Props
   interface Props {
     caseId: string;
@@ -25,7 +21,6 @@
     enableCollaboration?: boolean;
     showMetrics?: boolean;
   }
-  
   let {
     caseId,
     initialEvidence = [],
@@ -33,10 +28,7 @@
     enableCollaboration = true,
     showMetrics = true
   }: Props = $props();
-  
   // Event dispatcher
-  
-  
   // State
   let evidenceList = $state(initialEvidence);
   let isLoading = $state(false);
@@ -46,31 +38,27 @@
   let filterCriteria = $state({
     evidenceType: 'all',
     dateRange: 'all',
-    priority: 'all',;
+    priority: 'all',
     status: 'all';
   });
-  
   // AI-powered organization state
   let aiClusters = $state<any[]>([]);
   let isGeneratingClusters = $state(false);
   let clusteringProgress = $state(0);
-  
   // Collaboration state
   let wsManager: DetectiveWebSocketManager | null = null;
   let collaborativeUsers = $state<any[]>([]);
   let isConnectedToCollaboration = $state(false);
-  
   // Organization metrics
   let organizationMetrics = $state({
     totalEvidence: 0,
-    categorized: 0,;
-    uncategorized: 0,;
+    categorized: 0,
+    uncategorized: 0,
     duplicates: 0,
     missingMetadata: 0,
     chainOfCustodyComplete: 0,
     aiAnalyzed: 0;
   });
-  
   // Reactive derived values
   const filteredEvidence = $derived(() => {
     return evidenceList.filter(evidence => {
@@ -82,28 +70,23 @@
                              evidence.evidenceType?.toLowerCase().includes(searchLower);
         if (!matchesSearch) return false;
       }
-      
       // Filter by type
       if (filterCriteria.evidenceType !== 'all' && evidence.evidenceType !== filterCriteria.evidenceType) {
         return false;
       }
-      
       // Filter by priority
       if (filterCriteria.priority !== 'all') {
         const priority = evidence.metadata?.priority || 'medium';
         if (priority !== filterCriteria.priority) return false;
       }
-      
       // Filter by status
       if (filterCriteria.status !== 'all') {
         const status = evidence.metadata?.status || 'pending';
         if (status !== filterCriteria.status) return false;
       }
-      
       return true;
     });
   });
-  
   const organizationModes = [
     { value: 'category', label: 'By Category', icon: '🗂️' },
     { value: 'timeline', label: 'Timeline', icon: '📅' },
@@ -111,7 +94,6 @@
     { value: 'ai_clusters', label: 'AI Clusters', icon: '🧠' },
     { value: 'chain_custody', label: 'Chain of Custody', icon: '🔗' }
   ];
-  
   /**
    * Initialize component
    */
@@ -119,16 +101,13 @@
     (async () => {
 await loadCaseEvidence();
     updateOrganizationMetrics();
-    
     if (enableCollaboration) {
       await initializeCollaboration();
     }
-    
     // Generate initial organization
     await reorganizeEvidence();
     })();
   });
-  
   /**
    * Cleanup
    */
@@ -137,13 +116,11 @@ await loadCaseEvidence();
       wsManager.disconnect();
     }
   });
-  
   /**
    * Load evidence for the case
    */
   async function loadCaseEvidence() {
     if (!caseId) return;
-    
     isLoading = true;
     try {
       const response = await fetch(`/api/v1/evidence/by-case/${caseId}?includeAnalysis=true&limit=1000`);
@@ -157,7 +134,6 @@ await loadCaseEvidence();
       isLoading = false;
     }
   }
-  
   /**
    * Initialize WebSocket collaboration
    */
@@ -165,39 +141,32 @@ await loadCaseEvidence();
     try {
       const userId = `organizer_${Math.random.toString-substr(2, 6)}`;
       wsManager = new DetectiveWebSocketManager(caseId, userId);
-      
       wsManager.onConnectionStatus((connected) => {
         isConnectedToCollaboration = connected;
       });
-      
       wsManager.onUserJoined((user) => {
         collaborativeUsers = [...collaborativeUsers, user];
       });
-      
       wsManager.onUserLeft((userId) => {
         collaborativeUsers = collaborativeUsers.filter(u => u.id !== userId);
       });
-      
       // Handle real-time organization updates
       wsManager.onMessage('evidence_organization', (data) => {
         if (data.action === 'reorganized') {
-          organizationStructure = data.structure;
-          organizationMode = data.mode;
+          organizationStructure = data.structur;
+          organizationMode = data.mod;
         }
       });
-      
       wsManager.connect();
     } catch (error) {
       console.warn('Collaboration initialization failed:', error);
     }
   }
-  
   /**
    * Reorganize evidence based on current mode
    */
   async function reorganizeEvidence() {
     isLoading = true;
-    
     try {
       switch (organizationMode) {
         case 'category':
@@ -216,32 +185,27 @@ await loadCaseEvidence();
           await organizeByChainOfCustody();
           break;
       }
-      
       updateOrganizationMetrics();
-      
       // Send to collaborators
       if (wsManager) {
         wsManager.send.toISOString(),
           data: {
-            action: 'reorganized',;
-            mode: organizationMode,;
-            structure: organizationStructure;
+            action: 'reorganized',
+            mode: organizationMode
+            structure: organizationStructur;
           }
         });
       }
-      
       ondispatch?.({
-        mode: organizationMode,;
-        structure: organizationStructure;
+        mode: organizationMode
+        structure: organizationStructur;
       });
-      
     } catch (error) {
       console.error('Failed to reorganize evidence:', error);
     } finally {
       isLoading = false;
     }
   }
-  
   /**
    * Organize evidence by category
    */
@@ -251,22 +215,20 @@ await loadCaseEvidence();
       const category = evidence.evidenceType || 'uncategorized';
       if (!categories[category]) {
         categories[category] = {
-          name: category,
-          evidence: [],;
-          count: 0,;
+          name: category
+          evidence: [],
+          count: 0,
           priority: calculateCategoryPriority(category);
         };
       }
       categories[category].evidence.push(evidence);
       categories[category].count++;
     });
-    
     organizationStructure = {
-      type: 'category',;
+      type: 'category',
       categories: Object.values.sort((a, b) => b.priority - a.priority);
     };
   }
-  
   /**
    * Organize evidence by timeline
    */
@@ -277,39 +239,33 @@ await loadCaseEvidence();
         const dateB = new Date(b.collected_at || b.uploaded_at);
         return dateB.getTime() - dateA.getTime();
       });
-    
     // Group by time periods
     const periods = {};
     timeline.forEach(evidence => {
       const date = new Date(evidence.collected_at || evidence.uploaded_at);
       const periodKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
       const periodLabel = date.toLocaleString('default', { month: 'long', year: 'numeric' });
-      
       if (!periods[periodKey]) {
         periods[periodKey] = {
-          key: periodKey,
-          label: periodLabel,;
-          evidence: [],;
+          key: periodKey
+          label: periodLabel
+          evidence: [],
           count: 0,
-          startDate: date,
-          endDate: date;
+          startDate: date
+          endDate: dat;
         };
       }
-      
       periods[periodKey].evidence.push(evidence);
       periods[periodKey].count++;
-      
-      if (date < periods[periodKey].startDate) periods[periodKey].startDate = date;
-      if (date > periods[periodKey].endDate) periods[periodKey].endDate = date;
+      if (date < periods[periodKey].startDate) periods[periodKey].startDate = dat;
+      if (date > periods[periodKey].endDate) periods[periodKey].endDate = dat;
     });
-    
     organizationStructure = {
-      type: 'timeline',;
-      periods: Object.values.sort((a, b) => b.startDate.getTime() - a.startDate.getTime()),;
+      type: 'timeline',
+      periods: Object.values.sort((a, b) => b.startDate.getTime() - a.startDate.getTime()),
       uncategorized: filteredEvidence.filter(e => !e.collected_at && !e.uploaded_at);
     };
   }
-  
   /**
    * Organize evidence by priority
    */
@@ -318,68 +274,56 @@ await loadCaseEvidence();
       critical: { name: 'Critical', evidence: [], color: '#dc2626' },
       high: { name: 'High', evidence: [], color: '#ea580c' },
       medium: { name: 'Medium', evidence: [], color: '#d97706' },
-      low: { name: 'Low', evidence: [], color: '#65a30d' },;
+      low: { name: 'Low', evidence: [], color: '#65a30d' },
       unknown: { name: 'Unknown', evidence: [], color: '#6b7280' }
     };
-    
     filteredEvidence.forEach(evidence => {
-      const priority = evidence.metadata?.priority || 
-                      calculateEvidencePriority(evidence) || 
+      const priority = evidence.metadata?.priority ||
+                      calculateEvidencePriority(evidence) ||
                       'unknown';
-      
       if (priorities[priority]) {
         priorities[priority].evidence.push(evidence);
       } else {
         priorities.unknown.evidence.push(evidence);
       }
     });
-    
     // Add counts
     Object.values.forEach(priority => {
       priority.count = priority.evidence.length;
     });
-    
     organizationStructure = {
-      type: 'priority',;
+      type: 'priority',
       priorities: Object.values.filter(p => p.count > 0);
     };
   }
-  
   /**
    * Organize evidence using AI clustering with Gemma embeddings
    */
   async function organizeByAIClusters() {
     isGeneratingClusters = true;
     clusteringProgress = 0;
-    
     try {
       // Step 1: Get embeddings for all evidence (20%)
       clusteringProgress = 20;
       const evidenceWithEmbeddings = await getEvidenceEmbeddings();
-      
       // Step 2: Generate clusters using MCP server (60%)
       clusteringProgress = 60;
       const clusters = await generateAIClusters(evidenceWithEmbeddings);
-      
       // Step 3: Organize clusters (80%)
       clusteringProgress = 80;
       const organizedClusters = await organizeClusters(clusters);
-      
       // Step 4: Finalize (100%)
       clusteringProgress = 100;
-      
       organizationStructure = {
-        type: 'ai_clusters',;
-        clusters: organizedClusters,;
+        type: 'ai_clusters',
+        clusters: organizedClusters
         metadata: {
           totalClusters: organizedClusters.length,
           clusteringMethod: 'gemma_embeddings',
           generatedAt: new Date().toISOString()
         }
       };
-      
-      aiClusters = organizedClusters;
-      
+      aiClusters = organizedCluster;
     } catch (error) {
       console.error('AI clustering failed:', error);
       // Fallback to category organization
@@ -389,7 +333,6 @@ await loadCaseEvidence();
       clusteringProgress = 0;
     }
   }
-  
   /**
    * Organize evidence by chain of custody
    */
@@ -399,42 +342,36 @@ await loadCaseEvidence();
       const custody = evidence.chain_of_custody || [];
       const chainId = custody.length > 0 ? custody[0].officer_id || 'unknown' : 'no_chain';
       const chainStatus = validateChainOfCustody(custody);
-      
       if (!custodyChains[chainId]) {
         custodyChains[chainId] = {
-          id: chainId,
+          id: chainId
           officer: custody[0]?.officer_name || 'Unknown Officer',
-          evidence: [],;
-          status: chainStatus,;
+          evidence: [],
+          status: chainStatus
           completeness: 0;
         };
       }
-      
       custodyChains[chainId].evidence.push({
         ...evidence,
         custodyStatus: chainStatus
       });
     });
-    
     // Calculate completeness for each chain
     Object.values.forEach(chain => {
       const completeChains = chain.evidence.filter(item => item.length);
       chain.completeness = (completeChains / chain.evidence.length) * 100;
       chain.count = chain.evidence.length;
     });
-    
     organizationStructure = {
-      type: 'chain_custody',;
+      type: 'chain_custody',
       chains: Object.values.sort((a, b) => b.completeness - a.completeness);
     };
   }
-  
   /**
    * Get embeddings for evidence using MCP server
    */
   async function getEvidenceEmbeddings() {
     const evidenceWithEmbeddings = [];
-    
     for (const evidence of filteredEvidence) {
       try {
         // Check if embeddings already exist
@@ -443,21 +380,19 @@ await loadCaseEvidence();
             ...evidence,
             embedding: evidence.metadata.aiAnalysis.embeddingVector;
           });
-          continue;
+          continu;
         }
-        
         // Generate new embeddings using MCP server
         const response = await fetch('http://localhost:3002/mcp/evidence-analyze', {
-          method: 'POST',;
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            evidenceId: evidence.id,;
+          body: JSON.stringify({,
+            evidenceId: evidence.id,
             content: evidence.title + ' ' + (evidence.description || ''),
-            useGemmaEmbeddings: true,
+            useGemmaEmbeddings: true
             analysisType: 'embedding_only';
           })
         });
-        
         if (response.ok) {
           const analysis = await response.json();
           evidenceWithEmbeddings.push({
@@ -472,19 +407,17 @@ await loadCaseEvidence();
         evidenceWithEmbeddings.push(evidence);
       }
     }
-    
-    return evidenceWithEmbeddings;
+    return evidenceWithEmbedding;
   }
-  
   /**
    * Generate AI clusters using MCP server
    */
   async function generateAIClusters(evidenceWithEmbeddings) {
     try {
       const response = await fetch('http://localhost:3002/mcp/cluster-evidence', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           evidence: evidenceWithEmbeddings.map(e => ({
             id: e.id,
             title: e.title,
@@ -494,12 +427,11 @@ await loadCaseEvidence();
           clusteringParams: {
             minClusterSize: 2,
             maxClusters: 10,
-            similarityThreshold: 0.7,;
+            similarityThreshold: 0.7,
             method: 'kmeans';
           }
         })
       });
-      
       if (response.ok) {
         const clusterData = await response.json();
         return clusterData.clusters || [];
@@ -507,11 +439,9 @@ await loadCaseEvidence();
     } catch (error) {
       console.error('MCP clustering failed:', error);
     }
-    
     // Fallback: Simple similarity clustering
     return performSimpleClustering(evidenceWithEmbeddings);
   }
-  
   /**
    * Organize clusters with metadata
    */
@@ -522,12 +452,11 @@ await loadCaseEvidence();
       description: cluster.description || generateClusterDescription(cluster.evidence),
       evidence: cluster.evidence,
       count: cluster.evidence.length,
-      similarity: cluster.averageSimilarity || 0.8,;
-      keywords: cluster.keywords || extractClusterKeywords(cluster.evidence),;
+      similarity: cluster.averageSimilarity || 0.8,
+      keywords: cluster.keywords || extractClusterKeywords(cluster.evidence),
       color: getClusterColor(index);
     }));
   }
-  
   /**
    * Calculate category priority
    */
@@ -544,7 +473,6 @@ await loadCaseEvidence();
     };
     return priorities[category] || 3;
   }
-  
   /**
    * Calculate evidence priority based on metadata
    */
@@ -553,61 +481,52 @@ await loadCaseEvidence();
     if (evidence.metadata?.aiAnalysis?.importance > 0.8) return 'critical';
     if (evidence.metadata?.aiAnalysis?.importance > 0.6) return 'high';
     if (evidence.metadata?.aiAnalysis?.importance > 0.4) return 'medium';
-    
     // Type-based priority
     if (evidence.evidenceType === 'physical_evidence') return 'high';
     if (evidence.evidenceType === 'digital_evidence') return 'high';
     if (evidence.evidenceType === 'testimony') return 'medium';
-    
     return 'low';
   }
-  
   /**
    * Validate chain of custody
    */
   function validateChainOfCustody(custody: unknown[]): string {
     if (!custody || custody.length === 0) return 'missing';
-    
     const requiredFields = ['officer_id', 'timestamp', 'action'];
-    const hasAllFields = custody.every(entry => 
+    const hasAllFields = custody.every(entry =>
       requiredFields.every(field => entry[field])
     );
-    
     const isChronological = custody.every((entry, index) => {
       if (index === 0) return true;
       return new Date(entry.timestamp) >= new Date(custody[index - 1].timestamp);
     });
-    
     if (hasAllFields && isChronological) return 'complete';
     if (hasAllFields) return 'incomplete';
     return 'invalid';
   }
-  
   /**
    * Update organization metrics
    */
   function updateOrganizationMetrics() {
     organizationMetrics = {
       totalEvidence: evidenceList.length,
-      categorized: evidenceList.filter(item => item.length),;
-      uncategorized: evidenceList.filter(item => item.length),;
+      categorized: evidenceList.filter(item => item.length),
+      uncategorized: evidenceList.filter(item => item.length),
       duplicates: 0, // TODO: Implement duplicate detection
       missingMetadata: evidenceList.filter(item => item.length) === 0).length,
-      chainOfCustodyComplete: evidenceList.filter(e => 
+      chainOfCustodyComplete: evidenceList.filter(e =>
         validateChainOfCustody(e.chain_of_custody) === 'complete'
       ).length,
       aiAnalyzed: evidenceList.filter(item => item.length);
     };
   }
-  
   /**
    * Handle organization mode change
    */
   async function handleModeChange(newMode: string) {
-    organizationMode = newMode;
+    organizationMode = newMod;
     await reorganizeEvidence();
   }
-  
   /**
    * Select evidence
    */
@@ -617,27 +536,23 @@ await loadCaseEvidence();
     } else {
       selectedEvidence = [...selectedEvidence, evidence];
     }
-    
     ondispatch?.({ evidence, context });
   }
-  
   /**
    * Utility functions
    */
   function performSimpleClustering(evidenceWithEmbeddings: unknown[]) {
     // Simple fallback clustering
     return [{
-      evidence: evidenceWithEmbeddings,;
+      evidence: evidenceWithEmbeddings
       name: 'All Evidence',
       averageSimilarity: 0.5;
     }];
   }
-  
   function generateClusterDescription(evidence: unknown[]): string {
     const types = [...new Set(evidence.map(e => e.evidenceType))];
     return `Contains ${evidence.length} items of types: ${types.join(', ')}`;
   }
-  
   function extractClusterKeywords(evidence: unknown[]): string[] {
     // Extract common keywords from evidence titles and descriptions
     const allText = evidence.map(e => (e.title + ' ' + (e.description || '')).toLowerCase()).join(' ');
@@ -646,17 +561,14 @@ await loadCaseEvidence();
     words.forEach(word => {
       wordCounts[word] = (wordCounts[word] || 0) + 1;
     });
-    
     return Object.entries.sort((a, b) => b[1] - a[1])
       .slice.map(([word]) => word);
   }
-  
   function getClusterColor(index: number): string {
     const colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4', '#84cc16', '#f97316'];
     return colors[index % colors.length];
   }
 </script>
-
 <!-- Case Evidence Organizer UI -->
 <div class="case-evidence-organizer">
   <!-- Header with controls -->
@@ -672,11 +584,10 @@ await loadCaseEvidence();
         {/if}
       </div>
     </div>
-    
     <!-- Organization mode selector -->
     <div class="mode-selector">
       {#each organizationModes as mode}
-        <button 
+        <button
           type="button"
           class="mode-button"
           class:active={organizationMode === mode.value}
@@ -688,7 +599,6 @@ await loadCaseEvidence();
       {/each}
     </div>
   </header>
-
   <!-- Metrics and filters -->
   <section class="controls-section">
     <!-- Organization metrics -->
@@ -712,18 +622,16 @@ await loadCaseEvidence();
         </div>
       </div>
     {/if}
-    
     <!-- Search and filters -->
     <div class="filters-panel">
       <div class="search-box">
-        <input 
-          type="text" 
-          placeholder="Search evidence..." 
+        <input
+          type="text"
+          placeholder="Search evidence..."
           bind:value={searchQuery}
           class="search-input"
         />
       </div>
-      
       <div class="filter-controls">
         <select bind:value={filterCriteria.evidenceType}>
           <option value="all">All Types</option>
@@ -735,7 +643,6 @@ await loadCaseEvidence();
           <option value="video">Video</option>
           <option value="audio">Audio</option>
         </select>
-        
         <select bind:value={filterCriteria.priority}>
           <option value="all">All Priorities</option>
           <option value="critical">Critical</option>
@@ -746,7 +653,6 @@ await loadCaseEvidence();
       </div>
     </div>
   </section>
-
   <!-- Loading and progress indicators -->
   {#if isLoading || isGeneratingClusters}
     <div class="loading-section">
@@ -764,7 +670,6 @@ await loadCaseEvidence();
       </div>
     </div>
   {/if}
-
   <!-- Organization display -->
   <main class="organization-display">
     {#if organizationStructure.type === 'category'}
@@ -778,7 +683,7 @@ await loadCaseEvidence();
             </div>
             <div class="evidence-grid">
               {#each category.evidence as evidence}
-                <div 
+                <div
                   class="evidence-nier-bits-card"
                   class:selected={selectedEvidence.includes(evidence)}
                   onclick={() => selectEvidence(evidence, 'category')}
@@ -806,7 +711,6 @@ await loadCaseEvidence();
           </div>
         {/each}
       </div>
-    
     {:else if organizationStructure.type === 'timeline'}
       <!-- Timeline organization -->
       <div class="timeline-organization">
@@ -818,7 +722,7 @@ await loadCaseEvidence();
             </div>
             <div class="timeline-items">
               {#each period.evidence as evidence}
-                <div 
+                <div
                   class="timeline-item"
                   class:selected={selectedEvidence.includes(evidence)}
                   onclick={() => selectEvidence(evidence, 'timeline')}
@@ -840,7 +744,6 @@ await loadCaseEvidence();
           </div>
         {/each}
       </div>
-    
     {:else if organizationStructure.type === 'ai_clusters'}
       <!-- AI Clusters organization -->
       <div class="clusters-organization">
@@ -865,7 +768,7 @@ await loadCaseEvidence();
             {/if}
             <div class="cluster-evidence">
               {#each cluster.evidence as evidence}
-                <div 
+                <div
                   class="evidence-nier-bits-card compact"
                   class:selected={selectedEvidence.includes(evidence)}
                   onclick={() => selectEvidence(evidence, 'cluster')}
@@ -878,7 +781,6 @@ await loadCaseEvidence();
           </div>
         {/each}
       </div>
-    
     {:else if organizationStructure.type === 'chain_custody'}
       <!-- Chain of Custody organization -->
       <div class="custody-organization">
@@ -895,7 +797,7 @@ await loadCaseEvidence();
             </div>
             <div class="chain-evidence">
               {#each chain.evidence as evidence}
-                <div 
+                <div
                   class="evidence-nier-bits-card custody"
                   class:selected={selectedEvidence.includes(evidence)}
                   onclick={() => selectEvidence(evidence, 'custody')}
@@ -925,36 +827,31 @@ await loadCaseEvidence();
     {/if}
   </main>
 </div>
-
 <style>
-  .case-evidence-organizer {;
+  .case-evidence-organizer {
     display: flex;
     flex-direction: column;
     height: 100vh;
     background: #f8fafc;
     font-family: system-ui, -apple-system, sans-serif;
   }
-
   .organizer-header {
     background: white;
     border-bottom: 1px solid #e2e8f0;
     padding: 1.5rem 2rem;
   }
-
   .header-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1rem;
   }
-
   .header-content h1 {
     margin: 0;
     color: #1e293b;
     font-size: 1.75rem;
     font-weight: 700;
   }
-
   .case-info {
     display: flex;
     gap: 1rem;
@@ -962,18 +859,15 @@ await loadCaseEvidence();
     font-size: 0.875rem;
     color: #64748b;
   }
-
   .collaboration-status {
     color: #059669;
     font-weight: 500;
   }
-
   .mode-selector {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
   }
-
   .mode-button {
     display: flex;
     align-items: center;
@@ -983,70 +877,59 @@ await loadCaseEvidence();
     border: 1px solid #e2e8f0;
     border-radius: 0.5rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2;
   }
-
   .mode-button:hover {
     background: #e2e8f0;
   }
-
   .mode-button.active {
     background: #3b82f6;
     color: white;
     border-color: #3b82f6;
   }
-
   .mode-icon {
     font-size: 1.25rem;
   }
-
   .mode-label {
     font-weight: 500;
     font-size: 0.875rem;
   }
-
   .controls-section {
     background: white;
     border-bottom: 1px solid #e2e8f0;
     padding: 1rem 2rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
   }
-
   .metrics-panel {
     display: flex;
     gap: 2rem;
   }
-
   .metric {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
   }
-
   .metric-value {
     font-size: 1.5rem;
     font-weight: 700;
     color: #1e293b;
   }
-
   .metric-label {
     font-size: 0.75rem;
     color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
-
   .filters-panel {
     display: flex;
     gap: 1rem;
     align-items: center;
   }
-
   .search-input {
     padding: 0.5rem 1rem;
     border: 1px solid #d1d5db;
@@ -1054,19 +937,16 @@ await loadCaseEvidence();
     font-size: 0.875rem;
     min-width: 250px;
   }
-
   .filter-controls {
     display: flex;
     gap: 0.5rem;
   }
-
   .filter-controls select {
     padding: 0.5rem;
     border: 1px solid #d1d5db;
     border-radius: 0.375rem;
     font-size: 0.875rem;
   }
-
   .loading-section {
     display: flex;
     justify-content: center;
@@ -1074,12 +954,10 @@ await loadCaseEvidence();
     padding: 3rem;
     background: white;
   }
-
   .loading-content {
     text-align: center;
     max-width: 400px;
   }
-
   .progress-bar {
     width: 100%;
     height: 8px;
@@ -1088,13 +966,11 @@ await loadCaseEvidence();
     margin: 1rem 0;
     overflow: hidden;
   }
-
   .progress-fill {
     height: 100%;
     background: #3b82f6;
     transition: width 0.3s ease;
   }
-
   .spinner {
     width: 2rem;
     height: 2rem;
@@ -1104,51 +980,43 @@ await loadCaseEvidence();
     animation: spin 1s linear infinite;
     margin: 1rem auto;
   }
-
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-
   .organization-display {
     flex: 1;
     overflow-y: auto;
     padding: 2rem;
   }
-
   .evidence-card {
     background: white;
     border: 1px solid #e5e7eb;
     border-radius: 0.5rem;
     padding: 1rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2;
   }
-
   .evidence-card:hover {
     border-color: #3b82f6;
     box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
   }
-
   .evidence-card.selected {
     border-color: #3b82f6;
     background: #eff6ff;
   }
-
   .evidence-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: flex-start;
     margin-bottom: 0.5rem;
   }
-
   .evidence-header h4 {
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
     color: #1e293b;
   }
-
   .priority-badge {
     padding: 0.125rem 0.5rem;
     border-radius: 1rem;
@@ -1156,99 +1024,85 @@ await loadCaseEvidence();
     font-weight: 500;
     text-transform: uppercase;
   }
-
   .priority-critical { background: #fef2f2; color: #991b1b; }
   .priority-high { background: #fff7ed; color: #9a3412; }
   .priority-medium { background: #fffbeb; color: #92400e; }
   .priority-low { background: #f0fdf4; color: #166534; }
-
   .evidence-description {
     margin: 0 0 0.75rem 0;
     color: #64748b;
     font-size: 0.875rem;
     line-height: 1.4;
   }
-
   .evidence-meta {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     font-size: 0.75rem;
     color: #6b7280;
   }
-
   .evidence-type {
     background: #f1f5f9;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     font-weight: 500;
   }
-
   /* Category organization styles */
   .category-organization {
     display: flex;
     flex-direction: column;
     gap: 2rem;
   }
-
   .category-group {
     background: white;
     border-radius: 0.5rem;
     padding: 1.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
-
   .category-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
     border-bottom: 1px solid #e5e7eb;
   }
-
   .category-header h3 {
     margin: 0;
     color: #1e293b;
     font-size: 1.25rem;
     font-weight: 600;
   }
-
   .category-count {
     color: #64748b;
     font-size: 0.875rem;
     font-weight: 500;
   }
-
   .evidence-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1rem;
   }
-
   /* Timeline organization styles */
   .timeline-organization {
     display: flex;
     flex-direction: column;
     gap: 2rem;
   }
-
   .timeline-period {
     background: white;
     border-radius: 0.5rem;
     padding: 1.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
-
   .period-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
     border-bottom: 1px solid #e5e7eb;
   }
-
   .timeline-item {
     display: flex;
     gap: 1rem;
@@ -1257,13 +1111,11 @@ await loadCaseEvidence();
     border-radius: 0.375rem;
     margin-bottom: 0.75rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2;
   }
-
   .timeline-item:hover {
     border-color: #3b82f6;
   }
-
   .timeline-marker {
     width: 12px;
     height: 12px;
@@ -1272,18 +1124,15 @@ await loadCaseEvidence();
     margin-top: 0.25rem;
     flex-shrink: 0;
   }
-
   .timeline-content {
     flex: 1;
   }
-
   .timeline-content h4 {
     margin: 0 0 0.5rem 0;
     font-size: 1rem;
     font-weight: 600;
     color: #1e293b;
   }
-
   .timeline-meta {
     display: flex;
     gap: 1rem;
@@ -1291,14 +1140,12 @@ await loadCaseEvidence();
     font-size: 0.75rem;
     color: #6b7280;
   }
-
   /* Clusters organization styles */
   .clusters-organization {
     display: flex;
     flex-direction: column;
     gap: 2rem;
   }
-
   .cluster-group {
     background: white;
     border-radius: 0.5rem;
@@ -1306,34 +1153,29 @@ await loadCaseEvidence();
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     border-left: 4px solid;
   }
-
   .cluster-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 0.75rem;
   }
-
   .cluster-meta {
     display: flex;
     gap: 1rem;
     font-size: 0.875rem;
     color: #64748b;
   }
-
   .cluster-description {
     margin: 0 0 1rem 0;
     color: #64748b;
     font-size: 0.875rem;
   }
-
   .cluster-keywords {
     display: flex;
     gap: 0.5rem;
     margin-bottom: 1rem;
     flex-wrap: wrap;
   }
-
   .keyword-tag {
     background: #f1f5f9;
     color: #475569;
@@ -1342,58 +1184,49 @@ await loadCaseEvidence();
     font-size: 0.75rem;
     font-weight: 500;
   }
-
   .cluster-evidence {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 0.75rem;
   }
-
   .evidence-card.compact {
     padding: 0.75rem;
   }
-
   .evidence-card.compact h4 {
     font-size: 0.875rem;
     margin-bottom: 0.25rem;
   }
-
   /* Chain of custody styles */
   .custody-organization {
     display: flex;
     flex-direction: column;
     gap: 2rem;
   }
-
   .custody-chain {
     background: white;
     border-radius: 0.5rem;
     padding: 1.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
-
   .chain-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
     border-bottom: 1px solid #e5e7eb;
   }
-
   .chain-completeness {
     padding: 0.25rem 0.75rem;
     border-radius: 1rem;
     font-size: 0.75rem;
     font-weight: 500;
   }
-
   .completeness-0 { background: #fef2f2; color: #991b1b; }
   .completeness-1 { background: #fff7ed; color: #9a3412; }
   .completeness-2 { background: #fffbeb; color: #92400e; }
   .completeness-3 { background: #f0fdf4; color: #166534; }
   .completeness-4 { background: #dcfce7; color: #166534; }
-
   .custody-status {
     padding: 0.125rem 0.5rem;
     border-radius: 0.25rem;
@@ -1401,26 +1234,22 @@ await loadCaseEvidence();
     font-weight: 500;
     text-transform: uppercase;
   }
-
   .status-complete { background: #dcfce7; color: #166534; }
   .status-incomplete { background: #fffbeb; color: #92400e; }
   .status-missing { background: #fef2f2; color: #991b1b; }
   .status-invalid { background: #fef2f2; color: #991b1b; }
-
   .custody-timeline {
     margin-top: 0.75rem;
     padding-top: 0.75rem;
     border-top: 1px solid #f1f5f9;
   }
-
   .custody-entry {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     padding: 0.25rem 0;
     font-size: 0.75rem;
     color: #6b7280;
   }
-
   .custody-action {
     font-weight: 500;
   }

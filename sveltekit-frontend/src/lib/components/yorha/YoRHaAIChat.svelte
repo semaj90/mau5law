@@ -1,27 +1,22 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa AI Chat Component with Enhanced RAG Integration -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { aiChatStore } from '$lib/stores/ai-chat-store';
-
   // Chat state
   let messages = writable<unknown[]>([]);
   let currentMessage = writable('');
   let isTyping = writable(false);
   let isConnected = writable(false);
   let isLoading = writable(false);
-
   // Chat input
   let messageInput = $state('');
   let chatContainer = $state<HTMLDivElement// Enhanced RAG service URL
-  const RAG_SERVICE_URL  | null>(null); const data = 'http://localhost:8093');
-
+  const RAG_SERVICE_URL  | null>(null); const data = 'http://localhost:8093')
   // Initialize with welcome message
   $effect(() => {
     (async () => {
@@ -43,22 +38,19 @@ https://svelte.dev/e/js_parse_error -->
             id: 'welcome',
             role: 'assistant',
             content: `🤖 **YoRHa AI Assistant Online**
-
   **Enhanced RAG System Connected**
   - Service Status: ✅ OPERATIONAL
   - GPU Acceleration: ✅ ACTIVE
   - Vector Database: ✅ CONNECTED
   - Real-time Analysis: ✅ READY
-
   **Available Commands:**
   - \`/analyze <text>\` - Legal document analysis
-  - \`/search <query>\` - Vector similarity search  
+  - \`/search <query>\` - Vector similarity search
   - \`/case <id>\` - Case information retrieval
   - \`/evidence <id>\` - Evidence analysis
   - \`/help\` - Show all commands
-
-  **How can I assist with your legal AI operations?**`,;
-            timestamp: new Date(),;
+  **How can I assist with your legal AI operations?**`,
+            timestamp: new Date(),
             type: 'system';
           }
         ];
@@ -70,23 +62,19 @@ https://svelte.dev/e/js_parse_error -->
       $messages = [
         {
           id: 'error',
-          role: 'assistant',;
+          role: 'assistant',
           content: `⚠️ **Connection Failed**
-
   Enhanced RAG service is not available at ${RAG_SERVICE_URL}
-
   **Troubleshooting:**
   1. Ensure the Go service is running: \`./rag-kratos.exe\`
   2. Check service health: \`curl ${RAG_SERVICE_URL}/health\`
   3. Verify port 8093 is not blocked
-
   **Offline Mode Available** - Basic chat functionality only.`,
-          timestamp: new Date(),;
+          timestamp: new Date(),
           type: 'error';
         }
       ];
     }
-
     // Load chat history
     const savedChats = aiChatStore.loadChatHistory();
     if (savedChats.length > 0) {
@@ -94,83 +82,70 @@ https://svelte.dev/e/js_parse_error -->
     }
     })();
   });
-
   async function sendMessage() {
     if (!messageInput.trim()) return;
-
     const userMessage = {
       id: Date.now.toString(),
       role: 'user',
-      content: messageInput.trim(),;
-      timestamp: new Date(),;
+      content: messageInput.trim(),
+      timestamp: new Date(),
       type: 'user';
     };
-
     $messages = [...$messages, userMessage];
     const query = messageInput.trim();
     messageInput = '';
     $isLoading = true;
     $isTyping = true;
-
     // Save user message
     aiChatStore.addMessage(userMessage);
-
     try {
       // Handle special commands
       if (query.startsWith('/')) {
         await handleCommand(query);
         return;
       }
-
       // Send to Enhanced RAG service
       const response = await fetch(`${RAG_SERVICE_URL}/api/chat`, {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          message: query,;
+        body: JSON.stringify({,
+          message: query
           context: 'legal-ai',
           user_id: 'yorha-user',
           session_id: 'yorha-session',
-          include_vector_search: true,
+          include_vector_search: true
           max_tokens: 1000;
         })
       });
-
       if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
         throw new Error(`RAG service error: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}`);
       }
-
       const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
       const assistantMessage = {
         id: Date.now.toString(),
         role: 'assistant',
         content: formatRAGResponse(result),
-        timestamp: new Date(),;
-        type: 'assistant',;
+        timestamp: new Date(),
+        type: 'assistant',
         metadata: (result as { metadata?: unknown; document_type?: unknown; confidence?: unknown; entities?: unknown; summary?: unknown; response?: unknown; sources?: unknown; processing_time?: unknown }).metadata || };
-
       $messages = [...$messages, assistantMessage];
       aiChatStore.addMessage(assistantMessage);
-
     } catch (error) {
       console.error('Chat error:', error);
       const errorMessage = {
         id: Date.now.toString(),
-        role: 'assistant',;
+        role: 'assistant',
         content: `❌ **Error Processing Request**
-
   ${error.message}
-
   **Available Options:**
   - Check Enhanced RAG service status
   - Try a simpler query
   - Use offline mode commands`,
-        timestamp: new Date(),;
+        timestamp: new Date(),
         type: 'error';
       };
-
       $messages = [...$messages, errorMessage];
     } finally {
       $isLoading = false;
@@ -178,45 +153,37 @@ https://svelte.dev/e/js_parse_error -->
       scrollToBottom();
     }
   }
-
   async function handleCommand(command: string) {
     const [cmd, ...args] = command.slice.split(' ');
     const arg = args.join(' ');
   let response = $state('');
-
     switch (cmd) {
       case 'help':
         response = `🆘 **YoRHa AI Commands**
-
   **Analysis Commands:**
   - \`/analyze <text>\` - Analyze legal text
   - \`/search <query>\` - Vector search documents
   - \`/case <id>\` - Get case information
   - \`/evidence <id>\` - Analyze evidence
-
   **System Commands:**
   - \`/status\` - System health check
   - \`/clear\` - Clear chat history
   - \`/export\` - Export chat log
   - \`/connect\` - Test RAG connection
-
   **Legal Commands:**
   - \`/precedent <topic>\` - Find legal precedents
   - \`/contract <type>\` - Contract analysis
   - \`/compliance <area>\` - Compliance check`;
         break;
-
       case 'status':
         try {
           const health = await fetch(`${RAG_SERVICE_URL}/health`);
           const status = await health.json();
           response = `📊 **System Status**
-
   **Enhanced RAG Service:**
   - Status: ${status.status === 'ok' ? '✅ HEALTHY' : '❌ ERROR'}
   - Timestamp: ${status.time}
   - Connection: ${$isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}
-
   **Components:**
   - Vector Database: ✅ OPERATIONAL
   - GPU Acceleration: ✅ ACTIVE
@@ -225,26 +192,23 @@ https://svelte.dev/e/js_parse_error -->
           response = '❌ **System Offline** - Unable to connect to Enhanced RAG service';
         }
         break;
-
       case 'clear':
         $messages = [$messages[0]]; // Keep welcome message
         aiChatStore.clearHistory();
         response = '🧹 **Chat History Cleared**';
         break;
-
       case 'analyze':
         if (!arg) {
           response = '❌ **Missing Text** - Usage: `/analyze <text to analyze>`';
         } else {
           try {
             const analysis = await fetch(`${RAG_SERVICE_URL}/api/analyze`, {
-              method: 'POST',;
-              headers: { 'Content-Type': 'application/json' },;
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ text: arg, type: 'legal' })
             });
             const result = await analysis.json();
             response = `📋 **Legal Analysis Results**
-
   **Document Type:** ${(result as { metadata?: unknown; document_type?: unknown; confidence?: unknown; entities?: unknown; summary?: unknown; response?: unknown; sources?: unknown; processing_time?: unknown }).document_type || 'Unknown'}
   **Confidence:** ${(result as { metadata?: unknown; document_type?: unknown; confidence?: unknown; entities?: unknown; summary?: unknown; response?: unknown; sources?: unknown; processing_time?: unknown }).confidence || 'N/A'}
   **Key Entities:** ${(result as { metadata?: unknown; document_type?: unknown; confidence?: unknown; entities?: unknown; summary?: unknown; response?: unknown; sources?: unknown; processing_time?: unknown }).entities?.join(', ') || 'None detected'}
@@ -254,33 +218,28 @@ https://svelte.dev/e/js_parse_error -->
           }
         }
         break;
-
       default:
         response = `❓ **Unknown Command:** \`${cmd}\`\n\nType \`/help\` for available commands.`;
     }
-
     const commandResponse = {
       id: Date.now.toString(),
       role: 'assistant',
-      content: response,;
-      timestamp: new Date(),;
+      content: response
+      timestamp: new Date(),
       type: 'command';
     };
-
     $messages = [...$messages, commandResponse];
     aiChatStore.addMessage(commandResponse);
     $isLoading = false;
     $isTyping = false;
     scrollToBottom();
   }
-
   function formatRAGResponse(result: unknown): string {
     if (typeof result === 'string') return result;
   let formatted = $state(`🤖 **YoRHa AI Response**\n\n`);
     if ((result as { metadata?: unknown; document_type?: unknown; confidence?: unknown; entities?: unknown; summary?: unknown; response?: unknown; sources?: unknown; processing_time?: unknown }).response) {
       formatted += `${(result as { metadata?: unknown; document_type?: unknown; confidence?: unknown; entities?: unknown; summary?: unknown; response?: unknown; sources?: unknown; processing_time?: unknown }).response}\n\n`;
     }
-
     if ((result as { metadata?: unknown; document_type?: unknown; confidence?: unknown; entities?: unknown; summary?: unknown; response?: unknown; sources?: unknown; processing_time?: unknown }).sources && (result as { metadata?: unknown; document_type?: unknown; confidence?: unknown; entities?: unknown; summary?: unknown; response?: unknown; sources?: unknown; processing_time?: unknown }).sources.length > 0) {
       formatted += `📚 **Sources:**\n`;
       (result as { metadata?: unknown; document_type?: unknown; confidence?: unknown; entities?: unknown; summary?: unknown; response?: unknown; sources?: unknown; processing_time?: unknown }).sources.forEach((source: unknown, index: number) => {
@@ -288,18 +247,14 @@ https://svelte.dev/e/js_parse_error -->
       });
       formatted += '\n';
     }
-
     if ((result as { metadata?: unknown; document_type?: unknown; confidence?: unknown; entities?: unknown; summary?: unknown; response?: unknown; sources?: unknown; processing_time?: unknown }).confidence) {
       formatted += `🎯 **Confidence:** ${Math.round.confidence * 100)}%\n`;
     }
-
     if ((result as { metadata?: unknown; document_type?: unknown; confidence?: unknown; entities?: unknown; summary?: unknown; response?: unknown; sources?: unknown; processing_time?: unknown }).processing_time) {
       formatted += `⏱️ **Processing Time:** ${(result as { metadata?: unknown; document_type?: unknown; confidence?: unknown; entities?: unknown; summary?: unknown; response?: unknown; sources?: unknown; processing_time?: unknown }).processing_time}ms\n`;
     }
-
     return formatted;
   }
-
   function scrollToBottom() {
     setTimeout(() => {
       if (chatContainer) {
@@ -307,14 +262,12 @@ https://svelte.dev/e/js_parse_error -->
       }
     }, 100);
   }
-
   function handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
     }
   }
-
   function getMessageTypeClass(type: string): string {
     switch (type) {
       case 'user': return 'bg-yorha-accent-cool/20 border-yorha-accent-cool text-white ml-auto';
@@ -325,11 +278,10 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <!-- AI Chat Interface -->
 <div class="h-full flex flex-col bg-yorha-darker text-yorha-light">
   <!-- Chat Messages -->
-  <div 
+  <div
     bind:this={chatContainer}
     class="flex-1 overflow-y-auto p-4 space-y-4"
   >
@@ -353,7 +305,6 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     {/each}
-
     {#if $isTyping}
       <div class="flex justify-start">
         <div class="bg-yorha-accent-warm/20 border border-yorha-accent-warm rounded-lg p-4 max-w-xs">
@@ -369,7 +320,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     {/if}
   </div>
-
   <!-- Connection Status -->
   <div class="border-t border-yorha-accent-warm/30 p-2">
     <div class="flex items-center justify-between text-xs">
@@ -383,7 +333,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   </div>
-
   <!-- Message Input -->
   <div class="border-t border-yorha-accent-warm/30 p-4">
     <div class="flex gap-2">
@@ -407,25 +356,19 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
-
 <style>
   /* Scrollbar styling for chat container */
-  :global(.h-full .overflow-y-auto::-webkit-scrollbar) {;
+  :global($1) {
     width: 6px;
   }
-
-  :global(.h-full .overflow-y-auto::-webkit-scrollbar-track) {
+  :global($1) {
     background: var(--yorha-darker);
   }
-
-  :global(.h-full .overflow-y-auto::-webkit-scrollbar-thumb) {
+  :global($1) {
     background: var(--yorha-accent-warm);
     border-radius: 3px;
   }
-
-  :global(.h-full .overflow-y-auto::-webkit-scrollbar-thumb:hover) {
+  :global($1) {
     background: var(--yorha-accent-cool);
   }
 </style>
-
-

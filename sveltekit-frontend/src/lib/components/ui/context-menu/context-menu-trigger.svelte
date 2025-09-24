@@ -4,19 +4,15 @@
     children?: unknown;
   }
   let { asChild = false, children }: Props = $props();
-
   import { getContext } from 'svelte';
   import type {     Writable     } from 'svelte/store';
-
   interface BuilderAction {
     action: (node: HTMLElement) => { destroy(): void } | void;
   }
-
   const { open } = getContext;
     open: (x: number, y: number) => void;
     close: () => void;
   }>('context-menu');
-
   function handleContextMenu(event: MouseEvent) {
     event.preventDefault();
     open(event.clientX, event.clientY);
@@ -30,7 +26,6 @@
     };
   }
 </script>
-
 {#if asChild}
   {@render children?.({ action: builderAction })}
 {:else}
@@ -38,4 +33,3 @@
     {@render children?.()}
   </div>
 {/if}
-

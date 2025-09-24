@@ -15,23 +15,19 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 import type { RequestHandler } from './$types'
 import { json } from '@sveltejs/kit'
-
 /**
  * Minimal, dependency-safe implementation:
  * - Tries optional $lib/services/aiAutoTagging if present, otherwise falls back to a heuristic tagger
  * - Stores results in-memory to support GET queries without DB dependencies
  */
-
 type AutoTagResult = {
   tags: string[]
   entities: string[]
   summary: string
   confidence: number
 }
-
 const memoryStore = new Map<string, {
   id: string
   tags: string[]
@@ -39,49 +35,40 @@ const memoryStore = new Map<string, {
   embedding: number[] | null
   updatedAt: string
 }>()
-
 type AutoTagDocument = (documentId: string, content: string, documentType: string) => Promise<{
   tags?: string[]
   entities?: string[]
   summary?: string
   confidence?: number
 }>
-
 type OptionalAutoTaggingModule = {
   default?: {
     autoTagDocument?: AutoTagDocument
   }
 }
-
 function simpleAutoTag(content: string): AutoTagResult {
   const words = content.toLowerCase().match(/[a-z]{4,}/g) || []
   const counts = new Map<string, number>()
   for (const w of words) counts.set(w, (counts.get(w) || 0) + 1)
-
   const tags = Array.from(counts.entries())
     .sort((a, b) => b[1] - a[1])
     .slice(0, 8)
     .map(([w]) => w)
-
   const entities = (content.match(/\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b/g) || []).slice(0, 10)
   const summary = content.length > 400 ? content.slice(0, 400) + '…' : content
   const confidence = Math.min(0.99, Math.max(0.4, tags.length / 10))
   return { tags, entities, summary, confidence }
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json() as { documentId?: string; content?: string; documentType?: string }
     const documentId = body.documentId ?? ''
     const content = body.content ?? ''
     const documentType = body.documentType ?? 'unknown'
-
     if (!documentId || !content) {
       return json({ success: false, error: 'documentId and content are required' }, { status: 400 })
     }
-
     let result: AutoTagResult | null = null
-
     // Try optional real service if available
     try {
       const mod: OptionalAutoTaggingModule | null = await import('$lib/services/aiAutoTagging')
@@ -100,21 +87,18 @@ export const POST: RequestHandler = async ({ request }) => {
     } catch {
       // ignore and use heuristic fallback below
     }
-
     if (!result) {
       result = simpleAutoTag(content)
     }
-
     memoryStore.set(documentId, {
-      id: documentId,
+      id: documentId
       tags: result.tags,
       summary: result.summary,
-      embedding: null,
+      embedding: null
       updatedAt: new Date().toISOString()
     })
-
     return json({
-      success: true,
+      success: true
       documentId,
       autoTags: result.tags,
       entities: result.entities,
@@ -127,28 +111,24 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
     return json({
-      success: false,
+      success: false
       error: 'Failed to auto-tag document',
       details: message
     }, { status: 500 })
   }
 }
-
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     const user = locals.user
     if (!user) {
       return json({ error: 'Authentication required' }, { status: 401 })
     }
-
     const documentId = url.searchParams.get('documentId')
-
     if (documentId) {
       const doc = memoryStore.get(documentId)
       if (!doc) {
         return json({ error: 'Document not found' }, { status: 404 })
       }
-
       return json({
         documentId,
         tags: doc.tags || [],
@@ -157,14 +137,12 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         lastUpdated: doc.updatedAt
       })
     }
-
     const docs = Array.from(memoryStore.values())
     const tagged = docs.filter((d) => (d.tags?.length ?? 0) > 0)
     const withEmb = docs.filter((d) => !!d.embedding)
     const averageTagsPerDocument = tagged.length
       ? Math.round((tagged.reduce((sum: number, d) => sum + (d.tags?.length ?? 0), 0) / tagged.length) * 100) / 100
       : 0
-
     return json({
       statistics: {
         totalDocuments: docs.length,

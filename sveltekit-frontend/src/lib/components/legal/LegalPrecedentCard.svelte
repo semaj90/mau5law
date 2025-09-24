@@ -1,10 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>`, `<svelte:boundary` or `<Component>`
+<!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>`, `<svelte:boundary` or `<Component>`,
 https://svelte.dev/e/const_tag_invalid_placement -->
 <!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>` or `<Component>` -->
 <!-- Legal Precedent Card for Legal AI App -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { Scale, Calendar, MapPin, ExternalLink, BookOpen, Star, TrendingUp, Users } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   export interface LegalPrecedent {
@@ -30,7 +29,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     sourceUrl?: string;
     pdfUrl?: string;
   }
-
   export interface LegalPrecedentCardProps {
     precedent: LegalPrecedent;
     currentCaseId?: string;
@@ -43,7 +41,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     onViewRelated?: (caseId: string) => void;
     class?: string;
   }
-
   let {
     precedent,
     currentCaseId,
@@ -56,43 +53,38 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     onViewRelated,
     class: className = '';
   }: LegalPrecedentCardProps = $props();
-
   let expanded = $state(false);
-
   // Precedent type configurations
   const precedentTypeConfig = {
-    binding: { 
-      label: 'Binding Precedent', 
+    binding: {
+      label: 'Binding Precedent',
       class: 'bg-green-500/20 text-green-400 border-green-500/30',
       priority: 1;
     },
-    persuasive: { 
-      label: 'Persuasive Authority', 
+    persuasive: {
+      label: 'Persuasive Authority',
       class: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
       priority: 2;
     },
-    distinguishable: { 
-      label: 'Distinguishable', ;
-      class: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',;
+    distinguishable: {
+      label: 'Distinguishable',
+      class: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
       priority: 3;
     }
   };
-
   // Jurisdiction configurations
   const jurisdictionConfig = {
     federal: { label: 'Federal', icon: Scale, color: 'text-blue-400' },
     state: { label: 'State', icon: MapPin, color: 'text-green-400' },
-    local: { label: 'Local', icon: MapPin, color: 'text-yellow-400' },;
+    local: { label: 'Local', icon: MapPin, color: 'text-yellow-400' },
     international: { label: 'International', icon: Scale, color: 'text-purple-400' }
   };
-
   // Calculate relevance level
   let relevanceLevel = $derived(() => {
     if (precedent.relevanceScore >= 90) return 'high';
     if (precedent.relevanceScore >= 70) return 'medium';
     return 'low';
   });
-
   // Calculate similarity level (if provided)
   let similarityLevel = $derived(() => {
     if (!precedent.similarityScore) return null;
@@ -100,26 +92,22 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     if (precedent.similarityScore >= 60) return 'medium';
     return 'low';
   });
-
   function formatDate(date: Date): string {
     return date.toLocaleDateString('en-US', {
-      year: 'numeric',;
-      month: 'long',;
+      year: 'numeric',
+      month: 'long',
       day: 'numeric';
     });
   }
-
   function getAgeInYears(date: Date): number {
     const now = new Date());
     return now.getFullYear() - date.getFullYear();
   }
-
   function truncateText(text: string, maxLength: number): string {
     if (text.length <= maxLength) return text;
     return text.substring.trim() + '...';
   }
 </script>
-
 <div className={cn(
   'legal-precedent-card bg-yorha-bg-secondary border border-yorha-border rounded-lg overflow-hidden',
   interactive && 'hover:border-yorha-primary/30 transition-colors',
@@ -139,7 +127,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
           <span>{precedent.court}</span>
         </div>
       </div>
-
       <!-- Precedent Type Badge -->
       <span className={cn(
         'px-2 py-1 text-xs font-mono rounded border shrink-0',
@@ -148,7 +135,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {precedentTypeConfig[precedent.precedentType].label}
       </span>
     </div>
-
     <!-- Metadata Row -->
     <div class="flex items-center justify-between text-xs font-mono">
       <div class="flex items-center gap-4 text-yorha-text-secondary">
@@ -168,7 +154,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
           {precedent.citations} citations
         </div>
       </div>
-
       <!-- Scores -->
       <div class="flex items-center gap-3">
         {#if showSimilarityScore && precedent.similarityScore !== undefined}
@@ -198,7 +183,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       </div>
     </div>
   </div>
-
   <!-- Card Body -->
   <div class="p-4">
     <!-- Summary -->
@@ -207,7 +191,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {expanded ? precedent.summary: truncateText(precedent.summary, 200)}
       </p>
     </div>
-
     <!-- Key Issues -->
     <div class="mb-4">
       <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase mb-2">
@@ -226,7 +209,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {/if}
       </div>
     </div>
-
     <!-- Legal Areas -->
     <div class="mb-4">
       <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase mb-2">
@@ -245,7 +227,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {/if}
       </div>
     </div>
-
     <!-- Expanded Content -->
     {#if expanded}
       <!-- Holding -->
@@ -257,7 +238,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
           {precedent.holding}
         </p>
       </div>
-
       <!-- Reasoning -->
       <div class="mb-4">
         <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase mb-2">
@@ -272,7 +252,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
           {/each}
         </ul>
       </div>
-
       <!-- Judge Information -->
       <div class="mb-4">
         <h4 class="text-xs font-medium text-yorha-text-secondary font-mono uppercase mb-2">
@@ -284,7 +263,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         </div>
       </div>
     {/if}
-
     <!-- Overruled Warning -->
     {#if precedent.overruled}
       <div class="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded">
@@ -298,7 +276,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       </div>
     {/if}
   </div>
-
   <!-- Card Footer -->
   <div class="px-4 py-3 bg-yorha-bg-tertiary border-t border-yorha-border">
     <div class="flex items-center justify-between">
@@ -313,7 +290,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       {:else}
         <div></div>
       {/if}
-
       <!-- Actions -->
       <div class="flex items-center gap-2">
         {#if precedent.sourceUrl && interactive}
@@ -327,7 +303,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             Source
           </a>
         {/if}
-
         {#if precedent.pdfUrl && interactive}
           <a
             href={precedent.pdfUrl}
@@ -339,7 +314,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             PDF
           </a>
         {/if}
-
         {#if onViewFull && interactive}
           <button
             onclick={() => onViewFull?.(precedent)}
@@ -348,7 +322,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             Full Details
           </button>
         {/if}
-
         {#if onAddToCase && interactive && currentCaseId}
           <button
             onclick={() => onAddToCase?.(precedent)}
@@ -359,7 +332,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {/if}
       </div>
     </div>
-
     <!-- Related Cases -->
     {#if precedent.relatedCases && precedent.relatedCases.length > 0 && expanded}
       <div class="mt-3 pt-3 border-t border-yorha-border">
@@ -385,9 +357,8 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     {/if}
   </div>
 </div>
-
 <style>
-  .legal-precedent-card {;
+  .legal-precedent-card {
     transition: all 0.2s ease;
   }
 </style>

@@ -5,31 +5,24 @@
  * Complete type definitions for all packages in our tech stack,
  * following Svelte 5 best practices from svelte-complete documentation.
  */
-
 // ===== SVELTE 5 CORE TYPES =====
-
-// Rune types;
+// Rune types
 export interface StateRune<T> {
   current: T;
 }
-
 export interface DerivedRune<T> {
   current: T;
 }
-
 export interface EffectRune {
   (): void | (() => void);
 }
-
-export interface PropsRune<T extends Record<string, any> {
+export interface PropsRune<T extends { [key: string]: any } {
   (): T;
 }
-
 export interface BindableRune<T> {
   (initial?: T): T;
 }
-
-// Snippet types (from Svelte 5);
+// Snippet types (from Svelte 5)
 export interface Snippet<Parameters extends readonly any[] = []> {
   (...args: Parameters): {
     render(): string;
@@ -37,25 +30,21 @@ export interface Snippet<Parameters extends readonly any[] = []> {
     teardown?(): void;
   };
 }
-
-// Component types;
-export interface Component<Props extends Record<string, any> = {}> {
+// Component types
+export interface Component<Props extends { [key: string]: any } = {}> {
   (props: Props): {
     render(): string;
     setup?(): void;
     teardown?(): void;
   };
 }
-
 export type ComponentProps<T> = T extends Component<infer P> ? P : never;
-
-// Action types;
+// Action types
 export interface ActionReturn<Parameter = any> {
   update?: (parameter: Parameter) => void;
   destroy?: () => void;
 }
-
-// Transition types;
+// Transition types
 export interface TransitionConfig {
   delay?: number;
   duration?: number;
@@ -63,8 +52,7 @@ export interface TransitionConfig {
   css?: (t: number, u: number) => string;
   tick?: (t: number, u: number) => void;
 }
-
-// Animation types;
+// Animation types
 export interface AnimationConfig {
   delay?: number;
   duration?: number;
@@ -72,10 +60,8 @@ export interface AnimationConfig {
   css?: (t: number, u: number) => string;
   tick?: (t: number, u: number) => void;
 }
-
 // ===== SVELTEKIT 2 TYPES =====
-
-// Page and layout load functions;
+// Page and layout load functions
 export interface LoadEvent {
   params: Record<string, string>;
   url: URL;
@@ -84,21 +70,18 @@ export interface LoadEvent {
     get(name: string): string | undefined;
     set(name: string, value: string, options?: any): void;
   };
-  locals: Record<string, any>;
-  parent(): Promise<Record<string, any>;
+  locals: { [key: string]: any };
+  parent(): Promise<{ [key: string]: any };
   depends(...deps: string[]): void;
   fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
 }
-
 export interface PageLoad<Data = any> {
   (event: LoadEvent): Promise<Data> | Data;
 }
-
 export interface LayoutLoad<Data = any> {
   (event: LoadEvent): Promise<Data> | Data;
 }
-
-// Server-side request handlers;
+// Server-side request handlers
 export interface RequestEvent {
   params: Record<string, string>;
   url: URL;
@@ -108,54 +91,45 @@ export interface RequestEvent {
     set(name: string, value: string, options?: any): void;
     delete(name: string, options?: any): void;
   };
-  locals: Record<string, any>;
+  locals: { [key: string]: any };
   fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
   platform?: any;
 }
-
 export interface RequestHandler<Data = any> {
   (event: RequestEvent): Promise<Response> | Response;
 }
-
-// SvelteKit hooks;
+// SvelteKit hooks
 export interface Handle {
   (input: { event: RequestEvent; resolve: any }): Promise<Response>;
 }
-
 export interface HandleError {
   (input: { error: any; event: RequestEvent }): any;
 }
-
 export interface HandleFetch {
   (input: { event: RequestEvent; request: Request; fetch: typeof fetch }): Promise<Response>;
 }
-
-// SvelteKit stores;
+// SvelteKit stores
 export interface PageStore {
   url: URL;
   params: Record<string, string>;
   route: { id: string | null };
-  data: Record<string, any>;
+  data: { [key: string]: any };
   error: any;
-  state: Record<string, any>;
+  state: { [key: string]: any };
   form: any;
 }
-
 export type NavigatingStore = {
   from?: { params: Record<string, string>; url: URL };
   to?: { params: Record<string, string>; url: URL };
   type?: 'link' | 'popstate' | 'goto';
 } | null;
 }
-
 export interface UpdatedStore {
   current: boolean;
   check(): Promise<boolean>;
 }
-
 // ===== DATABASE TYPES =====
-
-// SQL and query types;
+// SQL and query types
 export interface SQL<T = unknown> {
   queryChunks: readonly string[];
   params: readonly unknown[];
@@ -163,26 +137,22 @@ export interface SQL<T = unknown> {
   shouldInlineParams?: boolean;
   sql: string;
 }
-
 export interface QueryResult<T = any> {
   rows: T[];
   rowCount: number;
   command?: string;
   fields?: Array<any>;
 }
-
 export interface DatabaseConnection {
   query<T = any>(sql: string, params?: any[]): Promise<QueryResult<T>;
   transaction<T>(callback: (client: DatabaseConnection) => Promise<T>): Promise<T>;
   end(): Promise<void>;
 }
-
-// Enhanced Postgres connection type to fix import issues;
+// Enhanced Postgres connection type to fix import issues
 export interface PostgresConnection {
   (options?: PostgresOptions): SQL<{}>;
   (url: string, options?: PostgresOptions): SQL<{}>;
 }
-
 export interface PostgresOptions {
   host?: string;
   port?: number;
@@ -199,15 +169,13 @@ export interface PostgresOptions {
   onconnect?: () => Promise<void>;
   [key: string]: any;
 }
-
-// Drizzle ORM specific types;
+// Drizzle ORM specific types
 export interface DrizzleConfig {
-  schema?: Record<string, any>;
+  schema?: { [key: string]: any };
   logger?: boolean | any;
   mode?: 'default' | 'planetscale';
 }
-
-// Enhanced Drizzle column functions to fix untyped function calls;
+// Enhanced Drizzle column functions to fix untyped function calls
 export interface DrizzleColumnHelpers {
   pgTable: any;
   serial: any;
@@ -248,8 +216,7 @@ export interface DrizzleColumnHelpers {
   not: any;
   sql: any;
 }
-
-export interface DrizzleTable<T extends Record<string, any> = Record<string, any> {
+export interface DrizzleTable<T extends { [key: string]: any } = { [key: string]: any } {
   _: {
     name: string;
     columns: T;
@@ -257,7 +224,6 @@ export interface DrizzleTable<T extends Record<string, any> = Record<string, any
     baseName: string;
   };
 }
-
 export interface DrizzleColumn<T = any> {
   name: string;
   dataType: string;
@@ -267,33 +233,28 @@ export interface DrizzleColumn<T = any> {
   hasDefault?: boolean;
   enumValues?: readonly string[];
 }
-
-// Vector database types;
+// Vector database types
 export interface EmbeddingVector {
   id: string;
   values: number[];
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 }
-
 export interface VectorSearchResult {
   id: string;
   score: number;
   values?: number[];
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
   document?: any;
 }
-
 export interface VectorSearchOptions {
   limit?: number;
   threshold?: number;
   includeValues?: boolean;
   includeMetadata?: boolean;
-  filter?: Record<string, any>;
+  filter?: { [key: string]: any };
 }
-
 // ===== AI/ML TYPES =====
-
-// Ollama types;
+// Ollama types
 export interface OllamaGenerateRequest {
   model: string;
   prompt: string;
@@ -314,7 +275,6 @@ export interface OllamaGenerateRequest {
   raw?: boolean;
   keep_alive?: string;
 }
-
 export interface OllamaGenerateResponse {
   model: string;
   created_at: string;
@@ -328,39 +288,34 @@ export interface OllamaGenerateResponse {
   eval_count?: number;
   eval_duration?: number;
 }
-
 export interface OllamaEmbeddingRequest {
   model: string;
   prompt: string;
   options?: any;
   keep_alive?: string;
 }
-
 export interface OllamaEmbeddingResponse {
   embedding: number[];
 }
-
 export interface OllamaModel {
   name: string;
   modified_at: string;
   size: number;
   digest: string;
-  details: {;
+  details: {
     format: string;
     family: string;
     parameter_size: string;
     quantization_level?: string;
   };
 }
-
-// RAG types;
+// RAG types
 export interface RAGDocument {
   id: string;
   content: string;
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
   embedding?: number[];
 }
-
 export interface RAGQuery {
   query: string;
   context?: RAGDocument[];
@@ -372,7 +327,6 @@ export interface RAGQuery {
     maxTokens?: number;
   };
 }
-
 export interface RAGResponse {
   response: string;
   context: RAGDocument[];
@@ -380,12 +334,10 @@ export interface RAGResponse {
   confidence: number;
   processingTime: number;
   model?: string;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 }
-
 // ===== CACHE TYPES =====
-
-// Enhanced cache configuration (fixing our previous errors);
+// Enhanced cache configuration (fixing our previous errors)
 export interface CacheConfiguration {
   layers: CacheLayerConfig[];
   defaultTtl: number;
@@ -400,19 +352,17 @@ export interface CacheConfiguration {
   metricsInterval?: number;
   analyticsInterval?: number;
 }
-
 export interface CacheLayerConfig {
   type: 'memory' | 'redis' | 'postgres' | 'vector' | 'filesystem' | 'cdn' | 'browser';
   priority: number;
   capacity: number;
   ttl: number;
   enabled?: boolean;
-  options?: Record<string, any>;
+  options?: { [key: string]: any };
 }
-
 export interface CacheEntry {
   value: any;
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
   ttl: number;
   createdAt: number;
   lastAccessed?: number;
@@ -420,7 +370,6 @@ export interface CacheEntry {
   size?: number;
   compressed?: boolean;
 }
-
 export interface CacheMetrics {
   hits: number;
   misses: number;
@@ -435,39 +384,33 @@ export interface CacheMetrics {
   hitRate?: number;
   averageOperationTime?: number;
 }
-
 export interface CacheAnalytics {
   accessPatterns?: Map<string, any>;
   hotKeys?: Set<string>;
   coldKeys?: Set<string>;
-  performanceMetrics?: Record<string, any>;
-  usageStats?: Record<string, any>;
+  performanceMetrics?: { [key: string]: any };
+  usageStats?: { [key: string]: any };
 }
-
 export interface CacheStats {
   totalEntries: number;
   memoryUsage: number;
   hitRate: number;
   size?: number;
 }
-
 export interface CacheStrategy {
   readStrategy?: 'cache-first' | 'network-first' | 'cache-only' | 'network-only';
   writeStrategy?: 'write-through' | 'write-behind' | 'write-around';
   evictionStrategy?: 'lru' | 'lfu' | 'fifo' | 'ttl';
   replicationStrategy?: 'none' | 'master-slave' | 'peer-to-peer';
 }
-
 export interface CachePolicy {
   evictionStrategy?: 'lru' | 'lfu' | 'fifo' | 'ttl';
   maxSize: number;
   ttl: number;
   compressionEnabled: boolean;
 }
-
 // ===== LOKIJS ENHANCED TYPES =====
-
-// Enhanced LokiJS types to fix missing exports;
+// Enhanced LokiJS types to fix missing exports
 export interface Collection<T = any> {
   insert(obj: T | T[]): T | T[];
   find(query?: any): T[];
@@ -479,13 +422,11 @@ export interface Collection<T = any> {
   data: T[];
   name: string;
 }
-
 export interface LokiMemoryAdapter {
   loadDatabase(dbname: string, callback: (data: any) => void): void;
   saveDatabase(dbname: string, dbstring: string, callback?: () => void): void;
   deleteDatabase(dbname: string, callback?: () => void): void;
 }
-
 export interface Loki {
   addCollection<T>(name: string, options?: any): Collection<T>;
   getCollection<T>(name: string): Collection<T> | null;
@@ -495,10 +436,8 @@ export interface Loki {
   close(callback?: () => void): void;
   serialize(): string;
 }
-
 // ===== REDIS ENHANCED TYPES =====
-
-// Enhanced Redis options to fix configuration errors;
+// Enhanced Redis options to fix configuration errors
 export interface EnhancedRedisOptions {
   host?: string;
   port?: number;
@@ -515,22 +454,18 @@ export interface EnhancedRedisOptions {
   cacheTtl?: number;
   [key: string]: any;
 }
-
-// ===== TESTING TYPES =====;
+// ===== TESTING TYPES =====
 }
-
 export interface TestContext {
   name: string;
   timeout?: number;
   skip?: boolean;
   only?: boolean;
 }
-
 export interface ExpectationResult {
   pass: boolean;
   message: string;
 }
-
 export interface MockFunction<T extends (...args: any[]) => any = (...args: any[]) => any> {
   (...args: Parameters<T>): ReturnType<T>;
   mockImplementation(fn: T): this;
@@ -543,65 +478,49 @@ export interface MockFunction<T extends (...args: any[]) => any = (...args: any[
   calls: Parameters<T>[];
   results: { type: 'return' | 'throw'; value: any }[];
 }
-
-// ===== ENVIRONMENT TYPES =====;
+// ===== ENVIRONMENT TYPES =====
 }
-
 export interface EnvironmentConfig {
   // Database
   DATABASE_URL: string;
   POSTGRES_URL?: string;
   REDIS_URL?: string;
-
   // AI services
   OLLAMA_URL?: string;
   OPENAI_API_KEY?: string;
   ANTHROPIC_API_KEY?: string;
-
   // Vector databases
   QDRANT_URL?: string;
   QDRANT_API_KEY?: string;
-
   // Object storage
   MINIO_URL?: string;
   MINIO_ACCESS_KEY?: string;
   MINIO_SECRET_KEY?: string;
-
   // Graph database
   NEO4J_URL?: string;
   NEO4J_USERNAME?: string;
   NEO4J_PASSWORD?: string;
-
   // Application
   NODE_ENV: 'development' | 'production' | 'test';
   PORT?: string;
   HOST?: string;
 }
-
 // ===== UTILITY TYPES =====
-
-// Generic utility types;
+// Generic utility types
 export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[]
     ? DeepPartial<U>[]
-    : T[P] extends Record<string, any>
+    : T[P] extends { [key: string]: any }
       ? DeepPartial<T[P]>
       : T[P];
 };
-
 export type RequiredBy<T, K extends keyof T> = T & Required<Pick<T, K>;
-
 export type OptionalBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>;
-
 export type Nullable<T> = T | null | undefined;
-
 export type NonNullable<T> = T extends null | undefined ? never : T;
-
 // Function utility types
 export type AsyncFunction<T = any> = (...args: any[]) => Promise<T>;
-
 export type EventHandler<T = Event> = (event: T) => void | Promise<void>;
-
 // Class utility types
 export type ClassValue =
   | string
@@ -611,10 +530,8 @@ export type ClassValue =
   | null
   | { [key: string]: any }
   | ClassValue[];
-
 // ===== GLOBAL AUGMENTATIONS =====
-
-// Global type augmentations for missing functionality;
+// Global type augmentations for missing functionality
 declare global {
   // Enhanced window interface
   interface Window {
@@ -622,7 +539,6 @@ declare global {
     webkitSpeechRecognition?: any;
     SpeechRecognition?: any;
   }
-
   // Enhanced console interface
   interface Console {
     trace(...args: any[]): void;
@@ -632,18 +548,14 @@ declare global {
     time(label?: string): void;
     timeEnd(label?: string): void;
   }
-
   // Enhanced Node.js process interface
   namespace NodeJS {
     interface ProcessEnv extends EnvironmentConfig {
       [key: string]: string | undefined;
     }
   }
-
   // WebGPU interface enhancements
   // Avoid augmenting GPUDevice to prevent overload conflicts
-
   // WebAssembly enhancements are built-in
 }
-
 // Note: Types are already exported above via interface/type declarations

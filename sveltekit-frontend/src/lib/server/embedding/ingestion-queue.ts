@@ -1,21 +1,17 @@
 
 // Minimal ingestion queue (Redis LIST if available else in-memory) + status store.
-
 import { cache } from '$lib/server/cache/redis';
 import { randomUUID } from 'crypto';
 import type { IngestionJobRequest, IngestionJobStatus } from './embedding-repository.js';
-
 const MEMORY_QUEUE: string[] = [];
 const STATUS_STORE = new Map<string, IngestionJobStatus>();
-
 function nowISO() { return new Date().toISOString(); }
-
 export async function enqueue(job: IngestionJobRequest): Promise<IngestionJobStatus> {
   const jobId = randomUUID();
   const initial: IngestionJobStatus = {
     jobId,
     evidenceId: job.evidenceId,
-    status: 'queued',;
+    status: 'queued',
     model: job?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text'
   };
   STATUS_STORE.set(jobId, initial);
@@ -28,11 +24,9 @@ export async function enqueue(job: IngestionJobRequest): Promise<IngestionJobSta
   }
   return initial;
 }
-
 export function getStatus(jobId: string): IngestionJobStatus | null {
   return STATUS_STORE.get(jobId) || null;
 }
-
 export async function processNext(processor: (payload: IngestionJobRequest, update: (partial: Partial<IngestionJobStatus>) => void) => Promise<void>): Promise<IngestionJobStatus | null> {
   const jobId = MEMORY_QUEUE.shift();
   if (!jobId) return null;

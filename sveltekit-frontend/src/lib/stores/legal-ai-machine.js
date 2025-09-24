@@ -4,17 +4,13 @@ import crypto from "crypto";
 // ================================================================================
 // State Machines • GPU Threading • WebSocket • Service Worker Integration
 // ================================================================================
-
 import { createMachine, assign, interpret, spawn } from "xstate";
 // Orphaned content: import {
-
 import { writable, derived, get } from "svelte/store";
 // Orphaned content: import {
-
 // ============================================================================
 // GPU SERVICE WORKER INTEGRATION
 // ============================================================================
-
 class GPUServiceWorkerClient {
     constructor() {
         this.worker = null;
@@ -23,28 +19,22 @@ class GPUServiceWorkerClient {
         this.connected = writable(false);
         this.status = writable('disconnected');
     }
-
     async initialize() {
         if (!browser || !('serviceWorker' in navigator)) {
             console.warn('Service Worker not supported');
             return false;
         }
-
         try {
             // Register service worker
             const registration = await navigator.serviceWorker.register('/service-worker.js', {
                 scope: '/',
             });
-
             console.log('✅ Service Worker registered:', registration.scope);
-
             // Wait for active worker
             await this.waitForActiveWorker(registration);
-
             this.worker = registration.active;
             this.connected.set(true);
             this.status.set('connected');
-
             return true;
         } catch (error) {
             console.error('❌ Service Worker registration failed:', error);
@@ -52,14 +42,12 @@ class GPUServiceWorkerClient {
             return false;
         }
     }
-
     async waitForActiveWorker(registration) {
         return new Promise((resolve) => {
             if (registration.active) {
                 resolve();
                 return;
             }
-
             const checkWorker = () => {
                 if (registration.active) {
                     resolve();
@@ -70,15 +58,12 @@ class GPUServiceWorkerClient {
             checkWorker();
         });
     }
-
     async sendMessage(type, data) {
         if (!this.worker) {
             throw new Error('Service Worker not available');
         }
-
         const id = ++this.messageId;
         const messageChannel = new MessageChannel();
-
         return new Promise((resolve, reject) => {
             messageChannel.port1.onmessage = (event) => {
                 const { success, result, error } = event.data;
@@ -88,85 +73,69 @@ class GPUServiceWorkerClient {
                     reject(new Error(error);
                 }
             };
-
             this.worker.postMessage({
                 type,
                 data,
                 id
             }, [messageChannel.port2]);
-
             // Timeout after 30 seconds
             setTimeout(() => {
                 reject(new Error('GPU operation timeout');
             }, 30000);
         });
     }
-
     async executeVectorSimilarity(vectorA, vectorB) {
         return this.sendMessage('GPU_VECTOR_SIMILARITY', { vectorA, vectorB });
     }
-
     async executeKMeans(dataPoints, k, maxIterations = 100) {
         return this.sendMessage('GPU_KMEANS', { dataPoints, k, maxIterations });
     }
-
     async computeEmbedding(tokens) {
         return this.sendMessage('GPU_EMBEDDING', { tokens });
     }
-
     async createVertexBuffer(id, data, usage = 'STATIC_DRAW') {
         return this.sendMessage('GPU_CREATE_BUFFER', { id, data, usage });
     }
-
     async getStatus() {
         return this.sendMessage('GPU_STATUS', {});
     }
 }
-
 // ============================================================================
 // ENHANCED LEGAL AI STATE MACHINE
 // ============================================================================
-
 const legalAIConfig = {
     id: 'legalAI',
     initial: 'idle',
     context: {
         // User session
-        userId: null,
-        sessionId: null,
-        
+        userId: null
+        sessionId: null
         // AI & Processing
         currentQuery: '',
         searchResults: [],
         chatHistory: [],
-        documentAnalysis: null,
-        
+        documentAnalysis: null
         // GPU & Performance
         gpuStatus: 'unknown',
         processingQueue: [],
         computeResults: new Map(),
-        
         // WebSocket & Connectivity
-        wsConnected: false,
-        lastHeartbeat: null,
+        wsConnected: false
+        lastHeartbeat: null
         connectionRetries: 0,
-        
         // Error handling
         errors: [],
         retryCount: 0,
-        
         // UI State
         activeTab: 'chat',
-        sidebarOpen: true,
+        sidebarOpen: true
         notifications: [],
-        
         // Legal specific
         activeCases: [],
-        currentCase: null,
+        currentCase: null
         evidenceUploads: [],
-        precedentSearch: null,
+        precedentSearch: null
     },
-    
     states: {
         idle: {
             entry: ['initializeSession', 'connectWebSocket'],
@@ -179,7 +148,6 @@ const legalAIConfig = {
                 ERROR: 'error',
             }
         },
-        
         initializingGPU: {
             entry: ['initializeGPUWorker'],
             invoke: {
@@ -194,7 +162,6 @@ const legalAIConfig = {
                 }
             }
         },
-        
         searching: {
             entry: ['startSearch'],
             invoke: {
@@ -215,7 +182,6 @@ const legalAIConfig = {
                 }
             }
         },
-        
         chatting: {
             entry: ['startChat'],
             states: {
@@ -247,7 +213,6 @@ const legalAIConfig = {
                 STOP_CHAT: 'idle',
             }
         },
-        
         uploadingDocument: {
             entry: ['startUpload'],
             invoke: {
@@ -265,7 +230,6 @@ const legalAIConfig = {
                 CANCEL_UPLOAD: 'idle',
             }
         },
-        
         analyzingDocument: {
             entry: ['startDocumentAnalysis'],
             invoke: {
@@ -280,7 +244,6 @@ const legalAIConfig = {
                 }
             }
         },
-        
         analyzingCase: {
             entry: ['startCaseAnalysis'],
             states: {
@@ -314,7 +277,6 @@ const legalAIConfig = {
             },
             initial: 'gatheringEvidence',
         },
-        
         error: {
             entry: ['logError'],
             on: {
@@ -331,54 +293,43 @@ const legalAIConfig = {
                 CLEAR_ERROR: 'idle',
             }
         },
-        
         criticalError: {
             entry: ['handleCriticalError'],
             type: 'final',
         }
     }
 };
-
 // ============================================================================
 // STATE MACHINE ACTIONS
 // ============================================================================
-
 const legalAIActions = {
-    initializeSession: assign({
+    initializeSession: assign({,
         sessionId: () => crypto.randomUUID(),
         userId: (context) => context.userId || `user_${Date.now()}`
     }),
-    
     connectWebSocket: (context) => {
         // WebSocket connection will be handled by the WebSocket service
         console.log('Connecting WebSocket for session:', context.sessionId);
     },
-    
     initializeGPUWorker: (context) => {
         console.log('Initializing GPU Worker...');
     },
-    
-    setGPUStatus: assign({
+    setGPUStatus: assign({,
         gpuStatus: (_, event) => event.data.status
     }),
-    
-    startSearch: assign({
+    startSearch: assign({,
         currentQuery: (_, event) => event.query || ''
     }),
-    
-    setSearchResults: assign({
+    setSearchResults: assign({,
         searchResults: (_, event) => event.data.results || []
     }),
-    
-    updateQuery: assign({
+    updateQuery: assign({,
         currentQuery: (_, event) => event.query
     }),
-    
     startChat: (context) => {
         console.log('Starting chat session:', context.sessionId);
     },
-    
-    addUserMessage: assign({
+    addUserMessage: assign({,
         chatHistory: (context, event) => [
             ...context.chatHistory,
             {
@@ -390,8 +341,7 @@ const legalAIActions = {
             }
         ]
     }),
-    
-    addAIResponse: assign({
+    addAIResponse: assign({,
         chatHistory: (context, event) => [
             ...context.chatHistory,
             {
@@ -404,42 +354,34 @@ const legalAIActions = {
             }
         ]
     }),
-    
-    clearChatHistory: assign({
+    clearChatHistory: assign({,
         chatHistory: [],
     }),
-    
     startUpload: (context) => {
         console.log('Starting document upload...');
     },
-    
-    setUploadResult: assign({
+    setUploadResult: assign({,
         evidenceUploads: (context, event) => [
             ...context.evidenceUploads,
             event.data
         ]
     }),
-    
     startDocumentAnalysis: (context) => {
         console.log('Starting document analysis...');
     },
-    
-    setDocumentAnalysis: assign({
+    setDocumentAnalysis: assign({,
         documentAnalysis: (_, event) => event.data
     }),
-    
     startCaseAnalysis: (context) => {
         console.log('Starting case analysis...');
     },
-    
-    setCaseAnalysis: assign({
+    setCaseAnalysis: assign({,
         currentCase: (_, event) => ({
             ...event.data,
             analysisTimestamp: new Date(),
         })
     }),
-    
-    setError: assign({
+    setError: assign({,
         errors: (context, event) => [
             ...context.errors,
             {
@@ -450,30 +392,24 @@ const legalAIActions = {
             }
         ]
     }),
-    
-    incrementRetry: assign({
+    incrementRetry: assign({,
         retryCount: (context) => context.retryCount + 1,
     }),
-    
     logError: (context, event) => {
         console.error('State machine error:', event.data);
     },
-    
     handleCriticalError: (context) => {
         console.error('Critical error - system halted');
         // Send error report to monitoring service
     }
 };
-
 // ============================================================================
 // STATE MACHINE SERVICES
 // ============================================================================
-
 const legalAIServices = {
     initializeGPU: async () => {
         const gpuClient = new GPUServiceWorkerClient();
         const success = await gpuClient.initialize();
-        
         if (success) {
             const status = await gpuClient.getStatus();
             return { status: 'initialized', ...status };
@@ -481,113 +417,93 @@ const legalAIServices = {
             throw new Error('GPU initialization failed');
         }
     },
-    
     performSearch: async (context) => {
         const response = await fetch('/api/rag/search', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
+            body: JSON.stringify({,
                 query: context.currentQuery,
                 sessionId: context.sessionId,
                 options: {
-                    includeVectorSimilarity: true,
-                    includePrecedents: true,
+                    includeVectorSimilarity: true
+                    includePrecedents: true
                 }
             })
         });
-        
         if (!response.ok) {
             throw new Error(`Search failed: ${response.statusText}`);
         }
-        
         return response.json();
     },
-    
     processChat: async (context, event) => {
         // Send to GPU for embedding computation
         const gpuClient = new GPUServiceWorkerClient();
         const tokens = event.message.split(' ');
         const embedding = await gpuClient.computeEmbedding(tokens);
-        
         // Send to AI service
         const response = await fetch('/api/rag/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
+            body: JSON.stringify({,
                 message: event.message,
                 context: context.chatHistory.slice(-10),
                 sessionId: context.sessionId,
                 embedding: Array.from(embedding),
             })
         });
-        
         if (!response.ok) {
             throw new Error(`Chat failed: ${response.statusText}`);
         }
-        
         return response.json();
     },
-    
     uploadDocument: async (context, event) => {
         const formData = new FormData();
         formData.append('file', event.file);
         formData.append('caseId', context.currentCase?.id || 'general');
         formData.append('documentType', event.documentType || 'evidence');
         formData.append('sessionId', context.sessionId);
-        
         const response = await fetch('/api/upload', {
             method: 'POST',
-            body: formData,
+            body: formData
         });
-        
         if (!response.ok) {
             throw new Error(`Upload failed: ${response.statusText}`);
         }
-        
         return response.json();
     },
-    
     analyzeDocument: async (context, event) => {
         const response = await fetch('/api/documents/analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
+            body: JSON.stringify({,
                 documentId: event.documentId,
                 analysisType: 'comprehensive',
                 sessionId: context.sessionId,
             })
         });
-        
         if (!response.ok) {
             throw new Error(`Analysis failed: ${response.statusText}`);
         }
-        
         return response.json();
     },
-    
     gatherEvidence: async (context) => {
         // Gather all evidence for the case
         const evidence = context.evidenceUploads.filter(
             upload => upload.caseId === context.currentCase?.id
         );
-        
         return { evidence };
     },
-    
     computeVectorSimilarity: async (context, event) => {
         const gpuClient = new GPUServiceWorkerClient();
-        
         // Compute similarity between evidence pieces
         const similarities = [];
         const evidence = event.data.evidence;
-        
         for (let i = 0; i < evidence.length; i++) {
             for (let j = i + 1; j < evidence.length; j++) {
                 const similarity = await gpuClient.executeVectorSimilarity(
                     evidence[i].embedding,
                     evidence[j].embedding
                 );
-                
                 similarities.push({
                     doc1: evidence[i].id,
                     doc2: evidence[j].id,
@@ -595,30 +511,26 @@ const legalAIServices = {
                 });
             }
         }
-        
         return { similarities };
     },
-    
     searchPrecedents: async (context, event) => {
         const response = await fetch('/api/legal/precedents', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
+            body: JSON.stringify({,
                 caseType: context.currentCase?.type,
                 keywords: context.currentCase?.keywords,
                 jurisdiction: context.currentCase?.jurisdiction,
                 similarities: event.data.similarities,
             })
         });
-        
         return response.json();
     },
-    
     generateCaseAnalysis: async (context, event) => {
         const response = await fetch('/api/legal/analyze-case', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
+            body: JSON.stringify({,
                 caseId: context.currentCase?.id,
                 evidence: event.data.evidence,
                 precedents: event.data.precedents,
@@ -626,65 +538,53 @@ const legalAIServices = {
                 sessionId: context.sessionId,
             })
         });
-        
         return response.json();
     }
 };
-
 // ============================================================================
 // STATE MACHINE GUARDS
 // ============================================================================
-
 const legalAIGuards = {
     canRetry: (context) => context.retryCount < 3,
-    
     hasGPUSupport: () => {
         return browser && 'serviceWorker' in navigator && 'WebGL2RenderingContext' in window;
     },
-    
     isConnected: (context) => context.wsConnected,
-    
     hasActiveCase: (context) => context.currentCase !== null,
 };
-
 // ============================================================================
 // MACHINE CREATION & STORE INTEGRATION
 // ============================================================================
-
 export function createLegalAIMachine() {
     return createMachine(legalAIConfig, {
-        actions: legalAIActions,
-        services: legalAIServices,
-        guards: legalAIGuards,
+        actions: legalAIActions
+        services: legalAIServices
+        guards: legalAIGuards
     });
 }
-
 // Svelte store integration
 export function useLegalAI() {
     const machine = createLegalAIMachine();
     const { state, send, service } = useMachine(machine);
-    
     // Derived stores for specific state slices
     const currentState = derived(state, ($state) => $state.value);
     const context = derived(state, ($state) => $state.context);
     const canTransition = derived(state, ($state) => (event) => $state.can(event);
-    
     // Specific context slices
     const chatHistory = derived(context, ($context) => $context.chatHistory);
     const searchResults = derived(context, ($context) => $context.searchResults);
     const currentCase = derived(context, ($context) => $context.currentCase);
     const gpuStatus = derived(context, ($context) => $context.gpuStatus);
     const errors = derived(context, ($context) => $context.errors);
-    
     // Action creators
     const actions = {
         startSearch: (query) => send({ type: 'START_SEARCH', query }),
         startChat: () => send({ type: 'START_CHAT' }),
         sendMessage: (message) => send({ type: 'SEND_MESSAGE', message }),
-        uploadDocument: (file, documentType) => send({ 
-            type: 'UPLOAD_DOCUMENT', 
-            file, 
-            documentType 
+        uploadDocument: (file, documentType) => send({
+            type: 'UPLOAD_DOCUMENT',
+            file,
+            documentType
         }),
         analyzeCase: (caseData) => send({ type: 'ANALYZE_CASE', caseData }),
         connectGPU: () => send({ type: 'CONNECT_GPU' }),
@@ -692,46 +592,39 @@ export function useLegalAI() {
         clearError: () => send({ type: 'CLEAR_ERROR' }),
         clearChat: () => send({ type: 'CLEAR_CHAT' })
     };
-    
     // Initialize GPU on mount
     if (browser) {
         actions.connectGPU();
     }
-    
     return {
         // State
         state,
         currentState,
         context,
         canTransition,
-        
         // Context slices
         chatHistory,
         searchResults,
         currentCase,
         gpuStatus,
         errors,
-        
         // Actions
         send,
         ...actions,
-        
         // Service
         service
     };
 }
-
 // ============================================================================
 // WEBSOCKET INTEGRATION WITH XSTATE
 // ============================================================================
-
 export function createWebSocketService(url) {
     return createMachine({
         id: 'websocket',
         initial: 'disconnected',
         context: {
             url,
-            socket: null,
+            socket: null
             reconnectAttempts: 0,
             maxReconnectAttempts: 5,
             messages: [],
@@ -796,18 +689,14 @@ export function createWebSocketService(url) {
             connectWebSocket: (context) => {
                 return new Promise((resolve, reject) => {
                     const socket = new WebSocket(context.url);
-                    
                     socket.onopen = () => resolve(socket);
                     socket.onerror = () => reject(new Error('WebSocket connection failed');
-                    
                     setTimeout(() => reject(new Error('Connection timeout')), 10000);
                 });
             },
-            
             listenToSocket: (context) => {
                 return new Promise((resolve, reject) => {
                     const { socket } = context;
-                    
                     socket.onmessage = (event) => {
                         try {
                             const message = JSON.parse(event.data);
@@ -817,46 +706,38 @@ export function createWebSocketService(url) {
                             console.error('Failed to parse WebSocket message:', error);
                         }
                     };
-                    
                     socket.onclose = () => reject(new Error('WebSocket closed');
                     socket.onerror = () => reject(new Error('WebSocket error');
                 });
             }
         },
-        
         actions: {
             setSocket: assign({
                 socket: (_, event) => event.data
             }),
-            
-            incrementReconnectAttempts: assign({
+            incrementReconnectAttempts: assign({,
                 reconnectAttempts: (context) => context.reconnectAttempts + 1,
             }),
-            
-            resetReconnectAttempts: assign({
+            resetReconnectAttempts: assign({,
                 reconnectAttempts: 0,
             }),
-            
             sendMessage: (context, event) => {
                 if (context.socket && context.socket.readyState === WebSocket.OPEN) {
                     context.socket.send(JSON.stringify(event.message);
                 }
             },
-            
-            addSubscription: assign({
+            addSubscription: assign({,
                 subscriptions: (context, event) => [
                     ...context.subscriptions,
                     event.channel
                 ]
             })
         },
-        
         guards: {
             canReconnect: (context) => context.reconnectAttempts < context.maxReconnectAttempts,
         }
     });
 }
-
 function handleWebSocketMessage(message) {
     // Handle different message types
     switch (message.type) {
@@ -876,16 +757,13 @@ function handleWebSocketMessage(message) {
             console.log('Unknown message type:', message.type);
     }
 }
-
 // ============================================================================
 // USAGE EXAMPLE IN SVELTE COMPONENT
 // ============================================================================
-
 /*
 <script>
 import { useLegalAI, createWebSocketService } from '$lib/stores/legal-ai-machine.js';
 // Orphaned content: import { useMachine
-    
     // Initialize the main legal AI machine
     const {
         currentState,
@@ -896,24 +774,20 @@ import { useLegalAI, createWebSocketService } from '$lib/stores/legal-ai-machine
         sendMessage,
         uploadDocument
     } = useLegalAI();
-    
     // Initialize WebSocket service
-    const wsService = createWebSocketService('ws://localhost:8094/ws');
+    const wsService = createWebSocketService('ws://localhost:8094/ws')
     const { state: wsState, send: wsSend } = useMachine(wsService);
-    
     // Connect WebSocket on mount
     import { onMount } from 'svelte';
     onMount(() => {
         wsSend({ type: 'CONNECT' });
     });
-    
     // Reactive statements
     let isSearching = $derived($currentState === 'searching');
     let isChatting = $derived(typeof $currentState === 'object' && $currentState.chatting);
     let gpuReady = $derived($gpuStatus === 'initialized');
     let wsConnected = $derived($wsState.matches('connected');
 </script>
-
 <div class="legal-ai-interface">
     <div class="status-bar">
         <span class="status-item" class:active={gpuReady}>
@@ -926,13 +800,11 @@ import { useLegalAI, createWebSocketService } from '$lib/stores/legal-ai-machine
             🧠 State: {$currentState}
         </span>
     </div>
-    
     {#if isSearching}
         <div class="search-indicator">
             <span>🔍 Searching...</span>
         </div>
     {/if}
-    
     <div class="chat-container">
         {#each $chatHistory as message}
             <div class="message" class:user={message.role === 'user'}>
@@ -940,17 +812,14 @@ import { useLegalAI, createWebSocketService } from '$lib/stores/legal-ai-machine
             </div>
         {/each}
     </div>
-    
     <button onclick={() => startSearch('contract law')}>
         Search Contract Law
     </button>
-    
     <button onclick={() => sendMessage('What is consideration in contracts?')}>
         Ask Question
     </button>
 </div>
 */
-
 export default {
     createLegalAIMachine,
     useLegalAI,

@@ -1,12 +1,10 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import Button from '$lib/components/ui/enhanced-bits';
   import { createFormStore, type FormOptions } from '$lib/stores/form';
   import { notifications } from '$lib/stores/notification';
-
   interface Props {
-    options?: FormOptions;
+    options?: FormOption;
     class?: string;
     novalidate?: boolean;
     autocomplete?: "on" | "off";
@@ -18,11 +16,10 @@
     showResetButton?: boolean;
     loading?: boolean;
     formApi?: unknown; // Add bindable formApi prop
-    onsubmit?: (event: { values: Record<string, any>; isValid: boolean }) => void;
+    onsubmit?: (event: { values: { [key: string]: any }; isValid: boolean }) => void;
     onreset?: () => void;
-    onchange?: (event: { values: Record<string, any> }) => void;
+    onchange?: (event: { values: { [key: string]: any } }) => void;
   }
-
   let { children,
     options = ,
     submitText = "Submit",
@@ -38,7 +35,6 @@
     onchange,
     ...restProps
   }: Props = $props();
-
   // Create form store
   const form = createFormStore({
     ...options,
@@ -49,7 +45,6 @@
   }
     },
   });
-
   // Subscribe to form values for change events using $effect
   $effect(() => {
     if ($form.isDirty) {
@@ -58,7 +53,6 @@
   });
   async function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
-
     const isValid = await form.submit();
     if (!isValid) {
       notifications.error(
@@ -80,14 +74,13 @@
         submit: form.submit,
         reset: form.reset,
         addField: form.addField,
-        removeField: form.removeField,;
-        values: form.values,;
-        errors: form.errors,;
+        removeField: form.removeField,
+        values: form.values,
+        errors: form.errors,
       };
     }
   });
 </script>
-
 <form onsubmit={handleSubmit}
   reset={handleReset}
   class="space-y-6 {restProps.class || ''}"
@@ -97,7 +90,6 @@
 >
   <!-- Form content -->
   {@render children?.({ form, formApi, values: $form.values, errors: $form.errors, isValid: $form.isValid, isDirty: $form.isDirty, })}
-
   <!-- Form actions -->
   {#if showSubmitButton || showResetButton}
     <div class="flex gap-3 justify-end">
@@ -109,9 +101,7 @@
           class={submitFullWidth ? "w-full" : ""}
         >
 {resetText}
-
       {/if}
-
       {#if showSubmitButton}
         <Button
           type="submit"
@@ -121,11 +111,9 @@
           class={submitFullWidth ? "w-full" : ""}
         >
 {submitText}
-
       {/if}
     </div>
   {/if}
-
   <!-- Form status -->
   {#if $form.submitCount > 0 && Object.keys(errors).length > 0}
     <div class="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg">
@@ -145,4 +133,3 @@
     </div>
   {/if}
 </form>
-

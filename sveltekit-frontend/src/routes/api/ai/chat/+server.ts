@@ -1,21 +1,20 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: chat
  * Category: aggressive
  * Memory Bank: CHR_ROM
  * Priority: 180
  * Redis Type: aiChat
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: aggressive
  * - Memory Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 // Enhanced Chat API with LLM Orchestrator Bridge and MCP Multi-Core Integration
 import type { RequestHandler } from '@sveltejs/kit'
 import { json } from '@sveltejs/kit'
@@ -25,29 +24,23 @@ import { dev } from '$app/environment'
 import { ollamaConfig } from '$lib/services/ollama-config-service.js'
 import { ENV_CONFIG } from '$lib/config/environment.js'
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-
 const originalPOSTHandler: RequestHandler = async (event) => {
   const { request, fetch, url } = event
   const startTime = performance.now()
-  
   try {
     // Parse incoming messages
     const requestData = await request.json()
     const { messages, model = "auto", temperature = 0.7, stream = false } = requestData
-    
     if (!messages || !Array.isArray(messages)) {
       return json({ error: "Messages array is required" }, { status: 400 })
     }
-
     // Get the latest user message
     const lastMessage = messages[messages.length - 1]
     if (!lastMessage?.content) {
       return json({ error: "Message content is required" }, { status: 400 })
     }
-
     // Extract conversation context
     const conversationHistory = messages.slice(0, -1).map(msg => `${msg.role}: ${msg.content}`)
-
     // Create bridge request for intelligent routing
     const bridgeRequest: LLMBridgeRequest = {
       id: `chat_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
@@ -56,14 +49,14 @@ const originalPOSTHandler: RequestHandler = async (event) => {
       context: {
         userId: requestData.userId || 'anonymous',
         sessionId: requestData.sessionId || `session_${Date.now()}`,
-        previousContext: conversationHistory,
+        previousContext: conversationHistory
         legalDomain: detectLegalDomain(lastMessage.content)
       },
       options: {
-        model: model === 'gemma3-legal:latest' ? 'gemma3-legal' : model,
+        model: model === 'gemma3-legal:latest' ? 'gemma3-legal' : model
         priority: stream ? 'realtime' : 'normal',
-        useGPU: true,
-        enableStreaming: stream,
+        useGPU: true
+        enableStreaming: stream
         temperature,
         maxTokens: requestData.max_tokens || 1024,
         maxLatency: stream ? 500 : undefined, // Prefer fast models for streaming
@@ -74,24 +67,19 @@ const originalPOSTHandler: RequestHandler = async (event) => {
         timestamp: Date.now()
       }
     }
-
     // Route through orchestrator bridge for optimal processing
     try {
       const result = await llmOrchestratorBridge.processRequest(bridgeRequest)
-      
       if (!(result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).success) {
         throw new Error((result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).error || 'Orchestrator processing failed')
       }
-
       const totalTime = performance.now() - startTime
-      
       if (dev) {
         console.log(`🚀 Chat API completed via ${(result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).orchestratorUsed} orchestrator in ${totalTime.toFixed(2)}ms`)
       }
-
       // Return OpenAI-compatible format
       return json({
-        choices: [{
+        choices: [{,
           message: {
             role: "assistant",
             content: (result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).response
@@ -116,39 +104,35 @@ const originalPOSTHandler: RequestHandler = async (event) => {
         },
         response_time_ms: totalTime
       })
-
     } catch (orchestratorError) {
       console.warn('Orchestrator failed, falling back to direct Ollama:', orchestratorError)
-      
       // Fallback to direct Ollama call
       return await fallbackToDirectOllama(lastMessage.content, model, temperature, startTime)
     }
-
   } catch (error: any) {
     console.error('Chat API error:', error)
-    return json({ 
+    return json({
       error: "Failed to generate response",
       detail: error.message,
       timestamp: new Date().toISOString()
     }, { status: 500 })
   }
 }
-
 // Fallback function for direct Ollama calls
 async function fallbackToDirectOllama(
-  prompt: string, 
-  model: string,
-  temperature: number, 
+  prompt: string
+  model: string
+  temperature: number
   startTime: number
 ) {
   try {
     const ollamaResponse = await fetch(`${DEFAULT_OLLAMA_URL}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: model === 'auto' ? 'gemma3-legal:latest' : model,
+      body: JSON.stringify({,
+        model: model === 'auto' ? 'gemma3-legal:latest' : model
         prompt,
-        stream: false,
+        stream: false
         options: {
           temperature,
           num_predict: 1024,
@@ -158,17 +142,14 @@ async function fallbackToDirectOllama(
         }
       })
     })
-
     if (!ollamaResponse.ok) {
       const errorText = await ollamaResponse.text()
       throw new Error(`Ollama error: ${errorText}`)
     }
-
     const data = await ollamaResponse.json()
     const totalTime = performance.now() - startTime
-
     return json({
-      choices: [{
+      choices: [{,
         message: {
           role: "assistant",
           content: (data as { response?: any; eval_count?: any; prompt_eval_count?: any }).response || "No response generated"
@@ -180,13 +161,13 @@ async function fallbackToDirectOllama(
         prompt_tokens: (data as { response?: any; eval_count?: any; prompt_eval_count?: any }).prompt_eval_count || 0,
         completion_tokens: ((data as { response?: any; eval_count?: any; prompt_eval_count?: any }).eval_count || 0) - ((data as { response?: any; eval_count?: any; prompt_eval_count?: any }).prompt_eval_count || 0)
       },
-      model: model,
+      model: model
       orchestrator: {
         used: 'fallback_ollama',
         confidence: 0.7,
         executionMetrics: {
-          totalLatency: totalTime,
-          processingTime: totalTime,
+          totalLatency: totalTime
+          processingTime: totalTime
           routingTime: 0,
           gpuAccelerated: false
         }
@@ -197,7 +178,6 @@ async function fallbackToDirectOllama(
     throw new Error(`Fallback to direct Ollama failed: ${error instanceof Error ? error.message: 'Unknown error'}`)
   }
 }
-
 // Helper function to detect legal domain from content
 function detectLegalDomain(content: string): string | undefined {
   const legalKeywords = {
@@ -209,17 +189,12 @@ function detectLegalDomain(content: string): string | undefined {
     'family': ['divorce', 'custody', 'marriage', 'adoption', 'alimony'],
     'employment': ['employment', 'workplace', 'discrimination', 'wage', 'termination']
   }
-
   const lowerContent = content.toLowerCase()
-  
   for (const [domain, keywords] of Object.entries(legalKeywords)) {
     if (keywords.some(keyword => lowerContent.includes(keyword))) {
       return domain
     }
   }
-  
   return undefined
 }
-
-
 export const POST = redisOptimized.aiChat(originalPOSTHandler)

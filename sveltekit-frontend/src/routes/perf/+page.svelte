@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import PerfChart from '$lib/components/PerfChart.svelte';
   import { writable } from 'svelte/store';
@@ -21,7 +20,7 @@
           if (res.ok){
             const aData = await res.json();
             serverAlerts = aData.alerts || [];
-            serverAlertCounts = aData.counts || serverAlertCounts;
+            serverAlertCounts = aData.counts || serverAlertCount;
             if (serverAlerts.some(a=>a.Level==='crit'||a.level==='crit')) highestAlertLevel='crit'; else if (serverAlerts.some(a=>a.Level==='warn'||a.level==='warn')) highestAlertLevel='warn'; else highestAlertLevel='none';
           }
         } catch }, 3000);
@@ -38,9 +37,7 @@
   let gpuMemSeries: number[] = [];
   let gpuInfo: unknown = null;
   const gpuRuntime = writable<any>(null);
-
   // NOTE: Using $runtime and $signatures directly in template (remove derived helpers for runes mode)
-
   // Enhanced metrics for comprehensive monitoring
   const cacheMetrics = writable<any>(null);
   const wasmMetrics = writable<any>(null);
@@ -67,14 +64,12 @@
   let showGpuEngines = $state<boolean>(false);
   let showWorkers = $state<boolean>(false);
   let showProfiling = $state<boolean>(false);
-
   // Backend (cuda-service) new endpoints data
   let gpuEngines: unknown = $state(null);
   let workerStats: unknown[] = $state([]);
   let profilingSnapshot: unknown = $state(null);
   let profilingHistory: unknown[] = $state([]);
   let lastProfilingFetched: number | null = $state(null);
-
   async function fetchCudaEndpoint(path: string) {
     try { const r = await fetch(`/api/cuda${path}`); if (r.ok) return await r.json(); } catch ; return null;
   }
@@ -91,21 +86,16 @@
     if (profHist && profHist.history) profilingHistory = profHist.history; else profilingHistory = [];
     lastProfilingFetched = Date.now();
   }
-
   // Highest alert level derived from server alerts
   let highestAlertLevel = $state<'none' | 'warn' | 'crit'>('none');
-
   // Cache performance series
   let cacheHitSeries: number[] = [];
   let cacheEvictionSeries: number[] = [];
-
   // Node.js event loop series
   let eventLoopLagSeries: number[] = [];
   let memoryUsageSeries: number[] = [];
-
   // WebAssembly metrics
   let wasmExecutionSeries: number[] = [];
-
   // Helper functions
   function formatBytes(bytes: number): string {
     if (!bytes) return '0 B';
@@ -113,33 +103,28 @@
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
     return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
   }
-
   function formatUptime(seconds: number): string {
     if (!seconds) return '0s';
     const days = Math.floor(seconds / 86400);
     const hours = Math.floor((seconds % 86400) / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = Math.floor(seconds % 60);
-
     if (days > 0) return `${days}d ${hours}h ${minutes}m`;
     if (hours > 0) return `${hours}h ${minutes}m ${secs}s`;
     if (minutes > 0) return `${minutes}m ${secs}s`;
     return `${secs}s`;
   }
-
   // Load comprehensive caching metrics
   async function loadCacheMetrics() {
     try {
       // Try multiple cache endpoints
       const endpoints = ['/api/v1/cache/stats', '/api/cache/metrics', '/api/perf/cache'];
-
       for (const endpoint of endpoints) {
         try {
           const res = await fetch(endpoint);
           if (res.ok) {
             const data = await res.json();
             cacheMetrics.set(data);
-
             // Update time series
             if (data.hitRate) {
               cacheHitSeries.push(data.hitRate * 100);
@@ -152,7 +137,6 @@
             return;
           }
         } catch }
-
       // Simulate realistic cache metrics based on performance optimization principles
       const mockData = {
         hits: Math.floor(Math.random() * 50000) + 10000,
@@ -160,8 +144,8 @@
         hitRate: 0.85 + Math.random() * 0.14, // 85-99% hit rate
         evictions: Math.floor(Math.random() * 200),
         size: Math.floor(Math.random() * 1024 * 1024 * 100), // Up to 100MB
-        maxSize: 1024 * 1024 * 256, // 256MB max;
-        entries: Math.floor(Math.random() * 10000) + 1000,;
+        maxSize: 1024 * 1024 * 256, // 256MB max
+        entries: Math.floor(Math.random() * 10000) + 1000,
         types: {
           'function-results': Math.floor(Math.random() * 3000),
           'compiled-wasm': Math.floor(Math.random() * 100),
@@ -169,7 +153,6 @@
           'api-responses': Math.floor(Math.random() * 1500)
         }
       };
-
       cacheMetrics.set(mockData);
       cacheHitSeries.push(mockData.hitRate * 100);
       cacheEvictionSeries.push(mockData.evictions);
@@ -179,7 +162,6 @@
       console.warn('Cache metrics unavailable:', e);
     }
   }
-
   // Load WebAssembly performance metrics
   async function loadWasmMetrics() {
     try {
@@ -187,7 +169,6 @@
       if (res.ok) {
         const data = await res.json();
         wasmMetrics.set(data);
-
         if (data.executionTime?.avg) {
           wasmExecutionSeries.push(data.executionTime.avg);
           if (wasmExecutionSeries.length > 300) wasmExecutionSeries.shift();
@@ -224,19 +205,17 @@
         avg: 8.5 + Math.random() * 15,
         p95: 25.2 + Math.random() * 20,
         p99: 58.3 + Math.random() * 30;
-      },;
+      },
       optimizations: {
         cacheHits: Math.floor(Math.random() * 1000) + 500,
         inlineFunctions: Math.floor(Math.random() * 200) + 100,
         memoryReuse: (0.7 + Math.random() * 0.25) * 100 // 70-95%
       }
     };
-
     wasmMetrics.set(mockWasm);
     wasmExecutionSeries.push(mockWasm.executionTime.avg);
     if (wasmExecutionSeries.length > 300) wasmExecutionSeries.shift();
   }
-
   // Load Node.js event loop and performance metrics
   async function loadNodeMetrics() {
     try {
@@ -244,7 +223,6 @@
       if (res.ok) {
         const data = await res.json();
         nodeMetrics.set(data);
-
         if (data.eventLoop?.lag) {
           eventLoopLagSeries.push(data.eventLoop.lag);
           if (eventLoopLagSeries.length > 300) eventLoopLagSeries.shift();
@@ -260,7 +238,7 @@
       eventLoop: {
         lag: Math.random() * 25 + 2, // 2-27ms lag
         utilization: Math.random() * 0.8 + 0.1, // 10-90% utilization
-        idle: Math.random() * 0.5 + 0.3 // 30-80% idle;
+        idle: Math.random() * 0.5 + 0.3 // 30-80% idl
       },
       memory: {
         rss: (150 + Math.random() * 100) * 1024 * 1024,
@@ -271,21 +249,19 @@
       handles: {
         active: Math.floor(Math.random() * 150) + 50,
         requests: Math.floor(Math.random() * 80) + 20;
-      },;
+      },
       performance: {
         dnsLookups: Math.floor(Math.random() * 100),
         httpRequests: Math.floor(Math.random() * 1000) + 200,
         fileOperations: Math.floor(Math.random() * 500) + 100
       }
     };
-
     nodeMetrics.set(mockNode);
     eventLoopLagSeries.push(mockNode.eventLoop.lag);
     memoryUsageSeries.push(mockNode.memory.heapUsed / (1024 * 1024));
     if (eventLoopLagSeries.length > 300) eventLoopLagSeries.shift();
     if (memoryUsageSeries.length > 300) memoryUsageSeries.shift();
   }
-
   // Load service health metrics
   async function loadServiceHealth() {
     try {
@@ -303,10 +279,8 @@
       { name: 'Neo4j', status: 'running', port: 7474, health: 'good', latency: 12.5, uptime: 259200 },
       { name: 'NATS Server', status: 'running', port: 4222, health: 'excellent', latency: 1.2, uptime: 345500 }
     ];
-
     serviceHealth.set(services);
   }
-
   // Load all enhanced metrics
   async function loadAllEnhancedMetrics() {
     // fetch enhanced metrics from cuda-service proxy (assumes reverse proxy /api/cuda)
@@ -346,7 +320,6 @@
       loadNodeMetrics(),
       loadServiceHealth()
     ]);
-
     // Fetch server-side alerts & history (best-effort)
     try {
       const [alertsRes, histRes] = await Promise.all([
@@ -356,7 +329,7 @@
       if (alertsRes.ok) {
         const aData = await alertsRes.json();
         serverAlerts = aData.alerts || [];
-        serverAlertCounts = aData.counts || serverAlertCounts;
+        serverAlertCounts = aData.counts || serverAlertCount;
       }
       if (histRes.ok) {
         const hData = await histRes.json();
@@ -369,13 +342,13 @@
         for (const snap of history) {
           const gpuUtil = (snap.gpu && (snap.gpu.util || snap.gpu.Util)) ?? null;
           if (gpuUtil != null) historyGpuUtilSeries.push(gpuUtil);
-          const jobs = snap.cache?.recent_embedding_jobs_minute;
+          const jobs = snap.cache?.recent_embedding_jobs_minut;
           if (typeof jobs === 'number') historyJobsSeries.push(jobs);
           const memPct = snap.memory?.used_percent;
           if (typeof memPct === 'number') historyMemUsedSeries.push(memPct);
           const ld = snap.load?.load1;
           if (typeof ld === 'number') historyLoad1Series.push(ld);
-          const redisBytes = snap.cache?.redis_used_memory_bytes;
+          const redisBytes = snap.cache?.redis_used_memory_byte;
           if (typeof redisBytes === 'number') historyRedisMemSeries.push(redisBytes/1024/1024);
         }
       }
@@ -384,7 +357,6 @@
       const aRes = await fetch('/api/cuda/metrics/anomalies');
       if (aRes.ok) { anomalyStats = await aRes.json(); }
     } catch }
-
   async function load() {
     try {
   loading.set(true);
@@ -430,7 +402,6 @@
         }
       } catch // Load enhanced metrics
   await loadAllEnhancedMetrics();
-
   error.set(null);
     } catch (e: unknown) {
   error.set(e.message);
@@ -438,7 +409,6 @@
   loading.set(false);
     }
   }
-
   $effect(() => {
     load();
     interval = setInterval(load, 5000);
@@ -449,7 +419,6 @@
     return () => clearInterval(interval);
   });
 </script>
-
 <div class="flex items-center justify-between mb-6">
   <div>
     <h1 class="text-2xl font-semibold tracking-tight flex items-center gap-3">
@@ -481,7 +450,6 @@
     </button>
   </div>
 </div>
-
 <div class="relative mb-8 overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-gradient-to-br from-white via-white to-indigo-50 dark:from-gray-900 dark:via-gray-900 dark:to-indigo-900/20 p-4">
   <div class="pointer-events-none absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_30%_30%,rgba(99,102,241,0.25),transparent_60%)]"></div>
   <div class="flex flex-wrap gap-6 relative">
@@ -517,7 +485,6 @@
   <div class="text-red-600">{$error}</div>
 {/if}
 <!-- Client-side alert block removed (server canonical) -->
-
 <!-- Server-Side Alerts (canonical) -->
 <div class="mb-6 p-4 border rounded-lg bg-white/60 dark:bg-gray-900/60 shadow">
   <h2 class="font-medium mb-3 flex items-center gap-2">
@@ -543,7 +510,6 @@
   {/if}
   <div class="mt-2 text-[10px] text-gray-500">Server alerts include threshold & anomaly detections (rolling z-score).</div>
 </div>
-
 <!-- Historical Series from Server -->
 {#if historyGpuUtilSeries.length > 0}
   <div class="mb-8 p-4 border rounded-lg bg-white/60 dark:bg-gray-900/60 shadow">
@@ -661,7 +627,6 @@
     </div>
   </div>
 {/if}
-
 {#if $enhancedMetrics?.gpu}
   <div class="mt-6 p-4 border rounded bg-white/50 shadow">
     <h2 class="font-medium mb-2">GPU Detailed Metrics</h2>
@@ -674,15 +639,13 @@
     </div>
   </div>
 {/if}
-
 <!-- Toggle buttons for advanced CUDA-service panels -->
 <div class="mt-6 flex flex-wrap gap-2">
-  <button class="px-2 py-1 text-xs rounded border bg-white/70 hover:bg-indigo-50" onclick={()=>{showGpuEngines=!showGpuEngines; if(showGpuEngines) refreshEnginesWorkersProfiling();}}>🧩 GPU Engines {showGpuEngines? '−':'+'}</button>
-  <button class="px-2 py-1 text-xs rounded border bg-white/70 hover:bg-indigo-50" onclick={()=>{showWorkers=!showWorkers; if(showWorkers) refreshEnginesWorkersProfiling();}}>🛠️ Workers {showWorkers? '−':'+'}</button>
-  <button class="px-2 py-1 text-xs rounded border bg-white/70 hover:bg-indigo-50" onclick={()=>{showProfiling=!showProfiling; if(showProfiling) refreshEnginesWorkersProfiling();}}>🧪 Profiling {showProfiling? '−':'+'}</button>
+  <button class="px-2 py-1 text-xs rounded border bg-white/70 hover:bg-indigo-50" onclick={()=>{showGpuEngines=!showGpuEngines; if(showGpuEngines) refreshEnginesWorkersProfiling()}}>🧩 GPU Engines {showGpuEngines? '−':'+'}</button>
+  <button class="px-2 py-1 text-xs rounded border bg-white/70 hover:bg-indigo-50" onclick={()=>{showWorkers=!showWorkers; if(showWorkers) refreshEnginesWorkersProfiling()}}>🛠️ Workers {showWorkers? '−':'+'}</button>
+  <button class="px-2 py-1 text-xs rounded border bg-white/70 hover:bg-indigo-50" onclick={()=>{showProfiling=!showProfiling; if(showProfiling) refreshEnginesWorkersProfiling()}}>🧪 Profiling {showProfiling? '−':'+'}</button>
   {#if lastProfilingFetched}<span class="text-[10px] text-gray-500 ml-2">Refreshed {new Date(lastProfilingFetched).toLocaleTimeString()}</span>{/if}
 </div>
-
 {#if showGpuEngines}
   <div class="mt-4 p-4 border rounded bg-white/60 shadow">
     <h3 class="font-medium mb-3 flex items-center gap-2">🧩 GPU Engines & Per-Process Utilization</h3>
@@ -732,7 +695,6 @@
     {/if}
   </div>
 {/if}
-
 {#if showWorkers}
   <div class="mt-4 p-4 border rounded bg-white/60 shadow">
     <h3 class="font-medium mb-3 flex items-center gap-2">🛠️ Monitored Workers</h3>
@@ -748,7 +710,6 @@
     {/if}
   </div>
 {/if}
-
 {#if showProfiling}
   <div class="mt-4 p-4 border rounded bg-white/60 shadow">
     <h3 class="font-medium mb-3 flex items-center gap-2">🧪 GPU Profiling Snapshot</h3>
@@ -777,7 +738,7 @@
       {:else}<div class="text-xs text-gray-500">No profiling history yet.</div>{/if}
       <div class="mt-3 flex gap-2">
         <button class="px-2 py-1 text-xs rounded border bg-white hover:bg-gray-50" onclick={refreshEnginesWorkersProfiling}>Refresh</button>
-        <button class="px-2 py-1 text-xs rounded border bg-white hover:bg-gray-50" onclick={()=>{profilingHistory.length=0;}}>Clear Local</button>
+        <button class="px-2 py-1 text-xs rounded border bg-white hover:bg-gray-50" onclick={()=>{profilingHistory.length=0}}>Clear Local</button>
       </div>
     {:else}
       <div class="text-xs text-gray-500">No profiling snapshot yet (enable with build tag or wait for sampler).</div>
@@ -865,9 +826,7 @@
       <div class="text-sm text-gray-500">No signature data yet.</div>
     {/if}
   </div>
-
   <!-- Enhanced Performance Metrics Sections -->
-
   <!-- Cache Performance Analysis -->
   {#if $cacheMetrics}
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
@@ -911,7 +870,6 @@
         </div>
       </div>
     </div>
-
     <!-- Cache Type Distribution -->
     <div class="p-4 border rounded bg-white/50 shadow">
       <h3 class="font-medium mb-3">Cache Distribution by Type</h3>
@@ -934,7 +892,6 @@
     </div>
   </div>
   {/if}
-
   <!-- WebAssembly Performance -->
   {#if $wasmMetrics}
   <div class="p-4 border rounded bg-white/50 shadow mb-6">
@@ -944,7 +901,6 @@
         {$wasmMetrics.modules.length} Modules
       </span>
     </h2>
-
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <!-- WASM Modules -->
       <div>
@@ -964,7 +920,6 @@
           </div>
           {/each}
         </div>
-
         <!-- Optimization Metrics -->
         <div class="mt-3">
           <h3 class="text-sm font-medium mb-2">Optimizations</h3>
@@ -984,7 +939,6 @@
           </div>
         </div>
       </div>
-
       <!-- Execution Metrics -->
       <div>
         <h3 class="text-sm font-medium mb-2">Execution Performance</h3>
@@ -1006,7 +960,6 @@
             <span class="font-semibold text-red-600">{$wasmMetrics.executionTime.p99.toFixed(1)}ms</span>
           </div>
         </div>
-
         <div class="mt-3">
           <div class="text-[10px] mb-1">Execution Time (ms)</div>
           <PerfChart points={wasmExecutionSeries} color="#8b5cf6" />
@@ -1015,7 +968,6 @@
     </div>
   </div>
   {/if}
-
   <!-- Node.js Event Loop Monitoring -->
   {#if $nodeMetrics}
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
@@ -1026,7 +978,6 @@
           {$nodeMetrics.eventLoop.lag.toFixed(1)}ms lag
         </span>
       </h2>
-
       <div class="space-y-2 text-sm">
         <div class="flex justify-between">
           <span>Event Loop Lag:</span>
@@ -1051,13 +1002,11 @@
           <span class="font-semibold">{$nodeMetrics.handles.requests}</span>
         </div>
       </div>
-
       <div class="mt-3">
         <div class="text-[10px] mb-1">Event Loop Lag (ms)</div>
         <PerfChart points={eventLoopLagSeries} color="#ef4444" />
       </div>
     </div>
-
     <!-- Node.js Memory -->
     <div class="p-4 border rounded bg-white/50 shadow">
       <h3 class="font-medium mb-3">Memory Usage</h3>
@@ -1079,12 +1028,10 @@
           <span class="font-semibold text-orange-600">{formatBytes($nodeMetrics.memory.external)}</span>
         </div>
       </div>
-
       <div class="mt-3">
         <div class="text-[10px] mb-1">Heap Usage (MB)</div>
         <PerfChart points={memoryUsageSeries} color="#8b5cf6" />
       </div>
-
       <!-- Performance Counters -->
       <div class="mt-3">
         <h4 class="text-xs font-medium mb-2">Performance Counters</h4>
@@ -1106,7 +1053,6 @@
     </div>
   </div>
   {/if}
-
   <!-- Service Health Matrix -->
   {#if $serviceHealth.length > 0}
   <div class="p-4 border rounded bg-white/50 shadow mb-6">
@@ -1148,4 +1094,3 @@
     </div>
   </div>
   {/if}
-

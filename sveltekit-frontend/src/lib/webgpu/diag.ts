@@ -1,4 +1,4 @@
-// @ts-nocheck - Complex experimental service with external dependencies;
+// @ts-nocheck - Complex experimental service with external dependencies
 export type WebGPUDiagResult = {
   supported: boolean;
   adapterFound: boolean;
@@ -21,34 +21,30 @@ export type WebGPUDiagResult = {
   deviceLimits?: Record<string, number>;
   recommendedActions: string[];
 };
-
 async function tryRequestAdapter(powerPreference: 'high-performance' | 'low-power' | 'default') {
   // Some implementations don't accept 'default'; handle separately
   const opts = powerPreference === 'default' ? {} : { powerPreference };
   // @ts-ignore - types allow this in modern libs; safe to pass
   return navigator.gpu.requestAdapter(opts as any);
 }
-
 export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
   const warnings: string[] = [];
   const recommended: string[] = [];
   const tried: Array<'high-performance' | 'low-power' | 'default'> = [];
-
   if (typeof navigator === 'undefined') {
     return {
-      supported: false,
-      adapterFound: false,
-      deviceCreated: false,
+      supported: false
+      adapterFound: false
+      deviceCreated: false
       error: 'Navigator is undefined (SSR or non-browser context).',
       warnings,
-      powerPreferenceTried: tried,;
-      timings: Record<string, any>,
+      powerPreferenceTried: tried
+      timings: { [key: string]: any },
       recommendedActions: ['Run diagnostics in a browser context (client-side).']
     };
   }
-
   // Basic support check
-  // @ts-ignore;
+  // @ts-ignore
   if (!navigator.gpu) {
     recommended.push(
       'Update to latest Chrome/Edge or enable WebGPU support.',
@@ -56,24 +52,22 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
       'Update GPU drivers (NVIDIA/AMD/Intel).'
     );
     return {
-      supported: false,
-      adapterFound: false,
-      deviceCreated: false,
+      supported: false
+      adapterFound: false
+      deviceCreated: false
       error: 'WebGPU not supported by this browser.',
       warnings,
-      powerPreferenceTried: tried,;
-      timings: Record<string, any>,
+      powerPreferenceTried: tried
+      timings: { [key: string]: any },
       recommendedActions: recommended
     };
   }
-
   let adapter: GPUAdapter | null = null;
   let device: GPUDevice | null = null;
   let t0 = performance.now();
   let t1: number | undefined;
   let t2: number | undefined;
-
-  // Try high-performance → default → low-power;
+  // Try high-performance → default → low-power
   for (const pref of ['high-performance', 'default', 'low-power'] as const) {
     tried.push(pref);
     try {
@@ -82,24 +76,24 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
         t1 = performance.now();
         // Keep track of which pref yielded an adapter
         var usedPref: 'high-performance' | 'low-power' | 'default' = pref;
-        // Try creating device;
+        // Try creating device
         try {
           device = await adapter.requestDevice();
           t2 = performance.now();
           const result: WebGPUDiagResult = {
-            supported: true,
-            adapterFound: true,
-            deviceCreated: true,
+            supported: true
+            adapterFound: true
+            deviceCreated: true
             warnings,
-            powerPreferenceTried: tried,
-            powerPreferenceUsed: usedPref,
+            powerPreferenceTried: tried
+            powerPreferenceUsed: usedPref
             timings: {
               requestAdapterMs: t1 - t0,
               requestDeviceMs: t2 - t1
             },
             adapter: {
               label: (adapter as any).label ?? undefined,
-              features: Array.from(adapter.features ?? [] as any),;
+              features: Array.from(adapter.features ?? [] as any),
               limits: Object.fromEntries(Object.entries((adapter.limits as any) || {})),
               isFallbackAdapter: (adapter as any).isFallbackAdapter ?? undefined
             },
@@ -108,8 +102,7 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
             ),
             recommendedActions: recommended
           };
-
-          // Heuristics and suggestions;
+          // Heuristics and suggestions
           if ((adapter as any).isFallbackAdapter) {
             warnings.push('Browser reports a fallback adapter (likely no native GPU path).');
             recommended.push(
@@ -117,7 +110,6 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
               'For laptops: ensure Windows Power Mode is set to Best Performance.'
             );
           }
-
           return result;
         } catch (e: any) {
           warnings.push(`requestDevice() failed for ${pref}: ${e?.message || String(e)}`);
@@ -130,7 +122,6 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
       warnings.push(`requestAdapter(${pref}) threw: ${e?.message || String(e)}`);
     }
   }
-
   // If we reach here, no device acquired
   recommended.push(
     'Update GPU drivers (NVIDIA/AMD/Intel).',
@@ -138,23 +129,22 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
     'In Chrome/Edge settings, prefer discrete GPU for this app.',
     'If running in VM/remote or with multiple GPUs, ensure the high-performance adapter is allowed.'
   );
-
   return {
-    supported: true,
+    supported: true
     adapterFound: Boolean(adapter),
-    deviceCreated: false,
+    deviceCreated: false
     error: 'Failed to create a WebGPU device after trying multiple power preferences.',
     warnings,
-    powerPreferenceTried: tried,
-    timings: t1 ? { requestAdapterMs: t1 - t0 } : Record<string, any>,;
+    powerPreferenceTried: tried
+    timings: t1 ? { requestAdapterMs: t1 - t0 } : { [key: string]: any },
     adapter: adapter;
       ? {
           label: (adapter as any).label ?? undefined,
-          features: Array.from(adapter.features ?? [] as any),;
+          features: Array.from(adapter.features ?? [] as any),
           limits: Object.fromEntries(Object.entries((adapter.limits as any) || {})),
           isFallbackAdapter: (adapter as any).isFallbackAdapter ?? undefined
         }
-      : undefined,
+      : undefined
     recommendedActions: recommended
   };
 }

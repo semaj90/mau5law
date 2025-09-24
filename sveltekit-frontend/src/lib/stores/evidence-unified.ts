@@ -1,13 +1,10 @@
 /// <reference types="vite/client" />
 import { writable, derived, get } from "svelte/store";
-
 /**
  * FIXED Evidence Unified Store - Phase 2 Integration
  * Addresses critical and compatibility issues
  */
-
 import { browser } from "$app/environment";
-
 // Safe import with fallback
 let selectedCase: any;
 try {
@@ -17,7 +14,6 @@ try {
   console.warn("Cases store not found, using fallback");
   selectedCase = writable(null);
 }
-
 export interface Evidence {
   id: string;
   caseId: string;
@@ -28,7 +24,7 @@ export interface Evidence {
   x: number;
   y: number;
   fileUrl?: string;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
   tags?: string[];
   embedding?: number[];
   location?: {
@@ -52,33 +48,28 @@ export interface Evidence {
     relatedEvidence?: string[];
   };
 }
-
 export interface EvidenceStoreState {
   evidence: Evidence[];
   isLoading: boolean;
   error: string | null;
   isConnected: boolean;
 }
-
 class UnifiedEvidenceStore {
   public store = writable<EvidenceStoreState>({
     evidence: [],
-    isLoading: false,;
-    error: null,
+    isLoading: false
+    error: null
     isConnected: false
   });
-
   private websocket: WebSocket | null = null;
   private eventSource: EventSource | null = null;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
-
   constructor() {
     if (browser) {
       this.initializeConnection();
       this.loadFromLocalStorage();
-
-      // Safe subscription to selectedCase;
+      // Safe subscription to selectedCase
       if (selectedCase?.subscribe) {
         selectedCase.subscribe((caseId: string | null) => {
           this.fetchEvidence(caseId);
@@ -86,38 +77,31 @@ class UnifiedEvidenceStore {
       }
     }
   }
-
   private async initializeConnection() {
     if (!browser) return;
-
     try {
       await this.connectWebSocket();
     } catch (error: any) {
       console.warn("WebSocket failed, using polling fallback");
     }
   }
-
   private async connectWebSocket(): Promise<void> {
     if (!browser) return;
-
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
     const hostname = window.location.hostname;
     const port =
       import.meta.env.NODE_ENV === "production" ? window.location.port: "3030";
-    const wsUrl = `${protocol}//${hostname}:${port}`;
-
+    const wsUrl = `${protocol}//${hostname}:${port}`
     try {
       this.websocket = new WebSocket(wsUrl);
-
       this.websocket.onopen = () => {
         this.store.update((s) => ({ ...s, isConnected: true });
         this.websocket?.send(JSON.stringify({
-            type: "subscribe",;
+            type: "subscribe",
             channels: ["evidence_update"]
           }),
         );
       };
-
       this.websocket.onmessage = (event: any) => {
         try {
           const message = JSON.parse(event.data);
@@ -126,7 +110,6 @@ class UnifiedEvidenceStore {
           console.error("WebSocket message error:", error);
         }
       };
-
       this.websocket.onclose = () => {
         this.store.update((s) => ({ ...s, isConnected: false });
         if (this.reconnectAttempts < this.maxReconnectAttempts) {
@@ -138,7 +121,6 @@ class UnifiedEvidenceStore {
           );
         }
       };
-
       this.websocket.onerror = (error) => {
         console.error("WebSocket connection error:", error);
       };
@@ -147,27 +129,25 @@ class UnifiedEvidenceStore {
       throw error;
     }
   }
-
   private handleRealtimeUpdate(message: any) {
     if (message.channel === "evidence_update") {
       const { type, data } = message.data;
-
       switch (type) {
-        case "EVIDENCE_CREATED":;
+        case 'EVIDENCE_CREATED':
           this.store.update((s) => ({
             ...s,
             evidence: [...s.evidence, data]
           });
           break;
-        case "EVIDENCE_UPDATED":;
+        case 'EVIDENCE_UPDATED':
           this.store.update((s) => ({
             ...s,
             evidence: s.evidence.map((e: any) =>
-              e.id === (data as { id?: any; lastUpdated?: any; evidence?: any }).id ? { ...e, ...data } : e,
+              e.id === (data as { id?: any; lastUpdated?: any; evidence?: any }).id ? { ...e, ...data } : e
             )
           });
           break;
-        case "EVIDENCE_DELETED":;
+        case 'EVIDENCE_DELETED':
           this.store.update((s) => ({
             ...s,
             evidence: s.evidence.filter((e: any) => e.id !== (data as { id?: any; lastUpdated?: any; evidence?: any }).id)
@@ -177,38 +157,33 @@ class UnifiedEvidenceStore {
       this.saveToLocalStorage();
     }
   }
-
   public async fetchEvidence(caseId: string | null) {
     if (!caseId) {
       this.store.update((s) => ({ ...s, evidence: [], error: null });
       return;
     }
-
     this.store.update((s) => ({ ...s, isLoading: true, error: null });
-
     try {
       const response = await fetch(`/api/evidence/${caseId}`);
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`Failed to fetch evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
-
       const evidenceList: Evidence[] = await (response as { ok?: any; statusText?: any; json?: any }).json();
       this.store.update((s) => ({
         ...s,
-        evidence: evidenceList,
+        evidence: evidenceList
         isLoading: false
       });
       this.saveToLocalStorage();
     } catch (error: any) {
       this.store.update((s) => ({
         ...s,
-        isLoading: false,
+        isLoading: false
         error: error.message
       });
       console.error("Failed to fetch evidence:", error);
     }
   }
-
   public async addEvidence(
     newEvidenceData: Omit<Evidence, "id" | "x" | "y" | "caseId">,
   ) {
@@ -216,20 +191,16 @@ class UnifiedEvidenceStore {
     if (!currentCaseId) {
       throw new Error("No case selected");
     }
-
     this.store.update((s) => ({ ...s, isLoading: true });
-
     try {
       const response = await fetch("/api/evidence", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },;
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...newEvidenceData, caseId: currentCaseId })
       });
-
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`Failed to add evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
-
       const createdEvidence: Evidence = await (response as { ok?: any; statusText?: any; json?: any }).json();
       this.store.update((s) => ({
         ...s,
@@ -240,13 +211,12 @@ class UnifiedEvidenceStore {
     } catch (error: any) {
       this.store.update((s) => ({
         ...s,
-        isLoading: false,
+        isLoading: false
         error: error.message
       });
       throw error;
     }
   }
-
   public async updateEvidence(evidenceId: string, updates: Partial<Evidence>) {
     let originalEvidence: Evidence | undefined;
     this.store.update((s) => {
@@ -254,18 +224,16 @@ class UnifiedEvidenceStore {
       return {
         ...s,
         evidence: s.evidence.map((e: any) =>
-          e.id === evidenceId ? { ...e, ...updates } : e,
+          e.id === evidenceId ? { ...e, ...updates } : e
         )
       };
     });
-
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },;
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updates)
       });
-
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`Failed to update evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
@@ -275,15 +243,14 @@ class UnifiedEvidenceStore {
         this.store.update((s) => ({
           ...s,
           evidence: s.evidence.map((e: any) =>
-            e.id === evidenceId ? originalEvidence! : e,
-          ),;
+            e.id === evidenceId ? originalEvidence! : e
+          ),
           error: error.message
         });
       }
       throw error;
     }
   }
-
   public async deleteEvidence(evidenceId: string) {
     let originalEvidence: Evidence | undefined;
     this.store.update((s) => {
@@ -293,12 +260,10 @@ class UnifiedEvidenceStore {
         evidence: s.evidence.filter((e: any) => e.id !== evidenceId)
       };
     });
-
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
         method: "DELETE"
       });
-
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`Failed to delete evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
@@ -307,14 +272,13 @@ class UnifiedEvidenceStore {
       if (originalEvidence) {
         this.store.update((s) => ({
           ...s,
-          evidence: [...s.evidence, originalEvidence!],;
+          evidence: [...s.evidence, originalEvidence!],
           error: error.message
         });
       }
       throw error;
     }
   }
-
   private saveToLocalStorage() {
     if (!browser) return;
     try {
@@ -330,7 +294,6 @@ class UnifiedEvidenceStore {
       console.error("Failed to save to localStorage:", error);
     }
   }
-
   private loadFromLocalStorage() {
     if (!browser) return;
     try {
@@ -340,12 +303,11 @@ class UnifiedEvidenceStore {
         const lastUpdated = new Date((data as { id?: any; lastUpdated?: any; evidence?: any }).lastUpdated);
         const hoursDiff =
           (Date.now() - lastUpdated.getTime()) / (1000 * 60 * 60);
-
         if (hoursDiff < 24) {
           this.store.set({
             evidence: (data as { id?: any; lastUpdated?: any; evidence?: any }).evidence || [],
-            isLoading: false,
-            error: null,
+            isLoading: false
+            error: null
             isConnected: false
           });
         }
@@ -354,11 +316,9 @@ class UnifiedEvidenceStore {
       console.error("Failed to load from localStorage:", error);
     }
   }
-
   public clearError() {
     this.store.update((s) => ({ ...s, error: null });
   }
-
   public disconnect() {
     if (this.websocket) {
       this.websocket.close();
@@ -370,18 +330,14 @@ class UnifiedEvidenceStore {
     }
     this.store.update((s) => ({ ...s, isConnected: false });
   }
-
   public subscribe = this.store.subscribe;
 }
-
 export const evidenceStore = new UnifiedEvidenceStore();
-;
 export const evidenceById = derived(evidenceStore, ($store) => {
   const map = new Map<string, Evidence>();
   $store.evidence.forEach((item) => map.set((item as { id?: any; caseId?: any }).id, item);
   return map;
 });
-
 export const evidenceByCase = derived(evidenceStore, ($store) => {
   const map = new Map<string, Evidence[]>();
   $store.evidence.forEach((item) => {
@@ -392,6 +348,5 @@ export const evidenceByCase = derived(evidenceStore, ($store) => {
   });
   return map;
 });
-
 export const evidence = evidenceStore;
 export default evidenceStore;

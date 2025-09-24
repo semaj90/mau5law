@@ -3,21 +3,18 @@
  * Orchestrates document processing: upload → chunk → embed → store → cache
  * Integrates with RabbitMQ, LokiJS, and Drizzle ORM
  */
-
 import { setup, assign, createActor, fromPromise, sendTo } from 'xstate';
 import { getEmbeddingViaGate } from '$lib/server/embedding-gateway.js';
 import { cache } from '$lib/server/cache/redis.js';
 }
-
 export interface DocumentChunk {
   id: string;
   documentId: string;
   chunkIndex: number;
   text: string;
   embedding?: number[];
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
 }
-
 export interface IngestionJob {
   id: string;
   documentId: string;
@@ -46,21 +43,17 @@ export interface IngestionJob {
     processingTime: number;
     similarDocuments?: Array<any>;
 }
-
 export interface IngestionContext {
   // Current job
   currentJob: IngestionJob | null;
-  
   // Job queue management
   jobQueue: IngestionJob[];
   completedJobs: IngestionJob[];
   failedJobs: IngestionJob[];
-  
   // Processing state
   currentChunk: number;
   processedChunks: DocumentChunk[];
-  
-  // Performance metrics;
+  // Performance metrics
   stats: {
     totalJobs: number;
     completedJobs: number;
@@ -69,16 +62,13 @@ export interface IngestionContext {
     totalEmbeddings: number;
     cacheHitRate: number;
   };
-  
   // Worker configuration
   concurrency: number;
   batchSize: number;
-  
   // Error handling
   error: string | null;
   isRetrying: boolean;
 }
-
 export type IngestionEvent =
   | { type: 'QUEUE_JOB'; job: IngestionJob }
   | { type: 'PROCESS_NEXT_JOB' }
@@ -93,9 +83,8 @@ export type IngestionEvent =
   | { type: 'RESUME_PROCESSING' }
   | { type: 'SET_CONCURRENCY'; concurrency: number }
   | { type: 'RESET_STATS' };
-
 const initialContext: IngestionContext = {
-  currentJob: null,
+  currentJob: null
   jobQueue: [],
   completedJobs: [],
   failedJobs: [],
@@ -110,19 +99,18 @@ const initialContext: IngestionContext = {
     cacheHitRate: 0
   },
   concurrency: 3,
-  batchSize: 10,;
-  error: null,
+  batchSize: 10,
+  error: null
   isRetrying: false
 };
-
 export const ingestionWorkflowMachine = setup({
-  types: Record<string, any> as {;
+  types: { [key: string]: any } as {
     context: IngestionContext;
     events: IngestionEvent;
   },
   actions: {
-    // Job queue management;
-    queueJob: assign({
+    // Job queue management
+    queueJob: assign({,
       jobQueue: ({ context, event }) => {
         const job = (event as any).job;
         job.state = 'queued';
@@ -133,33 +121,30 @@ export const ingestionWorkflowMachine = setup({
         totalJobs: context.stats.totalJobs + 1
       })
     }),
-    
-    setCurrentJob: assign({
+    setCurrentJob: assign({,
       currentJob: ({ context }) => context.jobQueue[0] || null,
       jobQueue: ({ context }) => context.jobQueue.slice(1),
       currentChunk: () => 0,
       processedChunks: () => []
     }),
-    
-    updateJobProgress: assign({
+    updateJobProgress: assign({,
       currentJob: ({ context, event }) => {
         if (!context.currentJob) return null;
         return {
           ...context.currentJob,
-          progress: (event as any).progress || context.currentJob.progress,;
+          progress: (event as any).progress || context.currentJob.progress,
           state: (event as any).state || context.currentJob.state
         };
       }
     }),
-    
-    completeJob: assign({
+    completeJob: assign({,
       currentJob: ({ context, event }) => {
         if (!context.currentJob) return null;
         return {
           ...context.currentJob,
           state: 'completed' as const,
           progress: 100,
-          completedAt: new Date().toISOString(),;
+          completedAt: new Date().toISOString(),
           results: (event as any).results
         };
       },
@@ -172,13 +157,12 @@ export const ingestionWorkflowMachine = setup({
         totalEmbeddings: context.stats.totalEmbeddings + (context.processedChunks.length || 0)
       })
     }),
-    
-    failJob: assign({
+    failJob: assign({,
       currentJob: ({ context, event }) => {
         if (!context.currentJob) return null;
         return {
           ...context.currentJob,
-          state: 'failed' as const,;
+          state: 'failed' as const,
           error: (event as any).error || 'Processing failed',
           completedAt: new Date().toISOString()
         };
@@ -192,42 +176,34 @@ export const ingestionWorkflowMachine = setup({
       }),
       error: ({ event }) => (event as any).error || 'Job failed'
     }),
-    
-    addProcessedChunk: assign({
+    addProcessedChunk: assign({,
       processedChunks: ({ context, event }) => [...context.processedChunks, (event as any).chunk],
       currentChunk: ({ context }) => context.currentChunk + 1
     }),
-    
-    updateStats: assign({
+    updateStats: assign({,
       stats: ({ context, event }) => ({
         ...context.stats,
         ...(event as any).stats
       })
     }),
-    
-    setConcurrency: assign({
+    setConcurrency: assign({,
       concurrency: ({ event }) => (event as any).concurrency
     }),
-    
-    clearError: assign({
+    clearError: assign({,
       error: () => null,
       isRetrying: () => false
     }),
-    
-    setRetrying: assign({
+    setRetrying: assign({,
       isRetrying: () => true
     })
   },
-  ;
   actors: {
-    // Main job processing orchestrator;
+    // Main job processing orchestrator
     processJob: fromPromise(async ({ input }: { input: any }) => {
       const { job } = input;
       console.log(`🚀 Starting job processing: ${job.id}`);
-      
       const startTime = Date.now();
       const chunks: DocumentChunk[] = [];
-      
       // Process chunks in batches for better performance
       const batchSize = input.batchSize || 5;
       for (let i = 0; i < job.chunks.length; i += batchSize) {
@@ -239,55 +215,48 @@ export const ingestionWorkflowMachine = setup({
             if (cached) {
               console.log(`📋 Cache hit for chunk ${chunkId}`);
               return {
-                id: chunkId,
+                id: chunkId
                 documentId: job.documentId,
                 chunkIndex: i + index,
                 text,
-                embedding: cached,;
+                embedding: cached
                 metadata: {
                   ...job.metadata,
-                  fromCache: true,
+                  fromCache: true
                   chunkId
                 }
               };
             }
-            
             // Generate embedding
             console.log(`🔄 Generating embedding for chunk ${chunkId}`);
             const result = await getEmbeddingViaGate(fetch, text, {
               model: process.env.EMBEDDING_MODEL
             });
-            
             // Cache the embedding
             await cache.set(`embedding:${chunkId}`, (result as { embedding?: any; backend?: any; inserted?: any; errors?: any; results?: any }).embedding, 24 * 60 * 60); // 24h TTL
-            
             return {
-              id: chunkId,
+              id: chunkId
               documentId: job.documentId,
               chunkIndex: i + index,
-              text,;
+              text,
               embedding: (result as { embedding?: any; backend?: any; inserted?: any; errors?: any; results?: any }).embedding,
               metadata: {
-                ...job.metadata,;
+                ...job.metadata,
                 backend: (result as { embedding?: any; backend?: any; inserted?: any; errors?: any; results?: any }).backend,
                 model: result?.model || "unknown" // @ts-ignore - Model property access,
-                chunkId,;
+                chunkId,
                 confidence: Math.random() * 0.3 + 0.7 // Mock confidence score
               }
             };
           })
         );
-        
         chunks.push(...batchResults);
-        
         // Update progress
         const progress = Math.round(((i + batch.length) / job.chunks.length) * 100);
         console.log(`📊 Job ${job.id} progress: ${progress}%`);
       }
-      
       const endTime = Date.now();
       const processingTime = endTime - startTime;
-      
       return {
         chunks,
         processingTime,
@@ -296,38 +265,32 @@ export const ingestionWorkflowMachine = setup({
         averageConfidence: chunks.reduce((sum, c) => sum + (c.metadata.confidence || 0), 0) / chunks.length
       };
     }),
-    
-    // Store processed chunks in database using Drizzle ORM;
+    // Store processed chunks in database using Drizzle ORM
     storeChunks: fromPromise(async ({ input }: { input: any }) => {
       const { chunks, jobId } = input;
-      
       console.log(`💾 Storing ${chunks.length} chunks for job ${jobId}`);
-      
       try {
-        // This would use Drizzle ORM to store in PostgreSQL;
+        // This would use Drizzle ORM to store in PostgreSQL
         const response = await fetch('/api/documents/chunks', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
-            chunks: chunks.map((chunk: DocumentChunk) => ({
+          body: JSON.stringify({,
+            chunks: chunks.map((chunk: DocumentChunk) => ({,
               document_id: chunk.documentId,
               chunk_index: chunk.chunkIndex,
               chunk_text: chunk.text,
-              embedding: chunk.embedding,;
+              embedding: chunk.embedding,
               metadata: chunk.metadata
             })
           })
         });
-        
         if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
           throw new Error(`Storage failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
         }
-        
         const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
         console.log(`✅ Stored ${(result as { embedding?: any; backend?: any; inserted?: any; errors?: any; results?: any }).inserted} chunks successfully`);
-        
         return {
           stored: (result as { embedding?: any; backend?: any; inserted?: any; errors?: any; results?: any }).inserted,
           errors: (result as { embedding?: any; backend?: any; inserted?: any; errors?: any; results?: any }).errors || []
@@ -337,11 +300,9 @@ export const ingestionWorkflowMachine = setup({
         throw error;
       }
     }),
-    
-    // Send job to RabbitMQ for reliable processing;
+    // Send job to RabbitMQ for reliable processing
     publishToQueue: fromPromise(async ({ input }: { input: any }) => {
       const { job } = input;
-      
       try {
         // Try RabbitMQ first
         const { publishToQueue } = await import('$lib/server/rabbitmq.js');
@@ -349,50 +310,41 @@ export const ingestionWorkflowMachine = setup({
           ...job,
           queuedAt: new Date().toISOString()
         });
-        
         console.log(`📤 Published job ${job.id} to RabbitMQ`);
         return { backend: 'rabbitmq', jobId: job.id };
       } catch (error) {
         console.warn('RabbitMQ unavailable, using Redis fallback:', error);
-        
-        // Fallback to Redis;
+        // Fallback to Redis
         await cache.rpush('ingestion:jobs', JSON.stringify({
           ...job,
           queuedAt: new Date().toISOString()
         });
-        
         console.log(`📤 Published job ${job.id} to Redis`);
         return { backend: 'redis', jobId: job.id };
       }
     }),
-    
-    // Find similar documents for the processed job;
+    // Find similar documents for the processed job
     findSimilarDocuments: fromPromise(async ({ input }: { input: any }) => {
       const { chunks } = input;
-      
       if (!chunks.length) return [];
-      
       // Use the first chunk's embedding for similarity search
       const queryEmbedding = chunks[0].embedding;
       if (!queryEmbedding) return [];
-      
       try {
         const response = await fetch('/api/ai/vector-search', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
-            embedding: queryEmbedding,
-            limit: 5,;
+          body: JSON.stringify({,
+            embedding: queryEmbedding
+            limit: 5,
             threshold: 0.7
           })
         });
-        
         if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
           throw new Error(`Similarity search failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
         }
-        
         const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
         return (result as { embedding?: any; backend?: any; inserted?: any; errors?: any; results?: any }).results || [];
       } catch (error) {
@@ -401,7 +353,6 @@ export const ingestionWorkflowMachine = setup({
       }
     })
   },
-  
   guards: {
     hasJobsInQueue: ({ context }) => context.jobQueue.length > 0,
     canRetry: ({ context }) => {
@@ -416,8 +367,7 @@ export const ingestionWorkflowMachine = setup({
 }).createMachine({
   id: 'ingestionWorkflow',
   initial: 'idle',
-  context: initialContext,
-  
+  context: initialContext
   states: {
     idle: {
       on: {
@@ -445,8 +395,7 @@ export const ingestionWorkflowMachine = setup({
         }
       }
     },
-    
-    checkingQueue: {;
+    checkingQueue: {
       always: [;
         {
           target: 'processingJob',
@@ -458,17 +407,15 @@ export const ingestionWorkflowMachine = setup({
         }
       ]
     },
-    
     processingJob: {
       initial: 'publishing',
-      entry: assign({
+      entry: assign({,
         currentJob: ({ context }) => context.currentJob ? {
           ...context.currentJob,
           state: 'processing' as const,
           startedAt: new Date().toISOString()
         } : null
       }),
-      
       states: {
         publishing: {
           invoke: {
@@ -476,7 +423,7 @@ export const ingestionWorkflowMachine = setup({
             input: ({ context }) => ({ job: context.currentJob }),
             onDone: {
               target: 'chunking',
-              actions: assign({
+              actions: assign({,
                 currentJob: ({ context, event }) => context.currentJob ? {
                   ...context.currentJob,
                   metadata: {
@@ -488,7 +435,7 @@ export const ingestionWorkflowMachine = setup({
             },
             onError: {
               target: 'processing',
-              actions: assign({
+              actions: assign({,
                 currentJob: ({ context }) => context.currentJob ? {
                   ...context.currentJob,
                   metadata: {
@@ -500,17 +447,16 @@ export const ingestionWorkflowMachine = setup({
             }
           }
         },
-        
         processing: {
           invoke: {
             src: 'processJob',
-            input: ({ context }) => ({ 
+            input: ({ context }) => ({
               job: context.currentJob,
               batchSize: context.batchSize
             }),
             onDone: {
               target: 'storing',
-              actions: assign({
+              actions: assign({,
                 processedChunks: ({ event }) => (event as any).output.chunks,
                 currentJob: ({ context, event }) => context.currentJob ? {
                   ...context.currentJob,
@@ -531,12 +477,11 @@ export const ingestionWorkflowMachine = setup({
             }
           }
         },
-        
         chunking: {
           after: {
             100: 'processing'
           },
-          entry: assign({
+          entry: assign({,
             currentJob: ({ context }) => context.currentJob ? {
               ...context.currentJob,
               state: 'chunking' as const,
@@ -544,17 +489,16 @@ export const ingestionWorkflowMachine = setup({
             } : null
           })
         },
-        
         storing: {
           invoke: {
             src: 'storeChunks',
-            input: ({ context }) => ({ 
+            input: ({ context }) => ({
               chunks: context.processedChunks,
               jobId: context.currentJob?.id
             }),
             onDone: {
               target: 'findingSimilar',
-              actions: assign({
+              actions: assign({,
                 currentJob: ({ context }) => context.currentJob ? {
                   ...context.currentJob,
                   state: 'caching' as const,
@@ -568,14 +512,13 @@ export const ingestionWorkflowMachine = setup({
             }
           }
         },
-        
         findingSimilar: {
           invoke: {
             src: 'findSimilarDocuments',
             input: ({ context }) => ({ chunks: context.processedChunks }),
             onDone: {
               target: 'completed',
-              actions: assign({
+              actions: assign({,
                 currentJob: ({ context, event }) => context.currentJob ? {
                   ...context.currentJob,
                   results: {
@@ -590,31 +533,28 @@ export const ingestionWorkflowMachine = setup({
             }
           }
         },
-        
         completed: {
           entry: 'completeJob',
           always: {
             target: '#ingestionWorkflow.checkingQueue',
-            actions: assign({
+            actions: assign({,
               currentJob: () => null
             })
           }
         }
       },
-      
       on: {
         CANCEL_JOB: {
           target: 'idle',
-          actions: assign({
+          actions: assign({,
             currentJob: () => null,
             jobQueue: ({ context, event }) => context.jobQueue.filter(item => item.jobId)
           })
         }
       }
     },
-    
     retrying: {
-      entry: 'setRetrying',;
+      entry: 'setRetrying',
       always: [;
         {
           target: 'processingJob',
@@ -639,7 +579,6 @@ export const ingestionWorkflowMachine = setup({
         }
       ]
     },
-    
     paused: {
       on: {
         RESUME_PROCESSING: 'checkingQueue',
@@ -649,33 +588,27 @@ export const ingestionWorkflowMachine = setup({
       }
     }
   },
-  
   on: {
-    PAUSE_PROCESSING: {;
+    PAUSE_PROCESSING: {
       target: 'paused'
     }
   }
 });
-
 // Export actor
 export const ingestionWorkflowActor = createActor(ingestionWorkflowMachine);
-
-// Helper function to create and start the workflow;
+// Helper function to create and start the workflow
 export function startIngestionWorkflow(options?: { concurrency?: number; batchSize?: number }) {
   const actor = createActor(ingestionWorkflowMachine);
-  
   if (options?.concurrency) {
     actor.send({ type: 'SET_CONCURRENCY', concurrency: options.concurrency });
   }
-  
   actor.start();
   return actor;
 }
-
 // Utility functions
 export function createIngestionJob(
-  documentId: string,
-  chunks: string[],;
+  documentId: string
+  chunks: string[]
   metadata: Partial<IngestionJob['metadata']>;
 ): IngestionJob {
   return {
@@ -692,11 +625,10 @@ export function createIngestionJob(
       confidenceThreshold: metadata.confidenceThreshold || 0.7,
       ...metadata
     },
-    state: 'queued',;
+    state: 'queued',
     progress: 0,
     retryCount: 0,
     maxRetries: 3
   };
 }
-
 export default ingestionWorkflowMachine;

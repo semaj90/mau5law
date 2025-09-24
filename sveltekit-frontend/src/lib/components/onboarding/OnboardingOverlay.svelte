@@ -1,12 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // @ts-nocheck
   import { onMount } from 'svelte';
-
   import { browser } from "$app/environment";
   import Button from '$lib/components/ui/enhanced-bits';
   import {
@@ -21,8 +19,6 @@ https://svelte.dev/e/js_parse_error -->
   Target,
   X,
   } from 'lucide-svelte';
-
-
   interface OnboardingStep {
   id: string;
   title: string;
@@ -37,7 +33,6 @@ https://svelte.dev/e/js_parse_error -->
   image?: string;
   video?: string;
   }
-
   interface Props {
   open?: boolean;
   currentStep?: number;
@@ -49,7 +44,6 @@ https://svelte.dev/e/js_parse_error -->
     onclose?: (event?: unknown) => void;
   oncomplete?: (event?: unknown) => void;
   }
-
   // Props interface
   interface Props {
   open?: boolean;
@@ -62,7 +56,6 @@ https://svelte.dev/e/js_parse_error -->
   onclose?: ((event?: unknown) => void) | undefined;
   oncomplete?: ((event?: unknown) => void) | undefined;
   }
-
   let {
   open = false,
   currentStep = 0,
@@ -78,15 +71,12 @@ https://svelte.dev/e/js_parse_error -->
   let autoProgressTimer: number | undefinedlet isPlaying>(null)(autoProgress);
   let targetElement = $state<Element | null >(null);
   let highlightBox = $state(null);
-
   // Reactive effect replacement for $effect
   // TODO: Convert to $derived: if (open && steps.length > 0) {
   updateTargetHighlight()
   }
-
   // Reactive derived value for current step data
   // TODO: Convert to $derived: currentStepData = steps[currentStep] || null
-
   $effect(() => {
     if (browser) {
       document.addEventListener("keydown", handleKeydown);
@@ -102,10 +92,8 @@ https://svelte.dev/e/js_parse_error -->
   }
     };
   });
-
   function handleKeydown(event: KeyboardEvent) {
     if (!open) return;
-
     switch (event.key) {
       case "Escape":
         closeOnboarding();
@@ -131,16 +119,15 @@ https://svelte.dev/e/js_parse_error -->
       const rect = targetElement.getBoundingClientRect();
       highlightBox = {
         top: rect.top + window.scrollY,
-        left: rect.left + window.scrollX,;
-        width: rect.width,;
-        height: rect.height,;
+        left: rect.left + window.scrollX,
+        width: rect.width,
+        height: rect.height,
       };
-
       // Scroll element into view
       targetElement.scrollIntoView({
-        behavior: "smooth",;
-        block: "center",;
-        inline: "center",;
+        behavior: "smooth",
+        block: "center",
+        inline: "center",
       });
     } else {
       highlightBox = null;
@@ -179,7 +166,6 @@ https://svelte.dev/e/js_parse_error -->
   }}
   function startAutoProgress() {
     if (!isPlaying) return;
-
     autoProgressTimer = setTimeout(() => {
       if (isPlaying && currentStep < steps.length - 1) {
         nextStep();
@@ -210,44 +196,41 @@ https://svelte.dev/e/js_parse_error -->
   }
   function getTooltipPosition() {
     if (!highlightBox || !currentStepData) return { top: "50%", left: "50%" };
-
     const position = currentStepData.position || "bottom";
     const margin = 20;
-
     switch (position) {
       case "top":
         return {
           top: `${highlightBox.top - margin}px`,
-          left: `${highlightBox.left + highlightBox.width / 2}px`,;
-          transform: "translate(-50%, -100%)",;
+          left: `${highlightBox.left + highlightBox.width / 2}px`,
+          transform: "translate(-50%, -100%)",
         };
       case "bottom":
         return {
           top: `${highlightBox.top + highlightBox.height + margin}px`,
-          left: `${highlightBox.left + highlightBox.width / 2}px`,;
-          transform: "translate(-50%, 0)",;
+          left: `${highlightBox.left + highlightBox.width / 2}px`,
+          transform: "translate(-50%, 0)",
         };
       case "left":
         return {
           top: `${highlightBox.top + highlightBox.height / 2}px`,
-          left: `${highlightBox.left - margin}px`,;
-          transform: "translate(-100%, -50%)",;
+          left: `${highlightBox.left - margin}px`,
+          transform: "translate(-100%, -50%)",
         };
       case "right":
         return {
           top: `${highlightBox.top + highlightBox.height / 2}px`,
-          left: `${highlightBox.left + highlightBox.width + margin}px`,;
-          transform: "translate(0, -50%)",;
+          left: `${highlightBox.left + highlightBox.width + margin}px`,
+          transform: "translate(0, -50%)",
         };
       default:
         return {
-          top: "50%",;
-          left: "50%",;
-          transform: "translate(-50%, -50%)",;
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
         };
   }}
 </script>
-
 {#if open && currentStepData}
   <!-- Overlay backdrop -->
   <div
@@ -270,7 +253,6 @@ https://svelte.dev/e/js_parse_error -->
         }
       }}
     ></div>
-
     <!-- Highlight box for target element -->
     {#if highlightBox}
       <div
@@ -283,7 +265,6 @@ https://svelte.dev/e/js_parse_error -->
         "
       ></div>
     {/if}
-
     <!-- Tooltip/Content card -->
     <div
       class="w-4 h-4"
@@ -299,10 +280,9 @@ https://svelte.dev/e/js_parse_error -->
           <span class="w-4 h-4">{currentStep + 1}</span>
           <span class="w-4 h-4">of {steps.length}</span>
         </div>
-
         <div class="w-4 h-4">
           {#if autoProgress}
-            <Button 
+            <Button
               class="bits-btn w-4 h-4"
               variant="ghost"
               size="sm"
@@ -319,7 +299,6 @@ toggleAutoProgress()}
               {/if}
 </Button>
           {/if}
-
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
@@ -331,7 +310,6 @@ closeOnboarding()}
 </Button>
         </div>
       </div>
-
       <!-- Content -->
       <div class="w-4 h-4">
         <div class="w-4 h-4">
@@ -345,27 +323,22 @@ closeOnboarding()}
             <Lightbulb class="w-4 h-4" />
           {/if}
         </div>
-
         <h3 id="onboarding-title" class="w-4 h-4">
           {currentStepData.title}
         </h3>
-
         <p id="onboarding-description" class="w-4 h-4">
           {currentStepData.description}
         </p>
-
         {#if currentStepData.content}
           <div class="w-4 h-4">
             {@html currentStepData.content}
           </div>
         {/if}
-
         {#if currentStepData.image}
           <div class="w-4 h-4">
             <img src={currentStepData.image} alt={currentStepData.title} />
           </div>
         {/if}
-
         {#if currentStepData.video}
           <div class="w-4 h-4">
             <video controls src={currentStepData.video}>
@@ -375,7 +348,6 @@ closeOnboarding()}
           </div>
         {/if}
       </div>
-
       <!-- Progress bar -->
       <div class="w-4 h-4">
         <div class="w-4 h-4">
@@ -388,7 +360,6 @@ closeOnboarding()}
           {currentStep + 1} / {steps.length}
         </span>
       </div>
-
       <!-- Navigation -->
       <div class="w-4 h-4">
         <div class="w-4 h-4">
@@ -400,7 +371,6 @@ skipOnboarding()}>
 </Button>
           {/if}
         </div>
-
         <div class="w-4 h-4">
           {#if showMinimap && steps.length > 1}
             <div class="w-4 h-4">
@@ -422,7 +392,6 @@ skipOnboarding()}>
             </div>
           {/if}
         </div>
-
         <div class="w-4 h-4">
           <Button class="bits-btn"
             variant="ghost"
@@ -434,7 +403,6 @@ previousStep()}
             <ArrowLeft class="w-4 h-4" />
             Back
 </Button>
-
           <Button class="bits-btn" onclick={() =>
 nextStep()} size="sm">
             {#if currentStep === steps.length - 1}
@@ -450,11 +418,11 @@ nextStep()} size="sm">
     </div>
   </div>
 {/if}
-
 <style>
   /* @unocss-include */
-  .onboarding-overlay {;
+  .onboarding-overlay {
     position: fixed;
+d;
     top: 0;
     left: 0;
     right: 0;
@@ -519,7 +487,7 @@ nextStep()} size="sm">
 }}
   .tooltip-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 1rem 1rem 0;
 }
@@ -613,7 +581,7 @@ nextStep()} size="sm">
 }
   .tooltip-navigation {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 1rem;
     border-top: 1px solid #e5e7eb;
@@ -646,9 +614,9 @@ nextStep()} size="sm">
     font-weight: 500;
     color: #6b7280;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2;
 }
-  .step-dot:hover {
+  .step-dot: hover {
     border-color: #3b82f6;
     background: #eff6ff;
 }
@@ -689,7 +657,7 @@ nextStep()} size="sm">
       border-color: #4b5563;
       color: #d1d5db;
 }
-    .step-dot:hover {
+    .step-dot: hover {
       border-color: #3b82f6;
       background: #1e3a8a;
 }}
@@ -707,10 +675,9 @@ nextStep()} size="sm">
     .nav-left,
     .nav-right {
       width: 100%;
-      justify-content: space-between;
+      justify-content: space-betwee;
 }
     .nav-center {
       order: -1;
 }}
 </style>
-

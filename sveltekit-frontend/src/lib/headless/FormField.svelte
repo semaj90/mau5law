@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // Runes mode props
   const {
     name,
@@ -12,13 +11,11 @@
     control = undefined,
     hint = undefined
   } = $props();
-
   const inputId = `${name}`;
   const errorId = `${name}-error`;
   const hasError = $derived(!!errors && errors.length > 0);
-  const ariaDescribed = $derived([describedBy, hasError ? errorId : undefined].filter(item => item.join)(' ') || undefined);
+  const ariaDescribed = $derived([describedBy, hasError ? errorId : undefined].filter(Boolean).join(' ') || undefined);
 </script>
-
 <div class={inline ? 'flex flex-col gap-1' : ''}>
   {#if control}
     {#key control}
@@ -32,15 +29,12 @@
     <p id={errorId} class="text-xs text-red-600" role="alert">{errors[0]}</p>
   {/if}
 </div>
-
 <!-- Hint snippet rendering -->
 {@render hint?.({ inputId, fieldName: name })}
-
 <style>
   .control-wrapper {
     position: relative;
   }
-
   .default-input {
     width: 100%;
     padding: 0.5rem 0.75rem;
@@ -49,29 +43,24 @@
     font-size: 0.875rem;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   }
-
   .default-input:focus {
     outline: none;
     border-color: rgb(59, 130, 246);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   }
-
   .default-input[aria-invalid="true"] {
     border-color: rgb(239, 68, 68);
   }
-
   .help-text {
     font-size: 0.75rem;
     color: rgb(107, 114, 128);
     line-height: 1.4;
   }
-
   .error-messages {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
   }
-
   .error-message {
     font-size: 0.75rem;
     color: rgb(239, 68, 68);
@@ -80,13 +69,11 @@
     align-items: center;
     gap: 0.25rem;
   }
-
   .error-message::before {
     content: '⚠';
     font-size: 0.875rem;
   }
 </style>
-
 <!-- Usage example:
 <FormField
   name="email"

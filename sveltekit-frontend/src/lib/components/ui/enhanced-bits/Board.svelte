@@ -1,10 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import {   } from "svelte";
   import { Grid, Layout, Maximize2, Minimize2, Save, RotateCcw } from 'lucide-svelte';
   import type { EvidenceItem } from './types';
-
   interface BoardItem {
     id: string;
     x: number;
@@ -14,7 +11,6 @@
     data: unknown;
     type: 'evidence' | 'note' | 'connection' | 'marker';
   }
-
   interface Props {
     items?: BoardItem[];
     layoutMode?: 'grid' | 'freeform' | 'timeline' | 'network';
@@ -30,7 +26,6 @@
     background?: 'light' | 'dark' | 'blueprint' | 'legal';
     class?: string;
   }
-
   let {
     items = $bindable([]),
     layoutMode = 'freeform',
@@ -45,36 +40,30 @@
     height = '600px',
     background = 'light',
     class: className = '',
-    ...restProps;
+    ...restProp;
   }: Props = $props();
-
   let boardElement: HTMLDivElement;
   let isFullscreen = $state(false);
   let isDragging = $state(false);
   let draggedItem: BoardItem | null = $state(null);
   let dragOffset = $state({ x: 0, y: 0 });
   let connections = $state<any[]>([]) => []);
-
-
-
   // Board styling based on background theme
   let boardClasses = $derived(() => {
     const base = 'relative overflow-hidden border-4 border-gray-800 bg-white';
     const themes = {
       light: 'bg-white',
-      dark: 'bg-gray-900 text-white',;
-      blueprint: 'bg-blue-100',;
+      dark: 'bg-gray-900 text-white',
+      blueprint: 'bg-blue-100',
       legal: 'bg-gray-50';
     };
-
     return [
       base,
       themes[background],
       showGrid && 'bg-grid-pattern',
       className
-    ].filter(item => item.join)(' ');
+    ].filter(Boolean).join(' ');
   });
-
   // Grid pattern overlay
   let gridPattern = $derived(() => {
     if (!showGrid) return '';
@@ -85,38 +74,30 @@
       background-size: ${gridSize}px ${gridSize}px;
     `;
   });
-
   // Snap coordinate to grid
   function snapToGridFn(coord: number): number {
     if (!snapToGrid) return coord;
-    return Math.round(coord / gridSize) * gridSize;
+    return Math.round(coord / gridSize) * gridSiz;
   }
-
   // Handle item drag start
   function handleDragStart(event: MouseEvent, item: BoardItem) {
     if (!enableDragging) return;
-
     event.preventDefault();
     isDragging = true;
     draggedItem = item;
-
     const rect = boardElement.getBoundingClientRect();
     dragOffset = {
       x: event.clientX - rect.left - (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).x,
       y: event.clientY - rect.top - (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).y
     };
-
     ondispatch?.({ item });
   }
-
   // Handle mouse move for dragging
   function handleMouseMove(event: MouseEvent) {
     if (!isDragging || !draggedItem) return;
-
     const rect = boardElement.getBoundingClientRect();
     const newX = snapToGridFn((event.clientX - rect.left - dragOffset.x) / zoomLevel);
     const newY = snapToGridFn((event.clientY - rect.top - dragOffset.y) / zoomLevel);
-
     // Update item position
     const itemIndex = items.findIndex(i => i.id === draggedItem!.id);
     if (itemIndex !== -1) {
@@ -124,13 +105,11 @@
       ondispatch?.({ item: items[itemIndex], newX, newY });
     }
   }
-
   // Handle drag end
   function handleMouseUp() {
     isDragging = false;
     draggedItem = null;
   }
-
   // Toggle fullscreen
   function toggleFullscreen() {
     if (!document.fullscreenElement) {
@@ -141,7 +120,6 @@
       isFullscreen = false;
     }
   }
-
   // Auto-arrange items
   function autoArrange() {
     const padding = 50;
@@ -150,7 +128,6 @@
     let maxHeight = 0;
     const itemWidth = 200;
     const itemHeight = 150;
-
     items = items.map((item, index) => {
       // Move to next row if needed
       if (currentX + itemWidth > (boardElement?.offsetWidth || 800) - padding) {
@@ -158,51 +135,41 @@
         currentY += maxHeight + padding;
         maxHeight = 0;
       }
-
       const newItem = { ...item, x: currentX, y: currentY };
       currentX += itemWidth + padding;
       maxHeight = Math.max(maxHeight, itemHeight);
-
       return newItem;
     });
-
     ondispatch?.({ mode: 'auto-arranged' });
   }
-
   // Save board state
   function saveBoard() {
     ondispatch?.({ items, connections });
   }
-
   // Get connection line path
   function getConnectionPath(from: BoardItem, to: BoardItem): string {
     const fromCenter = {
-      x: from.x + (from.width || 100) / 2,;
+      x: from.x + (from.width || 100) / 2,
       y: from.y + (from.height || 80) / 2;
     };
     const toCenter = {
-      x: to.x + (to.width || 100) / 2,;
+      x: to.x + (to.width || 100) / 2,
       y: to.y + (to.height || 80) / 2;
     };
-
     // Simple straight line for now - could be enhanced with curved paths
     return `M ${fromCenter.x} ${fromCenter.y} L ${toCenter.x} ${toCenter.y}`;
   }
-
   // Zoom controls
   function zoomIn() { zoomLevel = Math.min(zoomLevel * 1.2, 3); }
   function zoomOut() { zoomLevel = Math.max(zoomLevel / 1.2, 0.3); }
   function resetZoom() { zoomLevel = 1; }
-
   // Layout mode handlers
   function setLayoutMode(mode: typeof layoutMode) {
-    layoutMode = mode;
+    layoutMode = mod;
     ondispatch?.({ mode });
   }
 </script>
-
 <svelte:window onmousemove={handleMouseMove} onmouseup={handleMouseUp} />
-
 <div class="nes-container is-rounded p-2">
   <!-- Board Controls -->
   <div class="flex items-center justify-between mb-4">
@@ -210,7 +177,6 @@
       <h3 class="font-bold text-lg">Evidence Board</h3>
       <span class="text-sm text-gray-600">({items.length} items)</span>
     </div>
-
     <div class="flex items-center gap-2">
       <!-- Layout Mode Selector -->
       <div class="flex gap-1">
@@ -231,7 +197,6 @@
           <Grid class="w-4 h-4" />
         </button>
       </div>
-
       <!-- Zoom Controls -->
       <div class="flex gap-1">
         <button class="nes-btn is-small" onclick={zoomOut} title="Zoom Out">-</button>
@@ -243,7 +208,6 @@
           <RotateCcw class="w-4 h-4" />
         </button>
       </div>
-
       <!-- Board Actions -->
       <button class="nes-btn is-small" onclick={autoArrange} title="Auto Arrange">
         <Layout class="w-4 h-4" />
@@ -260,12 +224,11 @@
       </button>
     </div>
   </div>
-
   <!-- Board Container -->
   <div
     bind:this={boardElement}
     class={boardClasses}
-    style=";
+    style="
       width: {typeof width === 'number' ? width + 'px' : width};
       height: {typeof height === 'number' ? height + 'px' : height};
       transform: scale({zoomLevel});
@@ -293,11 +256,10 @@
         {/each}
       </svg>
     {/if}
-
     <!-- Board Items -->
     {#each items as item ((item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).id)}
       <div
-        class="absolute cursor-move transition-all duration-200 hover:scale-105 hover:z-20";
+        class="absolute cursor-move transition-all duration-200 hover: scale-105 hover:z-20";
         class:opacity-75={isDragging && draggedItem?.id === (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).id}
         style="
           left: {(item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).x}px;
@@ -337,14 +299,12 @@
             </div>
           {/if}
         {/if}
-
         <!-- Item Selection Indicator -->
         {#if draggedItem?.id === (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).id}
           <div class="absolute -inset-1 border-2 border-blue-500 rounded pointer-events-none"></div>
         {/if}
       </div>
     {/each}
-
     <!-- Drop Zone Overlay -->
     {#if isDragging}
       <div class="absolute inset-0 bg-blue-500/10 border-2 border-dashed border-blue-500 z-30 pointer-events-none">
@@ -354,7 +314,6 @@
       </div>
     {/if}
   </div>
-
   <!-- Board Statistics -->
   <div class="flex items-center justify-between mt-2 text-xs text-gray-600">
     <div>
@@ -365,7 +324,6 @@
     </div>
   </div>
 </div>
-
 <style>
   /* Grid pattern */
   .bg-grid-pattern {
@@ -373,30 +331,25 @@
       linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px),
       linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px);
   }
-
   /* Dragging cursor */
   .cursor-move:active {
     cursor: grabbing;
   }
-
   /* Smooth transitions for zoom */
-  div[style*="transform: scale"] {
+  div[style*="transform: scale"] {,
     transition: transform 0.2s ease-out;
   }
-
   /* Connection lines animation */
   svg path {
     animation: dash 5s linear infinite;
   }
-
   @keyframes dash {
     to {
       stroke-dashoffset: -10;
     }
   }
-
   /* Fullscreen styles */
-  :global(.nes-container:fullscreen) {
+  :global($1) {
     background: white;
     padding: 20px;
   }

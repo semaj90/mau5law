@@ -1,5 +1,4 @@
 <script lang="ts">
-
   import { getContext } from 'svelte';
   interface Props {
     disabled?: boolean;
@@ -19,7 +18,6 @@
     }
   }
 </script>
-
 <button
   class="space-y-4"
   class:disabled
@@ -30,8 +28,7 @@
 >
   {@render children?.()}
 </button>
-
-<style>/* @unocss-include */ .context-menu-item {;
+<style>/* @unocss-include */ .context-menu-item {
     display: flex;
     align-items: center;
     width: 100%;
@@ -41,7 +38,7 @@
     border-radius: 0.25rem;
     background: transparent;
     cursor: pointer;
-    transition: background-color 0.15s;
+    transition: background-color 0.15;
     text-align: left;
 }
   .context-menu-item:hover:not(.disabled) {
@@ -56,4 +53,3 @@
     cursor: not-allowed;
 }
 </style>
-

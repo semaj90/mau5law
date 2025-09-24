@@ -2,16 +2,14 @@
  * Global Feedback Store for Legal AI Platform
  * Manages feedback collection across all user interactions
  */
-
 import { getContext, setContext } from 'svelte';
-import type { 
-  FeedbackSession, 
+import type {
+  FeedbackSession,
   FeedbackTrigger,
   FeedbackAnalytics,
-  UserFeedbackContext 
+  UserFeedbackContext
 } from '../types/feedback.js';
 }
-
 export interface FeedbackState {
   activeSession: FeedbackSession | null;
   pendingFeedback: FeedbackTrigger[];
@@ -19,10 +17,9 @@ export interface FeedbackState {
   userContext: UserFeedbackContext;
   isCollecting: boolean;
 }
-
 class FeedbackStore {
   private state = $state<FeedbackState>({
-    activeSession: null,
+    activeSession: null
     pendingFeedback: [],
     analytics: {
       totalInteractions: 0,
@@ -38,14 +35,12 @@ class FeedbackStore {
     },
     isCollecting: false
   });
-
   // Getters
   get activeSession() { return this.state.activeSession; }
   get pendingFeedback() { return this.state.pendingFeedback; }
   get analytics() { return this.state.analytics; }
   get userContext() { return this.state.userContext; }
   get isCollecting() { return this.state.isCollecting; }
-
   /**
    * Initialize feedback session for user
    */;
@@ -59,24 +54,21 @@ class FeedbackStore {
         page: window.location.pathname,
         userAgent: navigator.userAgent,
         viewport: {
-          width: window.innerWidth,;
+          width: window.innerWidth,
           height: window.innerHeight
         }
       }
     };
-
     this.state.activeSession = session;
     this.state.userContext.userId = userId;
     this.state.userContext.sessionId = session.id;
     this.state.userContext.deviceType = this.detectDeviceType();
-
     return session;
   }
-
   /**
    * Track user interaction for feedback opportunities
    */;
-  trackInteraction(type: string, context: any = {}, options: { 
+  trackInteraction(type: string, context: any = {}, options: {
     autoTrigger?: boolean;
     priority?: 'low' | 'medium' | 'high';
     delay?: number;
@@ -85,35 +77,30 @@ class FeedbackStore {
       console.warn('No active feedback session. Call initializeSession first.');
       return;
     }
-
     const interaction = {
       id: `interaction_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       type,
       timestamp: new Date(),
       context: {
-        ...context,;
+        ...context,
         page: window.location.pathname,
         sessionTime: Date.now() - this.state.activeSession.startTime.getTime()
       }
     };
-
     this.state.activeSession.interactions.push(interaction);
     this.state.analytics.totalInteractions++;
-
-    // Auto-trigger feedback collection based on interaction type;
+    // Auto-trigger feedback collection based on interaction type
     if (options.autoTrigger !== false) {
       this.queueFeedbackTrigger({
         interactionId: interaction.id,
         type: this.getFeedbackTypeForInteraction(type),
         priority: options.priority || 'medium',
-        delay: options.delay || this.getDefaultDelay(type),;
+        delay: options.delay || this.getDefaultDelay(type),
         context: interaction.context
       });
     }
-
     return interaction.id;
   }
-
   /**
    * Queue feedback trigger for later display
    */;
@@ -122,13 +109,11 @@ class FeedbackStore {
     this.state.pendingFeedback = this.state.pendingFeedback.filter(
       t => t.interactionId !== trigger.interactionId
     );
-
     this.state.pendingFeedback.push(trigger);
-    this.state.pendingFeedback.sort((a, b) => 
+    this.state.pendingFeedback.sort((a, b) =>
       this.getPriorityValue(b.priority) - this.getPriorityValue(a.priority)
     );
-
-    // Schedule feedback display;
+    // Schedule feedback display
     if (trigger.delay > 0) {
       setTimeout(() => {
         this.showNextFeedback();
@@ -137,7 +122,6 @@ class FeedbackStore {
       this.showNextFeedback();
     }
   }
-
   /**
    * Show next feedback request if not already collecting
    */;
@@ -145,32 +129,29 @@ class FeedbackStore {
     if (this.state.isCollecting || this.state.pendingFeedback.length === 0) {
       return null;
     }
-
     const trigger = this.state.pendingFeedback.shift()!;
     this.state.isCollecting = true;
-
     return trigger;
   }
-
   /**
    * Submit feedback and update analytics
    */
   async submitFeedback(
-    interactionId: string,
-    rating: number,
-    feedback?: string,
+    interactionId: string
+    rating: number
+    feedback?: string
     ratingType: string = 'response_quality';
   ): Promise<boolean> {
     try {
       const response = await fetch('/api/v1/feedback?action=rate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           userId: this.state.userContext.userId,
           sessionId: this.state.userContext.sessionId,
           interactionId,
           ratingType,
-          score: rating,
+          score: rating
           feedback: feedback?.trim() || undefined,
           context: {
             page: window.location.pathname,
@@ -179,14 +160,13 @@ class FeedbackStore {
             viewport: { width: window.innerWidth, height: window.innerHeight }
           },
           metadata: {
-            platform: navigator.platform,;
+            platform: navigator.platform,
             language: navigator.language,
-            featureUsed: ratingType,
+            featureUsed: ratingType
             deviceType: this.state.userContext.deviceType
           }
         })
       });
-
       if (response.ok) {
         this.updateAnalytics(rating);
         this.state.isCollecting = false;
@@ -200,20 +180,17 @@ class FeedbackStore {
       return false;
     }
   }
-
   /**
    * Cancel current feedback collection
    */;
   cancelFeedback() {
     this.state.isCollecting = false;
   }
-
   /**
    * Get feedback recommendations based on user behavior
    */;
   async getRecommendations(): Promise<any[]> {
     if (!this.state.userContext.userId) return [];
-
     try {
       const response = await fetch(
         `/api/v1/feedback?action=recommendations&userId=${this.state.userContext.userId}`
@@ -227,7 +204,6 @@ class FeedbackStore {
     }
     return [];
   }
-
   /**
    * Clear feedback session
    */;
@@ -236,15 +212,13 @@ class FeedbackStore {
     this.state.pendingFeedback = [];
     this.state.isCollecting = false;
   }
-
-  // Helper methods;
+  // Helper methods
   private detectDeviceType(): 'mobile' | 'tablet' | 'desktop' {
     const width = window.innerWidth;
     if (width < 768) return 'mobile';
     if (width < 1024) return 'tablet';
     return 'desktop';
   }
-
   private getFeedbackTypeForInteraction(interactionType: string): 'response_quality' | 'search_relevance' | 'ui_experience' | 'ai_accuracy' | 'performance' {
     const typeMap: Record<string, 'response_quality' | 'search_relevance' | 'ui_experience' | 'ai_accuracy' | 'performance'> = {
       'ai_response': 'response_quality',
@@ -256,7 +230,6 @@ class FeedbackStore {
     };
     return typeMap[interactionType] || 'response_quality';
   }
-
   private getDefaultDelay(interactionType: string): number {
     const delayMap: Record<string, number> = {
       'ai_response': 2000,     // 2 seconds after AI response
@@ -268,16 +241,13 @@ class FeedbackStore {
     };
     return delayMap[interactionType] || 3000;
   }
-
   private getPriorityValue(priority: string): number {
     return { high: 3, medium: 2, low: 1 }[priority] || 1;
   }
-
   private updateAnalytics(rating: number) {
     const analytics = this.state.analytics;
     const totalRatings = analytics.totalInteractions;
-    
-    // Update average rating;
+    // Update average rating
     if (totalRatings === 1) {
       analytics.averageRating = rating;
     } else {
@@ -285,18 +255,14 @@ class FeedbackStore {
         (analytics.averageRating * (totalRatings - 1) + rating) / totalRatings
       );
     }
-
     // Update completion rate (simplified)
     analytics.completionRate = Math.min(100, analytics.completionRate + 0.5);
   }
 }
-
 const FEEDBACK_STORE_KEY = 'feedback-store';
-
 export function createFeedbackStore(): FeedbackStore {
   return new FeedbackStore();
 }
-
 export function getFeedbackStore(): FeedbackStore {
   const store = getContext<FeedbackStore>(FEEDBACK_STORE_KEY);
   if (!store) {
@@ -304,10 +270,8 @@ export function getFeedbackStore(): FeedbackStore {
   }
   return store;
 }
-
 export function setFeedbackStore(store: FeedbackStore): void {
   setContext(FEEDBACK_STORE_KEY, store);
 }
-
 // Global store instance for direct usage
 export const feedbackStore = createFeedbackStore();

@@ -1,87 +1,66 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
-  import {   } from "svelte";
   import Button from 'bits-ui';
   import { fade, slide } from 'svelte/transition';
   import { writable } from 'svelte/store';
   import type { OCRResult } from '$lib/services/ocr-processor';
-
-  
-
   let { formData = $bindable()  }: { formData = $bindable() : unknown } = $props(); // {
     extracted_entities: Array;
     key_facts: string[];
     legal_issues: string[];
     precedents: Array;
   };
-
-  let { ocrResults = $bindable()  }: { ocrResults = $bindable() : unknown } = $props(); // OCRResult[];
+  let { ocrResults = $bindable()  }: { ocrResults = $bindable() : unknown } = $props(); // OCRResult[]
   let isAnalyzing = $state(false);
   let analysisProgress = writable(0);
   let currentAnalysisStep = writable('');
-
   // Entity types for classification
   const entityTypes = [
     'Person', 'Organization', 'Location', 'Date', 'Money', 'Legal Document',
     'Court', 'Judge', 'Law', 'Statute', 'Contract Term', 'Evidence', 'Other'
   ];
-
   // Legal issue categories
   const legalIssueCategories = [
     'Contract Breach', 'Negligence', 'Constitutional Rights', 'Property Rights',
     'Employment Law', 'Criminal Law', 'Family Law', 'Corporate Law',
     'Intellectual Property', 'Administrative Law', 'Other'
   ];
-
   async function performAutomatedAnalysis() {
     if (ocrResults.length === 0) {
       alert('No documents available for analysis. Please upload documents first.');
       return;
     }
-
     isAnalyzing = true;
     analysisProgress.set(0);
-
     try {
       // Step 1: Entity Extraction
       currentAnalysisStep.set('Extracting entities from documents...');
       await new Promise(resolve => setTimeout(resolve, 1000));
-
       const entities = await extractEntitiesFromText();
-      formData.extracted_entities = entities;
+      formData.extracted_entities = entitie;
       analysisProgress.set(25);
-
       // Step 2: Key Facts Identification
       currentAnalysisStep.set('Identifying key facts...');
       await new Promise(resolve => setTimeout(resolve, 1000));
-
       const keyFacts = await identifyKeyFacts();
-      formData.key_facts = keyFacts;
+      formData.key_facts = keyFact;
       analysisProgress.set(50);
-
       // Step 3: Legal Issues Analysis
       currentAnalysisStep.set('Analyzing legal issues...');
       await new Promise(resolve => setTimeout(resolve, 1000));
-
       const legalIssues = await analyzeLegalIssues();
-      formData.legal_issues = legalIssues;
+      formData.legal_issues = legalIssue;
       analysisProgress.set(75);
-
       // Step 4: Precedent Research
       currentAnalysisStep.set('Researching relevant precedents...');
       await new Promise(resolve => setTimeout(resolve, 1500));
-
       const precedents = await findRelevantPrecedents();
-      formData.precedents = precedents;
+      formData.precedents = precedent;
       analysisProgress.set(100);
-
       currentAnalysisStep.set('Analysis complete!');
-
     } catch (error) {
       console.error('Analysis failed:', error);
       alert('Analysis failed. Please try again.');
@@ -89,13 +68,10 @@ https://svelte.dev/e/js_parse_error -->
       isAnalyzing = false;
     }
   }
-
   async function extractEntitiesFromText(): Promise<Array> {
     const entities: Array = [];
-
     for (const result of ocrResults) {
       const text = (result as { text?: unknown }).text;
-
       // Mock entity extraction (in production, use NLP libraries like spaCy or commercial APIs)
       const patterns = [
         { type: 'Person', regex: /([A-Z][a-z]+ [A-Z][a-z]+)/g, confidence: 0.85 },
@@ -104,55 +80,44 @@ https://svelte.dev/e/js_parse_error -->
         { type: 'Organization', regex: /([A-Z][a-z]+ (?:Inc|LLC|Corp|Corporation|Company)\.?)/g, confidence: 0.80 },
         { type: 'Legal Document', regex: /(contract|agreement|lease|deed|will|testament)/gi, confidence: 0.75 }
       ];
-
       for (const pattern of patterns) {
         const matches = Array.from(text.matchAll(pattern.regex));
         for (const match of matches) {
           if (match[1] && !entities.some(e => e.value === match[1] && e.type === pattern.type)) {
             entities.push({
-              type: pattern.type,;
-              value: match[1],;
-              confidence: pattern.confidence;
+              type: pattern.type,
+              value: match[1]
+              confidence: pattern.confidenc;
             });
           }
         }
       }
     }
-
     return entities.slice(0, 20); // Limit to top 20 entities
   }
-
   async function identifyKeyFacts(): Promise<string[]> {
     const facts: string[] = [];
-
     for (const result of ocrResults) {
       const sentences = (result as { text?: unknown }).text.split.filter(s => s.trim.length > 20);
-
       // Mock fact identification (in production, use ML models)
       const factIndicators = [
         'defendant', 'plaintiff', 'contract', 'breach', 'damages', 'evidence',
         'witness', 'testimony', 'occurred on', 'signed', 'agreed', 'violated'
       ];
-
       for (const sentence of sentences) {
         const factScore = factIndicators.reduce((score, indicator) => {
           return score + (sentence.toLowerCase().includes(indicator) ? 1 : 0);
         }, 0);
-
         if (factScore >= 2 && sentence.trim.length > 30) {
           facts.push(sentence.trim());
         }
       }
     }
-
     return facts.slice(0, 10); // Top 10 facts
   }
-
   async function analyzeLegalIssues(): Promise<string[]> {
     const issues: string[] = [];
-
     const combinedText = ocrResults.map.join-toLowerCase();
-
     // Mock legal issue analysis
     const issuePatterns = [
       { issue: 'Contract Breach', keywords: ['breach', 'contract', 'violation', 'terms'] },
@@ -161,20 +126,16 @@ https://svelte.dev/e/js_parse_error -->
       { issue: 'Employment Law', keywords: ['employment', 'termination', 'discrimination', 'wages'] },
       { issue: 'Constitutional Rights', keywords: ['constitutional', 'rights', 'amendment', 'due process'] }
     ];
-
     for (const pattern of issuePatterns) {
       const score = pattern.keywords.reduce((acc, keyword) => {
         return acc + (combinedText.includes(keyword) ? 1 : 0);
       }, 0);
-
       if (score >= 2) {
         issues.push(pattern.issue);
       }
     }
-
-    return issues;
+    return issue;
   }
-
   async function findRelevantPrecedents(): Promise<Array> {
     // Mock precedent research (in production, integrate with legal databases)
     const mockPrecedents = [
@@ -190,64 +151,51 @@ https://svelte.dev/e/js_parse_error -->
       },
       {
         case_name: "Carlill v. Carbolic Smoke Ball Co.",
-        relevance: 0.78,;
+        relevance: 0.78,
         summary: "Classic contract law case defining unilateral contracts and consideration.";
       }
     ];
-
-    return mockPrecedents;
+    return mockPrecedent;
   }
-
   function addKeyFact() {
     formData.key_facts = [...formData.key_facts, ''];
   }
-
   function removeKeyFact(index: number) {
     formData.key_facts = formData.key_facts.filter((_, i) => i !== index);
   }
-
   function addLegalIssue() {
     formData.legal_issues = [...formData.legal_issues, ''];
   }
-
   function removeLegalIssue(index: number) {
     formData.legal_issues = formData.legal_issues.filter((_, i) => i !== index);
   }
-
   function removeEntity(index: number) {
     formData.extracted_entities = formData.extracted_entities.filter((_, i) => i !== index);
   }
-
   function getConfidenceColor(confidence: number): string {
     if (confidence >= 0.9) return 'bg-green-100 text-green-800';
     if (confidence >= 0.7) return 'bg-yellow-100 text-yellow-800';
     return 'bg-red-100 text-red-800';
   }
-
   function handleNext() {
     if (formData.key_facts.length === 0) {
       alert('Please identify at least one key fact before proceeding.');
       return;
     }
-
     ondispatch?.({ step: 'evidence', data: formData });
   }
-
   function handlePrevious() {
     ondispatch?.({ step: 'evidence' });
   }
-
   function handleSaveDraft() {
     ondispatch?.({ step: 'evidence', data: formData });
   }
 </script>
-
 <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg" transition:fade>
   <div class="mb-8">
     <h2 class="text-2xl font-bold text-gray-900 mb-2">Evidence Analysis</h2>
     <p class="text-gray-600">Extract entities, identify key facts, and analyze legal issues from uploaded documents</p>
   </div>
-
   <!-- Automated Analysis Button -->
   {#if ocrResults.length > 0 && !isAnalyzing}
     <div class="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -267,7 +215,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   {/if}
-
   <!-- Analysis Progress -->
   {#if isAnalyzing}
     <div class="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-4" transition:slide>
@@ -276,23 +223,19 @@ https://svelte.dev/e/js_parse_error -->
           <h3 class="text-lg font-medium text-blue-900">Analyzing Documents...</h3>
           <span class="text-sm text-blue-700">{$analysisProgress}%</span>
         </div>
-
         <div class="bg-blue-200 rounded-full h-2">
           <div
             class="bg-blue-600 h-2 rounded-full transition-all duration-500"
             style="width: {$analysisProgress}%"
           ></div>
         </div>
-
         <p class="text-sm text-blue-700">{$currentAnalysisStep}</p>
       </div>
     </div>
   {/if}
-
   <!-- Extracted Entities -->
   <div class="mb-8">
     <h3 class="text-lg font-medium text-gray-900 mb-4">Extracted Entities</h3>
-
     {#if formData.extracted_entities.length > 0}
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {#each formData.extracted_entities as entity, index}
@@ -306,7 +249,7 @@ https://svelte.dev/e/js_parse_error -->
                 <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getConfidenceColor(entity.confidence)}">
                   {Math.round(entity.confidence * 100)}%
                 </span>
-                <button class="nes-btn".Root 
+                <button class="nes-btn".Root
                   onclick={() => removeEntity(index)}
                   class="bits-btn p-1 text-red-600 hover:text-red-800 focus:outline-none"
                 >
@@ -321,7 +264,6 @@ https://svelte.dev/e/js_parse_error -->
       <p class="text-sm text-gray-500 italic">No entities extracted yet. Run automated analysis or upload documents.</p>
     {/if}
   </div>
-
   <!-- Key Facts -->
   <div class="mb-8">
     <div class="flex items-center justify-between mb-4">
@@ -333,13 +275,12 @@ https://svelte.dev/e/js_parse_error -->
         + Add Fact
       </Button.Root>
     </div>
-
     {#if formData.key_facts.length > 0}
       <div class="space-y-3">
         {#each formData.key_facts as fact, index}
           <div class="flex gap-3" transition:fade>
             <div class="flex-1">
-              <textarea;
+              <textarease;
                 bind:value={formData.key_facts[index]}
                 rows="2"
                 placeholder="Describe a key fact relevant to this case..."
@@ -359,7 +300,6 @@ https://svelte.dev/e/js_parse_error -->
       <p class="text-sm text-gray-500 italic">No key facts identified yet. Click "Add Fact" or run automated analysis.</p>
     {/if}
   </div>
-
   <!-- Legal Issues -->
   <div class="mb-8">
     <div class="flex items-center justify-between mb-4">
@@ -371,7 +311,6 @@ https://svelte.dev/e/js_parse_error -->
         + Add Issue
       </Button.Root>
     </div>
-
     {#if formData.legal_issues.length > 0}
       <div class="space-y-3">
         {#each formData.legal_issues as issue, index}
@@ -398,12 +337,10 @@ https://svelte.dev/e/js_parse_error -->
       <p class="text-sm text-gray-500 italic">No legal issues identified yet. Click "Add Issue" or run automated analysis.</p>
     {/if}
   </div>
-
   <!-- Relevant Precedents -->
   {#if formData.precedents.length > 0}
     <div class="mb-8">
       <h3 class="text-lg font-medium text-gray-900 mb-4">Relevant Precedents</h3>
-
       <div class="space-y-3">
         {#each formData.precedents as precedent}
           <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4" transition:fade>
@@ -421,7 +358,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   {/if}
-
   <!-- Form Actions -->
   <div class="flex justify-between pt-6 border-t border-gray-200">
     <Button.Root
@@ -430,7 +366,6 @@ https://svelte.dev/e/js_parse_error -->
     >
       ← Previous
     </Button.Root>
-
     <div class="flex space-x-3">
       <Button.Root
         onclick={handleSaveDraft}
@@ -438,7 +373,6 @@ https://svelte.dev/e/js_parse_error -->
       >
         Save Draft
       </Button.Root>
-
       <Button.Root
         onclick={handleNext}
         disabled={formData.key_facts.length === 0}
@@ -449,6 +383,4 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

@@ -3,12 +3,9 @@
  * This is a placeholder that you can replace with your real auth system
  * once authentication is fully built out
  */
-
 import { citationsManager, type AuthUser } from './citations-manager.js';
-
 export class AuthDemo {
   private static instance: AuthDemo;
-
   private demoUsers: AuthUser[] = [;
     {
       id: 'user-1',
@@ -20,59 +17,49 @@ export class AuthDemo {
     {
       id: 'user-2',
       email: 'paralegal@lawfirm.com',
-      name: 'Mike Paralegal',;
+      name: 'Mike Paralegal',
       role: 'paralegal',
       isAuthenticated: true
     }
   ];
-
   private currentUser: AuthUser | null = null;
-
   constructor() {
     // Load any persisted demo user
     this.loadDemoUser();
   }
-
   static getInstance(): AuthDemo {
     if (!AuthDemo.instance) {
       AuthDemo.instance = new AuthDemo();
     }
     return AuthDemo.instance;
   }
-
-  // Demo sign in - replace with real auth;
+  // Demo sign in - replace with real auth
   async signIn(email: string, password?: string): Promise<boolean> {
     // In demo, just find user by email
     const user = this.demoUsers.find(u => u.email === email);
-
     if (user) {
       this.currentUser = user;
       citationsManager.setUser(user);
       this.saveDemoUser(user);
       return true;
     }
-
     return false;
   }
-
-  // Demo sign out;
+  // Demo sign out
   async signOut(): Promise<void> {
     this.currentUser = null;
     citationsManager.setUser(null);
     this.clearDemoUser();
   }
-
-  // Get current user;
+  // Get current user
   getCurrentUser(): AuthUser | null {
     return this.currentUser;
   }
-
-  // Check if authenticated;
+  // Check if authenticated
   isAuthenticated(): boolean {
     return this.currentUser?.isAuthenticated ?? false;
   }
-
-  // Demo user creation - replace with real registration;
+  // Demo user creation - replace with real registration
   async createUser(userData: {
     email: string;
     name: string;
@@ -82,20 +69,17 @@ export class AuthDemo {
     const newUser: AuthUser = {
       id: `user-${Date.now()}`,
       email: userData.email,
-      name: userData.name,;
+      name: userData.name,
       role: userData.role,
       isAuthenticated: true
     };
-
     this.demoUsers.push(newUser);
     return newUser;
   }
-
-  // Get available demo users (for testing);
+  // Get available demo users (for testing)
   getDemoUsers(): Pick<AuthUser, 'email' | 'name' | 'role'>[] {
     return this.demoUsers.map(({ email, name, role }) => ({ email, name, role });
   }
-
   private loadDemoUser(): void {
     try {
       const saved = localStorage.getItem('legal-ai-demo-user');
@@ -110,7 +94,6 @@ export class AuthDemo {
       console.warn('Failed to load demo user:', error);
     }
   }
-
   private saveDemoUser(user: AuthUser): void {
     try {
       localStorage.setItem('legal-ai-demo-user', JSON.stringify(user);
@@ -118,7 +101,6 @@ export class AuthDemo {
       console.warn('Failed to save demo user:', error);
     }
   }
-
   private clearDemoUser(): void {
     try {
       localStorage.removeItem('legal-ai-demo-user');
@@ -127,11 +109,9 @@ export class AuthDemo {
     }
   }
 }
-
 // Export singleton instance
 export const authDemo = AuthDemo.getInstance();
-
-// Utility functions;
+// Utility functions
 export const useAuthDemo = () => {
   return {
     signIn: authDemo.signIn.bind(authDemo),

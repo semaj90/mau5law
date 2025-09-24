@@ -9,7 +9,6 @@
     transparent?: boolean;
     children?: import('svelte').Snippet;
   }
-
   let {
     title = '',
     type = 'menu',
@@ -19,26 +18,23 @@
     transparent = false,
     children
   }: Props = $props();
-
   const typeColors = {
     menu: 'from-slate-800/95 to-slate-900/95 border-blue-400/80',
     info: 'from-blue-800/95 to-blue-900/95 border-cyan-400/80',
     stats: 'from-green-800/95 to-green-900/95 border-green-400/80',
-    inventory: 'from-amber-800/95 to-amber-900/95 border-yellow-400/80',;
-    battle: 'from-red-800/95 to-red-900/95 border-red-400/80',;
+    inventory: 'from-amber-800/95 to-amber-900/95 border-yellow-400/80',
+    battle: 'from-red-800/95 to-red-900/95 border-red-400/80',
     magic: 'from-purple-800/95 to-purple-900/95 border-purple-400/80';
   };
-
   const glowColors = {
     menu: 'shadow-blue-500/30',
     info: 'shadow-cyan-500/30',
     stats: 'shadow-green-500/30',
-    inventory: 'shadow-yellow-500/30',;
-    battle: 'shadow-red-500/30',;
+    inventory: 'shadow-yellow-500/30',
+    battle: 'shadow-red-500/30',
     magic: 'shadow-purple-500/30';
   };
 </script>
-
 <div
   class="ff-container relative bg-gradient-to-br {transparent ? 'from-transparent to-transparent border-opacity-40' : typeColors[type]}
          border-2 {glowEffect ? `shadow-2xl ${glowColors[type]}` : 'shadow-lg'}
@@ -52,7 +48,6 @@
     <div class="absolute bottom-1 left-1 w-3 h-3 border-b-2 border-l-2 border-white/40"></div>
     <div class="absolute bottom-1 right-1 w-3 h-3 border-b-2 border-r-2 border-white/40"></div>
   {/if}
-
   <!-- Title Bar -->
   {#if title}
     <div class="relative px-4 py-2 bg-gradient-to-r from-black/40 to-transparent
@@ -61,19 +56,16 @@
                 text-shadow-lg">
         {title}
       </h3>
-      
       <!-- FF-Style Title Decoration -->
       <div class="absolute right-2 top-1/2 -translate-y-1/2 w-1 h-1
                   bg-gradient-to-r from-yellow-400 to-orange-500
                   rounded-full animate-pulse"></div>
     </div>
   {/if}
-
   <!-- Content Area -->
   <div class="p-4">
     {@render children?.()}
   </div>
-
   <!-- FF-Style Animated Border Lines -->
   {#if animated}
     <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r
@@ -84,16 +76,13 @@
                 animate-pulse delay-1000"></div>
   {/if}
 </div>
-
 <style>
-  .ff-container {;
+  .ff-container {
     backdrop-filter: blur(8px);
   }
-
   .ff-corners-classic {
 clip-path: polygon( 0% 8px, 8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px) );
   }
-
   .text-shadow-lg {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   }

@@ -2,16 +2,13 @@
  * Enhanced Health Check API
  * Includes migration status, service health, and system metrics
  */
-
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { DatabaseMigrator } from '$lib/database/migrations/migration-system'
 import { env } from '$env/dynamic/private'
-
 export const GET: RequestHandler = async ({ url }) => {
   const detailed = url.searchParams.get('detailed') === 'true'
   const checkMigrations = url.searchParams.get('migrations') !== 'false'
-
   const healthCheck = {
     status: 'healthy',
     timestamp: new Date().toISOString(),
@@ -30,21 +27,17 @@ export const GET: RequestHandler = async ({ url }) => {
       platform: process.platform
     }
   }
-
   try {
     // Check database connection
     if (checkMigrations && env.DATABASE_URL) {
       const migrator = new DatabaseMigrator(env.DATABASE_URL)
-
       try {
         // Test database connection
         await migrator.sql`SELECT 1`
         healthCheck.services.database = 'healthy'
-
         // Check migration status
         const migrationStatus = await migrator.getStatus()
         healthCheck.services.migrations = migrationStatus.systemHealthy ? 'healthy' : 'degraded'
-
         if (detailed) {
           (healthCheck as any).migrationDetails = {
             appliedMigrations: migrationStatus.appliedMigrations,
@@ -53,7 +46,6 @@ export const GET: RequestHandler = async ({ url }) => {
             systemHealthy: migrationStatus.systemHealthy
           }
         }
-
         await migrator.close()
       } catch (error) {
         console.error('Database health check failed:', error)
@@ -62,7 +54,6 @@ export const GET: RequestHandler = async ({ url }) => {
         healthCheck.status = 'degraded'
       }
     }
-
     // Check background jobs (if job queue table exists)
     try {
       if (env.DATABASE_URL) {
@@ -72,10 +63,8 @@ export const GET: RequestHandler = async ({ url }) => {
           FROM background_jobs
           WHERE status IN ('pending', 'processing')
         `
-
         const pendingJobs = parseInt(jobCount[0]?.count || '0')
         healthCheck.services.backgroundJobs = pendingJobs > 100 ? 'degraded' : 'healthy'
-
         if (detailed) {
           (healthCheck as any).backgroundJobsDetails = {
             pendingJobs,
@@ -83,25 +72,21 @@ export const GET: RequestHandler = async ({ url }) => {
             status: healthCheck.services.backgroundJobs
           }
         }
-
         await migrator.close()
       }
     } catch (error) {
       // Background jobs table might not exist yet
       healthCheck.services.backgroundJobs = 'unknown'
     }
-
     // Check AI services (Ollama)
     try {
       const response = await fetch('http://localhost:11434/api/tags', {
         method: 'GET',
         signal: AbortSignal.timeout(5000)
       })
-
       if (response.ok) {
         const models = await response.json()
         healthCheck.services.aiServices = models.models?.length > 0 ? 'healthy' : 'degraded'
-
         if (detailed) {
           (healthCheck as any).aiServicesDetails = {
             modelsAvailable: models.models?.length || 0,
@@ -114,7 +99,6 @@ export const GET: RequestHandler = async ({ url }) => {
     } catch (error) {
       healthCheck.services.aiServices = 'error'
     }
-
     // Determine overall status
     const serviceStatuses = Object.values(healthCheck.services)
     if (serviceStatuses.includes('error')) {
@@ -124,24 +108,20 @@ export const GET: RequestHandler = async ({ url }) => {
     } else if (serviceStatuses.includes('unknown')) {
       healthCheck.status = 'partial'
     }
-
     // Add system load metrics if detailed
     if (detailed) {
       (healthCheck as any).systemMetrics = {
-        loadAverage: process.loadavg ? process.loadavg() : null,
+        loadAverage: process.loadavg ? process.loadavg() : null
         freeMemory: process.memoryUsage().heapUsed / process.memoryUsage().heapTotal,
         cpuUsage: process.cpuUsage ? process.cpuUsage() : null
       }
     }
-
     return json(healthCheck, {
       status: healthCheck.status === 'healthy' ? 200 :
               healthCheck.status === 'degraded' || healthCheck.status === 'partial' ? 206 : 500
     })
-
   } catch (error) {
     console.error('Health check error:', error)
-
     return json({
       status: 'error',
       timestamp: new Date().toISOString(),

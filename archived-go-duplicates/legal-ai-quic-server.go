@@ -59,7 +59,7 @@ type LegalDocumentResponse struct {
 	Error            string             `json:"error,omitempty"`
 }
 
-type RecommendationRequest struct {
+type SimpleRecommendationRequest struct {
 	CaseID              string            `json:"case_id"`
 	CaseFacts           []string          `json:"case_facts"`
 	LegalDomain         string            `json:"legal_domain"`
@@ -72,8 +72,8 @@ type RecommendationRequest struct {
 	Filters             map[string]string `json:"filters"`
 }
 
-type RecommendationResponse struct {
-	Recommendations   []LegalRecommendation `json:"recommendations"`
+type SimpleRecommendationResponse struct {
+	Recommendations   []SimpleLegalRecommendation `json:"recommendations"`
 	TotalCount        int32                 `json:"total_count"`
 	ConfidenceScore   float32               `json:"confidence_score"`
 	ProcessingTimeMs  int64                 `json:"processing_time_ms"`
@@ -92,7 +92,7 @@ type SimilarCase struct {
 	RelevanceScore float32  `json:"relevance_score"`
 }
 
-type LegalRecommendation struct {
+type SimpleLegalRecommendation struct {
 	ID                   string          `json:"id"`
 	Title                string          `json:"title"`
 	Description          string          `json:"description"`
@@ -101,20 +101,20 @@ type LegalRecommendation struct {
 	Jurisdiction         string          `json:"jurisdiction"`
 	RelevantCases        []string        `json:"relevant_cases"`
 	LegalConcepts        []string        `json:"legal_concepts"`
-	RiskAssessment       *RiskAssessment `json:"risk_assessment"`
+	RiskAssessment       *SimpleRiskAssessment `json:"risk_assessment"`
 	RecommendationType   string          `json:"recommendation_type"`
 	Metadata             map[string]string `json:"metadata"`
 }
 
-type RiskAssessment struct {
+type SimpleRiskAssessment struct {
 	OverallRiskScore     float32      `json:"overall_risk_score"`
 	RiskLevel            string       `json:"risk_level"`
-	RiskFactors          []RiskFactor `json:"risk_factors"`
+	RiskFactors          []SimpleRiskFactor `json:"risk_factors"`
 	MitigationStrategies []string     `json:"mitigation_strategies"`
 	Confidence           float32      `json:"confidence"`
 }
 
-type RiskFactor struct {
+type SimpleRiskFactor struct {
 	FactorName    string   `json:"factor_name"`
 	ImpactScore   float32  `json:"impact_score"`
 	Probability   float32  `json:"probability"`
@@ -129,8 +129,8 @@ type LegalAIQuicServer struct {
 	results        chan LegalResult
 	recommendations chan RecommendationJob
 	mu             sync.RWMutex
-	vectorDB       *VectorDatabase
-	caseDB         *LegalCaseDatabase
+	vectorDB       *SimpleVectorDatabase
+	caseDB         *SimpleLegalCaseDatabase
 }
 
 type LegalJob struct {
@@ -150,29 +150,29 @@ type LegalResult struct {
 
 type RecommendationJob struct {
 	JobID     string                `json:"job_id"`
-	Request   RecommendationRequest `json:"request"`
+	Request   SimpleRecommendationRequest `json:"request"`
 	Timestamp time.Time             `json:"timestamp"`
 }
 
 // Mock vector database for legal documents
-type VectorDatabase struct {
+type SimpleVectorDatabase struct {
 	vectors map[string][]float32
 	mu      sync.RWMutex
 }
 
-func NewVectorDatabase() *VectorDatabase {
-	return &VectorDatabase{
+func NewSimpleVectorDatabase() *SimpleVectorDatabase {
+	return &SimpleVectorDatabase{
 		vectors: make(map[string][]float32),
 	}
 }
 
-func (vdb *VectorDatabase) Store(id string, vector []float32) {
+func (vdb *SimpleVectorDatabase) Store(id string, vector []float32) {
 	vdb.mu.Lock()
 	defer vdb.mu.Unlock()
 	vdb.vectors[id] = vector
 }
 
-func (vdb *VectorDatabase) Search(queryVector []float32, topK int) []SimilarCase {
+func (vdb *SimpleVectorDatabase) Search(queryVector []float32, topK int) []SimilarCase {
 	vdb.mu.RLock()
 	defer vdb.mu.RUnlock()
 	
@@ -208,12 +208,12 @@ func (vdb *VectorDatabase) Search(queryVector []float32, topK int) []SimilarCase
 }
 
 // Mock legal case database
-type LegalCaseDatabase struct {
-	cases map[string]LegalCase
+type SimpleLegalCaseDatabase struct {
+	cases map[string]SimpleLegalCase
 	mu    sync.RWMutex
 }
 
-type LegalCase struct {
+type SimpleLegalCase struct {
 	CaseID       string   `json:"case_id"`
 	Title        string   `json:"title"`
 	Court        string   `json:"court"`
@@ -224,13 +224,13 @@ type LegalCase struct {
 	Outcome      string   `json:"outcome"`
 }
 
-func NewLegalCaseDatabase() *LegalCaseDatabase {
-	db := &LegalCaseDatabase{
-		cases: make(map[string]LegalCase),
+func NewSimpleLegalCaseDatabase() *SimpleLegalCaseDatabase {
+	db := &SimpleLegalCaseDatabase{
+		cases: make(map[string]SimpleLegalCase),
 	}
 	
 	// Add some mock cases
-	mockCases := []LegalCase{
+	mockCases := []SimpleLegalCase{
 		{
 			CaseID: "case_001",
 			Title: "Contract Dispute - Software Licensing",
@@ -303,8 +303,8 @@ func NewLegalAIQuicServer() *LegalAIQuicServer {
 		workerPool:      make(chan LegalJob, 1000),
 		results:         make(chan LegalResult, 1000),
 		recommendations: make(chan RecommendationJob, 500),
-		vectorDB:        NewVectorDatabase(),
-		caseDB:          NewLegalCaseDatabase(),
+		vectorDB:        NewSimpleVectorDatabase(),
+		caseDB:          NewSimpleLegalCaseDatabase(),
 	}
 
 	// Start worker goroutines
@@ -437,10 +437,10 @@ func (s *LegalAIQuicServer) processLegalDocument(req LegalDocumentRequest) Legal
 	}
 	
 	if req.Options.RiskAssessment {
-		response.RiskAssessment = &RiskAssessment{
+		response.RiskAssessment = &SimpleRiskAssessment{
 			OverallRiskScore: 0.6,
 			RiskLevel:       "medium",
-			RiskFactors: []RiskFactor{
+			RiskFactors: []SimpleRiskFactor{
 				{
 					FactorName:  "Contract Complexity",
 					ImpactScore: 0.7,
@@ -457,11 +457,11 @@ func (s *LegalAIQuicServer) processLegalDocument(req LegalDocumentRequest) Legal
 	return response
 }
 
-func (s *LegalAIQuicServer) processRecommendations(req RecommendationRequest) RecommendationResponse {
+func (s *LegalAIQuicServer) processRecommendations(req SimpleRecommendationRequest) SimpleRecommendationResponse {
 	startTime := time.Now()
 	
 	// Mock recommendation generation
-	recommendations := []LegalRecommendation{
+	recommendations := []SimpleLegalRecommendation{
 		{
 			ID:              "rec_001",
 			Title:           "Similar Contract Dispute Precedent",
@@ -484,7 +484,7 @@ func (s *LegalAIQuicServer) processRecommendations(req RecommendationRequest) Re
 		},
 	}
 	
-	return RecommendationResponse{
+	return SimpleRecommendationResponse{
 		Recommendations:  recommendations,
 		TotalCount:      int32(len(recommendations)),
 		ConfidenceScore: 0.785,
@@ -536,7 +536,7 @@ func (s *LegalAIQuicServer) handleRecommendations(w http.ResponseWriter, r *http
 		return
 	}
 
-	var req RecommendationRequest
+	var req SimpleRecommendationRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return

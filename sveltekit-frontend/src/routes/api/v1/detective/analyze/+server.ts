@@ -5,43 +5,37 @@
  * POST /api/v1/detective/patterns - Detect suspicious patterns
  * POST /api/v1/detective/connections - Generate connection maps
  */
-
 import { json, error, type RequestHandler } from '@sveltejs/kit'
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
 import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud'
 import { z } from 'zod'
-
 // Detective analysis request schemas
 const DetectiveAnalysisSchema = z.object({
   caseId: z.string().uuid(),
   analysisType: z.enum(['full', 'timeline', 'connections', 'patterns', 'anomalies']).default('full'),
   depth: z.enum(['surface', 'deep', 'comprehensive']).default('deep'),
   focusAreas: z.array(z.enum(['people', 'locations', 'times', 'evidence', 'motives', 'opportunities'])).optional(),
-  options: z.object({
+  options: z.object({,
     includeAI: z.boolean().default(true),
     confidenceThreshold: z.number().min(0).max(1).default(0.6),
     maxResults: z.number().min(1).max(100).default(20)
   }).optional()
 })
-
 const PatternDetectionSchema = z.object({
   caseId: z.string().uuid(),
   evidenceIds: z.array(z.string().uuid()).optional(),
   patternTypes: z.array(z.enum(['temporal', 'location', 'behavior', 'communication', 'financial'])).optional(),
   sensitivity: z.number().min(0).max(1).default(0.7)
 })
-
 const ConnectionMappingSchema = z.object({
   caseId: z.string().uuid(),
   entityTypes: z.array(z.enum(['people', 'evidence', 'locations', 'events'])).optional(),
   connectionStrength: z.number().min(0).max(1).default(0.5),
   maxDepth: z.number().min(1).max(5).default(3)
 })
-
 // Configuration for AI services
 const OLLAMA_BASE_URL = 'http://localhost:11434'
 const DETECTIVE_MODEL = 'gemma3-legal:latest'
-
 /*
  * POST /api/v1/detective/analyze
  * Run comprehensive detective analysis on a case
@@ -55,15 +49,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
       )
     }
-
     // Parse request body
     const body = await request.json()
     const { caseId, analysisType, depth, focusAreas, options = {} } = DetectiveAnalysisSchema.parse(body)
-
     // Create service instances
     const casesService = new CasesCRUDService(locals.user.id)
     const evidenceService = new EvidenceCRUDService(locals.user.id)
-
     // Verify case exists and user has access
     const caseData = await casesService.getById(caseId)
     if (!caseData) {
@@ -72,7 +63,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' })
       )
     }
-
     // Check if detective mode is enabled for this case
     if (!caseData.detectiveMode) {
       return error(
@@ -83,13 +73,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         })
       )
     }
-
     console.log(`Starting detective analysis for case ${caseId} with type: ${analysisType}`)
-
     // Get case evidence for analysis
     const evidenceResult = await evidenceService.listByCase(caseId, { page: 1, limit: 100 })
     const evidence = evidenceResult.data
-
     // Perform detective analysis
     const analysisResult = await performDetectiveAnalysis(
       caseData,
@@ -99,27 +86,25 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       focusAreas,
       options
     )
-
     // Update case with analysis timestamp
     await casesService.update(caseId, {
       metadata: {
         ...caseData.metadata,
         lastDetectiveAnalysis: {
           timestamp: new Date().toISOString(),
-          type: analysisType,
+          type: analysisType
           depth,
           analyzedBy: locals.user.id
         }
       }
     })
-
     return json({
-      success: true,
+      success: true
       data: {
         caseId,
         analysisType,
         depth,
-        result: analysisResult,
+        result: analysisResult
         metadata: {
           evidenceCount: evidence.length,
           analysisTime: new Date().toISOString(),
@@ -132,10 +117,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         action: 'detective_analysis_completed'
       }
     })
-
   } catch (err: any) {
     console.error('Error in detective analysis:', err)
-
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -146,7 +129,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         })
       )
     }
-
     return error(
       500,
       makeHttpErrorPayload({
@@ -157,7 +139,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     )
   }
 }
-
 /*
  * GET /api/v1/detective/insights
  * Get AI-generated insights for a case
@@ -171,7 +152,6 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
       )
     }
-
     // Parse query parameters
     const caseId = url.searchParams.get('caseId')
     if (!caseId) {
@@ -180,13 +160,10 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         makeHttpErrorPayload({ message: 'Case ID is required', code: 'MISSING_CASE_ID' })
       )
     }
-
     // Validate case ID format
     const validatedCaseId = z.string().uuid().parse(caseId)
-
     // Create service instance
     const casesService = new CasesCRUDService(locals.user.id)
-
     // Verify case exists and user has access
     const caseData = await casesService.getById(validatedCaseId)
     if (!caseData) {
@@ -195,14 +172,12 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' })
       )
     }
-
     // Generate insights based on case data and previous analyses
     const insights = await generateCaseInsights(caseData, locals.user.id)
-
     return json({
-      success: true,
+      success: true
       data: {
-        caseId: validatedCaseId,
+        caseId: validatedCaseId
         insights,
         lastUpdated: new Date().toISOString()
       },
@@ -211,10 +186,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         timestamp: new Date().toISOString()
       }
     })
-
   } catch (err: any) {
     console.error('Error getting detective insights:', err)
-
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -225,7 +198,6 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         })
       )
     }
-
     return error(
       500,
       makeHttpErrorPayload({
@@ -236,16 +208,15 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     )
   }
 }
-
 /*
  * Perform comprehensive detective analysis
  */
 async function performDetectiveAnalysis(
-  caseData: any,
-  evidence: any[],
-  analysisType: string,
-  depth: string,
-  focusAreas?: string[],
+  caseData: any
+  evidence: any[]
+  analysisType: string
+  depth: string
+  focusAreas?: string[]
   options: any = {}
 ): Promise<any> {
   const analysis = {
@@ -258,7 +229,6 @@ async function performDetectiveAnalysis(
     recommendations: [],
     alerts: []
   }
-
   try {
     // Temporal Analysis
     if (analysisType === 'full' || analysisType === 'timeline') {
@@ -267,7 +237,6 @@ async function performDetectiveAnalysis(
       analysis.patterns.push(...timelineAnalysis.patterns)
       analysis.overallConfidence = Math.max(analysis.overallConfidence, 0.8)
     }
-
     // Connection Analysis
     if (analysisType === 'full' || analysisType === 'connections') {
       const connectionAnalysis = analyzeConnections(evidence)
@@ -275,7 +244,6 @@ async function performDetectiveAnalysis(
       analysis.findings.push(...connectionAnalysis.findings)
       analysis.overallConfidence = Math.max(analysis.overallConfidence, 0.75)
     }
-
     // Pattern Detection
     if (analysisType === 'full' || analysisType === 'patterns') {
       const patternAnalysis = detectPatterns(evidence, focusAreas)
@@ -283,13 +251,10 @@ async function performDetectiveAnalysis(
       analysis.anomalies.push(...patternAnalysis.anomalies)
       analysis.overallConfidence = Math.max(analysis.overallConfidence, 0.72)
     }
-
     // Generate recommendations based on findings
     analysis.recommendations = generateDetectiveRecommendations(analysis)
     analysis.alerts = generateDetectiveAlerts(analysis)
-
     return analysis
-
   } catch (error) {
     console.error('Detective analysis error:', error)
     return {
@@ -299,7 +264,6 @@ async function performDetectiveAnalysis(
     }
   }
 }
-
 /*
  * Analyze timeline patterns in evidence
  */
@@ -323,7 +287,6 @@ function analyzeTimeline(evidence: any[]): any {
     ]
   }
 }
-
 /*
  * Analyze connections between evidence items
  */
@@ -346,7 +309,6 @@ function analyzeConnections(evidence: any[]): any {
     ]
   }
 }
-
 /*
  * Detect suspicious patterns in evidence
  */
@@ -379,7 +341,6 @@ function detectPatterns(evidence: any[], focusAreas?: string[]): any {
     ]
   }
 }
-
 /*
  * Generate case insights based on analysis
  */
@@ -405,41 +366,32 @@ async function generateCaseInsights(caseData: any, userId: string): Promise<any>
     lastAnalyzed: caseData.metadata?.lastDetectiveAnalysis?.timestamp || 'Never'
   }
 }
-
 /*
  * Generate detective recommendations
  */
 function generateDetectiveRecommendations(analysis: any): string[] {
   const recommendations: string[] = []
-
   if (analysis.patterns.length > 0) {
     recommendations.push('Investigate identified patterns more thoroughly')
   }
-
   if (analysis.connections.length > 3) {
     recommendations.push('Map evidence connections for clearer case narrative')
   }
-
   if (analysis.overallConfidence < 0.7) {
     recommendations.push('Collect additional evidence to strengthen case')
   }
-
   return recommendations
 }
-
 /*
  * Generate detective alerts
  */
 function generateDetectiveAlerts(analysis: any): string[] {
   const alerts: string[] = []
-
   if (analysis.anomalies.length > 0) {
     alerts.push('ALERT: Suspicious anomalies detected - requires investigation')
   }
-
   if (analysis.overallConfidence < 0.5) {
     alerts.push('WARNING: Low confidence analysis - manual review critical')
   }
-
   return alerts
 }

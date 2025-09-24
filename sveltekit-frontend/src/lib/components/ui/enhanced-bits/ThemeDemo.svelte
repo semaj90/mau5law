@@ -6,15 +6,12 @@
   import Select from './Select.svelte';
   import Tabs from './Tabs.svelte';
   import { getContext } from 'svelte';
-
   interface ThemeDemoProps {
     theme?: 'default' | 'legal' | 'gaming';
   }
-
   let {
     theme = 'default'
   }: ThemeDemoProps = $props();
-
   // Sample document data
   const sampleDocuments = [
     {
@@ -48,13 +45,12 @@
       title: 'Case Citations and Precedents',
       fileType: 'citation' as const,
       fileSize: '512 KB',
-      lastModified: '2024-01-08',;
+      lastModified: '2024-01-08',
       tags: ['citations', 'precedent', 'research'],
-      confidentialityLevel: 'internal' as const,;
+      confidentialityLevel: 'internal' as const,
       description: 'Compilation of relevant case law and legal precedents for the current matter.';
     }
   ];
-
   const selectItems = [
     { value: 'all', label: 'All Documents' },
     { value: 'contracts', label: 'Contracts' },
@@ -62,22 +58,18 @@
     { value: 'briefs', label: 'Legal Briefs' },
     { value: 'citations', label: 'Citations' }
   ];
-
   const tabItems = [
     { value: 'documents', label: 'Documents', icon: '📄' },
     { value: 'recent', label: 'Recent', icon: '🕒', badge: '4' },
     { value: 'shared', label: 'Shared', icon: '👥' },
     { value: 'archived', label: 'Archived', icon: '📦' }
   ];
-
   let selectedFilter = $state('all');
   let currentTab = $state('documents');
-
   function handleDocumentAction(action: string, doc: any) {
     console.log(`${action} action for:`, doc.title);
   }
 </script>
-
 <ThemeProvider defaultTheme="light" enableSystem={true}>
   <div class={`
     min-h-screen p-6 transition-colors
@@ -100,12 +92,10 @@
           Light/Dark theme system with document cards
         </p>
       </div>
-
       <div class="flex items-center space-x-4">
         <ThemeToggle {theme} variant="button" showLabel={true} />
       </div>
     </div>
-
     <!-- Controls Section -->
     <div class="mb-8 space-y-4">
       <div class="flex flex-wrap items-center gap-4">
@@ -118,7 +108,6 @@
             label="Document Filter"
           />
         </div>
-
         <div class="flex space-x-2">
           <Button {theme} variant="primary">
             Upload Document
@@ -131,7 +120,6 @@
           </Button>
         </div>
       </div>
-
       <!-- Tabs -->
       <Tabs
         {theme}
@@ -148,7 +136,6 @@
             `}>
               {item.label} Content
             </h3>
-
             {#if item.value === 'documents'}
               <!-- Document Cards Grid -->
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -201,7 +188,6 @@
         {/snippet}
       </Tabs>
     </div>
-
     <!-- Theme Info Panel -->
     <div class={`
       mt-12 p-6 rounded-lg border
@@ -216,7 +202,6 @@
       `}>
         Theme System Features
       </h2>
-
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div>
           <h3 class={`
@@ -232,7 +217,6 @@
             Respects system preference and remembers user choice
           </p>
         </div>
-
         <div>
           <h3 class={`
             font-medium mb-2
@@ -247,7 +231,6 @@
             Dynamic theming with CSS custom properties
           </p>
         </div>
-
         <div>
           <h3 class={`
             font-medium mb-2
@@ -266,10 +249,9 @@
     </div>
   </div>
 </ThemeProvider>
-
 <style>
   /* Ensure smooth theme transitions */
-  :global(*) {;
+  :global(*) {
     transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   }
 </style>

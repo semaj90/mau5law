@@ -3,12 +3,10 @@ https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script>
   // Svelte 5 runes are auto-imported
-
 </script>
 	import { onMount } from 'svelte';
 	import '../yorha/ps1.css';
-	
-	let canvas;
+	let canva;
 	let webgpuDevice = null;
 	let diffusionPipeline = null;
 	let embeddingTexture = null;
@@ -17,25 +15,22 @@ https://svelte.dev/e/expected_token -->
 	let intensity = 0.7;
 	let nomicEmbeddings = [];
 	let animationFrame = 0;
-	
 	// Feature flags for experimental effects
 	let featureFlags = {
-		ps1FX: true,
-		hybridMode: false,
-		subsampleAA: true,
-		dynamicParallax: true,
-		anisotropicSim: false,
+		ps1FX: true
+		hybridMode: false
+		subsampleAA: true
+		dynamicParallax: true
+		anisotropicSim: false
 		webgpuAccel: false
 	};
-	
 	// LOD system
 	let lodLevel = 'medium'; // low, medium, high
 	let deviceCapabilities = {
-		memory: navigator.deviceMemory || 4,;
-		cores: navigator.hardwareConcurrency || 4,;
+		memory: navigator.deviceMemory || 4,
+		cores: navigator.hardwareConcurrency || 4,
 		gpu: 'unknown';
 	};
-	
 	$effect(() => {
     (async () => {
 await detectCapabilities();
@@ -45,12 +40,10 @@ await detectCapabilities();
 		applyLODSettings();
     })();
   });
-	
 	async function detectCapabilities() {
 		// Detect device capabilities for automatic LOD
 		const memory = deviceCapabilities.memory;
-		const cores = deviceCapabilities.cores;
-		
+		const cores = deviceCapabilities.core;
 		if (memory >= 8 && cores >= 8) {
 			lodLevel = 'high';
 		} else if (memory >= 4 && cores >= 4) {
@@ -58,140 +51,108 @@ await detectCapabilities();
 		} else {
 			lodLevel = 'low';
 		}
-		
 		// Apply to HTML for CSS targeting
 		document.documentElement.setAttribute('data-hybrid-lod', lodLevel);
-		
 		console.log(`🎯 Auto-detected LOD: ${lodLevel} (${memory}GB RAM, ${cores} cores)`);
 	}
-	
 	async function initWebGPU() {
 		try {
 			if (!navigator.gpu) {
 				console.log('WebGPU not supported');
 				return;
 			}
-			
 			const adapter = await navigator.gpu.requestAdapter({
 				powerPreference: 'high-performance'
 			});
-			
 			if (!adapter) {
 				console.log('WebGPU adapter not available');
 				return;
 			}
-			
 			webgpuDevice = await adapter.requestDevice({
 				requiredFeatures: [],
 				requiredLimits: });
-			
 			isWebGPUSupported = true;
 			featureFlags.webgpuAccel = true;
 			deviceCapabilities.gpu = adapter.info?.description || 'WebGPU';
-			
 			console.log('✅ WebGPU initialized:', adapter.info);
-			
 			// Initialize diffusion pipeline
 			await createDiffusionPipeline();
-			
 		} catch (error) {
 			console.warn('WebGPU initialization failed:', error);
 			isWebGPUSupported = false;
 		}
 	}
-	
 	async function createDiffusionPipeline() {
 		if (!webgpuDevice) return;
-		
 		// Create compute shader for nomic-embed-text style diffusion
 		const shaderCode = `
 			@group(0) @binding(0) var<storage, read_write> embeddings: array<f32>;
 			@group(0) @binding(1) var<uniform> params: vec4<f32>; // time, intensity, width, height
-			
 			@compute @workgroup_size(8, 8)
 			fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
 				let index = global_id.x + global_id.y * u32(params.z);
 				if (index >= arrayLength(&embeddings)) { return; }
-				
 				let time = params.x;
 				let intensity = params.y;
-				
 				// Nomic-embed-text style: high-dimensional semantic diffusion
 				let embedding = embeddings[index];
 				let noise = sin(f32(index) * 0.1 + time) * 0.1;
 				let diffusion = cos(embedding * 3.14159 + time * 0.5) * intensity;
-				
 				embeddings[index] = embedding + noise + diffusion * 0.05;
 			}
 		`;
-		
 		const shaderModule = webgpuDevice.createShaderModule({
-			code: shaderCode;
+			code: shaderCod;
 		});
-		
 		diffusionPipeline = webgpuDevice.createComputePipeline({
-			layout: 'auto',;
-			compute: {;
-				module: shaderModule,
+			layout: 'auto',
+			compute: {
+				module: shaderModule
 				entryPoint: 'main';
 			}
 		});
-		
 		console.log('🧠 Diffusion pipeline created');
 	}
-	
 	function generateNomicEmbeddings() {
 		// Generate pseudo nomic-embed-text embeddings (384D)
 		const numEmbeddings = 1000;
 		const dimensions = 384; // Nomic embed dimension
-		
 		nomicEmbeddings = [];
-		
 		for (let i = 0; i < numEmbeddings; i++) {
 			const embedding = new Float32Array(dimensions);
-			
 			// Create semantic clusters (simulating real text embeddings)
 			const cluster = i % 5; // 5 semantic clusters
 			const baseValue = (cluster - 2) * 0.5; // Center around different values
-			
 			for (let j = 0; j < dimensions; j++) {
 				// Add structured semantic information
 				const semanticWeight = Math.sin((j / dimensions) * Math.PI * 2) * 0.3;
 				const clusterNoise = (Math.random() - 0.5) * 0.2;
 				const globalNoise = (Math.random() - 0.5) * 0.1;
-				
-				embedding[j] = baseValue + semanticWeight + clusterNoise + globalNoise;
+				embedding[j] = baseValue + semanticWeight + clusterNoise + globalNoi;
 			}
-			
 			nomicEmbeddings.push({
-				id: i,
-				vector: embedding,;
-				cluster: cluster,;
+				id: i
+				vector: embedding
+				cluster: cluster
 				similarity: Math.random();
 			});
 		}
-		
 		console.log(`📊 Generated ${numEmbeddings} nomic-style embeddings`);
 	}
-	
 	async function runWebGPUDiffusion() {
 		if (!diffusionPipeline || !webgpuDevice) return;
-		
 		// Create buffer for embeddings
 		const embeddingData = new Float32Array(nomicEmbeddings.length * 384);
 		nomicEmbeddings.forEach((embed, i) => {
 			embeddingData.set(embed.vector, i * 384);
 		});
-		
 		const embeddingBuffer = webgpuDevice.createBuffer({
-			size: embeddingData.byteLength,;
+			size: embeddingData.byteLength,
 			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
 			mappedAtCreation: true;
 		});
-		
 		new Float32Array(embeddingBuffer.getMappedRange()).set(embeddingData);
 		embeddingBuffer.unmap();
-		
 		// Parameters buffer
 		const paramsData = new Float32Array([
 			performance.now() / 1000, // time
@@ -199,69 +160,55 @@ await detectCapabilities();
 			Math.sqrt(nomicEmbeddings.length), // width
 			Math.sqrt(nomicEmbeddings.length)  // height
 		]);
-		
 		const paramsBuffer = webgpuDevice.createBuffer({
-			size: paramsData.byteLength,;
+			size: paramsData.byteLength,
 			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
 			mappedAtCreation: true;
 		});
-		
 		new Float32Array(paramsBuffer.getMappedRange()).set(paramsData);
 		paramsBuffer.unmap();
-		
 		// Create bind group
 		const bindGroup = webgpuDevice.createBindGroup({
-			layout: diffusionPipeline.getBindGroupLayout(0),;
+			layout: diffusionPipeline.getBindGroupLayout(0),
 			entries: [
 				{ binding: 0, resource: { buffer: embeddingBuffer } },
 				{ binding: 1, resource: { buffer: paramsBuffer } }
 			]
 		});
-		
 		// Execute compute shader
 		const commandEncoder = webgpuDevice.createCommandEncoder();
 		const computePass = commandEncoder.beginComputePass();
-		
 		computePass.setPipeline(diffusionPipeline);
 		computePass.setBindGroup(0, bindGroup);
 		computePass.dispatchWorkgroups(
 			Math.ceil(Math.sqrt(nomicEmbeddings.length) / 8),
 			Math.ceil(Math.sqrt(nomicEmbeddings.length) / 8)
 		);
-		
 		computePass.end();
 		webgpuDevice.queue.submit([commandEncoder.finish()]);
-		
 		// Read back results (for visualization)
 		const readBuffer = webgpuDevice.createBuffer({
-			size: embeddingData.byteLength,;
+			size: embeddingData.byteLength,
 			usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ;
 		});
-		
 		const copyEncoder = webgpuDevice.createCommandEncoder();
 		copyEncoder.copyBufferToBuffer(embeddingBuffer, 0, readBuffer, 0, embeddingData.byteLength);
 		webgpuDevice.queue.submit([copyEncoder.finish()]);
-		
 		// Update embeddings with diffused values
 		await readBuffer.mapAsync(GPUMapMode.READ);
 		const resultData = new Float32Array(readBuffer.getMappedRange());
-		
 		nomicEmbeddings.forEach((embed, i) => {
 			embed.vector = resultData.slice(i * 384, (i + 1) * 384);
 		});
-		
 		readBuffer.unmap();
-		
 		// Cleanup
 		embeddingBuffer.destroy();
 		paramsBuffer.destroy();
 		readBuffer.destroy();
 	}
-	
 	function runCPUDiffusion() {
 		// Fallback CPU implementation
 		const time = performance.now() / 1000;
-		
 		nomicEmbeddings.forEach((embed, i) => {
 			for (let j = 0; j < embed.vector.length; j++) {
 				const noise = Math.sin(i * 0.1 + time) * 0.1;
@@ -270,62 +217,48 @@ await detectCapabilities();
 			}
 		});
 	}
-	
 	function startDiffusionLoop() {
 		function animate() {
 			animationFrame++;
-			
 			if (featureFlags.webgpuAccel && webgpuDevice) {
 				runWebGPUDiffusion();
 			} else {
 				runCPUDiffusion();
 			}
-			
 			// Update visual effects every few frames
 			if (animationFrame % 3 === 0) {
 				updateVisualEffects();
 			}
-			
 			requestAnimationFrame(animate);
 		}
-		
 		animate();
 	}
-	
 	function updateVisualEffects() {
 		// Apply PS1-style effects based on feature flags
 		const container = document.querySelector('.diffusion-container');
 		if (!container) return;
-		
 		// Dynamic parallax
 		if (featureFlags.dynamicParallax) {
 			const scrollY = window.scrollY || 0;
 			const parallaxLayers = container.querySelectorAll('[data-parallax]');
-			
 			parallaxLayers.forEach((layer, i) => {
 				const depth = parseFloat(layer.dataset.parallax) || (i + 1) * 0.1;
 				const transform = `translateY(${scrollY * depth}px) translateZ(${depth * 10}px)`;
 				layer.style.transform = transform;
 			});
 		}
-		
 		// Anisotropic filtering simulation
 		if (featureFlags.anisotropicSim) {
 			container.style.filter = `blur(${0.5 + Math.sin(animationFrame * 0.1) * 0.2}px)`;
 		}
-		
 		// Update embedding visualization
 		updateEmbeddingVisualization();
 	}
-	
 	function updateEmbeddingVisualization() {/* JSX syntax converted to Svelte */}
-		
 		viz.innerHTML = html;
 	}
-	
 	function applyLODSettings() {
 		const root = document.documentElement;
-		
 		// Apply LOD-specific settings
 		switch (lodLevel) {
 			case 'high':
@@ -347,7 +280,6 @@ await detectCapabilities();
 				featureFlags.anisotropicSim = false;
 				break;
 		}
-		
 		// Apply CSS classes based on flags
 		Object.entries.forEach(([flag, enabled]) => {
 			if (enabled) {
@@ -355,23 +287,19 @@ await detectCapabilities();
 			}
 		});
 	}
-	
 	function toggleFeatureFlag(flag) {
 		featureFlags[flag] = !featureFlags[flag];
 		applyLODSettings();
 		console.log(`🎛️ Toggled ${flag}:`, featureFlags[flag]);
 	}
 </script>
-
 <div class="diffusion-container ps1-scene" class:ps1-aa-soft={featureFlags.subsampleAA}>
 	<div class="story-header ps1-scanlines">
 		<h1 class="ps1-text-glow">🌊 Nomic Diffusion Effects</h1>
 		<p class="ps1-subtitle">WebGPU-accelerated semantic embedding diffusion with PS1 aesthetics</p>
 	</div>
-	
 	<div class="controls-panel ps1-border">
 		<h3>🎛️ Effect Controls</h3>
-		
 		<div class="control-group">
 			<label for="effect-type">Effect Type:</label><select id="effect-type" bind:value={currentEffect} class="ps1-input">
 				<option value="nomic-diffusion">Nomic Diffusion</option>
@@ -379,26 +307,22 @@ await detectCapabilities();
 				<option value="embedding-storm">Embedding Storm</option>
 			</select>
 		</div>
-		
 		<div class="control-group">
 			<label for="intensity-intensityt">Intensity: {intensity.toFixed(2)}</label><input id="intensity-intensityt" type="range" bind:value={intensity} min="0" max="2" step="0.1" class="ps1-slider">
 		</div>
-		
 		<div class="feature-flags">
 			<h4>🚩 Feature Flags</h4>
-			
 			{#each Object.entries(featureFlags) as [flag, enabled]}
 				<label class="flag-toggle ps1-checkbox">
-					<input 
-						type="checkbox" 
-						checked={enabled} 
+					<input
+						type="checkbox"
+						checked={enabled}
 						onchange={() => toggleFeatureFlag(flag)}
 					>
 					<span class="flag-name">{flag}</span>
 				</label>
 			{/each}
 		</div>
-		
 		<div class="device-info ps1-panel">
 			<h4>📊 Device Capabilities</h4>
 			<div class="capability">Memory: {deviceCapabilities.memory}GB</div>
@@ -410,16 +334,13 @@ await detectCapabilities();
 			</div>
 		</div>
 	</div>
-	
 	<div class="visualization-area" data-parallax="0.1">
 		<div class="embedding-viz ps1-pixelated" data-parallax="0.2"></div>
-		
 		<div class="diffusion-layers" data-parallax="0.05">
 			<div class="layer ps1-layer-1" style="opacity: {intensity * 0.3}"></div>
 			<div class="layer ps1-layer-2" style="opacity: {intensity * 0.5}"></div>
 			<div class="layer ps1-layer-3" style="opacity: {intensity * 0.7}"></div>
 		</div>
-		
 		<div class="stats-overlay ps1-hud">
 			<div class="stat">Embeddings: {nomicEmbeddings.length}</div>
 			<div class="stat">Dimensions: 384</div>
@@ -427,25 +348,22 @@ await detectCapabilities();
 			<div class="stat">Mode: {featureFlags.webgpuAccel ? 'WebGPU' : 'CPU'}</div>
 		</div>
 	</div>
-	
 	<div class="technical-info ps1-terminal">
 		<h4>🧠 Nomic Embed Simulation</h4>
 		<p>This demo simulates the behavior of nomic-embed-text with 384-dimensional semantic embeddings.</p>
 		<p>The diffusion process applies noise and semantic transformation to embeddings in real-time.</p>
 		<p>WebGPU acceleration runs compute shaders for parallel processing of embedding vectors.</p>
-		
 		<h4>⚡ Performance Features</h4>
 		<ul>
-			<li><strong>LOD System:</strong> Automatic quality scaling based on device memory</li>
+			<li><strong>LOD System: </strong> Automatic quality scaling based on device memory</li>
 			<li><strong>WebGPU Compute:</strong> Parallel embedding transformation</li>
 			<li><strong>PS1 Aesthetics:</strong> Retro visual effects with modern performance</li>
 			<li><strong>Feature Flags:</strong> Runtime toggle of experimental effects</li>
 		</ul>
 	</div>
 </div>
-
 <style>
-	.diffusion-container {;
+	.diffusion-container {
 		min-height: 100vh;
 		background: linear-gradient(135deg, #1a1a2e, #16213e, #0f0f23);
 		padding: 20px;
@@ -453,25 +371,21 @@ await detectCapabilities();
 		position: relative;
 		overflow-x: hidden;
 	}
-	
 	.story-header {
 		text-align: center;
 		margin-bottom: 30px;
 		padding: 20px;
 	}
-	
 	.story-header h1 {
 		font-size: 2.5em;
 		color: #00ff88;
 		text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
 		margin-bottom: 10px;
 	}
-	
 	.ps1-subtitle {
 		color: #888;
 		font-size: 14px;
 	}
-	
 	.controls-panel {
 		background: rgba(0, 0, 0, 0.8);
 		border: 2px solid #00ff88;
@@ -480,22 +394,18 @@ await detectCapabilities();
 		margin-bottom: 30px;
 		max-width: 400px;
 	}
-	
 	.controls-panel h3 {
 		color: #00ff88;
 		margin-top: 0;
 	}
-	
 	.control-group {
 		margin-bottom: 15px;
 	}
-	
 	.control-group label {
 		display: block;
 		color: #ccc;
 		margin-bottom: 5px;
 	}
-	
 	.ps1-input, .ps1-slider {
 		width: 100%;
 		background: #222;
@@ -504,16 +414,13 @@ await detectCapabilities();
 		padding: 5px;
 		font-family: inherit;
 	}
-	
 	.feature-flags {
 		margin: 20px 0;
 	}
-	
 	.feature-flags h4 {
 		color: #ffff00;
 		margin-bottom: 10px;
 	}
-	
 	.flag-toggle {
 		display: flex;
 		align-items: center;
@@ -521,11 +428,9 @@ await detectCapabilities();
 		color: #ccc;
 		cursor: pointer;
 	}
-	
 	.flag-toggle input {
 		margin-right: 8px;
 	}
-	
 	.device-info {
 		background: rgba(0, 20, 40, 0.8);
 		border: 1px solid #0088ff;
@@ -533,26 +438,21 @@ await detectCapabilities();
 		padding: 15px;
 		margin-top: 20px;
 	}
-	
 	.device-info h4 {
 		color: #0088ff;
 		margin-top: 0;
 	}
-	
 	.capability {
 		margin: 5px 0;
 		font-size: 12px;
 		color: #aaa;
 	}
-	
 	.capability.status-ok {
 		color: #00ff88;
 	}
-	
 	.capability.status-warn {
 		color: #ffaa00;
 	}
-	
 	.visualization-area {
 		position: relative;
 		min-height: 400px;
@@ -562,7 +462,6 @@ await detectCapabilities();
 		margin: 20px 0;
 		overflow: hidden;
 	}
-	
 	.embedding-viz {
 		position: relative;
 		width: 100%;
@@ -572,7 +471,6 @@ await detectCapabilities();
 		align-items: center;
 		justify-content: center;
 	}
-	
 	:global(.embed-point) {
 		position: absolute;
 		width: 6px;
@@ -585,7 +483,6 @@ await detectCapabilities();
 		justify-content: center;
 		transition: transform 0.1s ease-out;
 	}
-	
 	.diffusion-layers {
 		position: absolute;
 		top: 0;
@@ -594,7 +491,6 @@ await detectCapabilities();
 		bottom: 0;
 		pointer-events: none;
 	}
-	
 	.layer {
 		position: absolute;
 		top: 0;
@@ -604,16 +500,13 @@ await detectCapabilities();
 		background: radial-gradient(ellipse at center, transparent 20%, rgba(255, 255, 255, 0.1) 40%, transparent 80%);
 		animation: pulse 3s ease-in-out infinite;
 	}
-	
 	.ps1-layer-1 { animation-delay: 0s; }
 	.ps1-layer-2 { animation-delay: 1s; }
 	.ps1-layer-3 { animation-delay: 2s; }
-	
 	@keyframes pulse {
 		0%, 100% { opacity: 0.1; transform: scale(1); }
 		50% { opacity: 0.3; transform: scale(1.05); }
 	}
-	
 	.stats-overlay {
 		position: absolute;
 		top: 10px;
@@ -623,13 +516,11 @@ await detectCapabilities();
 		padding: 10px;
 		border-radius: 4px;
 	}
-	
 	.stat {
 		font-size: 11px;
 		color: #ffff00;
 		margin: 2px 0;
 	}
-	
 	.technical-info {
 		background: rgba(0, 0, 0, 0.9);
 		border: 2px solid #0088ff;
@@ -638,27 +529,22 @@ await detectCapabilities();
 		margin-top: 30px;
 		color: #ccc;
 	}
-	
 	.technical-info h4 {
 		color: #0088ff;
 		margin-bottom: 10px;
 	}
-	
 	.technical-info ul {
 		margin: 10px 0;
 		padding-left: 20px;
 	}
-	
 	.technical-info li {
 		margin: 5px 0;
 		line-height: 1.4;
 	}
-	
 	/* PS1 Style Enhancements */
 	.ps1-scene {
 		filter: contrast(1.1) saturate(1.2);
 	}
-	
 	.ps1-scanlines::before {
 		content: '';
 		position: absolute;
@@ -675,55 +561,45 @@ await detectCapabilities();
 		);
 		pointer-events: none;
 	}
-	
 	.ps1-text-glow {
-		text-shadow: 
+		text-shadow:
 			0 0 5px currentColor,
 			0 0 10px currentColor,
 			0 0 15px currentColor;
 	}
-	
 	.ps1-border {
 		border-style: solid;
 		border-width: 2px;
-		box-shadow: 
+		box-shadow:
 			inset 0 0 10px rgba(0, 255, 136, 0.1),
 			0 0 20px rgba(0, 255, 136, 0.2);
 	}
-	
 	.ps1-pixelated {
 		image-rendering: pixelated;
-		image-rendering: -moz-crisp-edges;
-		image-rendering: crisp-edges;
+		image-rendering: -moz-crisp-edge;
+		image-rendering: crisp-edge;
 	}
-	
 	/* Feature Flag Styles */
 	.fx-ps1-fx .ps1-scene {
 		filter: contrast(1.2) saturate(1.4) brightness(1.1);
 	}
-	
 	.fx-subsample-aa .ps1-aa-soft {
 		filter: blur(0.5px);
 	}
-	
 	.fx-dynamic-parallax [data-parallax] {
 		transform-style: preserve-3d;
 	}
-	
 	.fx-anisotropic-sim .visualization-area {
 		filter: blur(0.3px) sharpen(1.2);
 	}
-	
 	/* Responsive design */
 	@media (max-width: 768px) {
 		.controls-panel {
 			max-width: 100%;
 		}
-		
 		.story-header h1 {
 			font-size: 1.8em;
 		}
-		
 		.embedding-viz {
 			height: 200px;
 		}

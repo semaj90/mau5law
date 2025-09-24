@@ -2,7 +2,6 @@
   import { DropdownMenu } from 'bits-ui';
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
-
   interface Props {
     children?: Snippet;
     class?: string;
@@ -12,7 +11,6 @@
     onclick?: () => void;
     onselect?: () => void;
   }
-
   let {
     children,
     class: className = '',
@@ -22,7 +20,6 @@
     onclick,
     onselect;
   }: Props = $props();
-
   let itemClasses = $derived(cn(
     "legal-ai-dropdown-item relative flex cursor-default select-none items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
     "focus:outline-none focus:bg-slate-800/60 focus:text-amber-400",
@@ -33,7 +30,6 @@
     disabled && "pointer-events-none opacity-50 cursor-not-allowed",
     className
   ));
-
   function handleClick() {
     if (!disabled) {
       onclick?.();
@@ -41,7 +37,6 @@
     }
   }
 </script>
-
 {#if href}
   <DropdownMenu.Item asChild>
     <a
@@ -69,4 +64,3 @@
     </button>
   </DropdownMenu.Item>
 {/if}
-

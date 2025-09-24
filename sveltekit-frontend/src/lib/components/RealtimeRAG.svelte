@@ -1,7 +1,6 @@
 <!-- Real-time RAG Interface Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import { useMachine } from '@xstate/svelte';
   import { createRealtimeRAGStore, ragQueryMachine, ragQueryServices } from '$lib/stores/realtime-rag.svelte.js';
@@ -15,14 +14,12 @@
     documentTypes?: unknown[];
     onResultSelect?: unknown;
   } = $props();
-
   // Initialize real-time RAG store
   const ragStore = createRealtimeRAGStore();
   // Initialize XState machine
   const ragMachine = useMachine(ragQueryMachine, {
-    services: ragQueryServices;
+    services: ragQueryService;
   });
-
   // Local component state
   let query = $state('');
   let showAdvancedOptions = $state(false);
@@ -36,16 +33,13 @@
   let stats = $derived(ragStore.stats);
   let machineState = $derived(ragMachine.state);
   let machineContext = $derived(ragMachine.context);
-
   $effect(() => {
     ragStore.connect();
     loadDocuments();
   });
-
   onDestroy(() => {
     ragStore.disconnect();
   });
-
   async function loadDocuments() {
     try {
       const response = await fetch('/api/documents');
@@ -57,28 +51,26 @@
       console.error('Failed to load documents:', error);
     }
   }
-
   function handleQuerySubmit() {
     if (!query.trim()) return;
     ragMachine.send({
-      type: 'QUERY',;
-      query: query.trim(),;
+      type: 'QUERY',
+      query: query.trim(),
       options: {
         maxResults,
         confidenceThreshold,
-        caseId: selectedCaseId,
+        caseId: selectedCaseId
         documentTypes: selectedDocumentTypes.length > 0 ? selectedDocumentTypes : undefined
       }
     });
   }
-
   function handleFileUpload(event: Event) {
     const target = event.target as HTMLInputElement;
     const files = Array.from(target.files || []);
     files.forEach(async (file) => {
       try {
         await ragStore.uploadDocument(file, {
-          case_id: selectedCaseId,
+          case_id: selectedCaseId
           document_type: 'upload',
           uploaded_by: 'user'
         });
@@ -88,12 +80,10 @@
     });
     target.value = '';
   }
-
   function formatConfidence(score) {
     return `${Math.round(score * 100)}%`;
   }
 </script>
-
 <div class="realtime-rag-interface">
   <!-- Header with connection status -->
   <div class="rag-header">
@@ -103,7 +93,7 @@
         <div class="flex items-center space-x-2">
           <div class="connection-indicator {stats.connectionStatus}"></div>
           <span class="text-sm text-gray-600">
-            {stats.connectionStatus === 'connected' ? 'Connected' : 
+            {stats.connectionStatus === 'connected' ? 'Connected' :
              stats.connectionStatus === 'connecting' ? 'Connecting...' : 'Disconnected'}
           </span>
         </div>
@@ -113,7 +103,6 @@
       </div>
     </div>
   </div>
-
   <!-- Query input section -->
   <div class="query-section">
     <div class="relative">
@@ -130,7 +119,6 @@
           }
         }}
       />
-      
       <button
         type="button"
         onclick={handleQuerySubmit}
@@ -148,7 +136,6 @@
         {/if}
       </button>
     </div>
-
     <!-- Advanced options toggle -->
     <div class="flex items-center justify-between mt-3">
       <button
@@ -158,7 +145,6 @@
       >
         {showAdvancedOptions ? 'Hide' : 'Show'} Advanced Options
       </button>
-      
       {#if machineState.matches('success') || machineState.matches('error')}
         <button
           type="button"
@@ -169,7 +155,6 @@
         </button>
       {/if}
     </div>
-
     <!-- Advanced options panel -->
     {#if showAdvancedOptions}
       <div class="advanced-options mt-4 p-4 bg-gray-50 rounded-lg">
@@ -186,7 +171,6 @@
               class="w-full"
             />
           </div>
-
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1" for="confidence">
               Confidence: {formatConfidence(confidenceThreshold)}
@@ -200,7 +184,6 @@
               class="w-full"
             />
           </div>
-
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1" for="document-types">
               Document Types
@@ -221,7 +204,6 @@
       </div>
     {/if}
   </div>
-
   <!-- Results section -->
   {#if machineState.matches('success')}
     <div class="results-section mt-6">
@@ -231,22 +213,19 @@
           Confidence: {formatConfidence(machineContext.confidence)}
         </div>
       </div>
-
       <div class="main-response mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
         <div class="prose max-w-none">
           {machineContext.results?.response || 'No response available'}
         </div>
       </div>
-
       {#if machineContext.sources && machineContext.sources.length > 0}
         <div class="sources-section">
           <h4 class="text-md font-medium text-gray-900 mb-3">
             Sources ({machineContext.sources.length})
           </h4>
-          
           <div class="space-y-3">
             {#each machineContext.sources as source}
-              <div 
+              <div
                 class="source-nier-bits-card p-4 border border-gray-200 rounded-lg hover:border-blue-300 cursor-pointer transition-colors"
                 onclick={() => onResultSelect?.(source)}
               >
@@ -260,12 +239,10 @@
                         {source.document_type}
                       </span>
                     </div>
-                    
                     <p class="text-sm text-gray-600 line-clamp-3">
                       {source.excerpt}
                     </p>
                   </div>
-                  
                   <div class="ml-4 text-right">
                     <div class="text-sm font-medium text-blue-600">
                       {formatConfidence(source.similarity_score)}
@@ -282,7 +259,6 @@
       {/if}
     </div>
   {/if}
-
   <!-- Error state -->
   {#if machineState.matches('error')}
     <div class="error-section mt-6">
@@ -306,7 +282,6 @@
       </div>
     </div>
   {/if}
-
   <!-- Document upload section -->
   <div class="upload-section mt-6">
     <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-400 transition-colors">
@@ -334,14 +309,12 @@
       </div>
     </div>
   </div>
-
   <!-- Processing jobs status -->
   {#if processingJobs.length > 0}
     <div class="processing-section mt-6">
       <h4 class="text-md font-medium text-gray-900 mb-3">
         Processing Queue ({processingJobs.length})
       </h4>
-      
       <div class="space-y-2">
         {#each processingJobs as job}
           <div class="flex items-center justify-between p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
@@ -362,7 +335,6 @@
                   </svg>
                 {/if}
               </div>
-              
               <div>
                 <div class="text-sm font-medium text-gray-900">
                   {job.filename}
@@ -372,7 +344,6 @@
                 </div>
               </div>
             </div>
-            
             <div class="text-xs text-gray-400">
               {job.job_id.substring(0, 8)}...
             </div>
@@ -382,73 +353,59 @@
     </div>
   {/if}
 </div>
-
 <style>
-  .realtime-rag-interface {;
+  .realtime-rag-interface {
     max-width: 1200px;
     margin: 0 auto;
     padding: 1rem;
   }
-
   .connection-indicator {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     background-color: #ef4444;
   }
-
   .connection-indicator.connected {
-    background-color: #22c55e;
+    background-color: #22c55;
     animation: pulse 2s infinite;
   }
-
   .connection-indicator.connecting {
     background-color: #eab308;
     animation: pulse 1s infinite;
   }
-
   .source-card:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
-
   .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
   }
-
   .processing-spinner {
     display: flex;
     align-items: center;
     justify-content: center;
   }
-
   .prose {
     line-height: 1.6;
   }
-
   @media (max-width: 768px) {
     .realtime-rag-interface {
       padding: 0.5rem;
     }
-
     .advanced-options {
       grid-template-columns: 1fr;
     }
-
     .rag-header .flex {
       flex-direction: column;
       gap: 0.5rem;
     }
   }
 </style>
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

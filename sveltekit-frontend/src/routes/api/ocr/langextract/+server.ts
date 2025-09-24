@@ -1,22 +1,18 @@
 import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
 import { cache, cacheEmbedding, cacheSearchResults } from '$lib/server/cache/redis'
-
 // Accept text and return embedding tensor with caching and indexing hooks
 export const POST: RequestHandler = async ({ request, fetch }) => {
   try {
     const { text, model = 'nomic-embed-text', tags = [], type = 'ocr' } = await request.json()
     if (!text || typeof text !== 'string') return json({ error: 'Missing text' }, { status: 400 })
-
     const key = `tensor:${model}:${btoa(text).slice(0, 64)}`
     const cached = await cache.get<number[]>(key)
     if (cached) {
       // Mirror both fields for compatibility
       return json({ tensor: cached, embedding: cached, cached: true, model, tags, type })
     }
-
     const fastApiUrl = process.env.FASTAPI_URL || process.env.PUBLIC_FASTAPI_URL
-
     // Helper to finalize and cache response
     const finalize = async (embedding: number[], wasCached = false) => {
       await cache.set(key, embedding, 24 * 60 * 60 * 1000)
@@ -24,7 +20,6 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       await cacheSearchResults(text, 'tensor', [{ id: key, score: 1 }], { model, tags })
       return json({ tensor: embedding, embedding, cached: wasCached, model, tags, type })
     }
-
     // Primary: FastAPI embed service
     if (fastApiUrl) {
       try {
@@ -42,12 +37,11 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         // fall through to Go fallback on error
       }
     }
-
     // Fallback: Go tensor bridge (mock-capable) to get an embedding when FastAPI isn't configured/available
     try {
       const goReq = {
         operation: 'vectorize',
-        documentId: key,
+        documentId: key
         data: [] as number[],
         options: { timeout: 5000 }
       }
@@ -66,7 +60,6 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     } catch {
       // swallow and report below
     }
-
     // If we reached here, no backend produced an embedding
     return json()
       {

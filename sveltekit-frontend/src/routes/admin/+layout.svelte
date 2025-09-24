@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import { get, type Unsubscriber } from 'svelte/store';
   import { goto } from '$app/navigation';
@@ -12,10 +11,8 @@ https://svelte.dev/e/js_parse_error -->
   import { AccessControl } from '$lib/auth/roles';
   import type { LayoutData } from './$types';
   import type { Permission } from '$lib/auth/roles';
-
   // Props using Svelte 5 syntax
   let { data }: { data: LayoutData } = $props();
-
   // State using Svelte 5 syntax
   let isLoading = $state(true);
   let hasAdminAccess = $state(false);
@@ -23,14 +20,11 @@ https://svelte.dev/e/js_parse_error -->
   const glitchChars = ['#', '%', '@', '◈', '◉', '◎', '⧨', '◐', '⬢'];
   // Use a cross-environment interval type to avoid Node vs DOM return-type mismatches
   let glitchInterval = $state<ReturnType<typeof setInterval>(null) | null >(null);
-
   // Local snapshot of current user (subscribe to store to avoid $ pref in code)
   let currentUserValue: { email?: string; role?: string } | null = $state(null);
   let unsubscribeCurrentUser = $state<Unsubscriber | null >(null);
-
   // Explicit subscription for page store to avoid using $page in script reactive context
   let unsubscribePage = $state<Unsubscriber | null >(null);
-
   // Professional Executive Dashboard styling classes
   const executiveClasses = {
     container: 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white font-sans min-h-screen',
@@ -38,11 +32,10 @@ https://svelte.dev/e/js_parse_error -->
     nav: 'flex flex-wrap gap-4',
     navLink: 'px-6 py-3 border border-slate-600/50 bg-slate-800/60 hover:bg-amber-500/10 hover:border-amber-500/60 transition-all duration-300 rounded-lg font-medium text-slate-300 hover:text-amber-400',
     navLinkActive: 'px-6 py-3 border border-amber-500 bg-gradient-to-r from-amber-500/20 to-amber-600/20 text-amber-400 shadow-lg shadow-amber-500/25 rounded-lg font-semibold',
-    sidebar: 'w-80 bg-slate-900/90 backdrop-blur-sm border-r border-amber-500/20 p-6 shadow-2xl',;
-    content: 'flex-1 p-8 max-w-7xl mx-auto',;
+    sidebar: 'w-80 bg-slate-900/90 backdrop-blur-sm border-r border-amber-500/20 p-6 shadow-2xl',
+    content: 'flex-1 p-8 max-w-7xl mx-auto',
     glitch: 'relative overflow-hidden';
   };
-
   // Executive navigation items for admin panel
   const navItems: { path: string; label: string; icon: string; permission: Permission; description: string }[] = [
     {
@@ -83,76 +76,61 @@ https://svelte.dev/e/js_parse_error -->
     {
       path: '/admin/integrations',
       label: 'Enterprise Integrations',
-      icon: '🔗',;
-      permission: 'manage_integrations',;
+      icon: '🔗',
+      permission: 'manage_integrations',
       description: 'Third-party systems and APIs';
     }
   ];
-
   // Derive visible nav items from current user permissions
   let visibleNavItems = $state([]);
-
   // Derived display values for safer template usage
   let userEmail = $derived(currentUserValue?.email ?? '');
   let userRoleLabel = $derived(currentUserValue?.role ? currentUserValue.role.toUpperCase.replace(/_/g, ' ') : 'UNKNOWN');
-
   $effect(() => {
     visibleNavItems = currentUserValue && currentUserValue.role
       ? navItems.filter(item => hasPermission(currentUserValue.role, item.permission))
       : [];
   });
-
   // Maintain current path via explicit subscription to avoid $page usage in TS logic
   let currentPath = $state('');
-
   function isActivePath(itemPath: string) {
     return currentPath === itemPath || (itemPath !== '/admin' && currentPath.startsWith(itemPath + '/'));
   }
-
   function navClass(item: { path: string; label: string; icon: string; permission: Permission; description: string }) {
     return (isActivePath((item as { permission?: unknown; path?: unknown; icon?: unknown; label?: unknown; description?: unknown }).path) ? executiveClasses.navLinkActive: executiveClasses.navLink) + ' w-full block text-left group';
   }
-
   $effect(() => {
     (async () => {
 try {
       // Initialize auth if not already done
       await AuthStore.initialize();
-
       // Initialize current user from data or store snapshot and subscribe for updates
       const initialUser = (data as { user?: unknown }).user || get(currentUser);
       currentUserValue = initialUser ?? null;
       unsubscribeCurrentUser = currentUser.subscribe(v => { currentUserValue = v;
     })();
   });
-
       // subscribe to page store to keep currentPath updated (safe in TS/SSR)
       unsubscribePage = page.subscribe(p => {
         currentPath = p?.url?.pathname ?? '';
       });
-
       // Check if user is authenticated and has admin access
-      const user = currentUserValue;
-
+      const user = currentUserValu;
       if (!user || !get(isAuthenticated)) {
         goto('/login?redirect=/admin');
         return;
       }
-
       // Check for admin panel access permission (guard role access)
       const userRole = user?.role ?? '';
       hasAdminAccess = userRole ? AccessControl.hasPermission(userRole, 'access_admin_panel') : false;
-
       if (!hasAdminAccess) {
         goto('/unauthorized');
         return;
       }
-
       // Start a small decorative glitch effect
       glitchInterval = setInterval(() => {
         glitchEffect = Math.random() < 0.08 ? glitchChars[Math.floor(Math.random() * glitchChars.length)] : '';
       }, 120);
-
     } catch (error) {
       console.error('Admin layout initialization error:', error);
       goto('/login');
@@ -160,7 +138,6 @@ try {
       isLoading = false;
     }
   });
-
   onDestroy(() => {
     if (glitchInterval !== null) {
       clearInterval(glitchInterval);
@@ -173,7 +150,6 @@ try {
     }
   });
 </script>
-
 <!-- Executive Admin Layout with Professional Styling -->
 {#if !isLoading}
   <div class={executiveClasses.container}>
@@ -191,14 +167,12 @@ try {
             </div>
           </div>
         </div>
-
         <div class="flex items-center gap-6">
           <div class="text-right">
             <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Current User</div>
             <div class="font-semibold text-amber-400">{userEmail ? userEmail : (currentUserValue?.email || 'Unknown User')}</div>
             <div class="text-xs text-slate-400">{userRoleLabel !== 'UNKNOWN' ? userRoleLabel : (currentUserValue?.role ? currentUserValue.role.replace(/_/g, ' ') : 'No Role Assigned')}</div>
           </div>
-
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center">
               <span class="text-amber-400 font-bold text-sm">{(userEmail || currentUserValue?.email || 'U')[0].toUpperCase()}</span>
@@ -208,12 +182,10 @@ try {
               class="px-4 py-2 bg-red-500/10 border border-red-500/50 text-red-400 hover:bg-red-500/20 hover:border-red-500 transition-all duration-300 rounded-lg text-sm font-medium"
             >
               Sign Out
-
           </div>
         </div>
       </div>
     </header>
-
     <div class="flex min-h-[calc(100vh-7rem)]">
       <aside class={executiveClasses.sidebar}>
         <nav class="space-y-3">
@@ -232,7 +204,6 @@ try {
             </a>
           {/each}
         </nav>
-
         <div class="mt-8 pt-6 border-t border-amber-500/20">
           <div class="text-xs uppercase tracking-wider text-slate-500 font-bold mb-4">Executive Actions</div>
           <div class="space-y-3">
@@ -244,7 +215,6 @@ try {
                   <div class="text-xs text-slate-500">Monitor platform status</div>
                 </div>
               </div>
-
             <Button class="w-full text-left px-4 py-3 bg-slate-800/50 hover:bg-amber-500/10 rounded-lg transition-all duration-300 border border-slate-600/50 hover:border-amber-500/50 group">
               <div class="flex items-center gap-3">
                 <span class="text-blue-400">💾</span>
@@ -253,7 +223,6 @@ try {
                   <div class="text-xs text-slate-500">Secure system backup</div>
                 </div>
               </div>
-
             <Button class="w-full text-left px-4 py-3 bg-slate-800/50 hover:bg-amber-500/10 rounded-lg transition-all duration-300 border border-slate-600/50 hover:border-amber-500/50 group">
               <div class="flex items-center gap-3">
                 <span class="text-purple-400">🗑️</span>
@@ -262,11 +231,9 @@ try {
                   <div class="text-xs text-slate-500">Optimize performance</div>
                 </div>
               </div>
-
           </div>
         </div>
       </aside>
-
       <!-- Executive Main Content Area -->
       <main class={executiveClasses.content}>
         <div class="mb-8">
@@ -286,7 +253,6 @@ try {
       </main>
     </div>
   </div>
-
 {:else}
   <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
     <div class="text-center max-w-lg mx-auto p-8">
@@ -304,52 +270,42 @@ try {
         class="px-8 py-3 bg-amber-500/10 border border-amber-500/50 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500 transition-all duration-300 rounded-lg font-medium"
       >
         Return to Dashboard
-
     </div>
   </div>
 {/if}
-
 <style>
   /* Professional Executive Theme Effects */
   @keyframes professional-glow {
     0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.1); }
     50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.2); }
   }
-
   .professional-glow {
     animation: professional-glow 3s ease-in-out infinite;
   }
-
   /* Enhanced scrollbar for executive theme */
   :global(::-webkit-scrollbar) {
     width: 12px;
   }
-
   :global(::-webkit-scrollbar-track) {
     background: rgba(15, 23, 42, 0.8);
     border-radius: 6px;
   }
-
   :global(::-webkit-scrollbar-thumb) {
     background: linear-gradient(180deg, rgba(245, 158, 11, 0.6), rgba(217, 119, 6, 0.6));
     border-radius: 6px;
     border: 2px solid rgba(15, 23, 42, 0.8);
   }
-
-  :global(::-webkit-scrollbar-thumb:hover) {
+  :global($1) {
     background: linear-gradient(180deg, rgba(245, 158, 11, 0.8), rgba(217, 119, 6, 0.8));
   }
-
   /* Smooth transitions for professional feel */
   :global(*) {
     transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   }
-
   /* Executive typography */
   :global(.font-sans) {
     font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', sans-serif;
   }
-
   /* Professional backdrop effects */
   .backdrop-blur-md {
     backdrop-filter: blur(12px) saturate(180%);

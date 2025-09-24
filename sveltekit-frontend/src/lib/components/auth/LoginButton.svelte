@@ -13,7 +13,6 @@
     redirectAfterLogin?: string;
     redirectAfterLogout?: string;
   }
-
   let {
     variant = 'default',
     size = 'md',
@@ -24,14 +23,12 @@
     redirectAfterLogin = '/dashboard',
     redirectAfterLogout = '/'
   }: Props = $props();
-
   async function handleLogin() {
     if (redirectAfterLogin) {
       authStore.setRedirect(redirectAfterLogin);
     }
     goto('/auth/login');
   }
-
   async function handleLogout() {
     await authStore.logout();
     if (redirectAfterLogout) {
@@ -39,7 +36,6 @@
     }
   }
 </script>
-
 {#if authStore.isAuthenticated}
   <div class="auth-user-section {className}">
     {#if showUserInfo && authStore.user}
@@ -48,19 +44,18 @@
         <span class="user-role">{authStore.user.role}</span>
       </div>
     {/if}
-    <Button class="bits-btn" 
-      {variant} 
+    <Button class="bits-btn"
+      {variant}
       {size}
       onclick={handleLogout}
       disabled={authStore.isLoading}
       aria-label="Sign out"
     >
 {logoutText}
-
   </div>
 {:else}
-  <Button 
-    {variant} 
+  <Button
+    {variant}
     {size}
     class={className}
     onclick={handleLogin}
@@ -68,39 +63,32 @@
     aria-label="Sign in"
   >
 {loginText}
-
 {/if}
-
 <style>
   .auth-user-section {
     display: flex;
     align-items: center;
     gap: 0.75rem;
   }
-
   .user-info {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     font-size: 0.875rem;
   }
-
   .user-name {
     font-weight: 500;
     color: #374151;
   }
-
   .user-role {
     font-size: 0.75rem;
     color: #6b7280;
-    text-transform: capitalize;
+    text-transform: capitaliz;
   }
-
   @media (prefers-color-scheme: dark) {
     .user-name {
       color: #f9fafb;
     }
-    
     .user-role {
       color: #9ca3af;
     }

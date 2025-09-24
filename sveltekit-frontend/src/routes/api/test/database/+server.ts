@@ -1,26 +1,21 @@
 import type { RequestHandler } from './$types.js'
-
 // Database CRUD Test API
 // Tests PostgreSQL, pgvector, and Drizzle ORM integration
-
 import { json } from '@sveltejs/kit'
 import { db } from '$lib/server/db/index'
 import { users, cases, reports, evidence, criminals, personsOfInterest } from '$lib/server/db/unified-schema'
 import { eq, desc, sql } from 'drizzle-orm'
 import { URL } from "url"
 }
-
 export interface TestResult {
   test: string
   status: 'success' | 'error'
   data?: any
   error?: string
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   const testType = url.searchParams.get('test') || 'all'
   const results: TestResult[] = []
-
   try {
     // Test 1: Database Connection
     if (testType === 'all' || testType === 'connection') {
@@ -39,7 +34,6 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       }
     }
-
     // Test 2: Users CRUD
     if (testType === 'all' || testType === 'users') {
       try {
@@ -51,7 +45,6 @@ export const GET: RequestHandler = async ({ url }) => {
           role: users.role,
           isActive: users.isActive
         }).from(users).limit(5)
-
         results.push({
           test: 'users_read',
           status: 'success',
@@ -65,7 +58,6 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       }
     }
-
     // Test 3: Cases CRUD
     if (testType === 'all' || testType === 'cases') {
       try {
@@ -76,7 +68,6 @@ export const GET: RequestHandler = async ({ url }) => {
           caseNumber: cases.caseNumber,
           createdAt: cases.createdAt
         }).from(cases).orderBy(desc(cases.createdAt)).limit(5)
-
         results.push({
           test: 'cases_read',
           status: 'success',
@@ -90,7 +81,6 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       }
     }
-
     // Test 4: Reports CRUD
     if (testType === 'all' || testType === 'reports') {
       try {
@@ -100,7 +90,6 @@ export const GET: RequestHandler = async ({ url }) => {
           status: reports.status,
           createdAt: reports.createdAt
         }).from(reports).orderBy(desc(reports.createdAt)).limit(5)
-
         results.push({
           test: 'reports_read',
           status: 'success',
@@ -114,7 +103,6 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       }
     }
-
     // Test 5: Evidence CRUD
     if (testType === 'all' || testType === 'evidence') {
       try {
@@ -125,7 +113,6 @@ export const GET: RequestHandler = async ({ url }) => {
           status: evidence.status,
           createdAt: evidence.createdAt
         }).from(evidence).orderBy(desc(evidence.createdAt)).limit(5)
-
         results.push({
           test: 'evidence_read',
           status: 'success',
@@ -139,7 +126,6 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       }
     }
-
     // Test 6: Persons of Interest CRUD
     if (testType === 'all' || testType === 'poi') {
       try {
@@ -150,7 +136,6 @@ export const GET: RequestHandler = async ({ url }) => {
           status: personsOfInterest.status,
           createdAt: personsOfInterest.createdAt
         }).from(personsOfInterest).orderBy(desc(personsOfInterest.createdAt)).limit(5)
-
         results.push({
           test: 'persons_of_interest_read',
           status: 'success',
@@ -164,7 +149,6 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       }
     }
-
     // Test 7: Criminals CRUD
     if (testType === 'all' || testType === 'criminals') {
       try {
@@ -176,7 +160,6 @@ export const GET: RequestHandler = async ({ url }) => {
           status: criminals.status,
           createdAt: criminals.createdAt
         }).from(criminals).orderBy(desc(criminals.createdAt)).limit(5)
-
         results.push({
           test: 'criminals_read',
           status: 'success',
@@ -190,7 +173,6 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       }
     }
-
     // Test 8: Vector Extension Test
     if (testType === 'all' || testType === 'vector') {
       try {
@@ -208,21 +190,19 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       }
     }
-
     return json({
-      success: true,
+      success: true
       timestamp: new Date().toISOString(),
-      tests: results,
+      tests: results
       summary: {
         total: results.length,
         passed: results.filter(item => item.length),
         failed: results.filter(item => item.length)
       }
     })
-
   } catch (error: any) {
     return json({
-      success: false,
+      success: false
       error: error instanceof Error ? error.message: String(error),
       timestamp: new Date().toISOString()
     }, { status: 500 })

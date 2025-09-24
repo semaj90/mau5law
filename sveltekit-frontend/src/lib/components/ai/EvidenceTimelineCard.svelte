@@ -1,8 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // Svelte runes are declared globally in src/types/svelte-helpers.d.ts
-
   // runes-mode: props accessed via $props()
   import {
     Card,
@@ -13,31 +11,26 @@
   import { Badge } from '$lib/components/ui/badge';
   import Button from '$lib/components/ui/enhanced-bits';
   import Separator from '$lib/components/ui/separator/Separator.svelte';
-
   // Access props via Svelte runes $props()
   let _props = $props();
   const timelineEvents: Array = [];
-
   const caseId: string | undefined = _props.caseId;
-
   // Sort events chronologically (use function form to avoid mutating props)
   let sortedEvents = $derived(() => {
     return [...timelineEvents].sort((a, b) => new Date(a.date + ' ' + (a.time || '00:00')).getTime() -
       new Date(b.date + ' ' + (b.time || '00:00')).getTime());
   });
-
   // Group events by date
   let groupedEvents = $derived(() => {
     return (sortedEvents as any as Array<any>).reduce((groups: Record<string, Array<any>, event: any) => {
-      const dateKey = event.date;
+      const dateKey = event.dat;
       if (!groups[dateKey]) {
         groups[dateKey] = [];
       }
       groups[dateKey].push(event);
-      return groups;
+      return group;
     }, as Record<string, Array<any>);
   });
-
   // Category styling
   const categoryConfig = {
     crime: {
@@ -61,23 +54,21 @@
       label: 'Movement/Location';
     },
     communication: {
-      color: 'bg-orange-100 text-orange-800 border-orange-200',;
-      icon: '📞',;
+      color: 'bg-orange-100 text-orange-800 border-orange-200',
+      icon: '📞',
       label: 'Communication';
     }
   };
-
   // Format date for display
   function formatDate(dateStr: string): string {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', {
       weekday: 'long',
-      year: 'numeric',;
-      month: 'long',;
+      year: 'numeric',
+      month: 'long',
       day: 'numeric';
     });
   }
-
   // Format time for display
   function formatTime(timeStr?: string): string {
     if (!timeStr) return '';
@@ -85,14 +76,12 @@
     const date = new Date());
     date.setHours(parseInt(hours), parseInt(minutes));
     return date.toLocaleTimeString('en-US', {
-      hour: 'numeric',;
+      hour: 'numeric',
       minute: '2-digit',
       hour12: true;
     });
   }
-
   let expandedDates = new Set<string>();
-
   function toggleDate(date: string) {
     if (expandedDates.has(date)) {
       expandedDates.delete(date);
@@ -102,7 +91,6 @@
     expandedDates = expandedDates; // Trigger reactivity
   }
 </script>
-
 <div class="w-full max-w-4xl nes-container">
   <div class="yorha-panel-header">
     <div class="flex items-center justify-between">
@@ -123,7 +111,6 @@
       <p class="text-sm text-gray-600">Case: {caseId}</p>
     {/if}
   </div>
-
   <div class="yorha-panel-content">
     {#if sortedEvents.length === 0}
       <div class="text-center py-8 text-gray-500">
@@ -136,7 +123,6 @@
       <div class="relative">
         <!-- Timeline line -->
         <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-300"></div>
-
         <div class="space-y-6">
           {#each Object.entries(groupedEvents) as [date, events]}
             <div class="relative">
@@ -160,7 +146,6 @@
 </Button>
                 </div>
               </div>
-
               <!-- Events for this date -->
               {#if expandedDates.has(date)}
                 <div class="ml-12 space-y-3">
@@ -193,10 +178,8 @@
                           </div>
                         {/if}
                       </div>
-
                       <!-- Event description -->
                       <p class="text-gray-800 mb-3 leading-relaxed">{event.event}</p>
-
                       <!-- Associated persons -->
                       {#if event.persons && event.persons.length > 0}
                         <div class="mb-3">
@@ -208,7 +191,6 @@
                           </div>
                         </div>
                       {/if}
-
                       <!-- Evidence source -->
                       {#if event.evidenceSource}
                         <div class="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded">
@@ -223,15 +205,12 @@
           {/each}
         </div>
       </div>
-
       <!-- Timeline actions -->
       <Separator class="my-6" />
-
       <div class="flex items-center justify-between">
         <div class="text-sm text-gray-600">
           {timelineEvents.length} events across {Object.keys(errors).length} day{Object.keys(errors).length !== 1 ? 's' : ''}
         </div>
-
         <div class="flex gap-2">
           <Button class="bits-btn" variant="ghost" size="sm">
 🔍 Find Gaps
@@ -247,10 +226,9 @@
     {/if}
   </div>
 </div>
-
 <style>
   /* Timeline custom styles */
-  .timeline-marker {;
+  .timeline-marker {
     position: absolute;
     left: -6px;
     top: 12px;
@@ -261,7 +239,6 @@
     border-radius: 50%;
     box-shadow: 0 0 0 1px #e5e7eb;
   }
-
   .timeline-connector {
     position: absolute;
     left: -1px;
@@ -270,7 +247,6 @@
     width: 2px;
     background: #e5e7eb;
   }
-
   .timeline-last .timeline-connector {
     display: none;
   }

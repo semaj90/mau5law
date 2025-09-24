@@ -5,13 +5,12 @@ Production-ready with native Windows support
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
-  import { 
-    imageGenerationService, 
+  import {
+    imageGenerationService,
     imageGenerationStore,
     type ImageGenerationRequest,
-    type ImageGenerationResult 
+    type ImageGenerationResult
   } from '$lib/services/local-image-generation-service.js';
   interface Props {
     caseId?: string;
@@ -19,13 +18,12 @@ Production-ready with native Windows support
     initialPrompt?: string;
     compact?: boolean;
   }
-  let { 
-    caseId = '', 
-    onImageGenerated = () => , 
+  let {
+    caseId = '',
+    onImageGenerated = () => ,
     initialPrompt = '',
-    compact = false 
+    compact = false
   }: Props = $props();
-
   // Component state
   let prompt = $state(initialPrompt);
   let negativePrompt = $state('blurry, low quality, distorted, text, watermark, signature');
@@ -44,14 +42,12 @@ Production-ready with native Windows support
   let generationHistory = $state<ImageGenerationResult[]>([]);
   // Provider status
   let providerStatus = $state<Map<string, string>('')>(new Map());
-
   $effect(() => {
     // Load provider status
     providerStatus = imageGenerationService.getProviderStatus();
     // Load generation history
     loadHistory();
   });
-
   async function loadHistory() {
     try {
       generationHistory = await imageGenerationService.getGenerationHistory();
@@ -59,13 +55,11 @@ Production-ready with native Windows support
       console.error('Failed to load generation history:', error);
     }
   }
-
   async function generateImage() {
     if (!prompt.trim()) {
       alert('Please enter a prompt');
       return;
     }
-
     try {
       const request: ImageGenerationRequest = {
         prompt: prompt.trim(),
@@ -74,11 +68,10 @@ Production-ready with native Windows support
         height,
         steps,
         cfgScale,
-        seed: seed === -1 ? undefined : seed,;
-        style: selectedStyle,;
+        seed: seed === -1 ? undefined : seed
+        style: selectedStyle
         provider: selectedProvider;
       };
-
       const result = await imageGenerationService.generateImage(request);
       // Update history
       generationHistory = [result, ...generationHistory];
@@ -90,7 +83,6 @@ Production-ready with native Windows support
       alert(`Image generation failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
     }
   }
-
   function useImageAsEvidence(result: ImageGenerationResult) {
     if (caseId && onImageGenerated) {
       // Create evidence record for the generated image
@@ -101,7 +93,7 @@ Production-ready with native Windows support
         evidenceType: 'image',
         fileUrl: (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).imageUrl,
         metadata: {
-          aiGenerated: true,;
+          aiGenerated: true
           provider: (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).provider,
           parameters: (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).parameters,
           generatedAt: (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).timestamp
@@ -111,7 +103,6 @@ Production-ready with native Windows support
       onImageGenerated(result);
     }
   }
-
   async function regenerateWithSeed(result: ImageGenerationResult) {
     prompt = (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).prompt;
     if ((result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).metadata.seed !== -1) {
@@ -122,13 +113,11 @@ Production-ready with native Windows support
     height = (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).metadata.size.height;
     await generateImage();
   }
-
   function copyPrompt(text: string) {
     navigator.clipboard.writeText.then(() => {
       // Could add a toast notification here
     });
   }
-
   // Legal/evidence specific prompts
   const legalPromptTemplates = [
     { name: 'Crime Scene Recreation', prompt: 'detailed crime scene recreation, professional forensic photography style, accurate lighting, evidence markers' },
@@ -139,7 +128,6 @@ Production-ready with native Windows support
     { name: 'Legal Diagram', prompt: 'legal process diagram, flowchart style, professional presentation, clear annotations' }
   ];
 </script>
-
 <div class="image-generator nes-container is-rounded {compact ? 'compact' : 'full'}">
   <div class="generator-header">
     <h3>🎨 AI Image Generation</h3>
@@ -151,24 +139,22 @@ Production-ready with native Windows support
       {/each}
     </div>
   </div>
-
   <div class="generation-controls">
     <!-- Prompt Input -->
     <div class="input-group">
-      <label class="nes-text" for="prompt">Prompt:</label><textarea id="prompt" 
-        class="nes-textarea" 
-        bind:value={prompt} 
+      <label class="nes-text" for="prompt">Prompt:</label><textarea id="prompt"
+        class="nes-textarea"
+        bind:value={prompt}
         placeholder="Describe the image you want to generate..."
         rows="3"
       ></textarea>
     </div>
-
     <!-- Legal Templates -->
     <div class="template-section">
       <label class="nes-text">Legal Templates:</label>
       <div class="template-buttons">
         {#each legalPromptTemplates as template}
-          <button 
+          <button
             class="template-btn nes-btn is-primary"
             onclick={() => prompt = template.prompt}
           >
@@ -177,7 +163,6 @@ Production-ready with native Windows support
         {/each}
       </div>
     </div>
-
     <!-- Style and Provider Selection -->
     <div class="selection-row">
       <div class="select-group">
@@ -193,7 +178,6 @@ Production-ready with native Windows support
           </select>
         </div>
       </div>
-
       <div class="select-group">
         <label class="nes-text">Provider:</label>
         <div class="nes-select">
@@ -207,7 +191,6 @@ Production-ready with native Windows support
         </div>
       </div>
     </div>
-
     <!-- Advanced Controls -->
     <div class="advanced-toggle">
       <label class="nes-checkbox">
@@ -215,18 +198,16 @@ Production-ready with native Windows support
         <span>Advanced Settings</span>
       </label>
     </div>
-
     {#if advancedMode}
       <div class="advanced-controls nes-container is-dark">
         <div class="input-group">
-          <label class="nes-text" for="negative-prompt">Negative Prompt:</label><textarea id="negative-prompt" 
+          <label class="nes-text" for="negative-prompt">Negative Prompt:</label><textarea id="negative-prompt"
             class="nes-textarea" ;
-            bind:value={negativePrompt} 
+            bind:value={negativePrompt}
             placeholder="What to avoid in the image..."
             rows="2"
           ></textarea>
         </div>
-
         <div class="parameter-row">
           <div class="param-group">
             <label class="nes-text" for="width">Width:</label>
@@ -251,10 +232,9 @@ Production-ready with native Windows support
         </div>
       </div>
     {/if}
-
     <!-- Generation Button and Status -->
     <div class="generate-section">
-      <button 
+      <button
         class="generate-btn nes-btn is-success"
         onclick={generateImage}
         disabled={$imageGenerationStore.status.isGenerating || !prompt.trim()}
@@ -266,7 +246,6 @@ Production-ready with native Windows support
           🎨 Generate Image
         {/if}
       </button>
-
       {#if $imageGenerationStore.status.isGenerating}
         <div class="progress-info nes-container is-rounded">
           <div class="nes-progress is-primary">
@@ -277,7 +256,6 @@ Production-ready with native Windows support
           <p>{$imageGenerationStore.status.currentStep}</p>
         </div>
       {/if}
-
       {#if $imageGenerationStore.status.error}
         <div class="error-message nes-container is-error">
           <p>❌ {$imageGenerationStore.status.error}</p>
@@ -285,32 +263,31 @@ Production-ready with native Windows support
       {/if}
     </div>
   </div>
-
   <!-- Generated Image Display -->
   {#if $imageGenerationStore.currentGeneration}
     <div class="current-generation nes-container is-rounded">
       <h4>Latest Generation</h4>
       <div class="image-result">
-        <img 
-          src={$imageGenerationStore.currentGeneration.imageUrl} 
+        <img
+          src={$imageGenerationStore.currentGeneration.imageUrl}
           alt={$imageGenerationStore.currentGeneration.prompt}
           class="generated-image"
         >
         <div class="image-actions">
-          <button 
+          <button
             class="nes-btn is-primary"
             onclick={() => copyPrompt($imageGenerationStore.currentGeneration!.prompt)}
           >
             📋 Copy Prompt
           </button>
-          <button 
+          <button
             class="nes-btn is-warning"
             onclick={() => regenerateWithSeed($imageGenerationStore.currentGeneration!)}
           >
             🔄 Regenerate
           </button>
           {#if caseId}
-            <button 
+            <button
               class="nes-btn is-success"
               onclick={() => useImageAsEvidence($imageGenerationStore.currentGeneration!)}
             >
@@ -329,35 +306,33 @@ Production-ready with native Windows support
       </div>
     </div>
   {/if}
-
   <!-- History Section -->
   <div class="history-section">
     <div class="history-header">
-      <button 
+      <button
         class="nes-btn is-normal"
         onclick={() => showHistory = !showHistory}
       >
         📚 History ({generationHistory.length})
       </button>
       {#if generationHistory.length > 0}
-        <button 
+        <button
           class="nes-btn is-error"
-          onclick={() => { 
-            imageGenerationService.clearHistory(); 
-            generationHistory = []; 
+          onclick={() => {
+            imageGenerationService.clearHistory();
+            generationHistory = [];
           }}
         >
           🗑️ Clear
         </button>
       {/if}
     </div>
-
     {#if showHistory}
       <div class="history-grid">
         {#each generationHistory as result}
           <div class="history-item nes-container is-rounded">
-            <img 
-              src={(result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).imageUrl} 
+            <img
+              src={(result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).imageUrl}
               alt={(result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).prompt}
               class="history-thumbnail"
               onclick={() => selectedImage = result}
@@ -371,7 +346,6 @@ Production-ready with native Windows support
       </div>
     {/if}
   </div>
-
   <!-- Selected Image Modal -->
   {#if selectedImage}
     <div class="modal-overlay" onclick={() => selectedImage = null}>
@@ -389,7 +363,7 @@ Production-ready with native Windows support
             <p><strong>Generated:</strong> {selectedImage.timestamp.toLocaleString()}</p>
           </div>
           <div class="modal-actions">
-            <button 
+            <button
               class="nes-btn is-primary"
               onclick={() => {
                 prompt = selectedImage!.prompt;
@@ -398,14 +372,14 @@ Production-ready with native Windows support
             >
               Use Prompt
             </button>
-            <button 
+            <button
               class="nes-btn is-warning"
               onclick={() => regenerateWithSeed(selectedImage!)}
             >
               Regenerate
             </button>
             {#if caseId}
-              <button 
+              <button
                 class="nes-btn is-success"
                 onclick={() => {
                   useImageAsEvidence(selectedImage!);
@@ -421,69 +395,57 @@ Production-ready with native Windows support
     </div>
   {/if}
 </div>
-
 <style>
   .image-generator {
     max-width: 100%;
     margin: 1rem 0;
   }
-
   .image-generator.compact {
     max-width: 600px;
   }
-
   .generator-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1rem;
   }
-
   .provider-status {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
   }
-
   .provider-badge {
     font-size: 0.75rem;
   }
-
   .generation-controls {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .input-group {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .template-section {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .template-buttons {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
   }
-
   .template-btn {
     font-size: 0.75rem;
     padding: 0.25rem 0.5rem;
   }
-
   .selection-row {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
   }
-
   .select-group {
     display: flex;
     flex-direction: column;
@@ -491,24 +453,20 @@ Production-ready with native Windows support
     flex: 1;
     min-width: 150px;
   }
-
   .advanced-toggle {
     margin: 0.5rem 0;
   }
-
   .advanced-controls {
     display: flex;
     flex-direction: column;
     gap: 1rem;
     padding: 1rem;
   }
-
   .parameter-row {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
   }
-
   .param-group {
     display: flex;
     flex-direction: column;
@@ -516,26 +474,22 @@ Production-ready with native Windows support
     flex: 1;
     min-width: 100px;
   }
-
   .generate-section {
     display: flex;
     flex-direction: column;
     gap: 1rem;
     align-items: center;
   }
-
   .generate-btn {
     padding: 1rem 2rem;
     font-size: 1.1rem;
     min-width: 200px;
   }
-
   .progress-info {
     width: 100%;
     max-width: 400px;
     text-align: center;
   }
-
   .spinner {
     display: inline-block;
     width: 16px;
@@ -546,91 +500,76 @@ Production-ready with native Windows support
     animation: spin 1s linear infinite;
     margin-right: 0.5rem;
   }
-
   @keyframes spin {
     to { transform: rotate(360deg); }
   }
-
   .current-generation {
     margin: 1rem 0;
   }
-
   .image-result {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .generated-image {
     max-width: 100%;
     height: auto;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
-
   .image-actions {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
     justify-content: center;
   }
-
   .image-metadata {
     font-size: 0.875rem;
     padding: 0.5rem;
   }
-
   .history-section {
     margin-top: 2rem;
   }
-
   .history-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1rem;
   }
-
   .history-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 1rem;
   }
-
   .history-item {
     cursor: pointer;
     transition: transform 0.2s ease;
   }
-
   .history-item:hover {
     transform: translateY(-2px);
   }
-
   .history-thumbnail {
     width: 100%;
     height: 120px;
     object-fit: cover;
     border-radius: 4px;
   }
-
   .history-info {
     margin-top: 0.5rem;
   }
-
   .history-prompt {
     font-size: 0.75rem;
     font-weight: bold;
     margin: 0;
   }
-
   .history-meta {
     font-size: 0.7rem;
     color: #666;
     margin: 0;
   }
-
   .modal-overlay {
     position: fixed;
+d;
     top: 0;
     left: 0;
     width: 100%;
@@ -642,54 +581,46 @@ Production-ready with native Windows support
     z-index: 1000;
     padding: 1rem;
   }
-
   .modal-content {
     max-width: 90vw;
     max-height: 90vh;
-    overflow: auto;
+    overflow: aut;
+o;
     background: white;
   }
-
   .modal-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1rem;
   }
-
   .modal-image {
     max-width: 100%;
     height: auto;
     border-radius: 8px;
     margin-bottom: 1rem;
   }
-
   .modal-info {
     margin-bottom: 1rem;
   }
-
   .modal-actions {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
     justify-content: center;
   }
-
   .error-message {
     color: #d32f2f;
     text-align: center;
   }
-
   @media (max-width: 768px) {
     .selection-row,
     .parameter-row {
       flex-direction: column;
     }
-    
     .history-grid {
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
-    
     .modal-content {
       margin: 0.5rem;
       max-width: calc(100vw - 1rem);

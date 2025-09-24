@@ -4,24 +4,20 @@ NES-styled label with legal AI theming
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
-  
   interface LabelProps {
     for?: string;
     required?: boolean;
     class?: string;
     children?: import('svelte').Snippet;
   }
-  
   let {
-    for: htmlFor,
-    required = false,;
+    for: htmlFor
+    required = false,
     class: className = '',
-    children;
+    childre;
   }: LabelProps = $props();
-  
   // NES-style label classes
   const labelClasses = $derived(
     cn(
@@ -30,38 +26,31 @@ NES-styled label with legal AI theming
       'block text-sm font-medium mb-1',
       'font-mono tracking-wide',
       'text-gray-900',
-      
       // Legal AI enhancements
       'transition-colors duration-200',
       'cursor-pointer',
-      
       // NES styling
       'font-semibold',
       'text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1)',
-      
       className
     )
   );
 </script>
-
-<label 
+<label
   for={htmlFor}
   class={labelClasses}
 >
   {#if children}
     {@render children()}
   {/if}
-  
   {#if required}
     <span class="text-red-500 ml-1" aria-label="required">*</span>
   {/if}
 </label>
-
 <style>
   .bits-label {
     font-family: 'Courier New', monospace;
   }
-  
   .bits-label:hover {
     color: rgb(59, 130, 246);
   }
@@ -71,7 +60,6 @@ NES-styled label with legal AI theming
 /* Legal AI specific styling */ .bits-label {
     position: relative;
   }
-  
   .bits-label::before {
     content: '';
     position: absolute;
@@ -82,7 +70,6 @@ NES-styled label with legal AI theming
     background: linear-gradient(45deg, #00ff9f, #00b4ff);
     transition: width 0.3s ease;
   }
-  
   .bits-label:hover::before {
     width: 100%;
   }

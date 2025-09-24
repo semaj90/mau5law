@@ -1,11 +1,9 @@
 // MinIO List Objects API Endpoint
 // Lists objects in MinIO bucket with optional filtering
-
 import { json } from '@sveltejs/kit'
 import { env } from '$env/dynamic/private'
 import { Client as MinIOClient } from 'minio'
 import type { RequestHandler } from './$types'
-
 interface MinIOObject {
   name: string
   etag: string
@@ -14,7 +12,6 @@ interface MinIOObject {
   prefix?: string
   metadata?: Record<string, string>
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const bucketName = url.searchParams.get('bucket') || env.MINIO_BUCKET_NAME || 'legal-documents'
@@ -22,13 +19,11 @@ export const GET: RequestHandler = async ({ url }) => {
     const recursive = url.searchParams.get('recursive') === 'true'
     const maxKeys = parseInt(url.searchParams.get('maxKeys') || '100')
     const caseId = url.searchParams.get('case_id')
-
     // MinIO configuration from environment
     const minioEndpoint = env.MINIO_ENDPOINT || 'localhost:9000'
     const accessKey = env.MINIO_ACCESS_KEY || 'minio'
     const secretKey = env.MINIO_SECRET_KEY || 'minio123'
     const useSSL = env.MINIO_USE_SSL === 'true'
-
     // Initialize MinIO client
     const minioClient = new MinIOClient({
       endPoint: minioEndpoint.split(':')[0],
@@ -37,26 +32,21 @@ export const GET: RequestHandler = async ({ url }) => {
       accessKey,
       secretKey
     })
-
     // Check if bucket exists
     const bucketExists = await minioClient.bucketExists(bucketName)
     if (!bucketExists) {
       return json({ error: 'Bucket does not exist' }, { status: 404 })
     }
-
     // Determine search prefix
     let searchPrefix = prefix
     if (caseId && !prefix) {
       searchPrefix = `cases/${caseId}/`
     }
-
     // List objects
     const objectsList: MinIOObject[] = []
     const objectStream = minioClient.listObjects(bucketName, searchPrefix, recursive)
-
     for await (const obj of objectStream) {
       if (objectsList.length >= maxKeys) break
-
       objectsList.push({
         name: obj.name,
         etag: obj.etag,
@@ -65,7 +55,6 @@ export const GET: RequestHandler = async ({ url }) => {
         prefix: obj.prefix
       })
     }
-
     // For each object, try to get metadata (optional, can be expensive)
     const includeMetadata = url.searchParams.get('metadata') === 'true'
     if (includeMetadata && objectsList.length <= 20) { // Only for small lists
@@ -78,7 +67,6 @@ export const GET: RequestHandler = async ({ url }) => {
         }
       }
     }
-
     // Group by folder structure if not recursive
     const folders = new Set<string>()
     if (!recursive) {
@@ -92,25 +80,23 @@ export const GET: RequestHandler = async ({ url }) => {
         }
       })
     }
-
     return json({
-      success: true,
-      bucket: bucketName,
-      prefix: searchPrefix,
+      success: true
+      bucket: bucketName
+      prefix: searchPrefix
       recursive,
-      objects: objectsList,
+      objects: objectsList
       folders: Array.from(folders),
       totalObjects: objectsList.length,
       maxKeys,
       truncated: objectsList.length >= maxKeys,
       timestamp: new Date().toISOString()
     })
-
   } catch (error) {
     console.error('MinIO list error:', error)
     return json(
       {
-        success: false,
+        success: false
         error: error instanceof Error ? error.message : 'List operation failed'
       },
       { status: 500 }

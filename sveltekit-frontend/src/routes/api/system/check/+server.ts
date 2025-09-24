@@ -1,12 +1,9 @@
 /// <reference types="vite/client" />
 import { healthCheck } from "$lib/server/db/index.js"
 import type { RequestHandler } from './$types.js'
-
-
 // Environment variables for Ollama configuration
 const OLLAMA_URL = import.meta.env.OLLAMA_URL || 'http://localhost:11434'
 const OLLAMA_TIMEOUT = 5000; // 5 seconds
-
 export const GET: RequestHandler = async () => {
   try {
     const systemStatus = {
@@ -19,7 +16,6 @@ export const GET: RequestHandler = async () => {
       },
       timestamp: new Date().toISOString()
     }
-
     return json(systemStatus)
   } catch (error: any) {
     console.error('System status check failed:', error)
@@ -36,27 +32,21 @@ export const GET: RequestHandler = async () => {
     )
   }
 }
-
 async function checkOllamaStatus(): Promise<any> {
   try {
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), OLLAMA_TIMEOUT)
-
     const response = await fetch(`${OLLAMA_URL}/api/version`, {
       signal: controller.signal,
       headers: {
         'Content-Type': 'application/json'
       }
     })
-
     clearTimeout(timeoutId)
-
     if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
       throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`)
     }
-
     const data = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json()
-    
     return {
       status: 'connected',
       version: (data as { version?: any }).version || 'unknown',
@@ -64,7 +54,6 @@ async function checkOllamaStatus(): Promise<any> {
     }
   } catch (error: any) {
     console.error('Ollama connection failed:', error)
-    
     let errorMessage = 'Connection failed'
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
@@ -75,19 +64,16 @@ async function checkOllamaStatus(): Promise<any> {
         errorMessage = error.message
       }
     }
-
     return {
       status: 'error',
-      error: errorMessage,
+      error: errorMessage
       url: OLLAMA_URL
     }
   }
 }
-
 async function checkDatabaseStatus(): Promise<any> {
   try {
     const result = await healthCheck()
-    
     if ((result as { status?: any; error?: any }).status === 'healthy') {
       return {
         status: 'connected',
@@ -103,7 +89,6 @@ async function checkDatabaseStatus(): Promise<any> {
     }
   } catch (error: any) {
     console.error('Database health check failed:', error)
-    
     return {
       status: 'error',
       error: error instanceof Error ? error.message: 'Unknown error',
@@ -111,6 +96,5 @@ async function checkDatabaseStatus(): Promise<any> {
     }
   }
 }
-
 // Also support POST for triggering system checks
 export const POST = GET

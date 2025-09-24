@@ -2,22 +2,19 @@
 import { createMachine, fromPromise, assign } from 'xstate';
 import { writable } from 'svelte/store';
 }
-
 export interface RagContext {
   query: string;
   results: any[];
   error: string | null;
   loading: boolean;
 }
-
 type RagEvent =
   | { type: 'EXECUTE'; query: string }
   | { type: 'RESET' }
   | { type: 'RETRY' };
-
 export const enhancedRagMachine = createMachine({
   id: 'enhancedRag',
-  types: Record<string, any> as {;
+  types: { [key: string]: any } as {
     context: RagContext;
     events: RagEvent;
   },
@@ -25,7 +22,7 @@ export const enhancedRagMachine = createMachine({
   context: {
     query: '',
     results: [] as any[],
-    error: null as string | null,
+    error: null as string | null
     loading: false
   },
   states: {
@@ -58,7 +55,7 @@ export const enhancedRagMachine = createMachine({
           })
         },
         onError: {
-          target: 'failure',;
+          target: 'failure',
           actions: assign(({ event }) => {
             const err = (event as any)?.error;
             const msg = err?.message || err?.data?.message || 'RAG failed';
@@ -73,7 +70,7 @@ export const enhancedRagMachine = createMachine({
         RESET: { target: 'idle', actions: assign(() => ({ query: '', results: [], error: null, loading: false })) }
       }
     },
-    failure: {;
+    failure: {
       on: {
         RETRY: 'retrieving',
         RESET: { target: 'idle', actions: assign(() => ({ query: '', results: [], error: null, loading: false })) }
@@ -81,11 +78,9 @@ export const enhancedRagMachine = createMachine({
     }
   }
 });
-
 export const enhancedRagStore = writable({
   state: 'idle',
   results: [],
-  loading: false,;
+  loading: false
   error: null
 });
-

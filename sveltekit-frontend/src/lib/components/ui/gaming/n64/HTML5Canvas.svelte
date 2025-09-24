@@ -1,7 +1,6 @@
 <!--
   N64 HTML5 Canvas Component
   Advanced HTML5 Canvas wrapper with N64-style texture filtering and 3D effects
-
   Features:
   - Hardware-accelerated canvas rendering with WebGL fallback
   - N64-style texture filtering and post-processing effects
@@ -12,11 +11,9 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import {  , onMount, onDestroy  } from "svelte";
+  import { onMount, onDestroy  } from "svelte";
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
-
   interface Props extends GamingComponentProps {
     // Canvas specific props
     width?: number;
@@ -26,7 +23,6 @@
     alpha?: boolean;
     antialias?: boolean;
     premultipliedAlpha?: boolean;
-
     // N64-specific styling
     enableTextureFiltering?: boolean;
     enableMipMapping?: boolean;
@@ -34,40 +30,33 @@
     enableLighting?: boolean;
     enablePostProcessing?: boolean;
     enableShaderEffects?: boolean;
-
     // Texture filtering options
     anisotropicLevel?: number; // 1, 2, 4, 8, 16
     textureQuality?: 'draft' | 'standard' | 'high' | 'ultra';
     enableBilinearFiltering?: boolean;
     enableTrilinearFiltering?: boolean;
-
     // 3D transformations
     perspective?: number;
     enableDepthTesting?: boolean;
     enableWireframe?: boolean;
-
     // Advanced effects
     enableParticleSystem?: boolean;
     enableBloom?: boolean;
     glowIntensity?: number;
     enableSpatialAudio?: boolean;
-
     // Performance settings
     autoQualityAdjustment?: boolean;
     targetFPS?: number;
     maxPixelRatio?: number;
-
     // Fabric.js integration
     enableFabricJS?: boolean;
     fabricConfig?: unknown;
-
     // Event callbacks
     onCanvasReady?: (canvas: HTMLCanvasElement, context: unknown) => void;
     onDraw?: (context: unknown, deltaTime: number) => void;
     onResize?: (width: number, height: number) => void;
     class?: string;
   }
-
   let {
     era = 'n64',
     variant = 'primary',
@@ -75,7 +64,6 @@
     disabled = false,
     loading = false,
     renderOptions,
-
     width = 800,
     height = 600,
     contextType = 'auto',
@@ -83,44 +71,33 @@
     alpha = true,
     antialias = true,
     premultipliedAlpha = true,
-
     enableTextureFiltering = true,
     enableMipMapping = false,
     enableFog = true,
     enableLighting = true,
     enablePostProcessing = true,
     enableShaderEffects = false,
-
     anisotropicLevel = 4,
     textureQuality = 'standard',
     enableBilinearFiltering = true,
     enableTrilinearFiltering = false,
-
     perspective = 1000,
     enableDepthTesting = true,
     enableWireframe = false,
-
     enableParticleSystem = false,
     enableBloom = false,
     glowIntensity = 0.4,
     enableSpatialAudio = false,
-
     autoQualityAdjustment = true,
     targetFPS = 60,
     maxPixelRatio = 2,
-
     enableFabricJS = false,
     fabricConfig = ,
-
     onCanvasReady,
     onDraw,
     onResize,
-
     class: className = '';
   }: Props = $props();
-
-  
-
   let canvasElement = $state<HTMLCanvasElement | null>(null);
   let containerElement = $state<HTMLElement | null>(null);
   let context = $state<any>(null);
@@ -131,15 +108,12 @@
     lastFrame: 0,
     frameCount: 0;
   });
-
   // WebGL/shader specific state
   let shaderProgram = $state<WebGLProgram | null>(null);
   let textureFilters = $state<any[]>([]);
   let postProcessingPipeline = $state<any[]>([]);
-
   // Fabric.js integration
   let fabricCanvas = $state<any>(null);
-
   // Default to high quality N64 rendering options for canvas
   const effectiveRenderOptions: N64RenderingOptions = {
     ...N64_TEXTURE_PRESETS.highQuality,
@@ -152,30 +126,28 @@
     enableTrilinearFiltering,
     ...renderOptions
   };
-
   // WebGL Shaders for N64 effects
   const vertexShaderSource = `
-    attribute vec2 a_position;
+    attribute vec2 a_positio;
     attribute vec2 a_texCoord;
     uniform mat3 u_transform;
-    uniform float u_perspective;
+    uniform float u_perspectiv;
     varying vec2 v_texCoord;
     varying float v_depth;
     void main() {
       vec3 position = u_transform * vec3(a_position, 1.0);
       // Apply perspective transformation
-      float w = 1.0 + position.z / u_perspective;
+      float w = 1.0 + position.z / u_perspectiv;
       gl_Position = vec4(position.xy / w, position.z, w);
       v_texCoord = a_texCoord;
       v_depth = position.z;
     }
   `;
-
   const fragmentShaderSource = `
     precision mediump float;
-    uniform sampler2D u_texture;
+    uniform sampler2D u_textur;
     uniform float u_time;
-    uniform vec2 u_resolution;
+    uniform vec2 u_resolutio;
     uniform float u_anisotropicLevel;
     uniform float u_glowIntensity;
     uniform bool u_enableFog;
@@ -190,9 +162,9 @@
       if (u_anisotropicLevel > 1.0) {
         vec2 dx = dFdx(coord) * u_anisotropicLevel;
         vec2 dy = dFdy(coord) * u_anisotropicLevel;
-        color = mix(color, 
-          texture2D(tex, coord + dx * 0.5) * 0.5 + 
-          texture2D(tex, coord + dy * 0.5) * 0.5, 
+        color = mix(color,
+          texture2D(tex, coord + dx * 0.5) * 0.5 +
+          texture2D(tex, coord + dy * 0.5) * 0.5,
           0.3);
       }
       return color;
@@ -218,7 +190,7 @@
       float bloomRadius = 2.0;
       for (float x = -bloomRadius; x <= bloomRadius; x += 1.0) {
         for (float y = -bloomRadius; y <= bloomRadius; y += 1.0) {
-          vec2 offset = vec2(x, y) / u_resolution;
+          vec2 offset = vec2(x, y) / u_resolutio;
           bloom += texture2D(u_texture, coord + offset) * 0.04;
         }
       }
@@ -236,18 +208,15 @@
       gl_FragColor = color;
     }
   `;
-
   // Initialize canvas context
   const initializeCanvas = async () => {
     if (!canvasElement) return;
-
     // Set canvas size and pixel ratio
     const pixelRatio = Math.min(window.devicePixelRatio, maxPixelRatio);
     canvasElement.width = width * pixelRatio;
     canvasElement.height = height * pixelRatio;
     canvasElement.style.width = `${width}px`;
     canvasElement.style.height = `${height}px`;
-
     // Initialize context based on type
     if (contextType === 'auto') {
       // Try WebGL2 first, then WebGL, then 2D
@@ -270,64 +239,51 @@
         premultipliedAlpha
       });
     }
-
     if (!context) {
       console.error('Failed to get canvas context');
       return;
     }
-
     // Initialize WebGL shaders if using WebGL context
     if (context instanceof WebGLRenderingContext || context instanceof WebGL2RenderingContext) {
       await initializeWebGLShaders();
     }
-
     // Initialize Fabric.js if enabled
     if (enableFabricJS) {
       await initializeFabricJS();
     }
-
     // Scale context for high DPI
     if (context.scale && pixelRatio !== 1) {
       context.scale(pixelRatio, pixelRatio);
     }
-
     // Notify parent component
     onCanvasReady?.(canvasElement, context);
-
     // Start render loop
     startRenderLoop();
   };
-
   // Initialize WebGL shaders
   const initializeWebGLShaders = async () => {
     if (!(context instanceof WebGLRenderingContext) && !(context instanceof WebGL2RenderingContext)) {
       return;
     }
-
     const gl = context;
-
     // Create and compile shaders
     const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
     const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
-
     if (!vertexShader || !fragmentShader) {
       console.error('Failed to create shaders');
       return;
     }
-
     // Create shader program
     shaderProgram = createShaderProgram(gl, vertexShader, fragmentShader);
-
     if (!shaderProgram) {
       console.error('Failed to create shader program');
       return;
     }
-
     // Set up uniforms
     const uniformLocations = {
       transform: gl.getUniformLocation(shaderProgram, 'u_transform'),
-      perspective: gl.getUniformLocation(shaderProgram, 'u_perspective'),;
-      time: gl.getUniformLocation(shaderProgram, 'u_time'),;
+      perspective: gl.getUniformLocation(shaderProgram, 'u_perspective'),
+      time: gl.getUniformLocation(shaderProgram, 'u_time'),
       resolution: gl.getUniformLocation(shaderProgram, 'u_resolution'),
       anisotropicLevel: gl.getUniformLocation(shaderProgram, 'u_anisotropicLevel'),
       glowIntensity: gl.getUniformLocation(shaderProgram, 'u_glowIntensity'),
@@ -335,7 +291,6 @@
       enableDither: gl.getUniformLocation(shaderProgram, 'u_enableDither'),
       enableBloom: gl.getUniformLocation(shaderProgram, 'u_enableBloom');
     };
-
     // Set initial uniform values
     gl.useProgram(shaderProgram);
     gl.uniform1f(uniformLocations.perspective, perspective);
@@ -346,42 +301,33 @@
     gl.uniform1i(uniformLocations.enableDither, textureQuality !== 'ultra' ? 1 : 0);
     gl.uniform1i(uniformLocations.enableBloom, enableBloom ? 1 : 0);
   };
-
   // Helper function to create WebGL shader
   const createShader = (gl: WebGLRenderingContext, type: number, source: string): WebGLShader | null => {
     const shader = gl.createShader(type);
     if (!shader) return null;
-
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
-
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
       console.error('Shader compilation error:', gl.getShaderInfoLog(shader));
       gl.deleteShader(shader);
       return null;
     }
-
     return shader;
   };
-
   // Helper function to create WebGL shader program
   const createShaderProgram = (gl: WebGLRenderingContext, vertexShader: WebGLShader, fragmentShader: WebGLShader): WebGLProgram | null => {
     const program = gl.createProgram();
     if (!program) return null;
-
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
-
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       console.error('Shader program linking error:', gl.getProgramInfoLog(program));
       gl.deleteProgram(program);
       return null;
     }
-
     return program;
   };
-
   // Initialize Fabric.js
   const initializeFabricJS = async () => {
     try {
@@ -392,29 +338,25 @@
         width,
         height
       });
-
       // Apply N64 texture filtering to Fabric.js
       fabricCanvas.setFilter('N64Filter', {
         ...effectiveRenderOptions,
-        blur: textureQuality === 'draft' ? 0.5 : 0,;
-        contrast: 1.1,;
+        blur: textureQuality === 'draft' ? 0.5 : 0,
+        contrast: 1.1,
         brightness: 1.05;
       });
-
       ondispatch?.({ fabricCanvas });
     } catch (error) {
       console.warn('Fabric.js not available:', error);
     }
   };
-
   // Performance monitoring
   const updatePerformanceMetrics = (currentTime: number) => {
-    const deltaTime = currentTime - performanceMonitor.lastFrame;
-    performanceMonitor.frameTime = deltaTime;
+    const deltaTime = currentTime - performanceMonitor.lastFram;
+    performanceMonitor.frameTime = deltaTim;
     performanceMonitor.fps = Math.round(1000 / deltaTime);
     performanceMonitor.frameCount++;
-    performanceMonitor.lastFrame = currentTime;
-
+    performanceMonitor.lastFrame = currentTim;
     // Auto quality adjustment
     if (autoQualityAdjustment && performanceMonitor.frameCount % 60 === 0) {
       if (performanceMonitor.fps < targetFPS * 0.8) {
@@ -426,7 +368,6 @@
       }
     }
   };
-
   // Quality adjustment
   const adjustQuality = (direction: 'up' | 'down') => {
     if (direction === 'down') {
@@ -440,21 +381,17 @@
       else if (!enableParticleSystem) enableParticleSystem = true;
       else if (!enableBloom) enableBloom = true;
     }
-
-    ondispatch?.({ 
-      direction, 
-      anisotropicLevel, 
-      enableBloom, 
-      enableParticleSystem 
+    ondispatch?.({
+      direction,
+      anisotropicLevel,
+      enableBloom,
+      enableParticleSystem
     });
   };
-
   // Render loop
   const renderLoop = (currentTime: number) => {
     if (!context || disabled) return;
-
     updatePerformanceMetrics(currentTime);
-
     // Update shader uniforms if using WebGL
     if (shaderProgram && (context instanceof WebGLRenderingContext || context instanceof WebGL2RenderingContext)) {
       const gl = context;
@@ -462,22 +399,18 @@
       gl.useProgram(shaderProgram);
       gl.uniform1f(timeLocation, currentTime * 0.001);
     }
-
     // Call user draw function
-    const deltaTime = performanceMonitor.frameTime;
+    const deltaTime = performanceMonitor.frameTim;
     onDraw?.(context, deltaTime);
-
     // Continue render loop
     animationFrameId = requestAnimationFrame(renderLoop);
   };
-
   const startRenderLoop = () => {
     if (animationFrameId) {
       cancelAnimationFrame(animationFrameId);
     }
     animationFrameId = requestAnimationFrame(renderLoop);
   };
-
   // Handle canvas resize
   const handleResize = () => {
     if (canvasElement && context) {
@@ -486,24 +419,19 @@
       canvasElement.height = height * pixelRatio;
       canvasElement.style.width = `${width}px`;
       canvasElement.style.height = `${height}px`;
-
       if (context.scale) {
         context.scale(pixelRatio, pixelRatio);
       }
-
       if (fabricCanvas) {
         fabricCanvas.setDimensions({ width, height });
       }
-
       onResize?.(width, height);
     }
   };
-
   // Watch for size changes
   $effect(() => {
     handleResize();
   });
-
   $effect(() => {
     initializeCanvas();
     // Handle window resize
@@ -512,7 +440,6 @@
       window.removeEventListener('resize', handleResize);
     };
   });
-
   onDestroy(() => {
     if (animationFrameId) {
       cancelAnimationFrame(animationFrameId);
@@ -522,13 +449,12 @@
     }
   });
 </script>
-
-<div 
+<div
   bind:this={containerElement}
   class="n64-canvas-container {className}"
-  class:disabled;
+  class: disabled;
   class:loading
-  style=";
+  style="
     --canvas-width: {width}px;
     --canvas-height: {height}px;
     --perspective: {perspective}px;
@@ -545,18 +471,15 @@
     {width}
     {height}
   ></canvas>
-
   {#if loading}
     <div class="canvas-loading">
       <div class="n64-spinner"></div>
       <div class="loading-text">Initializing Canvas...</div>
     </div>
   {/if}
-
   {#if enablePostProcessing}
     <div class="post-processing-overlay"></div>
   {/if}
-
   <!-- Debug information -->
   {#if typeof window !== 'undefined' && (window as any).__N64_DEBUG__}
     <div class="debug-info">
@@ -567,47 +490,40 @@
     </div>
   {/if}
 </div>
-
 <style>
-  .n64-canvas-container {;
+  .n64-canvas-container {
     position: relative;
     display: inline-block;
     width: var(--canvas-width);
     height: var(--canvas-height);
     overflow: hidden;
-    
     /* 3D perspective container */
     perspective: var(--perspective);
     perspective-origin: center center;
     transform-style: preserve-3d;
   }
-
   .n64-canv.n64-canvas.webgl {
     /* WebGL-specific optimizations */
     image-rendering: auto;
-    will-change: contents;
+    will-change: content;
   }
-
   .n64-canvas.canvas2d {
     /* Canvas 2D optimizations */
     image-rendering: auto;
   }
-
   .n64-canvas.texture-filtering {
     /* Enhanced texture filtering simulation */
-    filter: 
+    filter:
       contrast(1.08)
       brightness(1.02)
       saturate(1.08)
       blur(0.15px);
   }
-
   .n64-canvas.post-processing {
     /* Enable GPU compositing for post-processing */
     will-change: transform, filter;
     transform: translateZ(0);
   }
-
   /* Post-processing overlay for additional effects */
   .post-processing-overlay {
     position: absolute;
@@ -616,14 +532,12 @@
     right: 0;
     bottom: 0;
     pointer-events: none;
-    
     /* N64-style atmospheric overlay */
     background: radial-gradient(
       ellipse at center,
       transparent 0%,
       rgba(64, 64, 64, 0.1) 100%
     );
-    
     /* Subtle scanline effect */
     background-image: repeating-linear-gradient(
       0deg,
@@ -632,11 +546,9 @@
       rgba(0, 0, 0, 0.02) 2px,
       rgba(0, 0, 0, 0.02) 4px
     );
-    
     mix-blend-mode: multiply;
     opacity: 0.6;
   }
-
   /* Loading overlay */
   .canvas-loading {
     position: absolute;
@@ -654,7 +566,6 @@
     font-family: 'Rajdhani', sans-serif;
     z-index: 10;
   }
-
   .n64-spinner {
     width: 32px;
     height: 32px;
@@ -664,11 +575,9 @@
     border-radius: 50%;
     animation: n64CanvasSpin 1s linear infinite;
   }
-
   @keyframes n64CanvasSpin {
     to { transform: rotate(360deg); }
   }
-
   .loading-text {
     font-size: 14px;
     font-weight: 600;
@@ -676,7 +585,6 @@
     letter-spacing: 1px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
   }
-
   /* Debug information */
   .debug-info {
     position: absolute;
@@ -691,29 +599,25 @@
     z-index: 20;
     line-height: 1.4;
   }
-
   /* Disabled state */
   .n64-canvas-container.disabled {
     opacity: 0.5;
     filter: grayscale(0.8);
     pointer-events: none;
   }
-
   .n64-canvas-container.disabled .n64-canvas {
-    filter: 
+    filter:
       contrast(0.8)
       brightness(0.9)
       saturate(0.3)
       grayscale(0.5);
   }
-
   /* Mobile optimizations */
   @media (max-width: 480px) {
     .n64-canv.post-processing-overlay {
       display: none;
     }
   }
-
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
     .n64-canv.n64-spinner {
@@ -722,14 +626,12 @@
       border-right-color: transparent;
     }
   }
-
   /* High contrast mode */
   @media (prefers-contrast: high) {
     .n64-canv.post-processing-overlay {
       display: none;
     }
   }
-
   /* Performance optimization for low-end devices */
   @media (max-device-memory: 2GB) {
     .n64-canv.post-processing-overlay {

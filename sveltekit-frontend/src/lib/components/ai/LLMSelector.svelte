@@ -1,14 +1,12 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import { onMount } from 'svelte';
   // import * as Select from 'bits-ui'; // Removed melt dependency
   import { fade, fly } from 'svelte/transition';
-  import { 
-    ChevronDown, 
-    CheckCircle, 
-    AlertCircle, 
+  import {
+    ChevronDown,
+    CheckCircle,
+    AlertCircle,
     Loader2,
     Cpu,
     Brain,
@@ -57,46 +55,46 @@
       provider: 'ollama',
       size: '7.3GB',
       specialization: 'legal',
-      status: 'online',;
+      status: 'online',
       performance: {
         tokensPerSecond: 25,
         memoryUsage: '6.8GB',
         responseTime: 1200
       },
       capabilities: ['legal-analysis', 'case-research', 'document-review'],
-      endpoint: 'http://localhost:11434';
+      endpoint: 'http://localhost:11434'
     },
     {
       id: 'llama3-instruct',
       name: 'gemma3-legal:latest',
       displayName: 'Llama3 Instruct',
-      provider: 'ollama', 
+      provider: 'ollama',
       size: '4.7GB',
       specialization: 'general',
-      status: 'online',;
+      status: 'online',
       performance: {
         tokensPerSecond: 35,
         memoryUsage: '4.2GB',
         responseTime: 800
       },
       capabilities: ['general-chat', 'reasoning', 'summarization'],
-      endpoint: 'http://localhost:11434';
+      endpoint: 'http://localhost:11434'
     },
     {
       id: 'codellama-code',
       name: 'codellama:7b-code',
       displayName: 'CodeLlama Code Expert',
       provider: 'ollama',
-      size: '3.8GB', 
+      size: '3.8GB',
       specialization: 'code',
-      status: 'offline',;
+      status: 'offline',
       performance: {
         tokensPerSecond: 40,
         memoryUsage: '3.5GB',
         responseTime: 600
       },
       capabilities: ['code-generation', 'debugging', 'refactoring'],
-      endpoint: 'http://localhost:11434';
+      endpoint: 'http://localhost:11434'
     },
     {
       id: 'nomic-embed',
@@ -105,19 +103,19 @@
       provider: 'ollama',
       size: '274MB',
       specialization: 'embedding',
-      status: 'online',;
+      status: 'online',
       performance: {
         tokensPerSecond: 500,
         memoryUsage: '512MB',
         responseTime: 100
       },
-      capabilities: ['text-embedding', 'similarity-search', 'vector-generation'],;
-      endpoint: 'http://localhost:11434';
+      capabilities: ['text-embedding', 'similarity-search', 'vector-generation'],
+      endpoint: 'http://localhost:11434'
     }
   ])
   // Filter models based on criteria
   let filteredModels = $derived(
-    filterBy === 'all' ? availableModels : 
+    filterBy === 'all' ? availableModels :
     availableModels.filter(model => model.specialization === filterBy)
   )
   // Melt UI Select Setup
@@ -126,11 +124,11 @@
   //   states: { selectedLabel, open, selected },
   //   helpers: { isSelected }
   // } = createSelect<LLMModel>({
-  //   forceVisible: true,
+  //   forceVisible: true
   //   positioning: {
   //     placement: 'bottom',
-  //     fitViewport: true,
-  //     sameWidth: true,
+  //     fitViewport: true
+  //     sameWidth: true
   //   }
   // })
   // Mock implementations for now
@@ -149,14 +147,14 @@
       case 'autogen': return Brain
       case 'crewai': return Database
       case 'langchain': return Globe
-      default: return Settings;
+      default: return Setting;
     }
   }
   // Status Colors
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'online': return 'text-green-400'
-      case 'offline': return 'text-red-400' 
+      case 'offline': return 'text-red-400'
       case 'loading': return 'text-yellow-400'
       case 'error': return 'text-red-500'
       default: return 'text-gray-400';
@@ -168,13 +166,12 @@
       case 'online': return CheckCircle
       case 'offline': return AlertCircle
       case 'loading': return Loader2
-      case 'error': return AlertCircle;
-      default: return AlertCircle;
+      case 'error': return AlertCircl;
+      default: return AlertCircl;
     }
   }
   // State for dropdown
   let isOpen = $state(false);
-
   // Handle model selection
   function selectModel(model: LLMModel) {
     selectedModel = model;
@@ -216,7 +213,7 @@
     availableModels = [...availableModels]
     try {
       const response = await fetch(`${model.endpoint}/api/pull`, {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: model.name })
       })
@@ -231,21 +228,19 @@
     availableModels = [...availableModels]
   }
 </script>
-
 <!-- LLM Selector Component -->
 <div class="w-full max-w-md">
   <!-- Label -->
   <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
     AI Model Selection
   </label>
-  
   <!-- Trigger Button -->
   <button
     onclick={() => (isOpen = !isOpen)}
     class="flex h-12 w-full items-center justify-between rounded-lg border border-gray-300 dark:border-gray-600
-           bg-white dark:bg-gray-800 px-3 py-2 text-sm
-           hover:bg-gray-50 dark:hover:bg-gray-700
-           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+           bg-white dark:bg-gray-800 px-3 py-2 text-sm,
+           hover:bg-gray-50 dark:hover:bg-gray-700,
+           focus: outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
            disabled:cursor-not-allowed disabled:opacity-50
            transition-colors duration-200"
     aria-label="Select AI Model"
@@ -255,12 +250,12 @@
         {@const SvelteComponent = getProviderIcon(selectedModel.provider)}
         {@const SvelteComponent_1 = getStatusIcon(selectedModel.status)}
         <div class="flex items-center gap-2">
-          <SvelteComponent 
-            class="h-4 w-4 text-blue-500" 
+          <SvelteComponent
+            class="h-4 w-4 text-blue-500"
           />
           <span class="font-medium">{selectedModel.displayName}</span>
           <div class="flex items-center gap-1">
-            <SvelteComponent_1 
+            <SvelteComponent_1
               class="h-3 w-3 {getStatusColor(selectedModel.status)} {selectedModel.status === 'loading' ? 'animate-spin' : ''}"
             />
             <span class="text-xs {getStatusColor(selectedModel.status)}">
@@ -272,14 +267,12 @@
         <span class="text-gray-500">Select an AI model...</span>
       {/if}
     </div>
-    
     <ChevronDown class="h-4 w-4 text-gray-400 transition-transform duration-200 {isOpen ? 'rotate-180' : ''}" />
   </button>
-  
   <!-- Dropdown Menu -->
   {#if isOpen}
     <div
-      class="z-50 mt-1 w-full rounded-lg border border-gray-200 dark:border-gray-700 
+      class="z-50 mt-1 w-full rounded-lg border border-gray-200 dark:border-gray-700
              bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5
              max-h-96 overflow-auto";
       in:fade={{ duration: 150 }}
@@ -292,7 +285,7 @@
           <button
             onclick={() => selectModel(model)}
             class="flex w-full items-center justify-between px-4 py-3 text-sm
-                   hover:bg-gray-100 dark:hover:bg-gray-700;
+                   hover: bg-gray-100 dark:hover:bg-gray-700;
                    focus:bg-gray-100 dark:focus:bg-gray-700 focus:outline-none
                    {selectedModel?.id === model.id ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'text-gray-900 dark:text-gray-100'}"
           >
@@ -303,7 +296,6 @@
                   class="h-5 w-5 {selectedModel?.id === model.id ? 'text-blue-500' : 'text-gray-400'}"
                 />
               </div>
-              
               <!-- Model Info -->
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2">
@@ -313,7 +305,6 @@
                     {model.specialization}
                   </span>
                 </div>
-                
                 <div class="flex items-center gap-4 mt-1 text-xs text-gray-500 dark:text-gray-400">
                   <span>{model.size}</span>
                   {#if showMetrics && model.status === 'online'}
@@ -321,7 +312,6 @@
                     <span>{model.performance.responseTime}ms</span>
                   {/if}
                 </div>
-                
                 <!-- Capabilities -->
                 <div class="flex flex-wrap gap-1 mt-2">
                   {#each model.capabilities.slice(0, 3) as capability}
@@ -332,19 +322,17 @@
                   {/each}
                 </div>
               </div>
-              
               <!-- Status and Actions -->
               <div class="flex items-center gap-2 flex-shrink-0">
                 <!-- Status Indicator -->
                 <div class="flex items-center gap-1">
-                  <SvelteComponent_3 
+                  <SvelteComponent_3
                     class="h-4 w-4 {getStatusColor(model.status)} {model.status === 'loading' ? 'animate-spin' : ''}"
                   />
                   <span class="text-xs {getStatusColor(model.status)} font-medium">
                     {model.status.toUpperCase()}
                   </span>
                 </div>
-                
                 <!-- Load Button -->
                 {#if model.status === 'offline'}
                   <button
@@ -352,14 +340,13 @@
                       e.stopPropagation()
                       loadModel(model)
                     }}
-                    class="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 ;
+                    class="px-2 py-1 text-xs bg-blue-600 text-white rounded hover: bg-blue-700 ;
                            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1
                            transition-colors duration-200"
                   >
                     Load
                   </button>
                 {/if}
-                
                 <!-- Selected Indicator -->
                 {#if selectedModel?.id === model.id}
                   <CheckCircle class="h-4 w-4 text-blue-500" />
@@ -368,7 +355,6 @@
             </div>
           </button>
         {/each}
-        
         <!-- No models message -->
         {#if filteredModels.length === 0}
           <div class="px-4 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
@@ -376,18 +362,16 @@
           </div>
         {/if}
       </div>
-      
       <!-- Footer Actions -->
       <div class="border-t border-gray-200 dark:border-gray-700 px-4 py-3">
         <div class="flex items-center justify-between">
           <button
             onclick={refreshModelStatuses}
-            class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300;
+            class="text-xs text-blue-600 dark: text-blue-400 hover:text-blue-800 dark:hover:text-blue-300;
                    focus:outline-none focus:underline"
           >
             Refresh Status
           </button>
-          
           <div class="text-xs text-gray-500 dark:text-gray-400">
             {filteredModels.filter(model => model.status === 'online').length} / {filteredModels.length} online
           </div>
@@ -396,7 +380,6 @@
     </div>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
 </style>

@@ -2,13 +2,10 @@
   Advanced Performance Dashboard
   Real-time monitoring and analytics
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-
   interface PerformanceMetrics {
     totalRequests: number;
     averageResponseTime: number;
@@ -27,7 +24,6 @@
   const logs = writable<unknown[]>([]);
   let refreshInterval: NodeJS.Timeout;
   let autoRefresh = $state(true);
-
   $effect(() => {
     loadMetrics();
     if (autoRefresh) {
@@ -37,7 +33,6 @@
       if (refreshInterval) clearInterval(refreshInterval);
     };
   });
-
   async function loadMetrics() {
     try {
       // Load performance metrics
@@ -80,21 +75,19 @@
       default: return 'text-gray-600';
   }}
   function formatHour(hour: number): string {
-    return hour === 0 ? '12 AM' : 
+    return hour === 0 ? '12 AM' :
            hour === 12 ? '12 PM' :
            hour < 12 ? `${hour} AM` : `${hour - 12} PM`;
   }
 </script>
-
 <svelte:head>
   <title>Performance Dashboard - Legal Case Management</title>
 </svelte:head>
-
 <div class="space-y-4">
   <div class="space-y-4">
     <h1>Performance Dashboard</h1>
     <div class="space-y-4">
-      <button 
+      <button
         class="space-y-4"
         onclick={() => toggleAutoRefresh()}
       >
@@ -105,7 +98,6 @@
       </button>
     </div>
   </div>
-
   <!-- System Health Cards -->
   {#if $health}
     <div class="space-y-4">
@@ -115,7 +107,6 @@
           {$health.database}
         </div>
       </div>
-      
       <div class="space-y-4">
         <h3>CPU Usage</h3>
         <div class="space-y-4">{$health.cpu}%</div>
@@ -123,7 +114,6 @@
           <div class="space-y-4" style="width: {$health.cpu}%"></div>
         </div>
       </div>
-      
       <div class="space-y-4">
         <h3>Memory Usage</h3>
         <div class="space-y-4">{$health.memory}%</div>
@@ -131,7 +121,6 @@
           <div class="space-y-4" style="width: {$health.memory}%"></div>
         </div>
       </div>
-      
       <div class="space-y-4">
         <h3>Storage</h3>
         <div class="space-y-4">{$health.storage}%</div>
@@ -141,7 +130,6 @@
       </div>
     </div>
   {/if}
-
   <!-- Performance Metrics -->
   {#if $metrics}
     <div class="space-y-4">
@@ -149,12 +137,10 @@
         <h3>Total Requests</h3>
         <div class="space-y-4">{$metrics.totalRequests.toLocaleString()}</div>
       </div>
-      
       <div class="space-y-4">
         <h3>Average Response Time</h3>
         <div class="space-y-4">{formatTime($metrics.averageResponseTime)}</div>
       </div>
-      
       <div class="space-y-4">
         <h3>Error Rate</h3>
         <div class="space-y-4">
@@ -162,7 +148,6 @@
         </div>
       </div>
     </div>
-
     <!-- Slowest Endpoints -->
     <div class="space-y-4">
       <h2>Slowest Endpoints</h2>
@@ -178,7 +163,6 @@
         {/each}
       </div>
     </div>
-
     <!-- Peak Hours Chart -->
     <div class="space-y-4">
       <h2>Peak Hours</h2>
@@ -193,7 +177,6 @@
       </div>
     </div>
   {/if}
-
   <!-- Recent Logs -->
   <div class="space-y-4">
     <h2>Recent System Logs</h2>
@@ -213,7 +196,6 @@
     </div>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   .performance-dashboard {
@@ -223,7 +205,7 @@
 }
   .dashboard-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 2rem;
 }
@@ -242,7 +224,7 @@
     border-radius: 0.375rem;
     cursor: pointer;
     font-weight: 500;
-    transition: all 0.2s;
+    transition: all 0.2;
 }
   .btn-primary {
     background: var(--primary-color);
@@ -273,7 +255,7 @@
   .health-status {
     font-size: 1.25rem;
     font-weight: bold;
-    text-transform: capitalize;
+    text-transform: capitaliz;
 }
   .metrics-grid {
     display: grid;
@@ -335,7 +317,7 @@
 }
   .endpoint-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 0.75rem;
     background: var(--background-light);
@@ -454,6 +436,3 @@
   .text-red-600 { color: #dc2626; }
   .text-gray-600 { color: #6b7280; }
 </style>
-
-
-

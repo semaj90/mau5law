@@ -1,12 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { redisOrchestratorClient } from '$lib/stores/redis-orchestrator-store';
-  
   let endpointMetrics = $state([]);
   let isLoading = $state(true);
-  
   const endpoints = [
   {
     "name": "analyze-element",
@@ -459,19 +456,15 @@
     "complexity": "low"
   }
 ];
-  
   $effect(() => {
     loadEndpointMetrics();
-
     // Auto-refresh every 30 seconds
     const interval = setInterval(loadEndpointMetrics, 30000);
     return () => clearInterval(interval);
   });
-  
   async function loadEndpointMetrics() {
     try {
       const health = await redisOrchestratorClient.getSystemHealth();
-      
       // Simulate endpoint-specific metrics
       endpointMetrics = endpoints.map(endpoint => ({
         ...endpoint,
@@ -480,7 +473,6 @@
         requestCount: Math.floor(Math.random() * 1000),
         errorRate: Math.random() * 2 // 0-2%
       }));
-      
       isLoading = false;
     } catch (error) {
       console.error('Failed to load endpoint metrics:', error);
@@ -488,10 +480,8 @@
     }
   }
 </script>
-
 <div class="detailed-dashboard">
   <h1>🎮 Detailed Redis Performance - 90 Endpoints</h1>
-  
   {#if isLoading}
     <div class="loading">Loading endpoint metrics...</div>
   {:else}
@@ -504,17 +494,15 @@
               {endpoint.complexity.toUpperCase()}
             </span>
           </div>
-          
           <div class="metrics">
             <div class="metric">
               <span class="label">Cache Hit Rate:</span>
-              <span class="value" class:good={endpoint.cacheHitRate > 80} 
+              <span class="value" class:good={endpoint.cacheHitRate > 80}
                                   class:warning={endpoint.cacheHitRate > 60 && endpoint.cacheHitRate <= 80}
                                   class:critical={endpoint.cacheHitRate <= 60}>
                 {endpoint.cacheHitRate.toFixed(1)}%
               </span>
             </div>
-            
             <div class="metric">
               <span class="label">Avg Response:</span>
               <span class="value" class:good={endpoint.avgResponseTime < 100}
@@ -523,12 +511,10 @@
                 {endpoint.avgResponseTime.toFixed(0)}ms
               </span>
             </div>
-            
             <div class="metric">
               <span class="label">Requests:</span>
               <span class="value">{endpoint.requestCount}</span>
             </div>
-            
             <div class="metric">
               <span class="label">Error Rate:</span>
               <span class="value" class:good={endpoint.errorRate < 1}
@@ -543,115 +529,94 @@
     </div>
   {/if}
 </div>
-
 <style>
-  .detailed-dashboard {;
+  .detailed-dashboard {
     padding: 20px;
     background: #0f0f23;
     color: #cccccc;
     font-family: 'Courier New', monospace;
     min-height: 100vh;
   }
-  
   h1 {
     color: #00d800;
     margin-bottom: 30px;
     text-shadow: 0 0 10px #00d800;
   }
-  
   .loading {
     text-align: center;
     color: #3cbcfc;
     font-size: 18px;
     margin: 50px 0;
   }
-  
   .metrics-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 20px;
   }
-  
   .endpoint-card {
-    background: #1a1a2e;
+    background: #1a1a2;
     border: 2px solid #3cbcfc;
     padding: 15px;
     border-radius: 4px;
   }
-  
   .endpoint-card.complexity-high {
     border-color: #f83800;
   }
-  
   .endpoint-card.complexity-medium {
     border-color: #fc9838;
   }
-  
   .endpoint-card.complexity-low {
     border-color: #00d800;
   }
-  
   .endpoint-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 15px;
   }
-  
   .endpoint-header h3 {
     margin: 0;
     color: #3cbcfc;
     font-size: 14px;
   }
-  
   .complexity-badge {
     padding: 2px 6px;
     font-size: 10px;
     font-weight: bold;
   }
-  
   .complexity-badge.high {
     background: #f83800;
     color: white;
   }
-  
   .complexity-badge.medium {
     background: #fc9838;
     color: black;
   }
-  
   .complexity-badge.low {
     background: #00d800;
     color: black;
   }
-  
   .metrics {
     display: grid;
     gap: 8px;
   }
-  
   .metric {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     font-size: 12px;
   }
-  
   .label {
     color: #cccccc;
   }
-  
   .value {
     font-weight: bold;
   }
-  
   .value.good {
     color: #00d800;
   }
-  
   .value.warning {
     color: #fc9838;
   }
-  
   .value.critical {
     color: #f83800;
   }

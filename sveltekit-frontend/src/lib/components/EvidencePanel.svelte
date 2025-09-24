@@ -1,22 +1,17 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import type { Evidence } from "$lib/data/types";
   import { onMount } from "svelte";
-
   interface Props {
     caseId: string;
     onEvidenceDrop?: (evidence: Evidence) => void;
   }
-
   let {
     caseId,
     onEvidenceDrop = () => }: Props = $props();
-
   // State using Svelte 5 runes
   let evidenceList = $state<Evidence[]>([]);
   let isUploading = $state(false);
-
   async function fetchEvidence() {
     try {
       const res = await fetch(`/api/evidence?caseId=${caseId}`);
@@ -39,8 +34,8 @@
     formData.append("caseId", caseId);
     try {
       const res = await fetch("/api/evidence/upload", {
-        method: "POST",;
-        body: formData,;
+        method: "POST",
+        body: formData
       });
       if (res.ok) {
         console.log("Evidence uploaded!");
@@ -61,10 +56,8 @@
   }
   $effect(fetchEvidence);
 </script>
-
 <section class="evidence-panel">
   <h2 class="evidence-title">Evidence</h2>
-  
   <div class="evidence-upload">
     <label class="evidence-upload-btn">
       <input
@@ -79,7 +72,6 @@
       <span class="uploading">Uploading...</span>
     {/if}
   </div>
-  
   <div class="evidence-list">
     {#each evidenceList as evd (evd.id)}
       <div
@@ -102,7 +94,6 @@
         {/if}
       </div>
     {/each}
-    
     {#if evidenceList.length === 0 && !isUploading}
       <div class="empty-state">
         <p>No evidence uploaded yet.</p>
@@ -111,10 +102,9 @@
     {/if}
   </div>
 </section>
-
 <style>
   /* @unocss-include */
-  .evidence-panel {;
+  .evidence-panel {
     background: var(--pico-background, #fff);
     border-radius: 1rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -222,4 +212,3 @@
     opacity: 0.8;
   }
 </style>
-

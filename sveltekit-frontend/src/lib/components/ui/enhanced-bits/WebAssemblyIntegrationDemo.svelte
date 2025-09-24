@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { integrationChecker, type IntegrationStatus } from '$lib/integration-status';
   import { unifiedRuntime } from '$lib/webgpu/unified-runtime-abstraction';
@@ -12,14 +11,12 @@
     AlertDescription
   } from '$lib/components/ui/enhanced-bits';
   import { Database, Cpu, Zap, Palette, Globe, Server } from 'lucide-svelte';
-
   // Svelte 5 state
   let integrationStatus = $state<IntegrationStatus | null>(null);
   let isLoading = $state(false);
   let testPrompt = $state('What are the legal implications of AI in healthcare?');
   let testResult = $state<string | null>(null);
   let error = $state<string | null>(null);
-
   // Component demonstration data
   let demoData = $state({
     webassemblyTest: 'Not run',
@@ -27,18 +24,15 @@
     webgpuTest: 'Not run',
     cacheTest: 'Not run'
   });
-
   $effect(() => {
     (async () => {
 console.log('🔧 WebAssembly Integration Demo initialized');
     await checkAllIntegrations();
     })();
   });
-
   async function checkAllIntegrations() {
     isLoading = true;
     error = null;
-
     try {
       console.log('🔍 Checking integration status...');
       integrationStatus = await integrationChecker.checkIntegrationStatus();
@@ -50,102 +44,84 @@ console.log('🔧 WebAssembly Integration Demo initialized');
       isLoading = false;
     }
   }
-
   async function testWebAssemblyRuntime() {
     try {
       console.log('🧪 Testing WebAssembly runtime...');
       demoData.webassemblyTest = 'Running...';
-
       const result = await unifiedRuntime.executeInference({
-        model: 'gemma3:270m',;
-        prompt: testPrompt,
+        model: 'gemma3:270m',
+        prompt: testPrompt
         useCase: 'chat',
-        useCHRROMCache: true,
-        maxTokens: 100,;
+        useCHRROMCache: true
+        maxTokens: 100,
         temperature: 0.7;
       });
-
       testResult = result.text || 'WebAssembly inference completed successfully!';
       demoData.webassemblyTest = 'SUCCESS';
       console.log('✅ WebAssembly test completed:', result);
-
     } catch (err: any) {
       demoData.webassemblyTest = `FAILED: ${err.message}`;
       console.error('❌ WebAssembly test failed:', err);
     }
   }
-
   async function testDatabaseIntegration() {
     try {
       console.log('🧪 Testing database integration...');
       demoData.databaseTest = 'Running...';
-
       // Test the vector search endpoint
       const response = await fetch('/api/v1/vector/search', {
-        method: 'GET',;
+        method: 'GET',
         headers: { 'Accept': 'application/json' }
       });
-
       if (response.ok) {
         demoData.databaseTest = 'SUCCESS';
         console.log('✅ Database integration test passed');
       } else {
         demoData.databaseTest = `FAILED: ${response.statusText}`;
       }
-
     } catch (err: any) {
       demoData.databaseTest = `FAILED: ${err.message}`;
       console.error('❌ Database test failed:', err);
     }
   }
-
   async function testWebGPUCapabilities() {
     try {
       console.log('🧪 Testing WebGPU capabilities...');
       demoData.webgpuTest = 'Running...';
-
       await unifiedRuntime.initialize();
       const capabilities = unifiedRuntime.getCapabilities();
-
       if (capabilities.webgpu.available) {
         demoData.webgpuTest = 'SUCCESS';
         console.log('✅ WebGPU test passed:', capabilities);
       } else {
         demoData.webgpuTest = 'FAILED: WebGPU not available';
       }
-
     } catch (err: any) {
       demoData.webgpuTest = `FAILED: ${err.message}`;
       console.error('❌ WebGPU test failed:', err);
     }
   }
-
   async function testCacheSystem() {
     try {
       console.log('🧪 Testing cache system...');
       demoData.cacheTest = 'Running...';
-
       // Test CHR-ROM cache initialization
       await unifiedRuntime.initialize();
       const capabilities = unifiedRuntime.getCapabilities();
-
       if (capabilities.chrRomCache.available) {
         demoData.cacheTest = 'SUCCESS';
         console.log('✅ Cache test passed');
       } else {
         demoData.cacheTest = 'FAILED: CHR-ROM cache not available';
       }
-
     } catch (err: any) {
       demoData.cacheTest = `FAILED: ${err.message}`;
       console.error('❌ Cache test failed:', err);
     }
   }
-
   function getStatusColor(status: boolean) {
     return status ? 'text-green-400' : 'text-red-400';
   }
-
   function getTestColor(result: string) {
     if (result === 'SUCCESS') return 'text-green-400';
     if (result.includes('FAILED')) return 'text-red-400';
@@ -153,7 +129,6 @@ console.log('🔧 WebAssembly Integration Demo initialized');
     return 'text-gray-400';
   }
 </script>
-
 <!-- WebAssembly Integration Demo -->
 <div class="w-full max-w-6xl mx-auto space-y-6">
   <!-- Header -->
@@ -165,14 +140,12 @@ console.log('🔧 WebAssembly Integration Demo initialized');
       Modern stack verification: SvelteKit 2 + Svelte 5 + PostgreSQL + pgvector + Drizzle-ORM + Enhanced-Bits + UnoCSS + NES.css + Gaming Theme
     </p>
   </div>
-
   <!-- Error Alert -->
   {#if error}
     <Alert variant="error">
       <AlertDescription>{error}</AlertDescription>
     </Alert>
   {/if}
-
   <!-- Integration Status Overview -->
   <Card class="yorha-card">
     <div class="p-6">
@@ -188,7 +161,6 @@ console.log('🔧 WebAssembly Integration Demo initialized');
           {isLoading ? 'Checking...' : 'Refresh Status'}
         </Button>
       </div>
-
       {#if integrationStatus}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <!-- WebAssembly Status -->
@@ -218,7 +190,6 @@ console.log('🔧 WebAssembly Integration Demo initialized');
               </div>
             </div>
           </div>
-
           <!-- Database Status -->
           <div class="p-4 bg-gray-800/50 rounded-lg border border-gray-600">
             <div class="flex items-center gap-3 mb-3">
@@ -246,7 +217,6 @@ console.log('🔧 WebAssembly Integration Demo initialized');
               </div>
             </div>
           </div>
-
           <!-- UI Framework Status -->
           <div class="p-4 bg-gray-800/50 rounded-lg border border-gray-600">
             <div class="flex items-center gap-3 mb-3">
@@ -274,7 +244,6 @@ console.log('🔧 WebAssembly Integration Demo initialized');
               </div>
             </div>
           </div>
-
           <!-- WebGPU Status -->
           <div class="p-4 bg-gray-800/50 rounded-lg border border-gray-600">
             <div class="flex items-center gap-3 mb-3">
@@ -302,7 +271,6 @@ console.log('🔧 WebAssembly Integration Demo initialized');
               </div>
             </div>
           </div>
-
           <!-- Cache Status -->
           <div class="p-4 bg-gray-800/50 rounded-lg border border-gray-600">
             <div class="flex items-center gap-3 mb-3">
@@ -330,7 +298,6 @@ console.log('🔧 WebAssembly Integration Demo initialized');
               </div>
             </div>
           </div>
-
           <!-- SvelteKit Status -->
           <div class="p-4 bg-gray-800/50 rounded-lg border border-gray-600">
             <div class="flex items-center gap-3 mb-3">
@@ -364,7 +331,6 @@ console.log('🔧 WebAssembly Integration Demo initialized');
       {/if}
     </div>
   </Card>
-
   <!-- Integration Tests -->
   <Card class="yorha-card">
     <div class="p-6">
@@ -372,7 +338,6 @@ console.log('🔧 WebAssembly Integration Demo initialized');
         <Cpu class="w-6 h-6 text-amber-400" />
         <h2 class="text-xl font-semibold text-amber-400">Integration Tests</h2>
       </div>
-
       <!-- Test Input -->
       <div class="mb-6">
         <label for="test-prompt" class="block text-sm font-medium text-gray-300 mb-2">
@@ -385,7 +350,6 @@ console.log('🔧 WebAssembly Integration Demo initialized');
           class="w-full"
         />
       </div>
-
       <!-- Test Buttons -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <Button onclick={testWebAssemblyRuntime} variant="primary" class="w-full">
@@ -401,7 +365,6 @@ console.log('🔧 WebAssembly Integration Demo initialized');
           Test Cache
         </Button>
       </div>
-
       <!-- Test Results -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="p-3 bg-gray-800/30 rounded border border-gray-600">
@@ -421,7 +384,6 @@ console.log('🔧 WebAssembly Integration Demo initialized');
           <div class="text-sm {getTestColor(demoData.cacheTest)}">{demoData.cacheTest}</div>
         </div>
       </div>
-
       <!-- Test Result Output -->
       {#if testResult}
         <div class="mt-6 p-4 bg-green-900/20 border border-green-500/30 rounded-lg">
@@ -431,7 +393,6 @@ console.log('🔧 WebAssembly Integration Demo initialized');
       {/if}
     </div>
   </Card>
-
   <!-- Architecture Overview -->
   <Card class="yorha-card">
     <div class="p-6">
@@ -439,7 +400,6 @@ console.log('🔧 WebAssembly Integration Demo initialized');
         <Globe class="w-6 h-6 text-amber-400" />
         <h2 class="text-xl font-semibold text-amber-400">Modern Stack Architecture</h2>
       </div>
-
       <div class="space-y-4 text-sm text-gray-300">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -451,7 +411,6 @@ console.log('🔧 WebAssembly Integration Demo initialized');
               <li>• <span class="text-yellow-300">SIMD Acceleration</span> - Browser-native performance</li>
             </ul>
           </div>
-
           <div>
             <h3 class="text-amber-300 font-semibold mb-2">🗄️ Database Stack</h3>
             <ul class="space-y-1 text-xs">
@@ -461,7 +420,6 @@ console.log('🔧 WebAssembly Integration Demo initialized');
               <li>• <span class="text-yellow-300">Vector API</span> - /api/v1/vector/search endpoint</li>
             </ul>
           </div>
-
           <div>
             <h3 class="text-amber-300 font-semibold mb-2">🎨 UI Framework</h3>
             <ul class="space-y-1 text-xs">
@@ -471,7 +429,6 @@ console.log('🔧 WebAssembly Integration Demo initialized');
               <li>• <span class="text-yellow-300">UnoCSS + NES.css</span> - Gaming aesthetic + utility-first</li>
             </ul>
           </div>
-
           <div>
             <h3 class="text-amber-300 font-semibold mb-2">⚡ Performance</h3>
             <ul class="space-y-1 text-xs">
@@ -486,7 +443,6 @@ console.log('🔧 WebAssembly Integration Demo initialized');
     </div>
   </Card>
 </div>
-
 <style>
   .yorha-card {
     /* Professional card styling with gaming accents */;
@@ -500,7 +456,6 @@ console.log('🔧 WebAssembly Integration Demo initialized');
       inset 0 1px 0 rgba(248, 250, 252, 0.05);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-
   .yorha-card:hover {
     transform: translateY(-2px);
     box-shadow:

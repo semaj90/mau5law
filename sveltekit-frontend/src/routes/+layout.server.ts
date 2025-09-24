@@ -1,6 +1,5 @@
 import type { ServerLoad } from '@sveltejs/kit';
 import { loadWithSSR } from '$lib/server/api-ssr-helpers';
-
 /**
  * +layout.server.ts
  *
@@ -10,10 +9,8 @@ import { loadWithSSR } from '$lib/server/api-ssr-helpers';
  *
  * Replace with a Redis-backed implementation for production (shared cache).
  */
-
 // Simple in-memory cache (SSR-safe). Replace with Redis for multi-process.
 const cache = new Map<string, { value: any; expiresAt?: number }>();
-
 const getFromCache = (key: string): any | null => {
   const entry = cache.get(key);
   if (!entry) return null;
@@ -23,15 +20,12 @@ const getFromCache = (key: string): any | null => {
   }
   return entry.value;
 };
-
 const setCache = (key: string, value: any, ttlSeconds?: number) => {
   const expiresAt = ttlSeconds ? Date.now() + ttlSeconds * 1000 : undefined;
   cache.set(key, { value, expiresAt });
 };
-
 // TTL for startup status cache (adjust for your needs)
 const STARTUP_TTL_SECONDS = 60 * 5; // 5 minutes
-
 type LayoutData = {
   startupStatus: {
     initialized: boolean;
@@ -48,24 +42,21 @@ type LayoutData = {
   isAuthenticated?: boolean;
   error?: string;
 };
-
 export const load: ServerLoad = async (event): Promise<LayoutData> => {
   const localsTyped = event.locals as App.Locals;
   const cacheKey = 'layout:startupStatus';
-
   // 1. Try to return cached startup status
   const cached = getFromCache(cacheKey);
   if (cached) {
     return {
       startupStatus: cached,
-      user: localsTyped.user,;
+      user: localsTyped.user,
       session: localsTyped.session
     };
   }
-
-  // 2. Cache miss — use SSR-optimized loading;
+  // 2. Cache miss — use SSR-optimized loading
   const data = await loadWithSSR<import('$lib/server/api-ssr-helpers').BitsUICompatibleData>(async () => {
-      // Return SSR-optimized startup status for Bits UI (development mode);
+      // Return SSR-optimized startup status for Bits UI (development mode)
       const startupStatus = {
         initialized: true,
         services: {
@@ -77,7 +68,7 @@ export const load: ServerLoad = async (event): Promise<LayoutData> => {
           rabbitmq: false,
           orchestrator: false,
           ollama: false
-        },;
+        },
         errors: [] as { message: string }[],
         startTime: Date.now(),
         initTime: 0,
@@ -85,20 +76,19 @@ export const load: ServerLoad = async (event): Promise<LayoutData> => {
       };
       // Store the result in cache
       setCache(cacheKey, startupStatus, STARTUP_TTL_SECONDS);
-
       const result: LayoutData = {
         startupStatus,
-        user: localsTyped.user,;
+        user: localsTyped.user,
         session: localsTyped.session,
         isAuthenticated: !!localsTyped.user
       };
       return result as unknown as import('$lib/server/api-ssr-helpers').BitsUICompatibleData;
     },
-    // Fallback data for SSR errors;
+    // Fallback data for SSR errors
     {
       startupStatus: null,
       error: 'Failed to initialize startup services',
-      user: null,;
+      user: null,
       session: null,
       isAuthenticated: false
     } as unknown as import('$lib/server/api-ssr-helpers').BitsUICompatibleData

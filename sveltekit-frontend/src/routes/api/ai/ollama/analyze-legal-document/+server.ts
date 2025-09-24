@@ -1,24 +1,22 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: ollama\analyze-legal-document
  * Category: conservative
  * Memory Bank: PRG_ROM
  * Priority: 150
  * Redis Type: aiAnalysis
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 // Production API endpoints for Enhanced Legal Upload Analytics
 // Integrates with Ollama, Drizzle ORM, Lucia Auth, and pgvector
-
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { db } from '$lib/server/database'
@@ -27,7 +25,6 @@ import { validateAuthSession } from '$lib/server/auth'
 import { nanoid } from 'nanoid'
 import { createHash } from 'crypto'
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-
 // Ollama AI Analysis Endpoint
 const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
   try {
@@ -36,23 +33,19 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     if (!session) {
       return json({ error: 'Unauthorized' }, { status: 401 })
     }
-
     const formData = await request.formData()
     const file = formData.get('file') as File
     const caseId = formData.get('caseId') as string
     const legalContext = JSON.parse(formData.get('legalContext') as string || '{}')
     const model = formData.get('model') as string || 'gemma3:270m'
     const analysisType = formData.get('analysisType') as string || 'comprehensive_legal'
-
     if (!file) {
       return json({ error: 'No file provided' }, { status: 400 })
     }
-
     // Generate unique document ID and hash
     const documentId = nanoid()
     const buffer = await file.arrayBuffer()
     const hash = createHash('sha256').update(Buffer.from(buffer)).digest('hex')
-
     // Extract text content based on file type
     let textContent = ''
     try {
@@ -69,16 +62,13 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       console.warn('Text extraction failed:', error)
       textContent = `[Unable to extract text from ${file.type}]`
     }
-
     // Enhanced legal analysis prompt
     const legalAnalysisPrompt = `
 You are an expert legal AI assistant analyzing documents for evidence and legal relevance.
-
 Document: ${file.name}
 Case Context: ${JSON.stringify(legalContext)}
 Practice Area: ${legalContext.practiceArea || 'General'}
 Urgency: ${legalContext.urgency || 'Medium'}
-
 Please analyze this document and provide:
 1. A comprehensive summary
 2. Key legal entities (people, organizations, dates, monetary amounts)
@@ -89,35 +79,32 @@ Please analyze this document and provide:
 7. Relevance score (0-1) for the case
 8. Risk factors or ethical concerns
 9. Suggested evidence tags/categories
-
 Document content:
 ${textContent.slice(0, 8000)} ${textContent.length > 8000 ? '...[truncated]' : ''}
-
 Respond in JSON format with the following structure:
 {
   "summary": "string",
   "entities": [{"type": "person|organization|date|money|legal_term", "value": "string", "confidence": 0.0-1.0}],
   "citations": [{"type": "case|statute|regulation", "citation": "string", "relevance": 0.0-1.0}],
   "evidenceType": "contract|correspondence|pleading|discovery|expert_report|other",
-  "privileged": boolean,
-  "needsRedaction": boolean,
+  "privileged": boolean
+  "needsRedaction": boolean
   "relevanceScore": 0.0-1.0,
   "riskFactors": ["string"],
   "suggestedTags": ["string"],
   "confidence": 0.0-1.0
 }`
-
     // Call Ollama API
     const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        model: model,
-        prompt: legalAnalysisPrompt,
+      body: JSON.stringify({,
+        model: model
+        prompt: legalAnalysisPrompt
         format: 'json',
-        stream: false,
+        stream: false
         options: {
           temperature: 0.3, // Lower temperature for more consistent legal analysis
           top_p: 0.9,
@@ -125,14 +112,11 @@ Respond in JSON format with the following structure:
         }
       })
     })
-
     if (!ollamaResponse.ok) {
       throw new Error(`Ollama API error: ${ollamaResponse.statusText}`)
     }
-
     const ollamaResult = await ollamaResponse.json()
     let analysisResult
-
     try {
       analysisResult = JSON.parse(ollamaResult.response)
     } catch (error) {
@@ -142,32 +126,31 @@ Respond in JSON format with the following structure:
         entities: [],
         citations: [],
         evidenceType: 'other',
-        privileged: false,
-        needsRedaction: false,
+        privileged: false
+        needsRedaction: false
         relevanceScore: 0.5,
         riskFactors: [],
         suggestedTags: ['legal_document'],
         confidence: 0.6
       }
     }
-
     // Store document in database
     await db.insert(documents).values({
-      id: documentId,
+      id: documentId
       fileName: file.name,
       fileSize: file.size,
       fileType: file.type,
-      hash: hash,
-      caseId: caseId || null,
+      hash: hash
+      caseId: caseId || null
       userId: session.userId,
       textContent: textContent.slice(0, 50000), // Store up to 50k chars
-      aiAnalysis: analysisResult,
+      aiAnalysis: analysisResult
       uploadedAt: new Date(),
       metadata: {
         legalContext,
-        analysisModel: model,
+        analysisModel: model
         analysisType,
-        chainOfCustody: [{
+        chainOfCustody: [{,
           timestamp: new Date().toISOString(),
           actor: session.userId,
           action: 'uploaded_and_analyzed',
@@ -175,7 +158,6 @@ Respond in JSON format with the following structure:
         }]
       }
     })
-
     // Generate and store vector embeddings for semantic search
     if (textContent.length > 0) {
       try {
@@ -184,18 +166,16 @@ Respond in JSON format with the following structure:
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
+          body: JSON.stringify({,
             model: 'mxbai-embed-large', // Use a good embedding model
             prompt: textContent.slice(0, 2000) // Truncate for embedding
           })
         })
-
         if (embeddingResponse.ok) {
           const embeddingResult = await embeddingResponse.json()
-
           await db.insert(embeddings).values({
             id: nanoid(),
-            documentId: documentId,
+            documentId: documentId
             embedding: embeddingResult.embedding,
             content: textContent.slice(0, 2000),
             metadata: {
@@ -208,7 +188,6 @@ Respond in JSON format with the following structure:
         console.warn('Failed to generate embeddings:', embeddingError)
       }
     }
-
     return json({
       documentId,
       hash,
@@ -223,25 +202,20 @@ Respond in JSON format with the following structure:
       tags: analysisResult.suggestedTags,
       confidence: analysisResult.confidence
     })
-
   } catch (error) {
     console.error('Legal document analysis error:', error)
     return json({ error: 'Analysis failed' }, { status: 500 })
   }
 }
-
 // Helper functions (you would implement these based on your needs)
 async function extractPDFText(buffer: ArrayBuffer): Promise<string> {
   // Implement PDF text extraction
   // You could use pdf-parse, pdf2pic, or similar libraries
   return '[PDF text extraction not implemented]'
 }
-
 async function performOCR(buffer: ArrayBuffer): Promise<string> {
   // Implement OCR for images
   // You could use Tesseract.js or similar
   return '[OCR not implemented]'
 }
-
-
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)

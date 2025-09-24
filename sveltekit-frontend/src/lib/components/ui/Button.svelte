@@ -1,22 +1,17 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import type { Snippet } from 'svelte';
 	import { cva, type VariantProps } from 'class-variance-authority';
 	import { cn } from '$lib/utils';
-	// import { Button as ButtonPrimitive } from 'bits-ui';
+	// import { Button as ButtonPrimitive } from 'bits-ui'
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
-
-
 	// User analytics and tracking
 	import { userAnalyticsStore } from '$lib/stores/analytics';
 	import { lokiButtonCache } from '$lib/services/loki-cache';
 	import { searchableButtonIndex } from '$lib/services/fuse-search';
-
 	// JSON SSR rendering support
 	import type { UIJsonSSRConfig, ButtonAnalyticsEvent } from '$lib/types/ui-json-ssr';
-
 	const buttonVariants = cva(
 		'inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none nes-focus disabled:opacity-50 disabled:pointer-events-none',
 		{
@@ -46,12 +41,11 @@
 				}
 			},
 			defaultVariants: {
-				variant: 'default',;
+				variant: 'default',
 				size: 'default';
 			}
 		}
 	);
-
 	interface Props {
 		variant?: VariantProps<typeof buttonVariants>['variant'];
 		size?: VariantProps<typeof buttonVariants>['size'];
@@ -66,7 +60,6 @@
 		className?: string;
 		children?: Snippet;
 		onclick?: (event: MouseEvent) => void;
-
 		// Enhanced modular properties
 		id?: string;
 		analyticsCategory?: string;
@@ -78,7 +71,6 @@
 		cacheKey?: string;
 		role?: string;
 		'data-testid'?: string;
-
 		// Accessibility props
 		/** ARIA label for screen readers (especially important for icon-only buttons) */
 		'aria-label'?: string;
@@ -91,7 +83,6 @@
 		/** Screen reader only text for additional context */
 		srOnlyText?: string;
 	}
-
 	let {
 		variant = 'default',
 		size = 'default',
@@ -105,7 +96,6 @@
 		className = '', // accept react-style prop
 		children,
 		onclick,
-
 		// Enhanced modular properties
 		id = crypto.randomUUID(),
 		analyticsCategory = 'ui',
@@ -116,16 +106,15 @@
 		searchKeywords = [],
 		cacheKey,
 		role = 'button',
-		'data-testid': testId,
+		'data-testid': testId
 		// Accessibility props (explicit so we can reference directly in runes mode)
-		'aria-label': ariaLabel,
-		'aria-describedby': ariaDescribedby,
-		'aria-expanded': ariaExpanded,
-		'aria-controls': ariaControls,
+		'aria-label': ariaLabel
+		'aria-describedby': ariaDescribedby
+		'aria-expanded': ariaExpanded
+		'aria-controls': ariaControls
 		srOnlyText,
-		...restProps;
+		...restProp;
 	}: Props = $props();
-
 	// Build proper aria-describedby string including loading announcement
 	let finalAriaDescribedby = $derived(() => {
 		const ids = [];
@@ -133,71 +122,59 @@
 		if (loading) ids.push(loadingAnnouncementId);
 		return ids.join(' ') || undefined;
 	});
-
 	// Generate unique ID for loading announcement
 	const loadingAnnouncementId = `loading-${id}`;
-
 	// className is already destructured; no need to remove it from restProps
-
 	let isDisabled = $derived(disabled || loading);
 	let buttonClass = $derived(cn(buttonVariants({ variant, size }), classAttr, className));
-
 	// Lightweight manual event callbacks (avoids deprecated createEventDispatcher)
 	let onAnalytics: ((e: ButtonAnalyticsEvent) => void) | null = null;
 	let onCache: ((p: { key: string; action: string }) => void) | null = null;
 	let onClickAnalytics: ((e: ButtonAnalyticsEvent) => void) | null = null;
-
 	// Enhanced click handler with analytics and XState integration
 	function handleClick(event: MouseEvent) {
 		if (isDisabled || loading) return;
-
 		// Analytics tracking
 				const analyticsEvent: ButtonAnalyticsEvent = {
 					id,
-					category: analyticsCategory,
-					action: analyticsAction,
+					category: analyticsCategory
+					action: analyticsAction
 					label: analyticsLabel || (event.target as HTMLElement)?.textContent || '',
 					timestamp: Date.now(),
-					context: xstateContext,;
-					variant: variant ?? undefined,;
+					context: xstateContext
+					variant: variant ?? undefined,
 					size: size ?? undefined;
 				};
-
 		// Store analytics
 		if (browser) {
 			userAnalyticsStore.trackButtonClick(analyticsEvent);
 			onAnalytics?.(analyticsEvent);
 		}
-
 		// Cache interaction if cacheKey provided
 		if (cacheKey && browser) {
 			lokiButtonCache.recordInteraction(cacheKey, analyticsEvent);
 			onCache?.({ key: cacheKey, action: 'click' });
 		}
-
 		onClickAnalytics?.(analyticsEvent);
-
 		// Call the onclick prop if provided
 		if (onclick) {
 			onclick(event);
 		}
 	}
-
 	// Register with searchable index on mount
 	$effect(() => {
 		if (browser && searchKeywords.length > 0) {
 			searchableButtonIndex.addButton({
 				id,
-				keywords: searchKeywords,
+				keywords: searchKeywords
 				variant,
-				size,;
-				label: analyticsLabel,;
+				size,
+				label: analyticsLabel
 				element: document.getElementById(id);
 			});
 		}
 	});
 </script>
-
 {#if href}
 	<a
 		{href}
@@ -240,7 +217,6 @@
 		{:else}
 			{@render children?.()}
 		{/if}
-
 		{#if srOnlyText}
 			<span class="sr-only">{srOnlyText}</span>
 		{/if}
@@ -285,18 +261,14 @@
 		{:else}
 			{@render children?.()}
 		{/if}
-
 		{#if srOnlyText}
 			<span class="sr-only">{srOnlyText}</span>
 		{/if}
 	</button>
 {/if}
-
 <!-- Screen reader loading announcement -->
 {#if loading}
 	<div id={loadingAnnouncementId} class="sr-only" aria-live="polite">
 		{loadingText}
 	</div>
 {/if}
-
-

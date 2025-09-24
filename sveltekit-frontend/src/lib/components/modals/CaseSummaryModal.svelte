@@ -1,12 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Case Summary Modal with AI-generated insights -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import Button from '$lib/components/ui/enhanced-bits';
-  import {   } from "svelte";
   // Badge replaced with span - not available in enhanced-bits
   import * as Dialog from '$lib/components/ui/dialog';
   import Drawer from '$lib/components/ui/drawer/Drawer.svelte';
@@ -25,8 +23,7 @@ https://svelte.dev/e/js_parse_error -->
     Target,
     Users,
   } from "lucide-svelte";
-
-  let { open = $bindable()   }: { open = $bindable() : unknown } = $props(); // boolean = false;
+  let { open = $bindable()   }: { open = $bindable() : unknown } = $props(); // boolean = false
   // SSR-compatible: all dates as strings
   let { caseData = $bindable()  }: { caseData = $bindable() : unknown } = $props(); // {
     id: string;
@@ -48,7 +45,7 @@ https://svelte.dev/e/js_parse_error -->
         factors: string[];
       };
       timeline: Array;
-      evidence: {;
+      evidence: {
         total: number;
         admissible: number;
         questionable: number;
@@ -64,29 +61,23 @@ https://svelte.dev/e/js_parse_error -->
       completionPercentage: number;
     };
   } | null = null;
-
-  let { useDrawer = $bindable()  }: { useDrawer = $bindable() : unknown } = $props(); // boolean = false;
-
-  
+  let { useDrawer = $bindable()  }: { useDrawer = $bindable() : unknown } = $props(); // boolean = false
   let isGeneratingSummary = $state(false);
   let activeTab = $state<"overview" | "timeline" | "evidence" | "recommendations" >("overview");
-
   async function generateSummary() {
     if (!caseData) return;
-
     isGeneratingSummary = true;
     try {
       const response = await fetch("/api/cases/summary", {
-        method: "POST",;
-        headers: { "Content-Type": "application/json" },;
-        body: JSON.stringify({
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({,
           caseId: caseData.id,
-          includeEvidence: true,
-          includeTimeline: true,
+          includeEvidence: true
+          includeTimeline: true
           analysisDepth: "comprehensive",
         }),
       });
-
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; summary?: unknown }).success) {
         caseData = { ...caseData, summary: (result as { success?: unknown; summary?: unknown }).summary };
@@ -138,7 +129,6 @@ https://svelte.dev/e/js_parse_error -->
     return new Intl.DateTimeFormat.format(date);
   }
 </script>
-
 {#if useDrawer}
   <Drawer
     bind:open
@@ -150,7 +140,6 @@ https://svelte.dev/e/js_parse_error -->
     {#snippet trigger}
       {@render trigger?.()}
     {/snippet}
-
     {#snippet default}
       {@render content?.()}
     {/snippet}
@@ -177,30 +166,25 @@ https://svelte.dev/e/js_parse_error -->
               <h3 class="text-lg font-semibold">Overview</h3>
               <Button class="bits-btn" onclick={generateSummary} disabled={isGeneratingSummary} size="sm" variant="ghost">
 <Sparkles class="w-4 h-4 mr-2" /> Regenerate
-
             </div>
             <p class="nes-text is-disabled">{caseData.summary.overview}</p>
-
             <h3 class="text-lg font-semibold">Key Findings</h3>
             <ul class="list-disc list-inside nes-text is-disabled">
               {#each caseData.summary.keyFindings as finding}
                 <li>{finding}</li>
               {/each}
             </ul>
-
             <h3 class="text-lg font-semibold">Recommendations</h3>
             <ul class="list-disc list-inside nes-text is-disabled">
               {#each caseData.summary.recommendations as rec}
                 <li>{rec}</li>
               {/each}
             </ul>
-
             <h3 class="text-lg font-semibold">Risk Assessment</h3>
             <div class="flex items-center gap-2">
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{caseData.summary.riskAssessment.level}</span>
               <span class="nes-text is-disabled">({caseData.summary.riskAssessment.factors.join(', ')})</span>
             </div>
-
             <h3 class="text-lg font-semibold">Timeline</h3>
             <ol class="border-l border-gray-200 space-y-4 pl-4">
               {#each caseData.summary.timeline as event}
@@ -213,7 +197,6 @@ https://svelte.dev/e/js_parse_error -->
                 </li>
               {/each}
             </ol>
-
             <h3 class="text-lg font-semibold">Evidence Overview</h3>
             <div class="grid grid-cols-2 gap-4 nes-text is-disabled">
               <div>Total Evidence: {caseData.summary.evidence.total}</div>
@@ -221,7 +204,6 @@ https://svelte.dev/e/js_parse_error -->
               <div>Questionable: {caseData.summary.evidence.questionable}</div>
               <div>Inadmissible: {caseData.summary.evidence.inadmissible}</div>
             </div>
-
             <h3 class="text-lg font-semibold">Next Steps</h3>
             <ul class="list-disc list-inside nes-text is-disabled">
               {#each caseData.summary.nextSteps as step}
@@ -235,13 +217,10 @@ https://svelte.dev/e/js_parse_error -->
             <p>No AI summary available for this case.</p>
             <Button onclick={generateSummary} disabled={isGeneratingSummary} class="mt-4 bits-btn bits-btn">
 <Sparkles class="w-4 h-4 mr-2" /> Generate Summary
-
           </div>
         {/if}
       </div>
     </Dialog.Content>
   </Dialog.Root>
 {/if}
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

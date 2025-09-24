@@ -3,7 +3,6 @@
  * Type definitions for the Gemma3 Legal AI Chat System
  */;
 }
-
 export interface ChatMessage {
   id: string;
   content: string;
@@ -25,7 +24,6 @@ export interface ChatMessage {
     vectorResults?: VectorSearchResult[];
   };
 }
-
 export interface Conversation {
   id: string;
   title: string;
@@ -40,7 +38,6 @@ export interface Conversation {
     contextDocuments?: string[];
   };
 }
-
 export interface ChatSettings {
   model: string;
   temperature: number;
@@ -55,7 +52,6 @@ export interface ChatSettings {
   topK?: number;
   repeatPenalty?: number;
 }
-
 export interface VectorSearchResult {
   id: string;
   content: string;
@@ -68,7 +64,6 @@ export interface VectorSearchResult {
     jurisdiction?: string;
   };
 }
-
 export interface ModelInfo {
   name: string;
   status: "ready" | "loading" | "error" | "unknown";
@@ -83,7 +78,6 @@ export interface ModelInfo {
     multimodal?: boolean;
   };
 }
-
 export interface ContextInjection {
   enabled: boolean;
   documents: string[];
@@ -92,7 +86,6 @@ export interface ContextInjection {
   maxResults?: number;
   threshold?: number;
 }
-
 export interface StreamingResponse {
   id: string;
   chunk: string;
@@ -102,7 +95,6 @@ export interface StreamingResponse {
     confidence?: number;
   };
 }
-
 export interface ApiResponse {
   response: string;
   conversationId?: string;
@@ -116,15 +108,13 @@ export interface ApiResponse {
   };
   error?: string;
 }
-
 export interface ServiceStatus {
   ollama: "connected" | "disconnected" | "error" | "unknown";
   qdrant: "connected" | "disconnected" | "error" | "unknown";
   database: "connected" | "disconnected" | "error" | "unknown";
   gemma3: "ready" | "loading" | "error" | "unknown";
 }
-
-// Legal-specific types;
+// Legal-specific types
 export interface LegalContext {
   caseType?: "criminal" | "civil" | "administrative";
   jurisdiction?: string;
@@ -133,7 +123,6 @@ export interface LegalContext {
   relevantStatutes?: string[];
   precedentCases?: string[];
 }
-
 export interface EvidenceDocument {
   id: string;
   title: string;
@@ -146,8 +135,7 @@ export interface EvidenceDocument {
     tags?: string[];
   };
 }
-
-// UI State types;
+// UI State types
 export interface UIState {
   sidebar: {
     isOpen: boolean;
@@ -159,33 +147,31 @@ export interface UIState {
   };
   theme: "light" | "dark" | "system";
 }
-
-// Error types;
+// Error types
 export interface ChatError extends Error {
   code?: string;
   type: "network" | "api" | "model" | "validation" | "unknown";
   retryable?: boolean;
-  context?: Record<string, any>;
+  context?: { [key: string]: any };
 }
-
-// Configuration types;
+// Configuration types
 export interface SystemConfig {
   api: {
     baseUrl: string;
     timeout: number;
     retries: number;
   };
-  models: {;
+  models: {
     default: string;
     available: string[];
   };
-  features: {;
+  features: {
     streaming: boolean;
     contextInjection: boolean;
     vectorSearch: boolean;
     multimodal: boolean;
   };
-  ui: {;
+  ui: {
     theme: "light" | "dark" | "system";
     animations: boolean;
     notifications: boolean;

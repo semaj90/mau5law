@@ -1,20 +1,17 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
   import HeadlessDialog from '$lib/headless/HeadlessDialog.svelte';
   import LoadingButton from '$lib/headless/LoadingButton.svelte';
   import OptimisticList from '$lib/headless/OptimisticList.svelte';
-  
   // Icons
-  import { 
+  import {
     Brain, Scale, FileText, Users, Target, Lightbulb,
     TrendingUp, AlertTriangle, CheckCircle, Clock,
     Layers, Network, Eye, Plus, Edit, Trash, Save,
     ArrowRight, BarChart3, Zap, Search, Link2
   } from 'lucide-svelte';
-
   // Svelte 5 runes
   let caseId = $state('');
   let caseTitle = $state('');
@@ -25,10 +22,9 @@
   let newTheoryForm = $state({
     name: '',
     type: 'prosecution',
-    strategy: 'evidence-based',;
-    description: '',;
+    strategy: 'evidence-based',
+    description: '',
     errors: });
-  
   // Theory building components
   let evidenceItems = $state([]);
   let precedents = $state([]);
@@ -36,27 +32,23 @@
   let counterarguments = $state([]);
   let strengthAnalysis = $state(null);
   let timelineEvents = $state([]);
-  
   // AI reasoning engine state
   let aiSuggestions = $state([]);
   let logicalChain = $state([]);
   let riskAssessment = $state(null);
   let theoryScores = $state( );
-
   const theoryTypes = [
     { id: 'prosecution', label: 'Prosecution Theory', icon: Scale },
     { id: 'defense', label: 'Defense Theory', icon: Users },
     { id: 'civil', label: 'Civil Claim Theory', icon: FileText },
     { id: 'alternative', label: 'Alternative Theory', icon: Lightbulb }
   ];
-
   const strategyTypes = [
     { id: 'evidence-based', label: 'Evidence-Driven', description: 'Build theory around strongest evidence' },
     { id: 'precedent-based', label: 'Precedent-Driven', description: 'Leverage existing case law' },
     { id: 'narrative-based', label: 'Narrative-Driven', description: 'Construct compelling story' },
     { id: 'technical-based', label: 'Technical-Driven', description: 'Focus on legal technicalities' }
   ];
-
   $effect(() => {
     (async () => {
 // Initialize with case data if coming from case page
@@ -66,11 +58,9 @@
       caseId = paramCaseId;
       await loadCaseData();
     }
-    
     await loadExistingTheories();
     })();
   });
-
   async function loadCaseData() {
     try {
       const response = await fetch(`/api/v1/cases/${caseId}`);
@@ -88,7 +78,6 @@
       precedents = generateMockPrecedents();
     }
   }
-
   async function loadCaseEvidence() {
     try {
       const response = await fetch(`/api/v1/evidence/case/${caseId}`);
@@ -101,22 +90,20 @@
       evidenceItems = generateMockEvidence();
     }
   }
-
   async function loadCasePrecedents() {
     try {
       const response = await fetch(`/api/legal/research/search`, {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: caseTitle,
+        body: JSON.stringify({,
+          query: caseTitle
           mode: 'semantic',
           filters: ,
-          sort: 'relevance',;
-          page: 1,;
+          sort: 'relevance',
+          page: 1,
           limit: 10;
         })
       });
-      
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown }).json();
         precedents = (data as { evidence?: unknown; results?: unknown; theories?: unknown }).results || [];
@@ -126,7 +113,6 @@
       precedents = generateMockPrecedents();
     }
   }
-
   async function loadExistingTheories() {
     try {
       const response = await fetch(`/api/legal/case-theory/${caseId}`);
@@ -143,9 +129,9 @@
           name: 'Self-Defense Theory',
           type: 'defense',
           strategy: 'evidence-based',
-          description: 'Client acted in self-defense under reasonable fear of imminent harm',;
+          description: 'Client acted in self-defense under reasonable fear of imminent harm',
           strength: 0.87,
-          legalArguments: ['Evidence of threat', 'Witness testimony', 'Prior incidents'],;
+          legalArguments: ['Evidence of threat', 'Witness testimony', 'Prior incidents'],
           counterarguments: ['No imminent danger', 'Excessive force'],
           createdAt: new Date(Date.now() - 86400000),
           updatedAt: new Date(Date.now() - 3600000);
@@ -153,28 +139,23 @@
       ];
     }
   }
-
   async function buildTheoryWithAI(theoryData) {
     isBuilding = true;
-    
     try {
       // Store theory building request in CHR-ROM for fast processing
       await nesGPUBridge.storeCHRROMPattern(`theory_${Date.now()}`, {/* JSX syntax converted to Svelte */});
-
       const response = await fetch('/api/legal/case-theory/build', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           caseId,
-          theory: theoryData,;
-          evidence: evidenceItems,;
+          theory: theoryData
+          evidence: evidenceItems
           precedents: precedents.slice(0, 5);
         })
       });
-
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const result = await (response as { ok?: unknown; json?: unknown }).json();
-        
         // Update theory with AI analysis
         const builtTheory = {
           id: `theory_${Date.now()}`,
@@ -183,18 +164,15 @@
           counterarguments: (result as { legalArguments?: unknown; counterarguments?: unknown; logicalChain?: unknown; strengthScore?: unknown; riskAssessment?: unknown; suggestions?: unknown }).counterarguments || [],
           logicalChain: (result as { legalArguments?: unknown; counterarguments?: unknown; logicalChain?: unknown; strengthScore?: unknown; riskAssessment?: unknown; suggestions?: unknown }).logicalChain || [],
           strength: (result as { legalArguments?: unknown; counterarguments?: unknown; logicalChain?: unknown; strengthScore?: unknown; riskAssessment?: unknown; suggestions?: unknown }).strengthScore || 0.5,
-          riskAssessment: (result as { legalArguments?: unknown; counterarguments?: unknown; logicalChain?: unknown; strengthScore?: unknown; riskAssessment?: unknown; suggestions?: unknown }).riskAssessment || ,
+          riskAssessment: (result as { legalArguments?: unknown; counterarguments?: unknown; logicalChain?: unknown; strengthScore?: unknown; riskAssessment?: unknown; suggestions?: unknown }).riskAssessment ||
           aiSuggestions: (result as { legalArguments?: unknown; counterarguments?: unknown; logicalChain?: unknown; strengthScore?: unknown; riskAssessment?: unknown; suggestions?: unknown }).suggestions || [],
           createdAt: new Date(),
           updatedAt: new Date()
         };
-
         theories = [builtTheory, ...theories];
         currentTheory = builtTheory;
-        
         // Load detailed analysis
         await loadTheoryAnalysis(builtTheory);
-        
       } else {
         // Mock AI analysis for demo
         const mockTheory = await generateMockTheoryAnalysis(theoryData);
@@ -202,7 +180,6 @@
         currentTheory = mockTheory;
         await loadTheoryAnalysis(mockTheory);
       }
-      
     } catch (error) {
       console.error('Theory building failed:', error);
       // Fallback to mock data
@@ -214,11 +191,9 @@
       showTheoryDialog = false;
     }
   }
-
   async function generateMockTheoryAnalysis(theoryData) {
     // Simulate AI reasoning process
     await new Promise(resolve => setTimeout(resolve, 2000));
-    
     return {
       id: `theory_${Date.now()}`,
       ...theoryData,
@@ -243,8 +218,8 @@
       strength: 0.75 + Math.random() * 0.2,
       riskAssessment: {
         overallRisk: 'Medium',
-        strengths: ['Strong evidence', 'Clear precedent', 'Compelling narrative'],;
-        weaknesses: ['Procedural complexity', 'Jury unpredictability'],;
+        strengths: ['Strong evidence', 'Clear precedent', 'Compelling narrative'],
+        weaknesses: ['Procedural complexity', 'Jury unpredictability'],
         recommendations: ['Strengthen witness prep', 'Consider plea alternatives'];
       },
       aiSuggestions: [
@@ -257,50 +232,43 @@
       updatedAt: new Date()
     };
   }
-
   async function loadTheoryAnalysis(theory) {
     legalArguments = theory.legalArguments || [];
     counterarguments = theory.counterarguments || [];
     logicalChain = theory.logicalChain || [];
     riskAssessment = theory.riskAssessment || null;
     aiSuggestions = theory.aiSuggestions || [];
-    
     // Calculate theory strength visualization
     strengthAnalysis = {
-      overall: theory.strength || 0,;
+      overall: theory.strength || 0,
       components: {
         evidence: 0.8,
-        precedent: 0.7,;
-        logic: 0.9,;
+        precedent: 0.7,
+        logic: 0.9,
         presentation: 0.6;
       }
     };
   }
-
   async function submitTheory(event) {
     event.preventDefault();
     if (!newTheoryForm.name.trim()) {
       newTheoryForm.errors = { name: ['Theory name is required'] };
       return;
     }
-
     newTheoryForm.errors = {};
     await buildTheoryWithAI(newTheoryForm);
-    
     // Reset form
     newTheoryForm = {
       name: '',
       type: 'prosecution',
-      strategy: 'evidence-based',;
-      description: '',;
+      strategy: 'evidence-based',
+      description: '',
       errors: };
   }
-
   function selectTheory(theory) {
     currentTheory = theory;
     loadTheoryAnalysis(theory);
   }
-
   function getTheoryTypeColor(type) {
     switch (type) {
       case 'prosecution': return 'text-red-600 bg-red-100';
@@ -310,13 +278,11 @@
       default: return 'text-gray-600 bg-gray-100';
     }
   }
-
   function getStrengthColor(strength) {
     if (strength >= 0.8) return 'text-green-600';
     if (strength >= 0.6) return 'text-yellow-600';
     return 'text-red-600';
   }
-
   function generateMockEvidence() {
     return [
       {
@@ -327,7 +293,7 @@
         strength: 0.9;
       },
       {
-        id: '2', 
+        id: '2',
         title: 'Witness Statement - John Doe',
         type: 'testimony',
         description: 'Eyewitness account of events leading to incident',
@@ -336,13 +302,12 @@
       {
         id: '3',
         title: 'Medical Examiner Report',
-        type: 'document',;
-        description: 'Autopsy findings and cause of death determination',;
+        type: 'document',
+        description: 'Autopsy findings and cause of death determination',
         strength: 0.95;
       }
     ];
   }
-
   function generateMockPrecedents() {
     return [
       {
@@ -354,20 +319,18 @@
       },
       {
         id: '2',
-        title: 'Commonwealth v. Williams - Reasonable Force',;
+        title: 'Commonwealth v. Williams - Reasonable Force',
         citation: '789 Commonwealth 012 (2020)',
-        relevanceScore: 0.85,;
+        relevanceScore: 0.85,
         summary: 'Defines proportional response in threat situations';
       }
     ];
   }
 </script>
-
 <svelte:head>
   <title>Case Theory Builder - AI Legal Reasoning</title>
   <meta name="description" content="AI-powered case theory building with logical reasoning and precedent analysis" />
 </svelte:head>
-
 <div class="min-h-screen bg-gray-50">
   <!-- Header -->
   <div class="bg-white border-b border-gray-200">
@@ -382,7 +345,6 @@
             <p class="text-gray-600 mt-1">{caseTitle}</p>
           {/if}
         </div>
-        
         <button
           onclick={() => showTheoryDialog = true}
           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
@@ -393,7 +355,6 @@
       </div>
     </div>
   </div>
-
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="lg:grid lg:grid-cols-12 lg:gap-8">
       <!-- Theory List -->
@@ -403,15 +364,12 @@
             <h3 class="text-lg font-medium text-gray-900">Case Theories</h3>
             <p class="text-sm text-gray-500">AI-powered legal reasoning</p>
           </div>
-          
           <div class="p-6">
-            <OptimisticList 
+            <OptimisticList
               items={theories}
-              
-              
             >
               {#snippet children({ item: theory, optimistic })}
-                            <div 
+                            <div
                   class="p-4 border border-gray-200 rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md mb-3
                          {currentTheory?.id === theory.id ? 'border-purple-500 bg-purple-50' : 'hover:border-gray-300'}
                          {optimistic ? 'opacity-50' : ''}"
@@ -424,9 +382,7 @@
                       {theory.type}
                     </span>
                   </div>
-                  
                   <p class="text-sm text-gray-600 mb-3">{theory.description}</p>
-                  
                   <div class="flex items-center justify-between">
                     <div class="flex items-center text-sm">
                       <span class="text-gray-500">Strength:</span>
@@ -434,7 +390,6 @@
                         {Math.round(theory.strength * 100)}%
                       </span>
                     </div>
-                    
                     <div class="text-xs text-gray-400">
                       {new Date(theory.updatedAt).toLocaleDateString()}
                     </div>
@@ -442,7 +397,6 @@
                 </div>
                                         {/snippet}
                         </OptimisticList>
-
             {#if theories.length === 0}
               <div class="text-center py-8 text-gray-500">
                 <Brain class="w-8 h-8 mx-auto mb-2 opacity-50" />
@@ -453,7 +407,6 @@
           </div>
         </div>
       </div>
-
       <!-- Theory Analysis -->
       <div class="lg:col-span-8">
         {#if currentTheory}
@@ -467,7 +420,6 @@
                     {currentTheory.type} Theory
                   </span>
                 </div>
-                
                 <div class="flex items-center space-x-2">
                   <span class="text-sm text-gray-500">Overall Strength:</span>
                   <span class="text-lg font-bold {getStrengthColor(currentTheory.strength)}">
@@ -475,10 +427,8 @@
                   </span>
                 </div>
               </div>
-              
               <p class="text-gray-700">{currentTheory.description}</p>
             </div>
-
             <!-- Strength Analysis -->
             {#if strengthAnalysis}
               <div class="bg-white rounded-lg shadow p-6">
@@ -486,7 +436,6 @@
                   <BarChart3 class="h-5 w-5 mr-2" />
                   Strength Analysis
                 </h3>
-                
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {#each Object.entries(strengthAnalysis.components) as [component, score]}
                     <div class="text-center">
@@ -495,7 +444,7 @@
                       </div>
                       <div class="text-sm text-gray-500 capitalize">{component}</div>
                       <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
-                        <div 
+                        <div
                           class="h-2 rounded-full {score >= 0.8 ? 'bg-green-500' : score >= 0.6 ? 'bg-yellow-500' : 'bg-red-500'}"
                           style="width: {score * 100}%"
                         ></div>
@@ -505,7 +454,6 @@
                 </div>
               </div>
             {/if}
-
             <!-- Arguments and Counter-legalArguments -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <!-- Arguments -->
@@ -514,7 +462,6 @@
                   <CheckCircle class="h-5 w-5 mr-2 text-green-600" />
                   Supporting Arguments
                 </h3>
-                
                 <div class="space-y-3">
                   {#each legalArguments as argument, index}
                     <div class="flex items-start space-x-3 p-3 bg-green-50 rounded-lg">
@@ -526,14 +473,12 @@
                   {/each}
                 </div>
               </div>
-
               <!-- Counter-legalArguments -->
               <div class="bg-white rounded-lg shadow p-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
                   <AlertTriangle class="h-5 w-5 mr-2 text-red-600" />
                   Counter-legalArguments
                 </h3>
-                
                 <div class="space-y-3">
                   {#each counterarguments as counterarg, index}
                     <div class="flex items-start space-x-3 p-3 bg-red-50 rounded-lg">
@@ -546,7 +491,6 @@
                 </div>
               </div>
             </div>
-
             <!-- Logical Chain -->
             {#if logicalChain.length > 0}
               <div class="bg-white rounded-lg shadow p-6">
@@ -554,7 +498,6 @@
                   <Network class="h-5 w-5 mr-2" />
                   Logical Chain of Reasoning
                 </h3>
-                
                 <div class="space-y-4">
                   {#each logicalChain as step, index}
                     <div class="flex items-start space-x-4">
@@ -563,7 +506,6 @@
                           {step.step}
                         </div>
                       </div>
-                      
                       <div class="flex-1">
                         <div class="flex items-center space-x-2 mb-1">
                           <span class="font-medium text-gray-900">
@@ -575,18 +517,15 @@
                             </span>
                           {/if}
                         </div>
-                        
                         <p class="text-gray-700 mb-2">
                           {step.premise || step.conclusion}
                         </p>
-                        
                         {#if step.evidence}
                           <p class="text-sm text-gray-600 bg-gray-50 p-2 rounded">
                             Evidence: {step.evidence}
                           </p>
                         {/if}
                       </div>
-
                       {#if index < logicalChain.length - 1}
                         <ArrowRight class="h-4 w-4 text-gray-400 mt-2" />
                       {/if}
@@ -595,7 +534,6 @@
                 </div>
               </div>
             {/if}
-
             <!-- Risk Assessment -->
             {#if riskAssessment}
               <div class="bg-white rounded-lg shadow p-6">
@@ -603,7 +541,6 @@
                   <Scale class="h-5 w-5 mr-2" />
                   Risk Assessment
                 </h3>
-                
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
                     <h4 class="font-medium text-green-700 mb-2">Strengths</h4>
@@ -616,7 +553,6 @@
                       {/each}
                     </ul>
                   </div>
-                  
                   <div>
                     <h4 class="font-medium text-red-700 mb-2">Weaknesses</h4>
                     <ul class="space-y-1">
@@ -628,7 +564,6 @@
                       {/each}
                     </ul>
                   </div>
-                  
                   <div>
                     <h4 class="font-medium text-blue-700 mb-2">Recommendations</h4>
                     <ul class="space-y-1">
@@ -643,7 +578,6 @@
                 </div>
               </div>
             {/if}
-
             <!-- AI Suggestions -->
             {#if aiSuggestions.length > 0}
               <div class="bg-blue-50 rounded-lg p-6">
@@ -651,7 +585,6 @@
                   <Zap class="h-5 w-5 mr-2" />
                   AI Suggestions
                 </h3>
-                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {#each aiSuggestions as suggestion}
                     <div class="p-3 bg-white rounded-lg border border-blue-200">
@@ -680,7 +613,6 @@
     </div>
   </div>
 </div>
-
 <!-- New Theory Dialog -->
 <HeadlessDialog bind:open={showTheoryDialog}>
   <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
@@ -689,7 +621,6 @@
         <h2 class="text-lg font-semibold text-gray-900">Build New Case Theory</h2>
         <p class="text-sm text-gray-600">AI will analyze evidence and build logical legalArguments</p>
       </div>
-      
       <form onsubmit={submitTheory} class="p-6 space-y-4">
         <div>
           <label for="theoryName" class="block text-sm font-medium text-gray-700 mb-1">
@@ -707,14 +638,13 @@
             <p class="text-red-600 text-sm mt-1">{newTheoryForm.errors.name[0]}</p>
           {/if}
         </div>
-
         <div>
           <label for="theoryType" class="block text-sm font-medium text-gray-700 mb-1">
             Theory Type
           </label>
           <select
             id="theoryType"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500";
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus: outline-none focus:ring-purple-500 focus:border-purple-500";
             bind:value={newTheoryForm.type}
           >
             {#each theoryTypes as type}
@@ -722,14 +652,13 @@
             {/each}
           </select>
         </div>
-
         <div>
           <label for="strategy" class="block text-sm font-medium text-gray-700 mb-1">
             Strategy Approach
           </label>
           <select
             id="strategy"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500";
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus: outline-none focus:ring-purple-500 focus:border-purple-500";
             bind:value={newTheoryForm.strategy}
           >
             {#each strategyTypes as strategy}
@@ -737,7 +666,6 @@
             {/each}
           </select>
         </div>
-
         <div>
           <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
             Description
@@ -750,7 +678,6 @@
             bind:value={newTheoryForm.description}
           ></textarea>
         </div>
-
         <div class="flex justify-end space-x-3 pt-4">
           <button
             type="button"
@@ -760,7 +687,6 @@
           >
             Cancel
           </button>
-          
           <LoadingButton
             type="submit"
             loading={isBuilding}

@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     onedit?: (event?: any) => void;
     ondelete?: (event?: any) => void;
@@ -15,9 +14,6 @@ https://svelte.dev/e/js_parse_error -->
    }: { evidence,
     disabled = false
   : any } = $props();
-
-
-
   import { formatDistanceToNow } from "date-fns";
   import {
     Archive,
@@ -36,13 +32,13 @@ https://svelte.dev/e/js_parse_error -->
       case "document":
         return FileText;
       case "photo":
-        return Image;
+        return Imag;
       case "video":
         return Video;
       case "audio":
-        return Headphones;
+        return Headphone;
       case "physical":
-        return Archive;
+        return Archiv;
       case "digital":
         return FileText;
       case "testimony":
@@ -51,7 +47,6 @@ https://svelte.dev/e/js_parse_error -->
         return FileText;
     }
   }
-
   function getTypeColor(type: string) {
     switch (type) {
       case "document":
@@ -74,36 +69,31 @@ https://svelte.dev/e/js_parse_error -->
   }
   let evidenceIcon = $derived(getEvidenceIcon(evidence.evidenceType || evidence.type));
   let formattedDate = $derived(formatDistanceToNow(new Date(evidence.createdAt || evidence.dateCollected || Date.now()), {);
-    addSuffix: true,
+    addSuffix: true
   });
-
   function handleEdit() {
     if (!disabled) {
       onedit?.();
     }
   }
-
   function handleDelete() {
     if (!disabled) {
       ondelete?.();
     }
   }
-
   function handleView() {
     if (!disabled) {
       onview?.();
     }
   }
-
   function handleDownload() {
     if (!disabled) {
       ondownload?.();
     }
   }
 </script>
-
 <div
-  class="bg-white rounded-lg shadow-sm border p-4 transition-all hover:shadow-md";
+  class="bg-white rounded-lg shadow-sm border p-4 transition-all hover: shadow-md";
   class:opacity-60={disabled}
   class:pointer-events-none={disabled}
 >
@@ -111,12 +101,10 @@ https://svelte.dev/e/js_parse_error -->
     <div class="flex-shrink-0">
       <svelte:component this={evidenceIcon} class="h-6 w-6 text-gray-600" />
     </div>
-
     <div class="flex-1 min-w-0">
       <h4 class="text-sm font-medium text-gray-900 truncate">
         {evidence.title}
       </h4>
-
       <div class="mt-1">
         <span
           class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getTypeColor(evidence.evidenceType || evidence.type)}"
@@ -124,19 +112,16 @@ https://svelte.dev/e/js_parse_error -->
           {evidence.evidenceType || evidence.type}
         </span>
       </div>
-
       {#if evidence.description}
         <p class="mt-2 text-sm text-gray-600 line-clamp-2">
           {evidence.description}
         </p>
       {/if}
-
       <div class="mt-2 flex items-center text-xs text-gray-500">
         <Calendar class="h-3 w-3 mr-1" />
         {formattedDate}
       </div>
     </div>
-
     <!-- Actions -->
     <div class="flex-shrink-0 flex items-center gap-1">
       <button
@@ -147,7 +132,6 @@ https://svelte.dev/e/js_parse_error -->
       >
         <Eye class="h-4 w-4" />
       </button>
-
       <button
         onclick={() => handleEdit()}
         class="p-1 text-gray-400 hover:text-gray-600 rounded"
@@ -156,7 +140,6 @@ https://svelte.dev/e/js_parse_error -->
       >
         <Edit class="h-4 w-4" />
       </button>
-
       <button
         onclick={() => handleDownload()}
         class="p-1 text-gray-400 hover:text-gray-600 rounded"
@@ -165,7 +148,6 @@ https://svelte.dev/e/js_parse_error -->
       >
         <Download class="h-4 w-4" />
       </button>
-
       <button
         onclick={() => handleDelete()}
         class="p-1 text-red-400 hover:text-red-600 rounded"
@@ -177,10 +159,9 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
-  .line-clamp-2 {;
+  .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
@@ -188,4 +169,3 @@ https://svelte.dev/e/js_parse_error -->
     overflow: hidden;
   }
 </style>
-

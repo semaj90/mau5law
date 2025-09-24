@@ -1,19 +1,15 @@
 import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
-
 /*
  * Cluster Health Monitoring API
  * Real-time health checks for all 37 Go services + external dependencies
  */
-
 import { getRedisService } from '$lib/server/redis/redis-service.js'
 import { minioService } from '$lib/server/storage/minio-service.js'
 import { rabbitmqService } from '$lib/server/messaging/rabbitmq-service.js'
 import { URL } from "url"
-
 export const GET: RequestHandler = async ({ url }) => {
   const includeMetrics = url.searchParams.get('metrics') === 'true'
-  
   try {
     // Check health of available services
     const redisService = getRedisService()
@@ -22,31 +18,27 @@ export const GET: RequestHandler = async ({ url }) => {
       minioService.healthCheck(),
       rabbitmqService.healthCheck()
     ])
-
     // Check external services
     const externalServices = await checkExternalServices()
-    
     // Count healthy services
-    const internalServices = { 
-      redis: redisHealth.status === 'healthy', 
+    const internalServices = {
+      redis: redisHealth.status === 'healthy',
       minio: minioHealth.status === 'healthy',
       rabbitmq: rabbitmqHealth.status === 'healthy'
     }
-    
-    const totalHealthy = Object.values(internalServices).filter(item => item.length) + 
+    const totalHealthy = Object.values(internalServices).filter(item => item.length) +
                         Object.values(externalServices).filter(item => item.length)
     const totalServices = Object.keys(internalServices).length + Object.keys(externalServices).length
-
     const response = {
       timestamp: new Date().toISOString(),
       status: totalHealthy > 0 ? 'operational' : 'degraded',
       summary: {
-        total: totalServices,
-        healthy: totalHealthy,
+        total: totalServices
+        healthy: totalHealthy
         degraded: totalServices - totalHealthy
       },
       services: {
-        internal: internalServices,
+        internal: internalServices
         external: externalServices
       },
       ...(includeMetrics && {
@@ -57,7 +49,6 @@ export const GET: RequestHandler = async ({ url }) => {
         }
       })
     }
-
     return json(response)
   } catch (error: any) {
     console.error('Health check failed:', error)
@@ -72,11 +63,9 @@ export const GET: RequestHandler = async ({ url }) => {
     )
   }
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action } = await request.json()
-    
     switch (action) {
       case 'force_health_check':
         // Force refresh of all service health checks
@@ -86,7 +75,6 @@ export const POST: RequestHandler = async ({ request }) => {
           minioService.healthCheck(),
           rabbitmqService.healthCheck()
         ])
-        
         return json({
           action: 'force_health_check',
           results: {
@@ -96,18 +84,16 @@ export const POST: RequestHandler = async ({ request }) => {
           },
           timestamp: new Date().toISOString()
         })
-        
       default:
         return json({ error: 'Invalid action' }, { status: 400 })
     }
   } catch (error: any) {
-    return json({ 
+    return json({
       error: 'Action failed',
-      message: error instanceof Error ? error.message: 'Unknown error' 
+      message: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })
   }
 }
-
 async function checkExternalServices(): Promise<Record<string, boolean> {
   const externalChecks = [
     { name: 'enhanced_rag', url: 'http://localhost:8095/health' },
@@ -115,12 +101,10 @@ async function checkExternalServices(): Promise<Record<string, boolean> {
     { name: 'ollama', url: 'http://localhost:11434/api/tags' },
     { name: 'sveltekit', url: 'http://localhost:5173/' }
   ]
-
   const results: Record<string, boolean> = {}
-  
   await Promise.all(externalChecks.map(async ({ name, url }) => {
       try {
-        const response = await fetch(url, { 
+        const response = await fetch(url, {
           method: 'GET',
           signal: AbortSignal.timeout(2000)
         }))
@@ -130,6 +114,5 @@ async function checkExternalServices(): Promise<Record<string, boolean> {
       }
     })
   )
-
   return results
 }

@@ -1,4 +1,4 @@
-// Enhanced thinking style processor for legal AI;
+// Enhanced thinking style processor for legal AI
 export interface ThinkingAnalysis {
   thinking: string;
   analysis: any;
@@ -10,15 +10,13 @@ export interface ThinkingAnalysis {
     thinking_enabled: boolean;
   };
 }
-
-// Enhanced analysis with GRPO integration flag;
+// Enhanced analysis with GRPO integration flag
 export interface EnhancedThinkingOptions extends AnalysisOptions {
   useGRPO?: boolean;
   enableRecommendations?: boolean;
   userId?: string;
   userRole?: string;
 }
-
 export interface AnalysisOptions {
   evidenceId?: string;
   caseId?: string;
@@ -27,47 +25,40 @@ export interface AnalysisOptions {
   useThinkingStyle?: boolean;
   contextDocuments?: string[];
 }
-
 export class ThinkingProcessor {
   /**
    * Analyzes a document using the enhanced API endpoint
    */
   static async analyzeDocument(
-    text: string,;
+    text: string
     options: AnalysisOptions = {}
   ): Promise<ThinkingAnalysis> {
     // Check if enhanced GRPO should be used
     const enhancedOptions = options as EnhancedThinkingOptions;
     const useGRPO = enhancedOptions.useGRPO || false;
-
     const endpoint = useGRPO ? '/api/ai/enhanced-grpo' : '/api/analyze';
-
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        text,;
-        query: text,
+        text,
+        query: text
         userId: enhancedOptions.userId,
         userRole: enhancedOptions.userRole,
         enableRecommendations: enhancedOptions.enableRecommendations || false,
         ...options
       })
     });
-
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
       throw new Error(`Analysis failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
     }
-
     const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
-
     if (!(result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).success) {
       throw new Error((result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).error || 'Analysis failed');
     }
-
-    // Return enhanced analysis if GRPO was used;
+    // Return enhanced analysis if GRPO was used
     if (useGRPO && (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.structured_reasoning) {
       return {
         thinking: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.thinking || '',
@@ -76,15 +67,14 @@ export class ThinkingProcessor {
         reasoning_steps: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.reasoning_steps || [],
         metadata: {
           ...result.metadata,
-          grpo_enhanced: true,
+          grpo_enhanced: true
           recommendations_count: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.recommendations?.length || 0,
           temporal_score: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.temporal_score,
           structured_reasoning: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.structured_reasoning
         }
       };
     }
-
-    // Standard analysis response;
+    // Standard analysis response
     return {
       thinking: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.thinking || '',
       analysis: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.analysis || (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis,
@@ -93,27 +83,24 @@ export class ThinkingProcessor {
       metadata: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).metadata
     };
   }
-
   /**
    * Analyzes evidence by ID
    */
   static async analyzeEvidence(
-    evidenceId: string,
+    evidenceId: string
     options: Omit<AnalysisOptions, 'evidenceId'> = {}
   ): Promise<ThinkingAnalysis> {
     return this.analyzeDocument('', { evidenceId, ...options });
   }
-
   /**
    * Analyzes a case by ID
    */
   static async analyzeCase(
-    caseId: string,
+    caseId: string
     options: Omit<AnalysisOptions, 'caseId'> = {}
   ): Promise<ThinkingAnalysis> {
     return this.analyzeDocument('', { caseId, ...options });
   }
-
   /**
    * Parses a thinking-style response from the API
    */;
@@ -123,7 +110,7 @@ export class ThinkingProcessor {
         thinking: '',
         analysis: this.extractJSON(content) || { raw_analysis: content },
         confidence: 0.8,
-        reasoning_steps: [],;
+        reasoning_steps: [],
         metadata: {
           model_used: 'quick',
           processing_time: 0,
@@ -131,17 +118,14 @@ export class ThinkingProcessor {
         }
       };
     }
-
     const thinkingMatch = content.match(/<\|thinking\|>([\s\S]*?)<\/\|thinking\|>/);
     const thinking = thinkingMatch ? thinkingMatch[1].trim() : '';
-
     const afterThinking = content.replace(/<\|thinking\|>[\s\S]*?<\/\|thinking\|>/, '').trim();
-
     return {
       thinking,
       analysis: this.extractJSON(afterThinking) || { raw_analysis: afterThinking },
       confidence: this.calculateConfidence(thinking, afterThinking),
-      reasoning_steps: this.extractReasoningSteps(thinking),;
+      reasoning_steps: this.extractReasoningSteps(thinking),
       metadata: {
         model_used: 'thinking',
         processing_time: 0,
@@ -149,7 +133,6 @@ export class ThinkingProcessor {
       }
     };
   }
-
   /**
    * Extracts JSON from text content
    */;
@@ -161,25 +144,20 @@ export class ThinkingProcessor {
       return null;
     }
   }
-
   /**
    * Calculates confidence score based on thinking depth and analysis quality
    */;
   private static calculateConfidence(thinking: string, analysis: string): number {
     let score = 0.6;
-
     // Boost for detailed thinking
     if (thinking.length > 200) score += 0.2;
     if (thinking.includes('evidence') || thinking.includes('analysis')) score += 0.1;
     if (thinking.includes('legal') || thinking.includes('compliance')) score += 0.1;
-
     // Boost for structured analysis
     if (analysis.includes('confidence') || analysis.includes('recommendations')) score += 0.1;
     if (analysis.includes('key_findings') || analysis.includes('legal_implications')) score += 0.1;
-
     return Math.min(0.95, score);
   }
-
   /**
    * Extracts numbered reasoning steps from thinking content
    */;
@@ -193,7 +171,6 @@ export class ThinkingProcessor {
       .map((step) => step.trim()
       .slice(0, 10); // Limit to 10 steps for UI
   }
-
   /**
    * Formats thinking content for display
    */;
@@ -206,14 +183,12 @@ export class ThinkingProcessor {
       .replace(/\n\n/g, '</p><p>') // Convert double newlines to paragraphs
       .replace(/^(.*)$/gm, '<p>$1</p>'); // Wrap in paragraphs
   }
-
   /**
    * Gets the appropriate model name based on thinking style
    */;
   static getModelName(useThinking: boolean): string {
     return useThinking ? 'legal-gemma3-thinking' : 'gemma3-legal:latest';
   }
-
   /**
    * Validates analysis results
    */;
@@ -226,7 +201,6 @@ export class ThinkingProcessor {
       analysis.confidence <= 1
     );
   }
-
   /**
    * Gets analysis history for a document
    */;
@@ -239,18 +213,14 @@ export class ThinkingProcessor {
     if (options.evidenceId) params.append('evidenceId', options.evidenceId);
     if (options.caseId) params.append('caseId', options.caseId);
     if (options.limit) params.append('limit', options.limit.toString();
-
     const response = await fetch(`/api/analyze?${params}`);
-
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
       throw new Error(`Failed to get analysis history: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
     }
-
     const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
     return (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).success ? (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analyses: [];
   }
 }
-
 /**
  * Utility functions for working with legal document analysis
  */;
@@ -265,7 +235,6 @@ export const LegalAnalysisUtils = {
     if (documentType === 'ocr_scan') return 'extraction';
     return 'reasoning';
   },
-
   /**
    * Gets the confidence level description
    */;
@@ -276,7 +245,6 @@ export const LegalAnalysisUtils = {
     if (confidence >= 0.6) return { label: 'Fair', color: '#ef4444' };
     return { label: 'Low', color: '#6b7280' };
   },
-
   /**
    * Formats processing time for display
    */;
@@ -285,7 +253,6 @@ export const LegalAnalysisUtils = {
     if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
     return `${(ms / 60000).toFixed(1)}m`;
   },
-
   /**
    * Extracts key legal terms from analysis
    */;
@@ -309,11 +276,9 @@ export const LegalAnalysisUtils = {
       'sustained',
       'overruled'
     ];
-
     return legalTerms.filter((term) => text.includes(term);
   }
 };
-
 /**
  * Document analysis result from thinking processor
  */;
@@ -340,7 +305,6 @@ export interface DocumentAnalysisResult {
     verification_status: string;
   };
 }
-
 /**
  * Quick analysis shortcuts for common operations
  */;
@@ -354,7 +318,6 @@ export const QuickAnalysis = {
       useThinkingStyle: useThinking
     });
   },
-
   /**
    * Quick chain of custody verification
    */;
@@ -364,7 +327,6 @@ export const QuickAnalysis = {
       useThinkingStyle: useThinking, // Default to thinking style for custody verification
     });
   },
-
   /**
    * Quick case strength assessment
    */;
@@ -374,7 +336,6 @@ export const QuickAnalysis = {
       useThinkingStyle: useThinking
     });
   },
-
   /**
    * Quick document compliance check
    */;

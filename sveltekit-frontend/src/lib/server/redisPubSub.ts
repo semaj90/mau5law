@@ -1,13 +1,11 @@
 import { createRedisClientSet, RedisBasicCommands } from '$lib/server/redis';
 }
-
 export interface PubSubHandlerOptions {
   patterns?: string[]; // pattern-based subscriptions (psubscribe)
   channels?: string[]; // direct channel subscriptions (subscribe)
   onMessage: (info: { pattern?: string; channel: string; message: string }) => void;
   autoStart?: boolean;
 }
-
 export interface PubSubController {
   publish(channel: string, message: any): Promise<number>;
   addChannels(channels: string[]): Promise<void>;
@@ -15,25 +13,21 @@ export interface PubSubController {
   stop(): Promise<void>;
   clients: { primary: RedisBasicCommands; subscriber: any; publisher: any };
 }
-
 export function createPubSubHelper(opts: PubSubHandlerOptions): PubSubController {
   const set = createRedisClientSet();
   const { primary, subscriber, publisher } = set;
-
   if (opts.patterns?.length) {
     (subscriber as any).psubscribe(...opts.patterns).catch(()=>{});
   }
   if (opts.channels?.length) {
     (subscriber as any).subscribe(...opts.channels).catch(()=>{});
   }
-
   (subscriber as any).on('pmessage', (pattern: string, channel: string, message: string) => {
     opts.onMessage({ pattern, channel, message });
   });
   (subscriber as any).on('message', (channel: string, message: string) => {
     opts.onMessage({ channel, message });
   });
-
   return {
     publish(channel: string, message: any) {
       const payload = typeof message === 'string' ? message : JSON.stringify(message);

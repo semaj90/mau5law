@@ -1,119 +1,54 @@
-// Enhanced-Bits Component System - Gaming-Inspired Legal AI Platform
-// These components extend bits-ui with specialized legal, evidence, and AI features
-
-// Core UI Components (Svelte 5 migrated)
-export { default as AIDialog } from '../AIDialog.svelte';
-export { default as ChatMessage } from '../ChatMessage.svelte';
-export { default as DialogWrapper } from '../DialogWrapper.svelte';
-export { default as Select } from '../Select.svelte';
-export { default as Button } from '../button/Button.svelte';
-
-// Card Components
-export { default as Card } from './Card.svelte';
-export { default as CardContent } from './CardContent.svelte';
-export { default as CardDescription } from './CardDescription.svelte';
-export { default as CardFooter } from './CardFooter.svelte';
-export { default as CardHeader } from './CardHeader.svelte';
-export { default as CardTitle } from './CardTitle.svelte';
-
-// Input Components
-export { default as Input } from './Input.svelte';
-export { default as Label } from './Label.svelte';
-
-// Navigation Components
-export { default as LinkButton } from './LinkButton.svelte';
-export { default as YoRHaSearchBar } from './YoRHaSearchBar.svelte';
-export { default as ThemeToggle } from './ThemeToggle.svelte';
-
-// Gaming Components (Implemented)
-export { default as N64Button } from '../gaming/N64Button.svelte';
-export { default as NESContainer } from '../gaming/NESContainer.svelte';
-export { default as PixelCard } from '../gaming/PixelCard.svelte';
-
-// Complex AI Components (Enhanced behaviors - require migration)
-export { default as EmbeddingGemmaChat } from './EmbeddingGemmaChat.svelte';
-export { default as Board } from './Board.svelte';
-export { default as EnhancedRAGStudio } from './EnhancedRAGStudio.svelte';
-
-// Demo Components
-export { default as PerformanceOptimizedEvidenceBoard } from '../demo/PerformanceOptimizedEvidenceBoard.svelte';
-
-// Gaming Theme System (Implemented)
-export * from '../../themes/retro-console-palettes';
-export {
-  CONSOLE_PALETTES,
-  applyConsolePalette,
-  getCurrentPalette,
-  getPalette,
-  getPaletteNames,
-  createThemeCSS
-} from '../../themes/retro-console-palettes';
-
-// Enhanced-Bits Design System (Implemented)
-export {
-  BASE_DESIGN_TOKENS,
-  THEME_PRESETS,
-  createCustomTheme,
-  applyDesignSystemToDocument,
-  getCurrentTheme,
-  generateUtilityCSS,
-  initializeDesignSystem
-} from '../../themes/design-system';
-
-// Component Loader for Dynamic Imports
-export async function loadComponent(name: string) {
+// Enhanced-Bits Component Library
+// Modern SvelteKit 2 + Svelte 5 UI Components for Legal AI Platform
+// Core components
+export { default as ProfileContainer } from './ProfileContainer.svelte';
+export { default as ProfileHeader } from './ProfileHeader.svelte';
+export { default as StatCard } from './StatCard.svelte';
+export { default as Alert } from './Alert.svelte';
+export { default as FormGrid } from './FormGrid.svelte';
+export { default as AvatarDisplay } from './AvatarDisplay.svelte';
+export { default as EditorCard } from './EditorCard.svelte';
+// Re-export commonly used components from other UI modules
+export { default as Card } from '../Card.svelte';
+export { default as CardContent } from '../CardContent.svelte';
+export { default as CardHeader } from '../CardHeader.svelte';
+export { default as CardTitle } from '../CardTitle.svelte';
+export { default as Button } from '../Button.svelte';
+// Component registry for dynamic loading
+export const ENHANCED_BITS_COMPONENTS = {
+  ProfileContainer: () => import('./ProfileContainer.svelte'),
+  ProfileHeader: () => import('./ProfileHeader.svelte'),
+  StatCard: () => import('./StatCard.svelte'),
+  Alert: () => import('./Alert.svelte'),
+  FormGrid: () => import('./FormGrid.svelte'),
+  AvatarDisplay: () => import('./AvatarDisplay.svelte'),
+  EditorCard: () => import('./EditorCard.svelte'),
+};
+// Dynamic component loader
+export async function loadComponent(name: keyof typeof ENHANCED_BITS_COMPONENTS) {
   try {
-    const module = await import(`../components/${name}.svelte`);
+    const module = await ENHANCED_BITS_COMPONENTS[name]();
     return module.default;
   } catch (error) {
-    console.warn(`Component ${name} not found`);
+    console.warn(`Failed to load enhanced-bits component: ${name}`, error);
     return null;
   }
 }
-
-// Gaming Component Loader
-export async function loadGamingComponent(name: 'N64Button' | 'NESContainer' | 'PixelCard') {
-  try {
-    const module = await import(`../gaming/${name}.svelte`);
-    return module.default;
-  } catch (error) {
-    console.warn(`Gaming component ${name} not found`);
-    return null;
-  }
-}
-
-// Re-export bits-ui for consistency
-export * from 'bits-ui';
-
-// Compound component patterns
-export * as Card from '../card';
-export * as Dialog from '../dialog';
-
 // Theme utilities
-export function applyRetroTheme(themeName: keyof typeof CONSOLE_PALETTES = 'legal') {
-  if (typeof document !== 'undefined') {
-    applyConsolePalette(themeName);
-    return true;
+export const ENHANCED_BITS_THEMES = {
+  legal: {
+    primary: '#1e40af',
+    secondary: '#7c3aed',
+    surface: '#ffffff',
+    text: '#111827',
+    border: '#e5e7eb'
+  },
+  gaming: {
+    primary: '#00ff41',
+    secondary: '#ff0041',
+    surface: '#2a2a2a',
+    text: '#e0e0e0',
+    border: '#444444'
   }
-  return false;
-}
-
-// Enhanced-Bits initialization
-export function initializeEnhancedBits(options?: {
-  theme?: keyof typeof CONSOLE_PALETTES;
-  designSystem?: keyof typeof THEME_PRESETS;
-}) {
-  if (typeof document === 'undefined') return;
-
-  // Apply theme
-  if (options?.theme) {
-    applyConsolePalette(options.theme);
-  }
-
-  // Initialize design system
-  if (options?.designSystem) {
-    initializeDesignSystem(options.designSystem);
-  }
-
-  console.log('🎮 Enhanced-Bits initialized with gaming theme system');
-}
+};
+export type EnhancedBitsTheme = keyof typeof ENHANCED_BITS_THEMES;

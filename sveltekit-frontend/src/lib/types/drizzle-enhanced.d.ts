@@ -2,11 +2,9 @@
  * Drizzle ORM Enhanced Type Definitions
  * Fixes "Untyped function calls may not accept type arguments" errors
  */
-
 declare module 'drizzle-orm/pg-core' {
   // Enhanced table function with proper generics
   export function pgTable<T extends string>(name: T, columns: any, extraConfig?: any): any;
-
   // Enhanced column types with proper generics
   export function serial<T extends string>(name?: T): any;
   export function text<T extends string>(name?: T, config?: any): any;
@@ -26,23 +24,19 @@ declare module 'drizzle-orm/pg-core' {
   export function date<T extends string>(name?: T): any;
   export function time<T extends string>(name?: T, config?: any): any;
   export function interval<T extends string>(name?: T, config?: any): any;
-
   // pgvector specific types
   export function vector<T extends string>(name?: T, config?: { dimensions?: number }): any;
-
   // Constraint functions
   export function primaryKey<T extends any[]>(...columns: T): any;
   export function foreignKey<T extends any>(config: T): any;
   export function unique<T extends any[]>(...columns: T): any;
   export function index<T extends string>(name: T, config?: any): any;
   export function uniqueIndex<T extends string>(name: T, config?: any): any;
-
   // Relations
   export function relations<T extends any>(table: T, relations: any): any;
   export function one<T extends any>(table: T, config?: any): any;
   export function many<T extends any>(table: T, config?: any): any;
 }
-
 declare module 'drizzle-orm' {
   // Enhanced SQL operations with proper generics
   export const sql: {
@@ -51,7 +45,6 @@ declare module 'drizzle-orm' {
     empty(): any;
     fromList<T = any>(list: T[]): T;
   };
-
   // Enhanced query operators
   export function eq<T, U>(left: T, right: U): any;
   export function ne<T, U>(left: T, right: U): any;
@@ -71,19 +64,16 @@ declare module 'drizzle-orm' {
   export function notBetween<T, U>(column: T, min: U, max: U): any;
   export function exists<T>(query: T): any;
   export function notExists<T>(query: T): any;
-
   // Logical operators
   export function and<T extends any[]>(...conditions: T): any;
   export function or<T extends any[]>(...conditions: T): any;
   export function not<T>(condition: T): any;
-
   // Aggregate functions
   export function count<T>(column?: T): any;
   export function sum<T>(column: T): any;
   export function avg<T>(column: T): any;
   export function min<T>(column: T): any;
   export function max<T>(column: T): any;
-
   // String functions
   export function concat<T extends any[]>(...columns: T): any;
   export function substring<T>(column: T, start: number, length?: number): any;
@@ -91,61 +81,48 @@ declare module 'drizzle-orm' {
   export function lower<T>(column: T): any;
   export function upper<T>(column: T): any;
   export function trim<T>(column: T): any;
-
   // Date functions
   export function now(): any;
   export function extract<T>(unit: string, column: T): any;
-
   // Cast functions
   export function cast<T, U>(column: T, type: U): any;
-
   // Case expressions
   export function caseWhen<T>(value?: T): any;
-
   // Window functions
   export function over<T>(fn: T, window?: any): any;
-
   // Array functions (PostgreSQL specific)
   export function arrayContains<T, U>(column: T, value: U): any;
   export function arrayContained<T, U>(column: T, value: U): any;
   export function arrayOverlaps<T, U>(column: T, value: U): any;
-
   // JSON functions (PostgreSQL specific)
   export function jsonExtract<T>(column: T, path: string): any;
   export function jsonArrayLength<T>(column: T): any;
-
   // Vector functions (pgvector specific)
   export function cosineDistance<T, U>(vector1: T, vector2: U): any;
   export function l2Distance<T, U>(vector1: T, vector2: U): any;
   export function innerProduct<T, U>(vector1: T, vector2: U): any;
 }
-
 declare module 'drizzle-orm/node-postgres' {
   import type { PostgresJsDatabase } from 'drizzle-orm/node-postgres';
-
   export function drizzle<T = any>(client: any, config?: {
     schema?: T;
     logger?: boolean | any;
   }): PostgresJsDatabase<T>;
 }
-
 declare module 'drizzle-orm/node-postgres' {
   export function drizzle<T = any>(client: any, config?: {
     schema?: T;
     logger?: boolean | any;
   }): any;
 }
-
 // Enhanced type for better IntelliSense
-export type DrizzleTable<T extends Record<string, any> = Record<string, any>> = T;
-
+export type DrizzleTable<T extends { [key: string]: any } = { [key: string]: any }> = T;
 export interface DrizzleColumn<T = any> {
   dataType: string;
   columnType: string;
   data: T;
   enumValues?: any[];
 }
-
 export interface DrizzleQuery<T = any> {
   execute(): Promise<T[]>;
   all(): Promise<T[]>;
@@ -153,7 +130,6 @@ export interface DrizzleQuery<T = any> {
   values(): Promise<any[][]>;
   raw(): Promise<any>;
 }
-
 export interface DrizzleInsert<T = any> {
   values(values: T | T[]): DrizzleQuery<T>;
   returning(): DrizzleQuery<T>;
@@ -161,20 +137,17 @@ export interface DrizzleInsert<T = any> {
   onConflictDoNothing(): DrizzleInsert<T>;
   onConflictDoUpdate(config: any): DrizzleInsert<T>;
 }
-
 export interface DrizzleUpdate<T = any> {
   set(values: Partial<T>): DrizzleQuery<T>;
   where(condition: any): DrizzleUpdate<T>;
   returning(): DrizzleQuery<T>;
   returning<U extends keyof T>(columns: U[]): DrizzleQuery<Pick<T, U>>;
 }
-
 export interface DrizzleDelete<T = any> {
   where(condition: any): DrizzleQuery<T>;
   returning(): DrizzleQuery<T>;
   returning<U extends keyof T>(columns: U[]): DrizzleQuery<Pick<T, U>>;
 }
-
 export interface DrizzleSelect<T = any> {
   from<U>(table: U): DrizzleSelect<T>;
   where(condition: any): DrizzleSelect<T>;
@@ -195,7 +168,6 @@ export interface DrizzleSelect<T = any> {
   all(): Promise<T[]>;
   get(): Promise<T | null>;
 }
-
 export interface DrizzleDatabase<T = any> {
   select(): DrizzleSelect<any>;
   select<U>(columns: U): DrizzleSelect<any>;
@@ -205,7 +177,6 @@ export interface DrizzleDatabase<T = any> {
   execute(query: any): Promise<any>;
   transaction<U>(callback: (tx: DrizzleDatabase<T>) => Promise<U>): Promise<U>;
 }
-
 // Export enhanced types
 export type {
   DrizzleTable,

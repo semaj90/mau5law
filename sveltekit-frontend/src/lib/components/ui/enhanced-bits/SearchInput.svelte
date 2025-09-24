@@ -1,9 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { Search, X, Loader, Filter, Zap, History } from 'lucide-svelte';
   import type { VectorSearchResult } from './types';
-
   interface Props {
     value?: string;
     placeholder?: string;
@@ -20,7 +18,6 @@
     onclear?: () => void;
     onfilter?: (filters: any[]) => void;
   }
-
   let {
     value = $bindable(''),
     placeholder = 'Search evidence, cases, documents...',
@@ -36,54 +33,47 @@
     onsearch,
     onclear,
     onfilter,
-    ...restProps;
+    ...restProp;
   }: Props = $props();
-
   let isSearching = $state(false);
   let showSuggestions = $state(false);
   let suggestions = $state<VectorSearchResult[]>([]);
   let showFilters = $state(false);
   let inputElement: HTMLInputElement;
   let debounceTimer: number;
-
   // Size configurations
   let sizeClasses = $derived({
-    sm: 'h-8 text-sm px-8',;
-    md: 'h-10 text-base px-10',;
+    sm: 'h-8 text-sm px-8',
+    md: 'h-10 text-base px-10',
     lg: 'h-12 text-lg px-12';
   });
-
   let iconSizes = $derived({
-    sm: 'w-3 h-3',;
-    md: 'w-4 h-4',;
+    sm: 'w-3 h-3',
+    md: 'w-4 h-4',
     lg: 'w-5 h-5';
   });
-
   // Variant styling
   let variantClasses = $derived(() => {
     switch (variant) {
       case 'legal':
         return 'border-blue-600 focus:border-blue-800 bg-blue-50';
       case 'evidence':
-        return 'border-purple-600 focus:border-purple-800 bg-purple-50';
+        return 'border-purple-600 focus: border-purple-800 bg-purple-50';
       default:
         return 'border-gray-300 focus:border-gray-600 bg-white';
     }
   });
-
   let containerClasses = $derived([
     'relative w-full',
     className
-  ].filter(item => item.join)(' '));
-
+  ].filter(Boolean).join(' '));
   let inputClasses = $derived([
     'nes-input w-full',
     sizeClasses[size],
     variantClasses,
     'transition-all duration-200',
     'focus:shadow-lg focus:scale-[1.01]'
-  ].filter(item => item.join)(' '));
-
+  ].filter(Boolean).join(' '));
   // Debounced search function
   async function performSearch(query: string) {
     if (!query.trim()) {
@@ -91,22 +81,18 @@
       showSuggestions = false;
       return;
     }
-
     isSearching = true;
-
     try {
       // Simulate vector search API call
       const searchParams = new URLSearchParams({
-        q: query,
-        limit: maxSuggestions.toString(),;
-        vector: enableVectorSearch.toString(),;
+        q: query
+        limit: maxSuggestions.toString(),
+        vector: enableVectorSearch.toString(),
         ai: enableAISearch.toString();
       });
-
       // In real implementation, this would be your vector search endpoint
       const response = await fetch(`/api/search/vector?${searchParams}`);
       const data = await response.json();
-
       if (data.success) {
         suggestions = data.results || [];
         showSuggestions = true;
@@ -119,25 +105,21 @@
       isSearching = false;
     }
   }
-
   // Handle input changes with debouncing
   function handleInput(event: Event) {
     const target = event.target as HTMLInputElement;
-    value = target.value;
-
+    value = target.valu;
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
       performSearch(value);
     }, debounceMs);
   }
-
   // Handle suggestion selection
   function selectSuggestion(suggestion: VectorSearchResult) {
     value = suggestion.content;
     showSuggestions = false;
     onsearch?.(suggestion.content);
   }
-
   // Handle clear
   function clearSearch() {
     value = '';
@@ -146,13 +128,11 @@
     inputElement?.focus();
     onclear?.();
   }
-
   // Handle filter toggle
   function toggleFilter(filterIndex: number) {
-    filters[filterIndex].active = !filters[filterIndex].active;
+    filters[filterIndex].active = !filters[filterIndex].activ;
     onfilter?.(filters);
   }
-
   // Close suggestions when clicking outside
   function handleClickOutside(event: MouseEvent) {
     if (!event.target || !(event.target as Element).closest('.search-container')) {
@@ -160,7 +140,6 @@
       showFilters = false;
     }
   }
-
   // Keyboard navigation
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
@@ -169,9 +148,7 @@
     }
   }
 </script>
-
 <svelte:window onclick={handleClickOutside} onkeydown={handleKeydown} />
-
 <div class="{containerClasses} search-container">
   <!-- Main Search Input -->
   <div class="relative">
@@ -184,7 +161,6 @@
       onfocus={() => value && (showSuggestions = true)}
       {...restProps}
     />
-
     <!-- Search Icon -->
     <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
       {#if isSearching}
@@ -195,7 +171,6 @@
         <Search class={iconSizes[size]} />
       {/if}
     </div>
-
     <!-- Clear Button -->
     {#if value}
       <button
@@ -205,7 +180,6 @@
         <X class={iconSizes[size]} />
       </button>
     {/if}
-
     <!-- Filter Toggle -->
     {#if filters.length > 0}
       <button
@@ -217,7 +191,6 @@
       </button>
     {/if}
   </div>
-
   <!-- Search Type Indicators -->
   {#if enableVectorSearch || enableAISearch}
     <div class="flex items-center gap-2 mt-1 text-xs">
@@ -235,7 +208,6 @@
       {/if}
     </div>
   {/if}
-
   <!-- Filters Panel -->
   {#if showFilters && filters.length > 0}
     <div class="absolute top-full left-0 right-0 mt-2 p-3 bg-white border-2 border-gray-300 rounded-lg shadow-lg z-50">
@@ -256,11 +228,9 @@
       </div>
     </div>
   {/if}
-
   <!-- Suggestions Dropdown -->
   {#if showSuggestions && (suggestions.length > 0 || searchHistory.length > 0)}
     <div class="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-gray-300 rounded-lg shadow-lg z-40 max-h-80 overflow-y-auto">
-
       {#if suggestions.length > 0}
         <div class="p-2">
           <div class="flex items-center gap-2 px-2 py-1 text-xs text-gray-600 font-medium">
@@ -270,7 +240,6 @@
               <span class="text-purple-600">(Vector)</span>
             {/if}
           </div>
-
           {#each suggestions as suggestion}
             <button
               class="w-full text-left p-2 rounded hover:bg-gray-100 transition-colors"
@@ -296,14 +265,12 @@
           {/each}
         </div>
       {/if}
-
       {#if searchHistory.length > 0 && !value}
         <div class="border-t p-2">
           <div class="flex items-center gap-2 px-2 py-1 text-xs text-gray-600 font-medium">
             <History class="w-3 h-3" />
             Recent Searches
           </div>
-
           {#each searchHistory.slice(0, 3) as historyItem}
             <button
               class="w-full text-left p-2 rounded hover:bg-gray-100 transition-colors"
@@ -317,24 +284,20 @@
     </div>
   {/if}
 </div>
-
 <style>
   /* Enhanced NES.css input styling */
   .nes-input:focus {
     transform: scale(1.01);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
-
   /* Vector search indicator glow */
   .nes-input:focus-within .text-purple-500 {
     animation: pulse 2s infinite;
   }
-
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
   }
-
   /* Suggestion hover animation */
   .hover\:bg-gray-100:hover {
     transform: translateX(2px);

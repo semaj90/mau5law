@@ -4,7 +4,6 @@
   import Button from './Button.svelte';
   import Select from './Select.svelte';
   import Tooltip from './Tooltip.svelte';
-
   interface ToolbarAction {
     id: string;
     label: string;
@@ -16,7 +15,6 @@
     options?: Array<{ value: string; label: string; icon?: string }>;
     onClick?: () => void;
   }
-
   interface ToolbarGroup {
     id: string;
     label: string;
@@ -24,7 +22,6 @@
     collapsible?: boolean;
     collapsed?: boolean;
   }
-
   interface ToolbarProps {
     theme?: 'default' | 'legal' | 'gaming' | 'yorha';
     groups?: ToolbarGroup[];
@@ -34,7 +31,6 @@
     showLabels?: boolean;
     customActions?: ToolbarAction[];
   }
-
   let {
     theme = 'default',
     groups = [],
@@ -44,18 +40,15 @@
     showLabels = true,
     customActions = []
   }: ToolbarProps = $props();
-
   const dispatch = createEventDispatcher();
   const themeContext = getContext<any>('theme');
   const currentTheme = themeContext?.resolvedTheme?.() || 'light';
-
   let activeDropdown = $state<string | null>(null);
-
   // Default Google Docs-style toolbar groups
   const defaultGroups: ToolbarGroup[] = [
     {
       id: 'file',
-      label: 'File',;
+      label: 'File',
       actions: [
         { id: 'new', label: 'New', icon: '📄', shortcut: 'Ctrl+N', type: 'button' },
         { id: 'open', label: 'Open', icon: '📂', shortcut: 'Ctrl+O', type: 'button' },
@@ -65,7 +58,7 @@
     },
     {
       id: 'edit',
-      label: 'Edit',;
+      label: 'Edit',
       actions: [
         { id: 'undo', label: 'Undo', icon: '↶', shortcut: 'Ctrl+Z', type: 'button' },
         { id: 'redo', label: 'Redo', icon: '↷', shortcut: 'Ctrl+Y', type: 'button' },
@@ -77,13 +70,13 @@
     },
     {
       id: 'format',
-      label: 'Format',;
+      label: 'Format',
       actions: [
         {
           id: 'font',
           label: 'Font',
           icon: 'Aa',
-          type: 'dropdown',;
+          type: 'dropdown',
           options: [
             { value: 'arial', label: 'Arial' },
             { value: 'times', label: 'Times New Roman' },
@@ -95,7 +88,7 @@
           id: 'fontSize',
           label: 'Size',
           icon: '🔤',
-          type: 'dropdown',;
+          type: 'dropdown',
           options: [
             { value: '12', label: '12pt' },
             { value: '14', label: '14pt' },
@@ -117,7 +110,7 @@
     },
     {
       id: 'insert',
-      label: 'Insert',;
+      label: 'Insert',
       actions: [
         { id: 'link', label: 'Link', icon: '🔗', shortcut: 'Ctrl+K', type: 'button' },
         { id: 'image', label: 'Image', icon: '🖼️', type: 'button' },
@@ -126,8 +119,8 @@
       ]
     },
     {
-      id: 'legal',;
-      label: 'Legal Tools',;
+      id: 'legal',
+      label: 'Legal Tools',
       actions: [
         { id: 'citation', label: 'Citation', icon: '📚', type: 'button' },
         { id: 'redact', label: 'Redact', icon: '▮', type: 'toggle' },
@@ -137,9 +130,7 @@
       ]
     }
   ];
-
   const toolbarGroups = $derived(groups.length > 0 ? groups : defaultGroups);
-
   const themeClasses = {
     default: {
       toolbar: 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700',
@@ -164,41 +155,33 @@
     },
     yorha: {
       toolbar: 'bg-black border-2 border-green-400/50 shadow-[0_0_30px_rgba(0,255,65,0.2)] backdrop-blur-sm font-mono',
-      group: 'border-green-400/30',;
+      group: 'border-green-400/30',
       button: 'hover:bg-green-400/15 text-green-400 hover:shadow-[0_0_12px_rgba(0,255,65,0.3)] border border-transparent hover:border-green-400/30',
-      activeButton: 'bg-green-400/25 text-green-300 shadow-[0_0_18px_rgba(0,255,65,0.5)] border border-green-400/50',;
+      activeButton: 'bg-green-400/25 text-green-300 shadow-[0_0_18px_rgba(0,255,65,0.5)] border border-green-400/50',
       dropdown: 'bg-black border-2 border-green-400/50 shadow-[0_0_25px_rgba(0,255,65,0.4)] backdrop-blur-sm';
     }
   };
-
   function handleAction(action: ToolbarAction) {
     if (action.disabled) return;
-
     if (action.type === 'toggle') {
-      action.active = !action.active;
+      action.active = !action.activ;
     }
-
     if (action.type === 'dropdown') {
       activeDropdown = activeDropdown === action.id ? null : action.id;
       return;
     }
-
     action.onClick?.();
     dispatch('actionClick', { action });
-
     // Close any open dropdowns
     activeDropdown = null;
   }
-
   function handleDropdownSelect(action: ToolbarAction, option: any) {
     dispatch('dropdownSelect', { action, option });
     activeDropdown = null;
   }
-
   function handleKeydown(event: KeyboardEvent) {
     // Handle keyboard shortcuts
     const shortcut = `${event.ctrlKey ? 'Ctrl+' : ''}${event.altKey ? 'Alt+' : ''}${event.shiftKey ? 'Shift+' : ''}${event.key.toUpperCase()}`;
-
     for (const group of toolbarGroups) {
       for (const action of group.actions) {
         if (action.shortcut === shortcut && !action.disabled) {
@@ -209,7 +192,6 @@
       }
     }
   }
-
   // Close dropdown when clicking outside
   function handleClickOutside(event: MouseEvent) {
     if (activeDropdown && !(event.target as Element).closest('.toolbar-dropdown')) {
@@ -217,9 +199,7 @@
     }
   }
 </script>
-
 <svelte:window onkeydown={handleKeydown} onclick={handleClickOutside} />
-
 <div
   class={`
     flex items-center px-4 py-2 border-b overflow-x-auto
@@ -267,7 +247,6 @@
                 {/if}
                 <span class="ml-1 text-xs">▼</span>
               </button>
-
               <!-- Dropdown Menu -->
               {#if activeDropdown === action.id}
                 <div
@@ -327,7 +306,6 @@
           {/if}
         {/each}
       </div>
-
       <!-- Group Separator -->
       {#if group !== toolbarGroups[toolbarGroups.length - 1]}
         <div class={`
@@ -338,7 +316,6 @@
       {/if}
     </div>
   {/each}
-
   <!-- Custom Actions -->
   {#if customActions.length > 0}
     <div class={`
@@ -346,7 +323,6 @@
       ${themeClasses[theme].group}
       bg-current opacity-30
     `}></div>
-
     <div class="flex items-center space-x-1">
       {#each customActions as action (action.id)}
         <Button
@@ -361,10 +337,8 @@
       {/each}
     </div>
   {/if}
-
   <!-- Spacer -->
   <div class="flex-1"></div>
-
   <!-- Right-side Actions -->
   <div class="flex items-center space-x-2">
     {#if theme === 'yorha'}
@@ -372,7 +346,6 @@
         LEGAL_AI_SYSTEM_ACTIVE
       </div>
     {/if}
-
     <Button
       {theme}
       variant="ghost"
@@ -381,7 +354,6 @@
     >
       ❓
     </Button>
-
     <Button
       {theme}
       variant="ghost"
@@ -392,32 +364,26 @@
     </Button>
   </div>
 </div>
-
 <style>
   /* Ensure toolbar scrolls horizontally on mobile */
-  .overflow-x-auto {;
-    scrollbar-width: thin;
+  .overflow-x-auto {
+    scrollbar-width: thi;
     scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
   }
-
   .overflow-x-auto::-webkit-scrollbar {
     height: 4px;
   }
-
   .overflow-x-auto::-webkit-scrollbar-track {
     background: transparent;
   }
-
   .overflow-x-auto::-webkit-scrollbar-thumb {
     background: rgba(156, 163, 175, 0.5);
     border-radius: 2px;
   }
-
   /* YoRHa theme enhancements */
   :global(.yorha-toolbar) {
     animation: yorha-toolbar-pulse 4s ease-in-out infinite alternate;
   }
-
   @keyframes yorha-toolbar-pulse {
     from {
       box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);

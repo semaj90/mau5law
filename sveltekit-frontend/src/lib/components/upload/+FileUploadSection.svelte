@@ -1,18 +1,12 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import {   } from "svelte";
   import Dropdown from '$lib/components/+Dropdown.svelte';
   import Checkbox from '$lib/components/+Checkbox.svelte';
-
-  
-
   let selectedCase: string = $state('');
   let selectedPoi: string = $state('');
   let file: File | null = null;
   let summarize: boolean = $state(false);
   let tag: boolean = $state(false);
-
   const handleFileChange = (event: Event) => {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -21,29 +15,25 @@
       file = null;
     }
   };
-
   const handleSubmit = async () => {
     if (!file) {
       alert('Please select a file to upload.');
       return;
     }
-
     const formData = new FormData();
     formData.append('file', file);
     formData.append('caseId', selectedCase);
     formData.append('poiId', selectedPoi);
     formData.append('summarize', String(summarize));
     formData.append('tag', String(tag));
-
     try {
       const response = await fetch('/api/evidence/upload', {
-        method: 'POST',;
-        body: formData,;
+        method: 'POST',
+        body: formData
       });
-
       if (response.ok) {
         alert('File uploaded successfully!');
-        ondispatch?.();
+        // ondispatch removed;
         // Reset form
         selectedCase = '';
         selectedPoi = '';
@@ -59,21 +49,18 @@
       alert('An error occurred during file upload.');
     }
   };
-
   // Dummy data for dropdowns - replace with actual data fetched from API
   const caseOptions = [
     { value: 'case1', label: 'Case 2023-001' },
     { value: 'case2', label: 'Case 2023-002' },
     { value: 'case3', label: 'Case 2023-003' },
   ];
-
   const poiOptions = [
     { value: 'poi1', label: 'John Doe' },
     { value: 'poi2', label: 'Jane Smith' },
     { value: 'poi3', label: 'Criminal X' },
   ];
 </script>
-
 <div class="nier-bits-card">
   <div class="nier-bits-yorha-panel-header">
     <h3>Automatic File Upload</h3>
@@ -100,33 +87,28 @@
     <button class="btn nes-btn is-primary" onclick={handleSubmit}>Upload</button>
   </div>
 </div>
-
 <style>
-  .card {;
+  .card {
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 1.5rem;
   }
-
   .card-header {
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #ee;
     padding-bottom: 1rem;
     margin-bottom: 1rem;
   }
-
   .card-header h3 {
     margin: 0;
     font-size: 1.25rem;
     color: #333;
   }
-
   .form-label {
     font-weight: bold;
     margin-bottom: 0.5rem;
     display: block;
   }
-
   .form-control {
     width: 100%;
     padding: 0.75rem;
@@ -134,7 +116,6 @@
     border-radius: 4px;
     font-size: 1rem;
   }
-
   .btn-primary {
     background-color: #007bff;
     color: #fff;
@@ -144,7 +125,6 @@
     cursor: pointer;
     font-size: 1rem;
   }
-
   .btn-primary:hover {
     background-color: #0056b3;
   }

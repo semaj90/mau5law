@@ -1,8 +1,6 @@
 import { db } from '$lib/server/db'
 import { users } from '$lib/server/db/schema-postgres'
 import type { RequestHandler } from './$types.js'
-
-
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check if user is authenticated and has admin role
@@ -13,7 +11,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       )
     }
     const userData = await request.json()
-
     // Validate required fields
     if (!userData.email || !userData.name) {
       return json({
@@ -32,18 +29,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       password: userData.password || "password123",
       avatarUrl: userData.avatarUrl
     } as const
-
     const result = await db.insert(users).values(newUser as any).returning()
-
     if ((result as { length?: any }).length > 0) {
       return json({
-        success: true,
+        success: true
         message: "User created successfully",
         user: result[0]
       })
     } else {
       return json({
-          success: false,
+          success: false
           message: "Failed to create user",
           error: "Database insertion failed"
         },)
@@ -53,7 +48,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   } catch (error: any) {
     console.error("Error creating user:", error)
     return json({
-        success: false,
+        success: false
         message: "Failed to create user",
         error: error instanceof Error ? error.message: "Unknown error"
       },)
@@ -61,7 +56,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     )
   }
 }
-
 export const GET: RequestHandler = async ({ locals }) => {
   // Check if user is authenticated
   if (!locals.user) {

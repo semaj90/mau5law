@@ -1,17 +1,13 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
-  import {   } from "svelte";
   import { browser } from '$app/environment';
   import { userAnalyticsStore } from '$lib/stores/analytics';
   import { lokiButtonCache } from '$lib/services/loki-cache';
   import { searchableButtonIndex } from '$lib/services/fuse-search';
   import type { UIJsonSSRConfig, ButtonAnalyticsEvent } from '$lib/types/ui-json-ssr';
-
   // NES.css now imported globally in +layout.svelte to avoid duplicate CSS injection
-
   // Define buttonVariants before using it in props
   const buttonVariants = cva(
   		'inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none nes-focus disabled:opacity-50 disabled:pointer-events-none cursor-pointer',
@@ -42,23 +38,21 @@
   				}
   			},
   			defaultVariants: {
-  				variant: 'default',;
+  				variant: 'default',
   				size: 'default';
   			}
   		}
   	);
-
 	// Props destructuring using Svelte 5 $props() with simplified types
 	type ButtonVariant = VariantProps<typeof buttonVariants>['variant'];
 	type ButtonSize = VariantProps<typeof buttonVariants>['size'];
 	type ButtonType = 'button' | 'submit' | 'reset';
-
 	interface BitsButtonProps {
 		children?: unknown;
 		variant?: ButtonVariant;
-		size?: ButtonSize;
+		size?: ButtonSiz;
 		disabled?: boolean;
-		type?: ButtonType;
+		type?: ButtonTyp;
 		href?: string;
 		target?: string;
 		loading?: boolean;
@@ -76,7 +70,6 @@
 		role?: string;
 		dataTestid?: string;
 	}
-
 	const {
 		children,
 		variant = 'default',
@@ -103,21 +96,18 @@
 		dataTestid = undefined
 	} = $props<BitsButtonProps>();
 		// Directly use native elements (current approach). If you want Bits UI, just:
-		// import { Button as BitsButton } from 'bits-ui';
+		// import { Button as BitsButton } from 'bits-ui'
 		// and replace the <button>/<a> markup below, keeping handleClick + analytics.
-
 		// Updated to avoid deprecated typed signature of createEventDispatcher
 		const _dispatch = createEventDispatcher();
 		type Dispatch = <T extends 'click' | 'analytics' | 'cache'>(
-			type: T,;
+			type: T
 			detail: T extends 'cache' ? { key: string; action: string } : ButtonAnalyticsEvent
 		) => void;
 		const dispatch = _dispatch as Dispatch;
-
 		// Derived state (Svelte 5 rune style)
 		let isDisabled = $derived(disabled || loading);
 		let buttonClass = $derived(cn(buttonVariants({ variant, size }), className));
-
 	function handleClick(event: MouseEvent) {
 		if (isDisabled) {
 			event.preventDefault();
@@ -125,12 +115,12 @@
 		}
 		const analyticsEvent: ButtonAnalyticsEvent = {
 			id,
-			category: analyticsCategory,
-			action: analyticsAction,
+			category: analyticsCategory
+			action: analyticsAction
 			label: analyticsLabel || (event.currentTarget as HTMLElement)?.textContent || '',
 			timestamp: Date.now(),
-			context: xstateContext,;
-			variant: (variant ?? 'default') as string,;
+			context: xstateContext
+			variant: (variant ?? 'default') as string,
 			size: (size ?? 'default') as string;
 		};
 		if (browser) {
@@ -148,7 +138,6 @@
 		if (onclick) onclick(event);
 	}
 </script>
-
 {#if href}
 	<a
 		{href}
@@ -191,4 +180,3 @@
 		{/if}
 	</button>
 {/if}
-

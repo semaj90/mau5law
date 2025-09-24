@@ -2,8 +2,6 @@ import { reports } from '$lib/server/db/schema-postgres'
 import { db } from '$lib/server/db/index'
 import { eq } from 'drizzle-orm'
 import type { RequestHandler } from './$types.js'
-
-
 export const GET: RequestHandler = async ({ params, locals }) => {
   try {
     if (!locals.user) {
@@ -21,7 +19,6 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       .from(reports)
       .where(eq(reports.id, reportId)
       .limit(1)
-
     if (!reportResult.length) {
       return json({ error: "Report not found" }, { status: 404 })
     }
@@ -31,7 +28,6 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     return json({ error: "Failed to fetch report" }, { status: 500 })
   }
 }
-
 export const PUT: RequestHandler = async ({ params, request, locals }) => {
   try {
     if (!locals.user) {
@@ -45,14 +41,12 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       return json({ error: "Report ID is required" }, { status: 400 })
     }
     const data = await request.json()
-
     // Check if report exists
     const existingReport = await db
       .select()
       .from(reports)
       .where(eq(reports.id, reportId)
       .limit(1)
-
     if (!existingReport.length) {
       return json({ error: "Report not found" }, { status: 404 })
     }
@@ -63,11 +57,9 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const wordCount = textContent
       .split(/\s+/)
       .filter((word: string) => word.length > 0).length
-
-    const updateData: Record<string, any> = {
+    const updateData: { [key: string]: any } = {
       updatedAt: new Date()
     }
-
     // Only update provided fields
     if (data.title !== undefined) updateData.title = data.title
     if (data.content !== undefined) updateData.content = data.content
@@ -75,7 +67,6 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     if (data.status !== undefined) updateData.status = data.status
     if (data.isPublic !== undefined) updateData.isPublic = data.isPublic
     if (data.tags !== undefined) updateData.tags = data.tags
-
     // Update metadata with new calculated values
     if (data.content !== undefined || data.metadata !== undefined) {
       const currentMetadata = (existingReport[0].metadata as any) || {}
@@ -91,14 +82,12 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       .set(updateData)
       .where(eq(reports.id, reportId)
       .returning()
-
     return json(updatedReport)
   } catch (error: any) {
     console.error("Error updating report:", error)
     return json({ error: "Failed to update report" }, { status: 500 })
   }
 }
-
 export const DELETE: RequestHandler = async ({ params, locals }) => {
   try {
     if (!locals.user) {
@@ -117,7 +106,6 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       .from(reports)
       .where(eq(reports.id, reportId)
       .limit(1)
-
     if (!existingReport.length) {
       return json({ error: "Report not found" }, { status: 404 })
     }
@@ -126,14 +114,12 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       .delete(reports)
       .where(eq(reports.id, reportId)
       .returning()
-
     return json({ success: true, deletedReport })
   } catch (error: any) {
     console.error("Error deleting report:", error)
     return json({ error: "Failed to delete report" }, { status: 500 })
   }
 }
-
 export const PATCH: RequestHandler = async ({ params, request, locals }) => {
   try {
     if (!locals.user) {
@@ -147,21 +133,18 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       return json({ error: "Report ID is required" }, { status: 400 })
     }
     const data = await request.json()
-
     // Check if report exists
     const existingReport = await db
       .select()
       .from(reports)
       .where(eq(reports.id, reportId)
       .limit(1)
-
     if (!existingReport.length) {
       return json({ error: "Report not found" }, { status: 404 })
     }
-    const updateData: Record<string, any> = {
+    const updateData: { [key: string]: any } = {
       updatedAt: new Date()
     }
-
     // Handle specific patch operations
     if (data.operation === "publish") {
       updateData.status = "published"
@@ -191,7 +174,6 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       .set(updateData)
       .where(eq(reports.id, reportId)
       .returning()
-
     return json(updatedReport)
   } catch (error: any) {
     console.error("Error patching report:", error)

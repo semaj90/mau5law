@@ -1,118 +1,98 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import { onMount } from 'svelte';
-
 	// Svelte 5 runes - simplified for NES.css retro style
 	let messages = $state<Array<{id: string, role: 'user' | 'assistant', content: string, timestamp: Date}>([]);
 	let currentMessage = $state('');
 	let isLoading = $state(false);
 	let chatContainer: HTMLElement;
-
 	// Enhanced UX state
 	let typingIndicator = $state(false);
 	let connectionStatus = $state<'connected' | 'disconnected' | 'connecting'>('disconnected');
 	let modelInfo = $state<{name: string, status: string} | null>(null);
-
 	// Check TensorRT service health
 	async function checkServiceHealth() {
 		try {
 			connectionStatus = 'connecting';
-			const response = await fetch('http://localhost:8086/health');
-
+			const response = await fetch('http://localhost:8086/health')
 			if (!response.ok) {
 				throw new Error(`Health check failed: ${response.status}`);
 			}
-
 			const data = await response.json();
 			connectionStatus = 'connected';
 			modelInfo = {
-				name: 'TensorRT Bridge - Gemma3-Legal',;
+				name: 'TensorRT Bridge - Gemma3-Legal',
 				status: data.status || 'Running';
 			};
 		} catch (error) {
 			connectionStatus = 'disconnected';
 			console.error('Service health check failed:', error);
-
 			// Show fallback notice
 			const notice = document.createElement('div');
 			notice.innerHTML = '⚠️ failure default to mock - AI service unavailable';
 			notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
 			document.body.appendChild(notice);
 			setTimeout(() => notice.remove(), 3000);
-
 			// Set mock model info
 			modelInfo = {
-				name: 'Mock Legal AI - Offline',;
+				name: 'Mock Legal AI - Offline',
 				status: 'Simulated';
 			};
 		}
 	}
-
 	// Send message to TensorRT service
 	async function sendMessage() {
 		if (!currentMessage.trim() || isLoading) return;
-
 		const userMessage = {
 			id: crypto.randomUUID(),
-			role: 'user' as const,;
-			content: currentMessage.trim(),;
+			role: 'user' as const,
+			content: currentMessage.trim(),
 			timestamp: new Date();
 		};
-
 		messages = [...messages, userMessage];
-		const messageToSend = currentMessage;
+		const messageToSend = currentMessag;
 		currentMessage = '';
 		isLoading = true;
 		typingIndicator = true;
-
 		// Scroll to bottom
 		setTimeout(() => {
 			chatContainer?.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
 		}, 100);
-
 		try {
 			const response = await fetch('http://localhost:8086/api/generate', {
-				method: 'POST',;
+				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({
+				body: JSON.stringify({,
 					model: 'gemma3-legal:latest',
-					prompt: messageToSend,
-					stream: false,;
-					options: {;
+					prompt: messageToSend
+					stream: false
+					options: {
 						temperature: 0.7,
 						max_tokens: 512;
 					}
 				})
 			});
-
 			if (!response.ok) {
 				throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 			}
-
 			const data = await response.json();
-
 			const assistantMessage = {
 				id: crypto.randomUUID(),
-				role: 'assistant' as const,;
-				content: data.response || data.text || 'No response received',;
+				role: 'assistant' as const,
+				content: data.response || data.text || 'No response received',
 				timestamp: new Date();
 			};
-
 			messages = [...messages, assistantMessage];
-
 		} catch (error) {
 			console.error('Error sending message:', error);
-
 			// Show fallback notice
 			const notice = document.createElement('div');
 			notice.innerHTML = '⚠️ failure default to mock';
 			notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
 			document.body.appendChild(notice);
 			setTimeout(() => notice.remove(), 3000);
-
 			// Generate mock legal AI response
 			const mockResponses = [
 				"Based on your query, I've identified potential legal precedents in employment law. Here's a mock analysis: The case pattern suggests reviewing contract termination clauses and documenting timeline inconsistencies.",
@@ -120,13 +100,11 @@
 				"Simulated AI response: The contract language appears standard, but Section 4.2 may contain problematic clauses. Consider reviewing similar cases from Martinez v. TechCorp (2024).",
 				"Mock Gemma3 Legal AI: This case shows strong indicators for favorable outcome. Key factors include procedural violations and inadequate documentation by opposing party."
 			];
-
 			const randomResponse = mockResponses[Math.floor(Math.random() * mockResponses.length)];
-
 			const mockMessage = {
 				id: crypto.randomUUID(),
-				role: 'assistant' as const,;
-				content: `🤖 ${randomResponse} [Mock Response - Real AI service unavailable]`,;
+				role: 'assistant' as const,
+				content: `🤖 ${randomResponse} [Mock Response - Real AI service unavailable]`,
 				timestamp: new Date();
 			};
 			messages = [...messages, mockMessage];
@@ -138,7 +116,6 @@
 			}, 100);
 		}
 	}
-
 	// Handle Enter key
 	function handleKeydown(event: KeyboardEvent) {
 		if (event.key === 'Enter' && !event.shiftKey) {
@@ -146,15 +123,13 @@
 			sendMessage();
 		}
 	}
-
 	// Format timestamp
 	function formatTime(date: Date): string {
 		return date.toLocaleTimeString('en-US', {
-			hour: '2-digit',;
+			hour: '2-digit',
 			minute: '2-digit';
 		});
 	}
-
 	$effect(() => {
 		checkServiceHealth();
 		// Check health every 30 seconds
@@ -162,12 +137,10 @@
 		return () => clearInterval(interval);
 	});
 </script>
-
 <svelte:head>
 	<title>AI Legal Chat - TensorRT Demo</title>
 	<meta name="description" content="Legal AI Chat powered by TensorRT and Gemma3-Legal" />
 </svelte:head>
-
 <!-- 8-bit Retro Legal AI Chat Interface -->
 <div class="retro-chat-app">
 	<!-- NES.css Header -->
@@ -192,7 +165,6 @@
 			{/if}
 		</div>
 	</div>
-
 	<!-- Chat Messages Container -->
 	<div class="nes-container is-dark chat-area" bind:this={chatContainer}>
 		{#if messages.length === 0}
@@ -201,24 +173,20 @@
 				<h2>👋 SYSTEM READY</h2>
 				<p>GEMMA3-LEGAL Q4_K_M LOADED</p>
 				<p>SELECT A QUERY TYPE:</p>
-
 				<button class="nes-btn is-primary"
 				        onclick={() => currentMessage = "What are the key elements of a valid contract?"}>
 					📋 CONTRACT LAW
 				</button>
-
 				<button class="nes-btn is-success"
 				        onclick={() => currentMessage = "Explain intellectual property basics"}>
 					💡 IP BASICS
 				</button>
-
 				<button class="nes-btn is-warning"
 				        onclick={() => currentMessage = "What is due diligence in M&A?"}>
 					🔍 M&A DUE DILIGENCE
 				</button>
 			</div>
 		{/if}
-
 		<!-- Message List -->
 		{#each messages as message (message.id)}
 			{#if message.role === 'user'}
@@ -235,7 +203,6 @@
 				</div>
 			{/if}
 		{/each}
-
 		<!-- Typing Indicator -->
 		{#if typingIndicator}
 			<div class="nes-balloon from-left">
@@ -243,7 +210,6 @@
 			</div>
 		{/if}
 	</div>
-
 	<!-- Input Section -->
 	<div class="nes-container input-section">
 		<div class="nes-field">
@@ -258,7 +224,6 @@
 				disabled={isLoading || connectionStatus === 'disconnected'}
 			></textarea>
 		</div>
-
 		<div class="button-row">
 			<button
 				type="button"
@@ -272,7 +237,6 @@
 					📤 SEND QUERY
 				{/if}
 			</button>
-
 			<button
 				type="button"
 				class="nes-btn"
@@ -285,7 +249,6 @@
 			</button>
 		</div>
 	</div>
-
 	<!-- Status Footer -->
 	<div class="nes-container is-dark footer-info">
 		<div class="lists">
@@ -297,15 +260,13 @@
 		</div>
 	</div>
 </div>
-
 <style>
 	/* 8-bit Retro Legal AI Chat Styling */
-	:global(body) {;
+	:global(body) {
 		background: #212529 !important;
 		font-family: 'Courier New', monospace !important;
 		color: #ffffff;
 	}
-
 	.retro-chat-app {
 		min-height: 100vh;
 		padding: 16px;
@@ -313,15 +274,13 @@
 		max-width: 1200px;
 		margin: 0 auto;
 	}
-
 	.status-bar {
 		display: flex;
-		justify-content: space-between;
+		justify-content: space-betwee;
 		align-items: center;
 		gap: 1rem;
 		margin-top: 1rem;
 	}
-
 	.chat-area {
 		min-height: 400px;
 		max-height: 500px;
@@ -329,7 +288,6 @@
 		margin: 16px 0;
 		padding: 16px;
 	}
-
 	.welcome-screen {
 		text-align: center;
 		background: #ffffff;
@@ -337,24 +295,20 @@
 		padding: 2rem;
 		margin: 2rem 0;
 	}
-
 	.welcome-screen h2 {
 		margin: 0 0 1rem 0;
 		font-size: 1.5rem;
 	}
-
 	.welcome-screen p {
 		margin: 0.5rem 0;
 		font-weight: bold;
 	}
-
 	.welcome-screen button {
 		display: block;
 		width: 100%;
 		margin: 0.75rem 0;
 		font-size: 0.875rem;
 	}
-
 	.user-message {
 		margin: 1rem 0;
 		background: #0066cc !important;
@@ -363,7 +317,6 @@
 		max-width: 70%;
 		margin-left: auto;
 	}
-
 	.ai-message {
 		margin: 1rem 0;
 		background: #ffffff !important;
@@ -372,114 +325,93 @@
 		max-width: 70%;
 		margin-right: auto;
 	}
-
 	.timestamp {
 		display: block;
 		margin-top: 0.5rem;
 		opacity: 0.7;
 		font-size: 0.75rem;
 	}
-
 	.input-section {
 		margin: 16px 0;
 		background: #ffffff;
 		color: #212529;
 	}
-
 	.input-section label {
 		font-weight: bold;
 		color: #212529;
 		margin-bottom: 0.5rem;
 		display: block;
 	}
-
 	.button-row {
 		display: flex;
 		gap: 1rem;
 		margin-top: 1rem;
 		flex-wrap: wrap;
 	}
-
 	.button-row button {
 		flex: 1;
 		min-width: 150px;
 	}
-
 	.footer-info {
 		margin-top: 16px;
 		font-size: 0.875rem;
 	}
-
 	.footer-info ul {
 		margin: 0;
 	}
-
 	.footer-info li {
 		color: #ffffff;
 		margin: 0.25rem 0;
 	}
-
 	/* NES.css balloon positioning */
 	.nes-balloon.from-right {
 		float: right;
 		clear: both;
 	}
-
 	.nes-balloon.from-left {
 		float: left;
 		clear: both;
 	}
-
 	/* Scrollbar styling for dark theme */
 	.chat-area::-webkit-scrollbar {
 		width: 8px;
 	}
-
 	.chat-area::-webkit-scrollbar-track {
 		background: #333;
 	}
-
 	.chat-area::-webkit-scrollbar-thumb {
 		background: #666;
 		border-radius: 4px;
 	}
-
 	.chat-area::-webkit-scrollbar-thumb:hover {
 		background: #888;
 	}
-
 	/* Responsive design for mobile */
 	@media (max-width: 768px) {
 		.retro-chat-app {
 			padding: 8px;
 		}
-
 		.user-message,
 		.ai-message {
 			max-width: 85%;
 		}
-
 		.button-row {
 			flex-direction: column;
 		}
-
 		.button-row button {
 			width: 100%;
 			min-width: auto;
 		}
-
 		.status-bar {
 			flex-direction: column;
 			gap: 0.5rem;
 		}
 	}
-
 	/* Animation for typing indicator */
 	@keyframes blink {
 		0%, 50% { opacity: 1; }
 		51%, 100% { opacity: 0; }
 	}
-
 	.nes-balloon.is-processing {
 		animation: blink 1s infinite;
 	}

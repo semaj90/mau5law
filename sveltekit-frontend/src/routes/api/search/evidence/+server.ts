@@ -1,17 +1,12 @@
 
 import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
-
 // Evidence search API endpoint with advanced vector capabilities
 // Supports document content search, image analysis, and multi-modal search
 import { evidence } from "$lib/server/db/schema-postgres"
-
 import { and, desc, ilike, or, sql } from "drizzle-orm"
-
 import { db } from "$lib/server/db/index"
 import { URL } from "url"
-
-
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const query = url.searchParams.get("q")
@@ -19,13 +14,11 @@ export const GET: RequestHandler = async ({ url }) => {
     const evidenceType = url.searchParams.get("type")
     const searchMode = url.searchParams.get("mode") || "hybrid"; // 'text', 'content', 'semantic', 'hybrid'
     const limit = parseInt(url.searchParams.get("limit") || "20")
-
     if (!query || query.length < 2) {
       return json({ results: [], searchMode: "none", executionTime: 0 })
     }
     const startTime = Date.now()
     let results = []
-
     switch (searchMode) {
       case "text":
         // Fast metadata search
@@ -35,7 +28,6 @@ export const GET: RequestHandler = async ({ url }) => {
           limit
         })
         break
-
       case "content":
         // Deep content search using Qdrant
         results = await searchEvidenceContent(query, {
@@ -44,7 +36,6 @@ export const GET: RequestHandler = async ({ url }) => {
           limit
         })
         break
-
       case "semantic":
         // PostgreSQL vector search
         results = await searchEvidenceSemantic(query, {
@@ -53,7 +44,6 @@ export const GET: RequestHandler = async ({ url }) => {
           limit
         })
         break
-
       case "hybrid":
       default:
         // Best of all worlds
@@ -65,7 +55,6 @@ export const GET: RequestHandler = async ({ url }) => {
         break
     }
     const executionTime = Date.now() - startTime
-
     return json({
       results,
       searchMode,
@@ -90,7 +79,7 @@ export const GET: RequestHandler = async ({ url }) => {
           summary: 'Mock evidence document returned due to search service failure.',
           uploadedAt: new Date(Date.now() - 86400000).toISOString(),
           similarity: 0.85,
-          searchType: searchMode,
+          searchType: searchMode
           mockData: true
         },
         {
@@ -105,7 +94,7 @@ export const GET: RequestHandler = async ({ url }) => {
           summary: 'Mock email evidence returned due to search service failure.',
           uploadedAt: new Date(Date.now() - 172800000).toISOString(),
           similarity: 0.72,
-          searchType: searchMode,
+          searchType: searchMode
           mockData: true
         }
       ],
@@ -117,12 +106,10 @@ export const GET: RequestHandler = async ({ url }) => {
     }, { status: 500 })
   }
 }
-
 // Fast text search on evidence metadata
 async function searchEvidenceText(query: string, options: any): Promise<any> {
   const { caseId, evidenceType, limit } = options
   const whereConditions = []
-
   // Text search conditions
   const textSearch = or(
     ilike(evidence.title, `%${query}%`),
@@ -131,12 +118,10 @@ async function searchEvidenceText(query: string, options: any): Promise<any> {
     sql`${evidence.tags}::text ILIKE ${`%${query}%`}`,
   )
   whereConditions.push(textSearch)
-
   // Apply filters
   if (caseId) whereConditions.push(sql`${evidence.caseId} = ${caseId}`)
   if (evidenceType)
     whereConditions.push(sql`${evidence.evidenceType} = ${evidenceType}`)
-
   return await db
     .select({
       id: evidence.id,
@@ -160,7 +145,6 @@ async function searchEvidenceText(query: string, options: any): Promise<any> {
 // Deep content search using Qdrant
 async function searchEvidenceContent(query: string, options: any): Promise<any> {
   const { caseId, evidenceType, limit } = options
-
   try {
     // Search Qdrant for document content
     const qdrantResults = await searchEvidence(query, {
@@ -174,10 +158,8 @@ async function searchEvidenceContent(query: string, options: any): Promise<any> 
         ]
       }
     })
-
     // Get full evidence records for matches
     const evidenceIds = qdrantResults.map((r) => r.payload.evidence_id)
-
     if (evidenceIds.length === 0) {
       return []
     }
@@ -196,7 +178,6 @@ async function searchEvidenceContent(query: string, options: any): Promise<any> 
       })
       .from(evidence)
       .where(sql`${evidence.id} = ANY(${evidenceIds})`)
-
     // Merge with similarity scores
     return evidenceRecords.map((record) => {
       const qdrantMatch = qdrantResults.find(
@@ -218,13 +199,10 @@ async function searchEvidenceContent(query: string, options: any): Promise<any> 
 async function searchEvidenceSemantic(query: string, options: any): Promise<any> {
   const { caseId, evidenceType, limit } = options
   const queryEmbedding = await generateEmbedding(query)
-
   const whereConditions = [sql`1=1`]; // Remove missing column reference
-
   if (caseId) whereConditions.push(sql`${evidence.caseId} = ${caseId}`)
   if (evidenceType)
     whereConditions.push(sql`${evidence.evidenceType} = ${evidenceType}`)
-
   return await db
     .select({
       id: evidence.id,
@@ -248,7 +226,6 @@ async function searchEvidenceSemantic(query: string, options: any): Promise<any>
 // Hybrid search combining all methods
 async function searchEvidenceHybrid(query: string, options: any): Promise<any> {
   const { limit } = options
-
   // Run searches in parallel for speed
   const [textResults, contentResults, semanticResults] =
     await Promise.allSettled([
@@ -259,10 +236,8 @@ async function searchEvidenceHybrid(query: string, options: any): Promise<any> {
         limit: Math.ceil(limit / 3)
       })
     ])
-
   const allResults: any[] = []
   const seenIds = new Set<string>()
-
   // Merge results with deduplication
   const addResults = (results: any[], boost = 1) => {
     if (results) {
@@ -277,14 +252,12 @@ async function searchEvidenceHybrid(query: string, options: any): Promise<any> {
       })
     }
   }
-
   // Add results with different priority weights
   if (textResults.status === "fulfilled") addResults(textResults.value, 1.0)
   if (contentResults.status === "fulfilled")
     addResults(contentResults.value, 1.2); // Boost content matches
   if (semanticResults.status === "fulfilled")
     addResults(semanticResults.value, 1.1); // Boost semantic matches
-
   // Sort by similarity and limit
   return allResults
     .sort((a, b) => b.similarity - a.similarity)

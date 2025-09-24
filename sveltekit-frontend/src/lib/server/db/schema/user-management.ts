@@ -2,16 +2,13 @@
  * User Management Schema - Complete CRUD Operations
  * PostgreSQL + pgvector + Drizzle ORM
  */
-
 import { pgTable, text, timestamp, boolean, serial, varchar, jsonb, index, uniqueIndex } from 'drizzle-orm/pg-core';
 import { vector } from 'pgvector/drizzle-orm';
-// import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+// import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod';
-
 // ============================================================================
 // ZOD VALIDATION SCHEMAS
 // ============================================================================
-
 export const insertUserSchema = z.object({
   email: z.string().email(),
   firstName: z.string().optional(),
@@ -26,7 +23,6 @@ export const insertUserSchema = z.object({
   firmName: z.string().optional(),
   metadata: z.any().default({}),
 });
-
 export const updateUserSchema = insertUserSchema.partial();
 export const insertProfileSchema = z.object({
   userId: z.number(),
@@ -36,12 +32,10 @@ export const insertProfileSchema = z.object({
   experienceLevel: z.string().optional(),
   visibility: z.string().default('private'),
 });
-
 export const updateProfileSchema = insertProfileSchema.partial();
 // ============================================================================
 // USER ACCOUNTS TABLE
 // ============================================================================
-
 export const users = pgTable(
   'users',
   {
@@ -53,22 +47,18 @@ export const users = pgTable(
     role: varchar('role', { length: 50 }).notNull().default('user'),
     isActive: boolean('is_active').notNull().default(true),
     isVerified: boolean('is_verified').notNull().default(false),
-
     // Legal AI specific fields
     jurisdiction: varchar('jurisdiction', { length: 100 }),
     practiceAreas: jsonb('practice_areas'),
     barNumber: varchar('bar_number', { length: 50 }),
     firmName: varchar('firm_name', { length: 200 }),
-
     // Profile embedding for AI recommendations
     profileEmbedding: vector('profile_embedding', { dimensions: 384 }),
-
     // Metadata and timestamps
     metadata: jsonb('metadata').default({}),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
     lastLoginAt: timestamp('last_login_at'),
-
     // Soft delete
     deletedAt: timestamp('deleted_at'),
   },
@@ -85,11 +75,9 @@ export const users = pgTable(
     isActiveIdx: index('users_is_active_idx').on(table.isActive),
   })
 );
-
 // ============================================================================
 // USER SESSIONS TABLE
 // ============================================================================
-
 export const userSessions = pgTable(
   'user_sessions',
   {
@@ -102,10 +90,8 @@ export const userSessions = pgTable(
     ipAddress: varchar('ip_address', { length: 45 }),
     userAgent: text('user_agent'),
     isActive: boolean('is_active').notNull().default(true),
-
     // Session context for legal work
     sessionContext: jsonb('session_context').default({}),
-
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
   },
@@ -116,11 +102,9 @@ export const userSessions = pgTable(
     isActiveIdx: index('user_sessions_is_active_idx').on(table.isActive),
   })
 );
-
 // ============================================================================
 // USER PROFILES TABLE (Extended Information)
 // ============================================================================
-
 export const userProfiles = pgTable(
   'user_profiles',
   {
@@ -129,24 +113,19 @@ export const userProfiles = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' })
       .unique(),
-
     // Personal information
     phoneNumber: varchar('phone_number', { length: 20 }),
     address: jsonb('address'),
-
     // Professional information
     licenseNumber: varchar('license_number', { length: 50 }),
     yearsOfExperience: serial('years_of_experience'),
     specializations: jsonb('specializations').default([]),
     education: jsonb('education').default([]),
-
     // Preferences and settings
     preferences: jsonb('preferences').default({}),
-
     // Avatar and profile image
     avatarUrl: varchar('avatar_url', { length: 500 }),
     bio: text('bio'),
-
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
   },
@@ -154,11 +133,9 @@ export const userProfiles = pgTable(
     userIdIdx: uniqueIndex('user_profiles_user_id_idx').on(table.userId),
   })
 );
-
 // ============================================================================
 // USER ACTIVITY LOG TABLE
 // ============================================================================
-
 export const userActivityLog = pgTable(
   'user_activity_log',
   {
@@ -167,23 +144,18 @@ export const userActivityLog = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
     sessionId: varchar('session_id', { length: 255 }),
-
     // Activity details
     action: varchar('action', { length: 100 }).notNull(),
     resource: varchar('resource', { length: 100 }),
     resourceId: varchar('resource_id', { length: 100 }),
-
     // Request details
     ipAddress: varchar('ip_address', { length: 45 }),
     userAgent: text('user_agent'),
-
     // Activity context
     context: jsonb('context').default({}),
-
     // Results
     success: boolean('success').notNull().default(true),
     errorMessage: text('error_message'),
-
     // Timing
       duration: serial('duration'), // milliseconds
     timestamp: timestamp('timestamp').notNull().defaultNow(),
@@ -195,39 +167,31 @@ export const userActivityLog = pgTable(
     sessionIdIdx: index('user_activity_log_session_id_idx').on(table.sessionId),
   })
 );
-
 // ============================================================================
 // ZONT SCHEMAS FOR VALIDATION
 // ============================================================================
-
-// User insert/update schemas (commented out until drizzle-zod is available);
+// User insert/update schemas (commented out until drizzle-zod is available)
 // export const insertUserSchema = createInsertSchema(users, {
 //   email: z.string().email(),
 //   firstName: z.string().min(1).max(100),
 //   lastName: z.string().min(1).max(100),
 //   role: z.enum(['admin', 'attorney', 'paralegal', 'investigator', 'user']),
 //   practiceAreas: z.array(z.string()).optional(),
-// }));
-
-// export const selectUserSchema = createSelectSchema(users);
-// export const updateUserSchema = insertUserSchema.partial();
-
+// }))
+// export const selectUserSchema = createSelectSchema(users)
+// export const updateUserSchema = insertUserSchema.partial()
 // // Session schemas
-// export const insertSessionSchema = createInsertSchema(userSessions);
-// export const selectSessionSchema = createSelectSchema(userSessions);
-
+// export const insertSessionSchema = createInsertSchema(userSessions)
+// export const selectSessionSchema = createSelectSchema(userSessions)
 // // Profile schemas
-// export const insertProfileSchema = createInsertSchema(userProfiles);
-// export const selectProfileSchema = createSelectSchema(userProfiles);
-// export const updateProfileSchema = insertProfileSchema.partial();
-
+// export const insertProfileSchema = createInsertSchema(userProfiles)
+// export const selectProfileSchema = createSelectSchema(userProfiles)
+// export const updateProfileSchema = insertProfileSchema.partial()
 // // Activity log schema
-// export const insertActivitySchema = createInsertSchema(userActivityLog);
-
+// export const insertActivitySchema = createInsertSchema(userActivityLog)
 // ============================================================================
 // TYPESCRIPT TYPES
 // ============================================================================
-
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type UserSession = typeof userSessions.$inferSelect;
@@ -236,7 +200,6 @@ export type UserProfile = typeof userProfiles.$inferSelect;
 export type NewUserProfile = typeof userProfiles.$inferInsert;
 export type UserActivity = typeof userActivityLog.$inferSelect;
 export type NewUserActivity = typeof userActivityLog.$inferInsert;
-
 // Enhanced types for API responses
 export type UserWithProfile = User & { profile?: UserProfile };
 export type UserWithSessions = User & { sessions?: UserSession[] };
@@ -245,13 +208,10 @@ export type FullUserProfile = User & {
   sessions?: UserSession[];
   recentActivity?: UserActivity[];
 };
-
 // ============================================================================
 // DATABASE RELATIONS (for Drizzle Relational Queries)
 // ============================================================================
-
 import { relations } from 'drizzle-orm/relations';
-
 export const usersRelations = relations(users, ({ one, many }) => ({
   profile: one(userProfiles, {
     fields: [users.id],
@@ -260,21 +220,18 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   sessions: many(userSessions),
   activities: many(userActivityLog),
 }));
-
 export const userProfilesRelations = relations(userProfiles, ({ one }) => ({
   user: one(users, {
     fields: [userProfiles.userId],
     references: [users.id],
   }),
 }));
-
 export const userSessionsRelations = relations(userSessions, ({ one }) => ({
   user: one(users, {
     fields: [userSessions.userId],
     references: [users.id],
   }),
 }));
-
 export const userActivityLogRelations = relations(userActivityLog, ({ one }) => ({
   user: one(users, {
     fields: [userActivityLog.userId],

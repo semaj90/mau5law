@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: `<div>` was left open;
+<!-- @migration-task Error while migrating Svelte code: `<div>` was left ope;
 https://svelte.dev/e/element_unclosed -->
 <!-- @migration-task Error while migrating Svelte code: `<div>` was left open -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   // Svelte runes are declared globally in src/types/svelte-helpers.d.ts
   import {
@@ -16,38 +15,31 @@ https://svelte.dev/e/element_unclosed -->
   } from '$lib/services/logging-aggregation-service';
   import Button from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
-
   // Modern Svelte 5 props via $props rune
   let { visible = true, height = '600px' } = $props();
-
   let selectedLevel = $state<LogLevel | 'all'>('all');
   let selectedCategory = $state('all');
   let searchQuery = $state('');
   let autoScroll = $state(true);
   let showDetails = $state(false);
   let selectedEntry = $state<LogEntry | null>(null);
-
   let filteredEntries = $derived(() => $logEntries.filter((entry: LogEntry) => {
     const matchesLevel = selectedLevel === 'all' || entry.level === selectedLevel;
     const matchesCategory = selectedCategory === 'all' || entry.category === selectedCategory;
     const matchesSearch = !searchQuery ||
       entry.message.toLowerCase().includes(searchQuery.toLowerCase()) ||
       entry.category.toLowerCase().includes(searchQuery.toLowerCase());
-
     return matchesLevel && matchesCategory && matchesSearch;
   }));
-
   let categories = $derived(() => Array.from(new Set($logEntries.map((e: LogEntry) => e.category))).sort());
   let stats = $derived(() => $logStats);
   let logContainer = $state<HTMLDivElement | null>(null);
   let refreshInterval: ReturnType<typeof setInterval> | null = null;
-
   $effect(() => {
     // Auto-scroll to bottom when new entries arrive
     if (autoScroll) {
       scrollToBottom();
     }
-
     // Refresh dashboard periodically
   refreshInterval = setInterval(() => {
       if (autoScroll) {
@@ -55,39 +47,34 @@ https://svelte.dev/e/element_unclosed -->
       }
     }, 1000);
   });
-
   onDestroy(() => {
     if (refreshInterval) clearInterval(refreshInterval);
   });
-
   function scrollToBottom() {
     if (logContainer) {
       logContainer.scrollTop = logContainer.scrollHeight;
     }
   }
-
   function getLevelColor(level: LogLevel): string {
     const colors = {
       debug: 'bg-gray-100 text-gray-600',
       info: 'bg-blue-100 text-blue-600',
-      warn: 'bg-yellow-100 text-yellow-600',;
-      error: 'bg-red-100 text-red-600',;
+      warn: 'bg-yellow-100 text-yellow-600',
+      error: 'bg-red-100 text-red-600',
       fatal: 'bg-red-200 text-red-800';
     };
     return colors[level] || 'bg-gray-100 text-gray-600';
   }
-
   function getLevelIcon(level: LogLevel): string {
     const icons = {
       debug: '🐛',
       info: 'ℹ️',
-      warn: '⚠️',;
-      error: '❌',;
+      warn: '⚠️',
+      error: '❌',
       fatal: '💀';
     };
     return icons[level] || 'ℹ️';
   }
-
   function getCategoryIcon(category: string): string {
     const icons = {
       system: '⚙️',
@@ -96,23 +83,21 @@ https://svelte.dev/e/element_unclosed -->
       ai: '🤖',
       database: '🗄️',
       frontend: '🎨',
-      backend: '🖥️',;
-      security: '🛡️',;
+      backend: '🖥️',
+      security: '🛡️',
       console: '📟';
     };
     return icons[category] || '📋';
   }
-
   function formatTimestamp(timestamp: number): string {
     return new Date(timestamp).toLocaleTimeString('en-US', {
-      hour12: false,
-      hour: '2-digit',;
-      minute: '2-digit',;
+      hour12: false
+      hour: '2-digit',
+      minute: '2-digit',
       second: '2-digit',
       fractionalSecondDigits: 3;
     });
   }
-
   function formatData(data: unknown): string {
     if (!data) return '';
     try {
@@ -121,22 +106,18 @@ https://svelte.dev/e/element_unclosed -->
       return String(data);
     }
   }
-
   function clearLogs() {
     if (confirm('Are you sure you want to clear all logs?')) {
       // This would require a method in the logging service
       location.reload(); // Simple solution for now
     }
   }
-
   function exportLogs() {
     const filter: LogFilter = {
-      category: selectedCategory !== 'all' ? [selectedCategory] : undefined,;
+      category: selectedCategory !== 'all' ? [selectedCategory] : undefined
       level: selectedLevel !== 'all' ? [selectedLevel] : undefined;
     };
-
     const exportData = loggingService.exportLogs('json', filter);
-
     // Create download
     const blob = new Blob([exportData], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -148,13 +129,11 @@ https://svelte.dev/e/element_unclosed -->
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
-
   function selectEntry(entry: LogEntry) {
     selectedEntry = entry;
     showDetails = true;
   }
 </script>
-
 {#if visible}
   <div class="logging-dashboard bg-gray-900 text-white rounded-lg border border-gray-700" style="height: {height}">
     <!-- Header -->
@@ -164,17 +143,13 @@ https://svelte.dev/e/element_unclosed -->
           📊 Logging Dashboard
           <span class="text-sm text-gray-400">({stats.totalEntries} entries)</span>
         </h2>
-
         <div class="flex items-center gap-2">
           <Button class="bits-btn" size="sm" variant="ghost" onclick={exportLogs}>
 📤 Export
-
           <Button class="bits-btn" size="sm" variant="ghost" onclick={clearLogs}>
 🗑️ Clear
-
         </div>
       </div>
-
       <!-- Stats Bar -->
       <div class="grid grid-cols-6 gap-4 mb-4">
         <div class="text-center">
@@ -202,7 +177,6 @@ https://svelte.dev/e/element_unclosed -->
           <div class="text-green-300 font-mono">{stats.avgLogsPerMinute}/min</div>
         </div>
       </div>
-
       <!-- Filters -->
       <div class="flex gap-4">
         <input
@@ -211,7 +185,6 @@ https://svelte.dev/e/element_unclosed -->
           bind:value={searchQuery}
           class="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white placeholder-gray-400"
         />
-
         <select
           bind:value={selectedLevel}
           class="px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white"
@@ -223,7 +196,6 @@ https://svelte.dev/e/element_unclosed -->
           <option value="error">Error</option>
           <option value="fatal">Fatal</option>
         </select>
-
         <select
           bind:value={selectedCategory}
           class="px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white"
@@ -233,7 +205,6 @@ https://svelte.dev/e/element_unclosed -->
             <option value={category}>{category}</option>
           {/each}
         </select>
-
         <label class="flex items-center gap-2">
           <input
             type="checkbox"
@@ -244,7 +215,6 @@ https://svelte.dev/e/element_unclosed -->
         </label>
       </div>
     </div>
-
     <!-- Log Entries -->
     <div
       class="flex-1 overflow-y-auto p-2";
@@ -268,56 +238,46 @@ https://svelte.dev/e/element_unclosed -->
                 <div class="text-xs text-gray-400 font-mono min-w-[80px]">
                   {formatTimestamp(entry.timestamp)}
                 </div>
-
                 <!-- Level Badge -->
                 <div class="min-w-[60px]">
                   <Badge class={getLevelColor(entry.level) + ' text-xs'}>
                     {getLevelIcon(entry.level)} {entry.level.toUpperCase()}
                   </Badge>
                 </div>
-
                 <!-- Category -->
                 <div class="text-xs text-gray-300 min-w-[80px] flex items-center gap-1">
                   <span>{getCategoryIcon(entry.category)}</span>
                   <span>{entry.category}</span>
                 </div>
-
                 <!-- Message -->
                 <div class="flex-1 text-sm">
                   <span class="text-white">{entry.message}</span>
-
                   {#if entry.service}
                     <span class="text-gray-400 text-xs ml-2">({entry.service})</span>
                   {/if}
-
                   {#if entry.data}
                     <div class="text-xs text-gray-400 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       📎 Has additional data
                     </div>
                   {/if}
-
                   {#if entry.error}
                     <div class="text-xs text-red-400 mt-1">
                       🐛 {entry.error.message}
                     </div>
                   {/if}
                 </div>
-
                 <!-- Actions -->
                 <div class="opacity-0 group-hover:opacity-100 transition-opacity">
                   <Button class="bits-btn" size="sm" variant="ghost" onclick={(e) =>
 { e.stopPropagation(); selectEntry(entry); }}>
                     👁️
-
                 </div>
               </div>
-
           {/each}
         </div>
       {/if}
     </div>
   </div>
-
   <!-- Details Modal -->
   {#if showDetails && selectedEntry}
   <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -331,9 +291,7 @@ https://svelte.dev/e/element_unclosed -->
           <Button class="bits-btn" variant="ghost" onclick={() =>
 showDetails = false}>
             ✕
-
         </div>
-
         <!-- Entry Details -->
         <div class="space-y-4 overflow-y-auto max-h-96">
   </div>
@@ -343,7 +301,6 @@ showDetails = false}>
                 {new Date(selectedEntry.timestamp).toISOString()}
               </div>
             </div>
-
             <div role="group" aria-label="Level">
               <div class="text-sm text-gray-400">Level</div>
               <div>
@@ -352,40 +309,34 @@ showDetails = false}>
                 </Badge>
               </div>
             </div>
-
             <div role="group" aria-label="Category">
               <div class="text-sm text-gray-400">Category</div>
               <div class="text-white flex items-center gap-2">
                 {getCategoryIcon(selectedEntry.category)} {selectedEntry.category}
               </div>
             </div>
-
             <div role="group" aria-label="Entry ID">
               <div class="text-sm text-gray-400">Entry ID</div>
               <div class="font-mono text-white text-sm">{selectedEntry.id}</div>
             </div>
-
             {#if selectedEntry.service}
               <div role="group" aria-label="Service">
                 <div class="text-sm text-gray-400">Service</div>
                 <div class="text-white">{selectedEntry.service}</div>
               </div>
             {/if}
-
             {#if selectedEntry.userId}
               <div role="group" aria-label="User ID">
                 <div class="text-sm text-gray-400">User ID</div>
                 <div class="font-mono text-white text-sm">{selectedEntry.userId}</div>
               </div>
             {/if}
-
             {#if selectedEntry.sessionId}
               <div role="group" aria-label="Session ID">
                 <div class="text-sm text-gray-400">Session ID</div>
                 <div class="font-mono text-white text-sm">{selectedEntry.sessionId}</div>
               </div>
             {/if}
-
             {#if selectedEntry.requestId}
               <div role="group" aria-label="Request ID">
                 <div class="text-sm text-gray-400">Request ID</div>
@@ -393,7 +344,6 @@ showDetails = false}>
               </div>
             {/if}
           </div>
-
           <!-- Message -->
           <div>
             <div class="text-sm text-gray-400">Message</div>
@@ -401,7 +351,6 @@ showDetails = false}>
               <code class="text-white whitespace-pre-wrap">{selectedEntry.message}</code>
             </div>
           </div>
-
           <!-- Data -->
           {#if selectedEntry.data}
             <div>
@@ -411,7 +360,6 @@ showDetails = false}>
               </div>
             </div>
           {/if}
-
           <!-- Error -->
           {#if selectedEntry.error}
             <div>
@@ -424,7 +372,6 @@ showDetails = false}>
               </div>
             </div>
           {/if}
-
           <!-- Meta -->
           {#if selectedEntry.meta}
             <div>
@@ -434,7 +381,6 @@ showDetails = false}>
               </div>
             </div>
           {/if}
-
           <!-- Tags -->
           {#if selectedEntry.tags && selectedEntry.tags.length > 0}
             <div>
@@ -447,7 +393,6 @@ showDetails = false}>
             </div>
           {/if}
         </div>
-
         <!-- Actions -->
         <div class="flex gap-2 mt-6">
           <Button class="bits-btn"
@@ -456,51 +401,41 @@ showDetails = false}>
 navigator.clipboard.writeText(JSON.stringify(selectedEntry, null, 2))}
           >
             📋 Copy JSON
-
           <Button class="bits-btn" variant="ghost" onclick={() =>
 showDetails = false}>
             Close
-
         </div>
       </div>
     </div>
   {/if}
-
 <style>
   .logging-dashboard {
     display: flex;
     flex-direction: column;
     font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
   }
-
   .log-entry {
     font-size: 0.875rem;
     line-height: 1.25rem;
   }
-
   pre {
     white-space: pre-wrap;
     word-wrap: break-word;
   }
-
   :global(.logging-dashboard .log-entry:nth-child(even)) {
     background-color: rgba(255, 255, 255, 0.02);
   }
-
   /* Scrollbar styling */
   .overflow-y-auto::-webkit-scrollbar {
     width: 8px;
   }
-
   .overflow-y-auto::-webkit-scrollbar-track {
     background: #1f2937;
   }
-
   .overflow-y-auto::-webkit-scrollbar-thumb {
     background: #4b5563;
     border-radius: 4px;
   }
-
   .overflow-y-auto::-webkit-scrollbar-thumb:hover {
     background: #6b7280;
   }

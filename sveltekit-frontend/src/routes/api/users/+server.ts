@@ -5,8 +5,6 @@ import { and, desc, eq, like, or, sql } from "drizzle-orm"
 import { db } from "$lib/server/db/index"
 import type { RequestHandler } from './$types.js'
 import { URL } from "url"
-
-
 export const GET: RequestHandler = async ({ locals, url }) => {
   try {
     if (!locals.user) {
@@ -22,7 +20,6 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     const offset = parseInt(url.searchParams.get("offset") || "0")
     const sortBy = url.searchParams.get("sortBy") || "createdAt"
     const sortOrder = url.searchParams.get("sortOrder") || "desc"
-
     // Build query with filters
     let query = db
       .select({
@@ -39,9 +36,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         // Exclude sensitive fields like hashedPassword
       })
       .from(users)
-
     const filters = []
-
     // Add search filter
     if (search) {
       filters.push(
@@ -73,7 +68,6 @@ export const GET: RequestHandler = async ({ locals, url }) => {
             : sortBy === "updatedAt"
               ? users.updatedAt
               : users.createdAt
-
     const userResults = await db
       .select({
         id: users.id,
@@ -92,16 +86,14 @@ export const GET: RequestHandler = async ({ locals, url }) => {
       .orderBy(sortOrder === "asc" ? orderColumn : desc(orderColumn)
       .limit(limit)
       .offset(offset)
-
     // Get total count for pagination
     const totalCountResult = await db
       .select({ count: sql<number>`count(*)` })
       .from(users)
       .where(whereClause)
     const totalCount = totalCountResult[0]?.count || 0
-
     return json({
-      users: userResults,
+      users: userResults
       totalCount,
       hasMore: offset + limit < totalCount,
       pagination: {
@@ -115,7 +107,6 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     return json({ error: "Failed to fetch users" }, { status: 500 })
   }
 }
-
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.user) {
@@ -129,7 +120,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return json({ error: "Database not available" }, { status: 500 })
     }
     const data = await request.json()
-
     // Validate required fields
     if (!data.email || !data.password) {
       return json(
@@ -143,14 +133,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       .from(users)
       .where(eq(users.email, data.email)
       .limit(1)
-
     if (existingUser.length > 0) {
       return json({ error: "Email already exists" }, { status: 409 })
     }
     // Hash password (you should use proper password hashing)
     const bcrypt = await import("bcrypt")
     const hashedPassword = await bcrypt.hash(data.password, 12)
-
     // Map frontend data to schema fields
     const userData = {
       email: data.email.trim().toLowerCase(),
@@ -159,10 +147,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       firstName: data.firstName?.trim() || null,
       lastName: data.lastName?.trim() || null,
       role: data.role || "prosecutor",
-      isActive: data.isActive !== undefined ? data.isActive: true,
+      isActive: data.isActive !== undefined ? data.isActive: true
       avatarUrl: data.avatarUrl?.trim() || null
     }
-
     const [newUser] = await db.insert(users).values(userData).returning({
       id: users.id,
       email: users.email,
@@ -175,7 +162,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       createdAt: users.createdAt,
       updatedAt: users.updatedAt
     })
-
     return json(newUser, { status: 201 })
   } catch (error: any) {
     console.error("Error creating user:", error)

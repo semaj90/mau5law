@@ -1,8 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { cn } from '$lib/utils';
-
   interface Props {
     value?: unknown;
     max?: unknown;
@@ -13,10 +11,8 @@
     max = 100,
     class: className = '';
   }: Props = $props();
-
   	let percentage = $derived(Math.min((value / max) * 100, 100));
 </script>
-
 <div
 	class={cn(
 		"relative h-2 w-full overflow-hidden rounded-full bg-secondary",

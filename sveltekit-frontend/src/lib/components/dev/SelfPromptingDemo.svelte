@@ -1,7 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import { onMount } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import {
@@ -12,14 +10,12 @@
     type OrchestrationOptions,
     type AgentResult
   } from '$lib/utils/mcp-helpers';
-
   // Agent orchestration state
   const activeAgents = writable<Set<string>(new Set());
   const agentResults = writable<AgentResult[]>([]);
   const orchestrationLog = writable<Array>([]);
   const isRunning = writable(false);
   const currentPhase = writable<string>('idle');
-
   // Workflow configuration
   let selectedWorkflow = $state('legal-evidence-analysis');
   let initialPrompt = $state('Analyze the evidence for case CASE-2024-001 and build a comprehensive legal argument');
@@ -27,26 +23,24 @@
   let enableMultiAgent = $state(true);
   let maxIterations = $state(3);
   let currentIteration = $state(0);
-
   // Progress tracking
   const progress = derived([currentPhase, isRunning], ([$phase, $running]) => {
     if (!$running) return 0;
     const phases = ['semantic-search', 'memory-analysis', 'agent-coordination', 'self-prompting', 'synthesis'];
     return ((phases.indexOf($phase) + 1) / phases.length) * 100;
   });
-
   // Available workflows
   const workflows = [
     {
       id: 'legal-evidence-analysis',
       name: 'Legal Evidence Analysis',
       description: 'Multi-agent analysis of evidence with case building and recommendation generation',
-      agents: ['autogen', 'crewai', 'claude'],;
+      agents: ['autogen', 'crewai', 'claude'],
       options: {
-        useSemanticSearch: true,
-        useMemory: true,
-        useMultiAgent: true,
-        useCodebase: true,
+        useSemanticSearch: true
+        useMemory: true
+        useMultiAgent: true
+        useCodebase: true
         synthesizeOutputs: true
       }
     },
@@ -54,29 +48,27 @@
       id: 'development-guidance',
       name: 'Development Guidance',
       description: 'Context7 MCP integration for stack analysis and best practices',
-      agents: ['context7', 'copilot', 'claude'],;
+      agents: ['context7', 'copilot', 'claude'],
       options: {
-        useSemanticSearch: true,
-        useCodebase: true,
+        useSemanticSearch: true
+        useCodebase: true
         synthesizeOutputs: true
       }
     },
     {
       id: 'self-improving-workflow',
       name: 'Self-Improving Workflow',
-      description: 'Agents analyze their own outputs and generate follow-up prompts',;
-      agents: ['autogen', 'crewai', 'vllm', 'claude'],;
+      description: 'Agents analyze their own outputs and generate follow-up prompts',
+      agents: ['autogen', 'crewai', 'vllm', 'claude'],
       options: {
-        useMultiAgent: true,
-        synthesizeOutputs: true,
+        useMultiAgent: true
+        synthesizeOutputs: true
         logErrors: true
       }
     }
   ];
-
   // Agent communication visualization
   const agentCommunications = writable<Array>([]);
-
   // Real-time agent status
   const agentStatus = writable<Record<string, {
     status: 'idle' | 'processing' | 'completed' | 'error';
@@ -84,26 +76,22 @@
     progress: number;
     lastUpdate: string;
   }>( );
-
   /**
    * Execute the self-prompting orchestration workflow
    */
   async function executeWorkflow() {
     if ($isRunning) return;
-
     isRunning.set(true);
     currentIteration = 0;
     agentResults.set([]);
     orchestrationLog.set([]);
     agentCommunications.set([]);
-
     const selectedWorkflowConfig = workflows.find(w => w.id === selectedWorkflow);
     if (!selectedWorkflowConfig) {
       console.error('Selected workflow not found');
       isRunning.set(false);
       return;
     }
-
     try {
       await runOrchestrationLoop(selectedWorkflowConfig, initialPrompt);
     } catch (error) {
@@ -114,91 +102,74 @@
       currentPhase.set('completed');
     }
   }
-
   /**
    * Main orchestration loop with self-prompting
    */
   async function runOrchestrationLoop(workflow: any, prompt: string) {
     let currentPrompt = prompt;
-
     for (let i = 0; i < maxIterations; i++) {
       currentIteration = i + 1;
       addLogEntry('iteration-start', '', `Starting iteration ${i + 1}/${maxIterations}`, );
-
       // Phase 1: Semantic Search and Memory Analysis
       currentPhase.set('semantic-search');
       const searchResults = await executeSemanticSearch(currentPrompt);
-
       // Phase 2: Memory Graph Reading
       currentPhase.set('memory-analysis');
       const memoryResults = await executeMemoryAnalysis(currentPrompt);
-
       // Phase 3: Multi-Agent Coordination
       currentPhase.set('agent-coordination');
       const orchestrationOptions: OrchestrationOptions = {
         ...workflow.options,
-        agents: workflow.agents,;
-        context: {;
+        agents: workflow.agents,
+        context: {
           iteration: i + 1,
           previousResults: i > 0 ? $agentResults : [],
           searchResults,
-          memoryResults;
+          memoryResult;
         }
       };
-
       const results = await copilotOrchestrator(currentPrompt, orchestrationOptions);
-
       // Update agent results store
       if (results.agentResults) {
         agentResults.update(prev => [...prev, ...results.agentResults]);
       }
-
       // Phase 4: Self-Prompting Generation
       currentPhase.set('self-prompting');
       if (enableSelfPrompting && results.selfPrompt) {
         const selfPromptResult = await generateSelfPrompt(results, workflow.agents);
-
         // Use the self-generated prompt for the next iteration
         if (selfPromptResult.nextPrompt && i < maxIterations - 1) {
           currentPrompt = selfPromptResult.nextPrompt;
           addLogEntry('self-prompt-generated', '', 'Generated new prompt for next iteration', {
-            nextPrompt: currentPrompt,
+            nextPrompt: currentPrompt
             reasoning: selfPromptResult.reasoning;
           });
         }
       }
-
       // Phase 5: Result Synthesis and Analysis
       currentPhase.set('synthesis');
       await synthesizeIterationResults(results, i + 1);
-
       // Break early if agents decide the task is complete
       if (await checkTaskCompletion(results)) {
         addLogEntry('task-completion', '', 'Agents determined task is complete', results);
         break;
       }
-
       // Simulate processing delay for demo
       await new Promise(resolve => setTimeout(resolve, 1000));
     }
-
     // Final synthesis
     await generateFinalReport();
   }
-
   /**
    * Execute semantic search with Context7 MCP integration
    */
   async function executeSemanticSearch(prompt: string) {
     addLogEntry('semantic-search', 'context7', `Executing semantic search for: ${prompt}`, );
-
     updateAgentStatus('context7', 'processing', 'Performing semantic search');
-
     // Simulate Context7 semantic search
     await new Promise(resolve => setTimeout(resolve, 800));
-
     const searchResults = {
-      query: prompt,;
+      query: prompt
       results: [
         {
           document: 'Legal Precedent DB',
@@ -207,30 +178,24 @@
           caseId: 'PRECEDENT-2023-045';
         },
         {
-          document: 'Prosecution Guidelines',;
-          relevance: 0.76,;
+          document: 'Prosecution Guidelines',
+          relevance: 0.76,
           snippet: 'Multi-agent coordination in evidence processing...',
           caseId: 'GUIDELINE-PROC-001';
         }
       ]
     };
-
     updateAgentStatus('context7', 'completed', 'Semantic search completed');
     addLogEntry('semantic-search', 'context7', 'Semantic search completed', searchResults);
-
-    return searchResults;
+    return searchResult;
   }
-
   /**
    * Execute memory graph analysis
    */
   async function executeMemoryAnalysis(prompt: string) {
     addLogEntry('memory-analysis', 'memory-server', `Reading memory graph for: ${prompt}`, );
-
     updateAgentStatus('memory-server', 'processing', 'Analyzing memory graph');
-
     await new Promise(resolve => setTimeout(resolve, 600));
-
     const memoryResults = {
       nodes: [
         {
@@ -245,35 +210,30 @@
           relations: ['physical-evidence', 'digital-evidence', 'testimonial-evidence'],
           strength: 0.85;
         }
-      ],;
+      ],
       insights: [
         'Strong evidence chain established for case CASE-2024-001',
         'Multiple precedent cases support prosecution strategy',
         'Key witness testimony patterns identified'
       ];
     };
-
     updateAgentStatus('memory-server', 'completed', 'Memory analysis completed');
     addLogEntry('memory-analysis', 'memory-server', 'Memory graph analysis completed', memoryResults);
-
-    return memoryResults;
+    return memoryResult;
   }
-
   /**
    * Generate self-prompting suggestions
    */
   async function generateSelfPrompt(results: any, agents: string[]) {
     addLogEntry('self-prompting', 'meta-agent', 'Analyzing results for self-prompting', );
-
     // Simulate meta-analysis by the orchestration system
     await new Promise(resolve => setTimeout(resolve, 500));
-
     const analysis = {
       strengths: [
         'Strong legal precedent identification',
         'Comprehensive evidence mapping',
         'Multi-agent coordination successful'
-      ],;
+      ],
       weaknesses: [
         'Need deeper witness testimony analysis',
         'Missing timeline correlation analysis',
@@ -281,29 +241,23 @@
       ],
       nextFocus: 'Investigate temporal relationships between evidence items and witness statements';
     };
-
     const nextPrompt = `Based on previous analysis, focus on: ${analysis.nextFocus}.
     Specifically examine witness testimony timing relative to evidence collection,
     and identify any inconsistencies or corroborating patterns that strengthen the case.`;
-
     const selfPromptResult = {
       analysis,
       nextPrompt,
-      reasoning: 'Previous iteration showed strong evidence foundation but lacked temporal analysis. Next iteration should focus on timeline correlation to strengthen legal argument.',;
+      reasoning: 'Previous iteration showed strong evidence foundation but lacked temporal analysis. Next iteration should focus on timeline correlation to strengthen legal argument.',
       confidence: 0.87;
     };
-
     addLogEntry('self-prompting', 'meta-agent', 'Self-prompt generated', selfPromptResult);
-
     return selfPromptResult;
   }
-
   /**
    * Synthesize results from each iteration
    */
   async function synthesizeIterationResults(results: any, iteration: number) {
     addLogEntry('synthesis', 'synthesizer', `Synthesizing iteration ${iteration} results`, );
-
     const synthesis = {
       iteration,
       keyFindings: [
@@ -313,17 +267,14 @@
       ],
       agentPerformance: workflow.agents.map(agent => ({
         agent,
-        performance: Math.random() * 0.3 + 0.7, // Simulate performance metric;
+        performance: Math.random() * 0.3 + 0.7, // Simulate performance metric
         contribution: `Agent ${agent} contributed specialized analysis`
       })),
       nextSteps: iteration < maxIterations ? ['Continue with refined focus', 'Apply self-prompting insights'] : ['Prepare final report']
     };
-
     addLogEntry('synthesis', 'synthesizer', 'Iteration synthesis completed', synthesis);
-
-    return synthesis;
+    return synthesi;
   }
-
   /**
    * Check if task is complete based on agent consensus
    */
@@ -331,27 +282,24 @@
     // Simple heuristic: if we have sufficient high-confidence results
     const agentConfidence = results.agentResults?.map((r: any) => r.confidence || 0.8) || [];
     const avgConfidence = agentConfidence.reduce((a: number, b: number) => a + b, 0) / agentConfidence.length;
-
     return avgConfidence > 0.85 && currentIteration >= 2;
   }
-
   /**
    * Generate final comprehensive report
    */
   async function generateFinalReport() {
     currentPhase.set('final-report');
     addLogEntry('final-report', 'orchestrator', 'Generating comprehensive final report', );
-
     const finalReport = {
       summary: 'Multi-agent legal evidence analysis completed successfully',
-      totalIterations: currentIteration,
+      totalIterations: currentIteration
       agentContributions: $agentResults.length,
       keyInsights: [
         'Evidence chain integrity verified through multi-agent analysis',
         'Legal precedents strongly support prosecution strategy',
         'Witness testimony patterns show high consistency',
         'Self-prompting improved analysis depth by 40%'
-      ],;
+      ],
       recommendations: [
         'Proceed with prosecution based on strong evidence foundation',
         'Focus on temporal evidence correlation in court presentation',
@@ -361,10 +309,8 @@
       confidenceScore: 0.91,
       generatedAt: new Date().toISOString();
     };
-
     addLogEntry('final-report', 'orchestrator', 'Final report generated', finalReport);
   }
-
   /**
    * Context7 MCP tool integration demonstration
    */
@@ -375,28 +321,23 @@
       commonMCPQueries.securityBestPractices(),
       commonMCPQueries.aiChatIntegration()
     ];
-
     for (const query of mcpQueries) {
       const prompt = generateMCPPrompt(query);
       addLogEntry('context7-demo', 'context7', `Executing: ${prompt}`, );
-
       // Simulate MCP tool execution
       await new Promise(resolve => setTimeout(resolve, 300));
-
       const mockResult = {
-        tool: query.tool,;
-        result: `Context7 analysis completed for ${query.component || query.area || query.feature}`,;
+        tool: query.tool,
+        result: `Context7 analysis completed for ${query.component || query.area || query.feature}`,
         recommendations: [
           'Follow SvelteKit best practices for legal applications',
           'Implement proper security measures for sensitive data',
           'Optimize performance for large document processing'
         ];
       };
-
       addLogEntry('context7-demo', 'context7', `Result: ${formatMCPResponse(mockResult)}`, mockResult);
     }
   }
-
   /**
    * Utility functions
    */
@@ -409,19 +350,16 @@
       selfPrompt: (result as { selfPrompt?: any; agent?: any; result?: any }).selfPrompt
     }]);
   }
-
   function updateAgentStatus(agent: string, status: 'idle' | 'processing' | 'completed' | 'error', task: string) {
     agentStatus.update.toISOString()
       }
     }));
   }
-
   function addAgentCommunication(from: string, to: string, message: string, type: 'prompt' | 'result' | 'self-prompt') {
     agentCommunications.update.toISOString(),
       type
     }]);
   }
-
   function clearLogs() {
     orchestrationLog.set([]);
     agentResults.set([]);
@@ -429,12 +367,10 @@
     agentStatus.set( );
     currentPhase.set('idle');
   }
-
   function stopWorkflow() {
     isRunning.set(false);
     currentPhase.set('stopped');
   }
-
   // Initialize demo data
   $effect(() => {
     // Add some demo agent status
@@ -445,7 +381,6 @@
     updateAgentStatus('context7', 'idle', 'MCP tools available');
   });
 </script>
-
 <div class="space-y-6 p-6 max-w-7xl mx-auto">
   <!-- Header -->
   <div class="border-b border-gray-200 pb-4">
@@ -455,7 +390,6 @@
       Context7 MCP integration, and legal AI workflow automation.
     </p>
   </div>
-
   <!-- Progress Indicator -->
   {#if $isRunning}
     <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -471,12 +405,10 @@
       </div>
     </div>
   {/if}
-
   <!-- Workflow Configuration -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <div class="bg-white border border-gray-200 rounded-lg p-6">
       <h3 class="text-lg font-semibold mb-4">Workflow Configuration</h3>
-
       <div class="space-y-4">
         <div>
           <label for="workflow" class="block text-sm font-medium mb-2">Select Workflow</label>
@@ -494,7 +426,6 @@
             {workflows.find(w => w.id === selectedWorkflow)?.description}
           </p>
         </div>
-
         <div>
           <label for="prompt" class="block text-sm font-medium mb-2">Initial Prompt</label>
           <textarea
@@ -506,7 +437,6 @@
             placeholder="Enter the initial task for the agent orchestration..."
           ></textarea>
         </div>
-
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="flex items-center">
@@ -531,7 +461,6 @@
             </label>
           </div>
         </div>
-
         <div>
           <label for="iterations" class="block text-sm font-medium mb-2">Max Iterations</label>
           <input
@@ -545,7 +474,6 @@
           />
         </div>
       </div>
-
       <div class="flex gap-3 mt-6">
         <button
           onclick={executeWorkflow}
@@ -561,7 +489,6 @@
             Execute Workflow
           {/if}
         </button>
-
         {#if $isRunning}
           <button
             onclick={stopWorkflow}
@@ -570,7 +497,6 @@
             Stop
           </button>
         {/if}
-
         <button
           onclick={clearLogs}
           disabled={$isRunning}
@@ -580,11 +506,9 @@
         </button>
       </div>
     </div>
-
     <!-- Agent Status Panel -->
     <div class="bg-white border border-gray-200 rounded-lg p-6">
       <h3 class="text-lg font-semibold mb-4">Agent Status</h3>
-
       <div class="space-y-3">
         {#each Object.entries($agentStatus) as [agent, status]}
           <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -607,7 +531,6 @@
           </div>
         {/each}
       </div>
-
       <div class="mt-4 pt-4 border-t border-gray-200">
         <button
           onclick={demonstrateContext7Integration}
@@ -619,11 +542,9 @@
       </div>
     </div>
   </div>
-
   <!-- Real-time Orchestration Log -->
   <div class="bg-white border border-gray-200 rounded-lg p-6">
     <h3 class="text-lg font-semibold mb-4">Real-time Orchestration Log</h3>
-
     <div class="max-h-96 overflow-y-auto space-y-3">
       {#each $orchestrationLog as entry}
         <div class="border-l-4 pl-4 py-2 {
@@ -649,7 +570,6 @@
           {/if}
         </div>
       {/each}
-
       {#if $orchestrationLog.length === 0}
         <div class="text-center text-gray-500 py-8">
           No orchestration activity yet. Click "Execute Workflow" to begin.
@@ -657,12 +577,10 @@
       {/if}
     </div>
   </div>
-
   <!-- Agent Communication Visualization -->
   {#if $agentCommunications.length > 0}
     <div class="bg-white border border-gray-200 rounded-lg p-6">
       <h3 class="text-lg font-semibold mb-4">Agent Communication Network</h3>
-
       <div class="space-y-2">
         {#each $agentCommunications as comm}
           <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
@@ -689,12 +607,10 @@
       </div>
     </div>
   {/if}
-
   <!-- Workflow Results Summary -->
   {#if $agentResults.length > 0}
     <div class="bg-white border border-gray-200 rounded-lg p-6">
       <h3 class="text-lg font-semibold mb-4">Agent Results Summary</h3>
-
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {#each $agentResults as result}
           <div class="border border-gray-200 rounded-lg p-4">
@@ -711,11 +627,9 @@
       </div>
     </div>
   {/if}
-
   <!-- Usage Guide -->
   <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
     <h3 class="text-lg font-semibold mb-4">Demo Features & Usage</h3>
-
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
         <h4 class="font-medium text-gray-900 mb-2">🤖 Agent Orchestration</h4>
@@ -726,7 +640,6 @@
           <li>• Context7 MCP tool integration</li>
         </ul>
       </div>
-
       <div>
         <h4 class="font-medium text-gray-900 mb-2">🔄 Self-Prompting Loops</h4>
         <ul class="text-sm text-gray-600 space-y-1">
@@ -737,7 +650,6 @@
           <li>• Dynamic prompt evolution</li>
         </ul>
       </div>
-
       <div>
         <h4 class="font-medium text-gray-900 mb-2">⚖️ Legal AI Workflows</h4>
         <ul class="text-sm text-gray-600 space-y-1">
@@ -748,7 +660,6 @@
           <li>• Automated recommendation generation</li>
         </ul>
       </div>
-
       <div>
         <h4 class="font-medium text-gray-900 mb-2">🔧 Context7 MCP Integration</h4>
         <ul class="text-sm text-gray-600 space-y-1">
@@ -760,7 +671,6 @@
         </ul>
       </div>
     </div>
-
     <div class="mt-6 p-4 bg-blue-50 rounded-md">
       <h4 class="font-medium text-blue-900 mb-2">🚀 Getting Started</h4>
       <ol class="list-decimal list-inside text-sm text-blue-800 space-y-1">
@@ -775,26 +685,20 @@
     </div>
   </div>
 </div>
-
 <style>
   /* Custom scrollbar for log panels */
-  .max-h-96::-webkit-scrollbar {;
+  .max-h-96::-webkit-scrollbar {
     width: 6px;
   }
-
   .max-h-96::-webkit-scrollbar-track {
     background: #f1f5f9;
     border-radius: 3px;
   }
-
   .max-h-96::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 3px;
   }
-
   .max-h-96::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
   }
 </style>
-
-

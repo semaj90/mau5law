@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-
   interface Props {
     open?: boolean;
     title?: string;
@@ -10,7 +9,6 @@
     onCancel?: () => void;
     children?: Snippet;
   }
-
   let {
     open = false,
     title = 'Confirm',
@@ -21,7 +19,6 @@
     children
   }: Props = $props();
 </script>
-
 {#if open}
   <dialog class="nes-dialog is-rounded" open>
     <form method="dialog">

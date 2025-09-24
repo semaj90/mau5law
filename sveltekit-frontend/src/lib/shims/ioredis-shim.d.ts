@@ -1,6 +1,5 @@
 // Minimal ioredis shim to declare commonly-used methods observed in the repo.
 // Keep types permissive (any) to reduce noise during the migration.
-
 declare module 'ioredis' {
   export class Redis {
     constructor(...args: any[]);

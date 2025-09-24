@@ -1,16 +1,14 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  interface Props {;
+  interface Props {
     data: PageData;
   }
   let {
     data
   }: Props = $props();
-
   	import AIFabButton from "$lib/components/AIFabButton.svelte";
   	import CanvasEditor from "$lib/components/CanvasEditor.svelte";
   	import FileUploadSection from "$lib/components/FileUploadSection.svelte";
@@ -21,7 +19,6 @@ https://svelte.dev/e/js_parse_error -->
   	import { loki } from "$lib/stores/lokiStore";
   	import { onDestroy, onMount } from 'svelte';
   	import type { PageData } from "./$types";
-
   	// Case ID - extract from data or generate
   	function resolveCaseId(d: unknown) {
   		return d?.reportData?.id
@@ -31,39 +28,31 @@ https://svelte.dev/e/js_parse_error -->
   			|| 'demo-case-' + Date.now();
   	}
   	let caseId = (data as any)?.reportData?.id || (data as any)?.reportId || 'demo-case-' + Date.now();
-
   	// Canvas state
   	let canvasElement: HTMLCanvasElement;
   	let canvasWidth = $state(0);
   	let canvasHeight = $state(0);
   	let isFullscreen = $state(false);
-
   	// Layout state
   	let mainContainer: HTMLElement;
   	let sidebarOpen = $state(false);
-
   	$effect(() => {
   		// Initialize canvas dimensions
   		updateCanvasDimensions();
   		window.addEventListener('resize', updateCanvasDimensions);
-
   		// Load cached data
   		loki.init();
-
   		// Subscribe to sidebar state
   		const unsubscribeSidebar = sidebarStore.subscribe(state => {
-  			sidebarOpen = state.open;
+  			sidebarOpen = state.ope;
   		});
-
   		return () => {
   			unsubscribeSidebar();
   		};
   	});
-
   	onDestroy(() => {
   		window.removeEventListener('resize', updateCanvasDimensions);
   	});
-
   	function updateCanvasDimensions() {
   		if (mainContainer) {
   			const rect = mainContainer.getBoundingClientRect();
@@ -71,18 +60,17 @@ https://svelte.dev/e/js_parse_error -->
   			canvasHeight = rect.height;
   }}
   	function toggleFullscreen() {
-  		isFullscreen = !isFullscreen;
+  		isFullscreen = !isFullscree;
   		updateCanvasDimensions();
   }
   	// Enhanced file upload state
   let uploadProgress = $state( );
   let uploadingFiles = $state( );
   let completedUploads = $state( );
-
   	// Handle file drops with hash calculation
   	async function handleFileDrop(event: DragEvent) {
   		event.preventDefault();
-  		const files = event.dataTransfer?.files;
+  		const files = event.dataTransfer?.file;
   		if (files && files.length > 0) {
   			await processFileUploads(Array.from(files));
   }}
@@ -94,39 +82,33 @@ https://svelte.dev/e/js_parse_error -->
   		for (const file of files) {
   			const fileId = crypto.randomUUID();
   			uploadingFiles[fileId] = {
-  				name: file.name,;
-  				size: file.size;
+  				name: file.name,
+  				size: file.siz;
   			};
   			uploadProgress[fileId] = 0;
-
   			try {
   				// Calculate hash while uploading
   				const hash = await calculateFileHash(file, (progress) => {
   					uploadProgress[fileId] = progress * 0.3; // Hash calculation is 30% of progress
   				});
-
   				uploadingFiles[fileId].hash = hash;
   				uploadProgress[fileId] = 30;
-
   				// Upload file with hash
   				const result = await uploadFileWithHash(file, hash, (progress) => {
   					uploadProgress[fileId] = 30 + (progress * 0.7); // Upload is 70% of progress
   				});
-
   				// Mark as completed
   				completedUploads[fileId] = {
-  					name: file.name,;
-  					hash: hash,;
+  					name: file.name,
+  					hash: hash
   					id: (result as { id?: unknown; uploaded?: unknown }).id
   				};
   				uploadProgress[fileId] = 100;
-
   				// Remove from uploading after delay
   				setTimeout(() => {
   					delete uploadingFiles[fileId];
   					delete uploadProgress[fileId];
   				}, 3000);
-
   			} catch (error) {
   				console.error('Upload failed:', error);
   				// Handle error state
@@ -154,7 +136,6 @@ https://svelte.dev/e/js_parse_error -->
   		formData.append('files', file);
   		formData.append('caseId', caseId);
   		formData.append('hash', hash);
-
   		// Simulate upload progress
   		if (onProgress) {
   			for (let i = 0; i <= 100; i += 5) {
@@ -162,10 +143,9 @@ https://svelte.dev/e/js_parse_error -->
   				onProgress(i / 100);
   }}
   		const response = await fetch('/api/evidence/upload', {
-  			method: 'POST',;
+  			method: 'POST',
   			body: formData;
   		});
-
   		if (!(response as { ok?: unknown; json?: unknown }).ok) {
   			throw new Error('Upload failed');
   }
@@ -173,34 +153,28 @@ https://svelte.dev/e/js_parse_error -->
   		return { id: (result as { id?: unknown; uploaded?: unknown }).uploaded?.[0]?.id || crypto.randomUUID() };
   }
 </script>
-
 <svelte:head>
 	<title>Interactive Canvas - Prosecutor Case Management</title>
 </svelte:head>
-
 <div class="space-y-4" class:fullscreen={isFullscreen}>
 	<!-- Header -->
 	<NierHeader />
-
 	<!-- Main Content Area -->
 	<div class="space-y-4" bind:this={mainContainer}>
 		<!-- Sidebar -->
 		<Sidebar />
-
 		<!-- Canvas Container -->
 		<div
 			class="space-y-4"
 		 class:sidebar-open={sidebarOpen}
 			ondrop={handleFileDrop}
 		 role="button" aria-label="Drop zone" ondragover={handleDragOver}
-		
 			aria-label="Interactive canvas workspace"
 		>
 			<!-- Toolbar -->
 			<div class="space-y-4">
 				<Toolbar />
 			</div>
-
 			<!-- Canvas Editor -->
 			<div class="space-y-4">
 				<CanvasEditor
@@ -211,11 +185,9 @@ https://svelte.dev/e/js_parse_error -->
 					canvasState={data?.canvasState as any}
 				/>
 			</div>
-
 			<!-- File Upload Zone with Progress -->
 			<div class="space-y-4">
 				<FileUploadSection />
-
 				<!-- Upload Progress Indicators -->
 				{#if Object.keys(errors).length > 0}
 					<div class="space-y-4">
@@ -250,7 +222,6 @@ https://svelte.dev/e/js_parse_error -->
 						{/each}
 					</div>
 				{/if}
-
 				<!-- Completed Uploads -->
 				{#if Object.keys(errors).length > 0}
 					<div class="space-y-4">
@@ -275,14 +246,12 @@ https://svelte.dev/e/js_parse_error -->
 			</div>
 		</div>
 	</div>
-
 	<!-- AI Floating Action Button -->
 	<AIFabButton />
 </div>
-
 <style>
   /* @unocss-include */
-	.canvas-layout {;
+	.canvas-layout {
 		display: flex;
 		flex-direction: column;
 		height: 100vh;
@@ -354,7 +323,7 @@ https://svelte.dev/e/js_parse_error -->
 }
 	.upload-info {
 		display: flex;
-		justify-content: space-between;
+		justify-content: space-betwee;
 		align-items: center;
 		margin-bottom: 6px;
 }
@@ -460,4 +429,3 @@ https://svelte.dev/e/js_parse_error -->
 			margin-left: 0;
 }}
 </style>
-

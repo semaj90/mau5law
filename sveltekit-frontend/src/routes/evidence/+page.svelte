@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { browser } from "$app/environment";
   import { page } from "$app/stores";
   import EvidenceUploadModal from "$lib/components/modals/EvidenceUploadModal.svelte";
@@ -28,7 +27,6 @@ https://svelte.dev/e/js_parse_error -->
   import { notifications } from "$lib/stores/notification";
   import { ThinkingProcessor } from "$lib/ai/thinking-processor";
   import { logSecurityEvent } from "$lib/utils/security";
-
   // Feedback Integration
   import FeedbackIntegration from '$lib/components/feedback/FeedbackIntegration.svelte';
   import {
@@ -67,22 +65,20 @@ https://svelte.dev/e/js_parse_error -->
     Zap,
   } from "lucide-svelte";
   import { onMount } from "svelte";
-
   import type { PageData } from "./$types";
   // ... other imports ...
-  let { data }: { data: unknown } = $props(); // PageData;
-
+  let { data }: { data: unknown } = $props(); // PageData
   // State management
   let validationModal = $state({
-    open: false,;
-    evidence: null as Evidence | null,
-    aiEvent: null as any,;
+    open: false
+    evidence: null as Evidence | null
+    aiEvent: null as any
   });
   let analysisModal = $state({
-    open: false,
-    evidence: null as Evidence | null,;
-    result: null as any,;
-    loading: false;
+    open: false
+    evidence: null as Evidence | null
+    result: null as any
+    loading: false
   });
   let searchQuery = $state("");
   let showFilters = $state(false);
@@ -90,17 +86,14 @@ https://svelte.dev/e/js_parse_error -->
   let viewMode = $state<"grid" | "list" >("grid");
   let sortBy = $state("createdAt");
   let sortOrder = $state<"asc" | "desc" >("desc");
-
   // Enhanced AI analysis state
   let thinkingStyleEnabled = $state(false);
   let bulkAnalysisMode = $state(false);
   let analysisInProgress = new Set<string>();
-
   // Feedback integration references
   let evidencePageFeedback = $state<any>(null);
   let evidenceSearchFeedback: unknown;
   let evidenceUploadFeedback: unknown;
-
   // Filtering and selection
   let selectedEvidence = $state<Set<string>('')>(new Set());
   let selectedType = $state("");
@@ -109,18 +102,14 @@ https://svelte.dev/e/js_parse_error -->
   let dateFrom = $state("");
   let dateTo = $state("");
   let showAdvancedUpload = $state(false);
-
   // Pagination
   let currentPage = $state(1);
   let itemsPerPage = $state(12);
   let totalPages = $state(1);
-
   // Bulk operations
   let bulkOperationLoading = $state(false);
-
   // Get case ID from URL if available
   let caseId = $derived($page.url.searchParams.get("caseId") || undefined);
-
   // Reactive values from SSR data and store
   let ({ isLoading: loading, error } = $derived($evidenceGrid));
   let allEvidence = $derived((data as { evidence?: unknown }).evidence || []);
@@ -134,10 +123,8 @@ https://svelte.dev/e/js_parse_error -->
       evidenceActions.loadEvidence(caseId);
     }
   });
-
   function filterAndSortEvidence(evidence: Evidence[]) {
   let filtered = [...evidence];
-
     // Apply search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
@@ -149,12 +136,10 @@ https://svelte.dev/e/js_parse_error -->
           e.tags?.some((tag) => tag.toLowerCase().includes(query))
       );
     }
-
     // Apply type filter
     if (selectedType) {
       filtered = filtered.filter((e) => e.evidenceType === selectedType);
     }
-
     // Apply status filter - using isAdmissible as a simple status indicator
     if (selectedStatus) {
       if (selectedStatus === "admissible") {
@@ -163,14 +148,12 @@ https://svelte.dev/e/js_parse_error -->
         filtered = filtered.filter((e) => !e.isAdmissible);
       }
     }
-
     // Apply collector filter
     if (selectedCollector) {
       filtered = filtered.filter((e) =>
         e.collectedBy?.toLowerCase().includes(selectedCollector.toLowerCase())
       );
     }
-
     // Apply date filters
     if (dateFrom) {
       const fromDate = new Date(dateFrom);
@@ -178,18 +161,15 @@ https://svelte.dev/e/js_parse_error -->
         (e) => new Date(e.uploadedAt || 0) >= fromDate
       );
     }
-
     if (dateTo) {
       const toDate = new Date(dateTo);
       toDate.setHours(23, 59, 59, 999); // End of day
       filtered = filtered.filter((e) => new Date(e.uploadedAt || 0) <= toDate);
     }
-
     // Apply sorting
     filtered.sort((a, b) => {
       let aValue = a[sortBy as keyof Evidence];
       let bValue = b[sortBy as keyof Evidence];
-
       if (sortBy === "createdAt" || sortBy === "updatedAt") {
         aValue = new Date(aValue || 0).getTime();
         bValue = new Date(bValue || 0).getTime();
@@ -197,87 +177,74 @@ https://svelte.dev/e/js_parse_error -->
         aValue = aValue.toLowerCase();
         bValue = (bValue as string)?.toLowerCase();
       }
-
       if (sortOrder === "asc") {
         return aValue > bValue ? 1 : -1;
       } else {
         return aValue < bValue ? 1 : -1;
       }
     });
-
     totalPages = Math.ceil(filtered.length / itemsPerPage);
     currentPage = Math.min(currentPage, totalPages || 1);
-
     return filtered;
   }
-
   function getPaginatedEvidence() {
-    const start = (currentPage - 1) * itemsPerPage;
-    const end = start + itemsPerPage;
+    const start = (currentPage - 1) * itemsPerPag;
+    const end = start + itemsPerPag;
     return filteredEvidence.slice(start, end);
   }
-
   // Enhanced AI Analysis Functions
   async function analyzeEvidence(evidence: Evidence) {
     if (analysisInProgress.has(evidence.id)) return;
-
     analysisInProgress.add(evidence.id);
-    analysisInProgress = analysisInProgress;
-
+    analysisInProgress = analysisInProgres;
     try {
       const analysis = await ThinkingProcessor.analyzeEvidence(evidence.id, {
         analysisType: 'reasoning',
-        useThinkingStyle: thinkingStyleEnabled,
+        useThinkingStyle: thinkingStyleEnabled
         documentType: 'evidence'
       });
-
       analysisModal = {
-        open: true,
-        evidence,;
-        result: analysis,;
+        open: true
+        evidence,
+        result: analysis
         loading: false;
       };
-
       notifications.add({
-        type: "success",;
-        title: `Evidence Analysis Complete`,;
+        type: "success",
+        title: `Evidence Analysis Complete`,
         message: `${thinkingStyleEnabled ? 'Detailed thinking' : 'Quick'} analysis completed for ${evidence.title}`,
       });
-
     } catch (error) {
       console.error('Evidence analysis failed:', error);
       notifications.add({
-        type: "error",;
-        title: "Analysis Failed",;
+        type: "error",
+        title: "Analysis Failed",
         message: `Failed to analyze evidence: ${error instanceof Error ? error.message: 'Unknown error'}`,
       });
     } finally {
       analysisInProgress.delete(evidence.id);
-      analysisInProgress = analysisInProgress;
+      analysisInProgress = analysisInProgres;
     }
   }
-
   async function bulkAnalyzeEvidence() {
     if (selectedEvidence.size === 0) {
       notifications.add({
-        type: "warning",;
-        title: "No Evidence Selected",;
-        message: "Please select evidence items to analyze.",;
+        type: "warning",
+        title: "No Evidence Selected",
+        message: "Please select evidence items to analyze.",
       });
       return;
     }
-
     bulkOperationLoading = true;
     const evidenceIds = Array.from(selectedEvidence);
   let successCount = 0;
   let failureCount = 0;
-
     try {
       for (const evidenceId of evidenceIds) {
         try {
           await ThinkingProcessor.analyzeEvidence(evidenceId, {
             analysisType: 'classification',
-            useThinkingStyle: thinkingStyleEnabled,
+            useThinkingStyle: thinkingStyleEnabled
             documentType: 'evidence'
           });
           successCount++;
@@ -286,17 +253,14 @@ https://svelte.dev/e/js_parse_error -->
           failureCount++;
         }
       }
-
       notifications.add({
-        type: successCount > 0 ? "success" : "error",;
-        title: "Bulk Analysis Complete",;
+        type: successCount > 0 ? "success" : "error",
+        title: "Bulk Analysis Complete",
         message: `${successCount} evidence items analyzed successfully${failureCount > 0 ? `, ${failureCount} failed` : ''}.`,
       });
-
       if (successCount > 0) {
         await refreshEvidence();
       }
-
     } finally {
       bulkOperationLoading = false;
       selectedEvidence.clear();
@@ -304,54 +268,45 @@ https://svelte.dev/e/js_parse_error -->
       showBulkActions = false;
     }
   }
-
   function handleThinkingToggle(event: CustomEvent) {
     thinkingStyleEnabled = event.detail.enabled;
-
     notifications.add({
-      type: "info",;
-      title: "Analysis Mode Changed",;
+      type: "info",
+      title: "Analysis Mode Changed",
       message: thinkingStyleEnabled
         ? "🧠 Thinking Style enabled - detailed reasoning will be shown"
-        : "⚡ Quick Mode enabled - concise analysis results",;
+        : "⚡ Quick Mode enabled - concise analysis results",
     });
   }
-
   function closeAnalysisModal() {
     analysisModal = {
-      open: false,
-      evidence: null,;
-      result: null,;
+      open: false
+      evidence: null
+      result: null
       loading: false;
     };
   }
-
   function formatAnalysisForDisplay(analysis: unknown): string {
     if (!analysis) return "No analysis available";
   let display = "";
-
     if (analysis.thinking && thinkingStyleEnabled) {
       display += `**🧠 AI Reasoning Process:**\n${analysis.thinking}\n\n---\n\n`;
     }
-
     if (analysis.analysis) {
       display += `**📋 Analysis Results:**\n`;
-      const analysisData = analysis.analysis;
-
+      const analysisData = analysis.analysi;
       if (analysisData.key_findings) {
         display += `\n**Key Findings:**\n`;
         analysisData.key_findings.forEach((finding: string) => {
           display += `• ${finding}\n`;
         });
       }
-
       if (analysisData.legal_implications) {
         display += `\n**Legal Implications:**\n`;
         analysisData.legal_implications.forEach((implication: string) => {
           display += `• ${implication}\n`;
         });
       }
-
       if (analysisData.recommendations) {
         display += `\n**Recommendations:**\n`;
         analysisData.recommendations.forEach((rec: string) => {
@@ -359,12 +314,9 @@ https://svelte.dev/e/js_parse_error -->
         });
       }
     }
-
     display += `\n**Confidence:** ${Math.round(analysis.confidence * 100)}%`;
-
     return display;
   }
-
   function toggleEvidenceSelection(evidenceId: string) {
     if (selectedEvidence.has(evidenceId)) {
       selectedEvidence.delete(evidenceId);
@@ -374,7 +326,6 @@ https://svelte.dev/e/js_parse_error -->
     selectedEvidence = selectedEvidence;
     showBulkActions = selectedEvidence.size > 0;
   }
-
   function selectAllEvidence() {
     if (selectedEvidence.size === visibleEvidence.length) {
       selectedEvidence.clear();
@@ -384,14 +335,11 @@ https://svelte.dev/e/js_parse_error -->
     selectedEvidence = selectedEvidence;
     showBulkActions = selectedEvidence.size > 0;
   }
-
   async function bulkOperation(operation: string) {
     if (selectedEvidence.size === 0) return;
-
     bulkOperationLoading = true;
     try {
       const evidenceIds = Array.from(selectedEvidence);
-
       switch (operation) {
         case "analyze":
           await bulkAnalyzeEvidence();
@@ -401,8 +349,8 @@ https://svelte.dev/e/js_parse_error -->
             evidenceIds.map((id) => updateEvidenceStatus(id, "Archived"))
           );
           notifications.add({
-            type: "success",;
-            title: "Evidence Archived",;
+            type: "success",
+            title: "Evidence Archived",
             message: `${evidenceIds.length} evidence items archived successfully.`,
           });
           break;
@@ -411,29 +359,28 @@ https://svelte.dev/e/js_parse_error -->
             evidenceIds.map((id) => updateEvidenceStatus(id, "Verified"))
           );
           notifications.add({
-            type: "success",;
-            title: "Evidence Verified",;
+            type: "success",
+            title: "Evidence Verified",
             message: `${evidenceIds.length} evidence items verified successfully.`,
           });
           break;
         case "export":
           await exportEvidence(evidenceIds);
           notifications.add({
-            type: "success",;
-            title: "Evidence Exported",;
+            type: "success",
+            title: "Evidence Exported",
             message: `${evidenceIds.length} evidence items exported successfully.`,
           });
           break;
         case "delete":
           await deleteEvidence(evidenceIds);
           notifications.add({
-            type: "success",;
-            title: "Evidence Deleted",;
+            type: "success",
+            title: "Evidence Deleted",
             message: `${evidenceIds.length} evidence items deleted successfully.`,
           });
           break;
       }
-
       selectedEvidence.clear();
       selectedEvidence = selectedEvidence;
       showBulkActions = false;
@@ -442,27 +389,24 @@ https://svelte.dev/e/js_parse_error -->
       console.error("Bulk operation failed:", err);
       notifications.add({
         type: "error",
-        title: "Bulk Operation Failed",;
-        message: "Failed to perform bulk operation. Please try again.",;
-        duration: 5000,;
+        title: "Bulk Operation Failed",
+        message: "Failed to perform bulk operation. Please try again.",
+        duration: 5000,
       });
     } finally {
       bulkOperationLoading = false;
     }
   }
-
   async function updateEvidenceStatus(evidenceId: string, status: string) {
     // Implementation would call API
     console.log("Updating evidence status:", evidenceId, status);
   }
-
   async function exportEvidence(evidenceIds: string[]) {
     const evidenceToExport = allEvidence.filter((e) =>
       evidenceIds.includes(e.id)
     );
     const dataStr = JSON.stringify(evidenceToExport, null, 2);
     const dataBlob = new Blob([dataStr], { type: "application/json" });
-
     if (browser) {
       const url = URL.createObjectURL(dataBlob);
       const link = document.createElement("a");
@@ -471,49 +415,41 @@ https://svelte.dev/e/js_parse_error -->
       link.click();
       URL.revokeObjectURL(url);
     }
-
     // Log security event
     logSecurityEvent({
-      type: "data_export",;
-      details: { evidenceIds, exportType: "bulk" },;
-      severity: "medium",;
+      type: "data_export",
+      details: { evidenceIds, exportType: "bulk" },
+      severity: "medium",
     });
   }
-
   async function deleteEvidence(evidenceIds: string[]) {
     // Implementation would call API
     console.log("Deleting evidence:", evidenceIds);
   }
-
   async function refreshEvidence() {
     if (caseId) {
       await evidenceActions.loadEvidence(caseId);
     }
   }
-
   function openUploadModal() {
     uploadActions.openModal(caseId);
   }
-
   function handleEvidenceValidation(event: CustomEvent) {
     const { evidence, aiEvent } = event.detail;
     validationModal = {
-      open: true,
+      open: true
       evidence,
-      aiEvent: aiEvent || null,;
+      aiEvent: aiEvent || null
     };
   }
-
   function handleValidationComplete(event: CustomEvent) {
     validationModal.open = false;
     // Refresh evidence grid to show updated analysis
     refreshEvidence();
   }
-
   function handleAdvancedUpload() {
     showAdvancedUpload = true;
   }
-
   function handleFileUpload(event: CustomEvent) {
     const { files } = event.detail;
     // Process uploaded files
@@ -521,14 +457,12 @@ https://svelte.dev/e/js_parse_error -->
     showAdvancedUpload = false;
     refreshEvidence();
   }
-
   // Handle unified search results from multi-source search
   function handleUnifiedSearch(searchResults: unknown[]) {
     console.log('🔍 Unified search results received:', searchResults.length, 'items');
-
     // Convert search results to evidence format for display
-    const convertedEvidence = searchResults.map((result: any) => ({
-      id: result.id,;
+    const convertedEvidence = searchResults.map((result: any) => ({,
+      id: result.id,
       title: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).title,
       description: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).content.substring(0, 200) + '...',
       evidenceType: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata.documentType || 'document',
@@ -536,7 +470,7 @@ https://svelte.dev/e/js_parse_error -->
       collectedBy: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata.source,
       uploadedAt: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata.uploadDate || new Date().toISOString(),
       fileSize: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata.fileSize || 0,
-      hash: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata.filePath ? 'verified' : null,
+      hash: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata.filePath ? 'verified' : null
       tags: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata.entities || [],
       aiAnalysis: {
         confidence: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).confidence,
@@ -551,26 +485,25 @@ https://svelte.dev/e/js_parse_error -->
       evidenceActions.setSearchResults(convertedEvidence);
       notifications.add({
         type: "success",
-        title: "Multi-Source Search Complete",;
-        message: `Found ${searchResults.length} results across PostgreSQL, Qdrant, MinIO, and Loki`,;
+        title: "Multi-Source Search Complete",
+        message: `Found ${searchResults.length} results across PostgreSQL, Qdrant, MinIO, and Loki`,
         duration: 3000;
       });
     } else {
       notifications.add({
         type: "info",
-        title: "No Results Found",;
-        message: "Try adjusting your search terms or filters",;
+        title: "No Results Found",
+        message: "Try adjusting your search terms or filters",
         duration: 3000;
       });
     }
   }
-
   function getEvidenceTypeIcon(type: string) {
     switch (type?.toLowerCase()) {
       case "document":
         return FileText;
       case "image":
-        return Image;
+        return Imag;
       case "video":
         return Video;
       case "audio":
@@ -579,7 +512,6 @@ https://svelte.dev/e/js_parse_error -->
         return FileCheck;
     }
   }
-
   function getEvidenceStatusColor(status: string) {
     switch (status?.toLowerCase()) {
       case "pending":
@@ -594,22 +526,20 @@ https://svelte.dev/e/js_parse_error -->
         return "badge-ghost";
     }
   }
-
   function getEvidenceStatusIcon(status: string) {
     switch (status?.toLowerCase()) {
       case "pending":
         return Clock;
       case "verified":
-        return CheckCircle;
+        return CheckCircl;
       case "archived":
-        return Archive;
+        return Archiv;
       case "flagged":
-        return AlertTriangle;
+        return AlertTriangl;
       default:
         return FileCheck;
     }
   }
-
   // Reactive statements
   // TODO: Convert to $derived
   $effect(() => { if (
@@ -625,7 +555,6 @@ https://svelte.dev/e/js_parse_error -->
     filteredEvidence = filterAndSortEvidence(allEvidence)
   }
 </script>
-
 <svelte:head>
   <title>Evidence Management - WardenNet Detective Mode</title>
   <meta
@@ -633,7 +562,6 @@ https://svelte.dev/e/js_parse_error -->
     content="Advanced evidence management with secure file handling, chain of custody, and AI-powered analysis"
   />
 </svelte:head>
-
 <div class="container-nes-main">
   <!-- Header Section -->
   <div class="container-nes-panel mb-6">
@@ -653,7 +581,6 @@ https://svelte.dev/e/js_parse_error -->
           <span class="badge ml-2">({filteredEvidence.length} of {allEvidence.length} items)</span>
         </p>
       </div>
-
       <!-- Enhanced Action Buttons with AI Analysis -->
       <div class="flex flex-wrap gap-2 items-center">
         <!-- AI Analysis Toggle -->
@@ -665,7 +592,6 @@ https://svelte.dev/e/js_parse_error -->
             ontoggle={handleThinkingToggle}
           />
         </div>
-
         <Tooltip content="Refresh evidence list">
           <Button class="bits-btn"
             variant="ghost"
@@ -680,7 +606,6 @@ refreshEvidence()}
             </span>
 </Button>
         </Tooltip>
-
         <Tooltip content="Toggle filters">
           <Button class="bits-btn"
             variant="ghost"
@@ -695,7 +620,6 @@ refreshEvidence()}
             Filters
 </Button>
         </Tooltip>
-
         <Tooltip content="Toggle view mode">
           <Button class="bits-btn"
             variant="ghost"
@@ -712,7 +636,6 @@ refreshEvidence()}
             {/if}
 </Button>
         </Tooltip>
-
         <Tooltip content="Advanced file upload">
           <Button class="bits-btn"
             variant="ghost"
@@ -725,7 +648,6 @@ handleAdvancedUpload()}
             Advanced Upload
 </Button>
         </Tooltip>
-
         <Tooltip content="Standard evidence upload">
           <Button class="bits-btn"
             variant="evidence"
@@ -739,7 +661,6 @@ openUploadModal()}
       </div>
     </div>
   </div>
-
   <!-- Enhanced Unified Search with Multi-Source Integration -->
   <div class="container-nes-panel mb-6">
     <UnifiedSearchBar
@@ -748,11 +669,10 @@ openUploadModal()}
       onSearch={handleUnifiedSearch}
       className="w-full"
     />
-
     <!-- Advanced Sorting Controls -->
     <div class="flex items-center justify-between mt-4">
       <div class="flex items-center gap-4">
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="sort-by">Sort by:</label><select id="sort-by";
+        <label class="text-sm font-medium text-gray-700 dark: text-gray-300" for="sort-by">Sort by:</label><select id="sort-by";
           bind:value={sortBy}
           class="nes-select"
           aria-label="Sort by field"
@@ -764,7 +684,6 @@ openUploadModal()}
           <option value="status">Status</option>
           <option value="collectedBy">Collector</option>
         </select>
-
         <Button class="bits-btn"
           variant="ghost"
           size="sm"
@@ -780,7 +699,6 @@ openUploadModal()}
           {/if}
 </Button>
       </div>
-
       <div class="flex items-center gap-2">
         <span class="text-sm text-gray-600 dark:text-gray-400">
           Unified Search: PostgreSQL + Qdrant + MinIO + Loki
@@ -789,7 +707,6 @@ openUploadModal()}
       </div>
     </div>
   </div>
-
   <!-- Enhanced Bulk Actions with AI Analysis -->
   {#if showBulkActions}
     <div class="mx-auto px-4 max-w-7xl">
@@ -802,7 +719,6 @@ openUploadModal()}
             >{selectedEvidence.size} evidence item(s) selected</span
           >
         </div>
-
         <div class="mx-auto px-4 max-w-7xl">
           <Button class="bits-btn"
             variant="ghost"
@@ -820,7 +736,6 @@ bulkOperation("analyze")}
               Quick Analyze
             {/if}
 </Button>
-
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
@@ -832,7 +747,6 @@ bulkOperation("verify")}
             <CheckCircle class="mx-auto px-4 max-w-7xl" />
             Verify
 </Button>
-
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
@@ -844,7 +758,6 @@ bulkOperation("archive")}
             <Archive class="mx-auto px-4 max-w-7xl" />
             Archive
 </Button>
-
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
@@ -856,7 +769,6 @@ bulkOperation("export")}
             <Download class="mx-auto px-4 max-w-7xl" />
             Export
 </Button>
-
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
@@ -868,7 +780,6 @@ bulkOperation("delete")}
             <Trash2 class="mx-auto px-4 max-w-7xl" />
             Delete
 </Button>
-
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
@@ -886,7 +797,6 @@ bulkOperation("delete")}
       </div>
     </div>
   {/if}
-
   <!-- Evidence List/Grid -->
   {#if loading}
     <div class="mx-auto px-4 max-w-7xl">
@@ -958,7 +868,6 @@ handleAdvancedUpload()}
             filteredEvidence.length
           )} of {filteredEvidence.length} evidence items
         </span>
-
         {#if visibleEvidence.length > 0}
           <Button class="bits-btn"
             variant="ghost"
@@ -978,7 +887,6 @@ selectAllEvidence()}
         {/if}
       </div>
     </div>
-
     <!-- Enhanced Evidence Grid/List View with AI Analysis -->
     <div class="space-y-6">
       {#if viewMode === "grid"}
@@ -999,7 +907,6 @@ selectAllEvidence()}
                   onchange={() => toggleEvidenceSelection(evidence.id)}
                   aria-label="Select evidence {evidence.title || 'Untitled Evidence'}"
                 />
-
                 <div class="dropdown dropdown-end">
                   <Tooltip content="Evidence actions">
                     <Button variant="ghost" size="sm" class="yorha-3d-button bits-btn bits-btn">
@@ -1008,7 +915,6 @@ selectAllEvidence()}
                   </Tooltip>
                 </div>
               </div>
-
               <!-- Evidence Content -->
               <div class="space-y-4">
                 <!-- Header with Icon -->
@@ -1021,7 +927,6 @@ selectAllEvidence()}
                     </h2>
                   </div>
                 </div>
-
                 <!-- Status Badges -->
                 <div class="flex flex-wrap gap-2">
                   <span class="badge bg-blue-100 text-blue-800">
@@ -1043,7 +948,6 @@ selectAllEvidence()}
                     </span>
                   {/if}
                 </div>
-
                 <!-- Description -->
                 <p class="text-gray-600 dark:text-gray-300 text-sm line-clamp-3">
                   {evidence.description
@@ -1051,7 +955,6 @@ selectAllEvidence()}
                       ? evidence.description.substring(0, 120) + "..."
                       : evidence.description: "No description available"}
                 </p>
-
                 <!-- Metadata -->
                 <div class="grid grid-cols-1 gap-2 text-xs text-gray-500">
                   <div class="flex items-center gap-1">
@@ -1074,7 +977,6 @@ selectAllEvidence()}
                   {/if}
                 </div>
               </div>
-
               <!-- Enhanced Actions with AI Analysis -->
               <div class="flex gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <Button class="bits-btn"
@@ -1096,7 +998,6 @@ analyzeEvidence(evidence)}
                     Analyze
                   {/if}
 </Button>
-
                 <a href="/evidence/{evidence.id}">
                   <Button size="sm" variant="evidence" class="flex-1 bits-btn bits-btn">
 <Eye class="w-3 h-3 mr-1" />
@@ -1123,10 +1024,8 @@ analyzeEvidence(evidence)}
                   aria-label="Select evidence {evidence.title ||
                     'Untitled Evidence'}"
                 />
-
                 {@const EvidenceIconList = getEvidenceTypeIcon(evidence.evidenceType)}
                 <EvidenceIconList class="w-4 h-4 nes-text is-disabled" />
-
                 <div class="mx-auto px-4 max-w-7xl">
                   <div class="mx-auto px-4 max-w-7xl">
                     <div class="mx-auto px-4 max-w-7xl">
@@ -1137,7 +1036,6 @@ analyzeEvidence(evidence)}
                         {evidence.description || "No description available"}
                       </p>
                     </div>
-
                     <div class="mx-auto px-4 max-w-7xl">
                       <div class="mx-auto px-4 max-w-7xl">
                         {evidence.evidenceType || "Unknown"}
@@ -1161,7 +1059,6 @@ analyzeEvidence(evidence)}
                       {/if}
                     </div>
                   </div>
-
                   <div
                     class="mx-auto px-4 max-w-7xl"
                   >
@@ -1185,7 +1082,6 @@ analyzeEvidence(evidence)}
                     {/if}
                   </div>
                 </div>
-
                 <div class="mx-auto px-4 max-w-7xl">
                   <Button class="bits-btn"
                     size="sm"
@@ -1206,14 +1102,12 @@ analyzeEvidence(evidence)}
                       Analyze
                     {/if}
 </Button>
-
                   <a href="/evidence/{evidence.id}" class="mx-auto px-4 max-w-7xl">
                     <Button class="bits-btn" size="sm" variant="ghost">
 <Eye class="mx-auto px-4 max-w-7xl" />
                       View
 </Button>
                   </a>
-
                   <div class="mx-auto px-4 max-w-7xl">
                     <Tooltip content="More actions">
                       <Button class="bits-btn"
@@ -1259,7 +1153,6 @@ analyzeEvidence(evidence)}
         </div>
       {/if}
     </div>
-
     <!-- Pagination -->
     {#if totalPages > 1}
       <div class="mx-auto px-4 max-w-7xl">
@@ -1275,7 +1168,6 @@ analyzeEvidence(evidence)}
           >
             Previous
 </Button>
-
           {#each Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
             const start = Math.max(1, currentPage - 2);
             return start + i;
@@ -1292,7 +1184,6 @@ analyzeEvidence(evidence)}
               {page}
 </Button>
           {/each}
-
           <Button
             variant="ghost"
             size="sm"
@@ -1308,17 +1199,14 @@ analyzeEvidence(evidence)}
       </div>
     {/if}
 </div>
-
 <!-- Modals -->
 <EvidenceUploadModal />
-
 <EvidenceValidationModal
   bind:open={validationModal.open}
   evidence={validationModal.evidence}
   aiEvent={validationModal.aiEvent}
   oncomplete={handleValidationComplete}
 />
-
 <!-- AI Analysis Results Modal -->
 {#if analysisModal.open && analysisModal.evidence && analysisModal.result}
   <div class="mx-auto px-4 max-w-7xl">
@@ -1338,12 +1226,10 @@ analyzeEvidence(evidence)}
 ✕
 </Button>
       </div>
-
       <div class="mx-auto px-4 max-w-7xl">
         <div class="mx-auto px-4 max-w-7xl">
           <div class="mx-auto px-4 max-w-7xl">{formatAnalysisForDisplay(analysisModal.result)}</div>
         </div>
-
         {#if analysisModal.result.reasoning_steps && analysisModal.result.reasoning_steps.length > 0}
           <div class="mx-auto px-4 max-w-7xl">
             <h4 class="mx-auto px-4 max-w-7xl">Reasoning Steps:</h4>
@@ -1355,7 +1241,6 @@ analyzeEvidence(evidence)}
           </div>
         {/if}
       </div>
-
       <div class="mx-auto px-4 max-w-7xl">
   <Button class="bits-btn" variant="ghost" onclick={closeAnalysisModal}>
 Close
@@ -1371,7 +1256,6 @@ Close
   <div class="mx-auto px-4 max-w-7xl" role="button" tabindex="0" onclick={closeAnalysisModal} onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && closeAnalysisModal()}></div>
   </div>
 {/if}
-
 {#if showAdvancedUpload}
   <div class="mx-auto px-4 max-w-7xl">
     <div class="mx-auto px-4 max-w-7xl">
@@ -1395,7 +1279,6 @@ Close
     ></div>
   </div>
 {/if}
-
 <style>
   .line-clamp-2 {
     display: -webkit-box;
@@ -1404,7 +1287,6 @@ Close
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-
   .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -1413,7 +1295,6 @@ Close
     overflow: hidden;
   }
 </style>
-
 <!-- Feedback Integration Components -->
 <FeedbackIntegration
   bind:this={evidencePageFeedback}
@@ -1424,13 +1305,12 @@ Close
     page: 'evidence',
     viewMode,
     evidenceCount: $evidenceGrid.length,
-    hasFilters: searchQuery.trim() || selectedType || selectedStatus;
+    hasFilters: searchQuery.trim() || selectedType || selectedStatu;
   }}
   trackOnMount={true}
   let:feedback
 />
-
-<FeedbackIntegration;
+<FeedbackIntegratio;
   bind:this={evidenceSearchFeedback}
   interactionType="evidence_search"
   ratingType="search_relevance"
@@ -1438,8 +1318,7 @@ Close
   context={{ component: 'EvidenceSearch', legalDomain: 'evidence_management' }}
   let:feedback
 />
-
-<FeedbackIntegration;
+<FeedbackIntegratio;
   bind:this={evidenceUploadFeedback}
   interactionType="evidence_upload"
   ratingType="ui_experience"
@@ -1447,4 +1326,3 @@ Close
   context={{ component: 'EvidenceUpload' }}
   let:feedback
 />
-

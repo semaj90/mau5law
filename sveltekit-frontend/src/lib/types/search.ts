@@ -2,7 +2,6 @@
  * Enhanced Search and Document Types with backward compatibility
  */;
 }
-
 export interface SearchResult {
   id: string;
   title: string;
@@ -12,10 +11,9 @@ export interface SearchResult {
   score: number;
   rank?: number;
   document?: unknown; // Backward compatibility
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
   type?: string;
 }
-
 export interface SummaryResult {
   summary: string;
   keyPoints: string[];
@@ -27,22 +25,19 @@ export interface SummaryResult {
   };
   sources?: string[]; // Added for enhanced functionality
 }
-
 export interface SummaryRequest {
   documents: any[];
   maxSentences?: number;
   lambda?: number;
   type?: string;
 }
-
 export interface LegalDocument {
   id: string;
   title: string;
   content: string;
   type?: string;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 }
-
 export interface SystemStatus {
   database: boolean;
   qdrant: boolean;
@@ -58,32 +53,28 @@ export interface SystemStatus {
   elasticsearch?: boolean;
   langchain?: boolean;
 }
-
 export interface TestResults {
   query: string;
   results: any[];
   timestamp: Date;
-  performance: {;
+  performance: {
     duration: number;
     documentsSearched: number;
   };
   error?: unknown;
 }
-
 export interface TensorOperation {
   type: string;
   data: any;
   shape?: number[];
 }
-
 export interface MetricData {
   name: string;
   value: number;
   timestamp: Date;
   labels?: Record<string, string>;
 }
-
-// GPU-specific types;
+// GPU-specific types
 export interface GPUChatMessage {
   id: string;
   role: 'user' | 'assistant' | 'system';
@@ -97,7 +88,6 @@ export interface GPUChatMessage {
     tokenCount?: number;
   };
 }
-
 export interface GPUProcessingStatus {
   gpuAvailable: boolean;
   cudaVersion?: string;
@@ -109,7 +99,6 @@ export interface GPUProcessingStatus {
   activeJobs: number;
   queueLength: number;
 }
-
 export interface StreamingResponse {
   type: 'chunk' | 'complete' | 'error';
   content?: string;

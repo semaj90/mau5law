@@ -4,17 +4,13 @@ import { personsOfInterest } from "$lib/server/db/schema-postgres"
 import { db } from "$lib/server/db/connection"
 import { eq } from "drizzle-orm"
 import type { RequestHandler } from './$types.js'
-
-
 export const GET: RequestHandler = async ({ params }) => {
   try {
     const caseId = params.caseId
-
     const pois = await db
       .select()
       .from(personsOfInterest)
       .where(eq(personsOfInterest.caseId, caseId)
-
     return json(pois)
   } catch (error: any) {
     console.error("Error fetching POIs:", error)
@@ -24,12 +20,10 @@ export const GET: RequestHandler = async ({ params }) => {
     )
   }
 }
-
 export const POST: RequestHandler = async ({ request, params }) => {
   try {
     const caseId = params.caseId
     const data = await request.json()
-
     // Remove posX/posY, use position object if needed
     const [poi] = await db
       .insert(personsOfInterest)
@@ -37,7 +31,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
         caseId,
         name: data.name || "New Person of Interest",
         aliases: data.aliases || [],
-        profileData: data.profileData || {
+        profileData: data.profileData || {,
           who: "",
           what: "",
           why: "",
@@ -51,7 +45,6 @@ export const POST: RequestHandler = async ({ request, params }) => {
         createdBy: data.createdBy || "system", // TODO: Get from session
       })
       .returning()
-
     return json(poi, { status: 201 })
   } catch (error: any) {
     console.error("Error creating POI:", error)

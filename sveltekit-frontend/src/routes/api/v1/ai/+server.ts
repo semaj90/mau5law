@@ -1,16 +1,12 @@
 import type { RequestHandler } from './$types.js'
-
 /*
  * AI API Endpoint - Comprehensive AI Services
  * Routes to: ai-enhanced.exe: 8096, enhanced-legal-ai.exe:8202, live-agent-enhanced.exe:8200
  */
-
-
 import { ensureError } from '$lib/utils/ensure-error'
 import { productionServiceClient } from "$lib/services/productionServiceClient"
 import { URL } from "url"
 }
-
 export interface AIRequest {
   type: 'summary' | 'legal' | 'live' | 'analysis'
   content?: string
@@ -23,18 +19,14 @@ export interface AIRequest {
     streaming?: boolean
   }
 }
-
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const data: AIRequest = await request.json()
-    
     if (!data.userId) {
       return error(400, ensureError({ message: 'User ID is required' })
     }
-
     let operation: string
     let serviceData: any
-
     switch (data.type) {
       case 'summary':
         if (!data.content) {
@@ -47,7 +39,6 @@ export const POST: RequestHandler = async ({ request, url }) => {
           options: data.options
         }
         break
-
       case 'legal':
         if (!data.document) {
           return error(400, ensureError({ message: 'Document is required for legal analysis' })
@@ -59,7 +50,6 @@ export const POST: RequestHandler = async ({ request, url }) => {
           options: data.options
         }
         break
-
       case 'live':
         if (!data.sessionId) {
           return error(400, ensureError({ message: 'Session ID is required for live AI' })
@@ -72,7 +62,6 @@ export const POST: RequestHandler = async ({ request, url }) => {
           streaming: data.options?.streaming || false
         }
         break
-
       case 'analysis':
         operation = 'ai.analysis'
         serviceData = {
@@ -82,18 +71,15 @@ export const POST: RequestHandler = async ({ request, url }) => {
           options: data.options
         }
         break
-
       default:
         return error(400, ensureError({ message: 'Invalid AI operation type' })
     }
-
     const result = await productionServiceClient.execute(operation, serviceData, {
       timeout: data.options?.streaming ? 60000 : 30000
     })
-
     return json({
-      success: true,
-      data: result,
+      success: true
+      data: result
       metadata: {
         timestamp: new Date().toISOString(),
         service: getServiceName(data.type),
@@ -101,16 +87,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
         userId: data.userId
       }
     })
-
   } catch (err: any) {
     console.error('AI API Error:', err)
     return error(500, `AI service unavailable: ${err instanceof Error ? err.message: 'Unknown error'}`)
   }
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   const sessionId = url.searchParams.get('sessionId')
-  
   if (sessionId) {
     // Get session status for live AI
     try {
@@ -120,11 +103,9 @@ export const GET: RequestHandler = async ({ url }) => {
       return error(404, ensureError({ message: 'Session not found' })
     }
   }
-
   // Service health check and capabilities
   try {
     const health = await productionServiceClient.checkAllServicesHealth()
-    
     return json({
       service: 'ai',
       status: 'operational',
@@ -157,7 +138,6 @@ export const GET: RequestHandler = async ({ url }) => {
     return error(503, ensureError({ message: 'AI service health check failed' })
   }
 }
-
 function getServiceName(type: string): string {
   switch (type) {
     case 'summary': return 'ai-enhanced'

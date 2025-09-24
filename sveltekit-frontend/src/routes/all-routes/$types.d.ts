@@ -1,7 +1,6 @@
 import type * as Kit from '@sveltejs/kit';
 import type { RouteDefinition } from '$lib/data/routes-config';
 }
-
 export interface SystemHealthData {
   system_overview: {
     healthy_services: number;
@@ -16,9 +15,8 @@ export interface SystemHealthData {
     disk_usage: number;
   };
 }
-
 export interface UserSession {
-  user: {;
+  user: {
     id: string;
     email: string;
     firstName?: string;
@@ -32,24 +30,20 @@ export interface UserSession {
   } | null;
   isAuthenticated: boolean;
 }
-
 export interface RecentOperation {
   operation: string;
   timestamp: string;
   status: 'success' | 'error' | 'pending';
   protocol?: string;
 }
-
 export interface RoutePageData {
   systemHealth: SystemHealthData | null;
   userSession: UserSession;
   availableRoutes: RouteDefinition[];
   recentOperations: RecentOperation[];
 }
-
 type RouteParams = {};
 type PageParent = Kit.AwaitedProperties<{}>;
-
 export type PageServerData = RoutePageData;
 export type PageData = PageParent & PageServerData;
 export type ActionData = unknown;

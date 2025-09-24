@@ -2,28 +2,23 @@ import { json } from '@sveltejs/kit'
 import { readBodyFast } from '$lib/server/utils/json-fast'
 import { INGEST_SERVICE_URL } from '$env/static/private'
 import type { RequestHandler } from './$types.js'
-
 /*
  * SvelteKit API proxy to Go Ingest Service (port 8227)
  * Integrates with your 37-service architecture
  * Follows your established patterns from Enhanced RAG service
  */
-
 const SERVICE_URL = INGEST_SERVICE_URL || 'http://localhost:8227'
 const TIMEOUT = 30000; // 30 seconds for document processing
 }
-
 export interface DocumentIngestRequest {
   title: string
   content: string
   case_id?: string
-  metadata?: Record<string, any>
+  metadata?: { [key: string]: any }
 }
-
 export interface BatchIngestRequest {
   documents: DocumentIngestRequest[]
 }
-
 export interface IngestResponse {
   id: string
   status: string
@@ -32,12 +27,10 @@ export interface IngestResponse {
   process_time_ms: number
   timestamp: string
 }
-
 // Single document ingestion
 export const POST: RequestHandler = async ({ request, fetch }) => {
   try {
     const requestData = await readBodyFast(request)
-
     // Validate request structure
     if (!requestData.title || !requestData.content) {
       return json(
@@ -45,7 +38,6 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         { status: 400 }
       )
     }
-
     // Transform to Go service format
     const ingestRequest: DocumentIngestRequest = {
       title: requestData.title,
@@ -62,10 +54,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         ip_address: request.headers.get('x-forwarded-for') || 'unknown'
       }
     }
-
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), TIMEOUT)
-
     try {
       // Call Go ingest service using SvelteKit's enhanced fetch
       const response = await fetch(`${SERVICE_URL}/api/ingest`, {
@@ -76,9 +66,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         body: JSON.stringify(ingestRequest),
         signal: controller.signal
       })
-
       clearTimeout(timeoutId)
-
       if (!response.ok) {
         const errorText = await response.text()
         return json({
@@ -89,9 +77,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           { status: response.status }
         )
       }
-
       const result: IngestResponse = await response.json()
-
       // Enhanced response with SvelteKit metadata
       return json({
         ...result,
@@ -102,24 +88,21 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           architecture: 'multi-protocol'
         },
         // Follow your established success pattern
-        success: true,
+        success: true
         api_version: 'v1'
       })
     } catch (fetchError: any) {
       clearTimeout(timeoutId)
-
       if ((fetchError as any)?.name === 'AbortError') {
         return json(
           { error: 'Request timeout - document processing took too long' },)
           { status: 504 }
         )
       }
-
       throw fetchError
     }
   } catch (error: any) {
     console.error('Ingest API error:', error)
-
     return json({
         error: 'Internal server error',
         message: error instanceof Error ? error.message: 'Unknown error',
@@ -129,7 +112,6 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     )
   }
 }
-
 // Health check endpoint
 export const GET: RequestHandler = async ({ fetch }) => {
   try {
@@ -137,7 +119,6 @@ export const GET: RequestHandler = async ({ fetch }) => {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     })
-
     if (!response.ok) {
       return json({
           status: 'unhealthy',
@@ -148,15 +129,13 @@ export const GET: RequestHandler = async ({ fetch }) => {
         { status: 503 }
       )
     }
-
     const health = await response.json()
-
     return json({
       status: 'healthy',
       service: 'ingest-service',
       port: '8227',
       proxy: 'sveltekit-api',
-      upstream: health,
+      upstream: health
       // Follow your health check pattern
       timestamp: new Date().toISOString(),
       architecture: 'go-microservice'

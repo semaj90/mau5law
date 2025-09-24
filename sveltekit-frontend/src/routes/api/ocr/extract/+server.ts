@@ -1,56 +1,43 @@
 import * as pdfjsLib from "pdfjs-dist"
 import { createWorker } from "tesseract.js"
 import type { RequestHandler } from './$types.js'
-
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const formData = await request.formData()
     const file = formData.get('file') as File
-
     if (!file) {
       throw error(400, 'No file provided')
     }
-
     if (!file.type.includes('pdf')) {
       throw error(400, 'Only PDF files are supported')
     }
-
     console.log(`Processing PDF: ${file.name} (${file.size} bytes)`)
-
     // Convert PDF to images and then OCR
     const arrayBuffer = await file.arrayBuffer()
     const typedArray = new Uint8Array(arrayBuffer)
-    
     const loadingTask = pdfjsLib.getDocument(typedArray)
     const pdf = await loadingTask.promise
-    
     const ocrResults = []
     let totalConfidence = 0
     let totalCharacters = 0
-
     // Process each page
     for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
       const page = await pdf.getPage(pageNum)
-      
       // Get page text content first (if available)
       const textContent = await page.getTextContent()
       let pageText = ''
-      
       if (textContent.items.length > 0) {
         // PDF has extractable text
         pageText = textContent.items
           .filter((item): item is any => 'str' in item)
           .map((item) => (item as { str?: any }).str)
           .join(' ')
-        
         ocrResults.push({
-          page: pageNum,
-          text: pageText,
+          page: pageNum
+          text: pageText
           confidence: 95, // High confidence for extractable text
           method: 'text_extraction'
         })
-        
         totalCharacters += pageText.length
         totalConfidence += 95
       } else {
@@ -58,50 +45,42 @@ export const POST: RequestHandler = async ({ request }) => {
         const viewport = page.getViewport({ scale: 2.0 })
         const canvas = new OffscreenCanvas(viewport.width, viewport.height)
         const context = canvas.getContext('2d') as any as CanvasRenderingContext2D
-        
         await page.render({
-          canvas: canvas as any,
-          canvasContext: context,
+          canvas: canvas as any
+          canvasContext: context
           viewport: viewport
         }).promise
-        
         // Initialize Tesseract worker
         const worker = await createWorker('eng', 1, {
           workerPath: '/tesseract-worker.js',
           corePath: '/tesseract-core.js'
         })
-        
         // Perform OCR using the canvas directly
         const { data } = await worker.recognize(canvas)
         await worker.terminate()
-        
         ocrResults.push({
-          page: pageNum,
+          page: pageNum
           text: (data as { text?: any; confidence?: any }).text,
           confidence: (data as { text?: any; confidence?: any }).confidence,
           method: 'ocr'
         })
-        
         totalCharacters += (data as { text?: any; confidence?: any }).text.length
         totalConfidence += (data as { text?: any; confidence?: any }).confidence
       }
     }
-
     // Calculate average confidence
     const averageConfidence = totalConfidence / pdf.numPages
-
     // Extract legal concepts and citations
     const allText = ocrResults.map(r => r.text).join('\n\n')
     const legalConcepts = extractLegalConcepts(allText)
     const citations = extractCitations(allText)
-
     const result = {
       filename: file.name,
       pages: pdf.numPages,
       totalCharacters,
       averageConfidence: Math.round(averageConfidence),
-      text: allText,
-      pageResults: ocrResults,
+      text: allText
+      pageResults: ocrResults
       legalConcepts,
       citations,
       extractedAt: new Date().toISOString(),
@@ -110,18 +89,14 @@ export const POST: RequestHandler = async ({ request }) => {
         extractedPages: ocrResults.filter(item => item.length)
       }
     }
-
     return json(result)
-
   } catch (err: any) {
     console.error('OCR processing error:', err)
     throw error(500, `OCR processing failed: ${err.message}`)
   }
 }
-
 function extractLegalConcepts(text: string): string[] {
   const concepts = new Set<string>()
-  
   // Legal concept patterns
   const patterns = [
     // Contract terms
@@ -135,20 +110,16 @@ function extractLegalConcepts(text: string): string[] {
     // Legal procedures
     /(?:discovery|deposition|motion\s+to\s+dismiss|summary\s+judgment|trial)/gi
   ]
-
   patterns.forEach(pattern => {
     const matches = text.match(pattern)
     if (matches) {
       matches.forEach(match => concepts.add(match.toLowerCase())
     }
   })
-
   return Array.from(concepts)
 }
-
 function extractCitations(text: string): string[] {
   const citations = new Set<string>()
-  
   // Citation patterns
   const patterns = [
     // Federal courts
@@ -162,13 +133,11 @@ function extractCitations(text: string): string[] {
     // Code of Federal Regulations
     /\b\d+\s+C\.F\.R\.\s*§?\s*\d+/g
   ]
-
   patterns.forEach(pattern => {
     const matches = text.match(pattern)
     if (matches) {
       matches.forEach(match => citations.add(match.trim())
     }
   })
-
   return Array.from(citations)
 }

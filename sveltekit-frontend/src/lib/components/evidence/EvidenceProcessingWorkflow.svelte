@@ -1,7 +1,6 @@
 
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   /**
    * xState-Powered Evidence Processing Workflow Component
    *
@@ -12,7 +11,6 @@
    * - Portable artifact results
    * - Error handling and retry capabilities
    */
-
   import { createActor } from 'xstate';
   import { evidenceProcessingMachine, type EvidenceProcessingContext, getProcessingProgress, getCurrentStep } from '$lib/state/evidence-processing-machine.ts';
   import {
@@ -23,7 +21,6 @@
   } from '$lib/ui/card.svelte';
   import { onMount, onDestroy,   } from "svelte";
   import type { IFrame } from '@stomp/stompjs';
-
   // Explicit actor snapshot typing to satisfy accesses to currentState.context / matches
   interface StreamingUpdate {
     step: string;
@@ -31,16 +28,13 @@
     progress?: number;
     message?: string;
   }
-
   interface PortableArtifactInfo {
     enhancedPngUrl: string;
     compressionRatio?: number;
   }
-
   interface MinioStorageInfo {
     storageUrl: string;
   }
-
   interface EvidenceActorState {
     context: EvidenceProcessingContext & {
       streamingUpdates?: StreamingUpdate[];
@@ -52,7 +46,6 @@
     value: string;
     matches: (state: string) => boolean;
   }
-
   // Svelte props (exported)
   interface Props {
     evidenceId?: string;
@@ -63,7 +56,6 @@
     sessionId?: string | null;
     endpoint?: string;
   }
-
   let {
     evidenceId = `evidence_${Date.now()}`,
     autoStart = false,
@@ -73,35 +65,29 @@
     sessionId = null,
     endpoint = '/api/evidence/process/stream'
   }: Props = $props();
-
   // Events now handled via props in Svelte 5
-  // 
-
+  //
   // xState actor for client-side state management
   const actor = createActor(evidenceProcessingMachine);
-
   // Prepare initial snapshot with safe context access (actor may not have started yet)
   const rawSnapshot = (actor.getSnapshot && (actor.getSnapshot() as any)) || null;
-  const initialSnapshot: unknown = rawSnapshot || {
-    context: ,;
-    value: 'idle',;
+  const initialSnapshot: unknown = rawSnapshot || {,
+    context: ,
+    value: 'idle',
     matches: (_: string) => false;
   };
-
   // Local snapshot (augmented)
   let currentState: EvidenceActorState = {
     ...initialSnapshot,
     context: {
       ...(initialSnapshot.context || ),
-      streamingUpdates: initialSnapshot?.context?.streamingUpdates || [],;
+      streamingUpdates: initialSnapshot?.context?.streamingUpdates || [],
       errors: initialSnapshot?.context?.errors || [],
       processingTimeMs: initialSnapshot?.context?.processingTimeMs || 0;
     }
-  } as EvidenceActorState;
-
+  } as EvidenceActorStat;
   // SSE (existing path)
   let eventSource: EventSource | null = null;
-
   // ---- RabbitMQ (optional real-time transport) ------------------
   // Requires: npm i @stomp/stompjs and RabbitMQ Web STOMP plugin enabled
   interface RabbitMQConfig {
@@ -110,18 +96,15 @@
     routingKey: string;
     queue?: string;
   }
-
   // Enable if runtime provides a WS URL or endpoint hints at amqp
   let useRabbitMQ = !!import.meta.env?.VITE_RABBITMQ_WS_URL || endpoint?.startsWith('amqp');
   let rabbitConfig: RabbitMQConfig = {
-    url: import.meta.env.VITE_RABBITMQ_WS_URL || 'ws://localhost:15674/ws',;
+    url: import.meta.env.VITE_RABBITMQ_WS_URL || 'ws://localhost:15674/ws',
     exchange: 'evidence.processing',
     routingKey: evidenceId;
   };
-
   let rabbitClient: unknown = null;
   let rabbitSubscription: unknown = null;
-
   async function connectRabbitMQ() {
     if (!useRabbitMQ || typeof window === 'undefined') return;
     try {
@@ -132,7 +115,6 @@
         heartbeatIncoming: 10000,
         heartbeatOutgoing: 10000,
         debug: () => });
-
       rabbitClient.onConnect = () => {
         const destination = `/exchange/${rabbitConfig.exchange}/${rabbitConfig.routingKey}`;
         rabbitSubscription = rabbitClient.subscribe(destination, (msg: unknown) => {
@@ -153,28 +135,24 @@
           }
         });
       };
-
       rabbitClient.onStompError = (frame: IFrame) => {
         actor.send({
-          type: 'ANALYSIS_ERROR',;
+          type: 'ANALYSIS_ERROR',
           error: frame.headers['message'] || 'RabbitMQ STOMP error';
         });
       };
-
       rabbitClient.onWebSocketClose = () => {
         if (!eventSource) {
           console.warn('RabbitMQ closed, falling back to SSE');
           useRabbitMQ = false;
         }
       };
-
       rabbitClient.activate();
     } catch (e) {
       console.warn('RabbitMQ unavailable, using SSE only:', e);
       useRabbitMQ = false;
     }
   }
-
   function disconnectRabbitMQ() {
     try {
       rabbitSubscription?.unsubscribe();
@@ -182,23 +160,20 @@
     } catch rabbitSubscription = null;
     rabbitClient = null;
   }
-
   // Kick off RabbitMQ connection early (non-blocking)
   if (typeof window !== 'undefined') {
     queueMicrotask(connectRabbitMQ);
     window.addEventListener('beforeunload', disconnectRabbitMQ);
   }
-
   // UI state
   let dragOver = false;
   let selectedFile: File | null = null;
   let neuralSpriteConfig = {
-    enable_compression: neuralSpriteEnabled,
+    enable_compression: neuralSpriteEnabled
     predictive_frames: 3,
-    ui_layout_compression: false,
+    ui_layout_compression: false
     target_compression_ratio: 50
   };
-
   // Reactive values with safe fallbacks
   // Derived replacements
   let progress = 0;
@@ -208,7 +183,6 @@
   let hasError = false;
   let isCompleted = false;
   let isCancelled = false;
-
   function recomputeDerived() {
     try {
       progress = getProcessingProgress(currentState.context) || 0;
@@ -230,16 +204,13 @@
   }
   // Initial compute
   recomputeDerived();
-
   // Initialize actor subscription
   $effect(() => {
     actor.start();
-
     // Subscribe to state changes
     const subscription = actor.subscribe((state: unknown) => {
-      currentState = state as EvidenceActorState;
+      currentState = state as EvidenceActorStat;
       recomputeDerived();
-
       if (typeof currentState.matches === 'function' && currentState.matches('completed')) {
         onCompleted?.(currentState.context);
         onCompleted?.(currentState.context);
@@ -251,88 +222,73 @@
         onError?.(msg);
       }
     });
-
     // Auto-start if enabled
     if (autoStart && selectedFile) {
       startProcessing();
     }
-
     return () => {
       subscription?.unsubscribe && subscription.unsubscribe();
       disconnectStream();
     };
   });
-
   onDestroy(() => {
     actor?.stop && actor.stop();
     disconnectStream();
   });
-
   // File handling
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;
-    const files = target.files;
+    const files = target.file;
     if (files && files.length > 0) {
       selectedFile = files[0];
     }
   }
-
   function handleFileDrop(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
-
-    const files = event.dataTransfer?.files;
+    const files = event.dataTransfer?.file;
     if (files && files.length > 0) {
       selectedFile = files[0];
     }
   }
-
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
     dragOver = true;
   }
-
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
   }
-
   // Streaming connection management
   async function startProcessing() {
     if (!selectedFile) return;
-
     try {
       // Start streaming API connection
       const response = await fetch(endpoint, {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           evidenceId,
           file: {
-            name: selectedFile.name,;
-            type: selectedFile.type,;
-            size: selectedFile.size;
+            name: selectedFile.name,
+            type: selectedFile.type,
+            size: selectedFile.siz;
           },
           neuralSpriteConfig: neuralSpriteConfig.enable_compression ? neuralSpriteConfig : undefined
         })
       });
-
       if (!response.body) {
         throw new Error('No response stream available');
       }
-
       // Connect to SSE stream
       eventSource = new EventSource(`${endpoint}?evidenceId=${encodeURIComponent(evidenceId)}`);
-
       eventSource.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-
           if (data.type === 'connection_established') {
             console.log('🔗 Streaming connection established for', evidenceId);
             return;
           }
-
           // Streaming progress update
           if (data.type === 'streaming_update' && data.payload) {
             currentState.context.streamingUpdates = [
@@ -340,7 +296,6 @@
               data.payload
             ];
           }
-
           // Full state sync from server
           if (data.currentState && data.context) {
             updateClientFromServer(data);
@@ -350,7 +305,6 @@
           console.error('Failed to parse SSE data:', e);
         }
       };
-
       eventSource.onerror = (ev: Event) => {
         console.error('SSE connection error:', ev);
         actor.send({ type: 'ANALYSIS_ERROR', error: 'Connection lost' });
@@ -362,68 +316,57 @@
       actor.send({ type: 'ANALYSIS_ERROR', error: message });
     }
   }
-
   function updateClientFromServer(serverData: unknown) {
     const { currentState: serverState, context: serverContext } = serverData;
-
     // Sync client state with server state
     if (serverState !== currentState.value) {
       // Map server events to client events based on state transitions
       if (serverState === 'analyzing' && !(currentState.matches && currentState.matches('analyzing'))) {
         actor.send({ type: 'START_ANALYSIS' });
       }
-
       // Update context with server context
-      currentState = { ...currentState, context: { ...serverContext } } as EvidenceActorState;
+      currentState = { ...currentState, context: { ...serverContext } } as EvidenceActorStat;
       recomputeDerived();
     }
   }
-
   function disconnectStream() {
     if (eventSource) {
       eventSource.close();
       eventSource = null;
     }
   }
-
   async function cancelProcessing() {
     try {
       await fetch(`${endpoint}?evidenceId=${encodeURIComponent(evidenceId)}`, {
         method: 'DELETE';
       });
-
       actor.send({ type: 'CANCEL_PROCESSING' });
       disconnectStream();
     } catch (error) {
       console.error('Failed to cancel processing:', error);
     }
   }
-
   async function retryProcessing() {
     actor.send({ type: 'RETRY_CURRENT_STEP' });
     if (selectedFile) {
       setTimeout(() => startProcessing(), 500);
     }
   }
-
   function resetWorkflow() {
     actor.send({ type: 'RESET' });
     selectedFile = null;
     disconnectStream();
   }
-
   // Helper handlers moved out of markup to avoid inline-expression parsing issues
   function openPortableArtifact() {
     const url = currentState.context.portableArtifact?.enhancedPngUrl;
     if (url) window.open(url, '_blank');
   }
-
   function openMinioStorage() {
     const url = currentState.context.minioStorage?.storageUrl;
     if (url) window.open(url, '_blank');
   }
 </script>
-
 <div class="w-full max-w-4xl mx-auto nes-container">
   <div class="yorha-panel-header">
     <h3 class="nes-text is-primary flex items-center gap-2">
@@ -436,7 +379,6 @@
       Real-time streaming workflow with Neural Sprite optimization and portable artifact generation
     </p>
   </div>
-
   <div class="yorha-panel-content space-y-6">
     <!-- File Upload Section -->
     {#if !selectedFile && !isProcessing && !isCompleted}
@@ -459,7 +401,6 @@
               Drag and drop a file here, or click to select
             </p>
           </div>
-
           <!-- wrap the input inside the label to avoid separate id/for and potential attribute duplication -->
           <label class="cursor-pointer inline-flex items-center justify-center px-4 py-2 rounded bg-white border">
             <input
@@ -473,7 +414,6 @@
         </div>
       </div>
     {/if}
-
     <!-- Selected File Display -->
     {#if selectedFile}
       <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -486,7 +426,6 @@
             </div>
           </div>
         </div>
-
         {#if !isProcessing && !isCompleted}
           <button type="button" class="bits-btn" onclick={resetWorkflow}>
             Change File
@@ -494,7 +433,6 @@
         {/if}
       </div>
     {/if}
-
     <!-- Neural Sprite Configuration -->
     {#if selectedFile && !isProcessing && !isCompleted}
       <div class="border rounded-lg p-4 bg-gradient-to-r from-purple-50 to-blue-50">
@@ -512,7 +450,6 @@
             ADVANCED
           </span>
         </div>
-
         {#if neuralSpriteConfig.enable_compression}
           <div class="space-y-3 ml-6 border-l-2 border-purple-200 pl-4">
             <div class="flex items-center gap-2">
@@ -529,7 +466,6 @@
                 {neuralSpriteConfig.target_compression_ratio}:1
               </span>
             </div>
-
             <div class="flex items-center gap-2">
               <label for="predictive-frames" class="text-sm text-gray-600 w-32">Pred. Frames:</label>
               <input
@@ -544,7 +480,6 @@
                 {neuralSpriteConfig.predictive_frames}
               </span>
             </div>
-
             <div class="flex items-center gap-2">
               <input
                 type="checkbox"
@@ -560,7 +495,6 @@
         {/if}
       </div>
     {/if}
-
     <!-- Processing Controls -->
     {#if selectedFile && !isProcessing && !isCompleted && !hasError}
       <div class="flex justify-center">
@@ -569,7 +503,6 @@
         </button>
       </div>
     {/if}
-
     <!-- Processing Progress -->
     {#if isProcessing}
       <div class="space-y-4">
@@ -577,14 +510,12 @@
           <h3 class="font-medium">Processing Evidence</h3>
           <span class="text-sm text-gray-600">{progress}% Complete</span>
         </div>
-
         <div class="w-full bg-gray-200 rounded-full h-2">
           <div
             class="bg-blue-600 h-2 rounded-full transition-all duration-300"
             style="width: {progress}%"
           ></div>
         </div>
-
         <!-- Current Step Display -->
         <div class="space-y-2">
           {#each (currentState.context.streamingUpdates || []) as update}
@@ -610,7 +541,6 @@
             </div>
           {/each}
         </div>
-
         {#if canCancel}
           <div class="flex justify-center">
             <button type="button" class="bits-btn" onclick={cancelProcessing}>
@@ -620,7 +550,6 @@
         {/if}
       </div>
     {/if}
-
     <!-- Error State -->
     {#if hasError}
       <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -652,7 +581,6 @@
           <p class="text-sm text-green-700">
             Evidence processed successfully in {Math.round((currentState.context.processingTimeMs || 0) / 1000)}s
           </p>
-
           <!-- Results Display -->
           {#if currentState.context.portableArtifact}
             <div class="space-y-3">
@@ -665,7 +593,6 @@
                 >
                   📦 Download Portable Artifact
                 </button>
-
                 {#if currentState.context.minioStorage}
                   <button
                     type="button"
@@ -676,7 +603,6 @@
                   </button>
                 {/if}
               </div>
-
               {#if currentState.context.portableArtifact?.compressionRatio}
                 <div class="text-sm text-gray-600">
                   Neural Sprite Compression: {currentState.context.portableArtifact.compressionRatio}:1 ratio
@@ -684,7 +610,6 @@
               {/if}
             </div>
           {/if}
-
           <div class="flex justify-center">
             <button type="button" class="bits-btn" onclick={resetWorkflow}>
               Process Another Evidence
@@ -693,7 +618,6 @@
         </div>
       </div>
     {/if}
-
     <!-- Cancelled State -->
     {#if isCancelled}
       <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-center">

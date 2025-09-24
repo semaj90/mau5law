@@ -1,14 +1,11 @@
 import type { RequestHandler } from './$types.js'
-
 // Clean, self-contained analysis endpoint that avoids referencing missing DB schema symbols.
 // - Validates input
 // - Calls local Ollama at http://localhost:11434/api/generate (if available)
 // - Returns structured JSON analysis
 // Note: Re-enable DB interactions once your drizzle schema and table symbols are available.
-
 import { json } from '@sveltejs/kit'
 import { createHash } from 'node:crypto'
-
 type AnalysisRequest = {
   text?: string
   documentId?: string
@@ -20,22 +17,18 @@ type AnalysisRequest = {
   contextDocuments?: string[]
   userId?: string
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = (await request.json()) as AnalysisRequest
     const startTime = Date.now()
-
     // Basic validation
     if (!body.text && !body.evidenceId && !body.caseId) {
       return json({ error: 'Missing required field: text, evidenceId, or caseId' }, { status: 400 })
     }
-
     // For safety this implementation does not depend on DB lookups; prefer provided text
     const documentText = body.text ?? ''
     const documentMetadata: any = {}; // placeholder for callers that provide metadata
     const contextualInfo = ''; // no case context resolved in this simplified handler
-
     const modelName = body.useThinkingStyle ? 'gemma3-legal:latest' : 'gemma3-legal:latest'
     const prompt = buildEnhancedAnalysisPrompt(
       documentText,
@@ -45,7 +38,6 @@ export const POST: RequestHandler = async ({ request }) => {
       contextualInfo,
       documentMetadata
     )
-
     let aiContent = ''
     try {
       const resp = await fetch('http://localhost:11434/api/generate', {
@@ -54,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
         body: JSON.stringify({
           model: 'gemma3-legal:latest',
           prompt,
-          stream: false,
+          stream: false
           options: {
             temperature: 0.2,
             top_p: 0.9,
@@ -62,7 +54,6 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         })
       })
-
       if (!resp.ok) {
         console.warn(`Ollama API returned ${resp.status}: ${resp.statusText}`)
         aiContent = 'AI analysis unavailable (service error)'
@@ -74,13 +65,11 @@ export const POST: RequestHandler = async ({ request }) => {
       console.warn('Could not connect to Ollama:', fetchError)
       aiContent = 'AI analysis unavailable (connection error)'
     }
-
     // Generate a request ID for logging
     const requestId = createHash('sha256').update(`${Date.now()}-${JSON.stringify(body)}`).digest('hex').slice(0, 8)
-
     const result = {
       requestId,
-      analysis: aiContent,
+      analysis: aiContent
       metadata: {
         documentType: body.documentType ?? 'legal_document',
         analysisType: body.analysisType ?? 'classification',
@@ -91,7 +80,6 @@ export const POST: RequestHandler = async ({ request }) => {
         model: modelName
       }
     }
-
     return json(result)
   } catch (error: any) {
     console.error('Analysis endpoint error:', error)
@@ -101,41 +89,32 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 function buildEnhancedAnalysisPrompt(
-  documentText: string,
-  analysisType: string,
-  documentType: string,
-  useThinkingStyle: boolean,
-  contextualInfo: string,
+  documentText: string
+  analysisType: string
+  documentType: string
+  useThinkingStyle: boolean
+  contextualInfo: string
   documentMetadata: any
 ): string {
   const basePrompt = `Analyze this ${documentType} document for ${analysisType}.
-
 Document Text:
 ${documentText}
-
 ${contextualInfo ? `Context: ${contextualInfo}` : ''}
-
 Provide a structured analysis focusing on:
 1. Key findings
 2. Legal relevance
 3. Compliance issues (if any)
 4. Recommendations
-
 Format: JSON with clear sections for each point.`
-
   if (useThinkingStyle) {
     return `<thinking>
 Let me analyze this ${documentType} for ${analysisType} purposes.
-
 First, I'll examine the content structure and identify key elements...
 Then I'll assess legal implications and compliance requirements...
 Finally, I'll provide actionable recommendations...
 </thinking>
-
 ${basePrompt}`
   }
-
   return basePrompt
 }

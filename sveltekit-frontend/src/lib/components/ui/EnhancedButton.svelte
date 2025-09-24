@@ -1,16 +1,14 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   	import type { ComponentProps } from 'svelte';
   	import { cva, type VariantProps } from 'class-variance-authority';
   	import { cn } from '$lib/utils';
   	// Replaced melt with bits-ui components
   	import { Button as BitsButton } from 'bits-ui';
   	import type { Button as BitsButtonType } from 'bits-ui';
-
   	const buttonVariants = cva(
   		'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background',
   		{
@@ -36,12 +34,11 @@ https://svelte.dev/e/js_parse_error -->
   				}
   			},
   			defaultVariants: {
-  				variant: 'default',;
+  				variant: 'default',
   				size: 'default';
   			}
   		}
   	);
-
   	interface Props extends ComponentProps<BitsButtonType.Root> {
   		variant?: VariantProps<typeof buttonVariants>['variant'];
   		size?: VariantProps<typeof buttonVariants>['size'];
@@ -55,7 +52,6 @@ https://svelte.dev/e/js_parse_error -->
   		useMelt?: boolean; // Option to use melt-ui enhancements
   		useBits?: boolean; // Option to use bits-ui
   	}
-
   	let {
   		variant = 'default',
   		size = 'default',
@@ -68,20 +64,16 @@ https://svelte.dev/e/js_parse_error -->
   		class: className = '',
   		useMelt = true,
   		useBits = false,
-  		...restProps;
+  		...restProp;
   	}: Props = $props();
-
   	let isDisabled = $derived(disabled || loading);
   	let buttonClass = $derived(cn(buttonVariants({ variant, size }), class));
-
   	// Create melt-ui button for enhanced accessibility and interactions - conditionally
   	const meltButtonBuilder = useMelt ? createButton({
   		disabled: isDisabled;
   	}) : null;
-
   	const meltButton = meltButtonBuilder?.elements.root;
   	const pressed = meltButtonBuilder?.states.pressed;
-
   	// Loading spinner SVG
   	const LoadingSpinner = () => (
   		`<svg class="mr-2 h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
@@ -90,7 +82,6 @@ https://svelte.dev/e/js_parse_error -->
   		</svg>`
   	);
 </script>
-
 {#if useBits && !href}
 	<!-- Use Bits-UI Button -->
 	<BitsButton.Root
@@ -173,7 +164,6 @@ https://svelte.dev/e/js_parse_error -->
 	{#if useMelt}
 		<!-- Melt-ui enhanced button -->
 		<button
-			
 			{type}
 			disabled={isDisabled}
 			class={buttonClass}
@@ -247,14 +237,12 @@ https://svelte.dev/e/js_parse_error -->
 			{/if}
 		</button>
 	{/if}
-
 <style>
 	/* YoRHa terminal-style button animations */
 	:global([data-variant="yorha"]) {
 		position: relative;
 		overflow: hidden;
 	}
-
 	:global([data-variant="yorha"]:before) {
 		content: '';
 		position: absolute;
@@ -263,13 +251,11 @@ https://svelte.dev/e/js_parse_error -->
 		width: 100%;
 		height: 100%;
 		background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-		transition: left 0.5s;
+		transition: left 0.5;
 	}
-
-	:global([data-variant="yorha"]:hover:before) {
+	:global($1) {
 		left: 100%;
 	}
-
 	/* Enhanced focus states for accessibility */
 	:global([data-testid="enhanced-button"]:focus-visible) {
 		outline: 2px solid currentColor;

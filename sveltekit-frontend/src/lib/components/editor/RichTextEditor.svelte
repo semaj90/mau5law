@@ -1,13 +1,11 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // Removed rune imports ($props, $effect, $state) - they are provided by the Svelte compiler and must not be imported
   import { onDestroy } from 'svelte';
   import Editor from '@tinymce/tinymce-svelte';
   import { report, reportActions, editorState } from '$lib/stores/report';
   import { lokiRedisCache } from '$lib/cache/loki-redis-integration';
   import { browser } from '$app/environment';
-
   interface Props {
     height?: unknown;
     disabled?: unknown;
@@ -18,7 +16,6 @@
     disabled = false,
     placeholder = 'Begin writing your report...'
   }: Props = $props();
-
   // Enhanced state management for AI-powered features
   let editorInstance: unknown;
   let isInitialized = $state(false);
@@ -28,23 +25,21 @@
   let autoSaveStatus = $state<'saving' | 'saved' | 'error' | 'idle'>('idle');
   let jobId = $state<string | null>(null);
   let pollingInterval: ReturnType<typeof setInterval> | null = null;
-
   // Debouncing variables
   let debounceTimer: ReturnType<typeof setTimeout> | null = null;
   const DEBOUNCE_DELAY = 500; // 500ms as recommended
   const MIN_TEXT_LENGTH = 100; // Minimum text length for AI processing
-
   // TinyMCE configuration
   const editorConfig = {
     height,
-    menubar: true,
+    menubar: true
     plugins: [
       'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
       'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
       'insertdatetime', 'media', 'table', 'help', 'wordcount', 'save',
       'autosave', 'paste', 'textpattern', 'emoticons', 'hr', 'pagebreak',
       'nonbreaking', 'template', 'toc', 'quickbars', 'codesample'
-    ],;
+    ],
     toolbar: `
       undo redo | blocks fontfamily fontsize |
       bold italic underline strikethrough |
@@ -56,7 +51,7 @@
       fullscreen preview save | help
     `,
     content_style: `
-      body {;
+      body {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         font-size: 14px;
         line-height: 1.6;
@@ -92,7 +87,7 @@
         overflow-x: auto;
   }
       table {
-        border-collapse: collapse;
+        border-collapse: collap;
         width: 100%;
         margin: 1em 0;
   }
@@ -107,17 +102,17 @@
   }
     `,
     placeholder,
-    resize: true,
-    autosave_ask_before_unload: true,
+    resize: true
+    autosave_ask_before_unload: true
     autosave_interval: '30s',
     autosave_prefix: 'report-autosave-',
     quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
-    quickbars_insert_toolbar: 'quickimage quicktable | hr pagebreak',;
+    quickbars_insert_toolbar: 'quickimage quicktable | hr pagebreak',
     contextmenu: 'link image table',
-    paste_data_images: true,
-    paste_as_text: false,
+    paste_data_images: true
+    paste_as_text: false
     paste_webkit_styles: 'color font-size',
-    smart_paste: true,
+    smart_paste: true
     // Custom save button behavior
     save_onsavecallback: () => {
       reportActions.save();
@@ -125,50 +120,40 @@
     // Content change handler
     setup: (editor: unknown) => {
       editorInstance = editor;
-
       editor.on('init', () => {
         isInitialized = true;
         editorState.update(s => ({ ...s, isEditing: true }));
       });
-
       editor.on('input change', () => {
         if (isInitialized) {
           const content = editor.getContent();
           reportActions.updateContent(content);
-
           // Update word count
           const wordCount = editor.plugins.wordcount?.getCount() || 0;
           editorState.update(s => ({ ...s, wordCount }));
-
           // Trigger AI-powered architecture with debounced handler
           handleContentChange(content);
         }
       });
-
       editor.on('selectionchange', () => {
         const selectedText = editor.selection.getContent({ format: 'text' });
         editorState.update(s => ({ ...s, selectedText }));
       });
-
       editor.on('focus', () => {
         editorState.update(s => ({ ...s, isEditing: true }));
       });
-
       editor.on('blur', () => {
         editorState.update(s => ({ ...s, isEditing: false }));
       });
   }
   };
-
   // Reactive updates
   $effect(() => {
     if (editorInstance && $report.content !== editorInstance.getContent()) {
       editorInstance.setContent($report.content);
     }
   });
-
   // ==================== AI-POWERED ARCHITECTURE METHODS ====================
-
   /**
    * 1. DEBOUNCED EVENT HANDLER - Prevents overwhelming the backend
    */
@@ -177,36 +162,31 @@
     if (debounceTimer) {
       clearTimeout(debounceTimer);
     }
-
     // Set new timer - only processes after user stops typing for DEBOUNCE_DELAY
     debounceTimer = setTimeout(() => {
       processContentChange(content);
     }, DEBOUNCE_DELAY);
-
     // Immediate local auto-save to Loki.js/IndexedDB (offline capability)
     performLocalAutoSave(content);
   }
-
   /**
    * 2. LOCAL AUTO-SAVE - Loki.js + IndexedDB for instant drafts
    */
   async function performLocalAutoSave(content: string) {
     if (!browser) return;
-
     try {
       autoSaveStatus = 'saving';
-
       // Save to Loki.js/IndexedDB for offline capability
       await lokiRedisCache.storeDocument({
         id: $report.id || crypto.randomUUID(),
         type: 'brief',
-        content,;
+        content,
         metadata: {
           title: 'Draft Document',
           wordCount: getWordCount(),
           characterCount: getCharCount(),
-          lastModified: new Date().toISOString(),;
-          author: 'Current User',;
+          lastModified: new Date().toISOString(),
+          author: 'Current User',
           version: '1.0';
         },
         cacheTimestamp: Date.now(),
@@ -214,34 +194,28 @@
         cacheLocation: 'loki',
         syncStatus: 'pending'
       });
-
       autoSaveStatus = 'saved';
     } catch (error) {
       console.error('Local auto-save failed:', error);
       autoSaveStatus = 'error';
     }
   }
-
   /**
    * 3. AI PROCESSING - Go microservice with Redis caching
    */
   async function processContentChange(content: string) {
     if (!content || content.length < MIN_TEXT_LENGTH) return;
     if (content === lastProcessedText) return; // Avoid duplicate processing
-
     const textHash = await generateTextHash(content);
-
     try {
       isProcessingSummary = true;
       lastProcessedText = content;
-
       // Step 1: Check Redis cache via Go microservice
       const cacheResponse = await fetch('/api/v1/ai/summary-cache', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ textHash, content })
       });
-
       if (cacheResponse.ok) {
         const cached = await cacheResponse.json();
         if (cached.summary) {
@@ -251,64 +225,52 @@
           return;
         }
       }
-
       // Step 2: Cache miss - Start background AI processing
       const jobResponse = await fetch('/api/v1/ai/summarize-async', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           content,
-          textHash,;
+          textHash,
           model: 'legal-bert',
           embedModel: 'nomic-embed-text';
         })
       });
-
       if (jobResponse.ok) {
         const job = await jobResponse.json();
         jobId = job.jobId;
-
         // Start polling for results
         startJobPolling();
       }
-
     } catch (error) {
       console.error('AI processing failed:', error);
       isProcessingSummary = false;
     }
   }
-
   /**
    * 4. BACKGROUND POLLING - Non-blocking job result checking
    */
   function startJobPolling() {
     if (pollingInterval) clearInterval(pollingInterval);
-
     pollingInterval = setInterval(async () => {
       if (!jobId) return;
-
       try {
         const response = await fetch(`/api/v1/ai/job-status/${jobId}`);
         if ((response as { ok?: unknown; json?: unknown }).ok) {
           const result = await (response as { ok?: unknown; json?: unknown }).json();
-
           if ((result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).status === 'completed') {
             currentSummary = (result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).summary;
-
             // Store vector embedding in PostgreSQL/pg_vector
             if ((result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).embedding) {
               await storeVectorEmbedding((result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).embedding, lastProcessedText);
             }
-
             // Cache result in Redis for future requests
             await cacheResult((result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).textHash, (result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).summary);
-
             // Cleanup
             isProcessingSummary = false;
             jobId = null;
             clearInterval(pollingInterval!);
             pollingInterval = null;
-
           } else if ((result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).status === 'failed') {
             console.error(error);
             isProcessingSummary = false;
@@ -322,14 +284,13 @@
       }
     }, 2000); // Poll every 2 seconds
   }
-
   /**
    * 5. VECTOR EMBEDDINGS - PostgreSQL/pg_vector storage
    */
   async function storeVectorEmbedding(embedding: number[], text: string) {
     try {
       await fetch('/api/v1/vector/store', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           embedding,
@@ -337,7 +298,7 @@
           documentId: $report.id,
           metadata: {
             wordCount: getWordCount(),
-            characterCount: getCharCount(),;
+            characterCount: getCharCount(),
             timestamp: new Date().toISOString();
           }
         })
@@ -346,7 +307,6 @@
       console.error('Vector embedding storage failed:', error);
     }
   }
-
   /**
    * 6. UTILITY FUNCTIONS
    */
@@ -358,26 +318,23 @@
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray.map.padStart(2, '0')).join('');
   }
-
   async function cacheResult(textHash: string, summary: string) {
     try {
       await fetch('/api/v1/ai/cache-result', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ textHash, summary })
       });
     } catch (error) {
       console.error('Result caching failed:', error);
     }
   }
-
   // Custom methods (enhanced)
   function insertContent(content: string) {
     if (editorInstance) {
       editorInstance.insertContent(content);
     }
   }
-
   function insertEvidence(evidence: unknown) {
     const evidenceHtml = `
       <div class="space-y-4" data-evidence-id="${evidence.id}">
@@ -391,18 +348,14 @@
     `;
     insertContent(evidenceHtml);
   };
-
   function getWordCount() {
     return editorInstance?.plugins.wordcount?.getCount() || 0;
   }
-
   function getCharCount() {
     return editorInstance?.plugins.wordcount?.getCharacterCount() || 0;
   }
-
   onDestroy(() => {
     editorState.update(s => ({ ...s, isEditing: false }));
-
     // Cleanup AI architecture timers
     if (debounceTimer) {
       clearTimeout(debounceTimer);
@@ -412,7 +365,6 @@
     }
   });
 </script>
-
 <!-- AI-Powered Editor with Status UI -->
 <div class="space-y-4">
   <!-- Status Header - Shows AI processing status -->
@@ -430,7 +382,6 @@
            autoSaveStatus === 'error' ? 'Save Error' : 'Ready'}
         </span>
       </div>
-
       <!-- AI Processing Status -->
       {#if isProcessingSummary}
         <div class="flex items-center gap-2">
@@ -447,14 +398,12 @@
         </div>
       {/if}
     </div>
-
     <!-- Document Stats -->
     <div class="flex items-center gap-4 text-sm text-gray-600">
       <span>Words: {getWordCount()}</span>
       <span>Characters: {getCharCount()}</span>
     </div>
   </div>
-
   <!-- Main Editor -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
     <!-- Editor Panel (2/3 width on large screens) -->
@@ -465,7 +414,6 @@
         init={editorConfig}
       />
     </div>
-
     <!-- AI Insights Panel (1/3 width on large screens) -->
     <div class="lg:col-span-1">
       <div class="bg-white border border-gray-200 rounded-lg p-4 h-full">
@@ -475,7 +423,6 @@
           </svg>
           AI Insights
         </h3>
-
         {#if isProcessingSummary}
           <div class="flex flex-col items-center justify-center py-8 text-gray-500">
             <div class="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mb-3"></div>
@@ -488,7 +435,6 @@
               <h4 class="font-medium text-blue-900 mb-2">Document Summary</h4>
               <p class="text-sm text-blue-800">{currentSummary}</p>
             </div>
-
             <!-- Technical Details -->
             <div class="bg-gray-50 rounded-lg p-3">
               <h5 class="font-medium text-gray-700 mb-2 text-xs uppercase tracking-wide">Processing Details</h5>
@@ -529,12 +475,11 @@
       </div>
     </div>
   </div>
-
   <!-- Architecture Footer - Shows the technical stack in action -->
   <div class="text-xs text-gray-500 bg-gray-50 p-2 rounded border">
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-4">
-        <span class="font-medium">Architecture:</span>
+        <span class="font-medium">Architecture: </span>
         <span>SvelteKit 2 → Go Microservice → Redis Cache → Llama.cpp/Legal-BERT → PostgreSQL/pg_vector</span>
       </div>
       <div class="flex items-center gap-2">
@@ -544,10 +489,9 @@
     </div>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
-  .tinymce-container {;
+  .tinymce-container {
     position: relative;
     width: 100%;
 }
@@ -602,6 +546,4 @@
     --tox-collection-toolbar-button-hover-background: #4B5563;
 }
 </style>
-
 <!-- Removed forced error test block after pipeline validation -->
-

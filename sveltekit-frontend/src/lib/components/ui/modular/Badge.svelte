@@ -1,11 +1,9 @@
 <!-- Modular Badge Component - Bits UI + UnoCSS + Svelte 5 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import type { Snippet } from 'svelte';
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
-
   // Svelte 5 props pattern
   interface Props {
     variant?: 'default' | 'secondary' | 'destructive' | 'success' | 'warning' | 'info' | 'outline' | 'yorha' | 'legal' | 'evidence' | 'case';
@@ -16,7 +14,6 @@
     removable?: boolean;
     onremove?: () => void;
   }
-
   let {
     variant = 'default',
     size = 'default',
@@ -25,9 +22,8 @@
     icon,
     removable = false,
     onremove,
-    ...restProps;
+    ...restProp;
   }: Props = $props();
-
   // UnoCSS-based badge variants
   const badgeVariants = cva(
     // Base classes
@@ -54,33 +50,28 @@
         }
       },
       defaultVariants: {
-        variant: 'default',;
+        variant: 'default',
         size: 'default';
       }
     }
   );
-
   // Computed class names
   let badgeClass = $derived(cn(badgeVariants({ variant, size }), className));
-
   // Handle remove click
   function handleRemove(event: MouseEvent) {
     event.stopPropagation();
     onremove?.();
   }
 </script>
-
 <span class={badgeClass} {...restProps}>
   <!-- Icon -->
   {#if icon}
     <div class="{icon} w-3 h-3" aria-hidden="true"></div>
   {/if}
-
   <!-- Content -->
   {#if children}
     {@render children()}
   {/if}
-
   <!-- Remove button -->
   {#if removable}
     <button
@@ -93,12 +84,10 @@
     </button>
   {/if}
 </span>
-
-<style>/* YoRHa-specific animations */ .yorha-badge {;
+<style>/* YoRHa-specific animations */ .yorha-badge {
     position: relative;
     overflow: hidden;
   }
-
   .yorha-badge::before {
     content: '';
     position: absolute;
@@ -107,16 +96,14 @@
     width: 100%;
     height: 100%;
 background: linear-gradient( 90deg, transparent, rgba(212, 175, 55, 0.2), transparent );
-    transition: left 0.5s;
+    transition: left 0.5;
   }
-
   .yorha-badge:hover::before {
     left: 100%;
   }
 /* Pulse animation for critical badges */ .badge-critical {
     animation: badge-pulse 2s infinite;
   }
-
   @keyframes badge-pulse {
     0%, 100% {
       opacity: 1;
@@ -128,11 +115,9 @@ background: linear-gradient( 90deg, transparent, rgba(212, 175, 55, 0.2), transp
 /* Priority indicators */ .badge-high-priority {
     box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
   }
-
   .badge-medium-priority {
     box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.3);
   }
-
   .badge-low-priority {
     box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.3);
   }

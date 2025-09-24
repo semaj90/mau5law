@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     class?: string;
     children?: import('svelte').Snippet;
@@ -9,7 +8,6 @@
   import type { SelectOption } from './index';
   import { cn } from '$lib/utils/cn';
   import { Search, FileText, Scale, Brain, AlertTriangle, CheckCircle } from 'lucide-svelte';
-
   // Demo state using Svelte 5 runes
   let selectedCaseType = $state('');
   let searchQuery = $state('');
@@ -19,7 +17,6 @@
   let selectedEvidenceCard = $state<string | null>(null);
   let aiAnalysisLoading = $state(false);
   let evidenceUploadProgress = $state(0);
-
   // Mock data for demos
   const caseTypes: SelectOption[] = [
     { value: 'criminal', label: 'Criminal Cases', description: 'Criminal law proceedings and investigations' },
@@ -29,7 +26,6 @@
     { value: 'contract', label: 'Contract Law', description: 'Contract disputes and negotiations' },
     { value: 'intellectual', label: 'Intellectual Property', description: 'Patents, trademarks, and IP disputes' }
   ];
-
   const evidenceCategories: SelectOption[] = [
     { value: 'critical', label: 'Critical Evidence', description: 'High-priority evidence for case', category: 'Priority' },
     { value: 'supporting', label: 'Supporting Evidence', description: 'Additional supporting materials', category: 'Priority' },
@@ -37,7 +33,6 @@
     { value: 'multimedia', label: 'Multimedia Evidence', description: 'Audio, video, images', category: 'Type' },
     { value: 'witness', label: 'Witness Testimony', description: 'Depositions and statements', category: 'Type' }
   ];
-
   const mockEvidenceItems = [
     {
       id: '1',
@@ -59,12 +54,11 @@
       id: '3',
       title: 'Expert Witness Statement',
       type: 'document',
-      priority: 'medium' as const,;
-      confidence: 'high' as const,;
+      priority: 'medium' as const,
+      confidence: 'high' as const,
       description: 'Technical analysis by Dr. Smith';
     }
   ];
-
   // Demo functions
   async function runAIAnalysis() {
     aiAnalysisLoading = true;
@@ -72,7 +66,6 @@
     await new Promise(resolve => setTimeout(resolve, 2000));
     aiAnalysisLoading = false;
   }
-
   async function uploadEvidence() {
     evidenceUploadProgress = 0;
     const interval = setInterval(() => {
@@ -84,11 +77,9 @@
       }
     }, 200);
   }
-
   function selectEvidenceCard(id: string) {
     selectedEvidenceCard = selectedEvidenceCard === id ? null : id;
   }
-
   // Reactive computed values using $derived
   function tabClasses(tab: string) {
     return cn(
@@ -99,7 +90,6 @@
       }
     );
   }
-
   let demoSections = $derived([
     { id: 'buttons', label: 'Enhanced Buttons', icon: FileText },
     { id: 'inputs', label: 'Smart Inputs', icon: Search },
@@ -107,7 +97,6 @@
     { id: 'cards', label: 'Evidence Cards', icon: Brain }
   ]);
 </script>
-
 <div class="yorha-panel p-6 max-w-6xl mx-auto">
   <!-- Header -->
   <div class="yorha-panel-header mb-6">
@@ -118,7 +107,6 @@
       Comprehensive showcase of Bits UI components enhanced with Svelte 5 runes, UnoCSS styling, and legal AI features.
     </p>
   </div>
-
   <!-- Tab Navigation -->
   <div class="border-b border-nier-border-secondary mb-6">
     <nav class="flex space-x-8">
@@ -135,7 +123,6 @@
       {/each}
     </nav>
   </div>
-
   <!-- Demo Content -->
   <div class="demo-content">
     {#if currentTab === 'buttons'}
@@ -145,7 +132,6 @@
         <p class="text-nier-text-secondary mb-6">
           Buttons with legal AI context, confidence indicators, and NieR theming.
         </p>
-
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <!-- Standard Variants -->
           <div class="yorha-nier-bits-card p-4">
@@ -165,7 +151,6 @@ Outline Style
 </Button>
             </div>
           </div>
-
           <!-- Legal AI Variants -->
           <div class="yorha-nier-bits-card p-4">
             <h3 class="font-semibold mb-3 text-nier-text-primary">Legal AI Variants</h3>
@@ -184,7 +169,6 @@ Processing...
 </Button>
             </div>
           </div>
-
           <!-- Priority Buttons -->
           <div class="yorha-nier-bits-card p-4">
             <h3 class="font-semibold mb-3 text-nier-text-primary">Priority Actions</h3>
@@ -206,7 +190,6 @@ Low Priority
           </div>
         </div>
       </div>
-
     {:else if currentTab === 'inputs'}
       <!-- Enhanced Inputs Demo -->
       <div class="demo-config-section">
@@ -214,7 +197,6 @@ Low Priority
         <p class="text-nier-text-secondary mb-6">
           Input fields with AI assistance, legal context validation, and evidence search capabilities.
         </p>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Search Inputs -->
           <div class="yorha-nier-bits-card p-4">
@@ -229,7 +211,6 @@ Low Priority
                 label="Evidence Search"
                 helpText="AI-powered semantic search across case database"
               />
-
               <Input
                 variant="legal"
                 placeholder="Case number (e.g., CV-2024-001)"
@@ -239,7 +220,6 @@ Low Priority
                 pattern="^[A-Z]{2}-\d{4}-\d{3}$"
                 errorMessage="Invalid case number format"
               />
-
               <Input
                 variant="evidence"
                 placeholder="Document title or description..."
@@ -252,7 +232,6 @@ Low Priority
               />
             </div>
           </div>
-
           <!-- Status Inputs -->
           <div class="yorha-nier-bits-card p-4">
             <h3 class="font-semibold mb-3 text-nier-text-primary">Status & Validation</h3>
@@ -266,7 +245,6 @@ Low Priority
                 icon={CheckCircle}
                 iconPosition="right"
               />
-
               <Input
                 variant="default"
                 placeholder="Error state input..."
@@ -276,7 +254,6 @@ Low Priority
                 icon={AlertTriangle}
                 iconPosition="right"
               />
-
               <Input
                 variant="password"
                 placeholder="Secure access..."
@@ -288,7 +265,6 @@ Low Priority
           </div>
         </div>
       </div>
-
     {:else if currentTab === 'dialogs'}
       <!-- Enhanced Dialogs Demo -->
       <div class="demo-config-section">
@@ -296,18 +272,15 @@ Low Priority
         <p class="text-nier-text-secondary mb-6">
           Modal dialogs optimized for legal workflows with evidence analysis and case management features.
         </p>
-
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <Button class="bits-btn" variant="yorha" legal onclick={() =>
 dialogOpen = true}>
             Case Management
 </Button>
-
           <Button class="bits-btn" variant="primary" legal onclick={() =>
 evidenceDialogOpen = true}>
             Evidence Upload
 </Button>
-
           <Button class="bits-btn" variant="ghost" legal onclick={runAIAnalysis} loading={aiAnalysisLoading}>
 {#if aiAnalysisLoading}
               Running AI Analysis...
@@ -316,7 +289,6 @@ evidenceDialogOpen = true}>
             {/if}
 </Button>
         </div>
-
         <!-- Case Management Dialog -->
         <Dialog
           bind:open={dialogOpen}
@@ -332,7 +304,6 @@ evidenceDialogOpen = true}>
                   Comprehensive case tracking and evidence management for legal professionals.
                 </p>
               </div>
-
               <div class="yorha-panel-content space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Select;
@@ -343,7 +314,6 @@ evidenceDialogOpen = true}>
                     caseType
                     label="Case Category"
                   />
-
                   <Input
                     variant="legal"
                     placeholder="Enter case title..."
@@ -352,7 +322,6 @@ evidenceDialogOpen = true}>
                     legal
                   />
                 </div>
-
                 <div class="agent-nier-bits-card p-4">
                   <h3 class="font-semibold text-nier-text-primary mb-2">AI Assistant Recommendations</h3>
                   <ul class="space-y-2 text-sm text-nier-text-secondary">
@@ -371,7 +340,6 @@ evidenceDialogOpen = true}>
                   </ul>
                 </div>
               </div>
-
               <div class="bits-dialog-footer">
                 <Button class="bits-btn" variant="ghost" onclick={() =>
 dialogOpen = false}>
@@ -384,7 +352,6 @@ Create Case
             </div>
                           {/snippet}
         </Dialog>
-
         <!-- Evidence Upload Dialog -->
         <Dialog
           bind:open={evidenceDialogOpen}
@@ -400,7 +367,6 @@ Create Case
                   Upload and categorize evidence with AI-powered analysis.
                 </p>
               </div>
-
               <div class="yorha-panel-content space-y-4">
                 <Select
                   options={evidenceCategories}
@@ -409,7 +375,6 @@ Create Case
                   evidenceCategory
                   label="Evidence Type"
                 />
-
                 {#if evidenceUploadProgress > 0}
                   <div class="processing-bar">
                     <div
@@ -429,7 +394,6 @@ Create Case
                   </div>
                 {/if}
               </div>
-
               <div class="bits-dialog-footer">
                 <Button class="bits-btn" variant="ghost" onclick={() =>
 evidenceDialogOpen = false}>
@@ -444,7 +408,6 @@ evidenceDialogOpen = false}>
                           {/snippet}
         </Dialog>
       </div>
-
     {:else if currentTab === 'cards'}
       <!-- Enhanced Cards Demo -->
       <div class="demo-config-section">
@@ -452,11 +415,10 @@ evidenceDialogOpen = false}>
         <p class="text-nier-text-secondary mb-6">
           Interactive cards for evidence management with priority indicators and AI confidence scores.
         </p>
-
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {#each mockEvidenceItems as item (item.id)}
             <div
-              class="nes-container yorha-nier-bits-card p-4 cursor-pointer transition-all duration-200 hover:shadow-lg";
+              class="nes-container yorha-nier-bits-card p-4 cursor-pointer transition-all duration-200 hover: shadow-lg";
               class:ring-2={selectedEvidenceCard === item.id}
               class:ring-nier-border-primary={selectedEvidenceCard === item.id}
               onclick={() => selectEvidenceCard(item.id)}
@@ -470,11 +432,9 @@ evidenceDialogOpen = false}>
                     {item.confidence.toUpperCase()}
                   </div>
                 </div>
-
                 <p class="text-xs text-nier-text-secondary">
                   {item.description}
                 </p>
-
                 <div class="flex items-center justify-between text-xs">
                   <span class="yorha-priority-{item.priority} px-2 py-1 rounded text-white">
                     {item.priority.toUpperCase()}
@@ -483,7 +443,6 @@ evidenceDialogOpen = false}>
                     {item.type.toUpperCase()}
                   </span>
                 </div>
-
                 {#if selectedEvidenceCard === item.id}
                   <div class="border-t border-nier-border-secondary pt-3 mt-3">
                     <div class="flex gap-2">
@@ -500,7 +459,6 @@ Analyze
             </div>
           {/each}
         </div>
-
         <!-- AI Analysis Card -->
         <div class="mt-6">
           <div
@@ -517,7 +475,6 @@ Analyze
                   <p class="text-sm text-nier-text-secondary">Generated with 94% confidence</p>
                 </div>
               </div>
-
               <div class="prose prose-sm max-w-none text-nier-text-secondary">
                 <p>
                   Based on the uploaded evidence and case parameters, the AI analysis suggests a strong likelihood
@@ -525,7 +482,6 @@ Analyze
                   favorable precedent cases.
                 </p>
               </div>
-
               <div class="flex gap-2">
                 <Button class="bits-btn" size="sm" variant="primary">
 Accept Analysis
@@ -543,7 +499,6 @@ Generate Report
       </div>
     {/if}
   </div>
-
   <!-- Footer -->
   <div class="mt-8 pt-6 border-t border-nier-border-secondary">
     <div class="text-center text-sm text-nier-text-muted">
@@ -551,18 +506,15 @@ Generate Report
     </div>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
-  .demo-content {;
+  .demo-content {
     min-height: 400px;
   }
-
   /* Enhanced demo styling */
   :global(.demo-config-section) {
     animation: demo-section-enter 0.5s ease-out;
   }
-
   @keyframes demo-section-enter {
     from {
       opacity: 0;
@@ -573,13 +525,11 @@ Generate Report
       transform: translateY(0);
     }
   }
-
   /* Interactive demo enhancements */
-  :global(.demo-example-card:hover) {
+  :global($1) {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   }
-
   /* Tab navigation styling */
   .demo-content {
     background: linear-gradient(
@@ -591,7 +541,6 @@ Generate Report
     padding: 2rem;
     margin-top: 1rem;
   }
-
   /* Legal AI specific demo styling */
   :global(.yorha-drop-zone) {
     background: linear-gradient(
@@ -606,12 +555,10 @@ Generate Report
     border-radius: 8px;
     transition: all 0.3s ease;
   }
-
   :global(.yorha-drop-zone:hover) {
     border-color: var(--color-nier-border-primary);
     background-color: var(--color-nier-bg-tertiary);
   }
-
   /* Processing animation */
   :global(.processing-bar) {
     height: 4px;
@@ -619,7 +566,6 @@ Generate Report
     border-radius: 2px;
     overflow: hidden;
   }
-
   :global(.processing-indicator) {
     height: 100%;
     background: linear-gradient(

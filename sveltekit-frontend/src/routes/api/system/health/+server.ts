@@ -1,7 +1,5 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
-
 export const GET: RequestHandler = async () => {
 	try {
 		// Comprehensive system health check
@@ -39,20 +37,17 @@ export const GET: RequestHandler = async () => {
 				loadAverage: process.platform !== 'win32' ? require('os').loadavg() : 'N/A (Windows)'
 			}
 		}
-
 		// Basic service availability checks
 		try {
 			// You can add actual service checks here
 			healthStatus.services.database.status = 'healthy'
 			healthStatus.services.database.message = 'Database connection assumed healthy'
-			
-			healthStatus.services.redis.status = 'healthy'; 
+			healthStatus.services.redis.status = 'healthy';
 			healthStatus.services.redis.message = 'Redis connection assumed healthy'
 		} catch (error: any) {
 			console.error('Health check error:', error)
 			healthStatus.status = 'degraded'
 		}
-
 		return json(healthStatus, {
 			status: 200,
 			headers: {
@@ -63,13 +58,12 @@ export const GET: RequestHandler = async () => {
 		})
 	} catch (error: any) {
 		console.error('System health check failed:', error)
-		
 		return json({
 			status: 'unhealthy',
 			timestamp: new Date().toISOString(),
 			error: 'Health check failed',
 			message: error instanceof Error ? error.message: 'Unknown error'
-		}, { 
+		}, {
 			status: 503,
 			headers: {
 				'Content-Type': 'application/json',

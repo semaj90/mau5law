@@ -2,8 +2,7 @@
  * WebAssembly Client Integration Status Check
  * Verifies all modern stack components are properly linked
  */
-
-// Type declarations for browser environment;
+// Type declarations for browser environment
 declare global {
   interface Navigator {
     gpu?: {
@@ -12,18 +11,16 @@ declare global {
   }
   interface GPUAdapter {}
 }
-
 // Environment detection - fallback for environments without SvelteKit
 const browser = typeof window !== 'undefined';
 }
-
 export interface IntegrationStatus {
-  webassembly: {;
+  webassembly: {
     available: boolean;
     simdSupport: boolean;
     runtimeConnected: boolean;
   };
-  sveltekit: {;
+  sveltekit: {
     version: string;
     svelte5Patterns: boolean;
     ssrReady: boolean;
@@ -39,7 +36,7 @@ export interface IntegrationStatus {
     nesCSS: boolean;
     gamingTheme: boolean;
   };
-  webgpu: {;
+  webgpu: {
     available: boolean;
     dawnBackend: boolean;
     unifiedRuntime: boolean;
@@ -50,50 +47,46 @@ export interface IntegrationStatus {
     wasmCache: boolean;
   };
 }
-
 export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
   const status: IntegrationStatus = {
     webassembly: {
-      available: false,
-      simdSupport: false,
+      available: false
+      simdSupport: false
       runtimeConnected: false
     },
     sveltekit: {
       version: '2.0',
-      svelte5Patterns: true,
+      svelte5Patterns: true
       ssrReady: true
     },
     database: {
-      drizzleOrm: true,
-      pgvectorSupport: true,
+      drizzleOrm: true
+      pgvectorSupport: true
       postgresqlReady: false
     },
     ui: {
-      enhancedBitsComponents: true,
-      unoCSS: true,
-      nesCSS: true,
+      enhancedBitsComponents: true
+      unoCSS: true
+      nesCSS: true
       gamingTheme: true
     },
     webgpu: {
-      available: false,
-      dawnBackend: false,
+      available: false
+      dawnBackend: false
       unifiedRuntime: true
-    },;
+    },
     cache: {
-      chrRomCache: true,
-      redisConnected: false,
+      chrRomCache: true
+      redisConnected: false
       wasmCache: true
     }
   };
-
   if (!browser) return status;
-
   try {
-    // Check WebAssembly support;
+    // Check WebAssembly support
     if (typeof WebAssembly !== 'undefined') {
       status.webassembly.available = true;
-
-      // Check SIMD support;
+      // Check SIMD support
       try {
         const wasmModule = new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0]);
         await WebAssembly.instantiate(wasmModule);
@@ -101,8 +94,7 @@ export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
       } catch (e) {
         console.warn('WebAssembly SIMD check failed:', e);
       }
-
-      // Check unified runtime connection;
+      // Check unified runtime connection
       try {
         // Use dynamic import with error handling for missing modules
         const modulePath = '../webgpu/unified-runtime-abstraction.js';
@@ -115,8 +107,7 @@ export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
         console.warn('Unified runtime connection failed:', e);
       }
     }
-
-    // Check WebGPU support;
+    // Check WebGPU support
     if (navigator.gpu) {
       status.webgpu.available = true;
       try {
@@ -126,8 +117,7 @@ export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
         console.warn('WebGPU adapter request failed:', e);
       }
     }
-
-    // Check database connection (simplified - would need actual endpoint check);
+    // Check database connection (simplified - would need actual endpoint check)
     try {
       // In a real scenario, this would ping a health check endpoint
       const response = await fetch('/api/health', { method: 'HEAD' });
@@ -135,22 +125,18 @@ export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
     } catch (e) {
       // Database connection not available in client-only check
     }
-
-    // Check cache connection;
+    // Check cache connection
     try {
       const response = await fetch('/api/cache/status', { method: 'HEAD' });
       status.cache.redisConnected = response.ok;
     } catch (e) {
       // Cache connection not available
     }
-
   } catch (error) {
     console.error('Integration status check failed:', error);
   }
-
   return status;
 }
-
 export function formatStatusReport(status: IntegrationStatus): string {
   const sections = [
     '🔧 WebAssembly Client Integration Status',
@@ -187,10 +173,8 @@ export function formatStatusReport(status: IntegrationStatus): string {
     `  🔴 Redis Connected: ${status.cache.redisConnected}`,
     `  📦 WASM Cache: ${status.cache.wasmCache}`
   ];
-
   return sections.join('\n');
 }
-
 export const integrationChecker = {
   checkIntegrationStatus,
   formatStatusReport

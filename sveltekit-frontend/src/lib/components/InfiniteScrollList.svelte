@@ -1,14 +1,11 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import { onMount } from "svelte";
   import { quintOut } from "svelte/easing";
   import { fade, slide } from "svelte/transition";
-
   import {
     File,
     FileEdit,
@@ -17,7 +14,6 @@ https://svelte.dev/e/js_parse_error -->
     Palette,
     Video,
   } from "lucide-svelte";
-
   interface Props {
     items?: unknown[];
     itemType?: "evidence" | "notes" | "canvas";
@@ -28,7 +24,6 @@ https://svelte.dev/e/js_parse_error -->
     onloadMore?: () => void;
     onitemClick?: (event: { item: unknown; type: string }) => void;
   }
-
   let {
     items = $bindable([]),
     itemType = $bindable("evidence"),
@@ -42,7 +37,6 @@ https://svelte.dev/e/js_parse_error -->
   let displayedItems: unknown[] = $state([]);
   let currentPage = $state(0);
   let hasMore = $state(true);
-
   // TODO: Convert to $derived: {
     // Reset when items change
     if (items !== displayedItems.slice(0, items.length)) {
@@ -53,42 +47,33 @@ https://svelte.dev/e/js_parse_error -->
   $effect(() => {
     loadMore();
   });
-
   function loadMore() {
     if (isLoading || !hasMore) return;
-
-    const startIndex = currentPage * pageSize;
+    const startIndex = currentPage * pageSiz;
     const endIndex = Math.min(startIndex + pageSize, items.length);
     const newItems = items.slice(startIndex, endIndex);
-
     if (newItems.length === 0) {
       hasMore = false;
       return;
   }
     displayedItems = [...displayedItems, ...newItems];
     currentPage++;
-
     // Check if we have more items to load
     hasMore = endIndex < items.length;
-
     // Emit event for loading more data from API
   // Emit event for loading more data from API
   if (onloadMore && endIndex >= items.length) {
     onloadMore();
   }
   }
-
   function handleItemClick(item: unknown) {
   onitemClick?.({ item, type: itemType });
   }
-
   function handleScroll() {
   if (!scrollContainer) return;
-
   const { scrollTop, scrollHeight, clientHeight } = scrollContainer;
   const scrolledToBottom =
     scrollHeight - scrollTop - clientHeight < loadMoreThreshold;
-
   if (scrolledToBottom) {
     loadMore();
   }
@@ -96,21 +81,21 @@ https://svelte.dev/e/js_parse_error -->
     if (itemType === "notes") {
       return FileEdit;
     } else if (itemType === "canvas") {
-      return Palette;
+      return Palett;
     } else {
       // Evidence
       const fileType = (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).fileType || (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).type || "";
-      if (fileType.startsWith("image/")) return Image;
+      if (fileType.startsWith("image/")) return Imag;
       if (fileType.startsWith("video/")) return Video;
       if (fileType.includes("text") || fileType.includes("pdf"))
         return FileText;
-      return File;
+      return Fil;
   }}
   function formatDate(dateString: string) {
     return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",;
-      month: "short",;
-      day: "numeric",;
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   }
   function truncateText(text: string, maxLength = 100) {
@@ -120,7 +105,6 @@ https://svelte.dev/e/js_parse_error -->
       : text;
   }
 </script>
-
 <div
   class="infinite-scroll-container"
   bind:this={scrollContainer}
@@ -151,7 +135,6 @@ https://svelte.dev/e/js_parse_error -->
           <div class="item-icon">
             <svelte:component this={getItemIcon(item)} size={20} />
           </div>
-
           <div class="item-content">
             <div class="item-header">
               <h4 class="item-title">
@@ -169,7 +152,6 @@ https://svelte.dev/e/js_parse_error -->
                 )}
               </span>
             </div>
-
             <p class="item-description">
               {#if itemType === "evidence"}
                 {truncateText((item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).description)}
@@ -179,7 +161,6 @@ https://svelte.dev/e/js_parse_error -->
                 Canvas state with {(item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).objectCount || 0} objects
               {/if}
             </p>
-
             {#if (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).tags && (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).tags.length > 0}
               <div class="item-tags">
                 {#each (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).tags.slice(0, 3) as tag}
@@ -195,23 +176,20 @@ https://svelte.dev/e/js_parse_error -->
       {/each}
     </div>
   {/if}
-
   {#if isLoading}
     <div class="loading-indicator" transitionfade={{ duration: 200 }}>
       <div class="spinner"></div>
       <p>Loading more {itemType}...</p>
     </div>
   {/if}
-
   {#if !hasMore && displayedItems.length > 0}
     <div class="end-indicator" transitionfade={{ duration: 200 }}>
       <p>No more {itemType} to load</p>
     </div>
   {/if}
 </div>
-
 <style>
-  .infinite-scroll-container {;
+  .infinite-scroll-container {
     flex: 1;
     overflow-y: auto;
     padding: 0;
@@ -280,7 +258,7 @@ https://svelte.dev/e/js_parse_error -->
   .item-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betwee;
     gap: 0.5rem;
     margin-bottom: 0.25rem;
 }
@@ -290,7 +268,7 @@ https://svelte.dev/e/js_parse_error -->
     font-weight: 600;
     color: var(--pico-color);
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: ellipsi;
     white-space: nowrap;
     flex: 1;
 }
@@ -305,7 +283,7 @@ https://svelte.dev/e/js_parse_error -->
     color: var(--pico-muted-color);
     line-height: 1.4;
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: ellipsi;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
@@ -349,7 +327,6 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-
 .end-indicator {
     text-align: center;
     padding: 1rem;
@@ -378,6 +355,4 @@ https://svelte.dev/e/js_parse_error -->
     background: var(--pico-primary);
 }
 </style>
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

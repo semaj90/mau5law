@@ -1,36 +1,30 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { ChatHistoryService } from '$lib/server/chat/history-service'
-
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     const user = locals.user as any
     if (!user?.id) return json({ error: 'Unauthorized' }, { status: 401 })
-
     const sessionId = url.searchParams.get('sessionId')
-
     if (sessionId) {
       const messages = await ChatHistoryService.getMessages(sessionId)
       return json({
-        success: true,
+        success: true
         sessionId,
         messages: messages.reverse()
       })
     }
-
     const sessions = await ChatHistoryService.getSessionsByUser(user.id)
     return json({
-      success: true,
+      success: true
       sessions
     })
-
   } catch (error) {
     console.error('Chat history API error:', error)
-
     // Return mock chat history on failure
     const sessionId = url.searchParams.get('sessionId')
     const mockData = sessionId ? {
-      success: false,
+      success: false
       error: 'failure default to mock',
       sessionId,
       messages: [
@@ -48,7 +42,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         }
       ]
     } : {
-      success: false,
+      success: false
       error: 'failure default to mock',
       sessions: [
         {
@@ -59,7 +53,6 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         }
       ]
     }
-
     return json(mockData, { status: 500 })
   }
 }

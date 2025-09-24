@@ -44,7 +44,6 @@
     Save,
     X
   } from 'lucide-svelte';
-
   // Component state
   let searchQuery = $state('');
   let selectedNoteType = $state('');
@@ -54,79 +53,67 @@
   let editingNote = $state<LegalNote | null>(null);
   let semanticResults = $state<LegalNote[]>([]);
   let showSemanticSearch = $state(false);
-
   // New note form
   let newNote = $state({
     title: '',
     content: '',
-    noteType: 'general' as const,;
+    noteType: 'general' as const,
     tags: [] as string[],
-    caseId: '',;
+    caseId: '',
     priority: 'medium' as const,
     riskLevel: 'low' as const;
   });
-
   // Stats and filters reactive
   let stats = $state<any>({});
   let notes = $state<LegalNote[]>([]);
   let currentFilters = $state<NoteFilters>({
     search: '',
-    noteType: '',;
+    noteType: '',
     tags: [],
     caseId: undefined;
   });
-
   onMount(async () => {
     await loadLegalNotes();
-
     // Subscribe to stores
     const unsubscribeNotes = filteredNotes.subscribe((value) => {
-      notes = value;
+      notes = valu;
     });
-
     const unsubscribeStats = noteStats.subscribe((value) => {
-      stats = value;
+      stats = valu;
     });
-
     const unsubscribeFilters = noteFilters.subscribe((value) => {
-      currentFilters = value;
+      currentFilters = valu;
     });
-
     return () => {
       unsubscribeNotes();
       unsubscribeStats();
       unsubscribeFilters();
     };
   });
-
   // Filter management
   function applyFilters() {
     setNoteFilter({
-      search: searchQuery,
-      noteType: selectedNoteType,
+      search: searchQuery
+      noteType: selectedNoteType
       riskLevel: selectedRiskLevel;
     });
   }
-
   function clearAllFilters() {
     searchQuery = '';
     selectedNoteType = '';
     selectedRiskLevel = '';
     clearNoteFilters();
   }
-
   // Note creation
   async function createNote() {
     if (!newNote.title.trim() || !newNote.content.trim()) return;
-
     const noteId = `note-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const tags = newNote.tags.length > 0 ? newNote.tags : [newNote.noteType];
-
     const note: Omit<LegalNote, 'savedAt' | 'updatedAt'> = {
-      id: noteId,
+      id: noteId
       title: newNote.title,
       content: newNote.content,
-      markdown: newNote.content,;
+      markdown: newNote.content,
       html: `<p>${newNote.content.replace(/\n/g, '<br>')}</p>`,
       contentJson: { content: newNote.content },
       noteType: newNote.noteType,
@@ -135,94 +122,80 @@
       userId: 'current-user', // TODO: Get from auth
       metadata: {
         priority: newNote.priority,
-        riskLevel: newNote.riskLevel,;
-        starred: false,
-        aiGenerated: false,
+        riskLevel: newNote.riskLevel,
+        starred: false
+        aiGenerated: false
         processingStatus: 'completed';
       }
     };
-
     await saveLegalNote(note);
     resetNewNoteForm();
     showCreateNote = false;
   }
-
   function resetNewNoteForm() {
     newNote = {
       title: '',
       content: '',
-      noteType: 'general',;
+      noteType: 'general',
       tags: [],
-      caseId: '',;
+      caseId: '',
       priority: 'medium',
       riskLevel: 'low';
     };
   }
-
   // Note editing
   function startEditNote(note: LegalNote) {
     editingNote = { ...note };
   }
-
   async function saveEditedNote() {
     if (!editingNote) return;
-
     await saveLegalNote({
       ...editingNote,
-      markdown: editingNote.content,;
+      markdown: editingNote.content,
       html: `<p>${editingNote.content.replace(/\n/g, '<br>')}</p>`
     });
-
     editingNote = null;
   }
-
   function cancelEdit() {
     editingNote = null;
   }
-
   // Note actions
   async function toggleStar(note: LegalNote) {
     const updated = {
       ...note,
       metadata: {
-        ...note.metadata,;
+        ...note.metadata,
         starred: !note.metadata.starred;
       }
     };
     await saveLegalNote(updated);
   }
-
   async function deleteNote(noteId: string) {
     if (confirm('Are you sure you want to delete this note?')) {
       await removeLegalNote(noteId);
     }
   }
-
   // Semantic search
   async function performSemSearch() {
     if (!searchQuery.trim()) return;
-
     const results = await performSemanticSearch(searchQuery, 10);
-    semanticResults = results;
+    semanticResults = result;
     showSemanticSearch = true;
   }
-
   // Export functionality
   async function exportNotes(format: 'json' | 'markdown' | 'legal_brief') {
     await exportLegalNotes(format);
   }
-
   // Utility functions
   function formatDate(date: Date | string): string {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric',;
-      hour: '2-digit',;
+      day: 'numeric',
+      hour: '2-digit',
       minute: '2-digit';
     });
   }
-
   function getRiskBadgeVariant(riskLevel?: string) {
     switch (riskLevel) {
       case 'critical': return 'destructive';
@@ -232,7 +205,6 @@
       default: return 'outline';
     }
   }
-
   function getTypeBadgeColor(noteType: string): string {
     const colors: Record<string, string> = {
       'legal_analysis': 'bg-blue-500',
@@ -246,18 +218,15 @@
     };
     return colors[noteType] || 'bg-gray-500';
   }
-
   function addTag(tag: string) {
     if (tag.trim() && !newNote.tags.includes(tag.trim())) {
       newNote.tags = [...newNote.tags, tag.trim()];
     }
   }
-
   function removeTag(index: number) {
     newNote.tags = newNote.tags.filter((_, i) => i !== index);
   }
 </script>
-
 <div class="space-y-6 p-6">
   <!-- Header -->
   <div class="flex justify-between items-center">
@@ -281,7 +250,6 @@
       </Button>
     </div>
   </div>
-
   <!-- Statistics Dashboard -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     <Card>
@@ -298,7 +266,6 @@
         </div>
       </CardContent>
     </Card>
-
     <Card>
       <CardHeader class="pb-2">
         <CardTitle class="text-sm flex items-center gap-2">
@@ -313,7 +280,6 @@
         </div>
       </CardContent>
     </Card>
-
     <Card>
       <CardHeader class="pb-2">
         <CardTitle class="text-sm flex items-center gap-2">
@@ -328,7 +294,6 @@
         </div>
       </CardContent>
     </Card>
-
     <Card>
       <CardHeader class="pb-2">
         <CardTitle class="text-sm flex items-center gap-2">
@@ -346,7 +311,6 @@
       </CardContent>
     </Card>
   </div>
-
   <!-- Search and Filters -->
   <Card>
     <CardHeader>
@@ -377,7 +341,6 @@
           Clear
         </Button>
       </div>
-
       {#if showFilters}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t">
           <div>
@@ -399,7 +362,6 @@
               </SelectContent>
             </Select>
           </div>
-
           <div>
             <label class="block text-sm font-medium mb-2">Risk Level</label>
             <Select bind:value={selectedRiskLevel}>
@@ -415,7 +377,6 @@
               </SelectContent>
             </Select>
           </div>
-
           <div class="flex items-end gap-2">
             <Button onclick={() => exportNotes('json')} variant="outline" size="sm">
               <Download class="h-4 w-4 mr-2" />
@@ -434,7 +395,6 @@
       {/if}
     </CardContent>
   </Card>
-
   <!-- Create New Note -->
   {#if showCreateNote}
     <Card>
@@ -451,7 +411,6 @@
               bind:value={newNote.title}
             />
           </div>
-
           <div>
             <label class="block text-sm font-medium mb-2">Case ID</label>
             <Input
@@ -460,7 +419,6 @@
               bind:value={newNote.caseId}
             />
           </div>
-
           <div>
             <label class="block text-sm font-medium mb-2">Type</label>
             <Select bind:value={newNote.noteType}>
@@ -477,7 +435,6 @@
               </SelectContent>
             </Select>
           </div>
-
           <div>
             <label class="block text-sm font-medium mb-2">Priority</label>
             <Select bind:value={newNote.priority}>
@@ -493,7 +450,6 @@
             </Select>
           </div>
         </div>
-
         <div>
           <label class="block text-sm font-medium mb-2">Content</label>
           <Textarea
@@ -502,7 +458,6 @@
             rows={6}
           />
         </div>
-
         <div>
           <label class="block text-sm font-medium mb-2">Tags</label>
           <div class="flex flex-wrap gap-2 mb-2">
@@ -526,7 +481,6 @@
             }}
           />
         </div>
-
         <div class="flex gap-2">
           <Button onclick={createNote}>
             <Save class="h-4 w-4 mr-2" />
@@ -539,7 +493,6 @@
       </CardContent>
     </Card>
   {/if}
-
   <!-- Semantic Search Results -->
   {#if showSemanticSearch && semanticResults.length > 0}
     <Card>
@@ -581,7 +534,6 @@
       </CardContent>
     </Card>
   {/if}
-
   <!-- Notes List -->
   <div class="space-y-4">
     {#each notes as note (note.id)}
@@ -620,44 +572,37 @@
                       <Star class="h-4 w-4 fill-yellow-400 text-yellow-400" />
                     {/if}
                   </div>
-
                   <div class="flex flex-wrap gap-2 mb-3">
                     <Badge class={getTypeBadgeColor(note.noteType) + ' text-white'}>
                       {note.noteType.replace(/_/g, ' ')}
                     </Badge>
-
                     {#if note.metadata.riskLevel}
                       <Badge variant={getRiskBadgeVariant(note.metadata.riskLevel)}>
                         <AlertTriangle class="h-3 w-3 mr-1" />
                         {note.metadata.riskLevel}
                       </Badge>
                     {/if}
-
                     {#if note.metadata.aiGenerated}
                       <Badge variant="outline" class="border-purple-500 text-purple-500">
                         <Brain class="h-3 w-3 mr-1" />
                         AI Generated
                       </Badge>
                     {/if}
-
                     {#if note.metadata.ocrExtracted}
                       <Badge variant="outline" class="border-cyan-500 text-cyan-500">
                         <Eye class="h-3 w-3 mr-1" />
                         OCR
                       </Badge>
                     {/if}
-
                     {#if note.metadata.confidence}
                       <Badge variant="outline">
                         {(note.metadata.confidence * 100).toFixed(1)}% confidence
                       </Badge>
                     {/if}
                   </div>
-
                   <p class="text-sm text-muted-foreground mb-3">
                     {note.content.length > 300 ? note.content.substring(0, 300) + '...' : note.content}
                   </p>
-
                   <div class="flex flex-wrap gap-1 mb-3">
                     {#each note.tags as tag}
                       <Badge variant="outline" class="text-xs">
@@ -666,7 +611,6 @@
                       </Badge>
                     {/each}
                   </div>
-
                   <div class="flex items-center gap-4 text-xs text-muted-foreground">
                     <span class="flex items-center gap-1">
                       <Calendar class="h-3 w-3" />
@@ -686,7 +630,6 @@
                     {/if}
                   </div>
                 </div>
-
                 <div class="flex gap-2">
                   <Button
                     onclick={() => toggleStar(note)}
@@ -716,7 +659,6 @@
                   </Button>
                 </div>
               </div>
-
               <!-- Legal Citations -->
               {#if note.metadata.legalCitations?.length}
                 <div class="border-t pt-3">
@@ -736,7 +678,6 @@
         </CardContent>
       </Card>
     {/each}
-
     {#if notes.length === 0}
       <Card>
         <CardContent class="p-8 text-center">

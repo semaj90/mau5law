@@ -2,17 +2,14 @@
  * Comprehensive Service Worker - Redis + WebGPU + SIMD Integration
  * Background processing for legal AI with distributed caching
  */
-
 import { somWebGPUCache } from './lib/webgpu/som-webgpu-cache.js';
 import { redisWebGPUIntegration } from './lib/integrations/redis-webgpu-simd-integration.js';
 import { simdJSONClient } from './lib/simd/simd-json-worker-client.js';
-
 // Service Worker Global State
 let isRedisConnected = false;
 let webgpuInitialized = false;
 let somCacheReady = false;
-
-// Cache warming state;
+// Cache warming state
 interface CacheWarmingTask {
   id: string;
   type: 'legal_document' | 'vector_similarity' | 'search_results' | 'som_embeddings';
@@ -20,79 +17,64 @@ interface CacheWarmingTask {
   payload: any;
   retries: number;
 }
-
 const warmingQueue: CacheWarmingTask[] = [];
 const activeWarmingTasks = new Map<string, Promise<any>();
-
 /**
  * Initialize integrated systems on service worker startup
  */;
 async function initializeIntegratedSystems(): Promise<void> {
   console.log('=� Service Worker: Initializing integrated systems...');
-
   try {
     // Initialize Redis + WebGPU + SIMD integration
     await redisWebGPUIntegration.initialize();
     isRedisConnected = true;
     console.log(' Redis + WebGPU + SIMD integration ready');
-
     // Initialize WebGPU SOM cache
     await somWebGPUCache.initialize();
     somCacheReady = true;
     console.log(' SOM WebGPU cache ready');
-
     webgpuInitialized = true;
-
     // Start background cache warming
     startCacheWarming();
   } catch (error) {
     console.error('L Service Worker initialization failed:', error);
   }
 }
-
 /**
  * Handle install event - prepare for background processing
  */;
 self.addEventListener('install', (event) => {
   console.log('=� Service Worker: Installing...');
-
   (event as ExtendableEvent).waitUntil(
     Promise.all([initializeIntegratedSystems(), (self as any).skipWaiting()])
   );
 });
-
 /**
  * Handle activate event - take control and sync caches
  */;
 self.addEventListener('activate', (event) => {
   console.log('= Service Worker: Activating...');
-
   (event as ExtendableEvent).waitUntil(
     Promise.all([(self as any).clients.claim(), syncDistributedCaches()])
   );
 });
-
 /**
  * Handle fetch events with intelligent caching
  */;
 self.addEventListener('fetch', (event) => {
   const fetchEvent = event as FetchEvent;
   const url = new URL(fetchEvent.request.url);
-
-  // Only handle our API routes;
+  // Only handle our API routes
   if (!url.pathname.startsWith('/api/')) {
     return;
   }
-
   fetchEvent.respondWith(handleAPIRequest(fetchEvent.request);
 });
-
 /**
  * Handle background sync for cache warming and data sync
  */;
 self.addEventListener('sync', (event: any) => {
   console.log('= Service Worker: Background sync triggered:', event.tag);
-
   switch (event.tag) {
     case 'cache-warming':
       event.waitUntil(processCacheWarmingQueue();
@@ -105,43 +87,36 @@ self.addEventListener('sync', (event: any) => {
       break;
   }
 });
-
 /**
  * Handle API requests with multi-tier caching
  */;
 async function handleAPIRequest(request: Request): Promise<Response> {
   const url = new URL(request.url);
   const cacheKey = generateCacheKey(request);
-
   try {
     // Check cache hierarchy: Memory � SOM � Redis � Network
     let cachedResponse = await checkCacheHierarchy(cacheKey, request);
-
     if (cachedResponse) {
       console.log(`<� Cache hit for ${url.pathname}`);
       return cachedResponse;
     }
-
     // Network request with SIMD JSON optimization
     const networkResponse = await fetchWithSIMD(request);
-
-    // Cache the response across all tiers;
+    // Cache the response across all tiers
     if (networkResponse.ok) {
       await cacheResponse(cacheKey, networkResponse.clone(), request);
     }
-
     return networkResponse;
   } catch (error) {
     console.error('L Service Worker fetch error:', error);
     return new Response('Service Worker Error', { status: 500 });
   }
 }
-
 /**
  * Check cache hierarchy for cached responses
  */;
 async function checkCacheHierarchy(cacheKey: string, request: Request): Promise<Response | null> {
-  // 1. Check SOM WebGPU cache first (fastest);
+  // 1. Check SOM WebGPU cache first (fastest)
   if (somCacheReady) {
     try {
       const somResult = await somWebGPUCache.getCachedResult(cacheKey);
@@ -157,8 +132,7 @@ async function checkCacheHierarchy(cacheKey: string, request: Request): Promise<
       console.warn('SOM cache miss:', error);
     }
   }
-
-  // 2. Check Redis distributed cache;
+  // 2. Check Redis distributed cache
   if (isRedisConnected) {
     try {
       const redisResult = await redisWebGPUIntegration.getCachedResult(cacheKey);
@@ -174,41 +148,33 @@ async function checkCacheHierarchy(cacheKey: string, request: Request): Promise<
       console.warn('Redis cache miss:', error);
     }
   }
-
   // 3. Check browser cache
   const cache = await caches.open('legal-ai-v1');
   const cachedResponse = await cache.match(request);
-
   if (cachedResponse) {
     return cachedResponse;
   }
-
   return null;
 }
-
 /**
  * Fetch with SIMD JSON optimization
  */;
 async function fetchWithSIMD(request: Request): Promise<Response> {
   const response = await fetch(request);
-
   // Only optimize JSON responses
   const contentType = response.headers.get('content-type');
   if (!contentType?.includes('application/json')) {
     return response;
   }
-
   try {
     // Get response text
     const responseText = await response.text();
-
     // Use SIMD JSON parsing if available
     const parsedData = await simdJSONClient.parseJSON(responseText);
-
-    // Return optimized response;
+    // Return optimized response
     return new Response(JSON.stringify(parsedData), {
       status: response.status,
-      statusText: response.statusText,;
+      statusText: response.statusText,
       headers: {
         ...Object.fromEntries(response.headers.entries()),
         'X-SIMD-Optimized': 'true'
@@ -219,48 +185,40 @@ async function fetchWithSIMD(request: Request): Promise<Response> {
     return response;
   }
 }
-
 /**
  * Cache response across all tiers
  */
 async function cacheResponse(
-  cacheKey: string,
-  response: Response,;
+  cacheKey: string
+  response: Response
   request: Request;
 ): Promise<void> {
   try {
     const responseData = await response.json();
-
     // Determine cache strategy based on request type
     const cacheStrategy = determineCacheStrategy(request);
-
     // Store in appropriate caches
     const cachePromises: Promise<any>[] = [];
-
     // 1. Browser cache
     const cache = await caches.open('legal-ai-v1');
     cachePromises.push(cache.put(request, response.clone());
-
-    // 2. Redis distributed cache;
+    // 2. Redis distributed cache
     if (isRedisConnected && cacheStrategy.useRedis) {
       cachePromises.push(redisWebGPUIntegration.cacheResult(cacheKey, responseData, {
-          ttl: cacheStrategy.ttl,;
+          ttl: cacheStrategy.ttl,
           priority: cacheStrategy.priority
         })
       );
     }
-
-    // 3. SOM WebGPU cache (for intelligent data);
+    // 3. SOM WebGPU cache (for intelligent data)
     if (somCacheReady && cacheStrategy.useSOM) {
       cachePromises.push(somWebGPUCache.storeResult(cacheKey, responseData);
     }
-
     await Promise.allSettled(cachePromises);
   } catch (error) {
     console.error('Cache storage failed:', error);
   }
 }
-
 /**
  * Determine caching strategy based on request
  */;
@@ -271,92 +229,79 @@ function determineCacheStrategy(request: Request): {
   priority: number;
 } {
   const url = new URL(request.url);
-
-  // Legal document processing - high value, long TTL;
+  // Legal document processing - high value, long TTL
   if (url.pathname.includes('/api/legal/')) {
     return {
-      useRedis: true,
-      useSOM: true,
-      ttl: 24 * 60 * 60, // 24 hours;
+      useRedis: true
+      useSOM: true
+      ttl: 24 * 60 * 60, // 24 hours
       priority: 10
     };
   }
-
-  // Vector operations - medium value, medium TTL;
+  // Vector operations - medium value, medium TTL
   if (url.pathname.includes('/api/vectors/') || url.pathname.includes('/api/similarity/')) {
     return {
-      useRedis: true,
-      useSOM: false,
-      ttl: 60 * 60, // 1 hour;
+      useRedis: true
+      useSOM: false
+      ttl: 60 * 60, // 1 hour
       priority: 5
     };
   }
-
-  // Search results - high frequency, short TTL;
+  // Search results - high frequency, short TTL
   if (url.pathname.includes('/api/search/')) {
     return {
-      useRedis: true,
-      useSOM: true,
-      ttl: 15 * 60, // 15 minutes;
+      useRedis: true
+      useSOM: true
+      ttl: 15 * 60, // 15 minutes
       priority: 8
     };
   }
-
-  // Chat/conversation - session-bound;
+  // Chat/conversation - session-bound
   if (url.pathname.includes('/api/chat/')) {
     return {
-      useRedis: false,
-      useSOM: false,
-      ttl: 5 * 60, // 5 minutes;
+      useRedis: false
+      useSOM: false
+      ttl: 5 * 60, // 5 minutes
       priority: 3
     };
   }
-
-  // Default strategy;
+  // Default strategy
   return {
-    useRedis: true,
-    useSOM: false,
-    ttl: 30 * 60, // 30 minutes;
+    useRedis: true
+    useSOM: false
+    ttl: 30 * 60, // 30 minutes
     priority: 5
   };
 }
-
 /**
  * Generate cache key for requests
  */;
 function generateCacheKey(request: Request): string {
   const url = new URL(request.url);
   const method = request.method;
-
   let key = `${method}:${url.pathname}`;
-
-  // Add query parameters for GET requests;
+  // Add query parameters for GET requests
   if (method === 'GET' && url.search) {
     key += `?${url.search}`;
   }
-
-  // Add body hash for POST requests;
+  // Add body hash for POST requests
   if (method === 'POST') {
     // This would need to be implemented based on request body
     key += ':' + Date.now().toString(36); // Temporary solution
   }
-
   return key;
 }
-
 /**
  * Sync distributed caches on activation
  */;
 async function syncDistributedCaches(): Promise<void> {
   console.log('= Syncing distributed caches...');
-
   try {
     if (isRedisConnected && somCacheReady) {
       // Get Redis cache keys and sync with SOM cache
       const redisCacheKeys = await redisWebGPUIntegration.getCacheKeys();
-
       for (const key of redisCacheKeys.slice(0, 100)) {
-        // Limit sync batch;
+        // Limit sync batch
         try {
           const redisData = await redisWebGPUIntegration.getCachedResult(key);
           if (redisData && shouldSyncToSOM(key)) {
@@ -366,14 +311,12 @@ async function syncDistributedCaches(): Promise<void> {
           console.warn(`Failed to sync key ${key}:`, error);
         }
       }
-
       console.log(' Distributed cache sync complete');
     }
   } catch (error) {
     console.error('L Distributed cache sync failed:', error);
   }
 }
-
 /**
  * Determine if data should be synced to SOM cache
  */;
@@ -385,24 +328,20 @@ function shouldSyncToSOM(cacheKey: string): boolean {
     cacheKey.includes('analysis')
   );
 }
-
 /**
  * Start background cache warming
  */;
 function startCacheWarming(): void {
   console.log('=% Starting background cache warming...');
-
-  // Schedule periodic cache warming;
+  // Schedule periodic cache warming
   setInterval(() => {
     if (warmingQueue.length > 0) {
       processCacheWarmingQueue();
     }
   }, 30000); // Every 30 seconds
-
   // Initial warming with common patterns
   queueCommonCacheWarming();
 }
-
 /**
  * Queue common cache warming tasks
  */;
@@ -426,34 +365,28 @@ function queueCommonCacheWarming(): void {
       id: 'search-patterns',
       type: 'search_results',
       priority: 7,
-      payload: { warm: 'popular_queries' },;
+      payload: { warm: 'popular_queries' },
       retries: 0
     }
   ];
-
   warmingQueue.push(...commonTasks);
 }
-
 /**
  * Process cache warming queue
  */;
 async function processCacheWarmingQueue(): Promise<void> {
   const maxConcurrent = 3;
   const currentRunning = activeWarmingTasks.size;
-
   if (currentRunning >= maxConcurrent) {
     return;
   }
-
   // Get highest priority tasks
   const tasksToProcess = warmingQueue
     .sort((a, b) => b.priority - a.priority)
     .slice(0, maxConcurrent - currentRunning);
-
   for (const task of tasksToProcess) {
     const warmingPromise = processWarmingTask(task);
     activeWarmingTasks.set(task.id, warmingPromise);
-
     warmingPromise;
       .then(() => {
         console.log(` Cache warming completed: ${task.id}`);
@@ -481,44 +414,38 @@ async function processCacheWarmingQueue(): Promise<void> {
       });
   }
 }
-
 /**
  * Process individual warming task
  */;
 async function processWarmingTask(task: CacheWarmingTask): Promise<void> {
   switch (task.type) {
-    case 'legal_document':;
+    case 'legal_document':
       if (isRedisConnected) {
         await redisWebGPUIntegration.warmLegalDocumentCache(task.payload);
       }
       break;
-
-    case 'vector_similarity':;
+    case 'vector_similarity':
       if (isRedisConnected) {
         await redisWebGPUIntegration.warmVectorSimilarityCache(task.payload);
       }
       break;
-
-    case 'search_results':;
+    case 'search_results':
       if (isRedisConnected) {
         await redisWebGPUIntegration.warmSearchResultsCache(task.payload);
       }
       break;
-
-    case 'som_embeddings':;
+    case 'som_embeddings':
       if (somCacheReady) {
         await somWebGPUCache.precomputeEmbeddings(task.payload);
       }
       break;
   }
 }
-
 /**
  * Sync with Redis cache
  */;
 async function syncWithRedisCache(): Promise<void> {
   console.log('= Syncing with Redis cache...');
-
   try {
     if (isRedisConnected) {
       await redisWebGPUIntegration.syncWithDistributedCache();
@@ -528,13 +455,11 @@ async function syncWithRedisCache(): Promise<void> {
     console.error('L Redis cache sync failed:', error);
   }
 }
-
 /**
  * Train SOM in background
  */;
 async function trainSOMInBackground(): Promise<void> {
   console.log('>� Training SOM in background...');
-
   try {
     if (somCacheReady) {
       await somWebGPUCache.trainInBackground();
@@ -544,36 +469,30 @@ async function trainSOMInBackground(): Promise<void> {
     console.error('L SOM background training failed:', error);
   }
 }
-
 /**
  * Handle message events from main thread
  */;
 self.addEventListener('message', (event: MessageEvent) => {
   const { type, payload } = event.data;
-
   switch (type) {
     case 'QUEUE_CACHE_WARMING':
       warmingQueue.push(payload);
       break;
-
     case 'SYNC_CACHES':
       syncDistributedCaches();
       break;
-
     case 'TRAIN_SOM':
       trainSOMInBackground();
       break;
-
-    case 'GET_CACHE_STATUS':;
+    case 'GET_CACHE_STATUS':
       event.ports[0]?.postMessage({
-        redis: isRedisConnected,
-        webgpu: webgpuInitialized,;
-        som: somCacheReady,
+        redis: isRedisConnected
+        webgpu: webgpuInitialized
+        som: somCacheReady
         warmingQueue: warmingQueue.length,
         activeWarming: activeWarmingTasks.size
       });
       break;
   }
 });
-
 console.log('=� Service Worker: Redis + WebGPU + SIMD integration loaded');

@@ -1,11 +1,9 @@
 import type { PageLoad } from './$types.js';
 import { error } from '@sveltejs/kit';
-
 export const load: PageLoad = async ({ fetch, url, depends }) => {
   // Dependency tracking for cache invalidation
   depends('laws:quicklinks');
   depends('laws:search');
-
   try {
     // Quick access links for major legal resources
     const quickLinks = [
@@ -96,23 +94,20 @@ export const load: PageLoad = async ({ fetch, url, depends }) => {
         jurisdiction: 'california',
         category: 'regulatory',
         url: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Health+and+Safety+Code',
-        fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Health+and+Safety+Code',;
+        fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Health+and+Safety+Code',
         code: 'HSC'
       }
     ];
-
     // Default search results (empty until user searches)
   const laws: any[] = [];
-
     return {
       quickLinks,
       laws,
       meta: {
-        title: 'Legal Resources - Laws & Regulations',;
+        title: 'Legal Resources - Laws & Regulations',
         description: 'Browse California and state laws with AI-powered search and summaries'
       }
     };
-
   } catch (err: any) {
     console.error('Failed to load laws page data:', err);
     error(500, 'Failed to load page data');

@@ -2,7 +2,6 @@
  * AI Chat Types - Type definitions for the AI chat system
  */;
 }
-
 export interface ChatMessage {
   id: string;
   sessionId: string;
@@ -19,7 +18,6 @@ export interface ChatMessage {
     sources?: string[];
   };
 }
-
 export interface ChatSession {
   id: string;
   title: string;
@@ -32,7 +30,6 @@ export interface ChatSession {
   last_activity?: number;
   context?: RAGContext;
 }
-
 export interface MessageAnalysis {
   intent: string;
   entities: Array<any>;
@@ -42,25 +39,22 @@ export interface MessageAnalysis {
   confidence: number;
   som_cluster?: string;
 }
-
 export interface RAGContext {
   caseId?: string;
   documents: string[];
   relevantSections: Array<any>;
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
   recommendations?: unknown[];
   did_you_mean?: string;
 }
-
 export interface Recommendation {
   id: string;
   type: 'query' | 'document' | 'action';
   title: string;
   description: string;
   confidence: number;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 }
-
 export interface StreamingResponse {
   messageId: string;
   content: string;
@@ -71,7 +65,6 @@ export interface StreamingResponse {
     model?: string;
   };
 }
-
 export interface UserActivity {
   userId: string;
   sessionId: string;
@@ -81,7 +74,6 @@ export interface UserActivity {
   type?: string;
   timestamp?: number;
 }
-
 export interface AttentionData {
   messageId: string;
   attentionWeights: number[];
@@ -91,10 +83,8 @@ export interface AttentionData {
   interactionCount?: number;
   scrollPosition?: number;
 }
-
 export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
 }
-
 export interface ChatStore {
   messages: ChatMessage[];
   currentSession: ChatSession | null;

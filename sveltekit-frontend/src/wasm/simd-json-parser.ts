@@ -1,6 +1,5 @@
 // WebAssembly SIMD-accelerated JSON parser for browser
 // Compiles to WASM for browser-side legal document processing
-
 // Legal document structure for WASM processing
 export class LegalDocumentWASM {
   public id: string = '';
@@ -11,7 +10,6 @@ export class LegalDocumentWASM {
   public entityCount: number = 0;
   public citationCount: number = 0;
 }
-
 // SIMD-accelerated string operations for JSON parsing
 export class SIMDStringOps {
   // SIMD string search for legal entities
@@ -20,9 +18,7 @@ export class SIMDStringOps {
     // In actual WASM, this would use SIMD instructions
     const textLen = text.length;
     const patternLen = pattern.length;
-
     if (patternLen > textLen) return -1;
-
     // Optimized string search that can be compiled to WASM with SIMD
     for (let i = 0; i <= textLen - patternLen; i++) {
       let match = true;
@@ -34,14 +30,11 @@ export class SIMDStringOps {
       }
       if (match) return i;
     }
-
     return -1;
   }
-
   // Fast legal citation extraction using SIMD pattern matching
   static extractCitations(text: string): string[] {
     const citations: string[] = [];
-
     // Common legal citation patterns
     const patterns = [
       '\\d+ U\\.S\\. \\d+', // Supreme Court
@@ -49,20 +42,16 @@ export class SIMDStringOps {
       '\\d+ S\\.Ct\\. \\d+', // Supreme Court Reporter
       '\\d+ L\\.Ed\\.\\d+d \\d+', // Lawyer's Edition
     ];
-
     for (const pattern of patterns) {
       const matches = SIMDStringOps.findPatternMatches(text, pattern);
       citations.push(...matches);
     }
-
     return citations;
   }
-
   // Helper function for pattern matching
   private static findPatternMatches(text: string, pattern: string): string[] {
   // Simplified regex-like matching with SIMD acceleration
   const matches: string[] = [];
-
     // Use regex for pattern matching (would be SIMD in actual WASM)
     try {
     const regex = new RegExp(pattern, 'g');
@@ -74,34 +63,27 @@ export class SIMDStringOps {
     // Fallback for invalid regex patterns
     console.warn('Invalid regex pattern:', pattern);
   }
-
     return matches;
   }
 }
-
 // SIMD-accelerated JSON parsing for legal documents
 export class SIMDJSONParser {
   // Fast parse legal document from JSON bytes
   static parseDocument(jsonBytes: Uint8Array): LegalDocumentWASM {
     const doc = new LegalDocumentWASM();
-
     // Convert bytes to string for parsing
     const jsonStr = new TextDecoder().decode(jsonBytes);
-
     // SIMD-accelerated field extraction
     doc.id = SIMDJSONParser.extractStringField(jsonStr, 'id');
     doc.title = SIMDJSONParser.extractStringField(jsonStr, 'title');
     doc.content = SIMDJSONParser.extractStringField(jsonStr, 'content');
     doc.confidence = SIMDJSONParser.extractNumberField(jsonStr, 'confidence');
     doc.processedAt = Date.now();
-
     // Use SIMD for entity and citation counting
     doc.entityCount = SIMDJSONParser.countLegalEntities(doc.content);
     doc.citationCount = SIMDStringOps.extractCitations(doc.content).length;
-
     return doc;
   }
-
   // Batch process multiple documents with SIMD
   static parseBatch(jsonArrayBytes: Uint8Array): LegalDocumentWASM[] {
     try {
@@ -115,29 +97,23 @@ export class SIMDJSONParser {
       return [];
     }
   }
-
   // SIMD-optimized string field extraction
   private static extractStringField(json: string, fieldName: string): string {
     const startPattern = `"${fieldName}":"`;
     const startIndex = json.indexOf(startPattern);
     if (startIndex === -1) return '';
-
     const valueStart = startIndex + startPattern.length;
     const valueEnd = json.indexOf('"', valueStart);
     if (valueEnd === -1) return '';
-
     return json.substring(valueStart, valueEnd);
   }
-
   // SIMD-optimized number field extraction
   private static extractNumberField(json: string, fieldName: string): number {
     const startPattern = `"${fieldName}":`;
     const startIndex = json.indexOf(startPattern);
     if (startIndex === -1) return 0.0;
-
     const valueStart = startIndex + startPattern.length;
     let valueEnd = valueStart;
-
     // Find end of number
     while (valueEnd < json.length) {
       const char = json.charCodeAt(valueEnd);
@@ -148,17 +124,13 @@ export class SIMDJSONParser {
         break;
       }
     }
-
     const numberStr = json.substring(valueStart, valueEnd);
     return parseFloat(numberStr);
   }
-
   // Split JSON array utility no longer needed; using JSON.parse in parseBatch
-
   // Count legal entities using SIMD pattern matching
   private static countLegalEntities(text: string): number {
     let count = 0;
-
     // Legal entity patterns (simplified)
     const entityPatterns = [
       'United States Code',
@@ -168,11 +140,9 @@ export class SIMDJSONParser {
       'District Court',
       'Circuit Court',
     ];
-
     for (let i = 0; i < entityPatterns.length; i++) {
       const pattern = entityPatterns[i];
       let searchIndex = 0;
-
       while (searchIndex < text.length) {
         const foundIndex = text.indexOf(pattern, searchIndex);
         if (foundIndex === -1) break;
@@ -180,24 +150,20 @@ export class SIMDJSONParser {
         searchIndex = foundIndex + pattern.length;
       }
     }
-
     return count;
   }
 }
-
 // Export WASM memory management functions
 export function allocateMemory(size: number): number {
   // In TypeScript/browser environment, use regular memory allocation
   // In actual WASM, this would use heap.alloc(size)
   return size; // Placeholder implementation
 }
-
 export function deallocateMemory(ptr: number): void {
   // In TypeScript/browser environment, memory is garbage collected
   // In actual WASM, this would use heap.free(ptr)
   console.log('Memory deallocated:', ptr);
 }
-
 // Performance benchmarking
 export const benchmarkSIMDParsing = (iterations: number): number => {
   const sampleJSON = `{
@@ -211,14 +177,11 @@ export const benchmarkSIMDParsing = (iterations: number): number => {
       "practice_areas": ["contract_law", "commercial_litigation"]
     }
   }`;
-
   const jsonBytes = new TextEncoder().encode(sampleJSON);
   const startTime = Date.now();
-
   for (let i = 0; i < iterations; i++) {
     SIMDJSONParser.parseDocument(jsonBytes);
   }
-
   const endTime = Date.now();
   return endTime - startTime;
 };

@@ -2,7 +2,6 @@
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     onchange?: (event?: unknown) => void;
   }
@@ -11,15 +10,12 @@ https://svelte.dev/e/js_parse_error -->
     height = '400px',
     placeholder = 'Start writing...'
   }: Props = $props();
-
     import Editor from '@toast-ui/editor';
   import '@toast-ui/editor/dist/toastui-editor.css';
   import type { ContentNode } from '$lib/logic/HistoryManager';
-
   let editorElement: HTMLElement;
   let editor: Editor;
   let isInitialized = $state(false);
-
   // Convert ContentNode array to markdown
   function contentToMarkdown(nodes: ContentNode[]): string {
     const nodeToMd = (node: ContentNode): string => {
@@ -59,7 +55,6 @@ https://svelte.dev/e/js_parse_error -->
   }}
       return '';
     };
-
     return nodes.map.join('');
   }
   // Convert markdown to ContentNode array (simplified)
@@ -71,14 +66,13 @@ https://svelte.dev/e/js_parse_error -->
     const lines = markdown.split('\n');
     const nodes: ContentNode[] = [];
   let currentParagraph = $state<ContentNode | null >(null);
-
     for (const line of lines) {
       if (line.trim() === '') {
         if (currentParagraph) {
           nodes.push(currentParagraph);
           currentParagraph = null;
   }
-        continue;
+        continu;
   }
       // Headings
       if (line.startsWith('#')) {
@@ -86,40 +80,39 @@ https://svelte.dev/e/js_parse_error -->
         const text = line.replace(/^#+\s*/, '');
         nodes.push({
           type: 'heading',
-          level,;
+          level,
           children: [{ type: 'text', text }]
         });
-        continue;
+        continu;
   }
       // Lists
       if (line.startsWith('- ') || line.startsWith('* ')) {
         const text = line.replace(/^[-*]\s*/, '');
         nodes.push({
-          type: 'list-item',;
+          type: 'list-item',
           children: [{ type: 'text', text }]
         });
-        continue;
+        continu;
   }
       // Blockquotes
       if (line.startsWith('> ')) {
         const text = line.replace(/^>\s*/, '');
         nodes.push({
-          type: 'blockquote',;
+          type: 'blockquote',
           children: [{ type: 'text', text }]
         });
-        continue;
+        continu;
   }
       // Regular paragraph
       if (!currentParagraph) {
         currentParagraph = {
-          type: 'paragraph',;
+          type: 'paragraph',
           children: [];
         };
   }
       // Basic inline formatting
-      let text = line;
+      let text = li;
       const textNode: ContentNode = { type: 'text', text };
-
       // Bold
       if (text.includes('**')) {
         textNode.bold = true;
@@ -141,13 +134,13 @@ https://svelte.dev/e/js_parse_error -->
   }
   $effect(() => {
     editor = new Editor({
-      el: editorElement,
+      el: editorElement
       initialValue: contentToMarkdown(content),
       previewStyle: 'vertical',
-      height: height,
-      initialEditType: 'markdown',;
-      placeholder: placeholder,
-      usageStatistics: false,
+      height: height
+      initialEditType: 'markdown',
+      placeholder: placeholder
+      usageStatistics: false
       toolbarItems: [
         ['heading', 'bold', 'italic', 'strike'],
         ['hr', 'quote'],
@@ -155,7 +148,7 @@ https://svelte.dev/e/js_parse_error -->
         ['table', 'image', 'link'],
         ['code', 'codeblock'],
         ['scrollSync']
-      ],;
+      ],
       hooks: {
         addImageBlobHook: (blob: Blob, callback: (url: string, alt?: string) => void) => {
           // Handle image upload
@@ -166,25 +159,21 @@ https://svelte.dev/e/js_parse_error -->
           reader.readAsDataURL(blob);
   }}
     });
-
     // Listen for content changes
     editor.on('change', () => {
       const markdown = editor.getMarkdown();
       const newContent = markdownToContent(markdown);
       onchange?.();
     });
-
     isInitialized = true;
   });
-
   onDestroy(() => {
     if (editor) {
       editor.destroy();
   }
   });
-
   // Reactive update when content prop changes
-  $effect(() => { 
+  $effect(() => {
     if (editor && isInitialized && content) {
       const currentMarkdown = editor.getMarkdown();
       const newMarkdown = contentToMarkdown(content);
@@ -193,54 +182,45 @@ https://svelte.dev/e/js_parse_error -->
       }
     }
   });
-
   // Expose methods for parent component
   function setContent(newContent: ContentNode[]) {
     if (editor) {
       editor.setMarkdown(contentToMarkdown(newContent));
     }
   }
-
   function getContent(): ContentNode[] {
     if (editor) {
       return markdownToContent(editor.getMarkdown());
     }
     return content;
   }
-
   function getMarkdown(): string {
     return editor ? editor.getMarkdown() : '';
   }
-
   function getHTML(): string {
     return editor ? editor.getHTML() : '';
   }
-
   function insertText(text: string) {
     if (editor) {
       editor.insertText(text);
     }
   }
-
   function getSelectedText(): string {
     if (editor) {
       return editor.getSelectedText() || '';
     }
     return '';
   }
-
   function focus() {
     if (editor) {
       editor.focus();
     }
   }
-
   // Formatting methods
   function toggleMark(mark: string) {
     if (!editor) return;
     const selectedText = editor.getSelectedText();
     if (!selectedText) return;
-
     let formattedText = selectedText;
     switch (mark) {
       case 'bold':
@@ -255,16 +235,13 @@ https://svelte.dev/e/js_parse_error -->
     }
     editor.replaceSelection(formattedText);
   }
-
   function addMark(mark: string, value: string) {/* JSX syntax converted to Svelte */}">${selectedText}</span>`;
         break;
     }
     editor.replaceSelection(formattedText);
   }
-
   function insertNode(node: unknown) {
     if (!editor) return;
-
     switch (node.type) {
       case 'image':
         editor.insertText(`![${node.alt || ''}](${node.url})`);
@@ -279,12 +256,10 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <div bind:this={editorElement} class="space-y-4"></div>
-
 <style>
   /* @unocss-include */
-  .advanced-editor {;
+  .advanced-editor {
     width: 100%;
     height: 100%;
 }
@@ -357,4 +332,3 @@ https://svelte.dev/e/js_parse_error -->
     font-weight: 600 !important;
 }
 </style>
-

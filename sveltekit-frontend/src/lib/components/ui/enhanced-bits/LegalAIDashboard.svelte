@@ -1,6 +1,5 @@
 <!-- Enhanced-Bits Legal AI Dashboard -->
 <!-- Complete integration of Citations, Reports, and POI systems -->
-
 <script lang="ts">
   import { onMount } from 'svelte';
   import {
@@ -15,28 +14,23 @@
     initializeEnhancedBits,
     LegalDesignTokens
   } from './index.js';
-
   import LegalPOICard from './LegalPOICard.svelte';
-
   // Import all three legal systems
   import { citationsStore } from '$lib/stores/legal-citations.js';
   import { reportsStore } from '$lib/stores/legal-reports.js';
   import { poiStore } from '$lib/stores/legal-poi.js';
   import { legalPlatformStore, unifiedSearch } from '$lib/stores/legal-platform-integration.js';
-
   // Component state using Svelte 5 runes
   let activeTab = $state('dashboard');
   let searchQuery = $state('');
   let searchResults = $state<any>({});
   let loading = $state(false);
-
   // Reactive dashboard data
   let dashboardData = $derived(() => {
     const platform = $state.snapshot(legalPlatformStore);
     const citations = $state.snapshot(citationsStore);
     const reports = $state.snapshot(reportsStore);
     const poi = $state.snapshot(poiStore);
-
     return {
       totalCases: platform.context.allCases.length,
       totalCitations: citations.context.searchResults.length,
@@ -49,16 +43,13 @@
       pendingReports: reports.context.searchResults.filter(r => r.status === 'draft').length
     };
   });
-
   // Initialize Enhanced-Bits theme
   onMount(() => {
     initializeEnhancedBits(LegalDesignTokens);
   });
-
   // Search functionality
   async function handleSearch() {
     if (!searchQuery.trim()) return;
-
     loading = true;
     try {
       searchResults = await unifiedSearch(searchQuery, ['citations', 'reports', 'poi']);
@@ -68,7 +59,6 @@
       loading = false;
     }
   }
-
   // Quick actions
   function handleCreateCase() {
     legalPlatformStore.createCase({
@@ -84,7 +74,7 @@
       notes: [],
       jurisdiction: 'Federal',
       court: 'District Court',
-      filingDate: new Date().toISOString(),;
+      filingDate: new Date().toISOString(),
       financials: {
         budgetAllocated: 50000,
         costToDate: 0,
@@ -98,15 +88,13 @@
         recommendedActions: [],
         precedentCases: []
       },
-      assignedTo: [],;
+      assignedTo: [],
       tags: [];
     });
   }
-
   function handleQuickAnalysis() {
     legalPlatformStore.analyzeInsights();
   }
-
   // Sample data for demo (would normally come from stores)
   let samplePOIs = $state([
     {
@@ -115,11 +103,11 @@
       aliases: ['Johnny D', 'JD'],
       role: 'suspect',
       entityType: 'individual',
-      status: 'wanted',;
+      status: 'wanted',
       metadata: {
         riskLevel: 'critical',
         threatLevel: 'severe',
-        publicSafetyRisk: true,
+        publicSafetyRisk: true
         credibilityScore: 25,
         influenceLevel: 'significant',
         communicationStyle: ['aggressive', 'uncooperative'],
@@ -127,7 +115,7 @@
         lastInteraction: '2024-01-15',
         interactionCount: 12,
         personality: {
-          traits: ['violent', 'unpredictable', 'anti-authority'],;
+          traits: ['violent', 'unpredictable', 'anti-authority'],
           communication: [],
           predictedBehavior: [],
           negotiationStyle: 'hostile',
@@ -156,7 +144,7 @@
       },
       criminalProfile: {
         aliases: ['Johnny D'],
-        mugshots: [],;
+        mugshots: [],
         warrants: [
           {
             id: 'W001',
@@ -184,7 +172,7 @@
           weaponsUsed: ['handgun'];
         },
         dangerLevel: 'extreme',
-        armedAndDangerous: true,
+        armedAndDangerous: true
         escapeRisk: 'high',
         lastKnownLocation: {
           address: '123 Main St, Los Angeles, CA',
@@ -193,28 +181,27 @@
           reliability: 0.8;
         }
       },
-      relationships: [],;
+      relationships: [],
       timeline: [],
       createdAt: '2024-01-01',
       updatedAt: '2024-01-15',
-      createdBy: 'system',;
+      createdBy: 'system',
       tags: ['violent', 'armed'],
       aiProcessing: {
         lastAnalyzed: '2024-01-15',
-        profileComplete: true,
-        networkMapped: false,
-        riskAssessed: true,
-        documentsScanned: true,
-        socialMediaScanned: false,
-        backgroundCheckComplete: true,
-        criminalProfileAnalyzed: true,
-        threatAssessmentComplete: true,
+        profileComplete: true
+        networkMapped: false
+        riskAssessed: true
+        documentsScanned: true
+        socialMediaScanned: false
+        backgroundCheckComplete: true
+        criminalProfileAnalyzed: true
+        threatAssessmentComplete: true
         watchListsChecked: true
       }
     }
   ]);
 </script>
-
 <div class="legal-dashboard">
   <!-- Header -->
   <header class="dashboard-header">
@@ -238,7 +225,6 @@
       </div>
     </div>
   </header>
-
   <!-- Dashboard Content -->
   <main class="dashboard-content">
     <Tabs bind:value={activeTab}>
@@ -255,7 +241,6 @@
                 <div class="stat-value">{dashboardData.totalCases}</div>
               </CardContent>
             </Card>
-
             <Card class="stat-card">
               <CardHeader>
                 <CardTitle>📚 Citations</CardTitle>
@@ -265,7 +250,6 @@
                 <div class="stat-detail">{dashboardData.activeCitations} verified</div>
               </CardContent>
             </Card>
-
             <Card class="stat-card">
               <CardHeader>
                 <CardTitle>📊 Reports</CardTitle>
@@ -275,7 +259,6 @@
                 <div class="stat-detail">{dashboardData.pendingReports} pending</div>
               </CardContent>
             </Card>
-
             <Card class="stat-card">
               <CardHeader>
                 <CardTitle>👥 Persons of Interest</CardTitle>
@@ -286,7 +269,6 @@
               </CardContent>
             </Card>
           </div>
-
           <!-- Recent Activity -->
           <div class="recent-activity">
             <Card>
@@ -316,7 +298,6 @@
           </div>
         </div>
       {/if}
-
       <!-- POI Tab -->
       {#if activeTab === 'poi'}
         <div class="poi-section">
@@ -326,7 +307,6 @@
               ➕ Add POI
             </Button>
           </div>
-
           <div class="poi-grid">
             {#each samplePOIs as poi}
               <LegalPOICard
@@ -338,7 +318,6 @@
           </div>
         </div>
       {/if}
-
       <!-- Citations Tab -->
       {#if activeTab === 'citations'}
         <div class="citations-section">
@@ -348,7 +327,6 @@
               ➕ Add Citation
             </Button>
           </div>
-
           <Card>
             <CardContent>
               <p>Citations management interface would go here...</p>
@@ -357,7 +335,6 @@
           </Card>
         </div>
       {/if}
-
       <!-- Reports Tab -->
       {#if activeTab === 'reports'}
         <div class="reports-section">
@@ -367,7 +344,6 @@
               ➕ Generate Report
             </Button>
           </div>
-
           <Card>
             <CardContent>
               <p>Reports management interface would go here...</p>
@@ -376,12 +352,10 @@
           </Card>
         </div>
       {/if}
-
       <!-- Search Results -->
       {#if searchQuery && Object.keys(searchResults).length > 0}
         <div class="search-results">
           <h2>🔍 Search Results for "{searchQuery}"</h2>
-
           {#if searchResults.citations?.length > 0}
             <Card>
               <CardHeader>
@@ -397,7 +371,6 @@
               </CardContent>
             </Card>
           {/if}
-
           {#if searchResults.reports?.length > 0}
             <Card>
               <CardHeader>
@@ -413,7 +386,6 @@
               </CardContent>
             </Card>
           {/if}
-
           {#if searchResults.poi?.length > 0}
             <Card>
               <CardHeader>
@@ -432,7 +404,6 @@
         </div>
       {/if}
     </Tabs>
-
     <!-- Navigation Tabs -->
     <nav class="dashboard-nav">
       <Button
@@ -462,49 +433,43 @@
     </nav>
   </main>
 </div>
-
 <style>
-  .legal-dashboard {;
+  .legal-dashboard {
     min-height: 100vh;
     background: var(--enhanced-bits-background);
     color: var(--enhanced-bits-text);
   }
-
   .dashboard-header {
     background: var(--enhanced-bits-surface);
     border-bottom: 1px solid var(--enhanced-bits-border);
     padding: 1rem 2rem;
   }
-
   .header-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     max-width: 1400px;
     margin: 0 auto;
   }
-
   .header-content h1 {
     margin: 0;
     color: var(--enhanced-bits-primary);
     font-size: 1.75rem;
     font-weight: bold;
   }
-
   .header-actions {
     display: flex;
     gap: 1rem;
     align-items: center;
   }
-
   .dashboard-content {
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
   }
-
   .dashboard-nav {
     position: fixed;
+d;
     bottom: 2rem;
     left: 50%;
     transform: translateX(-50%);
@@ -516,46 +481,38 @@
     box-shadow: var(--enhanced-bits-shadow-lg);
     border: 1px solid var(--enhanced-bits-border);
   }
-
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
   }
-
   .stat-card {
     text-align: center;
   }
-
   .stat-value {
     font-size: 2.5rem;
     font-weight: bold;
     color: var(--enhanced-bits-primary);
     line-height: 1;
   }
-
   .stat-detail {
     font-size: 0.875rem;
     color: var(--enhanced-bits-textMuted);
     margin-top: 0.25rem;
   }
-
   .stat-detail.high-risk {
     color: var(--enhanced-bits-error);
     font-weight: 600;
   }
-
   .recent-activity {
     margin-bottom: 2rem;
   }
-
   .activity-list {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
   }
-
   .activity-item {
     display: flex;
     align-items: center;
@@ -565,92 +522,75 @@
     border-radius: var(--enhanced-bits-radius-md);
     border: 1px solid var(--enhanced-bits-border);
   }
-
   .activity-icon {
     font-size: 1.25rem;
   }
-
   .activity-text {
     flex: 1;
     font-size: 0.875rem;
   }
-
   .activity-time {
     font-size: 0.75rem;
     color: var(--enhanced-bits-textMuted);
   }
-
   .section-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1.5rem;
   }
-
   .section-header h2 {
     margin: 0;
     color: var(--enhanced-bits-primary);
   }
-
   .poi-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 1.5rem;
   }
-
   .search-results {
     margin-top: 2rem;
   }
-
   .search-results h2 {
     color: var(--enhanced-bits-primary);
     margin-bottom: 1.5rem;
   }
-
   .search-result-item {
     padding: 0.75rem 0;
     border-bottom: 1px solid var(--enhanced-bits-border);
   }
-
   .search-result-item:last-child {
     border-bottom: none;
   }
-
   .search-result-item strong {
     color: var(--enhanced-bits-primary);
   }
-
   .search-result-item p {
     margin: 0.25rem 0 0 0;
     font-size: 0.875rem;
     color: var(--enhanced-bits-textMuted);
   }
-
   @media (max-width: 768px) {
     .header-content {
       flex-direction: column;
       gap: 1rem;
     }
-
     .header-actions {
       width: 100%;
       justify-content: center;
     }
-
     .dashboard-content {
       padding: 1rem;
     }
-
     .stats-grid {
       grid-template-columns: 1fr;
     }
-
     .poi-grid {
       grid-template-columns: 1fr;
     }
-
     .dashboard-nav {
-      position: static;
+      position: stati;
+c;
       transform: none;
       margin-top: 2rem;
       justify-content: center;

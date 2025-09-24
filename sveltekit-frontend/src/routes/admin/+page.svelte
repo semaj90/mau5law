@@ -1,19 +1,16 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Badge } from '$lib/components/ui/badge';
-
   // Icons
   import {
     Settings, Users, Activity, Database, Cpu, HardDrive,
     Shield, BarChart3, Clock, CheckCircle, AlertTriangle,
     RefreshCw, Eye, Zap, Server, Network, Monitor
   } from 'lucide-svelte';
-
   // Svelte 5 runes
   let systemStats = $state({
     totalUsers: 0,
@@ -25,32 +22,27 @@
     aiAnalyses: 0,
     uptime: '0d 0h 0m';
   });
-
   let systemHealth = $state({
-    database: true,;
-    redis: true,
-    aiService: true,
-    fileSystem: true,;
-    gpu: false,
+    database: true
+    redis: true
+    aiService: true
+    fileSystem: true
+    gpu: false
     vectorSearch: true;
   });
-
   let recentActivity = $state([]);
   let isLoading = $state(true);
   let lastUpdated = $state(new Date());
-
   $effect(() => {
     (async () => {
       await loadSystemStats();
       await loadSystemHealth();
       await loadRecentActivity();
     })();
-
     // Auto-refresh every 30 seconds
     const interval = setInterval(refreshData, 30000);
     return () => clearInterval(interval);
   });
-
   async function loadSystemStats() {
     try {
       const response = await fetch('/api/admin/stats');
@@ -74,7 +66,6 @@
       console.error('Failed to load system stats:', error);
     }
   }
-
   async function loadSystemHealth() {
     try {
       const response = await fetch('/api/admin/health');
@@ -88,7 +79,6 @@
       isLoading = false;
     }
   }
-
   async function loadRecentActivity() {
     try {
       const response = await fetch('/api/admin/activity');
@@ -118,8 +108,8 @@
             id: 3,
             type: 'user_login',
             user: 'admin@legal-ai.com',
-            description: 'Administrator login from 192.168.1.100',;
-            timestamp: new Date(Date.now() - 1800000).toISOString(),;
+            description: 'Administrator login from 192.168.1.100',
+            timestamp: new Date(Date.now() - 1800000).toISOString(),
             status: 'info';
           }
         ];
@@ -128,7 +118,6 @@
       console.error('Failed to load recent activity:', error);
     }
   }
-
   async function refreshData() {
     await Promise.all([
       loadSystemStats(),
@@ -137,41 +126,34 @@
     ]);
     lastUpdated = new Date();
   }
-
   function getHealthIcon(isHealthy: boolean) {
-    return isHealthy ? CheckCircle : AlertTriangle;
+    return isHealthy ? CheckCircle : AlertTriangl;
   }
-
   function getHealthColor(isHealthy: boolean) {
     return isHealthy ? 'text-green-600' : 'text-red-600';
   }
-
   function getActivityIcon(type: string) {
     switch (type) {
-      case 'case_created': return Users;
+      case 'case_created': return User;
       case 'ai_analysis': return Cpu;
       case 'user_login': return Shield;
       default: return Activity;
     }
   }
-
   function formatTimeAgo(timestamp: string) {
     const date = new Date(timestamp);
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
-
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffMins < 1440) return `${Math.floor(diffMins / 60)}h ago`;
     return `${Math.floor(diffMins / 1440)}d ago`;
   }
 </script>
-
 <svelte:head>
   <title>Admin Dashboard - Legal AI Platform</title>
   <meta name="description" content="Administrative dashboard for the Legal AI Platform" />
 </svelte:head>
-
 <div class="container mx-auto p-6 space-y-8">
   <!-- Header -->
   <div class="flex items-center justify-between">
@@ -184,13 +166,11 @@
         Legal AI Platform system administration and monitoring
       </p>
     </div>
-
     <div class="flex items-center gap-3">
       <Badge variant="secondary" class="gap-1">
         <Clock class="w-3 h-3" />
         Updated {formatTimeAgo(lastUpdated.toISOString())}
       </Badge>
-
       <Button
         variant="ghost"
         onclick={refreshData}
@@ -200,10 +180,8 @@
 <RefreshCw class="w-4 h-4 {isLoading ? 'animate-spin' : ''}" />
         Refresh
       </Button>
-
     </div>
   </div>
-
   <!-- Quick Actions -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     <button class="nes-btn h-20 flex-col gap-2"
@@ -213,7 +191,6 @@
       <Users class="w-6 h-6" />
       <span>Manage Users</span>
     </button>
-
     <button class="nes-btn h-20 flex-col gap-2"
       onclick={() => goto('/admin/cluster')}
       variant="ghost"
@@ -221,7 +198,6 @@
       <Server class="w-6 h-6" />
       <span>Cluster Status</span>
     </button>
-
     <button class="nes-btn h-20 flex-col gap-2"
       onclick={() => goto('/admin/gpu-demo')}
       variant="ghost"
@@ -229,7 +205,6 @@
       <Cpu class="w-6 h-6" />
       <span>GPU Monitor</span>
     </button>
-
     <button class="nes-btn h-20 flex-col gap-2"
       onclick={() => goto('/system-status')}
       variant="ghost"
@@ -238,7 +213,6 @@
       <span>System Status</span>
     </button>
   </div>
-
   <!-- System Statistics -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
     <div>
@@ -256,7 +230,6 @@
         </div>
       </div>
     </div>
-
     <div>
       <div class="pb-3">
         <div class="text-sm font-medium nes-text is-disabled">Cases</div>
@@ -272,7 +245,6 @@
         </div>
       </div>
     </div>
-
     <div>
       <div class="pb-3">
         <div class="text-sm font-medium nes-text is-disabled">Documents</div>
@@ -288,7 +260,6 @@
         </div>
       </div>
     </div>
-
     <div>
       <div class="pb-3">
         <div class="text-sm font-medium nes-text is-disabled">AI Analyses</div>
@@ -305,7 +276,6 @@
       </div>
     </div>
   </div>
-
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
     <!-- System Health -->
     <div>
@@ -345,7 +315,6 @@
         {/each}
       </div>
     </div>
-
     <!-- Recent Activity -->
     <div>
       <div>

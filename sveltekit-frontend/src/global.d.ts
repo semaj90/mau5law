@@ -1,18 +1,15 @@
 // Svelte 5 + SvelteKit global type declarations
 /// <reference types="svelte" />
 /// <reference types="vite/client" />
-
 declare global {
   // WebGPU support (avoid conflict with @webgpu/types)
   interface Navigator {
     gpu?: any; // Use 'any' to avoid Navigator interface conflicts
   }
-
   // Global WebGPU types (simplified)
   interface GPU {
     requestAdapter(): Promise<any>;
   }
-
   // Telemetry and GPU Manager global properties
   interface Window {
     __TELEMETRY__?: any;
@@ -21,7 +18,6 @@ declare global {
     };
   }
 }
-
 // Stub out problematic drizzle-orm gel module types
 declare module 'gel' {
   export interface Duration {
@@ -43,5 +39,4 @@ declare module 'gel' {
     [key: string]: any;
   }
 }
-
 export {};

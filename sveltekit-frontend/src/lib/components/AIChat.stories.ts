@@ -1,9 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
 import AIChat from './AIChat.svelte.js';
-
 const meta = {
   title: 'Business/AIChat',
-  component: AIChat,
+  component: AIChat
   parameters: {
     layout: 'fullscreen',
     docs: {
@@ -30,49 +29,44 @@ const meta = {
     streaming: {
       control: { type: 'boolean' }
     }
-  },;
+  },
   tags: ['autodocs']
 } satisfies Meta<AIChat>;
-
 export default meta;
 type Story = StoryObj<typeof meta>;
-
 export const Default: Story = {
   args: {
     model: 'gemma3-legal',
     provider: 'ollama',
     temperature: 0.7,
-    maxTokens: 2000,;
+    maxTokens: 2000,
     streaming: true
   }
 };
-
 export const OpenAI: Story = {
   args: {
     model: 'gpt-4',
     provider: 'openai',
     temperature: 0.5,
-    maxTokens: 1500,;
+    maxTokens: 1500,
     streaming: true
   }
 };
-
 export const Conservative: Story = {
   args: {
     model: 'gemma3-legal',
     provider: 'ollama',
     temperature: 0.1,
-    maxTokens: 1000,;
+    maxTokens: 1000,
     streaming: false
   }
 };
-
 export const Creative: Story = {
   args: {
     model: 'gemma3-legal',
     provider: 'ollama',
     temperature: 1.5,
-    maxTokens: 3000,;
+    maxTokens: 3000,
     streaming: true
   }
 };

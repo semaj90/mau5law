@@ -1,6 +1,5 @@
 // WebGPU Type Definitions for Legal AI Platform
 // Comprehensive interface definitions for GPU-accelerated processing
-
 export interface WebGPUDevice {
   device: GPUDevice;
   adapter: GPUAdapter;
@@ -8,40 +7,34 @@ export interface WebGPUDevice {
   features: Set<string>;
   limits: GPUSupportedLimits;
 }
-
 export interface WebGPUBuffer {
   buffer: GPUBuffer;
   size: number;
   usage: GPUBufferUsageFlags;
   mappedAtCreation?: boolean;
 }
-
 export interface WebGPUShaderModule {
   module: GPUShaderModule;
   code: string;
   entryPoint: string;
 }
-
 export interface WebGPUComputePipeline {
   pipeline: GPUComputePipeline;
   bindGroupLayout: GPUBindGroupLayout;
   workgroupSize: [number, number, number];
 }
-
 export interface WebGPUMemoryInfo {
   totalMemory: number;
   usedMemory: number;
   availableMemory: number;
   fragmentationLevel: number;
 }
-
 export interface WebGPUTensorOperation {
   operation: 'add' | 'multiply' | 'matmul' | 'transpose' | 'normalize';
   inputTensors: WebGPUTensor[];
   outputTensor: WebGPUTensor;
-  parameters?: Record<string, any>;
+  parameters?: { [key: string]: any };
 }
-
 export interface WebGPUTensor {
   data: Float32Array | Uint32Array | Int32Array;
   shape: number[];
@@ -49,7 +42,6 @@ export interface WebGPUTensor {
   dataType: 'f32' | 'i32' | 'u32';
   buffer: WebGPUBuffer;
 }
-
 export interface WebGPUKernel {
   name: string;
   source: string;
@@ -57,19 +49,16 @@ export interface WebGPUKernel {
   workgroupSize: [number, number, number];
   bindings: WebGPUBinding[];
 }
-
 export interface WebGPUBinding {
   binding: number;
   resource: GPUBindingResource;
   type: 'buffer' | 'texture' | 'sampler';
 }
-
 export interface WebGPUComputeContext {
   device: WebGPUDevice;
   commandEncoder: GPUCommandEncoder;
   computePass: GPUComputePassEncoder;
 }
-
 export interface WebGPUPerformanceMetrics {
   computeTime: number;
   memoryTransferTime: number;
@@ -77,35 +66,30 @@ export interface WebGPUPerformanceMetrics {
   throughput: number;
   efficiency: number;
 }
-
 export interface WebGPULegalProcessor {
   processDocument(document: string): Promise<WebGPUProcessingResult>;
   extractEntities(text: string): Promise<WebGPUEntityResult[]>;
   calculateSimilarity(text1: string, text2: string): Promise<number>;
   generateEmbeddings(text: string): Promise<Float32Array>;
 }
-
 export interface WebGPUProcessingResult {
   success: boolean;
   processedText: string;
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
   performanceMetrics: WebGPUPerformanceMetrics;
 }
-
 export interface WebGPUEntityResult {
   entity: string;
   type: string;
   confidence: number;
   position: [number, number];
 }
-
 export interface WebGPUVectorEngine {
   computeSimilarity(vector1: Float32Array, vector2: Float32Array): Promise<number>;
   batchProcess(vectors: Float32Array[]): Promise<Float32Array[]>;
   normalize(vector: Float32Array): Promise<Float32Array>;
   reduce(vectors: Float32Array[], operation: 'mean' | 'sum' | 'max'): Promise<Float32Array>;
 }
-
 export interface WebGPUConfiguration {
   deviceType: 'high-performance' | 'low-power' | 'fallback';
   memoryLimit: number;
@@ -113,7 +97,6 @@ export interface WebGPUConfiguration {
   enableProfiling: boolean;
   shaderOptimization: 'none' | 'basic' | 'aggressive';
 }
-
 export interface WebGPUCapabilities {
   supportsCompute: boolean;
   supportsTimestampQuery: boolean;
@@ -122,7 +105,6 @@ export interface WebGPUCapabilities {
   maxBufferSize: number;
   maxTextureSize: number;
 }
-
 // Legal AI specific interfaces
 export interface LegalDocumentProcessor {
   processContract(contract: string): Promise<ContractAnalysis>;
@@ -130,7 +112,6 @@ export interface LegalDocumentProcessor {
   assessRisk(document: string): Promise<RiskAssessment>;
   compareDocuments(doc1: string, doc2: string): Promise<DocumentComparison>;
 }
-
 export interface ContractAnalysis {
   documentType: string;
   keyTerms: string[];
@@ -139,7 +120,6 @@ export interface ContractAnalysis {
   recommendations: string[];
   confidence: number;
 }
-
 export interface ClauseExtraction {
   clauseType: string;
   text: string;
@@ -147,14 +127,12 @@ export interface ClauseExtraction {
   legalImplications: string[];
   suggestedActions: string[];
 }
-
 export interface RiskAssessment {
   overallRisk: 'low' | 'medium' | 'high' | 'critical';
   riskFactors: RiskFactor[];
   mitigationStrategies: string[];
   legalReview: boolean;
 }
-
 export interface RiskFactor {
   factor: string;
   severity: number;
@@ -162,7 +140,6 @@ export interface RiskFactor {
   impact: string;
   mitigation: string[];
 }
-
 export interface DocumentComparison {
   similarity: number;
   keyDifferences: string[];
@@ -170,14 +147,12 @@ export interface DocumentComparison {
   removedClauses: string[];
   modifiedClauses: ModifiedClause[];
 }
-
 export interface ModifiedClause {
   original: string;
   modified: string;
   changeType: 'minor' | 'major' | 'critical';
   legalImpact: string;
 }
-
 // Memory management interfaces
 export interface WebGPUMemoryManager {
   allocateBuffer(size: number, usage: GPUBufferUsageFlags): Promise<WebGPUBuffer>;
@@ -186,46 +161,39 @@ export interface WebGPUMemoryManager {
   defragment(): Promise<void>;
   setMemoryLimit(limit: number): void;
 }
-
 export interface WebGPUResourcePool {
   acquireBuffer(size: number): Promise<WebGPUBuffer>;
   releaseBuffer(buffer: WebGPUBuffer): void;
   acquireComputePipeline(shader: string): Promise<WebGPUComputePipeline>;
   releaseComputePipeline(pipeline: WebGPUComputePipeline): void;
 }
-
 // Error handling interfaces
 export interface WebGPUError extends Error {
   code: string;
   details: string;
   recoverable: boolean;
-  context: Record<string, any>;
+  context: { [key: string]: any };
 }
-
 export interface WebGPUValidationError extends WebGPUError {
   shaderSource?: string;
   line?: number;
   column?: number;
 }
-
 export interface WebGPUOutOfMemoryError extends WebGPUError {
   requestedSize: number;
   availableSize: number;
   totalSize: number;
 }
-
 // Event interfaces
 export interface WebGPUEventHandler {
   onDeviceLost(callback: (event: GPUDeviceLostInfo) => void): void;
   onUncapturedError(callback: (event: GPUUncapturedErrorEvent) => void): void;
   onPerformanceWarning(callback: (warning: string) => void): void;
 }
-
 // Utility types
 export type WebGPUDataType = 'f32' | 'i32' | 'u32' | 'f16';
 export type WebGPUOperationType = 'compute' | 'render' | 'copy';
 export type WebGPUShaderStage = 'vertex' | 'fragment' | 'compute';
-
 // Re-export WebGPU native types for convenience
 export type {
   GPUDevice,

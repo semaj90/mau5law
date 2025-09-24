@@ -3,12 +3,11 @@ https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 </script>
 /**
  * Adaptive Rendering Engine with Dynamic Upscaling
  * Implements NES → SNES → N64 quality scaling based on system performance
- * 
+ *
  * Features:
  * - Real-time FPS monitoring and quality adjustment
  * - Texture streaming and chunking for memory optimization
@@ -16,13 +15,10 @@ https://svelte.dev/e/expected_token -->
  * - CHR-ROM pattern caching with quality-based LOD
  * - Bitmap HMM-SOM prediction integration
  */
-
 import { onMount, onDestroy } from 'svelte';
 import { BitmapHMMSOMPredictor } from '$lib/ai/bitmap-hmm-som-predictor.js';
-
 // Quality tier definitions
 export type QualityTier = '8-BIT_NES' | '16-BIT_SNES' | '64-BIT_N64';
-
 export interface QualityConfig {
   tier: QualityTier;
   targetResolution: number;
@@ -34,7 +30,6 @@ export interface QualityConfig {
   particleEffects: boolean;
   advancedLighting: boolean;
 }
-
 export interface SystemMetrics {
   fps: number;
   frameTime: number;
@@ -43,7 +38,6 @@ export interface SystemMetrics {
   gpuUtilization: number;
   drawCalls: number;
 }
-
 interface Props {
   content: unknown;
   assetType?: string;
@@ -51,7 +45,6 @@ interface Props {
   predictive?: boolean;
   className?: string;
 }
-
 let {
   content,
   assetType = 'general',
@@ -59,20 +52,18 @@ let {
   predictive = false,
   className = ''
 }: Props = $props();
-
 // Reactive state using Svelte 5 runes
 let currentQuality = $state<QualityConfig>({
   tier: '8-BIT_NES',
   targetResolution: 540,
   pixelScale: 2.0,
   shaderComplexity: 1,
-  textureStreamingEnabled: false,
+  textureStreamingEnabled: false
   chrRomCacheSize: 50,
-  antiAliasing: false,
-  particleEffects: false,
+  antiAliasing: false
+  particleEffects: false
   advancedLighting: false;
 });
-
 let systemMetrics = $state<SystemMetrics>({
   fps: 60,
   frameTime: 16.67,
@@ -81,38 +72,31 @@ let systemMetrics = $state<SystemMetrics>({
   gpuUtilization: 30,
   drawCalls: 100;
 });
-
 let isMonitoring = $state(false);
 let canvasElement: HTMLCanvasElement = $state(undefined as any);
 let renderContext = $state<CanvasRenderingContext2D | WebGLRenderingContext | null>(null);
 let webgpuDevice = $state<GPUDevice | null>(null);
 let hmmPredictor = $state<BitmapHMMSOMPredictor | null>(null);
-
 // Performance monitoring
 let frameCount = 0;
 let lastFrameTime = 0;
 let fpsHistory: number[] = [];
 let monitoringInterval: NodeJS.Timeout;
 let qualityAdjustmentTimer: NodeJS.Timeout;
-
 $effect(() => {
     (async () => {
 await initializeRenderingEngine();
   startPerformanceMonitoring();
     })();
   });
-
 onDestroy(() => {
   stopPerformanceMonitoring();
 });
-
 async function initializeRenderingEngine(): Promise<void> {
   console.log('🎮 Initializing Adaptive Rendering Engine...');
-
   // Initialize HMM-SOM predictor for asset prediction
   hmmPredictor = new BitmapHMMSOMPredictor();
   await hmmPredictor.initialize();
-
   // Setup WebGPU if available
   if ('gpu' in navigator) {
     try {
@@ -125,7 +109,6 @@ async function initializeRenderingEngine(): Promise<void> {
       console.warn('WebGPU not available:', error);
     }
   }
-
   // Initialize canvas context
   if (canvasElement) {
     renderContext = canvasElement.getContext('2d');
@@ -133,19 +116,15 @@ async function initializeRenderingEngine(): Promise<void> {
       console.log('✅ Canvas 2D context initialized');
     }
   }
-
   // Set initial quality based on device capabilities
   currentQuality = calculateInitialQuality();
-  
   console.log(`🎯 Initial quality: ${currentQuality.tier}`);
 }
-
 function calculateInitialQuality(): QualityConfig {
   // Detect device capabilities
-  const isHighEnd = navigator.hardwareConcurrency > 4 && 
+  const isHighEnd = navigator.hardwareConcurrency > 4 &&
                     (navigator as any).deviceMemory > 4;
-  const hasWebGPU = !!webgpuDevice;
-  
+  const hasWebGPU = !!webgpuDevic;
   if (isHighEnd && hasWebGPU) {
     return create64BitConfig();
   } else if (isHighEnd || hasWebGPU) {
@@ -154,99 +133,83 @@ function calculateInitialQuality(): QualityConfig {
     return create8BitConfig();
   }
 }
-
 function create8BitConfig(): QualityConfig {
   return {
     tier: '8-BIT_NES',
     targetResolution: 540,
     pixelScale: 2.0,
     shaderComplexity: 1,
-    textureStreamingEnabled: false,
+    textureStreamingEnabled: false
     chrRomCacheSize: 50,
-    antiAliasing: false,
-    particleEffects: false,
+    antiAliasing: false
+    particleEffects: false
     advancedLighting: false;
   };
 }
-
 function create16BitConfig(): QualityConfig {
   return {
     tier: '16-BIT_SNES',
     targetResolution: 720,
     pixelScale: 1.5,
     shaderComplexity: 2,
-    textureStreamingEnabled: true,
+    textureStreamingEnabled: true
     chrRomCacheSize: 100,
-    antiAliasing: true,
-    particleEffects: true,
+    antiAliasing: true
+    particleEffects: true
     advancedLighting: false;
   };
 }
-
 function create64BitConfig(): QualityConfig {
   return {
     tier: '64-BIT_N64',
     targetResolution: 1080,
     pixelScale: 1.0,
     shaderComplexity: 3,
-    textureStreamingEnabled: true,
+    textureStreamingEnabled: true
     chrRomCacheSize: 200,
-    antiAliasing: true,
-    particleEffects: true,
+    antiAliasing: true
+    particleEffects: true
     advancedLighting: true;
   };
 }
-
 function startPerformanceMonitoring(): void {
   isMonitoring = true;
-  
   // FPS monitoring
   monitoringInterval = setInterval(() => {
     updateSystemMetrics();
     evaluateQualityAdjustment();
   }, 1000);
-
   // Quality adjustment check
   qualityAdjustmentTimer = setInterval(() => {
     adjustQualityBasedOnPerformance();
   }, 5000); // Check every 5 seconds
-
   // Frame timing
   requestAnimationFrame(frameTimeCallback);
 }
-
 function stopPerformanceMonitoring(): void {
   isMonitoring = false;
   if (monitoringInterval) clearInterval(monitoringInterval);
   if (qualityAdjustmentTimer) clearInterval(qualityAdjustmentTimer);
 }
-
 function frameTimeCallback(timestamp: number): void {
   if (lastFrameTime > 0) {
-    const frameTime = timestamp - lastFrameTime;
-    const fps = 1000 / frameTime;
-    
+    const frameTime = timestamp - lastFrameTim;
+    const fps = 1000 / frameTim;
     fpsHistory.push(fps);
     if (fpsHistory.length > 60) { // Keep last 60 frames (1 second at 60fps)
       fpsHistory.shift();
     }
-    
     frameCount++;
   }
-  
   lastFrameTime = timestamp;
-  
   if (isMonitoring) {
     requestAnimationFrame(frameTimeCallback);
   }
 }
-
 function updateSystemMetrics(): void {
   if (fpsHistory.length === 0) return;
-
   const averageFps = fpsHistory.reduce((a, b) => a + b, 0) / fpsHistory.length;
-  const averageFrameTime = 1000 / averageFps;
-
+  const averageFrameTime = 1000 / averageFp;
   systemMetrics = {
     fps: Math.round(averageFps),
     frameTime: Number(averageFrameTime.toFixed(2)),
@@ -256,7 +219,6 @@ function updateSystemMetrics(): void {
     drawCalls: estimateDrawCalls();
   };
 }
-
 function getMemoryUsage(): number {
   if ('memory' in performance) {
     const mem = (performance as any).memory;
@@ -264,19 +226,16 @@ function getMemoryUsage(): number {
   }
   return 50; // Default estimate
 }
-
 function getCacheHitRate(): number {
   // Integrate with CHR-ROM cache statistics
   return Math.random() * 20 + 70; // 70-90% simulation
 }
-
 function estimateGPUUtilization(): number {
   // Estimate based on rendering complexity and FPS
   const complexityFactor = currentQuality.shaderComplexity / 3;
   const fpsFactor = Math.max(0, 1 - systemMetrics.fps / 60);
   return Math.round((complexityFactor * 50 + fpsFactor * 30) * 100) / 100;
 }
-
 function estimateDrawCalls(): number {
   // Estimate based on quality tier and content complexity
   const baseDrawCalls = {
@@ -284,17 +243,13 @@ function estimateDrawCalls(): number {
     '16-BIT_SNES': 150,
     '64-BIT_N64': 300
   };
-  
   return baseDrawCalls[currentQuality.tier] + Math.random() * 50;
 }
-
 function evaluateQualityAdjustment(): void {
   if (fpsHistory.length < 30) return; // Need enough samples
-
   const avgFps = fpsHistory.reduce((a, b) => a + b, 0) / fpsHistory.length;
   const memoryPressure = systemMetrics.memoryUsage > 80;
   const poorCachePerformance = systemMetrics.cacheHitRate < 60;
-
   // Quality adjustment logic
   if (avgFps < 50 || memoryPressure || poorCachePerformance) {
     downgradeQuality();
@@ -302,27 +257,23 @@ function evaluateQualityAdjustment(): void {
     upgradeQuality();
   }
 }
-
 function adjustQualityBasedOnPerformance(): void {
   const performance = analyzePerformance();
-  
   if (performance.shouldDowngrade) {
     downgradeQuality();
   } else if (performance.shouldUpgrade) {
     upgradeQuality();
   }
-
   // Record interaction for HMM-SOM prediction
   if (hmmPredictor) {
     hmmPredictor.recordInteraction('quality_adjustment', {
-      tier: currentQuality.tier,;
+      tier: currentQuality.tier,
       fps: systemMetrics.fps,
       memoryUsage: systemMetrics.memoryUsage,
-      assetType;
+      assetTyp;
     });
   }
 }
-
 function analyzePerformance(): {
   shouldUpgrade: boolean;
   shouldDowngrade: boolean;
@@ -332,21 +283,16 @@ function analyzePerformance(): {
   const stableFps = fpsHistory.every(fps => fps > 55);
   const lowMemory = systemMetrics.memoryUsage < 70;
   const goodCache = systemMetrics.cacheHitRate > 80;
-
-  const shouldUpgrade = stableFps && lowMemory && goodCache && 
+  const shouldUpgrade = stableFps && lowMemory && goodCache &&
                        currentQuality.tier !== '64-BIT_N64';
-  
-  const shouldDowngrade = (avgFps < 50 || systemMetrics.memoryUsage > 85 || 
-                          systemMetrics.cacheHitRate < 60) && 
+  const shouldDowngrade = (avgFps < 50 || systemMetrics.memoryUsage > 85 ||
+                          systemMetrics.cacheHitRate < 60) &&
                          currentQuality.tier !== '8-BIT_NES';
-
-  const confidence = Math.min(1, Math.max(0, 
+  const confidence = Math.min(1, Math.max(0,
     (avgFps / 60 + (100 - systemMetrics.memoryUsage) / 100 + systemMetrics.cacheHitRate / 100) / 3
   ));
-
   return { shouldUpgrade, shouldDowngrade, confidence };
 }
-
 function upgradeQuality(): void {
   switch (currentQuality.tier) {
     case '8-BIT_NES':
@@ -358,10 +304,8 @@ function upgradeQuality(): void {
       console.log('📈 Upgraded to 64-BIT N64 quality');
       break;
   }
-  
   applyQualityChanges();
 }
-
 function downgradeQuality(): void {
   switch (currentQuality.tier) {
     case '64-BIT_N64':
@@ -373,32 +317,24 @@ function downgradeQuality(): void {
       console.log('📉 Downgraded to 8-BIT NES quality');
       break;
   }
-  
   applyQualityChanges();
 }
-
 function applyQualityChanges(): void {
   if (!canvasElement || !renderContext) return;
-
   // Update canvas resolution
-  canvasElement.width = currentQuality.targetResolution;
+  canvasElement.width = currentQuality.targetResolutio;
   canvasElement.height = Math.round(currentQuality.targetResolution * 0.75); // 4:3 aspect ratio
-
   // Apply pixel scaling for retro effect
   if (renderContext instanceof CanvasRenderingContext2D) {
     renderContext.imageSmoothingEnabled = !currentQuality.antiAliasing;
     renderContext.scale(currentQuality.pixelScale, currentQuality.pixelScale);
   }
-
   // Update CSS for visual effect
   updateVisualEffects();
 }
-
 function updateVisualEffects(): void {
   if (!canvasElement) return;
-
   const element = canvasElement;
-  
   // Apply CSS filters based on quality tier
   switch (currentQuality.tier) {
     case '8-BIT_NES':
@@ -415,15 +351,11 @@ function updateVisualEffects(): void {
       break;
   }
 }
-
 function renderContent(): void {
   if (!renderContext || !content) return;
-
   const ctx = renderContext as CanvasRenderingContext2D;
-  
   // Clear canvas
   ctx.clearRect(0, 0, canvasElement?.width || 0, canvasElement?.height || 0);
-
   // Render based on quality tier
   switch (currentQuality.tier) {
     case '8-BIT_NES':
@@ -437,83 +369,67 @@ function renderContent(): void {
       break;
   }
 }
-
 function renderNESStyle(ctx: CanvasRenderingContext2D): void {
   // Simple pixelated rendering
   ctx.fillStyle = '#4A90E2';
   ctx.fillRect(10, 10, 50, 30);
-  
   // Add NES-style text
   ctx.fillStyle = 'white';
   ctx.font = '8px monospace';
   ctx.fillText(assetType.toUpperCase(), 15, 25);
 }
-
 function renderSNESStyle(ctx: CanvasRenderingContext2D): void {
   // Enhanced 16-bit style rendering
   const gradient = ctx.createLinearGradient(0, 0, 60, 40);
   gradient.addColorStop(0, '#4A90E2');
   gradient.addColorStop(1, '#357ABD');
-  
   ctx.fillStyle = gradient;
   ctx.fillRect(10, 10, 60, 40);
-  
   // Better typography
   ctx.fillStyle = 'white';
   ctx.font = '10px serif';
   ctx.fillText(assetType, 15, 28);
 }
-
 function renderN64Style(ctx: CanvasRenderingContext2D): void {
   // Advanced 64-bit style rendering with effects
   const gradient = ctx.createRadialGradient(40, 30, 0, 40, 30, 30);
   gradient.addColorStop(0, '#4A90E2');
   gradient.addColorStop(0.5, '#357ABD');
   gradient.addColorStop(1, '#2E6BA8');
-  
   ctx.fillStyle = gradient;
   ctx.fillRect(10, 10, 70, 50);
-  
   // Add shadow effect
   ctx.shadowColor = 'rgba(0,0,0,0.3)';
   ctx.shadowBlur = 3;
   ctx.shadowOffsetX = 2;
   ctx.shadowOffsetY = 2;
-  
   // Premium typography
   ctx.fillStyle = 'white';
   ctx.font = '12px Arial';
   ctx.fillText(assetType, 15, 35);
 }
-
 // Texture streaming for memory optimization
 async function streamTexture(assetKey: string): Promise<string> {
   if (!currentQuality.textureStreamingEnabled) {
     return loadFullTexture(assetKey);
   }
-
   // Load texture in chunks based on quality
-  const chunkSize = currentQuality.tier === '64-BIT_N64' ? 1024 : 
+  const chunkSize = currentQuality.tier === '64-BIT_N64' ? 1024 :
                    currentQuality.tier === '16-BIT_SNES' ? 512 : 256;
-  
   return loadTextureChunks(assetKey, chunkSize);
 }
-
 async function loadFullTexture(assetKey: string): Promise<string> {/* JSX syntax converted to Svelte */}, 10);
   });
 }
-
 async function loadTextureChunks(assetKey: string, chunkSize: number): Promise<string> {/* JSX syntax converted to Svelte */}, 50);
   });
 }
-
 // Reactive updates
 $effect(() => {
   if (canvasElement) {
     renderContent();
   }
 });
-
 // Performance metrics for external monitoring
 export function getPerformanceMetrics() {
   return {
@@ -522,7 +438,6 @@ export function getPerformanceMetrics() {
     isMonitoring
   };
 }
-
 // Quality control API
 export function setQuality(tier: QualityTier) {
   switch (tier) {
@@ -539,16 +454,14 @@ export function setQuality(tier: QualityTier) {
   applyQualityChanges();
 }
 </script>
-
 <!-- Adaptive Rendering Canvas -->
 <div class="adaptive-rendering-container {className}">
-  <canvas 
+  <canvas
     bind:this={canvasElement}
     width={currentQuality.targetResolution}
     height={Math.round(currentQuality.targetResolution * 0.75)}
     class="rendering-canvas {currentQuality.tier.toLowerCase.replace(/_/g, '-')}"
   ></canvas>
-  
   <!-- Quality Indicator -->
   {#if isMonitoring}
     <div class="quality-indicator">
@@ -562,7 +475,6 @@ export function setQuality(tier: QualityTier) {
       </div>
     </div>
   {/if}
-
   <!-- WebGPU Status -->
   {#if webgpuDevice}
     <div class="webgpu-indicator">
@@ -570,30 +482,25 @@ export function setQuality(tier: QualityTier) {
     </div>
   {/if}
 </div>
-
 <style>
-.adaptive-rendering-container {;
+.adaptive-rendering-container {
   position: relative;
   display: inline-block;
   border-radius: 4px;
   overflow: hidden;
 }
-
 .rendering-canv.rendering-canvas.8-bit-nes {
   image-rendering: pixelated;
-  image-rendering: -moz-crisp-edges;
-  image-rendering: crisp-edges;
+  image-rendering: -moz-crisp-edge;
+  image-rendering: crisp-edge;
   filter: contrast(1.1) saturate(1.2);
 }
-
 .rendering-canvas.16-bit-snes {
   filter: contrast(1.05) saturate(1.1);
 }
-
 .rendering-canvas.64-bit-n64 {
   filter: none;
 }
-
 .quality-indicator {
   position: absolute;
   top: 4px;
@@ -603,7 +510,6 @@ export function setQuality(tier: QualityTier) {
   gap: 2px;
   pointer-events: none;
 }
-
 .tier-badge {
   padding: 2px 6px;
   border-radius: 3px;
@@ -613,19 +519,15 @@ export function setQuality(tier: QualityTier) {
   color: white;
   text-shadow: 1px 1px 1px rgba(0,0,0,0.8);
 }
-
 .tier-badge.8-bit-nes {
   background: linear-gradient(45deg, #ff4444, #ff6666);
 }
-
 .tier-badge.16-bit-snes {
   background: linear-gradient(45deg, #4444ff, #6666ff);
 }
-
 .tier-badge.64-bit-n64 {
   background: linear-gradient(45deg, #44ff44, #66ff66);
 }
-
 .performance-stats {
   display: flex;
   gap: 4px;
@@ -633,7 +535,6 @@ export function setQuality(tier: QualityTier) {
   color: rgba(255,255,255,0.8);
   text-shadow: 1px 1px 1px rgba(0,0,0,0.8);
 }
-
 .webgpu-indicator {
   position: absolute;
   bottom: 4px;
@@ -643,30 +544,24 @@ export function setQuality(tier: QualityTier) {
   text-shadow: 1px 1px 1px rgba(0,0,0,0.8);
   pointer-events: none;
 }
-
 /* Quality-specific animations */
 .8-bit-nes {
   animation: pixel-flicker 0.1s infinite;
 }
-
 .16-bit-snes {
   animation: smooth-glow 2s ease-in-out infinite alternate;
 }
-
 .64-bit-n64 {
   animation: premium-shine 3s ease-in-out infinite;
 }
-
 @keyframes pixel-flicker {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.98; }
 }
-
 @keyframes smooth-glow {
   0% { filter: brightness(1) contrast(1.05) saturate(1.1); }
   100% { filter: brightness(1.02) contrast(1.08) saturate(1.15); }
 }
-
 @keyframes premium-shine {
   0%, 100% { filter: brightness(1) saturate(1); }
   50% { filter: brightness(1.05) saturate(1.1); }

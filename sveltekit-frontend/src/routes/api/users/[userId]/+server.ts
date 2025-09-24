@@ -4,8 +4,6 @@ import { eq } from 'drizzle-orm'
 import { json } from '@sveltejs/kit'
 import { authService } from '$lib/server/auth'
 import type { RequestHandler } from './$types.js'
-
-
 export const GET: RequestHandler = async ({ params, locals }) => {
   try {
     const currentUser = locals.user
@@ -40,7 +38,6 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       .from(users)
       .where(eq(users.id, userId)
       .limit(1)
-
     if (!userResult.length) {
       return json({ error: 'User not found' }, { status: 404 })
     }
@@ -50,7 +47,6 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     return json({ error: 'Failed to fetch user' }, { status: 500 })
   }
 }
-
 export const PUT: RequestHandler = async ({ params, request, locals }) => {
   try {
     const currentUser = locals.user
@@ -69,10 +65,8 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       return json({ error: 'Insufficient permissions' }, { status: 403 })
     }
     const data = await request.json()
-
     // Check if user exists
     const existingUser = await db.select().from(users).where(eq(users.id, userId)).limit(1)
-
     if (!existingUser.length) {
       return json({ error: 'User not found' }, { status: 404 })
     }
@@ -83,22 +77,19 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         .from(users)
         .where(eq(users.email, data.email)
         .limit(1)
-
       if (duplicateUser.length > 0) {
         return json({ error: 'Email already exists' }, { status: 409 })
       }
     }
-    const updateData: Record<string, any> = {
+    const updateData: { [key: string]: any } = {
       updatedAt: new Date()
     }
-
     // Only update provided fields
     if (data.email !== undefined) updateData.email = data.email.trim().toLowerCase()
     if (data.name !== undefined) updateData.name = data.name?.trim() || null
     if (data.firstName !== undefined) updateData.firstName = data.firstName?.trim() || null
     if (data.lastName !== undefined) updateData.lastName = data.lastName?.trim() || null
     if (data.avatarUrl !== undefined) updateData.avatarUrl = data.avatarUrl?.trim() || null
-
     // Only admins can change role and active status
     if (currentUser.role === 'admin') {
       if (data.role !== undefined) updateData.role = data.role
@@ -125,14 +116,12 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         createdAt: users.createdAt,
         updatedAt: users.updatedAt
       })
-
     return json(updatedUser)
   } catch (error: any) {
     console.error('Error updating user:', error)
     return json({ error: 'Failed to update user' }, { status: 500 })
   }
 }
-
 export const DELETE: RequestHandler = async ({ params, locals }) => {
   try {
     if (!locals.user) {
@@ -155,7 +144,6 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     }
     // Check if user exists
     const existingUser = await db.select().from(users).where(eq(users.id, userId)).limit(1)
-
     if (!existingUser.length) {
       return json({ error: 'User not found' }, { status: 404 })
     }
@@ -165,14 +153,12 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       email: users.email,
       name: users.name
     })
-
     return json({ success: true, deletedUser })
   } catch (error: any) {
     console.error('Error deleting user:', error)
     return json({ error: 'Failed to delete user' }, { status: 500 })
   }
 }
-
 // PATCH endpoint for partial updates (like status changes)
 export const PATCH: RequestHandler = async ({ params, request, locals }) => {
   try {
@@ -188,21 +174,18 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       return json({ error: 'User ID is required' }, { status: 400 })
     }
     const data = await request.json()
-
     // Users can only update their own profile unless they're admin
     if (currentUser.id !== userId && currentUser.role !== 'admin') {
       return json({ error: 'Insufficient permissions' }, { status: 403 })
     }
     // Check if user exists
     const existingUser = await db.select().from(users).where(eq(users.id, userId)).limit(1)
-
     if (!existingUser.length) {
       return json({ error: 'User not found' }, { status: 404 })
     }
-    const updateData: Record<string, any> = {
+    const updateData: { [key: string]: any } = {
       updatedAt: new Date()
     }
-
     // Handle specific patch operations
     if (data.operation === 'activate' && currentUser.role === 'admin') {
       updateData.isActive = true
@@ -253,7 +236,6 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
         createdAt: users.createdAt,
         updatedAt: users.updatedAt
       })
-
     return json(updatedUser)
   } catch (error: any) {
     console.error('Error patching user:', error)

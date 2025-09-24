@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // NES Auth Modal - Svelte 5 compatible
   interface Props {
     open?: boolean;
@@ -8,16 +7,13 @@
     onClose?: () => void;
     onSubmit?: (e: { email: string; password: string }) => void;
   }
-
   let {
     open = false,
     title = 'Sign in',
     onClose = () => ,
     onSubmit = () => }: Props = $props();
-
   let email = $state('');
   let password = $state('');
-
   function submit() {
     if (email && password) {
       onSubmit({ email, password });
@@ -27,7 +23,6 @@
     }
   }
 </script>
-
 {#if open}
   <div
     class="fixed inset-0 z-50 grid place-items-center bg-black/50"
@@ -65,9 +60,8 @@
     </div>
   </div>
 {/if}
-
 <style>
-  :global(body) {;
+  :global(body) {
     --modal-bg: rgba(0,0,0,0.5);
   }
 </style>

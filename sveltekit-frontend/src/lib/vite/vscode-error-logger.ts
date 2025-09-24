@@ -1,7 +1,6 @@
 
 import { resolve, dirname } from 'path';
 import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
-
 /**
  * Simple VS Code Error Logger plugin for Vite
  * - Writes a JSON log to .vscode/vite-errors.json
@@ -10,28 +9,26 @@ import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
  */;
 export function vscodeErrorLogger(options: any = {}) {
   const config = {
-    enabled: true,
+    enabled: true
     logFile: resolve(process.cwd(), '.vscode/vite-errors.json'),
     maxEntries: 500,
-    includeWarnings: true,
-    includeSourceMaps: true,
+    includeWarnings: true
+    includeSourceMaps: true
     ...options
   };
-
   let server: any = undefined;
   let errorLog: any = { metadata: { lastUpdated: new Date().toISOString(), version: 1 }, errors: [] };
-
   function loadLog() {
     try {
       if (existsSync(config.logFile)) {
         const raw = readFileSync(config.logFile, 'utf8');
         const parsed = JSON.parse(raw);
-        // Normalize shape so later code can safely read metadata and errors;
+        // Normalize shape so later code can safely read metadata and errors
         errorLog = {
           metadata: {
             lastUpdated: parsed?.metadata?.lastUpdated || new Date().toISOString(),
             version: parsed?.metadata?.version || 1
-          },;
+          },
           errors: Array.isArray(parsed?.errors) ? parsed.errors: []
         };
       }
@@ -39,7 +36,6 @@ export function vscodeErrorLogger(options: any = {}) {
     // ignore
     }
   }
-
   function saveLog() {
     try {
       const dir = dirname(config.logFile);
@@ -53,7 +49,6 @@ export function vscodeErrorLogger(options: any = {}) {
     // ignore
     }
   }
-
   function pushEntry(entry: any) {
     if (!config.enabled) return;
     errorLog.errors = errorLog.errors || [];
@@ -61,7 +56,6 @@ export function vscodeErrorLogger(options: any = {}) {
     if (errorLog.errors.length > config.maxEntries) errorLog.errors.length = config.maxEntries;
     saveLog();
   }
-
   function normalizeViteError(err: any) {
     const entry: any = {
       timestamp: new Date().toISOString(),
@@ -71,25 +65,22 @@ export function vscodeErrorLogger(options: any = {}) {
       file: err?.id || err?.loc?.file || undefined,
       line: err?.loc?.line || err?.loc?.lineNumber || undefined,
       column: err?.loc?.column || undefined,
-      frame: err?.frame || undefined,;
+      frame: err?.frame || undefined,
       plugin: err?.plugin || undefined,
       buildPhase: 'vite'
     };
     return entry;
   }
-
   return {
     name: 'vscode-error-logger',
     configureServer(srv: any) {
       server = srv;
       loadLog();
-
       try {
         server.ws.on('vite:error', (payload: any) => {
           const e = normalizeViteError(payload.err || payload);
           pushEntry(e);
         });
-
         if (config.includeWarnings) {
           server.ws.on('vite:warning', (payload: any) => {
             const e = normalizeViteError(payload.warn || payload);
@@ -101,11 +92,9 @@ export function vscodeErrorLogger(options: any = {}) {
         // ignore websocket attach errors
       }
     },
-
     buildStart() {
       pushEntry({ timestamp: new Date().toISOString(), level: 'info', message: 'Build started', buildPhase: 'build' });
     },
-
     buildEnd(error: any) {
       if (error) {
         pushEntry({ timestamp: new Date().toISOString(), level: 'error', message: error.message || String(error), stack: error.stack, buildPhase: 'build' });
@@ -115,15 +104,14 @@ export function vscodeErrorLogger(options: any = {}) {
     }
   };
 }
-
 export const defaultVSCodeErrorConfig = {
-  enabled: true,
+  enabled: true
   logFile: resolve(process.cwd(), '.vscode/vite-errors.json'),
   maxEntries: 1000,
-  includeWarnings: true,
-  includeSourceMaps: true,
-  autoOpenProblems: false,
+  includeWarnings: true
+  includeSourceMaps: true
+  autoOpenProblems: false
   notificationLevel: 'errors-only',
-  integrateTasks: true,
+  integrateTasks: true
   generateDiagnostics: true
 };

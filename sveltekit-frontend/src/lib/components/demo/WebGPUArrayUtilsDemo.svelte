@@ -8,7 +8,6 @@ https://svelte.dev/e/expected_token -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 </script>
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits';
@@ -22,7 +21,6 @@ https://svelte.dev/e/expected_token -->
     type SupportedArrayTypes
   } from '$lib/utils/webgpu-array-utils';
   import { webgpuRAGService } from '$lib/webgpu/webgpu-rag-service';
-
   // Component state
   let webgpuSupported = $state(false);
   let isProcessing = $state(false);
@@ -32,7 +30,6 @@ https://svelte.dev/e/expected_token -->
     fp16?: ArrayConversionResult;
     int8?: ArrayConversionResult;
     memoryAnalysis?: Array( );
-
   // Sample data demonstrating the mismatch problem
   // Melt UI component creation removed - replace with bits-ui declarative components
         </code>
@@ -40,7 +37,6 @@ https://svelte.dev/e/expected_token -->
     </div.Content>
   </div.Root>
 </div>
-
 <style>
   .webgpu-array-demo {
     max-width: 1200px;

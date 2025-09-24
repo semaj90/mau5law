@@ -2,9 +2,7 @@ import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
 import { healthResponseSchema } from '$lib/schemas/vector'
 import { safeFetchJson } from '$lib/server/fetch-wrapper'
-
 const VECTOR_BASE = process.env.VECTOR_SERVICE_URL || 'http://localhost:8095'
-
 export const GET: RequestHandler = async () => {
   const upstream = await safeFetchJson<any>(`${VECTOR_BASE}/health`, { timeoutMs: 5000 })
   if (!upstream.ok) {

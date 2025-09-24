@@ -4,7 +4,6 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { enhance } from '$app/forms';
   import { goto } from '$app/navigation';
   import Button from '$lib/components/ui/enhanced-bits';
@@ -18,20 +17,17 @@
     redirectTo?: string;
     showLogin?: boolean;
   }
-
-  let { 
-    data, 
-    redirectTo = '/dashboard', 
-    showLogin = true 
+  let {
+    data,
+    redirectTo = '/dashboard',
+    showLogin = true
   }: Props = $props();
-
   // Form state
   let showPassword = $state(false);
   let showConfirmPassword = $state(false);
   let isLoading = $state(false);
   let errorMessage = $state('');
   let successMessage = $state('');
-
   // Form data
   let formData = $state({
     email: '',
@@ -39,15 +35,14 @@
     lastName: '',
     password: '',
     confirmPassword: '',
-    role: 'analyst',;
-    department: '',;
+    role: 'analyst',
+    department: '',
     jurisdiction: '',
     badgeNumber: '',
-    agreeToTerms: false,
-    agreeToPrivacy: false,
+    agreeToTerms: false
+    agreeToPrivacy: false
     enableTwoFactor: false;
   });
-
   // Role options
   const roleOptions = [
     { value: 'prosecutor', label: 'Prosecutor' },
@@ -55,44 +50,35 @@
     { value: 'analyst', label: 'Legal Analyst' },
     { value: 'admin', label: 'Administrator' }
   ];
-
   // Form validation
   function validateForm(): boolean {
     if (!formData.email || !formData.password || !formData.firstName || !formData.lastName) {
       errorMessage = 'Please fill in all required fields';
       return false;
     }
-
     if (formData.password !== formData.confirmPassword) {
       errorMessage = 'Passwords do not match';
       return false;
     }
-
     if (formData.password.length < 8) {
       errorMessage = 'Password must be at least 8 characters';
       return false;
     }
-
     if (!formData.agreeToTerms || !formData.agreeToPrivacy) {
       errorMessage = 'You must agree to the terms and privacy policy';
       return false;
     }
-
     return true;
   }
-
   // Password visibility toggles
   function togglePasswordVisibility() {
     showPassword = !showPassword;
   }
-
   function toggleConfirmPasswordVisibility() {
     showConfirmPassword = !showConfirmPassword;
   }
-
   // Password strength checker
   let passwordStrength = $derived(calculatePasswordStrength(formData.password));
-
   function calculatePasswordStrength(password: string): { score: number; feedback: string; color: string } {
     if (!password) return { score: 0, feedback: 'Enter a password', color: 'text-gray-400' };
   let score = $state(0);
@@ -108,7 +94,6 @@
     return { score, feedback: 'Excellent', color: 'text-green-500' };
   }
 </script>
-
 <div class="w-full max-w-2xl mx-auto">
   <div class="bg-nier-bits-card p-8 rounded-lg border border-border">
     <div class="text-center mb-6">
@@ -124,7 +109,6 @@
         Register as a legal professional to access the AI-powered legal system
       </p>
     </div>
-
     <!-- Error Message -->
     {#if errorMessage}
       <div class="bg-destructive/15 border border-destructive text-destructive-foreground px-4 py-3 rounded mb-4 flex items-center gap-2">
@@ -132,7 +116,6 @@
         <span>{errorMessage}</span>
       </div>
     {/if}
-
     <!-- Success Message -->
     {#if successMessage}
       <div class="bg-green-500/15 border border-green-500 text-green-700 px-4 py-3 rounded mb-4 flex items-center gap-2">
@@ -140,23 +123,19 @@
         <span>{successMessage}</span>
       </div>
     {/if}
-
-    <form 
-      method="POST" 
-      action="?/register" 
+    <form
+      method="POST"
+      action="?/register"
       use:enhance={({ formData, cancel }) => {
         if (!validateForm()) {
           cancel();
           return;
         }
-        
         isLoading = true;
         errorMessage = '';
         successMessage = '';
-
         return async ({ result }) => {
           isLoading = false;
-          
           if ((result as { type?: any; data?: any }).type === 'success') {
             successMessage = 'Registration successful! Redirecting to dashboard...';
             setTimeout(() => {
@@ -172,7 +151,6 @@
       class="space-y-4"
     >
       <input type="hidden" name="redirectTo" value={redirectTo} />
-
       <!-- Personal Information -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- First Name -->
@@ -189,7 +167,6 @@
             class="mt-1"
           />
         </div>
-
         <!-- Last Name -->
         <div>
           <Label for="lastName">Last Name</Label>
@@ -205,7 +182,6 @@
           />
         </div>
       </div>
-
       <!-- Email -->
       <div>
         <Label for="email">Official Email Address</Label>
@@ -220,7 +196,6 @@
           class="mt-1"
         />
       </div>
-
       <!-- Professional Information -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Role -->
@@ -239,7 +214,6 @@
             {/each}
           </select>
         </div>
-
         <!-- Badge Number -->
         <div>
           <Label for="badgeNumber">Badge/ID Number (Optional)</Label>
@@ -254,7 +228,6 @@
           />
         </div>
       </div>
-
       <!-- Department & Jurisdiction -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
@@ -270,7 +243,6 @@
             class="mt-1"
           />
         </div>
-
         <div>
           <Label for="jurisdiction">Jurisdiction</Label>
           <Input
@@ -285,7 +257,6 @@
           />
         </div>
       </div>
-
       <!-- Password Fields -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Password -->
@@ -318,7 +289,7 @@
           {#if formData.password}
             <div class="mt-2 flex items-center gap-2">
               <div class="h-2 flex-1 bg-muted rounded">
-                <div 
+                <div
                   class="h-full rounded transition-all duration-300"
                   class:bg-red-500={passwordStrength.score < 3}
                   class:bg-yellow-500={passwordStrength.score >= 3 && passwordStrength.score < 5}
@@ -331,7 +302,6 @@
             </div>
           {/if}
         </div>
-
         <!-- Confirm Password -->
         <div>
           <Label for="confirmPassword">Confirm Password</Label>
@@ -361,7 +331,6 @@
           </div>
         </div>
       </div>
-
       <!-- Security Options -->
       <div class="space-y-3">
         <div class="flex items-center space-x-2">
@@ -378,7 +347,6 @@
           </Label>
         </div>
       </div>
-
       <!-- Terms and Privacy -->
       <div class="space-y-3">
         <div class="flex items-center space-x-2">
@@ -395,7 +363,6 @@
             I agree to the <a href="/legal/terms" class="text-primary hover:underline">Terms of Service</a>
           </Label>
         </div>
-
         <div class="flex items-center space-x-2">
           <input
             type="checkbox"
@@ -411,11 +378,10 @@
           </Label>
         </div>
       </div>
-
       <!-- Submit Button -->
-      <Button 
-        type="submit" 
-        class="w-full bits-btn bits-btn" 
+      <Button
+        type="submit"
+        class="w-full bits-btn bits-btn"
         disabled={isLoading}
       >
 {#if isLoading}
@@ -427,14 +393,13 @@
         {/if}
 </Button>
     </form>
-
     <!-- Login Link -->
     {#if showLogin}
       <div class="mt-6 text-center">
         <p class="text-sm nes-text is-disabled">
           Already have an account?
-          <a 
-            href="/auth/login" 
+          <a
+            href="/auth/login"
             class="text-primary hover:underline font-medium"
             tabindex={isLoading ? -1 : 0}
           >

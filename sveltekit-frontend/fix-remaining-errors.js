@@ -99,9 +99,9 @@ function fixRemainingErrors(filePath) {
       changed = true;
     }
 
-    // Fix standalone line like "source: 'minio' as const,;"
-    content = content.replace(/source: '(\w+)' as const,;/g, "source: '$1' as const,");
-    content = content.replace(/confidence: ([\d.]+),;/g, 'confidence: $1,');
+    // Fix standalone line like "source: 'minio' as const;"
+    content = content.replace(/source: '(\w+)' as const;/g, "source: '$1' as const,");
+    content = content.replace(/confidence: ([\d.]+);/g, 'confidence: $1,');
 
     if (changed) {
       fs.writeFileSync(filePath, content, 'utf8');

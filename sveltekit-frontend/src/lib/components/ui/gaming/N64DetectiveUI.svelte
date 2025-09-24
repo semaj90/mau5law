@@ -6,14 +6,11 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   Integrates with Detective Analysis Engine, NES Memory Architecture,
   Texture Streaming, and Multi-Dimensional Cache with "Did You Mean" suggestions
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { detectiveAnalysisEngine, type EvidenceItem, type ConflictAnalysis, type SearchSuggestion } from '$lib/evidence/detective-analysis-engine.js';
   import { browser } from '$app/environment';
-
   // Svelte 5 runes for reactive state
   let isInitialized = $state(false);
   let isAnalyzing = $state(false);
@@ -32,7 +29,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     SAVE_RAM: { used: 0, total: 16 * 1024 * 1024, priority: 'low' },
     EXPANSION_ROM: { used: 0, total: 64 * 1024 * 1024, priority: 'medium' }
   });
-
   // Performance metrics
   let performanceMetrics = $state({
     analysisTime: 0,
@@ -44,19 +40,15 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     textureMemory: 0,
     vertexBufferMemory: 0
   });
-
   // Gaming UI animations
   let scanlineEffect = $state(true);
   let crtGlow = $state(true);
   let pixelPerfect = $state(false);
-
   // File input reference
   let fileInput: HTMLInputElement;
-
   $effect(() => {
     (async () => {
 if (!browser) return;
-
     try {
       console.log('🎮 Initializing N64 Detective UI...');
       await detectiveAnalysisEngine.initializeEngine();
@@ -71,22 +63,19 @@ if (!browser) return;
     }
     })();
   });
-
   /**
    * Handle file drop for evidence analysis
    */
   function handleFileDrop(event: DragEvent) {
     event.preventDefault();
-    const files = event.dataTransfer?.files;
+    const files = event.dataTransfer?.file;
     if (files && files.length > 0) {
       analyzeEvidence(files[0]);
     }
   }
-
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
   }
-
   /**
    * Handle file input change
    */
@@ -97,13 +86,11 @@ if (!browser) return;
       analyzeEvidence(file);
     }
   }
-
   /**
    * Analyze evidence using detective engine
    */
   async function analyzeEvidence(file: File) {
     if (!isInitialized || isAnalyzing) return;
-
     isAnalyzing = true;
     textureStreamingProgress = 0;
     try {
@@ -112,20 +99,16 @@ if (!browser) return;
       const progressInterval = setInterval(() => {
         textureStreamingProgress = Math.min(textureStreamingProgress + 10, 90);
       }, 200);
-
       const startTime = performance.now();
       const evidence = await detectiveAnalysisEngine.analyzeEvidence(file, {
         type: file.type.startsWith('image/') ? 'image' : 'document',
         userId: 'detective_user',
         caseId: 'case_2024_001';
       });
-
       clearInterval(progressInterval);
       textureStreamingProgress = 100;
-
-      currentEvidence = evidence;
+      currentEvidence = evidenc;
       evidenceHistory = [evidence, ...evidenceHistory.slice(0, 9)]; // Keep last 10
-
       // Check for conflicts
       if (evidence.analysis.conflictIndicators.length > 0) {
         // Mock conflict analysis
@@ -135,22 +118,21 @@ if (!browser) return;
           severity: 'medium',
           description: 'Potential inconsistency detected with previous evidence',
           affectedEvidence: [evidence.id],
-          suggestedResolution: 'Review evidence for accuracy',;
+          suggestedResolution: 'Review evidence for accuracy',
           confidence: 0.75,
           llmResponse: {
-            summary: 'LLM analysis indicates potential conflict',;
-            reasoning: 'Cross-reference with existing evidence shows discrepancies',;
+            summary: 'LLM analysis indicates potential conflict',
+            reasoning: 'Cross-reference with existing evidence shows discrepancies',
             recommendations: ['Verify with additional sources', 'Interview witnesses'];
           }
         };
         conflicts = [newConflict, ...conflicts];
       }
-
       // Update performance metrics
       const totalTime = performance.now() - startTime;
       performanceMetrics = {
         ...performanceMetrics,
-        analysisTime: totalTime,
+        analysisTime: totalTime
         enhancementTime: evidence.enhancedData ? 500 : 0,
         ocrTime: 300,
         embeddingTime: 400,
@@ -159,9 +141,7 @@ if (!browser) return;
         textureMemory: performanceMetrics.textureMemory + 1024 * 1024, // 1MB
         vertexBufferMemory: performanceMetrics.vertexBufferMemory + 512 * 1024 // 512KB
       };
-
       console.log(`✅ Analysis complete: ${totalTime.toFixed(2)}ms`);
-
     } catch (error: unknown) {
       console.error('Evidence analysis failed:', error);
     } finally {
@@ -169,7 +149,6 @@ if (!browser) return;
       setTimeout(() => textureStreamingProgress = 0, 2000);
     }
   }
-
   /**
    * Handle search input with "did you mean" suggestions
    */
@@ -178,17 +157,15 @@ if (!browser) return;
       showSuggestions = false;
       return;
     }
-
     try {
       const suggestions = await detectiveAnalysisEngine.generateSearchSuggestions(searchQuery);
-      searchSuggestions = suggestions;
+      searchSuggestions = suggestion;
       showSuggestions = suggestions.length > 0;
     } catch (error) {
       console.error('Search suggestions failed:', error);
       showSuggestions = false;
     }
   }
-
   /**
    * Apply search suggestion
    */
@@ -198,7 +175,6 @@ if (!browser) return;
     // Perform actual search here
     console.log(`🔍 Searching for: ${suggestion.query}`);
   }
-
   /**
    * Simulate texture streaming for N64 effect
    */
@@ -210,7 +186,6 @@ if (!browser) return;
       }
     }, 100);
   }
-
   /**
    * Update memory bank status
    */
@@ -225,16 +200,13 @@ if (!browser) return;
       );
       memoryBankStatus[bank].used = Math.max(0, usage);
     });
-
     memoryBankStatus = { ...memoryBankStatus }; // Trigger reactivity
   }
-
   /**
    * Screenshot current evidence for enhancement
    */
   async function screenshotEvidence() {
     if (!currentEvidence) return;
-
     try {
       console.log('📸 Taking screenshot for enhancement...');
       // Mock screenshot functionality
@@ -244,34 +216,28 @@ if (!browser) return;
         userId: 'detective_user',
         caseId: 'case_2024_001';
       });
-
       currentEvidence = enhanced;
       console.log('✅ Screenshot enhanced and analyzed');
     } catch (error: unknown) {
       console.error('Screenshot enhancement failed:', error);
     }
   }
-
   // Computed values
   const totalMemoryUsed = $derived(
     Object.values.reduce((sum, bank) => sum + bank.used, 0)
   );
-
   const totalMemoryAvailable = $derived(
     Object.values.reduce((sum, bank) => sum + bank.total, 0)
   );
-
   const memoryUtilization = $derived(
     (totalMemoryUsed / totalMemoryAvailable) * 100
   );
-
   const analysisEfficiency = $derived(
     performanceMetrics.analysisTime > 0
       ? (1000 / performanceMetrics.analysisTime).toFixed(2)
       : '0'
   );
 </script>
-
 <div class="n64-detective-ui" class:scanlines={scanlineEffect} class:crt-glow={crtGlow}>
   <div class="n64-header">
     <div class="n64-logo">🎮 N64 DETECTIVE</div>
@@ -292,13 +258,12 @@ if (!browser) return;
       </div>
     </div>
   </div>
-
   <!-- N64 Progress Bar for Texture Streaming -->
   {#if textureStreamingProgress > 0}
     <div class="n64-progress-container">
       <div class="n64-progress-label">TEXTURE STREAMING</div>
       <div class="n64-progress-bar">
-        <div 
+        <div
           class="n64-progress-fill"
           style="width: {textureStreamingProgress}%"
         ></div>
@@ -306,31 +271,30 @@ if (!browser) return;
       </div>
     </div>
   {/if}
-
   <!-- Navigation Tabs -->
   <div class="n64-tabs">
-    <button 
+    <button
       class="n64-tab"
       class:active={selectedTab === 'evidence'}
       onclick={() => selectedTab = 'evidence'}
     >
       EVIDENCE
     </button>
-    <button 
+    <button
       class="n64-tab"
       class:active={selectedTab === 'conflicts'}
       onclick={() => selectedTab = 'conflicts'}
     >
       CONFLICTS ({conflicts.length})
     </button>
-    <button 
+    <button
       class="n64-tab"
       class:active={selectedTab === 'search'}
       onclick={() => selectedTab = 'search'}
     >
       SEARCH
     </button>
-    <button 
+    <button
       class="n64-tab"
       class:active={selectedTab === 'cache'}
       onclick={() => selectedTab = 'cache'}
@@ -338,7 +302,6 @@ if (!browser) return;
       CACHE
     </button>
   </div>
-
   <div class="n64-content">
     {#if selectedTab === 'evidence'}
       <!-- Evidence Analysis Tab -->
@@ -371,7 +334,6 @@ if (!browser) return;
             </div>
           {/if}
         </div>
-
         {#if currentEvidence}
           <div class="evidence-details">
             <div class="evidence-header">
@@ -382,7 +344,6 @@ if (!browser) return;
                 </button>
               </div>
             </div>
-
             <div class="evidence-grid">
               <div class="evidence-section">
                 <h4>OCR RESULTS</h4>
@@ -407,14 +368,12 @@ if (!browser) return;
                   {currentEvidence.ocrResults.text.length > 200 ? '...' : ''}
                 </div>
               </div>
-
               <div class="evidence-section">
                 <h4>ANALYSIS</h4>
                 <div class="analysis-results">
                   <div class="legal-relevance" class:high={currentEvidence.analysis.legalRelevance === 'high'}>
                     RELEVANCE: {currentEvidence.analysis.legalRelevance.toUpperCase()}
                   </div>
-                  
                   {#if currentEvidence.analysis.detectedPatterns.length > 0}
                     <div class="patterns">
                       <strong>PATTERNS:</strong>
@@ -423,7 +382,6 @@ if (!browser) return;
                       {/each}
                     </div>
                   {/if}
-
                   {#if currentEvidence.analysis.contextualClues.length > 0}
                     <div class="clues">
                       <strong>CLUES:</strong>
@@ -432,7 +390,6 @@ if (!browser) return;
                       {/each}
                     </div>
                   {/if}
-
                   {#if currentEvidence.analysis.suggestedActions.length > 0}
                     <div class="actions">
                       <strong>SUGGESTED ACTIONS:</strong>
@@ -448,7 +405,6 @@ if (!browser) return;
             </div>
           </div>
         {/if}
-
         <!-- Evidence History -->
         {#if evidenceHistory.length > 0}
           <div class="evidence-history">
@@ -468,12 +424,10 @@ if (!browser) return;
           </div>
         {/if}
       </div>
-
     {:else if selectedTab === 'conflicts'}
       <!-- Conflicts Tab -->
       <div class="conflicts-panel">
         <h3>CONFLICT ANALYSIS</h3>
-        
         {#if conflicts.length === 0}
           <div class="no-conflicts">
             <div class="no-conflicts-icon">✅</div>
@@ -513,12 +467,10 @@ if (!browser) return;
           </div>
         {/if}
       </div>
-
     {:else if selectedTab === 'search'}
       <!-- Search Tab -->
       <div class="search-panel">
         <h3>MULTI-DIMENSIONAL SEARCH</h3>
-        
         <div class="search-container">
           <input
             type="text"
@@ -529,13 +481,12 @@ if (!browser) return;
           />
           <button class="n64-button">SEARCH</button>
         </div>
-
         {#if showSuggestions && searchSuggestions.length > 0}
           <div class="search-suggestions">
             <h4>DID YOU MEAN?</h4>
             <div class="suggestions-list">
               {#each searchSuggestions as suggestion}
-                <button 
+                <button
                   class="suggestion-item"
                   onclick={() => applySuggestion(suggestion)}
                 >
@@ -551,12 +502,10 @@ if (!browser) return;
           </div>
         {/if}
       </div>
-
     {:else if selectedTab === 'cache'}
       <!-- Cache Tab -->
       <div class="cache-panel">
         <h3>NES MEMORY ARCHITECTURE</h3>
-        
         <div class="memory-banks">
           {#each Object.entries(memoryBankStatus) as [bankName, bankData]}
             <div class="memory-bank">
@@ -568,7 +517,7 @@ if (!browser) return;
               </div>
               <div class="bank-usage">
                 <div class="usage-bar">
-                  <div 
+                  <div
                     class="usage-fill"
                     style="width: {(bankData.used / bankData.total) * 100}%"
                   ></div>
@@ -580,7 +529,6 @@ if (!browser) return;
             </div>
           {/each}
         </div>
-
         <div class="performance-metrics">
           <h4>PERFORMANCE METRICS</h4>
           <div class="metrics-grid">
@@ -605,7 +553,6 @@ if (!browser) return;
       </div>
     {/if}
   </div>
-
   <!-- UI Settings -->
   <div class="n64-settings">
     <label>
@@ -622,9 +569,8 @@ if (!browser) return;
     </label>
   </div>
 </div>
-
 <style>
-  .n64-detective-ui {;
+  .n64-detective-ui {
     background: linear-gradient(135deg, #1a1a2e, #16213e);
     color: #00ff41;
     font-family: 'Courier New', monospace;
@@ -632,7 +578,6 @@ if (!browser) return;
     padding: 1rem;
     position: relative;
   }
-
   .n64-detective-ui.scanlines::before {
     content: '';
     position: absolute;
@@ -649,54 +594,45 @@ if (!browser) return;
     pointer-events: none;
     z-index: 1000;
   }
-
   .n64-detective-ui.crt-glow {
-    box-shadow: 
+    box-shadow:
       inset 0 0 100px rgba(0, 255, 65, 0.1),
       0 0 50px rgba(0, 255, 65, 0.2);
   }
-
   .n64-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 1rem 0;
     border-bottom: 2px solid #00ff41;
     margin-bottom: 1rem;
   }
-
   .n64-logo {
     font-size: 1.5rem;
     font-weight: bold;
     text-shadow: 0 0 10px #00ff41;
   }
-
   .system-status {
     display: flex;
     gap: 2rem;
   }
-
   .status-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.25rem;
   }
-
   .status-label {
     font-size: 0.75rem;
     opacity: 0.7;
   }
-
   .status-value {
     font-weight: bold;
     text-shadow: 0 0 5px currentColor;
   }
-
   .status-value.online {
     color: #00ff41;
   }
-
   .n64-progress-container {
     margin-bottom: 1rem;
     padding: 1rem;
@@ -704,13 +640,11 @@ if (!browser) return;
     border: 1px solid #00ff41;
     border-radius: 4px;
   }
-
   .n64-progress-label {
     font-size: 0.875rem;
     margin-bottom: 0.5rem;
     text-align: center;
   }
-
   .n64-progress-bar {
     position: relative;
     height: 24px;
@@ -719,14 +653,12 @@ if (!browser) return;
     border-radius: 2px;
     overflow: hidden;
   }
-
   .n64-progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #00ff41, #00cc33);
     transition: width 0.3s ease;
     box-shadow: 0 0 10px #00ff41;
   }
-
   .n64-progress-text {
     position: absolute;
     top: 50%;
@@ -737,13 +669,11 @@ if (!browser) return;
     color: #000;
     text-shadow: 0 0 3px #fff;
   }
-
   .n64-tabs {
     display: flex;
     gap: 0.5rem;
     margin-bottom: 1rem;
   }
-
   .n64-tab {
     background: transparent;
     border: 1px solid #00ff41;
@@ -752,21 +682,18 @@ if (!browser) return;
     font-family: inherit;
     font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2;
     text-transform: uppercase;
   }
-
   .n64-tab:hover {
     background: rgba(0, 255, 65, 0.1);
     box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
   }
-
   .n64-tab.active {
     background: #00ff41;
     color: #000;
     box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
   }
-
   .n64-content {
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid #00ff41;
@@ -774,7 +701,6 @@ if (!browser) return;
     padding: 1.5rem;
     min-height: 500px;
   }
-
   .drop-zone {
     position: relative;
     border: 2px dashed #00ff41;
@@ -782,24 +708,20 @@ if (!browser) return;
     padding: 3rem;
     text-align: center;
     margin-bottom: 2rem;
-    transition: all 0.3s;
+    transition: all 0.3;
     background: rgba(0, 255, 65, 0.05);
   }
-
-  .drop-zone:hover {
+  .drop-zone: hover {
     border-color: #00cc33;
     background: rgba(0, 255, 65, 0.1);
   }
-
   .drop-zone.analyzing {
     border-color: #ffff00;
     background: rgba(255, 255, 0, 0.1);
   }
-
   .analyzing-overlay {
     position: relative;
   }
-
   .scan-line {
     position: absolute;
     top: 0;
@@ -809,12 +731,10 @@ if (!browser) return;
     background: linear-gradient(90deg, transparent, #ffff00, transparent);
     animation: scan 2s linear infinite;
   }
-
   @keyframes scan {
     0% { left: -100%; }
     100% { left: 100%; }
   }
-
   .analyzing-text {
     color: #ffff00;
     font-size: 1.25rem;
@@ -822,34 +742,28 @@ if (!browser) return;
     text-shadow: 0 0 10px #ffff00;
     animation: pulse 1s infinite;
   }
-
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.7; }
   }
-
   .drop-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1rem;
   }
-
   .drop-icon {
     font-size: 3rem;
     opacity: 0.7;
   }
-
   .drop-text {
     font-size: 1.25rem;
     font-weight: bold;
   }
-
   .drop-subtext {
     font-size: 0.875rem;
     opacity: 0.7;
   }
-
   .n64-button {
     background: transparent;
     border: 2px solid #00ff41;
@@ -858,76 +772,64 @@ if (!browser) return;
     font-family: inherit;
     font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2;
     text-transform: uppercase;
     font-weight: bold;
   }
-
   .n64-button:hover {
     background: #00ff41;
     color: #000;
     box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
   }
-
   .n64-button.small {
     padding: 0.5rem 1rem;
     font-size: 0.75rem;
   }
-
   .evidence-details {
     margin-bottom: 2rem;
   }
-
   .evidence-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid #00ff41;
   }
-
   .evidence-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
   }
-
   .evidence-section {
     background: rgba(0, 0, 0, 0.2);
     padding: 1rem;
     border: 1px solid rgba(0, 255, 65, 0.3);
     border-radius: 4px;
   }
-
   .evidence-section h4 {
     color: #00ff41;
     margin-bottom: 0.75rem;
     font-size: 0.875rem;
     text-transform: uppercase;
   }
-
   .ocr-results {
     display: grid;
     gap: 0.5rem;
     margin-bottom: 1rem;
   }
-
   .ocr-stat {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     font-size: 0.875rem;
   }
-
-  .ocr-stat span:last-child {;
+  .ocr-stat span:last-child {
     color: #00cc33;
     font-weight: bold;
   }
-
   .ocr-stat span.detected {
     color: #ffff00;
   }
-
   .ocr-text {
     background: rgba(0, 0, 0, 0.5);
     padding: 0.75rem;
@@ -937,22 +839,18 @@ if (!browser) return;
     max-height: 150px;
     overflow-y: auto;
   }
-
   .legal-relevance {
     font-weight: bold;
     margin-bottom: 0.75rem;
   }
-
   .legal-relevance.high {
     color: #ff4444;
     text-shadow: 0 0 5px #ff4444;
   }
-
   .patterns, .clues, .actions {
     margin-bottom: 0.75rem;
     font-size: 0.875rem;
   }
-
   .pattern-tag, .clue-item {
     display: inline-block;
     background: rgba(0, 255, 65, 0.2);
@@ -961,130 +859,107 @@ if (!browser) return;
     border-radius: 4px;
     font-size: 0.75rem;
   }
-
   .evidence-history {
     border-top: 1px solid #00ff41;
     padding-top: 1.5rem;
   }
-
   .history-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 1rem;
   }
-
   .history-item {
     background: rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(0, 255, 65, 0.3);
     border-radius: 4px;
     padding: 0.75rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2;
     text-align: center;
   }
-
   .history-item:hover {
     border-color: #00ff41;
     box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
   }
-
   .history-id {
     font-weight: bold;
     margin-bottom: 0.25rem;
   }
-
   .history-type {
     font-size: 0.75rem;
     opacity: 0.7;
     margin-bottom: 0.25rem;
   }
-
   .history-relevance {
     font-size: 0.75rem;
     font-weight: bold;
   }
-
   .history-relevance.high {
     color: #ff4444;
   }
-
   .conflicts-panel {
     padding: 0;
   }
-
   .no-conflicts {
     text-align: center;
     padding: 3rem;
   }
-
   .no-conflicts-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
   }
-
   .conflicts-list {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .conflict-item {
     background: rgba(255, 68, 68, 0.1);
     border: 1px solid #ff4444;
     border-radius: 4px;
     padding: 1rem;
   }
-
   .conflict-.critical {
     border-color: #ff0000;
     box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
   }
-
   .conflict-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 0.75rem;
   }
-
   .conflict-type {
     font-weight: bold;
     font-size: 0.875rem;
   }
-
   .conflict-severity {
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     font-size: 0.75rem;
     font-weight: bold;
   }
-
   .severity-critical {
     background: #ff0000;
     color: #fff;
   }
-
   .severity-high {
     background: #ff4444;
     color: #fff;
   }
-
   .severity-medium {
     background: #ffaa00;
     color: #000;
   }
-
   .severity-low {
     background: #ffff00;
     color: #000;
   }
-
   .conflict-description {
     margin-bottom: 1rem;
     font-size: 0.875rem;
     line-height: 1.4;
   }
-
   .conflict-llm-response {
     background: rgba(0, 0, 0, 0.3);
     padding: 0.75rem;
@@ -1092,23 +967,19 @@ if (!browser) return;
     margin-bottom: 1rem;
     font-size: 0.875rem;
   }
-
   .llm-recommendations ul {
     margin: 0.5rem 0;
     padding-left: 1.5rem;
   }
-
   .conflict-actions {
     display: flex;
     gap: 0.5rem;
   }
-
   .search-container {
     display: flex;
     gap: 1rem;
     margin-bottom: 2rem;
   }
-
   .n64-input {
     flex: 1;
     background: rgba(0, 0, 0, 0.5);
@@ -1119,45 +990,38 @@ if (!browser) return;
     font-size: 1rem;
     border-radius: 4px;
   }
-
   .n64-input:focus {
     outline: none;
     box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
   }
-
   .search-suggestions {
     background: rgba(0, 0, 0, 0.7);
     border: 1px solid #00ff41;
     border-radius: 4px;
     padding: 1rem;
   }
-
   .suggestions-list {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .suggestion-item {
     background: rgba(0, 255, 65, 0.05);
     border: 1px solid rgba(0, 255, 65, 0.3);
     border-radius: 4px;
     padding: 0.75rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2;
     text-align: left;
   }
-
   .suggestion-item:hover {
     background: rgba(0, 255, 65, 0.1);
     border-color: #00ff41;
   }
-
   .suggestion-query {
     font-weight: bold;
     margin-bottom: 0.25rem;
   }
-
   .suggestion-meta {
     display: flex;
     gap: 1rem;
@@ -1165,60 +1029,50 @@ if (!browser) return;
     font-size: 0.75rem;
     opacity: 0.7;
   }
-
   .suggestion-explanation {
     font-size: 0.875rem;
     opacity: 0.8;
   }
-
   .memory-banks {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     margin-bottom: 2rem;
   }
-
   .memory-bank {
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(0, 255, 65, 0.3);
     border-radius: 4px;
     padding: 1rem;
   }
-
   .bank-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 0.75rem;
   }
-
   .bank-name {
     font-weight: bold;
     font-size: 0.875rem;
   }
-
   .bank-priority {
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     font-size: 0.75rem;
     font-weight: bold;
   }
-
   .priority-high {
     background: #ff4444;
     color: #fff;
   }
-
   .priority-medium {
     background: #ffaa00;
     color: #000;
   }
-
   .priority-low {
     background: #00ff41;
     color: #000;
   }
-
   .usage-bar {
     height: 8px;
     background: #0a0a0a;
@@ -1227,29 +1081,24 @@ if (!browser) return;
     overflow: hidden;
     margin-bottom: 0.5rem;
   }
-
   .usage-fill {
     height: 100%;
     background: linear-gradient(90deg, #00ff41, #ffaa00, #ff4444);
     transition: width 0.3s ease;
   }
-
   .usage-text {
     font-size: 0.875rem;
     text-align: center;
   }
-
   .performance-metrics {
     border-top: 1px solid #00ff41;
     padding-top: 1.5rem;
   }
-
   .metrics-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 1rem;
   }
-
   .metric {
     display: flex;
     flex-direction: column;
@@ -1260,20 +1109,18 @@ if (!browser) return;
     border: 1px solid rgba(0, 255, 65, 0.3);
     border-radius: 4px;
   }
-
   .metric-label {
     font-size: 0.75rem;
     opacity: 0.7;
     text-transform: uppercase;
   }
-
   .metric-value {
     font-weight: bold;
     color: #00cc33;
   }
-
   .n64-settings {
     position: fixed;
+d;
     bottom: 1rem;
     right: 1rem;
     display: flex;
@@ -1284,35 +1131,28 @@ if (!browser) return;
     border-radius: 4px;
     font-size: 0.75rem;
   }
-
   .n64-settings label {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     cursor: pointer;
   }
-
   .n64-settings input[type="checkbox"] {
     accent-color: #00ff41;
   }
-
   @media (max-width: 768px) {
     .n64-detective-ui {
       padding: 0.5rem;
     }
-    
     .evidence-grid {
       grid-template-columns: 1fr;
     }
-    
     .system-status {
       gap: 1rem;
     }
-    
     .n64-tabs {
       flex-wrap: wrap;
     }
-    
     .history-grid {
       grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     }

@@ -1,20 +1,14 @@
 
 import type { RequestHandler } from './$types.js'
-
 // routes/api/ai-synthesizer/stream/[streamId]/+server.ts
 // Server-Sent Events endpoint for streaming AI synthesis updates
-
 import { streamingService } from "$lib/server/ai/streaming-service"
-
 export const GET: RequestHandler = async ({ params, request }) => {
   const { streamId } = params
-
   if (!streamId) {
     throw error(400, 'Stream ID is required')
   }
-
   logger.info(`[AI-Synthesizer] Opening stream connection: ${streamId}`)
-
   // Create SSE response
   const headers = new Headers({
     'Content-Type': 'text/event-stream',
@@ -22,7 +16,6 @@ export const GET: RequestHandler = async ({ params, request }) => {
     'Connection': 'keep-alive',
     'X-Accel-Buffering': 'no' // Disable nginx buffering
   })
-
   const encoder = new TextEncoder()
   const stream = new ReadableStream({
     async start(controller) {
@@ -30,7 +23,6 @@ export const GET: RequestHandler = async ({ params, request }) => {
       const unsubscribe = streamingService.subscribe(streamId, (event: any) => {
         const data = `event: ${event.type}\ndata: ${JSON.stringify(event.data)}\n\n`
         controller.enqueue(encoder.encode(data)
-
         // Close stream on completion or error
         if (event.type === 'complete' || event.type === 'error') {
           setTimeout(() => {
@@ -39,7 +31,6 @@ export const GET: RequestHandler = async ({ params, request }) => {
           }, 100)
         }
       })
-
       // Send heartbeat every 30 seconds
       const heartbeatInterval = setInterval(() => {
         const heartbeat = `event: heartbeat\ndata: ${JSON.stringify({ timestamp: Date.now() })}\n\n`
@@ -49,7 +40,6 @@ export const GET: RequestHandler = async ({ params, request }) => {
           clearInterval(heartbeatInterval)
         }
       }, 30000)
-
       // Cleanup on client disconnect
       request.signal.addEventListener('abort', () => {
         clearInterval(heartbeatInterval)
@@ -59,6 +49,5 @@ export const GET: RequestHandler = async ({ params, request }) => {
       })
     }
   })
-
   return new Response(stream, { headers })
 }

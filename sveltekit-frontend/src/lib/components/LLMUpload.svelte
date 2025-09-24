@@ -1,11 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { invoke } from '@tauri-apps/api/tauri';
   let uploadResult = $state('');
   let error = $state('');
   let loading = $state(false);
-
   async function handleUpload() {
     uploadResult = '';
     error = '';
@@ -20,7 +18,6 @@
       loading = false;
   }}
 </script>
-
 <div class="space-y-4">
   <h2>Upload Local LLM Model</h2>
   <button class="space-y-4" onclick={() => handleUpload()} disabled={loading}>
@@ -33,7 +30,6 @@
     <div class="space-y-4">{error}</div>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
 .llm-upload-container {
@@ -55,10 +51,10 @@
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2;
 }
 .upload-btn:disabled {
-  background: #b0c4de;
+  background: #b0c4d;
   cursor: not-allowed;
 }
 .upload-btn:not(:disabled):hover {
@@ -75,6 +71,3 @@
   font-weight: 600;
 }
 </style>
-
-
-

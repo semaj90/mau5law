@@ -1,15 +1,11 @@
 import { json } from "@sveltejs/kit"
 import { testDatabaseConnection, initializeDatabase } from '$lib/database/connection'
 import type { RequestHandler } from './$types.js'
-
-
 export const GET: RequestHandler = async () => {
   try {
     console.log('🔍 Testing database connection...')
-    
     // Test basic connection
     const healthCheck = await testDatabaseConnection()
-    
     if (!healthCheck.success) {
       console.error('❌ Database connection failed:', healthCheck.message)
       return json({
@@ -19,9 +15,7 @@ export const GET: RequestHandler = async () => {
         timestamp: new Date().toISOString()
       }, { status: 500 })
     }
-
     console.log('✅ Database connection successful')
-    
     // Try to initialize if not already done
     let initResult = null
     try {
@@ -29,18 +23,15 @@ export const GET: RequestHandler = async () => {
     } catch (error: any) {
       console.warn('⚠️ Database initialization error (may already be initialized):', error)
     }
-
     return json({
       status: 'healthy',
       message: 'Database connection successful',
       connection: healthCheck.details,
-      initialization: initResult,
+      initialization: initResult
       timestamp: new Date().toISOString()
     })
-
   } catch (error: any) {
     console.error('❌ Database health check failed:', error)
-    
     return json({
       status: 'error',
       message: `Database health check failed: ${(error as Error).message}`,
@@ -49,15 +40,12 @@ export const GET: RequestHandler = async () => {
     }, { status: 500 })
   }
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action } = await request.json()
-
     if (action === 'initialize') {
       console.log('🔧 Initializing database...')
       const result = await initializeDatabase()
-      
       return json({
         status: (result as { success?: any; message?: any; details?: any }).success ? 'success' : 'error',
         message: (result as { success?: any; message?: any; details?: any }).message,
@@ -65,16 +53,13 @@ export const POST: RequestHandler = async ({ request }) => {
         timestamp: new Date().toISOString()
       })
     }
-
     return json({
       status: 'error',
       message: 'Invalid action. Use "initialize"',
       timestamp: new Date().toISOString()
     }, { status: 400 })
-
   } catch (error: any) {
     console.error('❌ Database action failed:', error)
-    
     return json({
       status: 'error',
       message: `Database action failed: ${(error as Error).message}`,

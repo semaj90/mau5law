@@ -5,8 +5,6 @@ import { json } from "@sveltejs/kit"
 import { count, desc, sql, inArray, gte, lte, and } from "drizzle-orm"
 import { z } from 'zod'
 import type { RequestHandler } from './$types.js'
-
-
 // Export request schema
 const ExportRequestSchema = z.object({
   format: z.enum(["json", "csv", "xml"]).default("json"),
@@ -21,7 +19,6 @@ const ExportRequestSchema = z.object({
     .optional(),
   caseIds: z.array(z.string()).optional()
 })
-
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
     // Check authentication
@@ -34,7 +31,6 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     }
     const body = await request.json()
     const validatedData = ExportRequestSchema.parse(body)
-
     const {
       format,
       includeEvidence,
@@ -43,7 +39,6 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       dateRange,
       caseIds
     } = validatedData
-
     let exportData: any = {
       metadata: {
         exportedAt: new Date().toISOString(),
@@ -53,11 +48,9 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         includeAnalytics
       }
     }
-
     // Export cases
     if (includeCases) {
       const caseFilters = []
-
       if (caseIds?.length) {
         caseFilters.push(inArray(cases.id, caseIds)
       }
@@ -67,7 +60,6 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       if (dateRange?.to) {
         caseFilters.push(lte(cases.createdAt, new Date(dateRange.to))
       }
-
       const casesData = await db
         .select()
         .from(cases)
@@ -78,7 +70,6 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     // Export evidence
     if (includeEvidence) {
       const evidenceFilters = []
-
       if (caseIds?.length) {
         evidenceFilters.push(inArray(evidence.caseId, caseIds)
       }
@@ -88,7 +79,6 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       if (dateRange?.to) {
         evidenceFilters.push(lte(evidence.uploadedAt, new Date(dateRange.to))
       }
-
       const evidenceData = await db
         .select()
         .from(evidence)
@@ -122,20 +112,17 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     let responseData: string
     let contentType: string
     let fileName: string
-
     switch (format) {
       case "csv":
         responseData = convertToCSV(exportData)
         contentType = "text/csv"
         fileName = `legal-data-export-${new Date().toISOString().split("T")[0]}.csv`
         break
-
       case "xml":
         responseData = convertToXML(exportData)
         contentType = "application/xml"
         fileName = `legal-data-export-${new Date().toISOString().split("T")[0]}.xml`
         break
-
       default: // json
         responseData = JSON.stringify(exportData, null, 2)
         contentType = "application/json"
@@ -144,7 +131,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     return new Response(responseData, {
       status: 200,
       headers: {
-        "Content-Type": contentType,
+        "Content-Type": contentType
         "Content-Disposition": `attachment; filename="${fileName}"`,
         "Content-Length": responseData.length.toString()
       }
@@ -152,27 +139,24 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
   } catch (error: any) {
     console.error("Export error:", error)
     return json({
-        success: false,
+        success: false
         error: error instanceof Error ? error.message: "Export failed"
       },)
       { status: 500 },
     )
   }
 }
-
 function convertToCSV(data: any): string {
   let csv = ""
-
   // Export cases as CSV
   if (data.cases?.length > 0) {
     csv += "CASES\n"
     const caseHeaders = Object.keys(data.cases[0]).join(",")
     csv += caseHeaders + "\n"
-
     for (const caseItem of data.cases) {
       const row = Object.values(caseItem)
         .map((value) =>
-          typeof value === "string" ? `"${value.replace(/"/g, '""')}"` : value,
+          typeof value === "string" ? `"${value.replace(/"/g, '""')}"` : value
         )
         .join(",")
       csv += row + "\n"
@@ -184,11 +168,10 @@ function convertToCSV(data: any): string {
     csv += "EVIDENCE\n"
     const evidenceHeaders = Object.keys(data.evidence[0]).join(",")
     csv += evidenceHeaders + "\n"
-
     for (const evidenceItem of data.evidence) {
       const row = Object.values(evidenceItem)
         .map((value) =>
-          typeof value === "string" ? `"${value.replace(/"/g, '""')}"` : value,
+          typeof value === "string" ? `"${value.replace(/"/g, '""')}"` : value
         )
         .join(",")
       csv += row + "\n"
@@ -198,12 +181,10 @@ function convertToCSV(data: any): string {
 }
 function convertToXML(data: any): string {
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<legal_data_export>\n'
-
   xml += `  <metadata>\n`
   xml += `    <exported_at>${data.metadata.exportedAt}</exported_at>\n`
   xml += `    <format>${data.metadata.format}</format>\n`
   xml += `  </metadata>\n`
-
   if (data.cases?.length > 0) {
     xml += "  <cases>\n"
     for (const caseItem of data.cases) {

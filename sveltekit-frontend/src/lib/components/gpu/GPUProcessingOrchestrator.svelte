@@ -1,25 +1,17 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   GPU Processing Orchestrator - XState-powered document processing interface
   Manages concurrent GPU processing with real-time monitoring for Legal AI Platform
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   const { documents: DocumentInput[] = [], autoStart: boolean = false, maxConcurrent: number = 5 } = $props();
-
   import { onMount, onDestroy } from 'svelte';
   import { createGPUProcessingActor, type DocumentInput, type ProcessingResult } from '$lib/state/gpu-processing-machine';
   import { fade, fly } from 'svelte/transition';
-
   // Props
-  
-  
-  
-
   // XState actor
   const gpuActor = createGPUProcessingActor();
   // Reactive state
@@ -32,7 +24,6 @@ https://svelte.dev/e/js_parse_error -->
   let errorDocuments = $derived(state.context.errorDocuments);
   let serviceHealth = $derived(state.context.serviceHealth);
   let metrics = $derived(state.context.metrics);
-
   // UI state
   let selectedTab = $state('queue');
   let showDetails = $state(false);
@@ -40,7 +31,6 @@ https://svelte.dev/e/js_parse_error -->
   let newDocumentTitle = $state('');
   let processType = $state('full');
   let priority = $state(5);
-
   // Start the actor
   $effect(() => {
     gpuActor.start();
@@ -48,71 +38,58 @@ https://svelte.dev/e/js_parse_error -->
     const subscription = gpuActor.subscribe((snapshot) => {
       state = snapshot;
     });
-
     // Auto-start processing if enabled
     if (autoStart && documents.length > 0) {
       gpuActor.send({ type: 'BATCH_PROCESS', documents });
     }
-
     // Periodic health checks
     const healthCheckInterval = setInterval(() => {
       gpuActor.send({ type: 'SERVICE_HEALTH_CHECK' });
     }, 30000); // Every 30 seconds
-
     return () => {
       subscription.unsubscribe();
       clearInterval(healthCheckInterval);
     };
   });
-
   onDestroy(() => {
     gpuActor.stop();
   });
-
   // Action handlers
   function addDocument() {
     if (!newDocumentContent.trim()) return;
-
     const document: DocumentInput = {
       documentId: `doc_${Date.now()}_${Math.random.toString-substr(2, 9)}`,
-      content: newDocumentContent,
-      title: newDocumentTitle || undefined,;
+      content: newDocumentContent
+      title: newDocumentTitle || undefined
       options: {
-        processType: processType as any,
+        processType: processType as any
         priority,
-        timeout: 30000,;
+        timeout: 30000,
         retries: 3,
         batchSize: 1;
       }
     };
-
     gpuActor.send({ type: 'PROCESS_DOCUMENT', ...document });
     // Clear form
     newDocumentContent = '';
     newDocumentTitle = '';
   }
-
   function processBatch() {
     if (documents.length === 0) return;
     gpuActor.send({ type: 'BATCH_PROCESS', documents });
   }
-
   function pauseProcessing() {
     gpuActor.send({ type: 'PAUSE_PROCESSING' });
   }
-
   function resumeProcessing() {
     gpuActor.send({ type: 'RESUME_PROCESSING' });
   }
-
   function clearQueue() {
     gpuActor.send({ type: 'CLEAR_QUEUE' });
   }
-
   function retryFailed() {
     gpuActor.send({ type: 'RETRY_FAILED' });
   }
-
   function getStatusColor(status: string) {
     switch (status) {
       case 'healthy': return '#28a745';
@@ -122,7 +99,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <div class="gpu-orchestrator">
   <!-- Header -->
   <div class="orchestrator-header">
@@ -142,7 +118,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   </div>
-
   <!-- Metrics Dashboard -->
   <div class="metrics-dashboard">
     <div class="metric-nier-bits-card">
@@ -166,34 +141,29 @@ https://svelte.dev/e/js_parse_error -->
       <div class="metric-label">Utilization</div>
     </div>
   </div>
-
   <!-- Controls -->
   <div class="control-panel">
     <div class="control-group">
-      <button 
-        class="btn nes-btn is-primary" 
+      <button
+        class="btn nes-btn is-primary"
         onclick={processBatch}
         disabled={documents.length === 0}
       >
         🚀 Start Batch Processing
       </button>
-      
       {#if isProcessing}
         <button class="btn btn-warning" onclick={pauseProcessing}>
           ⏸️ Pause
         </button>
       {/if}
-      
       {#if isPaused}
         <button class="btn btn-success" onclick={resumeProcessing}>
           ▶️ Resume
         </button>
       {/if}
-      
       <button class="btn btn-danger" onclick={clearQueue}>
         🗑️ Clear Queue
       </button>
-      
       {#if errorDocuments.length > 0}
         <button class="btn btn-info" onclick={retryFailed}>
           🔄 Retry Failed ({errorDocuments.length})
@@ -201,20 +171,19 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
     </div>
   </div>
-
   <!-- Add Document Form -->
   <div class="add-document-form">
     <h3>📄 Add Legal Document</h3>
     <div class="form-group">
-      <input 
-        type="text" 
+      <input
+        type="text"
         bind:value={newDocumentTitle}
         placeholder="Document title (optional)"
         class="form-input"
       />
     </div>
     <div class="form-group">
-      <textarea 
+      <textarea
         bind:value={newDocumentContent}
         placeholder="Document content..."
         class="form-textarea"
@@ -228,52 +197,50 @@ https://svelte.dev/e/js_parse_error -->
         <option value="analyze">Legal Analysis</option>
         <option value="vectorize">Vectorization Only</option>
       </select>
-      <input 
+      <input
         type="range" ;
         bind:value={priority}
-        min="1" 
-        max="10" 
+        min="1"
+        max="10"
         class="priority-slider"
       />
       <span class="priority-label">Priority: {priority}</span>
     </div>
-    <button 
-      class="btn nes-btn is-primary" 
+    <button
+      class="btn nes-btn is-primary"
       onclick={addDocument}
       disabled={!newDocumentContent.trim()}
     >
       ➕ Add to Queue
     </button>
   </div>
-
   <!-- Tabs -->
   <div class="tabs">
-    <button 
+    <button
       class="tab {selectedTab === 'queue' ? 'active' : ''}"
       onclick={() => selectedTab = 'queue'}
     >
       📋 Queue ({processingQueue.length})
     </button>
-    <button 
+    <button
       class="tab {selectedTab === 'active' ? 'active' : ''}"
       onclick={() => selectedTab = 'active'}
     >
       ⚙️ Processing ({activeProcessing.size})
     </button>
-    <button 
+    <button
       class="tab {selectedTab === 'completed' ? 'active' : ''}"
       onclick={() => selectedTab = 'completed'}
     >
       ✅ Completed ({completedDocuments.length})
     </button>
-    <button 
+    <button
       class="tab {selectedTab === 'errors' ? 'active' : ''}"
       onclick={() => selectedTab = 'errors'}
     >
       ❌ Errors ({errorDocuments.length})
     </button>
   </div>
-
   <!-- Tab Content -->
   <div class="tab-content">
     {#if selectedTab === 'queue'}
@@ -299,7 +266,6 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       </div>
     {/if}
-
     {#if selectedTab === 'active'}
       <div class="document-list">
         {#each Array.from(activeProcessing.values()) as doc (doc.documentId)}
@@ -324,7 +290,6 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       </div>
     {/if}
-
     {#if selectedTab === 'completed'}
       <div class="document-list">
         {#each completedDocuments as result ((result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).documentId)}
@@ -356,7 +321,6 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       </div>
     {/if}
-
     {#if selectedTab === 'errors'}
       <div class="document-list">
         {#each errorDocuments as result ((result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).documentId)}
@@ -382,7 +346,6 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   </div>
 </div>
-
 <style>
   .gpu-orchestrator {
     max-width: 1200px;
@@ -390,27 +353,23 @@ https://svelte.dev/e/js_parse_error -->
     padding: 2rem;
     font-family: system-ui, sans-serif;
   }
-
   .orchestrator-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 2px solid #007bff;
   }
-
   .orchestrator-header h2 {
     margin: 0;
     color: #333;
     font-size: 1.8rem;
   }
-
   .status-indicators {
     display: flex;
     gap: 1rem;
   }
-
   .status-item {
     display: flex;
     align-items: center;
@@ -418,21 +377,18 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.9rem;
     color: #666;
   }
-
   .status-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     display: block;
   }
-
   .metrics-dashboard {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     margin-bottom: 2rem;
   }
-
   .metric-card {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -441,34 +397,28 @@ https://svelte.dev/e/js_parse_error -->
     text-align: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
-
   .metric-card h3 {
     margin: 0 0 0.5rem 0;
     font-size: 0.9rem;
     opacity: 0.9;
   }
-
   .metric-value {
     font-size: 2rem;
     font-weight: bold;
     margin-bottom: 0.25rem;
   }
-
   .metric-label {
     font-size: 0.8rem;
     opacity: 0.8;
   }
-
   .control-panel {
     margin-bottom: 2rem;
   }
-
   .control-group {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
   }
-
   .btn {
     padding: 0.75rem 1.5rem;
     border: none;
@@ -481,12 +431,10 @@ https://svelte.dev/e/js_parse_error -->
     align-items: center;
     gap: 0.5rem;
   }
-
   .btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }
-
   .btn-primary { background: #007bff; color: white; }
   .btn-primary:hover:not(:disabled) { background: #0056b3; }
   .btn-warning { background: #ffc107; color: #212529; }
@@ -497,23 +445,19 @@ https://svelte.dev/e/js_parse_error -->
   .btn-danger:hover:not(:disabled) { background: #c82333; }
   .btn-info { background: #17a2b8; color: white; }
   .btn-info:hover:not(:disabled) { background: #138496; }
-
   .add-document-form {
     background: #f8f9fa;
     padding: 1.5rem;
     border-radius: 8px;
     margin-bottom: 2rem;
   }
-
   .add-document-form h3 {
     margin: 0 0 1rem 0;
     color: #333;
   }
-
   .form-group {
     margin-bottom: 1rem;
   }
-
   .form-input, .form-textarea, .form-select {
     width: 100%;
     padding: 0.75rem;
@@ -521,35 +465,29 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 4px;
     font-size: 0.9rem;
   }
-
   .form-textarea {
     resize: vertical;
     min-height: 100px;
   }
-
   .form-row {
     display: flex;
     gap: 1rem;
     align-items: center;
     margin-bottom: 1rem;
   }
-
   .priority-slider {
     flex: 1;
   }
-
   .priority-label {
     min-width: 80px;
     font-size: 0.9rem;
     color: #666;
   }
-
   .tabs {
     display: flex;
     border-bottom: 1px solid #ddd;
     margin-bottom: 1rem;
   }
-
   .tab {
     background: none;
     border: none;
@@ -559,30 +497,25 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.9rem;
     transition: all 0.2s ease;
   }
-
   .tab:hover {
     background: #f8f9fa;
   }
-
   .tab.active {
     border-bottom-color: #007bff;
     color: #007bff;
     font-weight: 600;
   }
-
   .tab-content {
     min-height: 400px;
   }
-
   .document-list {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .document-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 1rem;
     border: 1px solid #ddd;
@@ -590,48 +523,39 @@ https://svelte.dev/e/js_parse_error -->
     background: white;
     transition: all 0.2s ease;
   }
-
   .document-item:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transform: translateY(-1px);
   }
-
   .document-.processing {
     border-color: #ffc107;
     background: #fffbf0;
   }
-
   .document-.completed {
     border-color: #28a745;
     background: #f8fff9;
   }
-
   .document-.error {
     border-color: #dc3545;
     background: #fff5f5;
   }
-
   .document-info {
     flex: 1;
   }
-
   .document-info h4 {
     margin: 0 0 0.5rem 0;
     color: #333;
     font-size: 1rem;
   }
-
   .document-preview {
     color: #666;
     font-size: 0.9rem;
     margin: 0.5rem 0;
   }
-
   .document-meta, .timestamp {
     font-size: 0.8rem;
     color: #888;
   }
-
   .processing-indicator {
     display: flex;
     align-items: center;
@@ -639,7 +563,6 @@ https://svelte.dev/e/js_parse_error -->
     color: #ffc107;
     font-size: 0.9rem;
   }
-
   .spinner {
     width: 16px;
     height: 16px;
@@ -648,24 +571,20 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-
   .result-summary {
     color: #28a745;
     font-size: 0.9rem;
     line-height: 1.4;
   }
-
   .error-message {
     color: #dc3545;
     font-size: 0.9rem;
     margin: 0.5rem 0;
   }
-
   .status-badge {
     padding: 0.25rem 0.75rem;
     border-radius: 12px;
@@ -673,12 +592,10 @@ https://svelte.dev/e/js_parse_error -->
     font-weight: 600;
     text-transform: uppercase;
   }
-
   .status-badge.queued { background: #e9ecef; color: #495057; }
   .status-badge.processing { background: #fff3cd; color: #856404; }
   .status-badge.completed { background: #d4edda; color: #155724; }
   .status-badge.error { background: #f8d7da; color: #721c24; }
-
   .empty-state {
     text-align: center;
     color: #666;
@@ -687,37 +604,30 @@ https://svelte.dev/e/js_parse_error -->
     background: #f8f9fa;
     border-radius: 8px;
   }
-
   /* Responsive */
   @media (max-width: 768px) {
     .gpu-orchestrator {
       padding: 1rem;
     }
-
     .orchestrator-header {
       flex-direction: column;
       gap: 1rem;
       align-items: flex-start;
     }
-
     .status-indicators {
       flex-wrap: wrap;
     }
-
     .control-group {
       flex-direction: column;
     }
-
     .form-row {
       flex-direction: column;
       align-items: stretch;
     }
-
     .tabs {
       overflow-x: auto;
       flex-wrap: nowrap;
     }
-
     .document-item {
       flex-direction: column;
       align-items: stretch;

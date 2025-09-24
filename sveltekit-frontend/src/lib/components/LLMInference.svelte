@@ -1,17 +1,13 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import { onMount } from 'svelte';
   import { getAvailableModels, runInference } from "$lib/llm/tauri-llm";
-
   let models: string[] = $state([]);
   let selectedModel = $state('');
   let prompt = $state('');
   let result = $state('');
   let loading = $state(false);
   let error = $state('');
-
   $effect(() => {
     (async () => {
 try {
@@ -22,7 +18,6 @@ try {
   }
     })();
   });
-
   async function handleInference() {
     if (!selectedModel || !prompt.trim()) return;
     loading = true;
@@ -36,7 +31,6 @@ try {
       loading = false;
   }}
 </script>
-
 <div class="space-y-4">
   <h2>Local LLM Inference (Tauri Desktop)</h2>
   <div class="space-y-4">
@@ -64,10 +58,9 @@ try {
     </div>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
-.llm-inference-container {;
+.llm-inference-container {
   max-width: 500px;
   margin: 2rem auto;
   padding: 2rem;
@@ -101,10 +94,10 @@ select, textarea {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2;
 }
 .run-btn:disabled {
-  background: #b0c4de;
+  background: #b0c4d;
   cursor: not-allowed;
 }
 .run-btn:not(:disabled):hover {
@@ -123,6 +116,3 @@ select, textarea {
   font-weight: 600;
 }
 </style>
-
-
-

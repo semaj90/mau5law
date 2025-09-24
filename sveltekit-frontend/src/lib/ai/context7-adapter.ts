@@ -1,9 +1,7 @@
 // Lightweight adapter to expose safe named helpers backed by the context7-wasm selector shim
 // This file provides performContext7Search, context7AgentOrchestrator, and context7SemanticAuditor
 // as small wrappers that work with the real WASM binding or the mock implementation.
-
 import context7 from '$lib/integrations/context7-wasm';
-
 export async function ensureContext7Ready(opts?: unknown) {
   try {
     const impl = await context7;
@@ -16,7 +14,6 @@ export async function ensureContext7Ready(opts?: unknown) {
     return null;
   }
 }
-
 export async function performContext7Search(options: { query: string; maxResults?: number; confidenceThreshold?: number; includeCode?: boolean; includeDocs?: boolean; } ) {
   const impl = await ensureContext7Ready();
   if (!impl || typeof (impl as { performSearch?: (...args: unknown[]) => unknown }).performSearch !== 'function') {
@@ -29,9 +26,8 @@ export async function performContext7Search(options: { query: string; maxResults
   }
   return (impl as { performSearch: (options: unknown) => unknown }).performSearch(options);
 }
-
 // Minimal agent orchestrator wrapper. The real implementation exposes methods like
-// triggerAgent, logAuditEntry, getAuditLog. The mock will be a small in-memory shim.;
+// triggerAgent, logAuditEntry, getAuditLog. The mock will be a small in-memory shim.
 export const context7AgentOrchestrator = {
   async triggerAgent(trigger: any) {
     const impl = await ensureContext7Ready();
@@ -42,7 +38,7 @@ export const context7AgentOrchestrator = {
     return (impl as any).triggerAgent(trigger);
   },
   logAuditEntry(entry: unknown) {
-    // best-effort: call real implementation or noop;
+    // best-effort: call real implementation or noop
     (async () => {
       const impl = await ensureContext7Ready();
       if (impl && typeof (impl as { logAuditEntry?: (...args: unknown[]) => unknown }).logAuditEntry === 'function') {
@@ -55,8 +51,7 @@ export const context7AgentOrchestrator = {
     return [] as any[];
   }
 };
-
-// Semantic auditor wrapper;
+// Semantic auditor wrapper
 export const context7SemanticAuditor = {
   async performSemanticAudit(component: string) {
     const impl = await ensureContext7Ready();
@@ -69,7 +64,6 @@ export const context7SemanticAuditor = {
     return (impl as any).performSemanticAudit(component);
   }
 };
-
 export default {
   ensureContext7Ready,
   performContext7Search,

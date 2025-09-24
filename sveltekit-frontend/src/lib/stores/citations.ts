@@ -1,8 +1,6 @@
 import { randomUUID } from "crypto";
-
 import { writable } from "svelte/store";
 }
-
 export interface Citation {
   id: string;
   title: string;
@@ -17,15 +15,13 @@ export interface Citation {
   createdAt: Date;
   updatedAt: Date;
 }
-
 export interface CitationStore {
   citations: Citation[];
   recentCitations: Citation[];
   searchQuery: string;
   selectedCategories: string[];
 }
-
-// Create the store;
+// Create the store
 function createCitationStore() {
   const { subscribe, set, update } = writable<CitationStore>({
     citations: [],
@@ -33,45 +29,39 @@ function createCitationStore() {
     searchQuery: "",
     selectedCategories: []
   });
-
   return {
     subscribe,
     set,
     update,
-
     // Add a new citation
-    addCitation: (
+    addCitation: (,
       citation: Omit<Citation, "id" | "createdAt" | "updatedAt">,
     ) => {
       const newCitation: Citation = {
-        ...citation,;
+        ...citation,
         id: randomUUID(),
         createdAt: new Date(),
         updatedAt: new Date()
       };
-
       update((store) => ({
         ...store,
         citations: [...store.citations, newCitation],
         recentCitations: [newCitation, ...store.recentCitations.slice(0, 9)], // Keep last 10
       });
-
       return newCitation;
     },
-
-    // Update an existing citation;
+    // Update an existing citation
     updateCitation: (id: string, updates: Partial<Citation>) => {
       update((store) => ({
-        ...store,;
+        ...store,
         citations: store.citations.map((citation) =>
           citation.id === id
             ? { ...citation, ...updates, updatedAt: new Date() }
-            : citation,
+            : citation
         )
       });
     },
-
-    // Delete a citation;
+    // Delete a citation
     deleteCitation: (id: string) => {
       update((store) => ({
         ...store,
@@ -81,20 +71,17 @@ function createCitationStore() {
         )
       });
     },
-
-    // Search citations;
+    // Search citations
     searchCitations: (query: string) => {
       update((store) => ({
         ...store,
         searchQuery: query
       });
     },
-
-    // Get filtered citations;
+    // Get filtered citations
     getFilteredCitations: (store: CitationStore) => {
       let filtered = store.citations;
-
-      // Filter by search query;
+      // Filter by search query
       if (store.searchQuery) {
         const query = store.searchQuery.toLowerCase();
         filtered = filtered.filter(
@@ -106,7 +93,7 @@ function createCitationStore() {
             citation.tags?.some((tag) => tag.toLowerCase().includes(query)),
         );
       }
-      // Filter by categories;
+      // Filter by categories
       if (store.selectedCategories.length > 0) {
         filtered = filtered.filter((citation) =>
           store.selectedCategories.includes(citation.type),
@@ -114,13 +101,11 @@ function createCitationStore() {
       }
       return filtered;
     },
-
-    // Get recent citations;
+    // Get recent citations
     getRecentCitations: (store: CitationStore, limit = 5) => {
       return store.recentCitations.slice(0, limit);
     },
-
-    // Mark citation as recently used;
+    // Mark citation as recently used
     markAsRecentlyUsed: (id: string) => {
       update((store) => {
         const citation = store.citations.find((c) => c.id === id);
@@ -129,7 +114,6 @@ function createCitationStore() {
             citation,
             ...store.recentCitations.filter((c) => c.id !== id)
           ].slice(0, 10);
-
           return {
             ...store,
             recentCitations: updatedRecent
@@ -138,8 +122,7 @@ function createCitationStore() {
         return store;
       });
     },
-
-    // Load citations from API;
+    // Load citations from API
     loadCitations: async () => {
       try {
         const response = await fetch("/api/citations");
@@ -155,22 +138,20 @@ function createCitationStore() {
         console.error("Failed to load citations:", error);
       }
     },
-
-    // Save citation to API;
+    // Save citation to API
     saveCitation: async (citation: Citation) => {
       try {
         const response = await fetch("/api/citations", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },;
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(citation)
         });
-
         if (response.ok) {
           const savedCitation = await response.json();
           update((store) => ({
             ...store,
             citations: store.citations.map((c) =>
-              c.id === citation.id ? savedCitation : c,
+              c.id === citation.id ? savedCitation : c
             )
           });
           return savedCitation;
@@ -182,9 +163,7 @@ function createCitationStore() {
     }
   };
 }
-
 export const citationStore = createCitationStore();
-;
 // Sample citations for development
 const sampleCitations: Citation[] = [;
   {
@@ -219,13 +198,12 @@ const sampleCitations: Citation[] = [;
     author: "U.S. Supreme Court",
     date: "1993",
     source: "509 U.S. 579",
-    type: "case",;
+    type: "case",
     tags: ["expert testimony", "scientific evidence", "daubert standard"],
     createdAt: new Date("2024-01-17"),
     updatedAt: new Date("2024-01-17")
   }
 ];
-
 // Initialize with sample data in development
 if (
   typeof window !== "undefined" &&
@@ -233,10 +211,9 @@ if (
 ) {
   citationStore.update((store) => ({
     ...store,
-    citations: sampleCitations,
+    citations: sampleCitations
     recentCitations: sampleCitations.slice(0, 3)
   });
   localStorage.setItem("citations-initialized", "true");
 }
-
 export default citationStore;

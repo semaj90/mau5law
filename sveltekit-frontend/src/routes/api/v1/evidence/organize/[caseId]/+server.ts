@@ -1,6 +1,5 @@
 import { json, error, type RequestHandler } from '@sveltejs/kit'
 import { z } from 'zod'
-
 // Minimal, valid implementation to restore route integrity
 const OrganizationRequestSchema = z.object({
   organizationMode: z
@@ -17,26 +16,21 @@ const OrganizationRequestSchema = z.object({
     .optional(),
   includeAnalytics: z.boolean().optional(),
 })
-
 export const POST: RequestHandler = async ({ params, request }) => {
   try {
     const { caseId } = params
     if (!caseId) throw error(400, 'Missing caseId')
-
     const body = await request.json().catch(() => ({}))
     const parsed = OrganizationRequestSchema.safeParse(body)
     if (!parsed.success) {
       throw error(400, 'Invalid request body')
     }
-
     const { organizationMode } = parsed.data
-
     // Return minimal stub structure; real logic can be reintroduced incrementally
     const structure = { type: organizationMode, groups: [], metadata: { caseId } }
     const analytics = { organizationEfficiency: 0, coverage: 0, qualityScore: 0 }
-
     return json({
-      success: true,
+      success: true
       data: { caseId, organizationMode, structure, analytics },
       meta: { timestamp: new Date().toISOString() },
     })

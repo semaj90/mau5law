@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import {
     Button,
@@ -12,7 +11,6 @@
   } from '$lib/components/ui/enhanced-bits';
   import { cn } from '$lib/utils';
   import type { ChatMessage, SystemStatus } from '$lib/types/ai';
-
   // Svelte 5 runes - proper syntax
   let messages = $state<ChatMessage[]>([]);
   let currentMessage = $state('');
@@ -21,13 +19,12 @@
   let conversationId = $state<string | null>(null);
   let userId = $state('mock-user-id'); // TODO: Get from auth
   let systemStatus = $state<SystemStatus>({
-    gpu: false,;
-    ollama: false,
-    enhancedRAG: false,;
-    postgres: false,
+    gpu: false
+    ollama: false
+    enhancedRAG: false
+    postgres: false
     neo4j: false;
   });
-
   // POI Timeline State
   let poiTimelineData = $state([]);
   let selectedPOI = $state(null);
@@ -36,7 +33,6 @@
   let showTimeline = $state(false);
   let evidenceReports = $state([]);
   let ragAnalysisResults = $state([]);
-
   // User Activity Timeline State
   let userActivityTimeline = $state([]);
   let activityLoading = $state(false);
@@ -46,136 +42,113 @@
     casesAnalyzed: 0,
     evidenceReviewed: 0
   });
-
   async function checkSystemStatus() {
     try {
       const res = await fetch('/api/v1/cluster/health');
-
       if (!res.ok) {
         throw new Error(`Health check failed: ${res.status}`);
       }
-
       const data = await res.json();
       systemStatus = {
-        gpu: data?.services?.gpu === 'accelerated',;
+        gpu: data?.services?.gpu === 'accelerated',
         ollama: data?.services?.ollama === 'healthy',
-        enhancedRAG: data?.services?.enhancedRAG === 'running',;
+        enhancedRAG: data?.services?.enhancedRAG === 'running',
         postgres: data?.services?.postgres === 'connected',
         neo4j: data?.services?.neo4j === 'active';
       };
     } catch (e: unknown) {
       console.error('Health check error:', e);
-
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock';
       notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
-
       // Set mock system status
       systemStatus = {
-        gpu: false,;
-        ollama: false,
-        enhancedRAG: false,;
-        postgres: false,
+        gpu: false
+        ollama: false
+        enhancedRAG: false
+        postgres: false
         neo4j: false;
       };
-
       error = 'System health check failed - using mock status';
     }
   }
-
   async function sendMessage() {
     if (!currentMessage.trim() || isStreaming) return;
-
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
-      role: 'user',;
-      content: currentMessage,;
+      role: 'user',
+      content: currentMessage
       timestamp: new Date();
     };
-
     messages = [...messages, userMessage];
-    const messageToSend = currentMessage;
+    const messageToSend = currentMessag;
     currentMessage = '';
     isStreaming = true;
     error = '';
-
     try {
       // Use proper Server-Sent Events (SSE) endpoint
       const eventSource = new EventSource('/api/ai/chat-sse');
-
       // Send message data via POST first to initiate the stream
       const initResponse = await fetch('/api/ai/chat-sse', {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          message: messageToSend,;
+        body: JSON.stringify({,
+          message: messageToSend
           model: 'gemma3-legal:latest',
           conversationId,
           userId,
           useRAG: true;
         })
       });
-
       if (!initResponse.ok) {
         throw new Error(`HTTP ${initResponse.status}`);
       }
-
       const aiMessage: ChatMessage = {
         id: crypto.randomUUID(),
-        role: 'assistant',;
-        content: '',;
+        role: 'assistant',
+        content: '',
         timestamp: new Date();
       };
-
       messages = [...messages, aiMessage];
-
       // Handle SSE streaming with proper event handling
       if (initResponse.body) {
         const reader = initResponse.body.getReader();
         const decoder = new TextDecoder();
-
         try {
           while (true) {
             const { done, value } = await reader.read();
             if (done) break;
-
             const chunk = decoder.decode(value);
             const lines = chunk.split('\n');
-
             for (const line of lines) {
               if (line.startsWith('data: ')) {
                 try {
                   const eventData = JSON.parse(line.slice(6));
-
                   switch (eventData.type) {
                     case 'connection':
                       if (eventData.conversationId) {
                         conversationId = eventData.conversationId;
                       }
                       break;
-
                     case 'token':
                       aiMessage.content = eventData.fullResponse || aiMessage.content + eventData.content;
                       // Trigger Svelte 5 reactivity
                       messages = [...messages];
                       break;
-
                     case 'complete':
-                      aiMessage.content = eventData.fullResponse;
+                      aiMessage.content = eventData.fullRespon;
                       messages = [...messages];
                       isStreaming = false;
                       break;
-
                     case 'error':
                       error = eventData.error;
                       isStreaming = false;
                       break;
-
                     case 'close':
                       isStreaming = false;
                       break;
@@ -193,14 +166,12 @@
       }
     } catch (e: unknown) {
       console.error('Send message error:', e);
-
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock';
       notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
-
       // Generate mock AI assistant response
       const mockLegalAssistantResponses = [
         "Based on your legal inquiry, I would recommend examining the contractual obligations and relevant case precedents. Here are the key considerations: [Mock Analysis] 1) Review governing law clauses, 2) Examine breach conditions, 3) Consider damages calculations.",
@@ -208,40 +179,33 @@
         "For intellectual property concerns like this, prior art searches are essential. Mock recommendation: Conduct comprehensive patent database review, examine competitor filings, and assess potential infringement claims.",
         "In contract dispute matters, intent and consideration are primary factors. Mock legal guidance: Review contract formation elements, examine performance obligations, and consider alternative dispute resolution options."
       ];
-
       const randomMockResponse = mockLegalAssistantResponses[Math.floor(Math.random() * mockLegalAssistantResponses.length)];
-
       const mockAiMessage: ChatMessage = {
         id: crypto.randomUUID(),
-        role: 'assistant',;
-        content: `🤖 ${randomMockResponse} [Mock AI Assistant - Real service unavailable]`,;
+        role: 'assistant',
+        content: `🤖 ${randomMockResponse} [Mock AI Assistant - Real service unavailable]`,
         timestamp: new Date();
       };
-
       messages = [...messages, mockAiMessage];
       error = '';
     } finally {
       isStreaming = false;
     }
   }
-
   async function handleQuickQuery(query: string) {
     currentMessage = query;
     await sendMessage();
   }
-
   function handleKeydown(e: KeyboardEvent) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
   }
-
   function clearChat() {
     messages = [];
     error = '';
   }
-
   // Semantic RAG-based POI Timeline Functions
   async function loadEvidenceReports() {
     try {
@@ -252,14 +216,12 @@
       evidenceReports = await response.json();
     } catch (e) {
       console.error('Failed to load evidence reports:', e);
-
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock';
       notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
-
       // Set mock evidence reports
       evidenceReports = [
         {
@@ -274,46 +236,41 @@
           id: 'mock-evidence-002',
           title: 'Mock Witness Statement - Contract Violation',
           type: 'witness_statement',
-          date: '2024-01-16',;
-          content: 'Mock evidence: Witness account of contract negotiation meeting.',;
+          date: '2024-01-16',
+          content: 'Mock evidence: Witness account of contract negotiation meeting.',
           confidence: 0.92;
         }
       ];
     }
   }
-
   async function analyzePersonsOfInterest() {
     if (evidenceReports.length === 0) {
       await loadEvidenceReports();
     }
-
     timelineLoading = true;
     try {
       // Semantic RAG analysis to extract POI from evidence reports
       const ragResponse = await fetch('/api/v1/rag/analyze-poi', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
-        body: JSON.stringify({
-          evidenceReports: evidenceReports,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({,
+          evidenceReports: evidenceReports
           analysisType: 'semantic_entity_extraction',
           includeTimeline: true
         })
       });
-
       if (ragResponse.ok) {
         ragAnalysisResults = await ragResponse.json();
-
         // Extract POI timeline data from semantic analysis
-        poiTimelineData = ragAnalysisResults.persons?.map((person: unknown) => ({
+        poiTimelineData = ragAnalysisResults.persons?.map((person: unknown) => ({,
           id: person.id,
           name: person.name,
           type: person.type || 'person',
-          activities: person.timeline || [],;
+          activities: person.timeline || [],
           confidence: person.confidence || 0.8,
-          evidenceSources: person.sources || [],;
+          evidenceSources: person.sources || [],
           relationships: person.relationships || [];
         })) || [];
-
         showTimeline = true;
       }
     } catch (e) {
@@ -323,7 +280,6 @@
       timelineLoading = false;
     }
   }
-
   async function generateUserActivityTimeline() {
     activityLoading = true;
     try {
@@ -344,28 +300,22 @@
       activityLoading = false;
     }
   }
-
   function selectPOI(poi: unknown) {
     selectedPOI = poi;
     showPOIDialog = true;
   }
-
   function closePOIDetails() {
     selectedPOI = null;
     showPOIDialog = false;
   }
-
   $effect(() => {
     checkSystemStatus();
     loadEvidenceReports();
-
     // Check system status every 30 seconds
     const interval = setInterval(checkSystemStatus, 30000);
-
     return () => clearInterval(interval);
   });
 </script>
-
 <div class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 p-6">
   <div class="max-w-6xl mx-auto">
     <!-- Header -->
@@ -375,7 +325,6 @@
       </h1>
       <p class="text-gray-600">Enhanced RAG with PostgreSQL Vector Search & Real-time Chat</p>
     </div>
-
     <!-- System Status Card -->
     <div class="mb-6 p-6 nes-container">
       {#snippet children()}
@@ -404,13 +353,12 @@
         </div>
       {/snippet}
     </div>
-
     <!-- Quick Actions -->
     <div class="mb-6 p-6 nes-container">
       {#snippet children()}
         <h2 class="text-xl font-semibold mb-4">Quick Legal Queries</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-          <Button 
+          <Button
             class="bits-btn justify-start"
             variant="ghost"
             onclick={() =>
@@ -419,7 +367,7 @@ handleQuickQuery('Explain contract formation requirements')}
           >
             {#snippet children()}Contract Law{/snippet}
 </Button>
-          <Button 
+          <Button
             class="bits-btn justify-start"
             variant="ghost"
             onclick={() =>
@@ -428,7 +376,7 @@ handleQuickQuery('What is the chain of custody for evidence?')}
           >
             {#snippet children()}Evidence Rules{/snippet}
 </Button>
-          <Button 
+          <Button
             class="bits-btn justify-start"
             variant="ghost"
             onclick={() =>
@@ -437,7 +385,7 @@ handleQuickQuery('Explain liability limitations in contracts')}
           >
             {#snippet children()}Liability{/snippet}
 </Button>
-          <Button 
+          <Button
             class="bits-btn justify-start"
             variant="ghost"
             onclick={() =>
@@ -449,7 +397,6 @@ handleQuickQuery('What are the elements of negligence?')}
         </div>
       {/snippet}
     </div>
-
     <!-- Chat Interface -->
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
       <!-- Chat Messages -->
@@ -467,7 +414,6 @@ handleQuickQuery('What are the elements of negligence?')}
 </Button>
               </div>
             </div>
-
             <!-- Messages Area -->
             <div class="flex-1 overflow-y-auto space-y-4 mb-4 min-h-0 border rounded-lg p-4">
               {#if messages.length === 0}
@@ -504,7 +450,6 @@ handleQuickQuery('What are the elements of negligence?')}
                 {/each}
               {/if}
             </div>
-
             <!-- Input Area -->
             <div class="border-t pt-4">
               {#if error}
@@ -539,7 +484,6 @@ handleQuickQuery('What are the elements of negligence?')}
             </div>
           {/snippet}
         </div>
-
         <!-- POI Timeline Visualization -->
         {#if showTimeline && poiTimelineData.length > 0}
           <div class="mt-6 p-6 nes-container">
@@ -564,7 +508,6 @@ handleQuickQuery('What are the elements of negligence?')}
                   {/snippet}
 </Button>
               </div>
-
               <div class="space-y-4">
                 {#each poiTimelineData as poi (poi.id)}
                   <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
@@ -591,7 +534,6 @@ handleQuickQuery('What are the elements of negligence?')}
                         {/snippet}
                       </button>
                     </div>
-
                     {#if poi.activities.length > 0}
                       <div class="mt-3">
                         <h4 class="font-medium mb-2">Recent Activity</h4>
@@ -615,7 +557,6 @@ handleQuickQuery('What are the elements of negligence?')}
                         </div>
                       </div>
                     {/if}
-
                     {#if poi.evidenceSources.length > 0}
                       <div class="mt-3 pt-3 border-t border-gray-100">
                         <h4 class="font-medium mb-2">Evidence Sources</h4>
@@ -639,7 +580,6 @@ handleQuickQuery('What are the elements of negligence?')}
             {/snippet}
           </div>
         {/if}
-
         <!-- User Activity Timeline -->
         {#if userActivityTimeline.length > 0}
           <div class="mt-6 p-6 nes-container">
@@ -650,7 +590,6 @@ handleQuickQuery('What are the elements of negligence?')}
                 </svg>
                 Your Activity Timeline - Stay Focused
               </h2>
-
               <div class="space-y-3">
                 {#each userActivityTimeline.slice(0, 10) as activity}
                   <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
@@ -671,7 +610,6 @@ handleQuickQuery('What are the elements of negligence?')}
           </div>
         {/if}
       </div>
-
       <!-- Sidebar - Features & Controls -->
       <div class="xl:col-span-1">
         <div class="space-y-6">
@@ -689,7 +627,6 @@ handleQuickQuery('What are the elements of negligence?')}
               </div>
             {/snippet}
           </div>
-
           <!-- Features -->
           <div class="p-6 nes-container">
             {#snippet children()}
@@ -722,7 +659,6 @@ handleQuickQuery('What are the elements of negligence?')}
               </div>
             {/snippet}
           </div>
-
           <!-- System Actions -->
           <div class="p-6 nes-container">
             {#snippet children()}
@@ -742,7 +678,7 @@ handleQuickQuery('What are the elements of negligence?')}
                     Refresh Status
                   {/snippet}
 </Button>
-                <Button 
+                <Button
                   class="bits-btn w-full justify-start"
                   variant="ghost"
                   size="sm"
@@ -760,7 +696,6 @@ window.open('/api/v1/cluster/health', '_blank')}
               </div>
             {/snippet}
           </div>
-
           <!-- POI Timeline Analysis -->
           <div class="p-6 nes-container">
             {#snippet children()}
@@ -811,7 +746,6 @@ window.open('/api/v1/cluster/health', '_blank')}
               </div>
             {/snippet}
           </div>
-
           <!-- Focus Metrics -->
           {#if focusMetrics.sessionsToday > 0}
             <div class="p-6 nes-container">
@@ -843,7 +777,6 @@ window.open('/api/v1/cluster/health', '_blank')}
     </div>
   </div>
 </div>
-
 <!-- POI Details Modal -->
 {#if selectedPOI}
   <Dialog bind:open={showPOIDialog} legal={true} size="lg" onOpenChange={(open) => { if (!open) closePOIDetails(); }}>
@@ -880,7 +813,6 @@ window.open('/api/v1/cluster/health', '_blank')}
             {/snippet}
 </Button>
         </div>
-
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <!-- Activity Timeline -->
           <div>
@@ -912,7 +844,6 @@ window.open('/api/v1/cluster/health', '_blank')}
               {/if}
             </div>
           </div>
-
           <!-- Evidence Sources -->
           <div>
             <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -948,7 +879,6 @@ window.open('/api/v1/cluster/health', '_blank')}
             </div>
           </div>
         </div>
-
         <!-- Relationships -->
         {#if selectedPOI.relationships && selectedPOI.relationships.length > 0}
           <div class="mt-6">
@@ -973,7 +903,6 @@ window.open('/api/v1/cluster/health', '_blank')}
             </div>
           </div>
         {/if}
-
         <!-- Actions -->
         <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
           <Button
@@ -998,24 +927,20 @@ window.open('/api/v1/cluster/health', '_blank')}
     {/snippet}
   </Dialog>
 {/if}
-
 <style>
   /* Custom scrollbar for chat */
-  :global(.overflow-y-auto::-webkit-scrollbar) {;
+  :global($1) {
     width: 6px;
   }
-
-  :global(.overflow-y-auto::-webkit-scrollbar-track) {
+  :global($1) {
     background: #f1f1f1;
     border-radius: 3px;
   }
-
-  :global(.overflow-y-auto::-webkit-scrollbar-thumb) {
+  :global($1) {
     background: #c1c1c1;
     border-radius: 3px;
   }
-
-  :global(.overflow-y-auto::-webkit-scrollbar-thumb:hover) {
+  :global($1) {
     background: #a8a8a8;
   }
 </style>

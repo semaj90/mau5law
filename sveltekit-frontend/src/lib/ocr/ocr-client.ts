@@ -1,15 +1,12 @@
 // Lightweight OCR client module for browser-side text extraction
 // Tries Tesseract.js (dynamic import) if present; falls back to server OCR endpoint if configured
-
 export type ImageSource = HTMLImageElement | HTMLCanvasElement | Blob | File | ImageBitmap;
 }
-
 export interface OCRResult {
   text: string;
   confidence?: number;
   engine: 'tesseract' | 'server' | 'none';
 }
-
 async function toImageData(src: ImageSource): Promise<ImageData> {
   if (src instanceof HTMLCanvasElement) {
     const ctx = src.getContext('2d');
@@ -19,7 +16,6 @@ async function toImageData(src: ImageSource): Promise<ImageData> {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('Canvas 2D context unavailable');
-
   if (src instanceof HTMLImageElement) {
     await new Promise<void>((resolve, reject) => {
       if (src.complete) return resolve();
@@ -31,7 +27,6 @@ async function toImageData(src: ImageSource): Promise<ImageData> {
     ctx.drawImage(src, 0, 0);
     return ctx.getImageData(0, 0, canvas.width, canvas.height);
   }
-
   if (src instanceof Blob) {
     const bmp = await createImageBitmap(src);
     canvas.width = bmp.width;
@@ -39,7 +34,6 @@ async function toImageData(src: ImageSource): Promise<ImageData> {
     ctx.drawImage(bmp, 0, 0);
     return ctx.getImageData(0, 0, canvas.width, canvas.height);
   }
-
   if ('width' in src && 'height' in src && typeof (src as any).close === 'function') {
     // ImageBitmap
     const bmp = src as ImageBitmap;
@@ -48,12 +42,10 @@ async function toImageData(src: ImageSource): Promise<ImageData> {
     ctx.drawImage(bmp, 0, 0);
     return ctx.getImageData(0, 0, canvas.width, canvas.height);
   }
-
   throw new Error('Unsupported image source');
 }
-
 export async function extractTextFromImage(source: ImageSource, lang = 'eng'): Promise<OCRResult> {
-  // Try Tesseract.js;
+  // Try Tesseract.js
   try {
     // @ts-ignore dynamic optional dep
     const Tesseract = (await import('tesseract.js')).default || (await import('tesseract.js');
@@ -63,8 +55,7 @@ export async function extractTextFromImage(source: ImageSource, lang = 'eng'): P
   } catch {
     // ignore, try server
   }
-
-  // Optional server OCR fallback;
+  // Optional server OCR fallback
   try {
     const blob = source instanceof Blob || source instanceof File
       ? source;
@@ -80,7 +71,6 @@ export async function extractTextFromImage(source: ImageSource, lang = 'eng'): P
           if (!b) throw new Error('Failed to create blob from canvas');
           return b;
         })();
-
     const form = new FormData();
     form.append('image', blob);
     form.append('lang', lang);
@@ -92,6 +82,5 @@ export async function extractTextFromImage(source: ImageSource, lang = 'eng'): P
   } catch {
     // ignore
   }
-
   return { text: '', engine: 'none' };
 }

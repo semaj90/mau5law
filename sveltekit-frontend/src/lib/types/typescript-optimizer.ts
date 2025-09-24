@@ -1,9 +1,7 @@
 // TypeScript Error Optimizer Types
 // Complete type definitions for production-ready TypeScript error processing
-
-// Core Types;
+// Core Types
 }
-
 export interface TypeScriptError {
 	file: string;
 	line: number;
@@ -14,7 +12,6 @@ export interface TypeScriptError {
 	severity?: 'error' | 'warning' | 'info';
 	category?: string;
 }
-
 export interface TypeScriptFix {
 	file: string;
 	line: number;
@@ -26,19 +23,16 @@ export interface TypeScriptFix {
 	strategy_used?: string;
 	processing_time_ms?: number;
 }
-
 export interface TypeScriptFixResult {
 	success: boolean;
 	message: string;
 	fixed_code: string;
 	explanation: string;
 	confidence: number;
-	metadata?: Record<string, any>;
+	metadata?: { [key: string]: any };
 }
-
-// Request Types;
+// Request Types
 }
-
 export interface AutoSolveRequest {
 	errors: TypeScriptError[];
 	max_fixes?: number;
@@ -47,7 +41,6 @@ export interface AutoSolveRequest {
 	quality_threshold?: number;
 	timeout_ms?: number;
 }
-
 export interface OptimizedFixRequest {
 	errors: TypeScriptError[];
 	strategy?: string;
@@ -60,18 +53,15 @@ export interface OptimizedFixRequest {
 	batch_size?: number;
 	priority?: 'low' | 'normal' | 'high' | 'urgent';
 }
-
 export interface BenchmarkRequest {
 	error_count: number;
 	strategy: 'speed' | 'quality' | 'comparison';
 	iterations?: number;
 	endpoints?: string[];
-	parameters?: Record<string, any>;
+	parameters?: { [key: string]: any };
 }
-
-// Response Types;
+// Response Types
 }
-
 export interface AutoSolveResponse {
 	success: boolean;
 	fixes_applied: number;
@@ -79,20 +69,18 @@ export interface AutoSolveResponse {
 	fixes: TypeScriptFix[];
 	processing_time: number;
 	strategy: string;
-	metadata: Record<string, any>;
+	metadata: { [key: string]: any };
 }
-
 export interface OptimizedFixResponse {
 	success: boolean;
 	processed_count: number;
 	successful_count: number;
 	results: TypeScriptFixResult[];
 	processing_stats: ProcessingStats;
-	optimization_meta: Record<string, any>;
+	optimization_meta: { [key: string]: any };
 }
-
 export interface ProcessingStats {
-	total_time: number; // milliseconds
+	total_time: number; // milliseconds,
 	processed_count: number;
 	successful_count: number;
 	avg_latency_per_error?: number;
@@ -100,10 +88,8 @@ export interface ProcessingStats {
 	cache_hit_ratio?: number;
 	gpu_utilization?: number;
 }
-
-// Performance & Analytics Types;
+// Performance & Analytics Types
 }
-
 export interface BatchProcessingStats {
 	total_processing_time_ms: number;
 	go_service_time_ms: number;
@@ -113,7 +99,6 @@ export interface BatchProcessingStats {
 	performance_grade: string;
 	bottlenecks?: string[];
 }
-
 export interface GPUProcessingStats {
 	total_time_ms: number;
 	gpu_processing_time_ms: number;
@@ -125,7 +110,6 @@ export interface GPUProcessingStats {
 	performance_vs_cpu_multiplier: number;
 	temperature_celsius?: number;
 }
-
 export interface BenchmarkResult {
 	endpoint: string;
 	strategy: string;
@@ -140,7 +124,6 @@ export interface BenchmarkResult {
 	quality_distribution?: number[];
 	resource_usage?: ResourceUsage;
 }
-
 export interface ResourceUsage {
 	cpu_percent: number;
 	memory_mb: number;
@@ -149,26 +132,22 @@ export interface ResourceUsage {
 	disk_io_mb?: number;
 	network_kb?: number;
 }
-
 export interface PerformanceComparison {
 	total_time_ms: number;
 	fastest_endpoint: string;
 	most_accurate: string;
 	best_overall: string;
-	performance_summary: Record<string, any>;
+	performance_summary: { [key: string]: any };
 	resource_efficiency: Record<string, number>;
 	scaling_analysis?: ScalingAnalysis;
 }
-
 export interface ScalingAnalysis {
 	linear_scaling: boolean;
 	optimal_batch_size: number;
 	performance_by_batch_size: Array<any>;
 	resource_scaling: Array<any>
-
-// Service Status Types;
+// Service Status Types
 }
-
 export interface OptimizerStatus {
 	service: string;
 	status: 'operational' | 'degraded' | 'down';
@@ -183,7 +162,6 @@ export interface OptimizerStatus {
 	capabilities: OptimizerCapabilities;
 	endpoints: Record<string, string>;
 }
-
 export interface OptimizerCapabilities {
 	auto_solve: boolean;
 	gpu_acceleration: boolean;
@@ -195,7 +173,6 @@ export interface OptimizerCapabilities {
 	min_batch_size?: number;
 	max_batch_size?: number;
 }
-
 export interface GPUStatus {
 	gpu_available: boolean;
 	gpu_model?: string;
@@ -207,10 +184,8 @@ export interface GPUStatus {
 	memory_used?: number;
 	memory_total?: number;
 }
-
-// Configuration Types;
+// Configuration Types
 }
-
 export interface OptimizerConfig {
 	default_strategy: string;
 	gpu_enabled: boolean;
@@ -230,17 +205,14 @@ export interface OptimizerConfig {
 		success_rate: number;
 	};
 }
-
 export interface ProcessingPriority {
 	level: 'low' | 'normal' | 'high' | 'urgent';
 	timeout_multiplier: number;
-	resource_allocation: number; // 0.0 - 1.0
+	resource_allocation: number; // 0.0 - 1.0,
 	queue_priority: number;
 }
-
-// Error Categories & Analysis;
+// Error Categories & Analysis
 }
-
 export interface ErrorCategoryAnalysis {
 	category: string;
 	count: number;
@@ -250,7 +222,6 @@ export interface ErrorCategoryAnalysis {
 	fix_strategies: string[];
 	difficulty_score: number; // 1-10
 }
-
 export interface ProcessingInsights {
 	total_errors: number;
 	category_breakdown: ErrorCategoryAnalysis[];
@@ -262,10 +233,8 @@ export interface ProcessingInsights {
 	optimization_opportunities: string[];
 	recommendations: string[];
 }
-
-// Real-time Processing Types;
+// Real-time Processing Types
 }
-
 export interface StreamingProcessingRequest {
 	session_id: string;
 	errors: TypeScriptError[];
@@ -273,7 +242,6 @@ export interface StreamingProcessingRequest {
 	chunk_size?: number;
 	progress_callback?: boolean;
 }
-
 export interface StreamingProcessingResponse {
 	session_id: string;
 	chunk_index: number;
@@ -284,7 +252,6 @@ export interface StreamingProcessingResponse {
 	estimated_time_remaining: number;
 	is_final: boolean;
 }
-
 export interface ProcessingSession {
 	id: string;
 	created_at: string;
@@ -296,20 +263,17 @@ export interface ProcessingSession {
 	estimated_completion: string;
 	progress_percent: number;
 }
-
-// WebSocket Event Types for Real-time Updates;
+// WebSocket Event Types for Real-time Updates
 }
-
 export interface WebSocketEvent {
 	type: 'progress' | 'completed' | 'error' | 'status';
 	session_id: string;
 	data: any;
 	timestamp: string;
 }
-
 export interface ProgressEvent extends WebSocketEvent {
 	type: 'progress';
-	data: {;
+	data: {
 		processed: number;
 		total: number;
 		current_file: string;
@@ -317,7 +281,6 @@ export interface ProgressEvent extends WebSocketEvent {
 		estimated_remaining_ms: number;
 	};
 }
-
 export interface CompletedEvent extends WebSocketEvent {
 	type: 'completed';
 	data: {
@@ -327,7 +290,6 @@ export interface CompletedEvent extends WebSocketEvent {
 		download_url?: string;
 	};
 }
-
 export interface ErrorEvent extends WebSocketEvent {
 	type: 'error';
 	data: {
@@ -337,9 +299,7 @@ export interface ErrorEvent extends WebSocketEvent {
 		retry_available: boolean;
 	};
 }
-
 // Export utility types
-
 export type ProcessingStrategy =
 	| 'auto'
 	| 'optimized'
@@ -348,7 +308,6 @@ export type ProcessingStrategy =
 	| 'template_only'
 	| 'hybrid'
 	| 'streaming';
-
 export type ProcessingStatus =
 	| 'queued'
 	| 'processing'
@@ -356,9 +315,7 @@ export type ProcessingStatus =
 	| 'failed'
 	| 'cancelled'
 	| 'streaming';
-
 export type PerformanceGrade = 'A+' | 'A' | 'B+' | 'B' | 'C+' | 'C' | 'D' | 'F';
-
 export type PerformanceTier =
 	| 'minimal'
 	| 'basic'
@@ -367,13 +324,12 @@ export type PerformanceTier =
 	| 'enterprise'
 	| 'ultra'
 	| 'gpu_accelerated';
-
-// Helper type for API responses;
+// Helper type for API responses
 export interface APIResponse<T = any> {
 	success: boolean;
 	data?: T;
 	error?: string;
 	details?: string;
 	timestamp: string;
-	metadata?: Record<string, any>;
+	metadata?: { [key: string]: any };
 }

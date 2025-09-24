@@ -2,7 +2,6 @@
  * Accessibility Validator for Legal AI Platform
  * Validates UX patterns and accessibility compliance
  */
-
 interface AccessibilityRule {
   name: string;
   description: string;
@@ -10,116 +9,99 @@ interface AccessibilityRule {
   validate: (element: Element) => boolean;
   fix?: string;
 }
-
 interface AccessibilityReport {
   element: Element;
   rule: AccessibilityRule;
   passed: boolean;
   message: string;
 }
-
 export class AccessibilityValidator {
   private rules: AccessibilityRule[] = [
     // Button Accessibility Rules
     {
       name: 'button-accessible-name',
       description: 'Buttons must have accessible names',
-      severity: 'error',;
+      severity: 'error',
       validate: (element) => {
         if (element.tagName.toLowerCase() !== 'button') return true;
-
         const hasAriaLabel = element.hasAttribute('aria-label');
         const hasAriaLabelledBy = element.hasAttribute('aria-labelledby');
         const hasTextContent = element.textContent?.trim().length > 0;
-
         return hasAriaLabel || hasAriaLabelledBy || hasTextContent;
       },
       fix: 'Add aria-label, aria-labelledby, or text content to the button'
     },
-
     // Focus Management Rules
     {
       name: 'focus-visible-indicator',
       description: 'Interactive elements must have visible focus indicators',
-      severity: 'error',;
+      severity: 'error',
       validate: (element) => {
         const isInteractive = ['button', 'a', 'input', 'select', 'textarea'].includes(
           element.tagName.toLowerCase()
         );
-
         if (!isInteractive) return true;
-
         const computedStyle = window.getComputedStyle(element, ':focus-visible');
         return computedStyle.outline !== 'none' || computedStyle.boxShadow !== 'none';
       },
       fix: 'Add focus-visible styles with outline or box-shadow'
     },
-
     // Color Contrast Rules
     {
       name: 'color-contrast',
       description: 'Text must have sufficient color contrast',
-      severity: 'warning',;
+      severity: 'warning',
       validate: (element) => {
         // This is a simplified check - in production, use a proper contrast calculator
         const style = window.getComputedStyle(element);
         const backgroundColor = style.backgroundColor;
         const color = style.color;
-
         // Skip if no text content
         if (!element.textContent?.trim()) return true;
-
         // Basic check for legal AI colors
         const isLegalTheme = style.getPropertyValue('--legal-ai-primary');
         return isLegalTheme ? true : backgroundColor !== color;
       },
       fix: 'Ensure color contrast ratio is at least 4.5:1 for normal text'
     },
-
     // Dialog Accessibility Rules
     {
       name: 'dialog-aria-attributes',
       description: 'Dialogs must have proper ARIA attributes',
-      severity: 'error',;
+      severity: 'error',
       validate: (element) => {
         if (!element.hasAttribute('role') || element.getAttribute('role') !== 'dialog') {
           return true;
         }
-
         const hasAriaLabel = element.hasAttribute('aria-label');
         const hasAriaLabelledBy = element.hasAttribute('aria-labelledby');
         const hasAriaDescribedBy = element.hasAttribute('aria-describedby');
-
         return (hasAriaLabel || hasAriaLabelledBy) && hasAriaDescribedBy;
       },
       fix: 'Add aria-label/aria-labelledby and aria-describedby to dialogs'
     },
-
     // Form Accessibility Rules
     {
       name: 'form-labels',
       description: 'Form inputs must have associated labels',
-      severity: 'error',;
+      severity: 'error',
       validate: (element) => {
         if (!['input', 'textarea', 'select'].includes(element.tagName.toLowerCase())) {
           return true;
         }
-
         const hasId = element.hasAttribute('id');
         const hasLabel = hasId && document.querySelector(`label[for="${element.id}"]`);
         const hasAriaLabel = element.hasAttribute('aria-label');
         const hasAriaLabelledBy = element.hasAttribute('aria-labelledby');
-
         return hasLabel || hasAriaLabel || hasAriaLabelledBy;
       },
       fix: 'Associate form inputs with labels using for/id or aria-label'
     },
-
     // Legal AI Specific Rules
     {
       name: 'legal-ai-theme-compliance',
       description: 'Components should use legal AI design tokens',
-      severity: 'info',;
+      severity: 'info',
       validate: (element) => {
         const classList = Array.from(element.classList);
         const hasLegalClasses = classList.some(cls =>
@@ -128,20 +110,17 @@ export class AccessibilityValidator {
           cls.includes('bg-legal-') ||
           cls.includes('text-legal-')
         );
-
         // Only check for components with our enhanced classes
         const isEnhancedComponent = classList.some(cls =>
           cls.includes('legal-ai-btn') ||
           cls.includes('legal-ai-card') ||
           cls.includes('legal-ai-dialog')
         );
-
         return !isEnhancedComponent || hasLegalClasses;
       },
       fix: 'Use legal AI design tokens and CSS variables'
     }
   ];
-
   /**
    * Validate accessibility for a single element
    */
@@ -149,48 +128,41 @@ export class AccessibilityValidator {
     return this.rules.map(rule => ({
       element,
       rule,
-      passed: rule.validate(element),;
+      passed: rule.validate(element),
       message: rule.passed ?
         `✅ ${rule.name}: Passed` :
         `❌ ${rule.name}: ${rule.description}${rule.fix ? ` - ${rule.fix}` : ''}`
     }));
   }
-
   /**
    * Validate accessibility for entire page
    */
   validatePage(): AccessibilityReport[] {
     const allElements = document.querySelectorAll('*');
     const reports: AccessibilityReport[] = [];
-
     allElements.forEach(element => {
       const elementReports = this.validateElement(element);
       reports.push(...elementReports.filter(report => !report.passed));
     });
-
     return reports;
   }
-
   /**
    * Validate specific component types
    */
   validateComponents(selector: string): AccessibilityReport[] {
     const components = document.querySelectorAll(selector);
     const reports: AccessibilityReport[] = [];
-
     components.forEach(component => {
       const componentReports = this.validateElement(component);
       reports.push(...componentReports);
     });
-
     return reports;
   }
-
   /**
    * Generate accessibility report
    */
   generateReport(): {
-    summary: {;
+    summary: {
       total: number;
       errors: number;
       warnings: number;
@@ -199,31 +171,27 @@ export class AccessibilityValidator {
     issues: AccessibilityReport[];
   } {
     const issues = this.validatePage();
-
     return {
       summary: {
         total: issues.length,
         errors: issues.filter(i => i.rule.severity === 'error').length,
-        warnings: issues.filter(i => i.rule.severity === 'warning').length,;
+        warnings: issues.filter(i => i.rule.severity === 'warning').length,
         info: issues.filter(i => i.rule.severity === 'info').length
       },
       issues
     };
   }
-
   /**
    * Live accessibility monitoring
    */
   startLiveValidation(): void {
     if (typeof window === 'undefined') return;
-
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         mutation.addedNodes.forEach((node) => {
           if (node.nodeType === Node.ELEMENT_NODE) {
             const issues = this.validateElement(node as Element);
             const errors = issues.filter(i => !i.passed && i.rule.severity === 'error');
-
             if (errors.length > 0) {
               console.group('🚨 Accessibility Issues Detected');
               errors.forEach(error => console.warn(error.message));
@@ -233,14 +201,12 @@ export class AccessibilityValidator {
         });
       });
     });
-
     observer.observe(document.body, {
-      childList: true,
+      childList: true
       subtree: true
     });
   }
 }
-
 /**
  * Keyboard Navigation Helper
  */
@@ -253,14 +219,12 @@ export class KeyboardNavigationHelper {
     'select:not([disabled])',
     '[tabindex]:not([tabindex="-1"])'
   ].join(',');
-
   /**
    * Get all focusable elements in container
    */
   getFocusableElements(container: Element = document.body): Element[] {
     return Array.from(container.querySelectorAll(this.focusableElements));
   }
-
   /**
    * Trap focus within container (for modals/dialogs)
    */
@@ -268,10 +232,8 @@ export class KeyboardNavigationHelper {
     const focusableElements = this.getFocusableElements(container);
     const firstElement = focusableElements[0] as HTMLElement;
     const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key !== 'Tab') return;
-
       if (e.shiftKey) {
         // Shift + Tab
         if (document.activeElement === firstElement) {
@@ -286,16 +248,13 @@ export class KeyboardNavigationHelper {
         }
       }
     };
-
     container.addEventListener('keydown', handleKeyDown);
     firstElement?.focus();
-
     // Return cleanup function
     return () => {
       container.removeEventListener('keydown', handleKeyDown);
     };
   }
-
   /**
    * Handle escape key for closing modals
    */
@@ -305,19 +264,15 @@ export class KeyboardNavigationHelper {
         callback();
       }
     };
-
     document.addEventListener('keydown', handleKeyDown);
-
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }
 }
-
 // Export singleton instances
 export const accessibilityValidator = new AccessibilityValidator();
 export const keyboardNavigationHelper = new KeyboardNavigationHelper();
-
 // Development helper
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   // @ts-ignore - Attach to window for debugging

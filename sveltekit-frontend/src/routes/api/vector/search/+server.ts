@@ -1,15 +1,12 @@
 
 import type { RequestHandler } from './$types.js'
-
 /*
  * Vector Intelligence Search API Endpoint
  * Provides semantic search capabilities with Phase 4 Vector Intelligence
  */
-
 import { json, error } from "@sveltejs/kit"
 import { vectorIntelligenceService } from "$lib/services/vector-intelligence-service.js"
 import { URL } from "url"
-
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const body = await request.json()
@@ -20,15 +17,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
       query: string
       options: Partial<VectorSearchOptions>
     } = body
-
     if (!query || typeof query !== "string") {
       throw error(400, "Invalid query: must be a non-empty string")
     }
-
     console.log(
       `🔍 Vector intelligence search: "${query.substring(0, 100)}..."`,
     )
-
     // Configure search options with intelligent defaults
     const searchOptions: VectorSearchOptions = {
       query,
@@ -37,16 +31,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
       includeMetadata: options.includeMetadata !== false,
       contextFilter: options.contextFilter
     }
-
     // Perform enhanced semantic search with vector intelligence
     const results =
       await vectorIntelligenceService.semanticSearch(searchOptions)
-
     // Get system health for response metadata
     const systemHealth = await vectorIntelligenceService.getSystemHealth()
-
     return json({
-      success: true,
+      success: true
       query,
       results,
       metadata: {
@@ -62,27 +53,22 @@ export const POST: RequestHandler = async ({ request, url }) => {
     })
   } catch (err: any) {
     console.error("❌ Vector intelligence search API error:", err)
-
     const errorMessage = err instanceof Error ? err.message: "Unknown error"
     const statusCode =
       err && typeof err === "object" && "status" in err
         ? (err as any).status: 500
-
     throw error(statusCode, errorMessage)
   }
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   const query = url.searchParams.get("q")
   const limit = parseInt(url.searchParams.get("limit") || "10")
   const threshold = parseFloat(url.searchParams.get("threshold") || "0.7")
   const caseId = url.searchParams.get("caseId")
   const evidenceType = url.searchParams.get("evidenceType")
-
   if (!query) {
     // Return API documentation and system status
     const systemHealth = await vectorIntelligenceService.getSystemHealth()
-
     return json({
       message: "Vector Intelligence Search API - Phase 4",
       endpoints: {
@@ -108,25 +94,22 @@ export const GET: RequestHandler = async ({ url }) => {
       ]
     })
   }
-
   try {
     // Build search options from query parameters
     const searchOptions: VectorSearchOptions = {
       query,
       threshold,
       limit,
-      includeMetadata: true,
+      includeMetadata: true
       contextFilter: {
         ...(caseId && { caseId }),
         ...(evidenceType && { evidenceType })
       }
     }
-
     const results =
       await vectorIntelligenceService.semanticSearch(searchOptions)
-
     return json({
-      success: true,
+      success: true
       query,
       results,
       metadata: {

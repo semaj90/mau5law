@@ -1,17 +1,14 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import type { Document } from "$lib/types/global";
-
   // Types
   interface SimilarityResult extends Document {
   similarity: number;
   }
-
   // Props (Svelte 5 runes)
   let { selectedDocument = $bindable(), searchQuery = $bindable() } = $props();
   // State
@@ -23,27 +20,23 @@ https://svelte.dev/e/js_parse_error -->
       similarDocuments = [];
       return;
     }
-
     isLoading = true;
     error = null;
-
     try {
       const response = await fetch('/api/semantic-search', {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          query: query.trim(),;
-          limit: 5,;
-          threshold: 0.3,;
+        body: JSON.stringify({,
+          query: query.trim(),
+          limit: 5,
+          threshold: 0.3,
         }),
       });
-
       const data = await response.json();
-
       if (data.success) {
-        similarDocuments = data.results;
+        similarDocuments = data.result;
       } else {
         error = data.error || 'Search failed';
         similarDocuments = [];
@@ -55,20 +48,17 @@ https://svelte.dev/e/js_parse_error -->
       isLoading = false;
     }
   }
-
   // Reactive search when query changes
   // TODO: Convert to $derived: if (searchQuery && searchQuery.trim.length) {
   // simple reactive trigger (debounce could be added later)
   performSemanticSearch(searchQuery)
   }
-
   $effect(() => {
   if (searchQuery && searchQuery.trim.length) {
     performSemanticSearch(searchQuery);
   }
   });
 </script>
-
 <!-- Search Input -->
 <div class="mb-6">
   <label for="search-query" class="block text-sm font-medium mb-2">
@@ -91,14 +81,12 @@ https://svelte.dev/e/js_parse_error -->
     </button>
   </div>
 </div>
-
 <!-- Selected Document Display -->
 {#if selectedDocument}
   <div class="bg-white rounded-lg shadow-md p-6 mb-6 border">
     <h2 class="text-xl font-bold mb-4 text-gray-800">
       📄 Document Analysis: {selectedDocument.title}
     </h2>
-
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
       <div>
         <p class="text-sm text-gray-600"><strong>ID:</strong> {selectedDocument.id}</p>
@@ -110,7 +98,6 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       </div>
     </div>
-
     <div class="mb-4">
       <h3 class="font-bold mb-2 text-gray-700">Content Preview</h3>
       <div class="bg-gray-50 p-3 rounded border max-h-40 overflow-y-auto">
@@ -119,13 +106,11 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 {/if}
-
 <!-- Search Results -->
 <div class="bg-white rounded-lg shadow-md p-6 border">
   <h2 class="text-xl font-bold mb-4 text-gray-800">
     🎯 Similar Documents {searchQuery ? `for "${searchQuery}"` : ''}
   </h2>
-
   {#if error}
     <div class="bg-red-50 border border-red-200 rounded-md p-4 mb-4">
       <div class="flex">
@@ -139,7 +124,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   {/if}
-
   {#if isLoading}
     <div class="flex items-center justify-center py-8">
       <div class="flex items-center space-x-2">
@@ -162,18 +146,15 @@ https://svelte.dev/e/js_parse_error -->
               </span>
             </div>
           </div>
-
           <div class="text-sm text-gray-600 mb-2">
             <p><strong>ID:</strong> {doc.id}</p>
             {#if doc.caseId}
               <p><strong>Case:</strong> {doc.caseId}</p>
             {/if}
           </div>
-
           <div class="bg-gray-50 p-3 rounded text-sm">
             <p class="text-gray-700">{doc.content.slice(0, 200)}{doc.content.length > 200 ? '...' : ''}</p>
           </div>
-
           <div class="mt-3 flex justify-end">
             <button
               onclick={() => selectedDocument = doc}
@@ -199,7 +180,3 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
-
-
-
-

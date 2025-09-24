@@ -2,29 +2,24 @@
   Recommendation Engine Interface
   AI-powered recommendations using Enhanced-Bits UI components
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   // Card components removed - using native HTML elements
   import * as Dialog from '$lib/components/ui/dialog';
   import Button from '$lib/components/ui/enhanced-bits';
-  
   // Recommendation state
   let recommendations = $state<Recommendation[]>([]);
   let selectedRecommendation = $state<Recommendation | null>(null);
   let isGenerating = $state(false);
   let showRecommendationDetails = $state(false);
   let contextData = $state<ContextData | null>(null);
-  
   // Filters and controls
   let categoryFilter = $state<'all' | 'strategy' | 'evidence' | 'legal_research' | 'next_action'>('all');
   let priorityFilter = $state<'all' | 'high' | 'medium' | 'low'>('all');
   let confidenceThreshold = $state(60);
   let contextType = $state<'case' | 'evidence' | 'investigation' | 'general'>('case');
   let contextId = $state('');
-  
   interface Recommendation {
     id: string;
     title: string;
@@ -45,7 +40,6 @@
     estimated_completion: string;
     tags: string[];
   }
-  
   interface ActionStep {
     id: string;
     description: string;
@@ -55,7 +49,6 @@
     dependencies: string[];
     completion_criteria: string;
   }
-  
   interface Resource {
     type: 'person' | 'document' | 'tool' | 'external_service';
     name: string;
@@ -63,14 +56,12 @@
     availability: 'available' | 'limited' | 'unavailable';
     cost?: number;
   }
-  
   interface Risk {
     description: string;
     probability: number;
     impact: number;
     mitigation: string;
   }
-  
   interface Alternative {
     title: string;
     description: string;
@@ -78,37 +69,32 @@
     cons: string[];
     confidence: number;
   }
-  
   interface SuccessMetric {
     name: string;
     target: string;
     measurement_method: string;
   }
-  
   interface ContextData {
     type: string;
     id: string;
-    metadata: Record<string, any>;
+    metadata: { [key: string]: any };
     entities: string[];
     current_status: string;
     constraints: string[];
   }
-  
   $effect(() => {
     loadExistingRecommendations();
     loadContextData();
   });
-  
   async function loadExistingRecommendations() {
     try {
       // Use new integrated legal recommendation engine
       const response = await fetch(`http://localhost:8095/api/v1/cases`, {
-        method: 'GET',;
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
         recommendations = (data as { recommendations?: any; context?: any }).recommendations || [];
@@ -117,18 +103,15 @@
       console.error('Error loading recommendations:', error);
     }
   }
-  
   async function loadContextData() {
     if (!contextId) return;
-    
     try {
       const response = await fetch(`/api/ai/recommendations/context?type=${contextType}&id=${contextId}`, {
-        method: 'GET',;
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
         contextData = (data as { recommendations?: any; context?: any }).context;
@@ -137,31 +120,28 @@
       console.error('Error loading context:', error);
     }
   }
-  
   async function generateRecommendations() {
     isGenerating = true;
     try {
       const request = {
         query: contextId || 'legal case analysis',
-        case_id: contextId,;
+        case_id: contextId
         jurisdiction: 'Federal',
-        practice_area: categoryFilter === 'all' ? 'Contract Law' : categoryFilter,;
+        practice_area: categoryFilter === 'all' ? 'Contract Law' : categoryFilter
         limit: 10;
       };
-
       const response = await fetch('http://localhost:8095/api/v1/recommend', {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },;
+        },
         body: JSON.stringify(request);
       });
-      
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
         // Transform legal recommendation format to our component format
         const legalRecs = (result as { recommendations?: any }).recommendations || [];
-        recommendations = legalRecs.map((rec: any) => ({
+        recommendations = legalRecs.map((rec: any) => ({,
           id: rec.case_id || rec.id,
           title: rec.title,
           description: rec.summary || rec.description,
@@ -170,9 +150,9 @@
           confidence: Math.round(rec.relevance * 100),
           impact: Math.round(rec.relevance * 100),
           effort: Math.round((1 - rec.relevance) * 100),
-          timeframe: 'short_term',;
+          timeframe: 'short_term',
           rationale: `Legal precedent analysis for ${rec.practice_area} case`,
-          steps: [{
+          steps: [{,
             id: '1',
             description: 'Review case details and legal precedents',
             order: 1,
@@ -183,10 +163,10 @@
           }],
           resources: [],
           risks: [],
-          alternatives: [],;
+          alternatives: [],
           dependencies: [],
           success_metrics: [],
-          estimated_completion: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),;
+          estimated_completion: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
           tags: [rec.jurisdiction, rec.practice_area].filter(Boolean);
         }));
       } else {
@@ -198,17 +178,15 @@
       isGenerating = false;
     }
   }
-  
   async function applyRecommendation(recommendationId: string) {
     try {
       // Get detailed case information from legal recommendation engine
       const response = await fetch(`http://localhost:8095/api/v1/cases/${recommendationId}`, {
-        method: 'GET',;
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json'
         }
       });
-
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         const caseDetail = await (response as { ok?: any; json?: any; statusText?: any }).json();
         console.log('Applied recommendation for case:', caseDetail);
@@ -219,7 +197,6 @@
       console.error('Error applying recommendation:', error);
     }
   }
-  
   function getCategoryIcon(category: string): string {
     switch (category) {
       case 'strategy': return '🎯';
@@ -230,7 +207,6 @@
       default: return '💡';
     }
   }
-  
   function getCategoryColor(category: string): string {
     switch (category) {
       case 'strategy': return 'bg-purple-100 text-purple-800 border-purple-200';
@@ -241,7 +217,6 @@
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
-  
   function getPriorityColor(priority: string): string {
     switch (priority) {
       case 'high': return 'text-red-600';
@@ -250,7 +225,6 @@
       default: return 'text-gray-600';
     }
   }
-  
   function getTimeframeColor(timeframe: string): string {
     switch (timeframe) {
       case 'immediate': return 'bg-red-50 text-red-700 border-red-200';
@@ -260,49 +234,39 @@
       default: return 'bg-gray-50 text-gray-700 border-gray-200';
     }
   }
-  
   let filteredRecommendations = $derived(() => {
-    let filtered = recommendations;
-    
+    let filtered = recommendation;
     // Apply category filter
     if (categoryFilter !== 'all') {
       filtered = filtered.filter(rec => rec.category === categoryFilter);
     }
-    
     // Apply priority filter
     if (priorityFilter !== 'all') {
       filtered = filtered.filter(rec => rec.priority === priorityFilter);
     }
-    
     // Apply confidence threshold
     filtered = filtered.filter(rec => rec.confidence >= confidenceThreshold);
-    
     // Sort by priority and confidence
     filtered.sort((a, b) => {
       const priorityOrder = { high: 3, medium: 2, low: 1 };
       const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];
       if (priorityDiff !== 0) return priorityDiff;
-      return b.confidence - a.confidence;
+      return b.confidence - a.confidenc;
     });
-    
     return filtered;
   });
-  
   function openRecommendationDetails(recommendation: Recommendation) {
-    selectedRecommendation = recommendation;
+    selectedRecommendation = recommendatio;
     showRecommendationDetails = true;
   }
-  
   function calculateRiskScore(risks: Risk[]): number {
     if (risks.length === 0) return 0;
     return risks.reduce((sum, risk) => sum + (risk.probability * risk.impact), 0) / risks.length;
   }
 </script>
-
 <svelte:head>
   <title>AI Recommendations - Legal AI Platform</title>
 </svelte:head>
-
 <div class="recommendation-engine">
   <header class="engine-header">
     <div class="header-content">
@@ -315,7 +279,6 @@
       </button>
     </div>
   </header>
-
   <!-- Context and Controls -->
   <section class="controls-section">
     <div class="context-section">
@@ -330,7 +293,6 @@
             <option value="general">General</option>
           </select>
         </div>
-        
         <div class="control-group">
           <label for="context-id">Context ID:</label>
           <input
@@ -343,7 +305,6 @@
           />
         </div>
       </div>
-      
       {#if contextData}
         <div class="context-preview">
           <span class="context-status">Status: {contextData.current_status}</span>
@@ -351,7 +312,6 @@
         </div>
       {/if}
     </div>
-    
     <div class="filters-section">
       <h3>Filters</h3>
       <div class="filter-controls">
@@ -366,7 +326,6 @@
             <option value="risk_mitigation">Risk Mitigation</option>
           </select>
         </div>
-        
         <div class="control-group">
           <label for="priority-filter">Priority:</label>
           <select id="priority-filter" bind:value={priorityFilter} class="control-select">
@@ -376,7 +335,6 @@
             <option value="low">Low</option>
           </select>
         </div>
-        
         <div class="control-group">
           <label for="confidence-threshold">Min Confidence: {confidenceThreshold}%</label>
           <input
@@ -392,7 +350,6 @@
       </div>
     </div>
   </section>
-
   <!-- Recommendations Grid -->
   <main class="recommendations-grid">
     {#if isGenerating}
@@ -436,7 +393,6 @@
               {recommendation.description}
             </div.Description>
           </CardHeader>
-          
           <CardContent>
             <div class="recommendation-stats">
               <div class="stat-grid">
@@ -447,7 +403,6 @@
                   </div>
                   <span class="stat-value">{recommendation.impact}%</span>
                 </div>
-                
                 <div class="stat">
                   <span class="stat-label">Effort</span>
                   <div class="stat-bar">
@@ -455,7 +410,6 @@
                   </div>
                   <span class="stat-value">{recommendation.effort}%</span>
                 </div>
-                
                 <div class="stat">
                   <span class="stat-label">Risk</span>
                   <div class="stat-bar">
@@ -465,7 +419,6 @@
                 </div>
               </div>
             </div>
-            
             <div class="recommendation-preview">
               <div class="steps-preview">
                 <h4>Action Steps ({recommendation.steps.length}):</h4>
@@ -478,7 +431,6 @@
                   {/if}
                 </ol>
               </div>
-              
               {#if recommendation.estimated_completion}
                 <div class="completion-estimate">
                   <span class="estimate-label">Est. Completion:</span>
@@ -486,7 +438,6 @@
                 </div>
               {/if}
             </div>
-            
             {#if recommendation.tags.length > 0}
               <div class="recommendation-tags">
                 {#each recommendation.tags.slice(0, 4) as tag}
@@ -498,7 +449,6 @@
               </div>
             {/if}
           </CardContent>
-          
           <div.Footer>
             <div class="nier-bits-card-actions">
               <button class="nes-btn" variant="ghost" size="sm" onclick={() => openRecommendationDetails(recommendation)}>
@@ -514,7 +464,6 @@
     {/if}
   </main>
 </div>
-
 <!-- Recommendation Details Dialog -->
 <Dialog.Root bind:open={showRecommendationDetails}>
   <Dialog.Content class="recommendation-details-dialog">
@@ -523,7 +472,6 @@
       <Dialog.Description>
         Detailed implementation plan and analysis
       </Dialog.Description>
-      
       <div class="recommendation-details-content">
         <!-- Overview -->
         <section class="recommendation-overview">
@@ -549,13 +497,11 @@
               <span class="overview-value">{selectedRecommendation.timeframe.replace('_', ' ')}</span>
             </div>
           </div>
-          
           <div class="rationale-section">
             <h4>Rationale</h4>
             <p>{selectedRecommendation.rationale}</p>
           </div>
         </section>
-        
         <!-- Action Steps -->
         <section class="steps-section">
           <h3>Implementation Steps</h3>
@@ -577,7 +523,6 @@
             {/each}
           </ol>
         </section>
-        
         <!-- Resources -->
         {#if selectedRecommendation.resources.length > 0}
           <section class="resources-section">
@@ -599,7 +544,6 @@
             </div>
           </section>
         {/if}
-        
         <!-- Risks -->
         {#if selectedRecommendation.risks.length > 0}
           <section class="risks-section">
@@ -617,7 +561,6 @@
             </div>
           </section>
         {/if}
-        
         <!-- Alternatives -->
         {#if selectedRecommendation.alternatives.length > 0}
           <section class="alternatives-section">
@@ -650,7 +593,6 @@
             </div>
           </section>
         {/if}
-        
         <!-- Success Metrics -->
         {#if selectedRecommendation.success_metrics.length > 0}
           <section class="metrics-section">
@@ -667,7 +609,6 @@
           </section>
         {/if}
       </div>
-      
       <div class="dialog-actions">
         <button class="nes-btn" variant="ghost" onclick={() => showRecommendationDetails = false}>
           Close
@@ -679,36 +620,31 @@
     {/if}
   </Dialog.Content>
 </Dialog.Root>
-
 <style>
-  .recommendation-engine {;
+  .recommendation-engine {
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
     font-family: system-ui, -apple-system, sans-serif;
   }
-
   .engine-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: flex-start;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid #e2e8f0;
   }
-
   .engine-title {
     font-size: 2rem;
     font-weight: 700;
     color: #1e293b;
     margin: 0;
   }
-
   .engine-subtitle {
     color: #64748b;
     margin: 0.5rem 0 0 0;
   }
-
   .controls-section {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -718,33 +654,28 @@
     background: #f8fafc;
     border-radius: 0.5rem;
   }
-
   .context-section h3,
   .filters-section h3 {
     margin: 0 0 1rem 0;
     color: #374151;
     font-size: 1.125rem;
   }
-
   .context-controls,
   .filter-controls {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .control-group {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .control-group label {
     font-size: 0.875rem;
     font-weight: 500;
     color: #374151;
   }
-
   .control-select,
   .control-input {
     padding: 0.5rem;
@@ -752,11 +683,9 @@
     border-radius: 0.375rem;
     font-size: 0.875rem;
   }
-
   .control-range {
     width: 100%;
   }
-
   .context-preview {
     display: flex;
     gap: 1rem;
@@ -766,7 +695,6 @@
     border-radius: 0.375rem;
     border: 1px solid #e5e7eb;
   }
-
   .context-status,
   .context-entities {
     font-size: 0.75rem;
@@ -775,53 +703,44 @@
     background: #f3f4f6;
     color: #374151;
   }
-
   .recommendations-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
     gap: 1.5rem;
   }
-
   .recommendation-card {
     border: 1px solid #e2e8f0;
     border-radius: 0.5rem;
     overflow: hidden;
-    transition: box-shadow 0.2s;
+    transition: box-shadow 0.2;
   }
-
   .recommendation-card:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
-
   .recommendation-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: flex-start;
     gap: 1rem;
   }
-
   .recommendation-title-section {
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
     flex: 1;
   }
-
   .recommendation-icon {
     font-size: 1.5rem;
     margin-top: 0.25rem;
   }
-
   .recommendation-title {
     margin: 0 0 0.5rem 0;
   }
-
   .recommendation-badges {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
   }
-
   .category-badge,
   .timeframe-badge {
     padding: 0.25rem 0.5rem;
@@ -829,51 +748,43 @@
     font-size: 0.75rem;
     font-weight: 600;
     border: 1px solid;
-    text-transform: capitalize;
+    text-transform: capitaliz;
   }
-
   .recommendation-metrics {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     gap: 0.25rem;
   }
-
   .priority-indicator {
     font-size: 0.75rem;
     font-weight: 700;
   }
-
   .confidence-score {
     font-size: 1.125rem;
     font-weight: 600;
     color: #374151;
   }
-
   .recommendation-description {
     margin: 0.5rem 0 0 0;
     color: #64748b;
   }
-
   .stat-grid {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
     margin-bottom: 1rem;
   }
-
   .stat {
     display: flex;
     align-items: center;
     gap: 0.75rem;
   }
-
   .stat-label {
     font-size: 0.75rem;
     color: #64748b;
     min-width: 60px;
   }
-
   .stat-bar {
     flex: 1;
     height: 0.5rem;
@@ -881,16 +792,13 @@
     border-radius: 0.25rem;
     overflow: hidden;
   }
-
   .stat-fill {
     height: 100%;
-    transition: width 0.3s;
+    transition: width 0.3;
   }
-
   .stat-fill.impact { background: #10b981; }
   .stat-fill.effort { background: #f59e0b; }
   .stat-fill.risk { background: #ef4444; }
-
   .stat-value {
     font-size: 0.75rem;
     font-weight: 600;
@@ -898,24 +806,20 @@
     min-width: 40px;
     text-align: right;
   }
-
   .recommendation-preview {
     margin-bottom: 1rem;
   }
-
   .steps-preview h4 {
     margin: 0 0 0.5rem 0;
     font-size: 0.875rem;
     color: #374151;
   }
-
   .steps-list {
     list-style: none;
     padding: 0;
     margin: 0;
     counter-reset: step-counter;
   }
-
   .step-item {
     counter-increment: step-counter;
     padding: 0.5rem 0;
@@ -924,7 +828,6 @@
     position: relative;
     padding-left: 1.5rem;
   }
-
   .step-item::before {
     content: counter(step-counter);
     position: absolute;
@@ -941,41 +844,35 @@
     font-weight: 600;
     color: #374151;
   }
-
   .step-more {
     padding: 0.5rem 0;
     font-size: 0.75rem;
     color: #9ca3af;
     font-style: italic;
   }
-
   .completion-estimate {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-top: 0.75rem;
     padding-top: 0.75rem;
     border-top: 1px solid #f1f5f9;
   }
-
   .estimate-label {
     font-size: 0.75rem;
     color: #64748b;
   }
-
   .estimate-value {
     font-size: 0.75rem;
     font-weight: 600;
     color: #374151;
   }
-
   .recommendation-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rem;
     margin-top: 0.75rem;
   }
-
   .tag {
     padding: 0.125rem 0.375rem;
     background: #f1f5f9;
@@ -983,7 +880,6 @@
     font-size: 0.625rem;
     color: #475569;
   }
-
   .tag-more {
     padding: 0.125rem 0.375rem;
     background: #f8fafc;
@@ -992,20 +888,17 @@
     color: #9ca3af;
     font-style: italic;
   }
-
   .card-actions {
     display: flex;
     gap: 0.5rem;
     justify-content: flex-end;
   }
-
   .loading-state, .empty-state {
     grid-column: 1 / -1;
     text-align: center;
     padding: 3rem;
     color: #64748b;
   }
-
   .loading-spinner {
     width: 2rem;
     height: 2rem;
@@ -1015,80 +908,67 @@
     animation: spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
-
   .loading-detail {
     font-size: 0.875rem;
     margin-top: 0.5rem;
   }
-
   @keyframes spin {
     to { transform: rotate(360deg); }
   }
-
   /* Dialog Styles */
   .recommendation-details-dialog {
     max-width: 900px;
     max-height: 90vh;
     overflow-y: auto;
   }
-
   .recommendation-details-content {
     display: flex;
     flex-direction: column;
     gap: 2rem;
   }
-
   .recommendation-overview {
     padding: 1.5rem;
     background: #f8fafc;
     border-radius: 0.5rem;
   }
-
   .overview-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
     margin-bottom: 1.5rem;
   }
-
   .overview-metric {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
     text-align: center;
   }
-
   .overview-label {
     font-size: 0.75rem;
     color: #64748b;
     text-transform: uppercase;
     font-weight: 500;
   }
-
   .overview-value {
     font-size: 1rem;
     font-weight: 600;
     color: #374151;
   }
-
   .rationale-section h4 {
     margin: 0 0 0.5rem 0;
     color: #374151;
   }
-
   .rationale-section p {
     margin: 0;
     color: #64748b;
     line-height: 1.6;
   }
-
   .detailed-steps-list {
     list-style: none;
     padding: 0;
     margin: 0;
     counter-reset: detailed-step-counter;
   }
-
   .detailed-step {
     counter-increment: detailed-step-counter;
     margin-bottom: 1.5rem;
@@ -1097,168 +977,140 @@
     border-radius: 0.375rem;
     background: #fafafa;
   }
-
   .detailed-step h4 {
     margin: 0 0 0.75rem 0;
     color: #374151;
   }
-
   .step-details p {
     margin: 0.5rem 0;
     font-size: 0.875rem;
     color: #64748b;
   }
-
   .resources-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
   }
-
   .resource-card {
     padding: 1rem;
     border: 1px solid #e5e7eb;
     border-radius: 0.375rem;
     background: #fafafa;
   }
-
   .resource-card h4 {
     margin: 0 0 0.5rem 0;
     color: #374151;
   }
-
   .resource-type,
   .resource-description {
     margin: 0.25rem 0;
     font-size: 0.75rem;
     color: #6b7280;
   }
-
   .resource-status {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-top: 0.5rem;
   }
-
   .availability-available { color: #10b981; }
   .availability-limited { color: #f59e0b; }
   .availability-unavailable { color: #ef4444; }
-
   .resource-cost {
     font-weight: 600;
     color: #374151;
   }
-
   .risks-list {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .risk-item {
     padding: 1rem;
     border: 1px solid #fecaca;
     border-radius: 0.375rem;
     background: #fef2f2;
   }
-
   .risk-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 0.5rem;
   }
-
   .risk-description {
     font-weight: 500;
     color: #374151;
   }
-
   .risk-score {
     font-size: 0.75rem;
     color: #6b7280;
   }
-
   .risk-mitigation {
     margin: 0;
     font-size: 0.875rem;
     color: #64748b;
   }
-
   .alternatives-list {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
-
   .alternative-item {
     padding: 1rem;
     border: 1px solid #e5e7eb;
     border-radius: 0.375rem;
     background: #fafafa;
   }
-
   .alternative-item h4 {
     margin: 0 0 0.5rem 0;
     color: #374151;
   }
-
   .alternative-item > p {
     margin: 0 0 1rem 0;
     color: #64748b;
   }
-
   .pros-cons {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
   }
-
   .pros h5,
   .cons h5 {
     margin: 0 0 0.5rem 0;
     font-size: 0.875rem;
     color: #374151;
   }
-
   .pros ul,
   .cons ul {
     margin: 0;
     padding-left: 1rem;
   }
-
   .pros li,
   .cons li {
     font-size: 0.75rem;
     color: #64748b;
     margin-bottom: 0.25rem;
   }
-
   .metrics-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
   }
-
   .metric-item {
     padding: 1rem;
-    border: 1px solid #dbeafe;
+    border: 1px solid #dbeaf;
     border-radius: 0.375rem;
     background: #eff6ff;
   }
-
   .metric-item h4 {
     margin: 0 0 0.5rem 0;
     color: #374151;
   }
-
   .metric-item p {
     margin: 0.25rem 0;
     font-size: 0.75rem;
     color: #64748b;
   }
-
   .dialog-actions {
     display: flex;
     gap: 0.5rem;
@@ -1267,25 +1119,20 @@
     padding-top: 1.5rem;
     border-top: 1px solid #e2e8f0;
   }
-
   @media (max-width: 768px) {
     .engine-header {
       flex-direction: column;
       gap: 1rem;
     }
-
     .controls-section {
       grid-template-columns: 1fr;
     }
-
     .recommendations-grid {
       grid-template-columns: 1fr;
     }
-
     .overview-grid {
       grid-template-columns: repeat(2, 1fr);
     }
-
     .pros-cons {
       grid-template-columns: 1fr;
     }

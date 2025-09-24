@@ -1,6 +1,6 @@
 // Canonical unified LegalDocument type
 // Consolidates many scattered interface variants across the codebase.
-// Future refactors: replace other duplicate declarations with imports from this file.;
+// Future refactors: replace other duplicate declarations with imports from this file.
 export interface LegalDocumentUnified {
   id: string;
   title: string;
@@ -13,13 +13,11 @@ export interface LegalDocumentUnified {
   jurisdiction?: string;
   court?: string;
   citation?: string;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
   createdAt?: Date;
   updatedAt?: Date;
 }
-
 export type LegalDocument = LegalDocumentUnified;
-
 export function isLegalDocument(value: any): value is LegalDocumentUnified {
   return (
     value &&
@@ -28,9 +26,8 @@ export function isLegalDocument(value: any): value is LegalDocumentUnified {
     typeof value.title === 'string'
   );
 }
-
 export function mergeLegalDocuments<T extends Partial<LegalDocumentUnified>(
-  base: LegalDocumentUnified,;
+  base: LegalDocumentUnified
   patch: T;
 ): LegalDocumentUnified {
   return { ...base, ...patch };

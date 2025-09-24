@@ -2,45 +2,37 @@
  * @file Manages a cache with reinforcement learning-based eviction policies.
  * This is a server-only module with '.server.ts' extension.
  */
-
 interface LearningModel {
   weights: Map<string, number>;
   learningRate: number;
   lastUpdate: number;
 }
-
 class ReinforcementLearningCache {
   private cache = new Map<string, any>();
   private isInitialized = false;
   private hitRatio = 0.85; // Mock hit ratio
   private learningModel: LearningModel | null = null;
-
   constructor() {
     console.log("ReinforcementLearningCache (server-only) instance created.");
   }
-
   /**
    * Initializes the cache, potentially loading a pre-trained eviction model.
    */;
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
     console.log("Initializing Reinforcement Learning Cache (server-only)...");
-
     // In a real implementation, you might load a model from disk
     // or connect to a separate caching service like Redis.
     await new Promise(resolve => setTimeout(resolve, 50)); // Simulate async setup
-
     // Initialize mock learning model
     this.learningModel = {
       weights: new Map<string, number>(),
       learningRate: 0.01,
       lastUpdate: Date.now()
     };
-
     this.isInitialized = true;
     console.log("Reinforcement Learning Cache (server-only) initialized.");
   }
-
   get(key: string): any {
     // Update hit ratio and model weights on cache hit
     const value = this.cache.get(key);
@@ -53,7 +45,6 @@ class ReinforcementLearningCache {
     }
     return value;
   }
-
   set(key: string, value: any): void {
     // Use the RL model to decide if this key is valuable enough to cache
     const cacheValue = this.shouldCache(key, value);
@@ -62,7 +53,6 @@ class ReinforcementLearningCache {
       this.updateModelWeights(key, 'cached');
     }
   }
-
   private shouldCache(key: string, value: any): boolean {
     // Simple heuristic - in production this would use ML model
     if (this.cache.size > 1000) {
@@ -71,13 +61,10 @@ class ReinforcementLearningCache {
     }
     return true; // For now, cache everything
   }
-
   private updateModelWeights(key: string, action: 'hit' | 'miss' | 'cached'): void {
     if (!this.learningModel) return;
-
     const currentWeight = this.learningModel.weights.get(key) ?? 0.5;
     let newWeight = currentWeight;
-
     switch (action) {
       case 'hit':
         newWeight = Math.min(1.0, currentWeight + this.learningModel.learningRate);
@@ -89,11 +76,9 @@ class ReinforcementLearningCache {
         newWeight = currentWeight + (this.learningModel.learningRate * 0.5);
         break;
     }
-
     this.learningModel.weights.set(key, newWeight);
     this.learningModel.lastUpdate = Date.now();
   }
-
   private evictLeastValuable(): void {
     if (!this.learningModel) return;
     const sortedEntries: Array<[string, number]> = Array.from(this.learningModel.weights.entries())
@@ -104,14 +89,12 @@ class ReinforcementLearningCache {
       this.learningModel.weights.delete(key);
     }
   }
-
   /**
    * Gets current cache hit ratio for monitoring
    */
   getHitRatio(): number {
     return Math.round(this.hitRatio * 100) / 100; // Round to 2 decimal places
   }
-
   /**
    * Gets cache statistics
    */
@@ -128,7 +111,6 @@ class ReinforcementLearningCache {
       lastUpdate: this.learningModel?.lastUpdate ?? 0
     };
   }
-
   /**
    * Clear all cache entries
    */
@@ -139,9 +121,7 @@ class ReinforcementLearningCache {
     }
   }
 }
-
 // Export a singleton instance for use across the server
 export const reinforcementLearningCache = new ReinforcementLearningCache();
-
 // Also export the class type if needed for dependency injection
 export { ReinforcementLearningCache };

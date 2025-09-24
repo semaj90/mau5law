@@ -1,17 +1,13 @@
 
 import { personsOfInterest } from "$lib/server/db/schema-postgres"
-
 import { eq } from "drizzle-orm"
 import type { RequestHandler } from './$types.js'
-
-
 export const GET: RequestHandler = async ({ params }) => {
   try {
     const [poi] = await db
       .select()
       .from(personsOfInterest)
       .where(eq(personsOfInterest.id, params.id)
-
     if (!poi) {
       return json({ error: "Person of interest not found" }, { status: 404 })
     }
@@ -24,11 +20,9 @@ export const GET: RequestHandler = async ({ params }) => {
     )
   }
 }
-
 export const PUT: RequestHandler = async ({ request, params }) => {
   try {
     const data = await request.json()
-
     // Remove posX/posY, use position object if needed
     const [poi] = await db
       .update(personsOfInterest)
@@ -45,7 +39,6 @@ export const PUT: RequestHandler = async ({ request, params }) => {
       })
       .where(eq(personsOfInterest.id, params.id)
       .returning()
-
     if (!poi) {
       return json({ error: "Person of interest not found" }, { status: 404 })
     }
@@ -58,14 +51,12 @@ export const PUT: RequestHandler = async ({ request, params }) => {
     )
   }
 }
-
 export const DELETE: RequestHandler = async ({ params }) => {
   try {
     const [poi] = await db
       .delete(personsOfInterest)
       .where(eq(personsOfInterest.id, params.id)
       .returning()
-
     if (!poi) {
       return json({ error: "Person of interest not found" }, { status: 404 })
     }

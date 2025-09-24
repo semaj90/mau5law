@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use rune without parentheses;
+<!-- @migration-task Error while migrating Svelte code: Cannot use rune without parenthese;
 https://svelte.dev/e/rune_missing_parentheses -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use rune without parentheses -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { goto } from "$app/navigation";
   import { citationStore } from "$lib/stores/citations";
   // // Replaced melt with bits-ui components // Removed melt dependency
@@ -17,7 +16,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
   } from "lucide-svelte";
   import { tick } from "svelte";
   import { fly } from "svelte/transition";
-
   // Props using Svelte 5 syntax
   let {
     triggerText = "#",
@@ -30,7 +28,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
     onInsert?: (text: string) => void;
     textareaElement?: HTMLTextAreaElement | undefined;
   } = $props();
-
   // Command menu state using Svelte 5 syntax
   let searchQuery = $state("");
   let selectedIndex = $state(0);
@@ -40,92 +37,88 @@ https://svelte.dev/e/rune_missing_parentheses -->
   //   states: { open },
   // }  | null>(null); const data = createPopover({
   //   positioning: { placement: "bottom-start" },
-  //   forceVisible: true,
-  //   preventScroll: true,
+  //   forceVisible: true
+  //   preventScroll: true
   //   escapeBehavior: "close",
-  //   closeOnOutsideClick: true,
-  // }));
+  //   closeOnOutsideClick: true
+  // }))
   // Alternative state management without melt
   let isOpen = $state(false);
-
   // Get recent citations
   let recentCitations = $derived(citationStore.getRecentCitations($citationStore, 5));
-
   // Available commands
   let commands = $derived([
     {
       id: "search",
       label: "Search Cases",
-      icon: Search,
+      icon: Search
       action: () => goto("/search"),
-      category: "Navigation",;
+      category: "Navigation",
     },
     {
       id: "new-case",
       label: "New Case",
-      icon: FileText,
+      icon: FileText
       action: () => goto("/cases/new"),
-      category: "Actions",;
+      category: "Actions",
     },
     {
       id: "recent-cases",
       label: "Recent Cases",
-      icon: Calendar,
+      icon: Calendar
       action: () => goto("/cases"),
-      category: "Navigation",;
+      category: "Navigation",
     },
     {
       id: "evidence",
       label: "Evidence Library",
-      icon: FileText,
+      icon: FileText
       action: () => goto("/evidence"),
-      category: "Navigation",;
+      category: "Navigation",
     },
     {
       id: "ai-assistant",
       label: "AI Assistant",
-      icon: Zap,
+      icon: Zap
       action: () => goto("/ai-assistant"),
-      category: "AI",;
+      category: "AI",
     },
     {
       id: "settings",
       label: "Settings",
-      icon: Settings,
+      icon: Settings
       action: () => goto("/settings"),
-      category: "System",;
+      category: "System",
     },
     {
       id: "insert-date",
       label: "Insert Current Date",
-      icon: Calendar,
+      icon: Calendar
       action: () => insertText(new Date().toLocaleDateString()),
-      category: "Text",;
+      category: "Text",
     },
     {
       id: "insert-timestamp",
       label: "Insert Timestamp",
-      icon: Calendar,
+      icon: Calendar
       action: () => insertText(new Date().toISOString()),
-      category: "Text",;
+      category: "Text",
     },
     // Add recent citations as commands
     ...recentCitations.map((citation) => ({
       id: `citation-${citation.id}`,
       label: `Insert: ${citation.title}`,
-      icon: Hash,;
-      action: () => insertCitation(citation),;
-      category: "Citations",;
+      icon: Hash
+      action: () => insertCitation(citation),
+      category: "Citations",
     })),
   ]);
-
   // Filter commands based on search query
   let filteredCommands = $derived(commands.filter(
     (cmd) =>
       cmd.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
       cmd.category.toLowerCase().includes(searchQuery.toLowerCase())
   ));
-
   // Group commands by category
   let groupedCommands = $derived(filteredCommands.reduce(
     (acc, cmd) => {
@@ -136,17 +129,14 @@ https://svelte.dev/e/rune_missing_parentheses -->
       return acc;
     }, as Record<string, typeof commands>
   ));
-
   // Handle keyboard navigation
   function handleKeydown(e: KeyboardEvent) {
     if (!isOpen) return;
-
     const totalCommands = filteredCommands.length;
-
     switch (e.key) {
       case "ArrowDown":
         e.preventDefault();
-        selectedIndex = (selectedIndex + 1) % totalCommands;
+        selectedIndex = (selectedIndex + 1) % totalCommand;
         break;
       case "ArrowUp":
         e.preventDefault();
@@ -176,19 +166,16 @@ https://svelte.dev/e/rune_missing_parentheses -->
     if (textareaElement) {
       const start = textareaElement.selectionStart;
       const end = textareaElement.selectionEnd;
-      const currentValue = textareaElement.value;
-
+      const currentValue = textareaElement.valu;
       // Replace the trigger text with the new text
       const newValue =
         currentValue.substring(0, start - triggerText.length) +
         text +
         currentValue.substring(end);
-      textareaElement.value = newValue;
-
+      textareaElement.value = newValu;
       // Position cursor after inserted text
       const newCursorPos = start - triggerText.length + text.length;
       textareaElement.setSelectionRange(newCursorPos, newCursorPos);
-
       // Trigger input event
       textareaElement.dispatchEvent(new Event("input", { bubbles: true }));
   }
@@ -199,7 +186,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
       // Format the citation properly
       const formattedCitation = `[${citation.title}${citation.source ? `, ${citation.source}` : ""}${citation.date ? ` (${citation.date})` : ""}]`;
       insertText(formattedCitation);
-
       // Mark as recently used
       citationStore.markAsRecentlyUsed(citation.id);
     } else {
@@ -222,12 +208,9 @@ https://svelte.dev/e/rune_missing_parentheses -->
     }
   });
 </script>
-
 <svelte:window keydown={handleKeydown} />
-
 <!-- Hidden trigger (we'll open programmatically) -->
 <button style="display: none;">Trigger</button>
-
 {#if isOpen}
   <div
     class="command-menu-overlay"
@@ -244,7 +227,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
         spellcheck="false"
       />
     </div>
-
     <div class="command-menu-results">
       {#each Object.entries(groupedCommands) as [category, categoryCommands], categoryIndex}
         <div class="command-menu-category">
@@ -265,7 +247,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
           {/each}
         </div>
       {/each}
-
       {#if filteredCommands.length === 0}
         <div class="command-menu-empty">
           <Search size={24} />
@@ -273,7 +254,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
         </div>
       {/if}
     </div>
-
     <div class="command-menu-footer">
       <div class="command-menu-shortcuts">
         <kbd>↑↓</kbd> Navigate
@@ -283,10 +263,9 @@ https://svelte.dev/e/rune_missing_parentheses -->
     </div>
   </div>
 {/if}
-
 <style>
   /* @unocss-include */
-  .command-menu {;
+  .command-menu {
     background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 0.75rem;
@@ -352,7 +331,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
     transition: all 0.15s ease;
     text-align: left;
 }
-  .command-item:hover,
+  .command-item: hover
   .command-.selected {
     background: #f3f4f6;
     color: #3b82f6;
@@ -410,6 +389,4 @@ https://svelte.dev/e/rune_missing_parentheses -->
     background: #6b7280;
 }
 </style>
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

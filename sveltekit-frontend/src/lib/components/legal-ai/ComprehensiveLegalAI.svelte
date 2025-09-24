@@ -22,7 +22,6 @@
     MessageSquare,
     BarChart3
   } from 'lucide-svelte';
-
   // Component state
   let selectedFiles = $state<FileList | null>(null);
   let caseId = $state('case_' + Date.now());
@@ -31,11 +30,9 @@
   let systemStats = $state<any>({});
   let recommendations = $state<any[]>([]);
   let processedResults = $state<any>({});
-
   // System components
   let workerPool: any = null;
   let simdCache: any = null;
-
   // Performance metrics
   let performanceMetrics = $state({
     totalProcessingTime: 0,
@@ -44,81 +41,68 @@
     workerUtilization: 0,
     simdPerformance: 0
   });
-
   onMount(async () => {
     // Initialize worker pool
     const workerConfig: WorkerPoolConfig = {
       maxWorkers: Math.min(navigator.hardwareConcurrency || 4, 8),
       workerTimeout: 60000,
       queueLimit: 100,
-      enableSIMD: true,
-      redisCache: true,
+      enableSIMD: true
+      redisCache: true
       concurrencyLimit: 6
     };
-
     workerPool = createWorkerPool(workerConfig);
     simdCache = createSIMDJSONCache({
       defaultTTL: 3600,
-      compressionEnabled: true,
+      compressionEnabled: true
       enableMetrics: true
     });
-
     // Start recommendation session
     recommendationStore.send({
       type: 'START_SESSION',
       userId: 'user_' + Date.now(),
       caseId;
     });
-
     // Update system stats periodically
     const statsInterval = setInterval(updateSystemStats, 2000);
-
     return () => {
       clearInterval(statsInterval);
       workerPool?.terminate();
     };
   });
-
   function updateSystemStats() {
     if (workerPool) {
       const workerStats = workerPool.getStats();
       const cacheStats = simdCache?.getCacheStats() || {};
       const simdStatus = simdCache?.getSIMDStatus() || {};
-
       systemStats = {
-        workers: workerStats,;
-        cache: cacheStats,;
-        simd: simdStatus;
+        workers: workerStats
+        cache: cacheStats
+        simd: simdStatu;
       };
-
       performanceMetrics.workerUtilization = workerStats.totalWorkers > 0
         ? (workerStats.activeWorkers / workerStats.totalWorkers) * 100
         : 0;
       performanceMetrics.cacheHitRate = cacheStats.hitRate * 100 || 0;
     }
   }
-
   async function handleFileUpload() {
     if (!selectedFiles || selectedFiles.length === 0) return;
-
     isProcessing = true;
     const startTime = performance.now();
-
     try {
       // Start enhanced upload machine
       enhancedUploadStore.send({
-        type: 'UPLOAD_FILES',;
+        type: 'UPLOAD_FILES',
         files: Array.from(selectedFiles),
         caseId,
-        documentType;
+        documentTyp;
       });
-
       // Subscribe to upload progress
       const unsubscribe = enhancedUploadStore.subscribe(async (state) => {
         if (state.matches('completed')) {
           const endTime = performance.now();
           performanceMetrics.totalProcessingTime = endTime - startTime;
-
           // Process results with workers and SIMD
           await processResults(state.context);
           isProcessing = false;
@@ -129,39 +113,32 @@
           unsubscribe();
         }
       });
-
       // Generate recommendations in parallel
       recommendationStore.send({
         type: 'ANALYZE_DOCUMENT',
         documentId: 'doc_' + Date.now(),
-        documentType;
+        documentTyp;
       });
-
     } catch (error) {
       console.error('Processing failed:', error);
       isProcessing = false;
     }
   }
-
   async function processResults(context: any) {
     if (!workerPool || !simdCache) return;
-
     try {
       // Process OCR results with SIMD JSON
       if (context.results?.ocrText) {
         const ocrData = await simdCache.parse(
           JSON.stringify({ text: context.results.ocrText, confidence: context.results.ocrConfidence })
         );
-
         // Enhance OCR with worker pool
         const enhancedOCR = await workerPool.processOCR(ocrData, {
           language: 'eng+fra',
           confidenceThreshold: 0.8;
         });
-
         processedResults.enhancedOCR = enhancedOCR;
       }
-
       // Generate embeddings with Gemma3
       if (context.results?.extractedText) {
         const embeddings = await workerPool.generateEmbeddings(
@@ -169,10 +146,8 @@
           'embeddinggemma:latest',
           { normalize: true, chunkSize: 512 }
         );
-
-        processedResults.embeddings = embeddings;
+        processedResults.embeddings = embedding;
       }
-
       // Perform AI analysis
       if (context.results?.extractedText) {
         const analysis = await workerPool.analyzeDocument(
@@ -180,67 +155,54 @@
           documentType,
           'gemma3:legal-latest'
         );
-
-        processedResults.aiAnalysis = analysis;
+        processedResults.aiAnalysis = analysi;
       }
-
       // Generate recommendations
       const recContext = {
         document: {
           text: context.results?.extractedText,
-          type: documentType,
+          type: documentType
           caseId;
-        },;
+        },
         user: { preferences: { priority: 'accuracy' } }
       };
-
       const recs = await workerPool.generateRecommendations(recContext);
       recommendations = recs.data?.recommendations || [];
-
       // Update performance metrics
       const simdMetrics = simdCache.getMetrics();
-      performanceMetrics.simdPerformance = simdMetrics.averageParseTime;
-      performanceMetrics.averageSpeed = simdMetrics.totalDataProcessed / simdMetrics.totalParses;
-
+      performanceMetrics.simdPerformance = simdMetrics.averageParseTim;
+      performanceMetrics.averageSpeed = simdMetrics.totalDataProcessed / simdMetrics.totalParse;
     } catch (error) {
       console.error('Result processing failed:', error);
     }
   }
-
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;
-    selectedFiles = target.files;
+    selectedFiles = target.file;
   }
-
   async function testSIMDPerformance() {
     if (!simdCache) return;
-
     const testData = {
       legal: {
         case: 'Test vs Example',
-        parties: ['Plaintiff', 'Defendant'],;
+        parties: ['Plaintiff', 'Defendant'],
         evidence: Array.from({ length: 100 }, (_, i) => ({
-          id: i,;
-          type: 'document',;
+          id: i
+          type: 'document',
           description: `Evidence item ${i} with detailed legal content and metadata`
         }))
       }
     };
-
     const jsonString = JSON.stringify(testData);
-
     console.time('SIMD JSON Parse');
     await simdCache.parse(jsonString);
     console.timeEnd('SIMD JSON Parse');
-
     console.time('Native JSON Parse');
     JSON.parse(jsonString);
     console.timeEnd('Native JSON Parse');
-
     updateSystemStats();
   }
 </script>
-
 <div class="space-y-6 p-6">
   <!-- Header -->
   <div class="text-center space-y-2">
@@ -252,7 +214,6 @@
       OCR • AI Assistant • Neo4j • PostgreSQL • pgvector • RAG • XState • RabbitMQ • SIMD • Redis Cache
     </p>
   </div>
-
   <!-- System Status Dashboard -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     <Card>
@@ -275,7 +236,6 @@
         </div>
       </CardContent>
     </Card>
-
     <Card>
       <CardHeader class="pb-2">
         <CardTitle class="text-sm flex items-center gap-2">
@@ -296,7 +256,6 @@
         </div>
       </CardContent>
     </Card>
-
     <Card>
       <CardHeader class="pb-2">
         <CardTitle class="text-sm flex items-center gap-2">
@@ -318,7 +277,6 @@
         </div>
       </CardContent>
     </Card>
-
     <Card>
       <CardHeader class="pb-2">
         <CardTitle class="text-sm flex items-center gap-2">
@@ -340,7 +298,6 @@
       </CardContent>
     </Card>
   </div>
-
   <!-- Upload Interface -->
   <Card>
     <CardHeader>
@@ -360,7 +317,6 @@
             placeholder="Enter case ID"
           />
         </div>
-
         <div>
           <label class="block text-sm font-medium mb-2">Document Type</label>
           <select bind:value={documentType} class="w-full p-2 border rounded">
@@ -370,7 +326,6 @@
             <option value="deposition">Deposition</option>
           </select>
         </div>
-
         <div>
           <label class="block text-sm font-medium mb-2">Select Files</label>
           <input
@@ -382,7 +337,6 @@
           />
         </div>
       </div>
-
       <Button
         onclick={handleFileUpload}
         disabled={!selectedFiles || selectedFiles.length === 0 || isProcessing}
@@ -398,12 +352,10 @@
       </Button>
     </CardContent>
   </Card>
-
   <!-- Processing Progress -->
   {#if isProcessing}
     <EnhancedUploadProgress />
   {/if}
-
   <!-- Results Dashboard -->
   {#if Object.keys(processedResults).length > 0}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -438,7 +390,6 @@
           </CardContent>
         </Card>
       {/if}
-
       <!-- AI Analysis -->
       {#if processedResults.aiAnalysis}
         <Card>
@@ -481,7 +432,6 @@
       {/if}
     </div>
   {/if}
-
   <!-- Recommendations -->
   {#if recommendations.length > 0}
     <Card>
@@ -518,7 +468,6 @@
       </CardContent>
     </Card>
   {/if}
-
   <!-- Feature Overview -->
   <Card>
     <CardHeader>

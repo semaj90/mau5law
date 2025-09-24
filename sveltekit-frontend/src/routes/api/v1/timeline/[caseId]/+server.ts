@@ -37,7 +37,6 @@
  * Note: Individual event operations (PUT/DELETE) are handled by
  * /api/v1/timeline/events/[eventId] endpoint
  */
-
 import { json, error, type RequestHandler } from '@sveltejs/kit'
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
 import { db } from '$lib/server/db/unified-client'
@@ -45,10 +44,8 @@ import { caseTimeline, cases } from '$lib/server/db/schemas/cases-schema'
 import { eq, desc, asc, and } from 'drizzle-orm'
 import { generateId } from 'lucia'
 import { z } from 'zod'
-
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid ID format')
-
 // Timeline event schemas
 const CreateTimelineEventSchema = z.object({
   eventType: z.enum(['case_created', 'evidence_added', 'interview_conducted', 'court_filing', 'hearing', 'investigation', 'analysis', 'decision', 'other']),
@@ -63,9 +60,7 @@ const CreateTimelineEventSchema = z.object({
   isPublic: z.boolean().default(false),
   metadata: z.record(z.any()).optional()
 })
-
 const UpdateTimelineEventSchema = CreateTimelineEventSchema.partial()
-
 const TimelineQuerySchema = z.object({
   eventType: z.string().optional(),
   importance: z.string().optional(),
@@ -74,7 +69,6 @@ const TimelineQuerySchema = z.object({
   sortOrder: z.enum(['asc', 'desc']).default('asc'),
   includePrivate: z.coerce.boolean().default(true)
 })
-
 /*
  * GET /api/v1/timeline/[caseId]
  * Get timeline events for a specific case
@@ -88,10 +82,8 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
       )
     }
-
     // Validate case ID
     const caseId = UUIDSchema.parse(params.caseId)
-
     // Parse query parameters
     const queryParams = Object.fromEntries(url.searchParams.entries()
     const {
@@ -102,66 +94,55 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
       sortOrder,
       includePrivate
     } = TimelineQuerySchema.parse(queryParams)
-
     // Verify case exists and user has access
     const [caseData] = await db.select()
       .from(cases)
       .where(eq(cases.id, caseId)
       .limit(1)
-
     if (!caseData) {
       return error(
         404,
         makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' })
       )
     }
-
     // Build where conditions
     const whereConditions = [eq(caseTimeline.caseId, caseId)]
-
     if (eventType) {
       whereConditions.push(eq(caseTimeline.eventType, eventType)
     }
-
     if (importance) {
       whereConditions.push(eq(caseTimeline.importance, importance)
     }
-
     if (startDate) {
       whereConditions.push(sql`${caseTimeline.eventDate} >= ${startDate}`)
     }
-
     if (endDate) {
       whereConditions.push(sql`${caseTimeline.eventDate} <= ${endDate}`)
     }
-
     if (!includePrivate) {
       whereConditions.push(eq(caseTimeline.isPublic, true)
     }
-
     // Get timeline events
     const timelineEvents = await db.select()
       .from(caseTimeline)
       .where(and(...whereConditions)
       .orderBy(sortOrder === 'desc' ? desc(caseTimeline.eventDate) : asc(caseTimeline.eventDate)
-
     // Calculate timeline statistics
     const statistics = {
       totalEvents: timelineEvents.length,
       eventTypes: [...new Set(timelineEvents.map(e => e.eventType))],
-      dateRange: timelineEvents.length > 0 ? {
+      dateRange: timelineEvents.length > 0 ? {,
         start: timelineEvents[sortOrder === 'asc' ? 0 : timelineEvents.length - 1].eventDate,
         end: timelineEvents[sortOrder === 'asc' ? timelineEvents.length - 1 : 0].eventDate
-      } : null,
+      } : null
       criticalEvents: timelineEvents.filter(item => item.length),
       publicEvents: timelineEvents.filter(item => item.length)
     }
-
     return json({
-      success: true,
+      success: true
       data: {
         caseId,
-        timeline: timelineEvents,
+        timeline: timelineEvents
         statistics,
         case: {
           id: caseData.id,
@@ -175,10 +156,8 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         timestamp: new Date().toISOString()
       }
     })
-
   } catch (err: any) {
     console.error('Timeline GET error:', err)
-
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -189,7 +168,6 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         })
       )
     }
-
     return error(
       500,
       makeHttpErrorPayload({
@@ -200,7 +178,6 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
     )
   }
 }
-
 /*
  * POST /api/v1/timeline/[caseId]
  * Add a new timeline event to a case
@@ -214,63 +191,52 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
       )
     }
-
     // Validate case ID
     const caseId = UUIDSchema.parse(params.caseId)
-
     // Parse request body
     const body = await request.json()
     const eventData = CreateTimelineEventSchema.parse(body)
-
     // Verify case exists and user has access
     const [caseData] = await db.select()
       .from(cases)
       .where(eq(cases.id, caseId)
       .limit(1)
-
     if (!caseData) {
       return error(
         404,
         makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' })
       )
     }
-
     const timelineEventId = generateId(15)
-
     const newEvent = {
-      id: timelineEventId,
+      id: timelineEventId
       caseId,
       ...eventData,
       eventDate: new Date(eventData.eventDate),
       createdAt: new Date()
     }
-
     // Insert the new timeline event
     const [insertedEvent] = await db.insert(caseTimeline).values(newEvent).returning()
-
     // Update case updated timestamp
     await db.update(cases)
       .set({ updatedAt: new Date() })
       .where(eq(cases.id, caseId)
-
     return json({
-      success: true,
+      success: true
       data: {
-        event: insertedEvent,
+        event: insertedEvent
         message: 'Timeline event added successfully'
       },
       meta: {
         userId: locals.user.id,
         caseId,
-        eventId: timelineEventId,
+        eventId: timelineEventId
         timestamp: new Date().toISOString(),
         action: 'timeline_event_created'
       }
     }, { status: 201 })
-
   } catch (err: any) {
     console.error('Timeline POST error:', err)
-
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -281,7 +247,6 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         })
       )
     }
-
     return error(
       500,
       makeHttpErrorPayload({

@@ -4,7 +4,6 @@
   import { quintOut, elasticOut } from 'svelte/easing';
   import Button from './Button.svelte';
   import Tooltip from './Tooltip.svelte';
-
   interface SidebarItem {
     id: string;
     label: string;
@@ -15,7 +14,6 @@
     children?: SidebarItem[];
     onClick?: () => void;
   }
-
   interface SidebarProps {
     theme?: 'default' | 'legal' | 'gaming';
     side?: 'left' | 'right';
@@ -30,7 +28,6 @@
     persistent?: boolean;
     backdrop?: boolean;
   }
-
   let {
     theme = 'default',
     side = 'left',
@@ -45,18 +42,14 @@
     persistent = false,
     backdrop = true
   }: SidebarProps = $props();
-
   const dispatch = createEventDispatcher();
   const themeContext = getContext<any>('theme');
   const currentTheme = themeContext?.resolvedTheme?.() || 'light';
-
   let isCollapsed = $state(defaultCollapsed);
   let isHovering = $state(false);
   let activeItem = $state<string | null>(null);
-
   // Computed expanded state - expands on hover or when explicitly opened
   let isExpanded = $derived(!isCollapsed || isHovering);
-
   const themeClasses = {
     default: {
       sidebar: 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100',
@@ -72,51 +65,43 @@
     },
     gaming: {
       sidebar: 'bg-black border-green-400/30 text-green-400 shadow-[0_0_20px_rgba(0,255,65,0.1)]',
-      homeButton: 'hover:bg-green-400/10 text-green-400 hover:shadow-[0_0_15px_rgba(0,255,65,0.3)]',;
+      homeButton: 'hover:bg-green-400/10 text-green-400 hover:shadow-[0_0_15px_rgba(0,255,65,0.3)]',
       item: 'hover:bg-green-400/10 text-green-400 hover:shadow-[0_0_10px_rgba(0,255,65,0.2)]',
       activeItem: 'bg-green-400/20 text-green-300 border-r-2 border-green-400 shadow-[0_0_15px_rgba(0,255,65,0.4)]';
     }
   };
-
   function toggleSidebar() {
     isCollapsed = !isCollapsed;
     dispatch('toggle', { collapsed: isCollapsed });
   }
-
   function handleHomeClick() {
     activeItem = 'home';
     onHomeClick?.();
     dispatch('home');
   }
-
   function handleItemClick(item: SidebarItem) {
     activeItem = item.id;
     item.onClick?.();
     dispatch('itemClick', { item });
   }
-
   function handleMouseEnter() {
     isHovering = true;
     dispatch('mouseEnter');
   }
-
   function handleMouseLeave() {
     isHovering = false;
     dispatch('mouseLeave');
   }
-
   // Calculate sidebar position classes
   const positionClasses = $derived(() => {
     const base = `fixed top-0 ${side}-0 h-full z-40`;
-    return base;
+    return ba;
   });
-
   // Calculate sidebar width with smooth transitions
   const sidebarWidth = $derived(() => {
     return isExpanded ? width : collapsedWidth;
   });
 </script>
-
 <!-- Backdrop overlay for mobile -->
 {#if overlay && isExpanded && backdrop}
   <div
@@ -125,7 +110,6 @@
     transition:fade={{ duration: 200 }}
   ></div>
 {/if}
-
 <!-- Sidebar Container -->
 <div
   class={`
@@ -161,7 +145,6 @@
       `}>
         {homeIcon}
       </div>
-
       <!-- Home Label (shown when expanded) -->
       {#if isExpanded}
         <span
@@ -171,7 +154,6 @@
           {homeLabel}
         </span>
       {/if}
-
       <!-- Tooltip for collapsed state -->
       {#if !isExpanded}
         <Tooltip content={homeLabel} side="right" {theme}>
@@ -182,7 +164,6 @@
       {/if}
     </button>
   </div>
-
   <!-- Navigation Items -->
   {#if items.length > 0}
     <nav class="flex-1 px-4 pb-4">
@@ -211,7 +192,6 @@
               `}>
                 {item.icon}
               </div>
-
               <!-- Item Label and Badge (shown when expanded) -->
               {#if isExpanded}
                 <div
@@ -221,7 +201,6 @@
                   <span class="font-medium truncate">
                     {item.label}
                   </span>
-
                   <!-- Badge -->
                   {#if item.badge}
                     <span class={`
@@ -249,7 +228,6 @@
                   `}
                 ></div>
               {/if}
-
               <!-- Tooltip for collapsed state -->
               {#if !isExpanded}
                 <Tooltip content={item.label} side="right" {theme}>
@@ -259,11 +237,10 @@
                 </Tooltip>
               {/if}
             </button>
-
             <!-- Sub-items (if expanded and has children) -->
             {#if isExpanded && item.children && item.children.length > 0}
               <ul
-                class="mt-2 ml-6 space-y-1 border-l border-gray-200 dark:border-gray-700 pl-4";
+                class="mt-2 ml-6 space-y-1 border-l border-gray-200 dark: border-gray-700 pl-4";
                 transition:fly={{ x: -10, duration: 200, delay: 100 }}
               >
                 {#each item.children as child (child.id)}
@@ -307,7 +284,6 @@
       </ul>
     </nav>
   {/if}
-
   <!-- Collapse Toggle Button (bottom) -->
   {#if !overlay}
     <div class="p-4 border-t border-gray-200 dark:border-gray-700">
@@ -339,41 +315,33 @@
     </div>
   {/if}
 </div>
-
 <style>
   /* Gaming theme glow animations */
-  :global(.group:hover .filter) {;
+  :global($1) {
     filter: drop-shadow(0 0 8px currentColor);
   }
-
   /* Smooth transitions for all states */
   button {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
-
   /* Custom scrollbar for navigation */
   nav {
-    scrollbar-width: thin;
+    scrollbar-width: thi;
     scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
   }
-
-  nav::-webkit-scrollbar {;
+  nav::-webkit-scrollbar {
     width: 4px;
   }
-
-  nav::-webkit-scrollbar-track {;
+  nav::-webkit-scrollbar-track {
     background: transparent;
   }
-
-  nav::-webkit-scrollbar-thumb {;
+  nav::-webkit-scrollbar-thumb {
     background: rgba(156, 163, 175, 0.5);
     border-radius: 2px;
   }
-
-  nav::-webkit-scrollbar-thumb:hover {;
+  nav::-webkit-scrollbar-thumb:hover {
     background: rgba(156, 163, 175, 0.8);
   }
-
   /* Ensure proper z-indexing */
   [role="navigation"] {
     z-index: 40;

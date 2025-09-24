@@ -1,105 +1,87 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: legal-search
  * Category: aggressive
  * Memory Bank: CHR_ROM
  * Priority: 170
  * Redis Type: aiSearch
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: aggressive
  * - Memory Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-
-
 import type { RequestHandler } from './$types.js'
-
 const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
   try {
     const { query, jurisdiction = 'all', category = 'all', useAI = true } = await request.json()
-
     if (!query || query.trim().length === 0) {
       return json({ error: 'Search query is required' }, { status: 400 })
     }
-
     // First, get basic search results
     const searchParams = new URLSearchParams({
-      q: query,
+      q: query
       jurisdiction,
       category,
       limit: '20'
     })
-
     const basicSearchResponse = await fetch(`/api/laws/search?${searchParams}`)
     const basicResults = await basicSearchResponse.json()
-
     if (!useAI) {
       return json(basicResults)
     }
-
     // Enhance with AI analysis
     const aiEnhancedResults = await enhanceWithAI(query, basicResults.laws || [], fetch)
-
     return json({
-      success: true,
+      success: true
       laws: aiEnhancedResults.laws,
       aiSummary: aiEnhancedResults.summary,
       suggestions: aiEnhancedResults.suggestions,
       count: aiEnhancedResults.laws.length,
       query,
       filters: { jurisdiction, category },
-      enhanced: true,
+      enhanced: true
       timestamp: new Date().toISOString()
     })
-
   } catch (error: any) {
     console.error('AI legal search error:', error)
-    return json({ 
-        success: false, 
+    return json({
+        success: false
         error: 'AI search failed',
         laws: [],
-        count: 0 
+        count: 0
       }, )
       { status: 500 }
     )
   }
 }
-
 async function enhanceWithAI(query: string, laws: any[], fetch: Function): Promise<any> {
   try {
     // Use AI to analyze the query and provide legal context
     const aiAnalysisPrompt = `Analyze this legal search query and provide insights:
-
 Query: "${query}"
-
 Found Laws:
 ${laws.map(law => `- ${law.title} (${law.code}): ${law.description}`).join('\n')}
-
 Please provide:
 1. A brief summary of what the user is likely looking for
 2. Key legal concepts involved
 3. Additional search suggestions
 4. Relevance ranking of the found laws
-
 Format your response as JSON with these fields: summary, concepts, suggestions, rankings`
-
     const aiResponse = await fetch('/api/ai/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: aiAnalysisPrompt,
+      body: JSON.stringify({,
+        message: aiAnalysisPrompt
         temperature: 0.3, // Lower temperature for more focused analysis
         model: 'gemma3-legal:latest'
       })
     })
-
     let aiAnalysis = null
     if (aiResponse.ok) {
       const aiData = await aiResponse.json()
@@ -116,7 +98,6 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
         }
       }
     }
-
     // If AI analysis failed, use fallback analysis
     if (!aiAnalysis) {
       aiAnalysis = {
@@ -126,7 +107,6 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
         rankings: laws.map((_, index) => index)
       }
     }
-
     // Reorder laws based on AI rankings if available
     let reorderedLaws = [...laws]
     if (aiAnalysis.rankings && Array.isArray(aiAnalysis.rankings)) {
@@ -136,24 +116,20 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
         reorderedLaws = laws
       }
     }
-
     // Add AI confidence scores to laws
     const enhancedLaws = reorderedLaws.map((law, index) => ({
       ...law,
       aiRelevanceScore: Math.max(0.9 - (index * 0.1), 0.1),
       aiInsights: generateLawInsights(law, query)
     })
-
     return {
-      laws: enhancedLaws,
+      laws: enhancedLaws
       summary: aiAnalysis.summary || 'AI analysis complete',
       suggestions: aiAnalysis.suggestions || generateSuggestions(query),
       concepts: aiAnalysis.concepts || extractLegalConcepts(query)
     }
-
   } catch (error: any) {
     console.error('AI enhancement error:', error)
-    
     // Return basic enhancement on AI failure
     return {
       laws: laws.map(law => ({
@@ -167,11 +143,9 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
     }
   }
 }
-
 function extractLegalConcepts(query: string): string[] {
   const concepts = []
   const lowerQuery = query.toLowerCase()
-
   const conceptMap = {
     'murder': ['homicide', 'intent', 'malice aforethought', 'criminal law'],
     'contract': ['agreement', 'consideration', 'offer', 'acceptance', 'civil law'],
@@ -181,20 +155,16 @@ function extractLegalConcepts(query: string): string[] {
     'corporation': ['business entity', 'filing', 'articles', 'corporate law'],
     'property': ['ownership', 'title', 'real estate', 'civil law']
   }
-
   for (const [keyword, relatedConcepts] of Object.entries(conceptMap)) {
     if (lowerQuery.includes(keyword)) {
       concepts.push(...relatedConcepts)
     }
   }
-
   return [...new Set(concepts)]; // Remove duplicates
 }
-
 function generateSuggestions(query: string): string[] {
   const suggestions = []
   const lowerQuery = query.toLowerCase()
-
   if (lowerQuery.includes('murder') || lowerQuery.includes('homicide')) {
     suggestions.push(
       'What are the degrees of murder in California?',
@@ -226,14 +196,11 @@ function generateSuggestions(query: string): string[] {
       'What evidence is needed to prove this?'
     )
   }
-
   return suggestions.slice(0, 3)
 }
-
 function generateLawInsights(law: any, query: string): string {
   const lowerQuery = query.toLowerCase()
   const lowerTitle = law.title.toLowerCase()
-
   if (lowerQuery.includes('element') && lowerTitle.includes('murder')) {
     return 'Key elements: unlawful killing, human being, malice aforethought'
   } else if (lowerQuery.includes('penalty') || lowerQuery.includes('sentence')) {
@@ -246,5 +213,4 @@ function generateLawInsights(law: any, query: string): string {
     return 'Relevant to your search query - consider context and application'
   }
 }
-
 export const POST = redisOptimized.aiSearch(originalPOSTHandler)

@@ -1,11 +1,9 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
 /**
  * Cache manifest endpoint for headless UI cache sync
  * GET /api/cache/manifest - Get cache manifest for synchronization
  */
-
 // Mock implementation - would integrate with actual Redis tensor cache
 const mockCache = new Map<string, {
   value: any
@@ -15,22 +13,18 @@ const mockCache = new Map<string, {
   source: string
   size: number
 }>()
-
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const pattern = url.searchParams.get('pattern') || '*'
     const limit = parseInt(url.searchParams.get('limit') || '100')
     const offset = parseInt(url.searchParams.get('offset') || '0')
-    
     // Filter keys by pattern
     const allKeys = Array.from(mockCache.keys()
-    const filteredKeys = pattern === '*' 
-      ? allKeys 
+    const filteredKeys = pattern === '*'
+      ? allKeys
       : allKeys.filter(key => key.includes(pattern.replace('*', ''))
-    
     // Apply pagination
     const paginatedKeys = filteredKeys.slice(offset, offset + limit)
-    
     // Build manifest entries
     const entries = paginatedKeys.map(key => {
       const entry = mockCache.get(key)!
@@ -44,7 +38,6 @@ export const GET: RequestHandler = async ({ url }) => {
         expired: Date.now() - entry.timestamp > entry.ttl
       }
     })
-    
     // Calculate statistics
     const stats = {
       totalKeys: filteredKeys.length,
@@ -54,9 +47,8 @@ export const GET: RequestHandler = async ({ url }) => {
       oldestEntry: Math.min(...entries.map(e => e.timestamp)),
       newestEntry: Math.max(...entries.map(e => e.timestamp)
     }
-    
     return json({
-      success: true,
+      success: true
       manifest: {
         entries,
         pagination: {
@@ -70,7 +62,6 @@ export const GET: RequestHandler = async ({ url }) => {
         pattern
       }
     })
-    
   } catch (error: any) {
     console.error('[Cache Manifest] Failed to generate manifest:', error)
     return json(

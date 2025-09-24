@@ -1,9 +1,8 @@
 export interface TensorCompressionOptions {
   ratio?: number;
 }
-
 export async function compressTensorToPNG(
-  tensor: Float32Array | number[],;
+  tensor: Float32Array | number[]
   opts: TensorCompressionOptions = {}
 ): Promise<string> {
   const ratio = opts.ratio ?? 1;
@@ -15,7 +14,6 @@ export async function compressTensorToPNG(
   const b64 = Buffer.from(arr).toString('base64');
   return `data:image/png;base64,${b64}`;
 }
-
 export async function decompressPNGtoTensor(dataUrl: string): Promise<Float32Array> {
   const prefix = 'data:image/png;base64,';
   if (!dataUrl.startsWith(prefix)) return new Float32Array();
@@ -32,16 +30,13 @@ export async function decompressPNGtoTensor(dataUrl: string): Promise<Float32Arr
  * do not produce TypeScript errors; replace the internals with real model logic
  * or HTTP calls to a backend upscaler as needed.
  */
-
 export type UpscaleQuality = 'low' | 'medium' | 'high';
 }
-
 export interface UpscaleOptions {
   scale?: number; // e.g. 2 for 2x
   model?: string; // optional model identifier
   quality?: UpscaleQuality;
 }
-
 /**
  * TensorUpscalerService
  *
@@ -55,9 +50,8 @@ export class TensorUpscalerService {
     // In a real implementation check WebGPU/WebGL or worker readiness here.
     return true;
   }
-
   async upscale(
-    input: Blob | ArrayBuffer | Uint8Array,;
+    input: Blob | ArrayBuffer | Uint8Array
     options: UpscaleOptions = {}
   ): Promise<Blob> {
     // Normalize input to a Blob so callers always receive a Blob result.
@@ -70,12 +64,10 @@ export class TensorUpscalerService {
       // Uint8Array
       blob = new Blob([input.slice()]);
     }
-
     // TODO: perform actual upscaling using a model or remote service.
     // For now return the original blob as a safe, no-op fallback.
     return blob;
   }
 }
-
 const tensorUpscalerService = new TensorUpscalerService();
 export default tensorUpscalerService;

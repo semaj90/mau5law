@@ -2,51 +2,42 @@
   Enhanced Case Management Demo Component
   Demonstrates XState + Database + Cognitive Cache Integration
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { createActor } from 'xstate';
   import { onMount, onDestroy } from 'svelte';
   import { enhancedCaseManagementMachine, type EnhancedCaseManagementContext } from '../../machines/enhanced-case-machine-with-cognitive-cache';
   import Button from '../ui/Button.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-
   // Machine actor
   const actor = createActor(enhancedCaseManagementMachine);
   // Reactive state
   let machineState = $state(actor.getSnapshot());
   let isConnected = $state(false);
-
   // Form data for case creation
   let newCaseData = $state({
     title: '',
-    description: '',;
-    priority: 'medium' as const,;
+    description: '',
+    priority: 'medium' as const,
     status: 'open' as const;
   });
-
   let searchQuery = $state('');
   let userId = $state('demo-user-123');
-
   // Subscribe to state changes
   $effect(() => {
     const subscription = actor.subscribe((snapshot) => {
       machineState = snapshot;
     });
-
     // Start the machine
     actor.start();
     // Initialize the system
     actor.send({ type: 'INITIALIZE_SYSTEM', userId });
     isConnected = true;
-
     return () => {
       subscription.unsubscribe();
       actor.stop();
     };
   });
-
   // Reactive getters for easier template access
   let context = $derived(machineState.context as EnhancedCaseManagementContext);
   let isLoading = $derived(context.isLoading);
@@ -54,7 +45,6 @@
   let error = $derived(context.error);
   let databaseHealth = $derived(context.databaseHealth);
   let cacheMetrics = $derived(context.cacheMetrics);
-
   // Actions
   function loadCase(caseId: string, withPrediction = false) {
     if (withPrediction) {
@@ -63,12 +53,10 @@
       actor.send({ type: 'LOAD_CASE', caseId, enableCache: true });
     }
   }
-
   function createCase() {
     if (!newCaseData.title || !newCaseData.description) {
       return;
     }
-
     actor.send({
       type: 'CREATE_CASE',
       caseData: {
@@ -76,34 +64,29 @@
         createdBy: userId
       }
     });
-
     // Reset form
     newCaseData = {
       title: '',
-      description: '',;
-      priority: 'medium',;
+      description: '',
+      priority: 'medium',
       status: 'open';
     };
   }
-
   function searchCases() {
     if (searchQuery.trim()) {
       actor.send({
-        type: 'SEARCH_CASES_COGNITIVE',;
-        query: searchQuery,
+        type: 'SEARCH_CASES_COGNITIVE',
+        query: searchQuery
         useML: true;
       });
     }
   }
-
   function refreshHealth() {
     actor.send({ type: 'CHECK_DATABASE_HEALTH' });
   }
-
   function refreshMetrics() {
     actor.send({ type: 'REFRESH_CACHE_METRICS' });
   }
-
   // Health status colors
   let healthColor = $derived(
     databaseHealth.overall === 'healthy' ? 'text-green-600' :
@@ -111,7 +94,6 @@
     'text-red-600'
   );
 </script>
-
 <div class="max-w-6xl mx-auto p-6 space-y-6">
   <!-- Header -->
   <div class="flex items-center justify-between">
@@ -121,21 +103,18 @@
         XState + Database + Cognitive Cache Integration
       </p>
     </div>
-    
     <!-- Status Indicators -->
     <div class="flex items-center gap-4">
       <div class="flex items-center gap-2">
         <div class="w-2 h-2 rounded-full {isConnected ? 'bg-green-500' : 'bg-red-500'}"></div>
         <span class="text-sm">XState: {isConnected ? 'Connected' : 'Disconnected'}</span>
       </div>
-      
       <div class="flex items-center gap-2">
         <div class="w-2 h-2 rounded-full {databaseHealth.overall === 'healthy' ? 'bg-green-500' : 'bg-red-500'}"></div>
         <span class="text-sm {healthColor}">DB: {databaseHealth.overall}</span>
       </div>
     </div>
   </div>
-
   <!-- System Status Dashboard -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     <!-- Machine State -->
@@ -162,14 +141,12 @@
         </div>
       </div>
     </div>
-
     <!-- Database Health -->
     <div>
       <divHeader class="flex flex-row items-center justify-between">
         <divTitle>Database Health</h3>
         <Button class="bits-btn" variant="ghost" size="sm" onclick={refreshHealth}>
 Refresh
-
       </div>
       <divContent>
         <div class="space-y-2">
@@ -192,14 +169,12 @@ Refresh
         </div>
       </div>
     </div>
-
     <!-- Cache Metrics -->
     <div>
       <divHeader class="flex flex-row items-center justify-between">
         <divTitle>Cache Metrics</h3>
         <Button class="bits-btn" variant="ghost" size="sm" onclick={refreshMetrics}>
 Refresh
-
       </div>
       <divContent>
         <div class="space-y-2">
@@ -219,7 +194,6 @@ Refresh
       </div>
     </div>
   </div>
-
   <!-- Error Display -->
   {#if error}
     <div class="border-red-200 bg-red-50">
@@ -233,7 +207,6 @@ Refresh
       </div>
     </div>
   {/if}
-
   <!-- Case Operations -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Create Case -->
@@ -244,23 +217,21 @@ Refresh
       <divContent>
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium mb-1" for="title">Title</label><input id="title" 
+            <label class="block text-sm font-medium mb-1" for="title">Title</label><input id="title"
               type="text" ;
               bind:value={newCaseData.title}
               placeholder="Enter case title..."
               class="w-full p-2 border rounded-md"
             />
           </div>
-          
           <div>
-            <label class="block text-sm font-medium mb-1" for="description">Description</label><textarea id="description" 
+            <label class="block text-sm font-medium mb-1" for="description">Description</label><textarea id="description"
               bind:value={newCaseData.description}
               placeholder="Enter case description..."
               rows="3"
               class="w-full p-2 border rounded-md"
             ></textarea>
           </div>
-          
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium mb-1" for="priority">Priority</label><select id="priority" bind:value={newCaseData.priority} class="w-full p-2 border rounded-md">
@@ -269,7 +240,6 @@ Refresh
                 <option value="high">High</option>
               </select>
             </div>
-            
             <div>
               <label class="block text-sm font-medium mb-1" for="status">Status</label><select id="status" bind:value={newCaseData.status} class="w-full p-2 border rounded-md">
                 <option value="open">Open</option>
@@ -278,18 +248,15 @@ Refresh
               </select>
             </div>
           </div>
-          
-          <Button 
+          <Button
             onclick={createCase}
             disabled={isLoading || !newCaseData.title || !newCaseData.description}
             class="w-full bits-btn bits-btn"
           >
 {isLoading && currentState === 'creatingCase' ? 'Creating...' : 'Create Case'}
-
         </div>
       </div>
     </div>
-
     <!-- Search Cases -->
     <div>
       <divHeader>
@@ -298,7 +265,7 @@ Refresh
       <divContent>
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium mb-1" for="search-query">Search Query</label><input id="search-query" 
+            <label class="block text-sm font-medium mb-1" for="search-query">Search Query</label><input id="search-query"
               type="text" ;
               bind:value={searchQuery}
               placeholder="Search with ML-powered cognition..."
@@ -306,14 +273,12 @@ Refresh
               keydown={(e) => e.key === 'Enter' && searchCases()}
             />
           </div>
-          
-          <Button 
+          <Button
             onclick={searchCases}
             disabled={isLoading || !searchQuery.trim()}
             class="w-full bits-btn bits-btn"
           >
 {isLoading && currentState === 'searchingWithCognition' ? 'Searching...' : 'Search with AI'}
-
           {#if context.searchResults.length > 0}
             <div class="mt-4">
               <h4 class="font-medium mb-2">Search Results ({context.searchResults.length})</h4>
@@ -331,7 +296,6 @@ Refresh
       </div>
     </div>
   </div>
-
   <!-- Case Loading Demo -->
   <div>
     <divHeader>
@@ -342,34 +306,29 @@ Refresh
         <p class="text-sm text-gray-600">
           Demonstrate different case loading strategies with cognitive caching
         </p>
-        
         <div class="flex flex-wrap gap-2">
-          <Button class="bits-btn" 
-            variant="ghost" 
+          <Button class="bits-btn"
+            variant="ghost"
             onclick={() =>
 loadCase('demo-case-001')}
             disabled={isLoading}
           >
             Load Case (Standard)
-
-          <Button class="bits-btn" 
-            variant="ghost" 
+          <Button class="bits-btn"
+            variant="ghost"
             onclick={() =>
 loadCase('demo-case-002', true)}
             disabled={isLoading}
           >
             Load Case (With Prediction)
-
-          <Button class="bits-btn" 
-            variant="ghost" 
+          <Button class="bits-btn"
+            variant="ghost"
             onclick={() =>
 loadCase('demo-case-003')}
             disabled={isLoading}
           >
             Load Case (Cache Priority)
-
         </div>
-        
         {#if context.currentCase}
           <div class="mt-4 p-4 bg-gray-50 rounded">
             <h4 class="font-medium mb-2">Current Case</h4>
@@ -387,7 +346,6 @@ loadCase('demo-case-003')}
       </div>
     </div>
   </div>
-
   <!-- Integration Info -->
   <div class="border-blue-200 bg-blue-50">
     <divHeader>
@@ -404,21 +362,17 @@ loadCase('demo-case-003')}
     </div>
   </div>
 </div>
-
 <style>
   /* Component-specific styles */
   :global(.card) {
     @apply border border-gray-200 rounded-lg shadow-sm;
   }
-  
   :global(.card-header) {
     @apply p-4 pb-2;
   }
-  
   :global(.card-content) {
     @apply p-4 pt-0;
   }
-  
   :global(.card-title) {
     @apply text-lg font-semibold;
   }

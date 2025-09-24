@@ -1,7 +1,6 @@
 <!-- Modern Bits-UI Select Component for Legal AI App -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { Select as SelectRoot, SelectTrigger, SelectContent, SelectItem, SelectValue } from "bits-ui";
   import { Check, ChevronDown } from 'lucide-svelte';
   import { cn } from '$lib/utils';
@@ -10,7 +9,6 @@
     label: string;
     disabled?: boolean;
   }
-
   interface Props {
     options: SelectOption[];
     value?: string;
@@ -21,7 +19,6 @@
     class?: string;
     onValueChange?: (value: string | undefined) => void;
   }
-
   let {
     options = [],
     value = $bindable(undefined),
@@ -30,20 +27,17 @@
     required = false,
     name,
     class: className = '',
-    onValueChange;
+    onValueChang;
   }: Props = $props();
-
   function handleValueChange(newValue: string | undefined) {
-    value = newValue;
+    value = newValu;
     onValueChange?.(newValue);
   }
-
   // Find selected option for display
   let selectedOption = $derived(options.find(option => option.value === value));
 </script>
-
-<SelectRoot 
-  bind:selected={value} 
+<SelectRoot
+  bind:selected={value}
   onSelectedChange={handleValueChange}
   {disabled}
   {required}
@@ -64,7 +58,6 @@
     </SelectValue>
     <ChevronDown class="h-4 w-4 opacity-50" />
   </SelectTrigger>
-
   <!-- Select Content -->
   <SelectContent
     class="relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 legal-select-content border-yorha-border bg-yorha-bg-secondary"
@@ -91,27 +84,22 @@
       {/each}
     </div>
   </SelectContent>
-
   <!-- Hidden Input for Form Submission -->
   {#if name}
     <Select.Input {name} />
   {/if}
 </SelectRoot>
-
 <style>
   /* Legal AI App Specific Styling */
-  :global(.legal-select-trigger) {;
+  :global(.legal-select-trigger) {
     transition: all 0.2s ease;
   }
-
   :global(.legal-select-trigger:hover) {
     box-shadow: 0 0 0 1px rgb(var(--yorha-primary) / 0.3);
   }
-
   :global(.legal-select-content) {
     backdrop-filter: blur(8px);
   }
-
   :global(.legal-select-item) {
     transition: all 0.15s ease;
   }

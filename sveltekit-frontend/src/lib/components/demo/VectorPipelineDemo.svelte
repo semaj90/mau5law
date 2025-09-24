@@ -1,7 +1,6 @@
 <!-- Vector Pipeline Demo Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { vectorPipelineState, vectorPipelineActions, type VectorPipelineJob } from '$lib/machines/vector-pipeline-machine';
   import Button from '$lib/components/ui/enhanced-bits';
   import {
@@ -11,8 +10,7 @@
     CardContent
   } from '$lib/components/ui/enhanced-bits';
   // Using Svelte 4 store pattern instead of conflicting $state runes
-  let machineState = $vectorPipelineState;
-
+  let machineState = $vectorPipelineStat;
   // Sample job data
   const sampleJobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'> = [
     { ownerType: 'evidence', ownerId: 'evidence-001', event: 'upsert' },
@@ -20,52 +18,41 @@
     { ownerType: 'case', ownerId: 'case-murder-investigation', event: 'upsert' },
     { ownerType: 'report', ownerId: 'forensic-report-dna-analysis', event: 'delete' }
   ];
-
   function submitSingleJob() {
     const randomJob = sampleJobs[Math.floor(Math.random() * sampleJobs.length)];
     vectorPipelineActions.submitJob(randomJob);
   }
-
   function submitBatchJobs() {
     vectorPipelineActions.submitBatch(sampleJobs);
   }
-
   function runHealthCheck() {
     vectorPipelineActions.healthCheck();
   }
-
   function enableWebGPU() {
     vectorPipelineActions.enableWebGPU();
   }
-
   function disableWebGPU() {
     vectorPipelineActions.disableWebGPU();
   }
-
   function resetPipeline() {
     vectorPipelineActions.reset();
   }
-
   function retryFailedJobs() {
     vectorPipelineActions.retryFailedJobs();
   }
-
   // Get status indicators using derived values
   let pipelineStatus = $derived(machineState.context?.pipeline || null);
   let batchInfo = $derived(machineState.context?.batch || null);
   let metrics = $derived(machineState.context?.metrics || null);
   let currentState = $derived(typeof machineState.value === 'string' ? machineState.value : 'unknown');
   let errors = $derived(machineState.context?.errors || []);
-
   function getStatusColor(status: boolean): string {
     return status ? 'text-green-600' : 'text-red-600';
   }
-
   function getStatusIcon(status: boolean): string {
     return status ? '✅' : '❌';
   }
 </script>
-
 <div class="w-full max-w-6xl mx-auto p-4 space-y-6">
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -89,7 +76,6 @@
           </div>
         {/if}
       </div>
-
       <!-- Control Buttons -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         <Button class="bits-btn" onclick={submitSingleJob} disabled={currentState === 'processingJob'}>
@@ -114,7 +100,6 @@ Disable WebGPU
 Retry Failed
 </Button>
       </div>
-
       <!-- Pipeline Status Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Service Status -->
@@ -163,7 +148,6 @@ Retry Failed
             </div>
           </div>
         </div>
-
         <!-- Batch Information -->
         <div class="nes-container">
           <div class="yorha-panel-header">
@@ -198,7 +182,6 @@ Retry Failed
             </div>
           </div>
         </div>
-
         <!-- Performance Metrics -->
         <div class="nes-container">
           <div class="yorha-panel-header">
@@ -231,7 +214,6 @@ Retry Failed
           </div>
         </div>
       </div>
-
       <!-- Current Jobs Display -->
       {#if batchInfo && batchInfo.jobs.length > 0}
         <div class="mt-6 nes-container">
@@ -276,7 +258,6 @@ Retry Failed
           </div>
         </div>
       {/if}
-
       <!-- Integration Test Results -->
       <div class="mt-6 nes-container">
         <div class="yorha-panel-header">
@@ -290,7 +271,7 @@ Retry Failed
             onclick={async () =>
 {
               try {
-                const response = await fetch('http://localhost:8094/api/health');
+                const response = await fetch('http://localhost:8094/api/health')
                 const data = await response.json();
                 alert(`Enhanced RAG Service: ${data.status} (${data.service})`);
               } catch (error) {
@@ -305,7 +286,7 @@ Retry Failed
             onclick={async () =>
 {
               try {
-                const response = await fetch('http://localhost:6333/health');
+                const response = await fetch('http://localhost:6333/health')
                 if (response.ok) {
                   alert('Qdrant Service: Healthy');
                 } else {

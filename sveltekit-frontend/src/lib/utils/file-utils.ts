@@ -1,6 +1,5 @@
 
 // File utility functions for evidence management
-
 export function formatFileSize(bytes: number): string {
   if (bytes === 0) return "0 Bytes";
   const k = 1024;
@@ -75,10 +74,9 @@ export function validateFileType(file: File): {
   error?: string;
 } {
   const maxSize = 100 * 1024 * 1024; // 100MB
-
   if (file.size > maxSize) {
     return {
-      valid: false,;
+      valid: false
       error: `File size must be less than ${formatFileSize(maxSize)}`
     };
   }
@@ -109,7 +107,6 @@ export function validateFileType(file: File): {
     "video/mkv",
     "video/webm"
   ];
-
   if (!allowedTypes.includes(file.type)) {
     return { valid: false, error: `File type ${file.type} is not supported` };
   }
@@ -139,7 +136,7 @@ export function copyToClipboard(text: string): Promise<void> {
   return navigator.clipboard.writeText(text);
 }
 export function generateThumbnail(
-  file: File,
+  file: File
   maxWidth: number = 150,
   maxHeight: number = 150;
 ): Promise<string | null> {
@@ -151,11 +148,9 @@ export function generateThumbnail(
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     const img = new Image();
-
     img.onload = () => {
       // Calculate new dimensions
       let { width, height } = img;
-
       if (width > height) {
         if (width > maxWidth) {
           height = (height * maxWidth) / width;
@@ -169,11 +164,9 @@ export function generateThumbnail(
       }
       canvas.width = width;
       canvas.height = height;
-
       ctx?.drawImage(img, 0, 0, width, height);
       resolve(canvas.toDataURL("image/jpeg", 0.8);
     };
-
     img.onerror = () => resolve(null);
     img.src = URL.createObjectURL(file);
   });

@@ -1,16 +1,15 @@
-<!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components;
+<!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on component;
 https://svelte.dev/e/component_invalid_directive -->
 <!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
   import { Search, Sparkles, FileText, Users, Calendar, Zap, Brain, Target } from 'lucide-svelte';
-  import {  , onMount  } from "svelte";
+  import { onMount  } from "svelte";
   import { fade, fly, scale } from 'svelte/transition';
   import { quintInOut, elasticOut } from 'svelte/easing';
-  import { 
-    generateMCPPrompt, 
+  import {
+    generateMCPPrompt,
     commonMCPQueries,
     copilotOrchestrator,
     type MCPContextAnalysis,
@@ -33,8 +32,6 @@ https://svelte.dev/e/component_invalid_directive -->
   let autoSuggestions = $state<AutoMCPSuggestion[]>([]);
   let phase13Status = $state<any>(null);
   let systemHealth = $state<any>(null);
-  
-
   // Load search history from localStorage and initialize Phase 13
   $effect(() => {
     (async () => {
@@ -48,7 +45,6 @@ const saved = localStorage.getItem('ai-search-history');
     generateAutoSuggestions();
     })();
   });
-
   // AI-powered search with MCP integration
   async function performAISearch() {
     if (!searchQuery.trim()) return;
@@ -59,28 +55,27 @@ const saved = localStorage.getItem('ai-search-history');
         searchHistory = [searchQuery, ...searchHistory.slice(0, 9)];
         localStorage.setItem('ai-search-history', JSON.stringify(searchHistory));
       }
-
       const response = await fetch('/api/ai/find', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: searchQuery,;
-          type: selectedType,
-          useAI: true,
-          mcpAnalysis: useMCPAnalysis,
-          semanticSearch: useSemanticSearch,
+        body: JSON.stringify({,
+          query: searchQuery
+          type: selectedType
+          useAI: true
+          mcpAnalysis: useMCPAnalysis
+          semanticSearch: useSemanticSearch
           maxResults: 20,
           confidenceThreshold: aiConfidenceThreshold;
         })
       });
       const data = await (response as { json?: any; ok?: any }).json();
       if ((data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).success) {
-        searchResults = (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).results;
+        searchResults = (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).result;
         mcpContext = (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).mcpContext;
         // Update memory graph with search interaction
         await updateMemoryWithAIContext({
           userId: 'current-user',
-          query: searchQuery,;
+          query: searchQuery
           results: (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).results.length,
           aiModel: (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).metadata?.model,
           confidence: (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).metadata?.confidence,
@@ -97,37 +92,33 @@ const saved = localStorage.getItem('ai-search-history');
       isSearching = false;
     }
   }
-
   // Get search suggestions as user types
   async function getSuggestions() {
     if (searchQuery.length < 3) {
       suggestions = [];
       return;
     }
-
     try {
       const response = await fetch(`/api/ai/find?q=${encodeURIComponent(searchQuery)}`);
       const data = await (response as { json?: any; ok?: any }).json();
       if ((data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).success) {
-        suggestions = (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).suggestions;
+        suggestions = (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).suggestion;
       }
     } catch (error) {
       console.error('Failed to get suggestions:', error);
     }
   }
-
   // Generate MCP auto-suggestions
   async function generateAutoSuggestions() {
     try {
       const context = await copilotOrchestrator(
         "Analyze current legal AI workflow and suggest improvements",
         {
-          useSemanticSearch: true,
-          useMemory: true,
+          useSemanticSearch: true
+          useMemory: true
           synthesizeOutputs: true
         }
       );
-
       autoSuggestions = [
         {
           type: 'ai-integration',
@@ -145,8 +136,8 @@ const saved = localStorage.getItem('ai-search-history');
         },
         {
           type: 'ui-enhancement',
-          priority: 'low',;
-          suggestion: 'Add voice search capability',;
+          priority: 'low',
+          suggestion: 'Add voice search capability',
           implementation: 'Integrate speech-to-text for hands-free search',
           mcpQuery: commonMCPQueries.uiUxBestPractices();
         }
@@ -155,18 +146,17 @@ const saved = localStorage.getItem('ai-search-history');
       console.error('Failed to generate auto-suggestions:', error);
     }
   }
-
   // Update memory graph with AI context
   async function updateMemoryWithAIContext(interaction: any) {
     try {
       await fetch('/api/mcp/memory/create-relations', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(toISOString)(),
-            resultsCount: interaction.results,;
-            model: interaction.aiModel,;
+            resultsCount: interaction.results,
+            model: interaction.aiModel,
             confidence: interaction.confidence,
-            processingTime: interaction.processingTime;
+            processingTime: interaction.processingTim;
           }
         })
       });
@@ -174,7 +164,6 @@ const saved = localStorage.getItem('ai-search-history');
       console.error('Failed to update memory graph:', error);
     }
   }
-
   // Keyboard shortcuts and event handlers
   function handleKeydown(event: KeyboardEvent) {
     switch (event.key) {
@@ -191,7 +180,6 @@ const saved = localStorage.getItem('ai-search-history');
         break;
     }
   }
-
   // Reactive search suggestions
   $effect(() => {
     if (searchQuery.length >= 3) {
@@ -199,7 +187,6 @@ const saved = localStorage.getItem('ai-search-history');
       return () => clearTimeout(debounce);
     }
   });
-
   // Public API
   export function open() {
     isOpen = true;
@@ -209,7 +196,6 @@ const saved = localStorage.getItem('ai-search-history');
       input?.focus();
     }, 100);
   }
-
   export function close() {
     isOpen = false;
     searchQuery = '';
@@ -217,26 +203,22 @@ const saved = localStorage.getItem('ai-search-history');
     suggestions = [];
     showAdvanced = false;
   }
-
   // Handle result selection
   function selectResult(result: any) {
     ondispatch?.(result);
     close();
   }
-
   // Handle suggestion selection
   function selectSuggestion(suggestion: string) {
-    searchQuery = suggestion;
+    searchQuery = suggestio;
     suggestions = [];
     performAISearch();
   }
-
   // Handle history selection
   function selectHistory(query: string) {
     searchQuery = query;
     performAISearch();
   }
-
   // Update Phase 13 integration status
   async function updatePhase13Status() {
     try {
@@ -250,17 +232,16 @@ const saved = localStorage.getItem('ai-search-history');
       console.error('Failed to get Phase 13 status:', error);
     }
   }
-
   // Apply MCP auto-suggestion with Phase 13 integration
   async function applyAutoSuggestion(suggestion: AutoMCPSuggestion) {
     try {
       // Use Phase 13 integration manager to apply suggestion
       const response = await fetch('/api/phase13/integration', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({;
+        body: JSON.stringify({,
           action: 'apply-suggestion',
-          suggestion;
+          suggestio;
         })
       });
       if ((response as { json?: any; ok?: any }).ok) {
@@ -279,26 +260,22 @@ const saved = localStorage.getItem('ai-search-history');
     }
   }
 </script>
-
 <Dialog.Root bind:open={isOpen}>
   <Dialog.Portal>
-    <Dialog.Overlay 
+    <Dialog.Overlay
       class="nier-overlay fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
       in:fade={{ duration: 200 }}
       out:fade={{ duration: 150 }}
     />
-    
-    <Dialog.Content 
+    <Dialog.Content
       class="nier-modal fixed left-1/2 top-1/2 z-50 w-full max-w-4xl -translate-x-1/2 -translate-y-1/2"
       in:fly={{ y: -20, duration: 300, easing: quintInOut }}
       out:fly={{ y: -10, duration: 200 }}
       data-testid="find-modal"
     >
       <div class="nier-container bg-gray-900 border-2 border-yellow-400 shadow-2xl overflow-hidden">
-        
         <!-- Animated Border Effect -->
         <div class="absolute inset-0 bg-gradient-to-r from-yellow-400 via-transparent to-yellow-400 opacity-20 animate-pulse pointer-events-none"></div>
-        
         <!-- Header -->
         <div class="nier-header border-b border-yellow-400/30 p-4 relative">
           <div class="flex items-center justify-between">
@@ -310,7 +287,6 @@ const saved = localStorage.getItem('ai-search-history');
                 AI-POWERED SEARCH SYSTEM
               </h2>
             </div>
-            
             <!-- Status Indicators -->
             <div class="flex items-center gap-2">
               {#if useMCPAnalysis}
@@ -328,10 +304,8 @@ const saved = localStorage.getItem('ai-search-history');
             </div>
           </div>
         </div>
-
         <!-- Main Search Area -->
         <div class="p-6 space-y-4">
-          
           <!-- Search Input with Suggestions -->
           <div class="nier-search-container relative">
             <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 z-10" />
@@ -343,7 +317,6 @@ const saved = localStorage.getItem('ai-search-history');
               disabled={isSearching}
               data-testid="search-input"
             />
-            
             <!-- Search Status Indicator -->
             <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
               {#if isSearching}
@@ -352,10 +325,9 @@ const saved = localStorage.getItem('ai-search-history');
                 <div class="text-green-400 text-sm font-mono">{searchResults.length}</div>
               {/if}
             </div>
-
             <!-- Search Suggestions Dropdown -->
             {#if suggestions.length > 0 && searchQuery.length >= 3}
-              <div 
+              <div
                 class="absolute top-full left-0 right-0 mt-2 bg-gray-800 border border-gray-600 max-h-40 overflow-y-auto z-20"
                 in:fly={{ y: -10, duration: 200 }}
               >
@@ -371,7 +343,6 @@ const saved = localStorage.getItem('ai-search-history');
               </div>
             {/if}
           </div>
-
           <!-- Search Type Filters -->
           <div class="flex flex-wrap gap-2">
             {#each [
@@ -389,7 +360,6 @@ const saved = localStorage.getItem('ai-search-history');
                 {filter.label}
               </button>
             {/each}
-            
             <!-- Advanced Options Toggle -->
             <button
               onclick={() => showAdvanced = !showAdvanced}
@@ -399,15 +369,13 @@ const saved = localStorage.getItem('ai-search-history');
               ADVANCED
             </button>
           </div>
-
           <!-- Advanced Options Panel -->
           {#if showAdvanced}
-            <div 
+            <div
               class="nier-advanced-panel bg-gray-800/50 border border-gray-600 p-4 space-y-3"
               in:fly={{ y: -20, duration: 300, easing: elasticOut }}
             >
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                
                 <!-- AI Confidence Threshold -->
                 <div class="space-y-2">
                   <label class="text-yellow-400 font-mono text-sm" for="ai-confidence-mathro">AI CONFIDENCE: {Math.round(aiConfidenceThreshold * 100)}%</label><input id="ai-confidence-mathro"
@@ -419,7 +387,6 @@ const saved = localStorage.getItem('ai-search-history');
                     class="nier-slider w-full"
                   />
                 </div>
-
                 <!-- Feature Toggles -->
                 <div class="space-y-2">
                   <label class="text-yellow-400 font-mono text-sm">FEATURES</label>
@@ -434,7 +401,6 @@ const saved = localStorage.getItem('ai-search-history');
                     </label>
                   </div>
                 </div>
-
                 <!-- Search History -->
                 <div class="space-y-2">
                   <label class="text-yellow-400 font-mono text-sm">RECENT SEARCHES</label>
@@ -452,7 +418,6 @@ const saved = localStorage.getItem('ai-search-history');
               </div>
             </div>
           {/if}
-
           <!-- AI Search Button -->
           <button
             onclick={performAISearch}
@@ -471,31 +436,27 @@ const saved = localStorage.getItem('ai-search-history');
             </div>
           </button>
         </div>
-
         <!-- Search Results -->
         {#if searchResults.length > 0}
           <div class="nier-results border-t border-yellow-400/30 max-h-96 overflow-y-auto" data-testid="search-results">
             {#each searchResults as result, index ((result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).id)}
-              <div 
+              <div
                 class="nier-result-item border-b border-gray-700/50 p-4 hover:bg-gray-800/50 cursor-pointer transition-all duration-200 group"
                 onclick={() => selectResult(result)};
                 in:fly={{ x: -20, duration: 300, delay: index * 50 }}
                 data-testid="result-item"
               >
                 <div class="flex items-start gap-4">
-                  
                   <!-- Result Index -->
                   <div class="nier-result-index w-10 h-10 bg-yellow-400/20 border border-yellow-400/50 flex items-center justify-center flex-shrink-0 group-hover:bg-yellow-400/30 transition-colors">
                     <span class="text-yellow-400 font-mono font-bold text-sm">{String(index + 1).padStart(2, '0')}</span>
                   </div>
-                  
                   <!-- Result Content -->
                   <div class="flex-1 min-w-0">
                     <div class="flex items-start justify-between gap-2 mb-2">
                       <h3 class="nier-result-title text-white font-mono font-bold text-lg leading-tight group-hover:text-yellow-400 transition-colors">
                         {(result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).title}
                       </h3>
-                      
                       <!-- AI Confidence Badge -->
                       {#if (result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).aiConfidence}
                         <div class="nier-confidence-badge flex-shrink-0" data-testid="ai-confidence">
@@ -504,26 +465,21 @@ const saved = localStorage.getItem('ai-search-history');
                         </div>
                       {/if}
                     </div>
-                    
                     <p class="nier-result-excerpt text-gray-300 text-sm mb-3 line-clamp-2 leading-relaxed">
                       {(result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).excerpt}
                     </p>
-                    
                     <!-- Result Metadata -->
                     <div class="flex items-center flex-wrap gap-3 text-xs">
                       <span class="nier-type-badge bg-gray-800 border border-gray-600 px-2 py-1">
                         {(result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).type?.toUpperCase()}
                       </span>
-                      
                       {#if (result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).relevanceScore}
                         <span class="text-blue-400 flex items-center gap-1">
                           <Target class="w-3 h-3" />
                           {Math.round.relevanceScore * 100)}% relevant
                         </span>
                       {/if}
-                      
                       <span class="text-gray-500">{(result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).lastModified}</span>
-                      
                       <!-- Highlights -->
                       {#if (result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).highlights && (result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).highlights.length > 0}
                         <div class="flex items-center gap-1">
@@ -537,11 +493,10 @@ const saved = localStorage.getItem('ai-search-history');
               </div>
             {/each}
           </div>
-          
         {:else if searchQuery && !isSearching}
           <!-- No Results -->
           <div class="nier-no-results border-t border-yellow-400/30 p-8 text-center">
-            <div 
+            <div
               class="w-20 h-20 mx-auto mb-4 bg-gray-800 border border-gray-600 flex items-center justify-center"
               in:scale={{ duration: 400, easing: elasticOut }}
             >
@@ -549,7 +504,6 @@ const saved = localStorage.getItem('ai-search-history');
             </div>
             <h3 class="text-white font-mono text-lg mb-2">NO RESULTS FOUND</h3>
             <p class="text-gray-400 text-sm mb-4">Try adjusting your search terms, filters, or AI confidence threshold</p>
-            
             <!-- MCP Suggestions -->
             {#if mcpContext?.recommendations && mcpContext.recommendations.length > 0}
               <div class="text-left max-w-md mx-auto">
@@ -562,7 +516,6 @@ const saved = localStorage.getItem('ai-search-history');
               </div>
             {/if}
           </div>
-          
         {:else if !searchQuery}
           <!-- Auto-Suggestions Panel -->
           <div class="border-t border-yellow-400/30 p-6">
@@ -570,7 +523,6 @@ const saved = localStorage.getItem('ai-search-history');
               <Sparkles class="w-5 h-5" />
               INTELLIGENT SUGGESTIONS
             </h3>
-            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               {#each autoSuggestions as suggestion}
                 <div class="nier-suggestion-nier-bits-card bg-gray-800/50 border border-gray-600 p-4 hover:border-yellow-400/50 transition-colors group cursor-pointer"
@@ -599,7 +551,6 @@ const saved = localStorage.getItem('ai-search-history');
             </div>
           </div>
         {/if}
-
         <!-- Footer -->
         <div class="nier-footer border-t border-yellow-400/30 p-4 flex justify-between items-center text-xs text-gray-500 font-mono bg-gray-900/50">
           <div class="flex items-center gap-4">
@@ -617,15 +568,13 @@ const saved = localStorage.getItem('ai-search-history');
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
-
 <style>
   /* NieR Automata Theme Enhancements */
-  .nier-container {;
+  .nier-container {
     clip-path: polygon(0 0, calc(100% - 25px) 0, 100% 25px, 100% 100%, 25px 100%, 0 calc(100% - 25px));
     position: relative;
     max-height: 90vh;
   }
-
   .nier-container::before {
     content: '';
     position: absolute;
@@ -638,45 +587,36 @@ const saved = localStorage.getItem('ai-search-history');
     z-index: -1;
     animation: borderFlow 4s ease-in-out infinite;
   }
-
   .nier-input {
     clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
     transition: all 0.3s ease;
   }
-
   .nier-input:focus {
     box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
     transform: translateY(-1px);
   }
-
   .nier-filter-btn {
     @apply px-4 py-2 bg-gray-800 border border-gray-600 text-gray-300 font-mono text-xs hover:bg-gray-700 transition-all duration-200 flex items-center gap-2;
     clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
   }
-
   .nier-filter-btn.active {
     @apply bg-yellow-400 text-black border-yellow-400 shadow-lg;
     box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
   }
-
   .nier-filter-btn.blue.active {
     @apply bg-blue-500 border-blue-500;
   }
-
   .nier-filter-btn.green.active {
     @apply bg-green-500 border-green-500;
   }
-
   .nier-filter-btn.purple.active {
     @apply bg-purple-500 border-purple-500;
   }
-
   .nier-search-btn {
     clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
     position: relative;
     overflow: hidden;
   }
-
   .nier-search-btn::before {
     content: '';
     position: absolute;
@@ -685,17 +625,14 @@ const saved = localStorage.getItem('ai-search-history');
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s;
+    transition: left 0.5;
   }
-
   .nier-search-btn:hover::before {
     left: 100%;
   }
-
   .nier-result-item {
     position: relative;
   }
-
   .nier-result-item::before {
     content: '';
     position: absolute;
@@ -706,121 +643,100 @@ const saved = localStorage.getItem('ai-search-history');
     background: transparent;
     transition: background 0.3s ease;
   }
-
   .nier-result-item:hover::before {
     background: linear-gradient(to bottom, #fbbf24, #f59e0b);
   }
-
   .nier-result-index {
     clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
   }
-
   .nier-type-badge,
   .nier-confidence-badge {
     clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
-    @apply px-2 py-1 font-mono text-xs;
+    @apply px-2 py-1 font-mono text-x;
   }
-
   .nier-confidence-badge {
     @apply bg-yellow-400/20 border border-yellow-400/50 text-yellow-400 flex items-center gap-1;
   }
-
   .nier-advanced-panel {
     clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
   }
-
   .nier-slider {
     @apply bg-gray-700 rounded-none h-2 cursor-pointer;
     -webkit-appearance: none;
   }
-
   .nier-slider::-webkit-slider-thumb {
     @apply bg-yellow-400 rounded-none w-4 h-4 cursor-pointer;
     -webkit-appearance: none;
     clip-path: polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
   }
-
   .nier-checkbox {
     @apply bg-gray-700 border border-gray-600 text-yellow-400 rounded-none;
     clip-path: polygon(0 0, calc(100% - 3px) 0, 100% 3px, 100% 100%, 3px 100%, 0 calc(100% - 3px));
   }
-
   .nier-status-badge {
     @apply px-2 py-1 font-mono text-xs flex items-center gap-1;
     clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
   }
-
   .nier-suggestion-card {
     clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
     transition: all 0.3s ease;
   }
-
   .nier-suggestion-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(251, 191, 36, 0.15);
   }
-
   .nier-priority-indicator.high {
     @apply bg-red-500;
     box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
   }
-
   .nier-priority-indicator.medium {
     @apply bg-yellow-500;
     box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
   }
-
   .nier-priority-indicator.low {
     @apply bg-green-500;
     box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
   }
-
   .nier-icon-container {
     @apply w-8 h-8 bg-yellow-400/20 border border-yellow-400/50 flex items-center justify-center;
     clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
   }
-
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-
   /* Animations */
   @keyframes borderFlow {
-    0%, 100% { 
+    0%, 100% {
       background: linear-gradient(45deg, #fbbf24, transparent, transparent, #fbbf24);
       opacity: 0.8;
     }
-    25% { 
+    25% {
       background: linear-gradient(135deg, transparent, #fbbf24, transparent, transparent);
       opacity: 1;
     }
-    50% { 
+    50% {
       background: linear-gradient(225deg, transparent, transparent, #fbbf24, transparent);
       opacity: 0.8;
     }
-    75% { 
+    75% {
       background: linear-gradient(315deg, transparent, transparent, transparent, #fbbf24);
       opacity: 1;
     }
   }
-
   @keyframes glowPulse {
     0%, 100% { opacity: 0.6; }
     50% { opacity: 1; }
   }
-
   .nier-spinner {
     animation: spin 1s linear infinite;
   }
-
   @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
-
   /* Responsive Design */
   @media (max-width: 768px) {
     .nier-container {
@@ -828,12 +744,10 @@ const saved = localStorage.getItem('ai-search-history');
       margin: 1rem;
       max-height: calc(100vh - 2rem);
     }
-    
     .nier-modal {
       max-width: calc(100vw - 2rem);
     }
   }
-
   /* Accessibility */
   @media (prefers-reduced-motion: reduce) {
     * {
@@ -842,14 +756,11 @@ const saved = localStorage.getItem('ai-search-history');
       transition-duration: 0.01ms !important;
     }
   }
-
   /* Focus Management */
-  .nier-input:focus,
-  .nier-search-btn:focus,
+  .nier-input: focus
+  .nier-search-btn: focus
   .nier-filter-btn:focus {
     outline: 2px solid #fbbf24;
     outline-offset: 2px;
   }
 </style>
-
-

@@ -1,29 +1,26 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: history
  * Category: conservative
  * Memory Bank: PRG_ROM
  * Priority: 150
  * Redis Type: aiAnalysis
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 import { aiHistory } from "$lib/db/schema/aiHistory"
 import { json } from "@sveltejs/kit"
 import { db } from '$lib/server/db/index'
 import { eq } from 'drizzle-orm'
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 import type { RequestHandler } from './$types.js'
-
-
 const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
   try {
     const { prompt, response, embedding } = await request.json()
@@ -34,7 +31,6 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     return json({ error: "Failed to save AI history" }, { status: 500 })
   }
 }
-
 const originalGETHandler: RequestHandler = async ({ url, locals }) => {
   try {
     const userId = locals.user?.id || "anonymous"
@@ -47,7 +43,5 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
     return json({ error: "Failed to fetch AI history" }, { status: 500 })
   }
 }
-
-
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)

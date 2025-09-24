@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     value?: number;
     max?: number;
@@ -12,7 +11,6 @@
     retro?: boolean;
     sparkle?: boolean;
   }
-
   let {
     value = 0,
     max = 100,
@@ -24,9 +22,7 @@
     retro = true,
     sparkle = false;
   }: Props = $props();
-
   let percentage = $derived(Math.min((value / max) * 100, 100));
-
   // N64 Controller inspired color themes
   const themes = {
     classic: {
@@ -36,47 +32,44 @@
       shadow: '#FFB000';
     },
     gold: {
-      bg: '#1A1A1A', 
+      bg: '#1A1A1A',
       fill: '#FFD700',
       border: '#8B7D3A',
       shadow: '#FFA500';
     },
     red: {
       bg: '#2C1A1A',
-      fill: '#FF3030', 
+      fill: '#FF3030',
       border: '#8B1A1A',
       shadow: '#CC0000';
     },
     blue: {
       bg: '#1A1A2C',
       fill: '#4090FF',
-      border: '#1A1A8B', 
+      border: '#1A1A8B',
       shadow: '#0066CC';
     },
     green: {
       bg: '#1A2C1A',
-      fill: '#40FF40',;
-      border: '#1A8B1A',;
+      fill: '#40FF40',
+      border: '#1A8B1A',
       shadow: '#00CC00';
     }
   };
-
   const sizes = {
     sm: { height: '12px', fontSize: '10px' },
-    md: { height: '16px', fontSize: '12px' },;
+    md: { height: '16px', fontSize: '12px' },
     lg: { height: '24px', fontSize: '14px' }
   };
-
   let currentTheme = $derived(themes[theme]);
   let currentSize = $derived(sizes[size]);
 </script>
-
-<div class="n64-progress-container {className}" class:retro>
-  <div 
+<div class="n64-progress-container {className}" class: retro>
+  <div
     class="n64-progress-bar"
     class:animated;
     class:sparkle
-    style=";
+    style="
       --bg-color: {currentTheme.bg};
       --fill-color: {currentTheme.fill};
       --border-color: {currentTheme.border};
@@ -93,7 +86,7 @@
     <div class="progress-frame">
       <div class="progress-track">
         <!-- Animated fill bar -->
-        <div 
+        <div
           class="progress-fill"
           style="width: {percentage}%"
         >
@@ -101,7 +94,6 @@
           {#if animated}
             <div class="progress-shine"></div>
           {/if}
-          
           <!-- Sparkle effects -->
           {#if sparkle && percentage > 10}
             <div class="sparkle-container">
@@ -111,18 +103,16 @@
             </div>
           {/if}
         </div>
-        
         <!-- Progress segments (N64 style) -->
         <div class="progress-segments">
           {#each Array(10) as _, i}
-            <div 
-              class="segment" 
+            <div
+              class="segment"
               class:active={percentage > (i * 10)}
             ></div>
           {/each}
         </div>
       </div>
-      
       <!-- Percentage display -->
       {#if showPercentage}
         <div class="percentage-display">
@@ -130,7 +120,6 @@
         </div>
       {/if}
     </div>
-    
     <!-- Retro gaming UI elements -->
     {#if retro}
       <div class="retro-ui">
@@ -144,41 +133,36 @@
     {/if}
   </div>
 </div>
-
 <style>
-  .n64-progress-container {;
+  .n64-progress-container {
     position: relative;
     width: 100%;
     font-family: 'Courier New', monospace;
   }
-
   .n64-progress-bar {
     position: relative;
     width: 100%;
     height: var(--bar-height);
-    border-radius: 0; /* Sharp edges for retro look */
+    border-radius: 0; /* Sharp edges for retro look */,
     overflow: hidden;
   }
-
   .progress-frame {
     position: relative;
     width: 100%;
     height: 100%;
     background: var(--bg-color);
     border: 2px solid var(--border-color);
-    box-shadow: 
+    box-shadow:
       inset -2px -2px 4px rgba(0,0,0,0.8),
       inset 2px 2px 4px rgba(255,255,255,0.1),
       0 0 0 1px rgba(255,255,255,0.05);
   }
-
   .progress-track {
     position: relative;
     width: 100%;
     height: 100%;
     overflow: hidden;
   }
-
   .progress-fill {
     position: absolute;
     top: 0;
@@ -193,12 +177,10 @@
     transition: width 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
     min-width: 0;
   }
-
   .progress-fill.animated {
     background-size: 200% 100%;
     animation: shimmer 2s linear infinite;
   }
-
   .progress-shine {
     position: absolute;
     top: 0;
@@ -213,7 +195,6 @@
     );
     animation: shine 1.5s ease-in-out infinite;
   }
-
   .progress-segments {
     position: absolute;
     top: 0;
@@ -223,7 +204,6 @@
     display: flex;
     pointer-events: none;
   }
-
   .segment {
     flex: 1;
     height: 100%;
@@ -231,15 +211,12 @@
     opacity: 0.3;
     transition: opacity 0.2s ease;
   }
-
   .segment:last-child {
     border-right: none;
   }
-
   .segment.active {
     opacity: 0.6;
   }
-
   .percentage-display {
     position: absolute;
     top: 50%;
@@ -247,18 +224,16 @@
     transform: translateY(-50%);
     pointer-events: none;
   }
-
   .percentage-text {
     color: #FFF;
     font-size: var(--font-size);
     font-weight: bold;
-    text-shadow: 
+    text-shadow:
       1px 1px 0 #000,
       -1px -1px 0 #000,
       1px -1px 0 #000,
       -1px 1px 0 #000;
   }
-
   /* Sparkle effects */
   .sparkle-container {
     position: absolute;
@@ -268,7 +243,6 @@
     height: 100%;
     overflow: hidden;
   }
-
   .sparkle {
     position: absolute;
     width: 4px;
@@ -277,25 +251,21 @@
     border-radius: 50%;
     opacity: 0;
   }
-
   .sparkle-1 {
     top: 20%;
     left: 30%;
     animation: sparkle 1.2s ease-in-out infinite;
   }
-
   .sparkle-2 {
     top: 60%;
     left: 60%;
-    animation: sparkle 1.5s ease-in-out infinite 0.3s;
+    animation: sparkle 1.5s ease-in-out infinite 0.3;
   }
-
   .sparkle-3 {
     top: 80%;
     left: 80%;
-    animation: sparkle 1.8s ease-in-out infinite 0.6s;
+    animation: sparkle 1.8s ease-in-out infinite 0.6;
   }
-
   /* Retro UI elements */
   .retro-ui {
     position: absolute;
@@ -305,13 +275,11 @@
     bottom: -2px;
     pointer-events: none;
   }
-
   .ui-corners {
     position: absolute;
     width: 100%;
     height: 100%;
   }
-
   .corner {
     position: absolute;
     width: 8px;
@@ -319,80 +287,69 @@
     background: var(--fill-color);
     opacity: 0.6;
   }
-
   .corner-tl {
     top: -4px;
     left: -4px;
     clip-path: polygon(0 0, 100% 0, 0 100%);
   }
-
   .corner-tr {
     top: -4px;
     right: -4px;
     clip-path: polygon(100% 0, 100% 100%, 0 0);
   }
-
   .corner-bl {
     bottom: -4px;
     left: -4px;
     clip-path: polygon(0 0, 0 100%, 100% 100%);
   }
-
   .corner-br {
     bottom: -4px;
     right: -4px;
     clip-path: polygon(100% 0, 100% 100%, 0 100%);
   }
-
   /* Retro styling enhancements */
   .retro {
     image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
+    image-rendering: -moz-crisp-edge;
+    image-rendering: crisp-edge;
   }
-
   .retro .progress-frame {
-    box-shadow: 
+    box-shadow:
       inset -3px -3px 6px rgba(0,0,0,0.9),
       inset 3px 3px 6px rgba(255,255,255,0.1),
       0 0 0 1px rgba(255,255,255,0.1),
       0 4px 8px rgba(0,0,0,0.5);
   }
-
   /* Animations */
   @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
+    0% { background-position: ;
+-200% 0; }
+    100% { background-position: 00% 0; }
   }
-
   @keyframes shine {
     0% { transform: translateX(-100%); opacity: 0; }
     50% { opacity: 1; }
     100% { transform: translateX(100%); opacity: 0; }
   }
-
   @keyframes sparkle {
-    0%, 100% { 
-      opacity: 0; 
-      transform: scale(0); 
+    0%, 100% {
+      opacity: 0;
+      transform: scale(0);
     }
-    50% { 
-      opacity: 1; 
-      transform: scale(1); 
+    50% {
+      opacity: 1;
+      transform: scale(1);
     }
   }
-
   /* Responsive adjustments */
   @media (max-width: 640px) {
     .percentage-display {
       right: 4px;
     }
-    
     .corner {
       width: 6px;
       height: 6px;
     }
-    
     .corner-tl,
     .corner-tr,
     .corner-bl,
@@ -403,22 +360,19 @@
       bottom: -3px;
     }
   }
-
   /* High contrast theme support */
   @media (prefers-contrast: high) {
     .progress-frame {
       border-width: 3px;
     }
-    
     .percentage-text {
-      text-shadow: 
+      text-shadow:
         2px 2px 0 #000,
         -2px -2px 0 #000,
         2px -2px 0 #000,
         -2px 2px 0 #000;
     }
   }
-
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
     .progress-fill,
@@ -426,7 +380,6 @@
     .progress-shine {
       animation: none;
     }
-    
     .progress-fill {
       transition: width 0.2s ease;
     }

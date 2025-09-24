@@ -1,21 +1,16 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
 /*
  * Database Health Check API Endpoint
  * GET /api/db/health - Check database connectivity and pgvector extension
  */
-
 import postgres from 'postgres'
 import { dev } from '$app/environment'
-
 // Database connection for health check
-const connectionString = import.meta.env.DATABASE_URL || 
+const connectionString = import.meta.env.DATABASE_URL ||
   `postgresql://${import.meta.env.DATABASE_USER || 'legal_admin'}:${import.meta.env.DATABASE_PASSWORD || '123456'}@${import.meta.env.DATABASE_HOST || 'localhost'}:${import.meta.env.DATABASE_PORT || '5433'}/${import.meta.env.DATABASE_NAME || 'legal_ai_db'}`
-
 export const GET: RequestHandler = async () => {
   let sql: postgres.Sql | null = null
-  
   try {
     // Create database connection
     sql = postgres(connectionString, {
@@ -23,29 +18,25 @@ export const GET: RequestHandler = async () => {
       idle_timeout: 5, // 5 seconds idle timeout
       connect_timeout: 10, // 10 seconds connect timeout
     })
-
     // Check basic database connectivity
     const basicCheck = await sql`SELECT version() as version, current_database() as database, now() as timestamp`
-    
     // Check pgvector extension
     const pgvectorCheck = await sql`
-      SELECT 
+      SELECT
         extname,
         extversion,
         extrelocatable
-      FROM pg_extension 
+      FROM pg_extension
       WHERE extname = 'vector'
     `
-    
     // Check if our user management tables exist
     const tablesCheck = await sql`
-      SELECT table_name 
-      FROM information_schema.tables 
-      WHERE table_schema = 'public' 
+      SELECT table_name
+      FROM information_schema.tables
+      WHERE table_schema = 'public'
       AND table_name IN ('users', 'sessions', 'user_profiles', 'user_activities')
       ORDER BY table_name
     `
-
     // Check vector operations capability (if tables exist)
     let vectorTest = null
     if (tablesCheck.length > 0) {
@@ -58,11 +49,10 @@ export const GET: RequestHandler = async () => {
         vectorTest = { error: err.message }
       }
     }
-
     // Collect health metrics
     const health = {
       database: {
-        connected: true,
+        connected: true
         version: basicCheck[0]?.version?.split(' ').slice(0, 2).join(' ') || 'Unknown',
         database_name: basicCheck[0]?.database || 'Unknown',
         timestamp: basicCheck[0]?.timestamp || new Date()
@@ -88,19 +78,17 @@ export const GET: RequestHandler = async () => {
         error: vectorTest?.error || null
       }
     }
-
     // Determine overall health status
-    const isHealthy = 
-      health.database.connected && 
-      health.extensions.pgvector.installed && 
-      health.tables.user_management.ready && 
+    const isHealthy =
+      health.database.connected &&
+      health.extensions.pgvector.installed &&
+      health.tables.user_management.ready &&
       health.vector_operations.working
-
     return json({
-      success: true,
+      success: true
       message: isHealthy ? 'Database is healthy' : 'Database has issues',
       data: {
-        healthy: isHealthy,
+        healthy: isHealthy
         status: isHealthy ? 'healthy' : 'degraded',
         checks: health
       },
@@ -116,15 +104,13 @@ export const GET: RequestHandler = async () => {
         ...(dev && { 'Access-Control-Allow-Origin': '*' })
       }
     })
-
   } catch (err: any) {
     console.error('Database health check failed:', err)
-    
     return json({
-      success: false,
+      success: false
       message: 'Database health check failed',
       data: {
-        healthy: false,
+        healthy: false
         status: 'unhealthy',
         error: {
           message: err.message,
@@ -137,11 +123,10 @@ export const GET: RequestHandler = async () => {
         version: '1.0.0',
         environment: dev ? 'development' : 'production'
       }
-    }, { 
+    }, {
       status: 503,
       headers: { 'Content-Type': 'application/json' }
     })
-    
   } finally {
     // Always close the connection
     if (sql) {
@@ -153,7 +138,6 @@ export const GET: RequestHandler = async () => {
     }
   }
 }
-
 // OPTIONS handler for CORS preflight requests
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {

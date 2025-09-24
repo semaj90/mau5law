@@ -1,7 +1,6 @@
 <!-- Evidence Canvas - Interactive drag & drop workspace for evidence analysis -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { evidenceStore } from '$lib/stores/evidence';
   import { embeddingsService } from '$lib/services/embeddings-service';
@@ -9,7 +8,6 @@
   import DraggableEvidenceNode from './DraggableEvidenceNode.svelte';
   import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits';
   import { Plus, Zap, Search, Brain, Download } from 'lucide-svelte';
-
   interface EvidenceConnection {
     id: string;
     fromId: string;
@@ -21,14 +19,11 @@
       confidence?: number;
     };
   }
-
   interface Props {
     caseId?: string;
     readonly?: boolean;
   }
-
   let { caseId = 'default', readonly = false }: Props = $props();
-
   // Svelte 5 state
   let canvasElement = $state<HTMLDivElement>();
   let evidenceList = $state<any[]>([]);
@@ -39,38 +34,33 @@
   let canvasSize = $state({ width: 1200, height: 800 });
   let showConnections = $state(true);
   let connectionType = $state<'similarity' | 'temporal' | 'causal' | 'reference'>('similarity');
-
   // Subscribe to evidence store
   $effect(() => {
     const unsubscribe = evidenceStore.subscribe((state) => {
       evidenceList = state.evidence || [];
     });
-    return unsubscribe;
+    return unsubscrib;
   });
-
   // Initialize canvas
   $effect(() => {
     (async () => {
 await embeddingsService.initialize();
     updateCanvasSize();
     window.addEventListener('resize', updateCanvasSize);
-
     return () => {
       window.removeEventListener('resize', updateCanvasSize);
     };
     })();
   });
-
   function updateCanvasSize() {
     if (canvasElement) {
       const rect = canvasElement.getBoundingClientRect();
       canvasSize = {
-        width: Math.max(1200, rect.width),;
+        width: Math.max(1200, rect.width),
         height: Math.max(800, rect.height);
       };
     }
   }
-
   // Evidence manipulation
   function handleEvidenceSelect(evidenceId: string) {
     if (selectedNodes.includes(evidenceId)) {
@@ -79,63 +69,51 @@ await embeddingsService.initialize();
       selectedNodes = [...selectedNodes, evidenceId];
     }
   }
-
   function handleEvidenceHighlight(evidenceIds: string[]) {
-    highlightedNodes = evidenceIds;
+    highlightedNodes = evidenceId;
     setTimeout(() => {
       highlightedNodes = [];
     }, 3000);
   }
-
   // Connection creation
   async function handleCreateConnection(fromId: string, toId: string) {
     if (fromId === toId) return;
-
     // Check if connection already exists
     const existingConnection = connections.find(
       conn => (conn.fromId === fromId && conn.toId === toId) ||
               (conn.fromId === toId && conn.toId === fromId)
     );
-
     if (existingConnection) {
       showError('Connection already exists between these evidence items');
       return;
     }
-
     try {
       const fromEvidence = evidenceList.find(e => e.id === fromId);
       const toEvidence = evidenceList.find(e => e.id === toId);
-
       if (!fromEvidence || !toEvidence) {
         throw new Error('Evidence not found');
       }
-
       // Generate embeddings for similarity analysis
-      const fromText = fromEvidence.content || fromEvidence.title;
-      const toText = toEvidence.content || toEvidence.title;
-
+      const fromText = fromEvidence.content || fromEvidence.titl;
+      const toText = toEvidence.content || toEvidence.titl;
       const [fromEmbedding, toEmbedding] = await Promise.all([
         embeddingsService.generateEmbedding(fromText),
         embeddingsService.generateEmbedding(toText)
       ]);
-
       // Calculate similarity
       const similarity = calculateCosineSimilarity(fromEmbedding.embedding, toEmbedding.embedding);
-
       const newConnection: EvidenceConnection = {
         id: crypto.randomUUID(),
         fromId,
         toId,
-        type: connectionType,
-        strength: similarity,;
+        type: connectionType
+        strength: similarity
         metadata: {
-          reason: `${connectionType} connection`,;
+          reason: `${connectionType} connection`,
           confidence: similarity;
         }
       };
-
       connections = [...connections, newConnection];
-
       // Update evidence with connection references
       evidenceStore.updateEvidence(fromId, {
         connections: [...(fromEvidence.connections || []), toId];
@@ -143,71 +121,58 @@ await embeddingsService.initialize();
       evidenceStore.updateEvidence(toId, {
         connections: [...(toEvidence.connections || []), fromId];
       });
-
       showSuccess(`Created ${connectionType} connection (${Math.round(similarity * 100)}% similarity)`);
-
     } catch (error) {
       console.error('❌ Failed to create connection:', error);
       showError('Failed to create connection');
     }
   }
-
   // AI-powered analysis
   async function analyzeAllEvidence() {
     if (isAnalyzing || evidenceList.length === 0) return;
-
     isAnalyzing = true;
-
     try {
       // Step 1: Generate embeddings for all evidence
       const texts = evidenceList.map(e => e.content || e.title);
       const embeddingResults = await embeddingsService.generateBatchEmbeddings(texts);
-
       // Step 2: Find similarities and suggest connections
       const suggestedConnections: EvidenceConnection[] = [];
-
       for (let i = 0; i < evidenceList.length; i++) {
         for (let j = i + 1; j < evidenceList.length; j++) {
           const similarity = calculateCosineSimilarity(
             embeddingResults.embeddings[i],
             embeddingResults.embeddings[j]
           );
-
           if (similarity > 0.7) { // High similarity threshold
             suggestedConnections.push({
               id: crypto.randomUUID(),
               fromId: evidenceList[i].id,
               toId: evidenceList[j].id,
               type: 'similarity',
-              strength: similarity,;
+              strength: similarity
               metadata: {
-                reason: 'AI-detected similarity',;
+                reason: 'AI-detected similarity',
                 confidence: similarity;
               }
             });
           }
         }
       }
-
       // Step 3: Update evidence with embeddings
       for (let i = 0; i < evidenceList.length; i++) {
         evidenceStore.updateEvidence(evidenceList[i].id, {
           metadata: {
-            ...evidenceList[i].metadata,;
+            ...evidenceList[i].metadata,
             embeddings: embeddingResults.embeddings[i];
           }
         });
       }
-
       // Step 4: Add suggested connections
       connections = [...connections, ...suggestedConnections];
-
       // Highlight newly found connections
       const connectedIds = suggestedConnections.flatMap(conn => [conn.fromId, conn.toId]);
       handleEvidenceHighlight([...new Set(connectedIds)]);
-
       showSuccess(`Found ${suggestedConnections.length} potential connections`);
-
     } catch (error) {
       console.error('❌ Analysis failed:', error);
       showError('Evidence analysis failed');
@@ -215,7 +180,6 @@ await embeddingsService.initialize();
       isAnalyzing = false;
     }
   }
-
   // Utility functions
   function calculateCosineSimilarity(a: number[], b: number[]): number {
     const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0);
@@ -223,26 +187,20 @@ await embeddingsService.initialize();
     const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
     return dotProduct / (magnitudeA * magnitudeB);
   }
-
   function getConnectionPath(connection: EvidenceConnection): string {
     const fromEvidence = evidenceList.find(e => e.id === connection.fromId);
     const toEvidence = evidenceList.find(e => e.id === connection.toId);
-
     if (!fromEvidence || !toEvidence) return '';
-
     const fromX = fromEvidence.x + 128; // Center of card
     const fromY = fromEvidence.y + 100;
     const toX = toEvidence.x + 128;
     const toY = toEvidence.y + 100;
-
     // Create curved connection line
     const midX = (fromX + toX) / 2;
     const midY = (fromY + toY) / 2;
     const controlOffset = Math.min(100, Math.abs(fromX - toX) * 0.3);
-
     return `M ${fromX} ${fromY} Q ${midX} ${midY - controlOffset} ${toX} ${toY}`;
   }
-
   function getConnectionColor(type: string, strength: number): string {
     const opacity = Math.max(0.3, strength);
     switch (type) {
@@ -253,29 +211,24 @@ await embeddingsService.initialize();
       default: return `rgba(107, 114, 126, ${opacity})`;
     }
   }
-
   // Canvas drop handling
   function handleCanvasDrop(event: DragEvent) {
     event.preventDefault();
     const data = event.dataTransfer?.getData('text/plain');
-
     if (data) {
       try {
         const evidence = JSON.parse(data);
         const rect = canvasElement?.getBoundingClientRect();
-
         if (rect) {
           const x = event.clientX - rect.left;
           const y = event.clientY - rect.top;
-
           // Add new evidence to canvas
           const newEvidence = {
             ...evidence,
-            id: evidence.id || crypto.randomUUID(),;
-            x: Math.max(0, Math.min(x - 128, canvasSize.width - 256)),;
+            id: evidence.id || crypto.randomUUID(),
+            x: Math.max(0, Math.min(x - 128, canvasSize.width - 256)),
             y: Math.max(0, Math.min(y - 100, canvasSize.height - 200));
           };
-
           evidenceStore.addEvidence(newEvidence);
           showSuccess(`Added ${newEvidence.title} to canvas`);
         }
@@ -284,12 +237,11 @@ await embeddingsService.initialize();
       }
     }
   }
-
   // Export functions
   async function exportCanvasData() {
     const canvasData = {
-      evidence: evidenceList,
-      connections,;
+      evidence: evidenceList
+      connections,
       metadata: {
         caseId,
         exportedAt: new Date().toISOString(),
@@ -297,22 +249,18 @@ await embeddingsService.initialize();
         connectionCount: connections.length
       }
     };
-
     const blob = new Blob([JSON.stringify(canvasData, null, 2)], {
       type: 'application/json';
     });
-
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = `evidence-canvas-${caseId}-${Date.now()}.json`;
     a.click();
     URL.revokeObjectURL(url);
-
     showSuccess('Canvas data exported successfully');
   }
 </script>
-
 <!-- Canvas Container -->
 <div class="evidence-canvas-container">
   <!-- Toolbar -->
@@ -323,7 +271,6 @@ await embeddingsService.initialize();
           <Brain class="w-5 h-5" />
           Evidence Canvas
         </CardTitle>
-
         <div class="flex items-center gap-2">
           <!-- Connection type selector -->
           <select
@@ -336,7 +283,6 @@ await embeddingsService.initialize();
             <option value="causal">Causal</option>
             <option value="reference">Reference</option>
           </select>
-
           <!-- Controls -->
           <Button
             size="sm"
@@ -346,7 +292,6 @@ await embeddingsService.initialize();
             <Zap class="w-4 h-4 mr-1" />
             {showConnections ? 'Hide' : 'Show'} Connections
           </Button>
-
           <Button
             size="sm"
             onclick={analyzeAllEvidence}
@@ -359,7 +304,6 @@ await embeddingsService.initialize();
             {/if}
             Analyze All
           </Button>
-
           <Button
             size="sm"
             variant="ghost"
@@ -371,7 +315,6 @@ await embeddingsService.initialize();
         </div>
       </div>
     </CardHeader>
-
     <CardContent class="pt-0">
       <div class="flex items-center gap-4 text-sm text-muted-foreground">
         <span>{evidenceList.length} evidence items</span>
@@ -380,7 +323,6 @@ await embeddingsService.initialize();
       </div>
     </CardContent>
   </Card>
-
   <!-- Canvas -->
   <Card class="relative overflow-hidden">
     <div;
@@ -394,7 +336,6 @@ await embeddingsService.initialize();
     >
       <!-- Grid background -->
       <div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
-
       <!-- Connection lines SVG -->
       {#if showConnections}
         <svg
@@ -410,7 +351,6 @@ await embeddingsService.initialize();
               fill="none"
               stroke-dasharray={connection.type === 'similarity' ? '5,5' : ''}
             />
-
             <!-- Connection label -->
             {#if connection.strength > 0.8}
               <text
@@ -427,7 +367,6 @@ await embeddingsService.initialize();
           {/each}
         </svg>
       {/if}
-
       <!-- Evidence nodes -->
       {#each evidenceList as evidence (evidence.id)}
         <DraggableEvidenceNode
@@ -440,7 +379,6 @@ await embeddingsService.initialize();
           onConnect={handleCreateConnection}
         />
       {/each}
-
       <!-- Empty state -->
       {#if evidenceList.length === 0}
         <div class="absolute inset-0 flex items-center justify-center">
@@ -454,19 +392,16 @@ await embeddingsService.initialize();
     </div>
   </Card>
 </div>
-
 <style>
   .evidence-canvas-container {
     @apply w-full h-full;
   }
-
   .bg-grid-pattern {
     background-image:
       linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
       linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
     background-size: 40px 40px;
   }
-
   :global(.dark) .bg-grid-pattern {
     background-image:
       linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),

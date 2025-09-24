@@ -1,19 +1,12 @@
 // Service Orchestration Types
 // Complete type definitions for managing 37 Go microservices
-
 export type ServiceTier = 'core' | 'enhanced' | 'specialized' | 'infrastructure';
-
 export type ServiceHealth = 'healthy' | 'degraded' | 'unhealthy' | 'unknown' | 'starting' | 'stopping';
-
 export type OrchestrationAction = 'start' | 'stop' | 'restart' | 'scale' | 'health_check' | 'deploy';
-
 export type DeploymentStrategy = 'rolling' | 'blue_green' | 'canary' | 'immediate';
-
 export type ScalingMode = 'manual' | 'auto' | 'predictive' | 'load_based';
-
-// Core Configuration Types;
+// Core Configuration Types
 }
-
 export interface ServiceConfig {
 	name: string;
 	tier: ServiceTier;
@@ -26,7 +19,6 @@ export interface ServiceConfig {
 	health_check_config?: HealthCheckConfig;
 	environment?: Record<string, string>;
 }
-
 export interface ResourceRequirements {
 	cpu_cores: number;
 	memory_mb: number;
@@ -34,7 +26,6 @@ export interface ResourceRequirements {
 	gpu_required?: boolean;
 	network_bandwidth_mbps?: number;
 }
-
 export interface ScalingConfig {
 	min_instances: number;
 	max_instances: number;
@@ -44,7 +35,6 @@ export interface ScalingConfig {
 	scale_down_threshold: number;
 	cooldown_period_ms: number;
 }
-
 export interface HealthCheckConfig {
 	endpoint?: string;
 	interval_ms: number;
@@ -54,23 +44,20 @@ export interface HealthCheckConfig {
 	failure_threshold: number;
 	success_threshold: number;
 }
-
-// Status and Monitoring Types;
+// Status and Monitoring Types
 }
-
 export interface ServiceStatusDetail {
 	name: string;
 	status: ServiceHealth;
-	health_score: number; // 0-100
+	health_score: number; // 0-100,
 	last_check: string;
 	uptime?: number;
 	response_time_ms?: number;
 	error_count?: number;
 	instances?: ServiceInstance[];
 	error?: string;
-	metadata?: Record<string, any>;
+	metadata?: { [key: string]: any };
 }
-
 export interface ServiceInstance {
 	id: string;
 	status: ServiceHealth;
@@ -81,7 +68,6 @@ export interface ServiceInstance {
 	started_at: string;
 	health_score: number;
 }
-
 export interface HealthCheckReport {
 	overall_health: string;
 	total_services: number;
@@ -96,10 +82,8 @@ export interface HealthCheckReport {
 	dependency_health?: DependencyHealth;
 	comprehensive?: boolean;
 }
-
-// Request/Response Types;
+// Request/Response Types
 }
-
 export interface OrchestrationRequest {
 	action: OrchestrationAction;
 	services?: string[];
@@ -107,35 +91,28 @@ export interface OrchestrationRequest {
 	emergency?: boolean;
 	priority?: 'low' | 'normal' | 'high' | 'critical';
 }
-
 export interface OrchestrationOptions {
 	// Startup options
 	tier_startup_delay?: boolean;
 	health_check_required?: boolean;
 	timeout_ms?: number;
-
 	// Shutdown options
 	graceful_shutdown?: boolean;
 	force_kill?: boolean;
-
 	// Scaling options
 	scale_factor?: number;
 	scaling_mode?: ScalingMode;
-
 	// Deployment options
 	deployment_strategy?: DeploymentStrategy;
 	stop_on_failure?: boolean;
 	rollback_on_failure?: boolean;
-
 	// General options
 	parallel_execution?: boolean;
 	batch_size?: number;
 	priority?: string;
 }
-
-// Performance and Metrics Types;
+// Performance and Metrics Types
 }
-
 export interface PerformanceMetrics {
 	cpu_usage: number;
 	memory_usage: any;
@@ -146,7 +123,6 @@ export interface PerformanceMetrics {
 	throughput: Record<string, number>;
 	timestamp: string;
 }
-
 export interface SystemMetrics {
 	cpu: {
 		usage_percent: number;
@@ -174,7 +150,6 @@ export interface SystemMetrics {
 		errors: number;
 	};
 }
-
 export interface NetworkHealth {
 	connectivity: boolean;
 	latency_ms: number;
@@ -183,7 +158,6 @@ export interface NetworkHealth {
 	dns_resolution_ms: number;
 	external_connectivity: boolean;
 }
-
 export interface ResourceHealth {
 	cpu_health: 'healthy' | 'warning' | 'critical';
 	memory_health: 'healthy' | 'warning' | 'critical';
@@ -192,7 +166,6 @@ export interface ResourceHealth {
 	overall_score: number;
 	alerts: ResourceAlert[];
 }
-
 export interface ResourceAlert {
 	type: 'cpu' | 'memory' | 'disk' | 'network';
 	level: 'warning' | 'critical';
@@ -201,7 +174,6 @@ export interface ResourceAlert {
 	current_value: number;
 	timestamp: string;
 }
-
 export interface DependencyHealth {
 	database_connections: Record<string, boolean>;
 	external_services: Record<string, boolean>;
@@ -209,10 +181,8 @@ export interface DependencyHealth {
 	cache_services: Record<string, boolean>;
 	overall_dependency_health: 'healthy' | 'degraded' | 'critical';
 }
-
-// Capabilities and Configuration;
+// Capabilities and Configuration
 }
-
 export interface ServiceCapabilities {
 	total_managed_services: number;
 	service_tiers: string[];
@@ -225,7 +195,6 @@ export interface ServiceCapabilities {
 	service_discovery: boolean;
 	configuration_management: boolean;
 }
-
 export interface OrchestrationCapabilities extends ServiceCapabilities {
 	max_concurrent_operations: number;
 	supported_protocols: string[];
@@ -235,19 +204,16 @@ export interface OrchestrationCapabilities extends ServiceCapabilities {
 	canary_deployment: boolean;
 	rollback_support: boolean;
 }
-
-// Emergency and Recovery Types;
+// Emergency and Recovery Types
 }
-
 export interface EmergencyRecoveryContext {
 	failure_type: 'service_crash' | 'network_partition' | 'resource_exhaustion' | 'cascade_failure' | 'unknown';
 	failure_timestamp: string;
 	affected_services: string[];
-	failure_details: Record<string, any>;
+	failure_details: { [key: string]: any };
 	recovery_priority: 'low' | 'normal' | 'high' | 'critical';
 	auto_recovery_enabled: boolean;
 }
-
 export interface RecoveryStrategy {
 	strategy_name: string;
 	actions: RecoveryAction[];
@@ -255,18 +221,15 @@ export interface RecoveryStrategy {
 	success_probability: number;
 	rollback_available: boolean;
 }
-
 export interface RecoveryAction {
 	action_type: 'restart_service' | 'scale_up' | 'failover' | 'traffic_redirect' | 'resource_cleanup';
 	target_service?: string;
-	parameters: Record<string, any>;
+	parameters: { [key: string]: any };
 	timeout_ms: number;
 	required: boolean;
 }
-
-// Load Balancing Types;
+// Load Balancing Types
 }
-
 export interface LoadBalancerConfig {
 	algorithm: 'round_robin' | 'least_connections' | 'weighted' | 'ip_hash';
 	health_check_enabled: boolean;
@@ -274,7 +237,6 @@ export interface LoadBalancerConfig {
 	connection_timeout_ms: number;
 	retry_attempts: number;
 }
-
 export interface LoadBalancingRule {
 	service_name: string;
 	weight: number;
@@ -282,31 +244,26 @@ export interface LoadBalancingRule {
 	health_check_path?: string;
 	backup_services: string[];
 }
-
-// Service Discovery Types;
+// Service Discovery Types
 }
-
 export interface ServiceRegistry {
 	services: Map<string, RegisteredService>;
 	last_updated: string;
 	version: string;
 }
-
 export interface RegisteredService {
 	name: string;
 	address: string;
 	port: number;
 	protocol: 'http' | 'https' | 'grpc' | 'tcp';
 	health_check_url?: string;
-	metadata: Record<string, any>;
+	metadata: { [key: string]: any };
 	tags: string[];
 	registered_at: string;
 	last_heartbeat: string;
 }
-
-// Monitoring and Alerting Types;
+// Monitoring and Alerting Types
 }
-
 export interface MonitoringRule {
 	rule_id: string;
 	service_name: string;
@@ -318,7 +275,6 @@ export interface MonitoringRule {
 	notification_channels: string[];
 	enabled: boolean;
 }
-
 export interface Alert {
 	alert_id: string;
 	rule_id: string;
@@ -328,12 +284,10 @@ export interface Alert {
 	timestamp: string;
 	acknowledged: boolean;
 	resolved: boolean;
-	metadata: Record<string, any>;
+	metadata: { [key: string]: any };
 }
-
-// Deployment Types;
+// Deployment Types
 }
-
 export interface DeploymentPlan {
 	plan_id: string;
 	services: string[];
@@ -343,7 +297,6 @@ export interface DeploymentPlan {
 	estimated_duration_ms: number;
 	risk_level: 'low' | 'medium' | 'high';
 }
-
 export interface DeploymentStage {
 	stage_id: string;
 	stage_name: string;
@@ -353,39 +306,33 @@ export interface DeploymentStage {
 	success_criteria: SuccessCriteria[];
 	timeout_ms: number;
 }
-
 export interface DeploymentAction {
 	action_type: 'stop_service' | 'start_service' | 'update_config' | 'health_check' | 'smoke_test';
 	service_name?: string;
-	parameters: Record<string, any>;
+	parameters: { [key: string]: any };
 	timeout_ms: number;
 }
-
 export interface SuccessCriteria {
 	criteria_type: 'health_check' | 'response_time' | 'error_rate' | 'custom';
 	threshold: number;
 	duration_ms: number;
 }
-
 export interface RollbackPlan {
 	automatic_rollback: boolean;
 	rollback_triggers: string[];
 	rollback_actions: DeploymentAction[];
 	rollback_timeout_ms: number;
 }
-
-// Configuration Management Types;
+// Configuration Management Types
 }
-
 export interface ConfigurationTemplate {
 	template_id: string;
 	template_name: string;
 	service_type: string;
 	parameters: ConfigParameter[];
-	default_values: Record<string, any>;
+	default_values: { [key: string]: any };
 	validation_rules: ValidationRule[];
 }
-
 export interface ConfigParameter {
 	name: string;
 	type: 'string' | 'number' | 'boolean' | 'array' | 'object';
@@ -394,59 +341,49 @@ export interface ConfigParameter {
 	default_value?: any;
 	validation?: string; // regex pattern
 }
-
 export interface ValidationRule {
 	field: string;
 	rule: string;
 	message: string;
 }
-
 export interface ServiceConfiguration {
 	service_name: string;
-	configuration: Record<string, any>;
+	configuration: { [key: string]: any };
 	version: string;
 	applied_at: string;
 	applied_by: string;
 	checksum: string;
 }
-
-// Orchestration Events and Logging;
+// Orchestration Events and Logging
 }
-
 export interface OrchestrationEvent {
 	event_id: string;
 	event_type: 'service_start' | 'service_stop' | 'deployment' | 'scaling' | 'health_check' | 'alert';
 	service_name?: string;
 	timestamp: string;
-	details: Record<string, any>;
+	details: { [key: string]: any };
 	severity: 'debug' | 'info' | 'warning' | 'error';
 }
-
 export interface OrchestrationLog {
 	log_id: string;
 	timestamp: string;
 	level: 'debug' | 'info' | 'warning' | 'error';
 	service: string;
 	message: string;
-	metadata: Record<string, any>;
+	metadata: { [key: string]: any };
 }
-
 // Utility Types
-
 export type OrchestrationResult<T = any> = {
 	success: boolean;
 	data?: T;
 	error?: string;
 	timestamp: string;
 	duration_ms?: number;
-	metadata?: Record<string, any>;
+	metadata?: { [key: string]: any };
 };
-
 export type ServiceHealthStatus = 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
-
 export type OperationStatus = 'pending' | 'in_progress' | 'completed' | 'failed' | 'cancelled';
 }
-
 export interface PaginatedResult<T> {
 	data: T[];
 	total: number;
@@ -454,7 +391,6 @@ export interface PaginatedResult<T> {
 	per_page: number;
 	has_more: boolean;
 }
-
 export interface ServiceFilter {
 	tier?: ServiceTier[];
 	status?: ServiceHealthStatus[];
@@ -462,7 +398,6 @@ export interface ServiceFilter {
 	tags?: string[];
 	critical_only?: boolean;
 }
-
 export interface ServiceSort {
 	field: 'name' | 'status' | 'health_score' | 'uptime' | 'last_check';
 	direction: 'asc' | 'desc';

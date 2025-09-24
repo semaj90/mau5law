@@ -1,11 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   const { evidenceId: string, showMetadata: boolean = true, allowDownload: boolean = true, onMetadataExtracted: ((metadata: LegalAIMetadata) = > void) | undefined = undefined } = $props();
-
   import { onMount } from 'svelte';
   import { fade, scale } from 'svelte/transition';
   import { extractPNGMetadata, getArtifact, formatFileSize, type ArtifactViewerProps } from '$lib/stores/evidence-workflow';
@@ -33,13 +31,7 @@ https://svelte.dev/e/js_parse_error -->
     CheckCircle,
     Info
   } from 'lucide-svelte';
-
   // Props
-  
-  
-  
-  
-
   // Component state
   let artifact: any = null;
   let extractedMetadata: LegalAIMetadata | null = null;
@@ -47,22 +39,18 @@ https://svelte.dev/e/js_parse_error -->
   let loading = true;
   let error: string | null = null;
   let downloadUrl: string | null = null;
-
   // Load artifact data
   const loadArtifact = async () => {
     try {
       loading = true;
       error = null;
-
       const response = await getArtifact(evidenceId);
       if (response.success) {
         artifact = response.artifact;
         downloadUrl = response.download_url;
-
         // Load image for display
         if (downloadUrl) {
           imageUrl = downloadUrl;
-
           // Extract PNG metadata if it's a PNG file
           if (artifact.content_type === 'image/png' && showMetadata) {
             await extractMetadata();
@@ -77,15 +65,12 @@ https://svelte.dev/e/js_parse_error -->
       loading = false;
     }
   };
-
   const extractMetadata = async () => {
     if (!downloadUrl) return;
-
     try {
       // Fetch the PNG file
       const response = await fetch(downloadUrl);
       const arrayBuffer = await response.arrayBuffer();
-
       // Extract metadata
       const metadata = await extractPNGMetadata(arrayBuffer);
       if (metadata) {
@@ -98,13 +83,11 @@ https://svelte.dev/e/js_parse_error -->
       console.warn('Failed to extract PNG metadata:', err);
     }
   };
-
   const handleDownload = () => {
     if (downloadUrl) {
       window.open(downloadUrl, '_blank');
     }
   };
-
   const getRiskBadgeVariant = (risk: string) => {
     switch (risk?.toLowerCase()) {
       case 'high': return 'destructive';
@@ -113,20 +96,16 @@ https://svelte.dev/e/js_parse_error -->
       default: return 'outline';
     }
   };
-
   const formatTimestamp = (timestamp: string) => {
     return new Date(timestamp).toLocaleString();
   };
-
   const formatConfidence = (confidence: number) => {
     return `${Math.round(confidence * 100)}%`;
   };
-
   $effect(() => {
     loadArtifact();
   });
 </script>
-
 {#if loading}
   <div class="flex items-center justify-center p-8">
     <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -145,15 +124,12 @@ https://svelte.dev/e/js_parse_error -->
         <h2 class="text-2xl font-semibold text-gray-900">Evidence Artifact</h2>
         <p class="text-sm text-gray-600">ID: {artifact.evidence_id}</p>
       </div>
-
       {#if allowDownload && downloadUrl}
         <Button onclick={handleDownload} class="flex items-center gap-2 bits-btn bits-btn">
 <Download class="w-4 h-4" />
           Download
-
       {/if}
     </div>
-
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Image Preview -->
       <div class="nes-container">
@@ -183,7 +159,6 @@ https://svelte.dev/e/js_parse_error -->
           {/if}
         </div>
       </div>
-
       <!-- Artifact Information -->
       <div class="nes-container">
         <div class="yorha-panel-header">
@@ -211,7 +186,6 @@ https://svelte.dev/e/js_parse_error -->
               <span class="ml-2">{formatTimestamp(artifact.updated_at)}</span>
             </div>
           </div>
-
           {#if artifact.content_hash}
             <div class="flex items-center gap-2 text-sm">
               <Hash class="w-4 h-4 text-gray-500" />
@@ -221,7 +195,6 @@ https://svelte.dev/e/js_parse_error -->
               </code>
             </div>
           {/if}
-
           {#if artifact.confidence !== undefined}
             <div class="flex items-center gap-2">
               <Zap class="w-4 h-4 text-yellow-500" />
@@ -229,7 +202,6 @@ https://svelte.dev/e/js_parse_error -->
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{formatConfidence(artifact.confidence)}</span>
             </div>
           {/if}
-
           {#if artifact.risk_assessment}
             <div class="flex items-center gap-2">
               <Shield class="w-4 h-4 text-gray-500" />
@@ -242,7 +214,6 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </div>
-
     <!-- Detailed Analysis -->
     {#if showMetadata && (extractedMetadata || artifact.ai_analysis)}
       <div class="mt-6 nes-container">
@@ -259,7 +230,6 @@ https://svelte.dev/e/js_parse_error -->
               <TabsTrigger value="extracted">PNG Metadata</TabsTrigger>
               <TabsTrigger value="processing">Processing Chain</TabsTrigger>
             </TabsList>
-
             <!-- AI Analysis Tab -->
             <TabsContent value="analysis" class="mt-4">
               {#if artifact.ai_analysis}
@@ -268,14 +238,12 @@ https://svelte.dev/e/js_parse_error -->
                     {@const analysis = typeof artifact.ai_analysis === 'string'
                       ? JSON.parse(artifact.ai_analysis)
                       : artifact.ai_analysis}
-
                     {#if analysis.summary}
                       <div>
                         <h4 class="font-medium text-gray-900 mb-2">Summary</h4>
                         <p class="text-sm text-gray-600 bg-gray-50 p-3 rounded">{analysis.summary}</p>
                       </div>
                     {/if}
-
                     {#if analysis.entities && analysis.entities.length > 0}
                       <div>
                         <h4 class="font-medium text-gray-900 mb-2">Entities</h4>
@@ -286,7 +254,6 @@ https://svelte.dev/e/js_parse_error -->
                         </div>
                       </div>
                     {/if}
-
                     {#if analysis.classifications}
                       <div>
                         <h4 class="font-medium text-gray-900 mb-2">Classifications</h4>
@@ -308,7 +275,6 @@ https://svelte.dev/e/js_parse_error -->
                 <p class="text-sm text-gray-500">No AI analysis available</p>
               {/if}
             </TabsContent>
-
             <!-- PNG Metadata Tab -->
             <TabsContent value="extracted" class="mt-4">
               {#if extractedMetadata}
@@ -331,7 +297,6 @@ https://svelte.dev/e/js_parse_error -->
                       <span class="ml-2">{extractedMetadata.version}</span>
                     </div>
                   </div>
-
                   {#if extractedMetadata.semanticHash}
                     <div class="flex items-center gap-2 text-sm">
                       <Hash class="w-4 h-4 text-gray-500" />
@@ -341,7 +306,6 @@ https://svelte.dev/e/js_parse_error -->
                       </code>
                     </div>
                   {/if}
-
                   {#if extractedMetadata.processingChain}
                     <div>
                       <h4 class="font-medium text-gray-900 mb-2">Processing Steps</h4>
@@ -366,7 +330,6 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
               {/if}
             </TabsContent>
-
             <!-- Processing Chain Tab -->
             <TabsContent value="processing" class="mt-4">
               {#if artifact.processing_chain}
@@ -400,20 +363,17 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   </div>
 {/if}
-
 <style>
-  .artifact-viewer {;
+  .artifact-viewer {
     max-width: 1200px;
     margin: 0 auto;
   }
-
   code {
     word-break: break-all;
     max-width: 200px;
     display: inline-block;
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: ellipsi;
     white-space: nowrap;
   }
 </style>
-

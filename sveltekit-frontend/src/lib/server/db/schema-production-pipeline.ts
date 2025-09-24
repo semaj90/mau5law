@@ -3,14 +3,13 @@
  * Optimized for crawl → OCR → embed → index → cache → serve workflow
  * PostgreSQL + pgvector + Drizzle ORM
  */
-
-import { 
-  pgTable, 
-  text, 
-  integer, 
-  timestamp, 
-  boolean, 
-  jsonb, 
+import {
+  pgTable,
+  text,
+  integer,
+  timestamp,
+  boolean,
+  jsonb,
   uuid,
   varchar,
   bigint,
@@ -20,12 +19,9 @@ import {
   primaryKey
 } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
-
 // Enable pgvector extension
 export const enableVectorExtension = sql`CREATE EXTENSION IF NOT EXISTS vector`;
-
 // ===== CRAWL & INGESTION TABLES =====
-
 /**
  * Crawl Jobs - Tracks web crawling requests and status
  */;
@@ -39,7 +35,7 @@ export const crawlJobs = pgTable('crawl_jobs', {
   maxDepth: integer('max_depth').default(1),
   allowedDomains: jsonb('allowed_domains'), // Array of domains to crawl
   blockedPaths: jsonb('blocked_paths'), // Array of path patterns to skip
-  headers: jsonb('headers'), // Custom headers for crawling;
+  headers: jsonb('headers'), // Custom headers for crawling
   metadata: jsonb('metadata'), // Additional crawl configuration
   retryCount: integer('retry_count').default(0),
   maxRetries: integer('max_retries').default(3),
@@ -55,7 +51,6 @@ export const crawlJobs = pgTable('crawl_jobs', {
   priorityIdx: index('crawl_jobs_priority_idx').on(table.priority),
   createdAtIdx: index('crawl_jobs_created_at_idx').on(table.createdAt)
 });
-
 /**
  * Crawled Pages - Stores raw crawled content before processing
  */;
@@ -72,7 +67,7 @@ export const crawledPages = pgTable('crawled_pages', {
   blobPath: text('blob_path'), // MinIO path for large files
   headers: jsonb('headers'),
   links: jsonb('links'), // Extracted links
-  images: jsonb('images'), // Extracted images;
+  images: jsonb('images'), // Extracted images
   metadata: jsonb('metadata'),
   processingStatus: varchar('processing_status', { length: 50 }).default('pending'), // pending, processing, completed, failed
   ocrRequired: boolean('ocr_required').default(false),
@@ -86,9 +81,7 @@ export const crawledPages = pgTable('crawled_pages', {
   hashIdx: index('crawled_pages_hash_idx').on(table.contentHash),
   ocrIdx: index('crawled_pages_ocr_idx').on(table.ocrRequired)
 });
-
 // ===== DOCUMENT PROCESSING TABLES =====
-
 /**
  * Documents - Processed and classified documents
  */;
@@ -105,7 +98,7 @@ export const documents = pgTable('documents', {
   confidentialityLevel: varchar('confidentiality_level', { length: 50 }).default('public'), // public, internal, confidential, restricted
   classification: jsonb('classification'), // AI-generated document classification
   entities: jsonb('entities'), // Extracted legal entities (parties, courts, etc.)
-  topics: jsonb('topics'), // Topic modeling results;
+  topics: jsonb('topics'), // Topic modeling results
   summary: text('summary'), // AI-generated summary
   keyPhrases: jsonb('key_phrases'), // Extracted key legal phrases
   citedCases: jsonb('cited_cases'), // Referenced case law
@@ -134,7 +127,6 @@ export const documents = pgTable('documents', {
   createdAtIdx: index('documents_created_at_idx').on(table.createdAt),
   qualityScoreIdx: index('documents_quality_score_idx').on(table.qualityScore)
 });
-
 /**
  * Document Chunks - Strategic chunking for optimal embeddings
  */;
@@ -157,7 +149,7 @@ export const documentChunks = pgTable('document_chunks', {
   embeddingVersion: varchar('embedding_version', { length: 50 }).default('1.0'),
   embeddingMetadata: jsonb('embedding_metadata'),
   searchKeywords: jsonb('search_keywords'), // Extracted keywords for hybrid search
-  legalConcepts: jsonb('legal_concepts'), // Identified legal concepts;
+  legalConcepts: jsonb('legal_concepts'), // Identified legal concepts
   entities: jsonb('entities'), // Entities mentioned in this chunk
   qualityScore: real('quality_score'), // Chunk-specific quality score
   createdAt: timestamp('created_at').defaultNow(),
@@ -173,9 +165,7 @@ export const documentChunks = pgTable('document_chunks', {
   embeddingL2Idx: index('document_chunks_embedding_l2_idx').using('hnsw', table.embedding.op('vector_l2_ops')),
   embeddingIpIdx: index('document_chunks_embedding_ip_idx').using('hnsw', table.embedding.op('vector_ip_ops'))
 });
-
 // ===== SEARCH & INDEXING TABLES =====
-
 /**
  * Search Index - Full-text search with legal-specific ranking
  */;
@@ -191,7 +181,7 @@ export const searchIndex = pgTable('search_index', {
   entities: jsonb('entities'),
   boost: real('boost').default(1.0), // Search ranking boost
   freshness: real('freshness').default(1.0), // Time-based relevance decay
-  authority: real('authority').default(0.5), // Domain/source authority score;
+  authority: real('authority').default(0.5), // Domain/source authority score
   popularity: real('popularity').default(0.0), // Click-through rate based score
   legalWeight: real('legal_weight').default(0.5), // Legal document importance
   lastAccessed: timestamp('last_accessed'),
@@ -208,7 +198,6 @@ export const searchIndex = pgTable('search_index', {
   popularityIdx: index('search_index_popularity_idx').on(table.popularity),
   legalWeightIdx: index('search_index_legal_weight_idx').on(table.legalWeight)
 });
-
 /**
  * Cache Keys - Redis cache key management and invalidation
  */;
@@ -222,7 +211,7 @@ export const cacheKeys = pgTable('cache_keys', {
   ttl: integer('ttl').default(3600), // TTL in seconds
   hitCount: integer('hit_count').default(0),
   lastHit: timestamp('last_hit'),
-  dataSize: integer('data_size'), // Cached data size in bytes;
+  dataSize: integer('data_size'), // Cached data size in bytes
   metadata: jsonb('metadata'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
@@ -235,9 +224,7 @@ export const cacheKeys = pgTable('cache_keys', {
   expiresAtIdx: index('cache_keys_expires_at_idx').on(table.expiresAt),
   hitCountIdx: index('cache_keys_hit_count_idx').on(table.hitCount)
 });
-
 // ===== PROCESSING & MONITORING TABLES =====
-
 /**
  * Processing Jobs - Tracks async processing tasks
  */;
@@ -251,7 +238,7 @@ export const processingJobs = pgTable('processing_jobs', {
   priority: integer('priority').default(5),
   progress: integer('progress').default(0), // 0-100
   payload: jsonb('payload'),
-  result: jsonb('result'),;
+  result: jsonb('result'),
   error: text('error'),
   retryCount: integer('retry_count').default(0),
   maxRetries: integer('max_retries').default(3),
@@ -270,7 +257,6 @@ export const processingJobs = pgTable('processing_jobs', {
   workerIdx: index('processing_jobs_worker_idx').on(table.workerId),
   createdAtIdx: index('processing_jobs_created_at_idx').on(table.createdAt)
 });
-
 /**
  * System Metrics - Performance and health monitoring
  */;
@@ -281,7 +267,7 @@ export const systemMetrics = pgTable('system_metrics', {
   value: real('value').notNull(),
   unit: varchar('unit', { length: 50 }), // pages/min, docs/min, ms, mb/s
   tags: jsonb('tags'),
-  metadata: jsonb('metadata'),;
+  metadata: jsonb('metadata'),
   timestamp: timestamp('timestamp').defaultNow()
 }, (table) => ({
   metricTypeIdx: index('system_metrics_type_idx').on(table.metricType),
@@ -289,9 +275,7 @@ export const systemMetrics = pgTable('system_metrics', {
   timestampIdx: index('system_metrics_timestamp_idx').on(table.timestamp),
   typeTimestampIdx: index('system_metrics_type_timestamp_idx').on(table.metricType, table.timestamp)
 });
-
 // ===== LEGAL-SPECIFIC TABLES =====
-
 /**
  * Legal Authorities - Court decisions, statutes, regulations
  */;
@@ -306,7 +290,7 @@ export const legalAuthorities = pgTable('legal_authorities', {
   authorityLevel: varchar('authority_level', { length: 50 }), // supreme, appellate, district, administrative
   bindingStatus: varchar('binding_status', { length: 50 }), // binding, persuasive, superseded
   keyholding: text('keyholding'),
-  summary: text('summary'),;
+  summary: text('summary'),
   topics: jsonb('topics'),
   citationCount: integer('citation_count').default(0),
   documentId: uuid('document_id').references(() => documents.id),
@@ -320,14 +304,12 @@ export const legalAuthorities = pgTable('legal_authorities', {
   bindingIdx: index('legal_authorities_binding_idx').on(table.bindingStatus),
   citationCountIdx: index('legal_authorities_citation_count_idx').on(table.citationCount)
 });
-
 // ===== UTILITY FUNCTIONS =====
-
 /**
  * Vector similarity search function
  */
 export const vectorSimilaritySearch = (queryEmbedding: string, limit: number = 10, threshold: number = 0.7) => sql`
-  SELECT 
+  SELECT
     dc.*,
     d.title,
     d.document_type,
@@ -339,13 +321,12 @@ export const vectorSimilaritySearch = (queryEmbedding: string, limit: number = 1
   ORDER BY dc.embedding <=> ${queryEmbedding}::vector
   LIMIT ${limit}
 `;
-
 /**
  * Hybrid search combining full-text and vector search
  */
 export const hybridSearch = (query: string, queryEmbedding: string, limit: number = 10) => sql`
   WITH text_search AS (
-    SELECT 
+    SELECT
       si.document_id,
       si.chunk_id,
       ts_rank_cd(si.search_vector, plainto_tsquery(${query})) as text_score
@@ -353,14 +334,14 @@ export const hybridSearch = (query: string, queryEmbedding: string, limit: numbe
     WHERE si.search_vector @@ plainto_tsquery(${query})
   ),
   vector_search AS (
-    SELECT 
+    SELECT
       dc.document_id,
       dc.id as chunk_id,
       (1 - (dc.embedding <=> ${queryEmbedding}::vector)) as vector_score
     FROM document_chunks dc
     WHERE (1 - (dc.embedding <=> ${queryEmbedding}::vector)) > 0.7
   )
-  SELECT 
+  SELECT
     COALESCE(ts.document_id, vs.document_id) as document_id,
     COALESCE(ts.chunk_id, vs.chunk_id) as chunk_id,
     COALESCE(ts.text_score, 0) * 0.3 + COALESCE(vs.vector_score, 0) * 0.7 as combined_score,
@@ -371,7 +352,6 @@ export const hybridSearch = (query: string, queryEmbedding: string, limit: numbe
   ORDER BY combined_score DESC
   LIMIT ${limit}
 `;
-
 // Export table types for TypeScript
 export type CrawlJob = typeof crawlJobs.$inferSelect;
 export type NewCrawlJob = typeof crawlJobs.$inferInsert;

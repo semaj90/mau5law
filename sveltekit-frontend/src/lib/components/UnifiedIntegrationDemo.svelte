@@ -1,17 +1,15 @@
 <!-- Unified GPU/WASM Integration Demo Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-
   // System status and results
   const systemHealth = writable(null);
   const activeOperations = writable([]);
@@ -21,19 +19,15 @@
   let selectedOperation = $state('processDocument');
   let testInput = $state('');
   let errorMessage = $state('');
-
   // Demo data for different operations
   const demoInputs = {
     processDocument: `LEGAL CONTRACT AGREEMENT
-
   This Service Agreement is entered into between Company A and Company B.
-
   TERMS AND CONDITIONS:
   1. Service Period: 12 months from execution
   2. Payment Terms: Net 30 days
   3. Deliverables: As specified in Schedule A
   4. Termination: Either party may terminate with 60 days notice
-
   Both parties acknowledge they have read and agree to these terms.`,
     performInference: JSON.stringify([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]),
     processCanvas: JSON.stringify(fill)-map((_, i) => {
@@ -44,7 +38,7 @@
       }),
       format: 'RGBA';
     }),
-    matmul: JSON.stringify({
+    matmul: JSON.stringify({,
       a: [1, 2, 3, 4, 5, 6],
       b: [7, 8, 9, 10, 11, 12],
       m: 2,
@@ -52,13 +46,12 @@
       k: 3;
     }),
     attention: JSON.stringify(fill)-map(() => Math.random()),
-      key: Array(64).fill.map(() => Math.random()),;
+      key: Array(64).fill.map(() => Math.random()),
       value: Array(64).fill.map(() => Math.random()),
-      seq_len: 8,;
+      seq_len: 8,
       dim: 8;
     })
   };
-
   $effect(() => {
     updateSystemHealth();
     updateMetrics();
@@ -70,7 +63,6 @@
     }, 5000);
     return () => clearInterval(interval);
   });
-
   async function updateSystemHealth() {
     try {
       const response = await fetch('/api/v1/orchestrator?endpoint=health');
@@ -82,7 +74,6 @@
       console.error('Failed to fetch system health:', error);
     }
   }
-
   async function updateMetrics() {
     try {
       const response = await fetch('/api/v1/orchestrator?endpoint=metrics');
@@ -94,7 +85,6 @@
       console.error('Failed to fetch metrics:', error);
     }
   }
-
   async function executeOperation() {
     if (!testInput.trim()) return;
     isLoading = true;
@@ -104,12 +94,12 @@
       switch (selectedOperation) {
         case 'processDocument':
           requestData = {
-            operation: 'processDocument',;
+            operation: 'processDocument',
             data: {
-              document: testInput,
+              document: testInput
               analysisType: 'comprehensive';
             },
-            options: {;
+            options: {
               priority: 'HIGH',
               maxTokens: 1024;
             }
@@ -117,11 +107,11 @@
           break;
         case 'performInference':
           requestData = {
-            operation: 'performInference',;
+            operation: 'performInference',
             data: {
               input: JSON.parse(testInput);
             },
-            options: {;
+            options: {
               priority: 'HIGH',
               modelType: 'transformer';
             }
@@ -130,11 +120,11 @@
         case 'processCanvas':
           const canvasData = JSON.parse(testInput);
           requestData = {
-            operation: 'processCanvas',;
+            operation: 'processCanvas',
             data: {
               canvasState: canvasData
             },
-            options: {;
+            options: {
               priority: 'NORMAL',
               targetBitDepth: 24;
             }
@@ -144,8 +134,8 @@
           const matrixData = JSON.parse(testInput);
           requestData = {
             operation: 'matmul',
-            data: matrixData,;
-            options: {;
+            data: matrixData
+            options: {
               priority: 'HIGH';
             }
           };
@@ -154,18 +144,18 @@
           const attentionData = JSON.parse(testInput);
           requestData = {
             operation: 'attention',
-            data: attentionData,;
-            options: {;
+            data: attentionData
+            options: {
               priority: 'HIGH';
             }
           };
           break;
       }
       const response = await fetch('/api/v1/orchestrator', {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },;
+        },
         body: JSON.stringify(requestData);
       });
       const result = await (response as { json?: unknown }).json();
@@ -173,8 +163,8 @@
         results.update(prev => [
           {
             id: Date.now(),
-            operation: selectedOperation,;
-            timestamp: new Date(),;
+            operation: selectedOperation
+            timestamp: new Date(),
             data: (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).data,
             metadata: (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata,
             processingTime: (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).totalProcessingTime
@@ -193,12 +183,10 @@
       updateMetrics();
     }
   }
-
   function onOperationChange() {
     testInput = demoInputs[selectedOperation];
     errorMessage = '';
   }
-
   function getHealthColor(status) {
     switch (status) {
       case 'healthy': return 'text-green-600';
@@ -207,7 +195,6 @@
       default: return 'text-gray-600';
     }
   }
-
   function getServiceColor(status) {
     switch (status) {
       case 'online': return 'text-green-600';
@@ -217,7 +204,6 @@
     }
   }
 </script>
-
 <div class="unified-integration-demo p-6 max-w-7xl mx-auto">
   <div class="mb-8">
     <h1 class="text-3xl font-bold text-gray-900 mb-2">
@@ -227,7 +213,6 @@
       Complete integration of WASM modules, GPU acceleration, QUIC services, and neural processing
     </p>
   </div>
-
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
     <!-- System Health Card -->
     <div class="lg:col-span-1 nes-container">
@@ -243,7 +228,6 @@
                 {$systemHealth.overall.toUpperCase()}
               </span>
             </div>
-
             <div class="border-t pt-3">
               <h4 class="text-xs font-semibold text-gray-700 mb-2">Services</h4>
               <div class="space-y-1">
@@ -255,7 +239,6 @@
                 {/each}
               </div>
             </div>
-
             <div class="border-t pt-3">
               <h4 class="text-xs font-semibold text-gray-700 mb-2">Performance</h4>
               <div class="space-y-1 text-xs">
@@ -275,7 +258,6 @@
         {/if}
       </div>
     </div>
-
     <!-- Operation Controls Card -->
     <div class="lg:col-span-2 nes-container">
       <div class="yorha-panel-header">
@@ -298,7 +280,6 @@
               <option value="attention">Attention Mechanism</option>
             </select>
           </div>
-
           <!-- Input Data -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2" for="-input-data-">
@@ -310,14 +291,12 @@
               placeholder="Enter test (data as { success?: unknown; data?: unknown })..."
 ></textarea>
           </div>
-
           <!-- Error Display -->
           {#if errorMessage}
             <div class="bg-red-50 border border-red-200 rounded-md p-3">
               <p class="text-red-600 text-sm">{errorMessage}</p>
             </div>
           {/if}
-
           <!-- Execute Button -->
           <Button
             onclick={executeOperation}
@@ -340,7 +319,6 @@
       </div>
     </div>
   </div>
-
   <!-- Results and Metrics -->
   <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
     <!-- Results Card -->
@@ -373,20 +351,17 @@
                     {/if}
                   </div>
                 </div>
-
                 <div class="bg-gray-50 rounded p-2 text-xs font-mono">
                   {#if (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).data?.success !== undefined}
                     <p class="text-{(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).data.success ? 'green' : 'red'}-600 mb-1">
                       Status: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).data.success ? 'Success' : 'Failed'}
                     </p>
                   {/if}
-
                   {#if (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata?.performance}
                     <p>Latency: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata.performance.latency}ms</p>
                     <p>Throughput: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata.performance.throughput.toFixed(2)}/s</p>
                     <p>Resource Usage: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata.performance.resourceUsage.toFixed(2)}</p>
                   {/if}
-
                   {#if (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata?.fallbacksTriggered?.length > 0}
                     <p class="text-yellow-600">
                       Fallbacks: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata.fallbacksTriggered.join(' → ')}
@@ -403,7 +378,6 @@
         </div>
       </div>
     </div>
-
     <!-- Performance Metrics Card -->
     <div class="nes-container">
       <div class="yorha-panel-header">
@@ -417,7 +391,6 @@
                 <h4 class="text-sm font-medium text-blue-800">Total Operations</h4>
                 <p class="text-2xl font-bold text-blue-600">{$metrics.count}</p>
               </div>
-
               {#if $metrics.latestMetric}
                 <div class="bg-green-50 rounded-lg p-3">
                   <h4 class="text-sm font-medium text-green-800">Latest Latency</h4>
@@ -427,7 +400,6 @@
                 </div>
               {/if}
             </div>
-
             <!-- Recent Metrics Chart (simplified) -->
             <div>
               <h4 class="text-sm font-medium text-gray-700 mb-2">Recent Performance</h4>
@@ -458,7 +430,6 @@
     </div>
   </div>
 </div>
-
 <style>
   .unified-integration-demo {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);

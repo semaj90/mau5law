@@ -1,24 +1,22 @@
 
 import { writable } from "svelte/store";
 // Orphaned content: import type { Evidence
-
-// Sidebar state;
+// Sidebar state
 export const sidebarStore = writable({
-  open: false,
+  open: false
   width: 320,
   items: [] as any[],
-  searchQuery: "",;
+  searchQuery: "",
   loading: false
 });
-
-// Toolbar state;
+// Toolbar state
 export const toolbarStore = writable({
   selectedTool: "select",
   formatting: {
-    bold: false,
-    italic: false,
-    underline: false,
-    strikethrough: false,
+    bold: false
+    italic: false
+    underline: false
+    strikethrough: false
     fontSize: 16,
     fontFamily: "Arial",
     color: "#000000",
@@ -30,40 +28,37 @@ export const toolbarStore = writable({
     strokeColor: "#000000",
     fillColor: "transparent",
     opacity: 1
-  },;
+  },
   zoom: 100,
-  canUndo: false,
+  canUndo: false
   canRedo: false
 });
-
-// Canvas state;
+// Canvas state
 export const canvasStore = writable({
   width: 800,
   height: 600,
   objects: [] as any[],
   selectedObjects: [] as any[],
-  clipboard: null as any,
-  isDirty: false,
-  isLoading: false,
+  clipboard: null as any
+  isDirty: false
+  isLoading: false
   panX: 0,
-  panY: 0,;
+  panY: 0,
   scale: 1
 });
-
-// AI state;
+// AI state
 export const aiStore = writable({
-  dialogOpen: false,
+  dialogOpen: false
   selectedVibe: "professional",
   prompt: "",
   response: "",
-  isGenerating: false,;
+  isGenerating: false
   history: [] as any[]
 });
-
-// File upload state;
+// File upload state
 export const uploadStore = writable({
-  isUploading: false,
-  progress: 0,;
+  isUploading: false
+  progress: 0,
   queue: [] as File[],
   uploadedFiles: [] as Evidence[]
 });

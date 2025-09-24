@@ -1,14 +1,11 @@
 <!-- @migration-task Error while migrating Svelte code: Missing catch or finally clause
-https://svelte.dev/e/js_parse_error -->
+https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Missing catch or finally clause -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, tick } from 'svelte';
-
   interface Props {
     x: number;
     y: number;
@@ -32,21 +29,19 @@ https://svelte.dev/e/js_parse_error -->
     onsendToCase,
     onclose
   }: Props = $props();
-
   import DropdownMenuContent from "$lib/components/ui/dropdown-menu/DropdownMenuContent.svelte";
   import DropdownMenuItem from "$lib/components/ui/dropdown-menu/DropdownMenuItem.svelte";
   import DropdownMenuRoot from "$lib/components/ui/dropdown-menu/DropdownMenuRoot.svelte";
   import DropdownMenuSeparator from "$lib/components/ui/dropdown-menu/DropdownMenuSeparator.svelte";
   import type { Case, Evidence } from "$lib/types/index";
-
   // --- Phase 10: Context7 Evidence Actions ---
   // Trigger semantic audit, agent review, or vector search for this evidence
   async function auditEvidence() {
     if (!item) return;
     try {
       const res = await fetch('/api/audit/semantic', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(id)}` })
       });
       if (!res.ok) throw new Error('Failed to audit evidence');
@@ -62,14 +57,13 @@ https://svelte.dev/e/js_parse_error -->
     if (!item) return;
     try {
       const res = await fetch('/api/agent/trigger', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(id) })
       });
       if (!res.ok) throw new Error('Failed to trigger agent review');
     closeMenu();
   }
-
   let cases = $state<Case[]>([]);
   let menuOpen = $state(true);
     }
@@ -78,7 +72,6 @@ https://svelte.dev/e/js_parse_error -->
   }
   let cases = $state<Case[] >([]);
   let menuOpen = $state(true);
-
   $effect(() => {
     (async () => {
 // Load available cases
@@ -94,7 +87,6 @@ https://svelte.dev/e/js_parse_error -->
     await tick();
     })();
   });
-
   function sendToCase(caseId: string) {
     onsendToCase?.();
     closeMenu();
@@ -216,7 +208,6 @@ https://svelte.dev/e/js_parse_error -->
     </DropdownMenuContent>
   {/if}
 </DropdownMenuRoot>
-
 <style>
   /* @unocss-include */
   @keyframes contextMenuFadeIn {
@@ -229,4 +220,3 @@ https://svelte.dev/e/js_parse_error -->
       transform: scale(1);
 }}
 </style>
-

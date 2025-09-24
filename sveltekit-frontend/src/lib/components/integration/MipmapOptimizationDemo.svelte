@@ -1,10 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: 'default' is a reserved word in JavaScript and cannot be used here;
+<!-- @migration-task Error while migrating Svelte code: 'default' is a reserved word in JavaScript and cannot be used her;
 https://svelte.dev/e/unexpected_reserved_word -->
 <!-- @migration-task Error while migrating Svelte code: 'default' is a reserved word in JavaScript and cannot be used here -->
 {#snippet default}
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { yorhaWebGPU } from '$lib/components/three/yorha-ui/webgpu/YoRHaWebGPUMath';
   import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders';
@@ -16,7 +15,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-
   // Reactive state using Svelte 5 runes
   let isInitialized = $state(false);
   let isProcessing = $state(false);
@@ -25,11 +23,10 @@ https://svelte.dev/e/unexpected_reserved_word -->
   let mipmapConfig = $state({
     maxMipLevels: 12,
     filterMode: 'linear' as 'linear' | 'nearest' | 'cubic',
-    rtxOptimized: true,
-    enableStreaming: false,
+    rtxOptimized: true
+    enableStreaming: false
     maxTextureSize: 2048
   });
-
   // Demo legal documents
   let legalDocuments = $state([
     {
@@ -42,7 +39,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       estimatedComplexity: 'High';
     },
     {
-      id: 'evidence_001', 
+      id: 'evidence_001',
       type: 'evidence' as const,
       title: 'Financial Records Evidence',
       priority: 180,
@@ -52,15 +49,14 @@ https://svelte.dev/e/unexpected_reserved_word -->
     },
     {
       id: 'brief_001',
-      type: 'brief' as const,;
-      title: 'Legal Brief Document',;
+      type: 'brief' as const,
+      title: 'Legal Brief Document',
       priority: 150,
       riskLevel: 'medium' as const,
       textureSize: '1024x1024',
       estimatedComplexity: 'Medium';
     }
   ]);
-
   // Performance metrics
   let performanceMetrics = $state({
     totalTexturesProcessed: 0,
@@ -69,7 +65,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
     memoryEfficiency: 0,
     rtxAccelerationUsage: 0
   });
-
   // Initialize WebGPU systems
   async function initializeSystem() {
     isProcessing = true;
@@ -80,22 +75,18 @@ https://svelte.dev/e/unexpected_reserved_word -->
       if (!webgpuInit) {
         throw new Error('Failed to initialize WebGPU Math');
       }
-
       // Initialize mipmap shaders
       const mipmapInit = await yorhaMipmapShaders.initialize();
       if (!mipmapInit) {
         throw new Error('Failed to initialize mipmap shaders');
       }
-
       // Initialize texture manager
       const textureManagerInit = await yorhaTextureManager.initialize();
       if (!textureManagerInit) {
         throw new Error('Failed to initialize texture manager');
       }
-
       // Get system statistics
       systemStats = yorhaTextureManager.getStatistics();
-
       isInitialized = true;
       console.log('✅ YoRHa mipmap optimization system initialized successfully');
     } catch (error) {
@@ -105,16 +96,14 @@ https://svelte.dev/e/unexpected_reserved_word -->
       isProcessing = false;
     }
   }
-
   // Create mock GPU texture for demonstration
   function createMockTexture(width: number, height: number): GPUTexture | null {
     try {
-      const device = (yorhaWebGPU as any).device;
+      const device = (yorhaWebGPU as any).devic;
       if (!device) return null;
-
       return device.createTexture({
-        size: [width, height, 1],;
-        format: 'rgba8unorm',;
+        size: [width, height, 1],
+        format: 'rgba8unorm',
         usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.STORAGE_BINDING;
       });
     } catch (error) {
@@ -122,32 +111,27 @@ https://svelte.dev/e/unexpected_reserved_word -->
       return null;
     }
   }
-
   // Process single legal document with mipmap optimization
   async function processDocument(docIndex: number) {
     if (!isInitialized || isProcessing) return;
-
     isProcessing = true;
     const document = legalDocuments[docIndex];
     try {
       console.log(`🚀 Processing document: ${document.title}`);
-
       // Parse texture size
       const [width, height] = document.textureSize.split.map(Number);
       const mockTexture = createMockTexture(width, height);
       if (!mockTexture) {
         throw new Error('Failed to create texture');
       }
-
       // Process with optimized mipmaps
       const result = await yorhaWebGPU.processTextureWithMipmaps(mockTexture, {
-        generateMipmaps: true,
+        generateMipmaps: true
         filterMode: mipmapConfig.filterMode,
         rtxOptimized: mipmapConfig.rtxOptimized,
         enableStreaming: mipmapConfig.enableStreaming,
         legalDocument: document
       });
-
       // Store result
       processingResults = [{
         document: document.title,
@@ -158,15 +142,11 @@ https://svelte.dev/e/unexpected_reserved_word -->
         streamingUsed: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.streamingUsed,
         timestamp: new Date();
       }, ...processingResults.slice(0, 9)]; // Keep last 10 results
-
       // Update performance metrics
       updatePerformanceMetrics(result);
-
       // Update system stats
       systemStats = yorhaTextureManager.getStatistics();
-
       console.log.mipmaps.length} mip levels generated`);
-
     } catch (error) {
       console.error('Document processing failed:', error);
       alert(`Processing failed: ${error.message}`);
@@ -174,15 +154,12 @@ https://svelte.dev/e/unexpected_reserved_word -->
       isProcessing = false;
     }
   }
-
   // Batch process all documents
   async function batchProcessDocuments() {
     if (!isInitialized || isProcessing) return;
-
     isProcessing = true;
     try {
       console.log('🚀 Starting batch processing of all legal documents');
-
       // Create mock textures for all documents
       const documentsWithTextures = legalDocuments.map.map(Number);
         const texture = createMockTexture(width, height);
@@ -191,26 +168,22 @@ https://svelte.dev/e/unexpected_reserved_word -->
           texture: texture!;
         };
       }).filter(doc => doc.texture); // Filter out failed textures
-
       if (documentsWithTextures.length === 0) {
         throw new Error('No textures could be created');
       }
-
       // Process batch with legal document context
       const batchResult = await yorhaWebGPU.processLegalDocumentTextures(documentsWithTextures);
-
       // Add batch result to processing results
       processingResults = [{
         document: `Batch (${batchResult.processedDocuments} docs)`,
         processingTime: batchResult.totalProcessingTime,
         mipmapsGenerated: batchResult.mipmapsGenerated,
         memoryUsed: 0,
-        rtxAcceleration: true,
-        streamingUsed: false,
-        batchProcessing: true,;
+        rtxAcceleration: true
+        streamingUsed: false
+        batchProcessing: true
         timestamp: new Date();
       }, ...processingResults.slice(0, 9)];
-
       // Update metrics
       performanceMetrics = {
         totalTexturesProcessed: performanceMetrics.totalTexturesProcessed + batchResult.processedDocuments,
@@ -219,12 +192,9 @@ https://svelte.dev/e/unexpected_reserved_word -->
         memoryEfficiency: batchResult.memoryOptimized ? 95 : performanceMetrics.memoryEfficiency,
         rtxAccelerationUsage: performanceMetrics.rtxAccelerationUsage + 1
       };
-
       // Update system stats
       systemStats = yorhaTextureManager.getStatistics();
-
       console.log(`✅ Batch processing completed: ${batchResult.processedDocuments} documents, ${batchResult.mipmapsGenerated} total mipmaps`);
-
     } catch (error) {
       console.error('Batch processing failed:', error);
       alert(`Batch processing failed: ${error.message}`);
@@ -232,28 +202,22 @@ https://svelte.dev/e/unexpected_reserved_word -->
       isProcessing = false;
     }
   }
-
   // Generate single mipmap chain demonstration
   async function generateMipmapDemo() {
     if (!isInitialized || isProcessing) return;
-
     isProcessing = true;
-
     try {
       console.log('🔥 Generating mipmap chain demonstration');
-
       const mockTexture = createMockTexture(2048, 2048);
       if (!mockTexture) {
         throw new Error('Failed to create demo texture');
       }
-
       const result = await yorhaMipmapShaders.generateMipmapChain(mockTexture, {
         maxMipLevels: mipmapConfig.maxMipLevels,
         filterMode: mipmapConfig.filterMode,
         rtxOptimized: mipmapConfig.rtxOptimized,
         enableStreaming: mipmapConfig.enableStreaming
       });
-
       processingResults = [{
         document: 'Mipmap Demo (2048x2048)',
         processingTime: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).totalGenerationTime,
@@ -261,12 +225,10 @@ https://svelte.dev/e/unexpected_reserved_word -->
         memoryUsed: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).memoryUsed,
         rtxAcceleration: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.rtxAcceleration,
         streamingUsed: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.streamingUsed,
-        demo: true,;
+        demo: true
         timestamp: new Date();
       }, ...processingResults.slice(0, 9)];
-
       console.log.mipmapLevels.length} levels generated in ${(result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).totalGenerationTime.toFixed(2)}ms`);
-
     } catch (error) {
       console.error('Mipmap demo failed:', error);
       alert(`Mipmap demo failed: ${error.message}`);
@@ -274,7 +236,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
       isProcessing = false;
     }
   }
-
   // Update performance metrics
   function updatePerformanceMetrics(result: unknown) {
     performanceMetrics = {
@@ -285,7 +246,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
       rtxAccelerationUsage: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.rtxAcceleration ? performanceMetrics.rtxAccelerationUsage + 1 : performanceMetrics.rtxAccelerationUsage
     };
   }
-
   // Format file size
   function formatBytes(bytes: number): string {
     if (bytes === 0) return '0 B';
@@ -294,19 +254,16 @@ https://svelte.dev/e/unexpected_reserved_word -->
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-
   // Format time
   function formatTime(ms: number): string {
     if (ms < 1000) return `${ms.toFixed(1)}ms`;
     return `${(ms / 1000).toFixed(2)}s`;
   }
-
   // Initialize on mount
   $effect(() => {
     initializeSystem();
   });
 </script>
-
 <div class="space-y-6 p-6 max-w-7xl mx-auto">
   <!-- Header -->
   <div class="text-center">
@@ -317,7 +274,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
       NVIDIA RTX-Optimized • NES Memory Architecture • Vulkan-Style Compute Shaders
     </p>
   </div>
-
   <!-- Initialization Status -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -331,20 +287,17 @@ https://svelte.dev/e/unexpected_reserved_word -->
             {isInitialized ? '✅ System Initialized' : '❌ Not Initialized'}
           </span>
         </div>
-        
         {#if !isInitialized && !isProcessing}
           <Button class="bits-btn" onclick={initializeSystem} size="sm">
 🔄 Initialize System
 </Button>
         {/if}
-
         {#if isProcessing}
           <span class="text-blue-600">⏳ Processing...</span>
         {/if}
       </div>
     </div>
   </div>
-
   <!-- Configuration -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -353,18 +306,17 @@ https://svelte.dev/e/unexpected_reserved_word -->
     <div class="yorha-panel-content">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label class="block text-sm font-medium mb-2" for="max-mip-levels">Max Mip Levels</label><input id="max-mip-levels" 
+          <label class="block text-sm font-medium mb-2" for="max-mip-levels">Max Mip Levels</label><input id="max-mip-levels"
             type="number" ;
             bind:value={mipmapConfig.maxMipLevels}
-            min="1" 
+            min="1"
             max="16"
             class="w-full p-2 border rounded-md"
             disabled={isProcessing}
           />
         </div>
-        
         <div>
-          <label class="block text-sm font-medium mb-2" for="filter-mode">Filter Mode</label><select id="filter-mode" 
+          <label class="block text-sm font-medium mb-2" for="filter-mode">Filter Mode</label><select id="filter-mode"
             bind:value={mipmapConfig.filterMode}
             class="w-full p-2 border rounded-md"
             disabled={isProcessing}
@@ -374,21 +326,19 @@ https://svelte.dev/e/unexpected_reserved_word -->
             <option value="cubic">Cubic (Gaussian)</option>
           </select>
         </div>
-        
         <div class="space-y-3">
           <div class="flex items-center gap-2">
-            <input 
-              type="checkbox" 
+            <input
+              type="checkbox"
               bind:checked={mipmapConfig.rtxOptimized}
               id="rtx"
               disabled={isProcessing}
             />
             <label for="rtx" class="text-sm font-medium">RTX Optimization</label>
           </div>
-          
           <div class="flex items-center gap-2">
-            <input 
-              type="checkbox" 
+            <input
+              type="checkbox"
               bind:checked={mipmapConfig.enableStreaming}
               id="streaming"
               disabled={isProcessing}
@@ -399,7 +349,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
       </div>
     </div>
   </div>
-
   <!-- Legal Documents -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -420,8 +369,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
                   Size: {document.textureSize} • Complexity: {document.estimatedComplexity}
                 </div>
               </div>
-              
-              <Button class="bits-btn" 
+              <Button class="bits-btn"
                 onclick={() =>
 processDocument(index)}
                 disabled={!isInitialized || isProcessing}
@@ -432,17 +380,15 @@ processDocument(index)}
             </div>
           {/each}
         </div>
-
         <!-- Batch Operations -->
         <div class="flex gap-2 pt-4 border-t">
-          <Button class="bits-btn" 
+          <Button class="bits-btn"
             onclick={batchProcessDocuments}
             disabled={!isInitialized || isProcessing}
           >
 🚀 Batch Process All
 </Button>
-          
-          <Button class="bits-btn" 
+          <Button class="bits-btn"
             onclick={generateMipmapDemo}
             disabled={!isInitialized || isProcessing}
             variant="ghost"
@@ -453,7 +399,6 @@ processDocument(index)}
       </div>
     </div>
   </div>
-
   <!-- Performance Metrics -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
     <div class="nes-container">
@@ -464,7 +409,6 @@ processDocument(index)}
         </div>
       </div>
     </div>
-    
     <div class="nes-container">
       <div class="yorha-panel-content p-4">
         <div class="text-center">
@@ -473,7 +417,6 @@ processDocument(index)}
         </div>
       </div>
     </div>
-    
     <div class="nes-container">
       <div class="yorha-panel-content p-4">
         <div class="text-center">
@@ -482,7 +425,6 @@ processDocument(index)}
         </div>
       </div>
     </div>
-    
     <div class="nes-container">
       <div class="yorha-panel-content p-4">
         <div class="text-center">
@@ -491,7 +433,6 @@ processDocument(index)}
         </div>
       </div>
     </div>
-    
     <div class="nes-container">
       <div class="yorha-panel-content p-4">
         <div class="text-center">
@@ -501,7 +442,6 @@ processDocument(index)}
       </div>
     </div>
   </div>
-
   <!-- System Statistics -->
   {#if systemStats}
     <div class="nes-container">
@@ -527,10 +467,9 @@ processDocument(index)}
                   <span class="font-medium">{bankStats.utilization}%</span>
                 </div>
               </div>
-              
               <div class="mt-2">
                 <div class="w-full bg-gray-200 rounded-full h-2">
-                  <div 
+                  <div
                     class="bg-blue-600 h-2 rounded-full transition-all";
                     style:width="{bankStats.utilization}%"
                   ></div>
@@ -542,7 +481,6 @@ processDocument(index)}
       </div>
     </div>
   {/if}
-
   <!-- Processing Results -->
   {#if processingResults.length > 0}
     <div class="nes-container">
@@ -567,7 +505,6 @@ processDocument(index)}
                   {formatTime((result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).processingTime)}
                 </div>
               </div>
-              
               <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
                 <div>
                   <span class="text-gray-500">Mipmaps:</span>
@@ -592,7 +529,6 @@ processDocument(index)}
       </div>
     </div>
   {/if}
-
   <!-- Technical Information -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -610,7 +546,6 @@ processDocument(index)}
             <li>• Memory-optimized LRU caching with legal document prioritization</li>
           </ul>
         </div>
-        
         <div>
           <h4 class="font-semibold mb-2">🎮 Shader Types</h4>
           <ul class="space-y-1 text-sm text-gray-600">
@@ -621,7 +556,6 @@ processDocument(index)}
             <li>• <strong>Multi-Level Batch:</strong> Parallel mip generation</li>
           </ul>
         </div>
-        
         <div>
           <h4 class="font-semibold mb-2">🏦 Memory Banks</h4>
           <ul class="space-y-1 text-sm text-gray-600">
@@ -636,5 +570,4 @@ processDocument(index)}
   </div>
 </div>
 {/snippet}
-
 {@render default()}

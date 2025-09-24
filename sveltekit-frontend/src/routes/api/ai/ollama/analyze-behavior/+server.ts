@@ -1,42 +1,36 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: ollama\analyze-behavior
  * Category: conservative
  * Memory Bank: PRG_ROM
  * Priority: 150
  * Redis Type: aiAnalysis
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 // Behavior Analysis API Endpoint
 // Analyzes user patterns and generates insights for legal workflows
-
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { validateAuthSession } from '$lib/server/auth'
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const session = await validateAuthSession(request)
     if (!session) {
       return json({ error: 'Unauthorized' }, { status: 401 })
     }
-
     const { userAnalytics, context, legalContext } = await request.json()
-
     // Enhanced legal behavior analysis prompt
     const behaviorPrompt = `
 You are an expert legal workflow analyst. Analyze the following user behavior data and legal context to provide insights and recommendations.
-
 User Analytics:
 - Behavior Pattern: ${userAnalytics.behaviorPattern}
 - Typing Speed: ${userAnalytics.interactionMetrics.typingSpeed} WPM
@@ -44,16 +38,13 @@ User Analytics:
 - Expertise Level: ${userAnalytics.caseContext.expertise}
 - Workflow Stage: ${userAnalytics.caseContext.workflowStage}
 - Active Cases: ${userAnalytics.caseContext.activeCases.length}
-
 Legal Context:
 - Practice Area: ${legalContext?.practiceArea || 'General'}
 - Case Type: ${legalContext?.caseType || 'Unknown'}
 - Urgency: ${legalContext?.urgency || 'Medium'}
-
 Current Session:
 - Files Selected: ${context.files.length}
 - Total File Size: ${context.files.reduce((sum: number, f: any) => sum + f.size, 0)} bytes
-
 Provide analysis in JSON format:
 {
   "behaviorPattern": "novice|intermediate|expert|power_user",
@@ -69,31 +60,27 @@ Provide analysis in JSON format:
   "urgencyAwareness": 0.0-1.0,
   "nextBestActions": ["string"]
 }`
-
     const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
+      body: JSON.stringify({,
         model: 'gemma2:9b',
-        prompt: behaviorPrompt,
+        prompt: behaviorPrompt
         format: 'json',
-        stream: false,
+        stream: false
         options: {
           temperature: 0.4,
           top_p: 0.8
         }
       })
     })
-
     if (!ollamaResponse.ok) {
       throw new Error(`Ollama API error: ${ollamaResponse.statusText}`)
     }
-
     const result = await ollamaResponse.json()
     let analysis
-
     try {
       analysis = JSON.parse((result as { response?: any }).response)
     } catch (error) {
@@ -113,7 +100,6 @@ Provide analysis in JSON format:
         nextBestActions: ['Process selected documents']
       }
     }
-
     // Update user analytics based on AI insights
     const updatedAnalytics = {
       ...userAnalytics,
@@ -124,18 +110,14 @@ Provide analysis in JSON format:
         helpLevel: analysis.behaviorPattern === 'novice' ? 'extensive' : 'moderate'
       }
     }
-
     return json({
-      analytics: updatedAnalytics,
-      insights: analysis,
+      analytics: updatedAnalytics
+      insights: analysis
       score: analysis.efficiencyScore
     })
-
   } catch (error) {
     console.error('Behavior analysis error:', error)
     return json({ error: 'Analysis failed' }, { status: 500 })
   }
 }
-
-
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)

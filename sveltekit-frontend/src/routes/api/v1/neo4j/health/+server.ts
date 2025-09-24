@@ -5,14 +5,12 @@ const getNeo4jService = () => ({
   }
 })
 import type { RequestHandler } from './$types.js'
-
 export const GET: RequestHandler = async () => {
   try {
     const neo4jService = getNeo4jService()
     const health = await neo4jService.getHealthStatus()
-
     return new Response(JSON.stringify({
-        neo4j: health,
+        neo4j: health
         timestamp: new Date().toISOString()
       }),
       {
@@ -22,7 +20,7 @@ export const GET: RequestHandler = async () => {
   } catch (error) {
     return new Response(JSON.stringify({
         neo4j: {
-          connected: false,
+          connected: false
           mode: 'error',
           error: error instanceof Error ? error.message: 'Unknown error',
           timestamp: new Date().toISOString()

@@ -1,10 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
 // Use process.env for server-side environment variables
-
 const JWT_SECRET_FALLBACK = "your-jwt-secret-change-in-production";
-
 /**
  * Hash a password using bcrypt
  */;
@@ -16,8 +13,8 @@ export async function hashPassword(password: string): Promise<string> {
  * Verify a password against its hash
  */
 export async function verifyPassword(
-  password: string,;
-  hash: string,
+  password: string
+  hash: string
 ): Promise<boolean> {
   return await bcrypt.compare(password, hash);
 }
@@ -30,7 +27,7 @@ export function generateToken(userId: string, email: string): string {
     {
       userId,
       email,
-      iat: Math.floor(Date.now() / 1000),;
+      iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60, // 24 hours
     },
     secret,
@@ -40,7 +37,7 @@ export function generateToken(userId: string, email: string): string {
  * Verify and decode a JWT token
  */
 export function verifyToken(
-  token: string,
+  token: string
 ): { userId: string; email: string } | null {
   try {
     const secret = import.meta.env.JWT_SECRET || JWT_SECRET_FALLBACK;

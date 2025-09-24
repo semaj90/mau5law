@@ -2,7 +2,6 @@
  * System Health Store - Monitor service status
  */;
 }
-
 export interface ServiceStatus {
   name: string;
   status: 'online' | 'offline' | 'warning';
@@ -10,16 +9,14 @@ export interface ServiceStatus {
   lastCheck?: Date;
   responseTime?: number;
 }
-
 export interface SystemHealth {
   overall: 'healthy' | 'degraded' | 'down';
   services: ServiceStatus[];
   lastUpdate: Date;
 }
-
-// Simple reactive system health store;
+// Simple reactive system health store
 let healthState = $state<SystemHealth>({
-  overall: 'healthy',;
+  overall: 'healthy',
   services: [
     { name: 'Database', status: 'online' },
     { name: 'AI Service', status: 'online' },
@@ -28,35 +25,28 @@ let healthState = $state<SystemHealth>({
   ],
   lastUpdate: new Date()
 });
-
 export const systemHealthStore = {
   get state() {
     return healthState;
   },
-  
   get overall() {
     return healthState.overall;
   },
-  
   get services() {
     return healthState.services;
   },
-  
   get lastUpdate() {
     return healthState.lastUpdate;
   },
-  
   updateService: (serviceName: string, status: ServiceStatus['status']) => {
     const service = healthState.services.find(s => s.name === serviceName);
     if (service) {
       service.status = status;
       service.lastCheck = new Date();
     }
-    
     // Update overall status
     const hasOffline = healthState.services.some(s => s.status === 'offline');
     const hasWarning = healthState.services.some(s => s.status === 'warning');
-    
     if (hasOffline) {
       healthState.overall = 'down';
     } else if (hasWarning) {
@@ -64,10 +54,8 @@ export const systemHealthStore = {
     } else {
       healthState.overall = 'healthy';
     }
-    
     healthState.lastUpdate = new Date();
   },
-  
   refresh: async () => {
     // Mock health check for development
     await new Promise(resolve => setTimeout(resolve, 500);

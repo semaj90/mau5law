@@ -1,11 +1,11 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  interface Props {;
-    position: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left' ;
+  interface Props {
+    position: ;
+'bottom-right' | 'bottom-left' | 'top-right' | 'top-left' ;
     size: 'sm' | 'md' | 'lg' ;
     variant: 'primary' | 'secondary' | 'accent' ;
     disabled?: boolean;
@@ -30,7 +30,6 @@ https://svelte.dev/e/js_parse_error -->
     onactivate,
     ondeactivate
   }: Props = $props();
-
   	import { onMount } from 'svelte';
   	import { fly, fade } from 'svelte/transition';
   	import { quintOut } from 'svelte/easing';
@@ -40,8 +39,8 @@ https://svelte.dev/e/js_parse_error -->
   let showTooltip = $state(false);
   let buttonElement = $state<HTMLButtonElement// Size configurations
   	const sizeClasses  | null>(null); const data = {
-  		sm: 'w-12 h-12 text-sm',;
-  		md: 'w-16 h-16 text-base',;
+  		sm: 'w-12 h-12 text-sm',
+  		md: 'w-16 h-16 text-base',
   		lg: 'w-20 h-20 text-lg';
   	});
   	// Position configurations
@@ -53,8 +52,8 @@ https://svelte.dev/e/js_parse_error -->
   	};
   	// Variant configurations
   	const variantClasses = {
-  		primary: 'bg-gradient-to-br from-yorha-primary to-yorha-secondary hover:from-yorha-secondary hover:to-yorha-primary border-yorha-primary',;
-  		secondary: 'bg-gradient-to-br from-yorha-bg-secondary to-yorha-bg-tertiary hover:from-yorha-bg-tertiary hover:to-yorha-bg-secondary border-yorha-border',;
+  		primary: 'bg-gradient-to-br from-yorha-primary to-yorha-secondary hover:from-yorha-secondary hover:to-yorha-primary border-yorha-primary',
+  		secondary: 'bg-gradient-to-br from-yorha-bg-secondary to-yorha-bg-tertiary hover:from-yorha-bg-tertiary hover:to-yorha-bg-secondary border-yorha-border',
   		accent: 'bg-gradient-to-br from-yorha-accent to-blue-400 hover:from-blue-400 hover:to-yorha-accent border-yorha-accent';
   	};
   	// Handle button click
@@ -98,7 +97,6 @@ https://svelte.dev/e/js_parse_error -->
   		};
   	});
 </script>
-
 {#if mounted}
 	<!-- AI Assistant Button -->
 	<div class="fixed {positionClasses[position]} z-50">
@@ -113,7 +111,6 @@ https://svelte.dev/e/js_parse_error -->
 				<div class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-yorha-border"></div>
 			</div>
 		{/if}
-
 		<button
 			bind:this={buttonElement}
 			type="button"
@@ -127,7 +124,7 @@ https://svelte.dev/e/js_parse_error -->
 				shadow-lg
 				transition-all duration-300 ease-in-out
 				transform-gpu
-				focus:outline-none focus:ring-2 focus:ring-yorha-primary focus:ring-offset-2 focus:ring-offset-yorha-bg-primary;
+				focus: outline-none focus:ring-2 focus:ring-yorha-primary focus:ring-offset-2 focus:ring-offset-yorha-bg-primary;
 				active:scale-95
 				group
 				{disabled ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110 hover:shadow-xl hover:shadow-yorha-primary/20'}
@@ -145,21 +142,19 @@ https://svelte.dev/e/js_parse_error -->
 		>
 			<!-- Background Effects -->
 			<div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-
 			<!-- Floating Particles -->
 			<div class="absolute inset-0 overflow-hidden">
 				{#each Array(3) as _, i}
 					<div
 						class="absolute w-1 h-1 bg-white/40 rounded-full animate-float"
-						style=";
+						style="
 							left: {20 + (i * 30)}%;
-							animation-delay: {i * 0.5}s;
-							animation-duration: {3 + (i * 0.5)}s;
+							animation-delay: {i * 0.5};
+							animation-duration: {3 + (i * 0.5)};
 						"
 					></div>
 				{/each}
 			</div>
-
 			<!-- Content -->
 			<div class="relative z-10 flex flex-col items-center justify-center">
 				{#if loading}
@@ -176,12 +171,10 @@ https://svelte.dev/e/js_parse_error -->
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
 						</svg>
 					</div>
-
 					<!-- Label -->
 					<span class="text-xs font-bold tracking-wider">AI</span>
 				{/if}
 			</div>
-
 			<!-- Notification Badge -->
 			{#if notification && notificationCount > 0}
 				<div
@@ -194,10 +187,9 @@ https://svelte.dev/e/js_parse_error -->
 		</button>
 	</div>
 {/if}
-
 <style>
 	@keyframes float {
-		0%, 100% {;
+		0%, 100% {
 			transform: translateY(0) rotate(0deg);
 			opacity: 0;
 		}
@@ -212,9 +204,7 @@ https://svelte.dev/e/js_parse_error -->
 			opacity: 0;
 		}
 	}
-
 	.animate-float {
 		animation: float 3s linear infinite;
 	}
 </style>
-

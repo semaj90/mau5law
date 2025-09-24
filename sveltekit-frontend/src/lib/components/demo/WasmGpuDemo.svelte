@@ -2,10 +2,8 @@
   WebAssembly GPU Initialization Demo
   Real-time monitoring and testing interface for the WASM GPU system
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { createWasmGpuService, WasmGpuHelpers } from '$lib/wasm/gpu-wasm-init';
   import { WebGPUBufferUtils_Extended } from '$lib/utils/webgpu-buffer-uploader.js';
@@ -13,7 +11,7 @@
   // Initialize WASM GPU service with RTX 3060 configuration
   const wasmGpu = createWasmGpuService(WasmGpuHelpers.rtx3060Config());
   // Reactive stores
-  const { initStatus, performanceMetrics, resourceStatus } = wasmGpu.stores;
+  const { initStatus, performanceMetrics, resourceStatus } = wasmGpu.store;
   const { isReady, isRtx3060, systemHealth, performance } = wasmGpu.derived;
   // Demo state
   let benchmarkRunning = $state(false);
@@ -28,21 +26,21 @@
       description: 'Similarity search across contract clauses',
       vectorCount: 150,
       dimensions: 384,
-      expectedTime: 5 // ms;
+      expectedTime: 5 // m
     },
     {
       name: 'Case Law Search',
       description: 'Semantic search through legal precedents',
       vectorCount: 500,
       dimensions: 768,
-      expectedTime: 15 // ms;
+      expectedTime: 15 // m
     },
     {
-      name: 'Evidence Classification',;
+      name: 'Evidence Classification',
       description: 'Document type classification using embeddings',
-      vectorCount: 200,;
+      vectorCount: 200,
       dimensions: 512,
-      expectedTime: 8 // ms;
+      expectedTime: 8 // m
     }
   ];
   let selectedScenario = $state(legalTestScenarios[0]);
@@ -74,11 +72,11 @@
       const dataSize = (vectors1.length + vectors2.length + similarities.length) * 4; // bytes
       const throughput = (dataSize / 1024 / 1024) / (computeTime / 1000); // MB/s
       benchmarkResults.push({
-        operation: 'Vector Similarity',;
-        time: computeTime,
+        operation: 'Vector Similarity',
+        time: computeTime
         throughput;
       });
-      similarityResults = similarities;
+      similarityResults = similaritie;
       // Test 2: Memory bandwidth test
       const largeVectors1 = WasmGpuHelpers.createTestVectors(1000, 768);
       const largeVectors2 = WasmGpuHelpers.createTestVectors(1000, 768);
@@ -88,8 +86,8 @@
       const largeDataSize = (largeVectors1.length + largeVectors2.length) * 4;
       const memoryThroughput = (largeDataSize / 1024 / 1024) / (memoryTime / 1000);
       benchmarkResults.push({
-        operation: 'Memory Bandwidth',;
-        time: memoryTime,;
+        operation: 'Memory Bandwidth',
+        time: memoryTime
         throughput: memoryThroughput;
       });
       // Test 3: Legal AI scenario
@@ -107,8 +105,8 @@
       const scenarioDataSize = (scenarioVectors1.length + scenarioVectors2.length) * 4;
       const scenarioThroughput = (scenarioDataSize / 1024 / 1024) / (scenarioTime / 1000);
       benchmarkResults.push({
-        operation: selectedScenario.name,;
-        time: scenarioTime,;
+        operation: selectedScenario.name,
+        time: scenarioTime
         throughput: scenarioThroughput;
       });
       console.log('🎯 Benchmark results:', benchmarkResults);
@@ -137,7 +135,7 @@
       const startTime = performance.now();
       const results = await wasmGpu.computeVectorSimilarity(vectors1, vectors2, selectedScenario.dimensions);
       const executionTime = performance.now() - startTime;
-      similarityResults = results;
+      similarityResults = result;
       // Find top similarities
       const topSimilarities = Array.from.map((similarity, index) => ({ similarity, index }))
         .sort((a, b) => b.similarity - a.similarity)
@@ -187,7 +185,6 @@
     }
   }
 </script>
-
 <div class="wasm-gpu-demo p-6 bg-gray-900 text-white min-h-screen">
   <div class="max-w-7xl mx-auto">
     <header class="mb-8">
@@ -198,7 +195,6 @@
         Browser-native GPU acceleration without Node.js overhead for legal AI applications
       </p>
     </header>
-
     <!-- System Status -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
       <!-- Initialization Status -->
@@ -216,7 +212,7 @@
             <span class="text-green-400">{$initStatus.progress}%</span>
           </div>
           <div class="w-full bg-gray-700 rounded-full h-2">
-            <div 
+            <div
               class="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
               style="width: {$initStatus.progress}%"
             ></div>
@@ -231,7 +227,6 @@
           {/if}
         </div>
       </div>
-
       <!-- Device Information -->
       <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
         <h3 class="text-xl font-semibold mb-4 text-green-400">Device Information</h3>
@@ -268,7 +263,6 @@
           <div class="text-gray-500">Device information not available</div>
         {/if}
       </div>
-
       <!-- System Health -->
       <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
         <h3 class="text-xl font-semibold mb-4 text-purple-400">System Health</h3>
@@ -306,7 +300,6 @@
         </div>
       </div>
     </div>
-
     <!-- Performance Metrics -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
@@ -326,13 +319,11 @@
         <div class="text-2xl font-bold">{$performanceMetrics.totalOperations}</div>
       </div>
     </div>
-
     <!-- Legal AI Test Scenarios -->
     <div class="bg-gray-800 rounded-lg p-6 border border-gray-700 mb-8">
       <h3 class="text-xl font-semibold mb-4 text-yellow-400">Legal AI Test Scenarios</h3>
-      
       <div class="mb-4">
-        <label class="block text-sm font-medium mb-2" for="select-test-scenario">Select Test Scenario:</label><select id="select-test-scenario" ;
+        <label class="block text-sm font-medium mb-2" for="select-test-scenario">Select Test Scenario: </label><select id="select-test-scenario" ;
           bind:value={selectedScenario}
           class="bg-gray-700 border border-gray-600 text-white rounded-lg px-3 py-2 w-full"
           disabled={benchmarkRunning}
@@ -342,7 +333,6 @@
           {/each}
         </select>
       </div>
-      
       <div class="bg-gray-700 rounded-lg p-4 mb-4">
         <h4 class="font-semibold mb-2">{selectedScenario.name}</h4>
         <p class="text-gray-300 text-sm mb-3">{selectedScenario.description}</p>
@@ -361,7 +351,6 @@
           </div>
         </div>
       </div>
-      
       <div class="flex gap-4">
         <button
           onclick={runLegalScenario}
@@ -374,7 +363,6 @@
             Run Legal Scenario
           {/if}
         </button>
-        
         <button
           onclick={runBenchmark}
           disabled={!$isReady || benchmarkRunning}
@@ -388,7 +376,6 @@
         </button>
       </div>
     </div>
-
     <!-- Benchmark Results -->
     {#if benchmarkResults.length > 0}
       <div class="bg-gray-800 rounded-lg p-6 border border-gray-700 mb-8">
@@ -421,7 +408,6 @@
         </div>
       </div>
     {/if}
-
     <!-- Similarity Results -->
     {#if similarityResults}
       <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
@@ -436,7 +422,6 @@
             <span class="ml-2 font-mono">{Math.round(similarityResults.byteLength / 1024)} KB</span>
           </div>
         </div>
-        
         <div class="bg-gray-700 rounded-lg p-4">
           <h4 class="font-semibold mb-2">Top 10 Similarities</h4>
           <div class="grid grid-cols-2 gap-2 text-sm font-mono">
@@ -452,7 +437,6 @@
         </div>
       </div>
     {/if}
-
     <!-- Buffer Quantization Integration -->
     <div class="bg-gradient-to-r from-blue-900 to-purple-900 rounded-lg p-6 border border-blue-700 mt-8">
       <h3 class="text-xl font-semibold mb-4 text-blue-300">🚀 Advanced Buffer Quantization Available</h3>
@@ -481,7 +465,7 @@
           </ul>
         </div>
         <div class="flex flex-col justify-center">
-          <a 
+          <a
             href="/demo/webgpu-quantization"
             class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200 text-center"
           >
@@ -495,5 +479,3 @@
     </div>
   </div>
 </div>
-
-

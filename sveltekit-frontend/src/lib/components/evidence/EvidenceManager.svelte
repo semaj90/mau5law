@@ -1,6 +1,5 @@
 <!--
   EvidenceManager.svelte
-
   Complete evidence management component with:
   - File upload with drag & drop
   - Evidence listing with embedding status
@@ -8,19 +7,16 @@
   - Integration with backfill worker
   - Real-time embedding progress
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-
   interface EvidenceFile {
     id: number;
     title: string;
@@ -32,26 +28,22 @@
     case_id?: string;
     hasEmbedding?: boolean;
   }
-
   interface EmbeddingStats {
     total: number;
     withEmbeddings: number;
     withoutEmbeddings: number;
     percentage: number;
   }
-
   interface SearchResult extends EvidenceFile {
     similarity: number;
     similarityDistance: number;
   }
-
   // Props
   interface Props {
     caseId?: string;
     showUpload?: boolean;
     showSearch?: boolean;
   }
-
   let { caseId = '',
     showUpload = true,
     showSearch = true
@@ -59,38 +51,33 @@
     showUpload = true,
     showSearch = true
   : unknown } = $props();
-
   // State
   let evidenceFiles = $state<EvidenceFile[]>([]);
   let searchResults = $state<SearchResult[]>([]);
   let embeddingStats = $state<EmbeddingStats>({
     total: 0,
     withEmbeddings: 0,
-    withoutEmbeddings: 0,;
+    withoutEmbeddings: 0,
     percentage: 0;
   });
   let loading = $state({
-    files: false,
-    upload: false,
-    backfill: false,;
-    search: false,;
+    files: false
+    upload: false
+    backfill: false
+    search: false
     stats: false;
   });
-
   let searchQuery = $state('');
   let showSearchResults = $state(false);
   let uploadProgress = $state<string>('');
   let error = $state<string>('');
-
   // File upload
   let fileInput: HTMLInputElement;
   let dragActive = $state(false);
-
   $effect(() => {
     loadEvidenceFiles();
     loadEmbeddingStats();
   });
-
   async function loadEvidenceFiles() {
     loading.files = true;
     try {
@@ -109,14 +96,13 @@
       loading.files = false;
     }
   }
-
   async function loadEmbeddingStats() {
     loading.stats = true;
     try {
       const response = await fetch('/api/evidence-embeddings');
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).success) {
-        embeddingStats = (result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).stats;
+        embeddingStats = (result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).stat;
       }
     } catch (err) {
       console.error('Failed to load embedding stats:', err);
@@ -124,34 +110,28 @@
       loading.stats = false;
     }
   }
-
   async function handleFileUpload(files: FileList) {
     if (!files.length) return;
     loading.upload = true;
     uploadProgress = '';
     error = '';
-
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       uploadProgress = `Uploading ${file.name} (${i + 1}/${files.length})...`;
-
       try {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('title', file.name);
         if (caseId) formData.append('case_id', caseId);
         formData.append('evidence_type', getEvidenceType(file.type));
-
         const response = await fetch('/api/evidence-files', {
-          method: 'POST',;
+          method: 'POST',
           body: formData;
         });
-
         const result = await (response as { json?: unknown }).json();
         if (!(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).success) {
           throw new Error((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).error || 'Upload failed');
         }
-
         if ((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).duplicate) {
           uploadProgress = `${file.name} already exists (duplicate detected)`;
         } else {
@@ -162,7 +142,6 @@
         console.error(err);
       }
     }
-
     loading.upload = false;
     uploadProgress = 'Upload complete!';
     // Reload files and stats
@@ -170,18 +149,15 @@
     // Clear progress after delay
     setTimeout(() => { uploadProgress = ''; }, 3000);
   }
-
   async function triggerEmbeddingBackfill() {
     loading.backfill = true;
     error = '';
-
     try {
       const response = await fetch('/api/evidence-embeddings', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'backfill' })
       });
-
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).success) {
         uploadProgress = `Backfill complete! Processed: ${(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).result.processed}, Success: ${(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).result.success}, Failed: ${(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).result.failed}`;
@@ -196,23 +172,20 @@
       loading.backfill = false;
     }
   }
-
   async function performSemanticSearch() {
     if (!searchQuery.trim()) return;
     loading.search = true;
     error = '';
-
     try {
       const params = new URLSearchParams({
-        search: searchQuery,;
+        search: searchQuery
         limit: '10';
       });
       if (caseId) params.set('case_id', caseId);
-
       const response = await fetch(`/api/evidence-embeddings?${params}`);
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).success) {
-        searchResults = (result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).results;
+        searchResults = (result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).result;
         showSearchResults = true;
       } else {
         throw new Error((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).error);
@@ -224,7 +197,6 @@
       loading.search = false;
     }
   }
-
   function getEvidenceType(mimeType: string): string {
     if (mimeType.includes('pdf')) return 'DOCUMENT';
     if (mimeType.includes('image')) return 'PHOTO';
@@ -233,7 +205,6 @@
     if (mimeType.includes('text')) return 'DOCUMENT';
     return 'UNKNOWN';
   }
-
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -241,32 +212,27 @@
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-
   function formatDate(dateString: string): string {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric',;
-      hour: '2-digit',;
+      day: 'numeric',
+      hour: '2-digit',
       minute: '2-digit';
     });
   }
-
   // Drag & drop handlers
   function handleDragEnter(e: DragEvent) {
     e.preventDefault();
     dragActive = true;
   }
-
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
     dragActive = false;
   }
-
   function handleDragOver(e: DragEvent) {
     e.preventDefault();
   }
-
   function handleDrop(e: DragEvent) {
     e.preventDefault();
     dragActive = false;
@@ -274,12 +240,9 @@
       handleFileUpload(e.dataTransfer.files);
     }
   }
-
-
 // Auto-generated default export
 export default ;
 </script>
-
 <div class="evidence-manager">
   <!-- Embedding Stats Card -->
   <div class="mb-6 nes-container">
@@ -305,7 +268,6 @@ export default ;
           <div class="text-sm text-gray-600">Complete</div>
         </div>
       </div>
-
       <div class="flex gap-2">
         <Button
           onclick={loadEmbeddingStats}
@@ -315,7 +277,6 @@ export default ;
         >
 {loading.stats ? 'Refreshing...' : '🔄 Refresh Stats'}
 </Button>
-
         <Button
           onclick={triggerEmbeddingBackfill}
           disabled={loading.backfill || embeddingStats.withoutEmbeddings === 0}
@@ -327,7 +288,6 @@ export default ;
       </div>
     </div>
   </div>
-
   <!-- Upload Section -->
   {#if showUpload}
     <div class="mb-6 nes-container">
@@ -352,12 +312,10 @@ export default ;
               if (target?.files) handleFileUpload(target.files);
             }}
           />
-
           <div class="text-center p-8">
             <div class="text-4xl mb-4">📎</div>
             <p class="text-lg mb-2">Drop files here or click to browse</p>
             <p class="text-sm text-gray-600 mb-4">Supports PDFs, images, documents, and more</p>
-
             <Button class="bits-btn"
               onclick={() =>
 fileInput?.click()}
@@ -367,7 +325,6 @@ fileInput?.click()}
 </Button>
           </div>
         </div>
-
         {#if uploadProgress}
           <div class="mt-4 p-3 bg-blue-50 rounded border border-blue-200">
             <p class="text-blue-700">{uploadProgress}</p>
@@ -376,7 +333,6 @@ fileInput?.click()}
       </div>
     </div>
   {/if}
-
   <!-- Search Section -->
   {#if showSearch}
     <div class="mb-6 nes-container">
@@ -399,7 +355,6 @@ fileInput?.click()}
 {loading.search ? 'Searching...' : 'Search'}
 </Button>
         </div>
-
         {#if showSearchResults}
           <div class="search-results">
             <div class="flex justify-between items-center mb-4">
@@ -412,7 +367,6 @@ fileInput?.click()}
                 Clear Results
 </Button>
             </div>
-
             {#if searchResults.length === 0}
               <p class="text-gray-600 italic">No similar evidence found.</p>
             {:else}
@@ -448,7 +402,6 @@ fileInput?.click()}
       </div>
     </div>
   {/if}
-
   <!-- Evidence Files List -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -514,7 +467,6 @@ fileInput?.click()}
       {/if}
     </div>
   </div>
-
   <!-- Error Display -->
   {#if error}
     <div class="mt-6">
@@ -535,20 +487,18 @@ fileInput?.click()}
     </div>
   {/if}
 </div>
-
 <style>
   /* Svelte 5 note: runes ($state, $props, etc.) are used in <script>; CSS here is unchanged */
-
   .upload-area {
     border: 2px dashed #d1d5db;
     border-radius: 10px;
-    transition: all .25s;
+    transition: all .25;
     cursor: pointer;
     background:
       radial-gradient(circle at 30% 25%, rgba(59 130 246 / 0.08), transparent 60%),
       radial-gradient(circle at 80% 70%, rgba(139 92 246 / 0.07), transparent 65%);
   }
-  .upload-area:hover,
+  .upload-area: hover
   .upload-area.drag-active {
     border-color: #6366f1;
     background:
@@ -559,7 +509,6 @@ fileInput?.click()}
       0 4px 14px -2px rgba(99 102 241 / 0.35),
       0 0 25px -4px rgba(59 130 246 / 0.35);
   }
-
   .stat-item {
     text-align: center;
     padding: 1rem;
@@ -571,52 +520,49 @@ fileInput?.click()}
   }
   .stat-item::after {
     content:'';
-    position:absolute;
+    position: absolute;
     inset:0;
     background:
       linear-gradient(120deg,
         transparent 0%,
         rgba(255 255 255 / 0.4) 40%,
         transparent 70%);
-    opacity:0;
+    opacity: 0;
     transform: translateX(-30%);
-    transition: opacity .6s, transform .6s;
+    transition: opacity .6s, transform .6;
     pointer-events:none;
   }
   .stat-item:hover::after {
     opacity:1;
     transform: translateX(15%);
   }
-
   .similarity-score {
     font-family: ui-monospace, "Courier New", monospace;
     text-shadow: 0 0 4px rgba(16 185 129 / 0.6);
   }
-
   .evidence-file-item,
   .search-result-item {
-    transition: transform .18s ease, box-shadow .25s ease, background .25s;
+    transition: transform .18s ease, box-shadow .25s ease, background .25;
     background:
       linear-gradient(180deg, #ffffff, #f8fafc);
     border: 1px solid #e2e8f0;
     border-radius: 10px;
     position: relative;
   }
-  .evidence-file-item:hover,
+  .evidence-file-item: hover
   .search-result-item:hover {
     transform: translateY(-2px);
     box-shadow:
       0 4px 14px -4px rgba(0 0 0 / 0.18),
       0 0 0 1px rgba(59 130 246 / 0.25);
   }
-
   /* Retro / N64 inspired error box */
   .error-box {
-    display:flex;
+    display: flex;
     gap:0.75rem;
     padding: 1rem 1.1rem 1.05rem;
     border:1px solid rgba(248 113 113 / 0.55);
-    border-radius:12px;
+    border-radius: 12px;
     background:
       linear-gradient(135deg, rgba(254 242 242 / 0.85), rgba(254 215 215 / 0.75)),
       radial-gradient(circle at 18% 25%, rgba(248 113 113 / 0.30), transparent 60%),
@@ -625,13 +571,13 @@ fileInput?.click()}
       0 0 0 1px rgba(248 113 113 / 0.45),
       0 4px 18px -4px rgba(239 68 68 / 0.35),
       inset 0 0 12px -2px rgba(239 68 68 / 0.25);
-    position:relative;
+    position: relative;
     overflow:hidden;
   }
-  .error-box::before,
+  .error-box:: before
   .error-box::after {
     content:'';
-    position:absolute;
+    position: absolute;
     inset:0;
     pointer-events:none;
   }
@@ -651,30 +597,27 @@ fileInput?.click()}
         transparent,
         rgba(255 255 255 / 0.55),
         transparent);
-    width:60px;
+    width: 60px;
     transform:translateX(-120%) skewX(-12deg);
     animation: sweep 4.2s linear infinite;
   }
-
   .error-icon {
     font-size:1.35rem;
-    line-height:1;
+    line-height: 1;
     filter: drop-shadow(0 0 4px rgba(239 68 68 / 0.6));
     animation: pulseErr 1.9s ease-in-out infinite;
   }
-
   .error-title {
-    font-weight:600;
+    font-weight: 600;
     color:#991b1b;
     letter-spacing:.5px;
     text-shadow:0 0 4px rgba(239 68 68 / 0.35);
   }
   .error-message {
     margin-top:.25rem;
-    font-size:.875rem;
+    font-size: .875rem;
     color:#b91c1c;
   }
-
   /* NES / N64 inspired dismiss button */
   :global(.dismiss-btn) {
     --nes-border: #e11d48;
@@ -693,11 +636,11 @@ fileInput?.click()}
       0 2px 6px -2px rgba(190 18 60 / 0.55),
       inset 0 0 0 1px #fff;
     text-shadow: 0 0 4px rgba(254 226 226 / .75);
-    transition: transform .18s, box-shadow .25s, background .25s;
+    transition: transform .18s, box-shadow .25s, background .25;
     will-change: transform;
     cursor: pointer;
   }
-  :global(.dismiss-btn:hover) {
+  :global($1) {
     background: linear-gradient(#fff, #fecaca);
     transform: translateY(-2px);
     box-shadow:
@@ -706,7 +649,7 @@ fileInput?.click()}
       0 4px 12px -2px rgba(190 18 60 / 0.55),
       inset 0 0 0 1px #fff;
   }
-  :global(.dismiss-btn:active) {
+  :global($1) {
     transform: translateY(0);
     box-shadow:
       0 0 0 1px #fda4af,
@@ -714,14 +657,13 @@ fileInput?.click()}
       0 2px 6px -2px rgba(190 18 60 / 0.55),
       inset 0 0 0 1px #fff;
   }
-
   /* Scan + flicker */
   .retro-scan {
     position:relative;
   }
   .retro-scan::before {
     content:'';
-    position:absolute;
+    position: absolute;
     inset:0;
     background:
       repeating-linear-gradient(
@@ -737,7 +679,6 @@ fileInput?.click()}
   .flicker {
     animation: flicker 4.5s linear infinite;
   }
-
   @keyframes pulseErr {
     0%,100% { transform: scale(1); opacity:1; }
     50% { transform: scale(1.08); opacity:.85; }
@@ -757,14 +698,13 @@ fileInput?.click()}
     98% { opacity:.55; }
     99% { opacity:.85; }
   }
-
   @media (prefers-reduced-motion: reduce) {
-    .error-box::after,
+    .error-box:: after
     .error-icon,
-    .retro-scan::before,
+    .retro-scan:: before
     .flicker,
     :global(.dismiss-btn),
-    :global(.dismiss-btn:hover) {
+    :global($1) {
       animation:none !important;
       transition:none !important;
     }

@@ -3,9 +3,7 @@ import { productionLogger } from '$lib/server/production-logger'
 import os from "os"
 import type { RequestHandler } from './$types.js'
 import { URL } from "url"
-
 }
-
 export interface PerformanceMetrics {
   timestamp: string
   system: {
@@ -87,7 +85,7 @@ export interface PerformanceMetrics {
     }
     ai: {
       modelsLoaded: number
-      inferenceSpeed: number; // tokens per second
+      inferenceSpeed: number; // tokens per second,
       queueDepth: number
       averageLatency: number
     }
@@ -116,11 +114,9 @@ export interface PerformanceMetrics {
   }
   processingTime: number
 }
-
 // Event loop monitoring
 let eventLoopDelay = 0
 let eventLoopUtilization = 0
-
 // Simulate event loop monitoring (in production, use actual monitoring)
 setInterval(() => {
   const start = process.hrtime.bigint()
@@ -130,37 +126,28 @@ setInterval(() => {
     eventLoopUtilization = Math.min(100, eventLoopDelay / 10); // Simple utilization calculation
   })
 }, 1000)
-
 export const GET: RequestHandler = async ({ url }) => {
   const startTime = Date.now()
   const detailed = url.searchParams.get('detailed') === 'true'
-
   try {
     // System-level metrics
     const totalMemory = os.totalmem()
     const freeMemory = os.freemem()
     const usedMemory = totalMemory - freeMemory
     const memoryPercentage = (usedMemory / totalMemory) * 100
-
     // Application-level metrics
     const processMemory = process.memoryUsage()
     const nodeUptime = process.uptime()
-
     // CPU usage simulation (in production, use actual monitoring)
     const cpuUsage = process.cpuUsage()
-
     // Legal AI Platform specific metrics
     const platformMetrics = await gatherPlatformMetrics()
-
     // Performance benchmarks
     const benchmarks = await runPerformanceBenchmarks()
-
     // System alerts
     const alerts = generateSystemAlerts(memoryPercentage, eventLoopDelay, platformMetrics)
-
     const metrics: PerformanceMetrics = {
       timestamp: new Date().toISOString(),
-
       system: {
         uptime: os.uptime(),
         loadAverage: os.loadavg(),
@@ -180,7 +167,6 @@ export const GET: RequestHandler = async ({ url }) => {
           available: '500GB'
         }
       },
-
       application: {
         nodeUptime: Math.floor(nodeUptime),
         memoryUsage: {
@@ -198,13 +184,11 @@ export const GET: RequestHandler = async ({ url }) => {
           duration: Math.round(Math.random() * 10 + 2)
         }
       },
-
-      legal_ai_platform: platformMetrics,
+      legal_ai_platform: platformMetrics
       benchmarks,
       alerts,
       processingTime: Date.now() - startTime
     }
-
     // Log performance data
     productionLogger.info('📊 Performance metrics collected', {
       systemMemory: `${metrics.system.memory.percentage}%`,
@@ -213,7 +197,6 @@ export const GET: RequestHandler = async ({ url }) => {
       serviceHealth: `${metrics.legal_ai_platform.services.healthy}/${metrics.legal_ai_platform.services.total}`,
       processingTime: metrics.processingTime
     })
-
     return json(metrics, {
       headers: {
         'X-Performance-Score': calculatePerformanceScore(metrics).toString(),
@@ -226,19 +209,17 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message: 'Unknown error'
     productionLogger.error(`Performance metrics collection failed: ${message}`)
-
     return json()
       {
         timestamp: new Date().toISOString(),
         error: 'Performance metrics collection failed',
-        details: message,
+        details: message
         processingTime: Date.now() - startTime
       },
       { status: 500 }
     )
   }
 }
-
 // Gather Legal AI Platform specific metrics
 async function gatherPlatformMetrics(): Promise<any> {
   // Simulate service health checks and metrics
@@ -291,14 +272,11 @@ async function gatherPlatformMetrics(): Promise<any> {
     }
   }
 }
-
 // Run performance benchmarks
 async function runPerformanceBenchmarks(): Promise<any> {
   const startTime = Date.now()
-
   // Simulate various performance tests
   await new Promise((resolve) => setTimeout(resolve, 50); // Simulate work
-
   return {
     vectorSearch: {
       latency: 42, // ms
@@ -317,37 +295,32 @@ async function runPerformanceBenchmarks(): Promise<any> {
     }
   }
 }
-
 // Generate system alerts based on metrics
 function generateSystemAlerts(
-  memoryPercentage: number,
-  eventLoopDelay: number,
+  memoryPercentage: number
+  eventLoopDelay: number
   platformMetrics: any
 ) {
   const warnings: string[] = []
   const critical: string[] = []
-
   // Memory alerts
   if (memoryPercentage > 90) {
     critical.push('System memory usage above 90%')
   } else if (memoryPercentage > 80) {
     warnings.push('System memory usage above 80%')
   }
-
   // Event loop alerts
   if (eventLoopDelay > 100) {
     critical.push(`Event loop delay high: ${eventLoopDelay}ms`)
   } else if (eventLoopDelay > 50) {
     warnings.push(`Event loop delay elevated: ${eventLoopDelay}ms`)
   }
-
   // GPU alerts
   if (platformMetrics.gpu.temperature > 85) {
     critical.push(`GPU temperature critical: ${platformMetrics.gpu.temperature}°C`)
   } else if (platformMetrics.gpu.temperature > 80) {
     warnings.push(`GPU temperature high: ${platformMetrics.gpu.temperature}°C`)
   }
-
   // Service health alerts
   const serviceHealthPercentage =
     (platformMetrics.services.healthy / platformMetrics.services.total) * 100
@@ -356,7 +329,6 @@ function generateSystemAlerts(
   } else if (serviceHealthPercentage < 85) {
     warnings.push(`Service health degraded: ${serviceHealthPercentage.toFixed(1)}%`)
   }
-
   // Database connection alerts
   const dbConnUsage =
     (platformMetrics.database.connections.active / platformMetrics.database.connections.max) * 100
@@ -365,72 +337,60 @@ function generateSystemAlerts(
   } else if (dbConnUsage > 80) {
     warnings.push('Database connections high')
   }
-
   // AI queue depth alerts
   if (platformMetrics.ai.queueDepth > 10) {
     warnings.push(`AI processing queue backed up: ${platformMetrics.ai.queueDepth} items`)
   }
-
   return {
     active: warnings.length + critical.length,
     warnings,
     critical
   }
 }
-
 // Calculate overall performance score
 function calculatePerformanceScore(metrics: PerformanceMetrics): number {
   let score = 100
-
   // Memory usage penalty
   if (metrics.system.memory.percentage > 90) score -= 20
   else if (metrics.system.memory.percentage > 80) score -= 10
   else if (metrics.system.memory.percentage > 70) score -= 5
-
   // Event loop delay penalty
   if (metrics.application.eventLoop.delay > 100) score -= 15
   else if (metrics.application.eventLoop.delay > 50) score -= 8
   else if (metrics.application.eventLoop.delay > 25) score -= 3
-
   // Service health impact
   const serviceHealthPercentage =
     (metrics.legal_ai_platform.services.healthy / metrics.legal_ai_platform.services.total) * 100
   if (serviceHealthPercentage < 70) score -= 30
   else if (serviceHealthPercentage < 85) score -= 15
   else if (serviceHealthPercentage < 95) score -= 5
-
   // GPU performance impact
   if (metrics.legal_ai_platform.gpu.temperature > 85) score -= 10
   if (metrics.legal_ai_platform.gpu.utilization < 30) score -= 5; // Underutilization
-
   // Database performance impact
   if (metrics.legal_ai_platform.database.queryPerformance.avg > 50) score -= 10
   if (metrics.legal_ai_platform.database.queryPerformance.slowQueries > 5) score -= 5
-
   // Cache efficiency impact
   if (metrics.legal_ai_platform.caching.hitRate < 80) score -= 8
-
   return Math.max(0, Math.round(score)
 }
-
 // POST endpoint for performance actions
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action } = await request.json()
-
     switch (action) {
       case 'gc': {
         // Trigger garbage collection
         if (global.gc) {
           global.gc()
           return json({
-            success: true,
+            success: true
             message: 'Garbage collection triggered',
             memoryAfter: process.memoryUsage()
           })
         } else {
           return json({
-              success: false,
+              success: false
               error: 'Garbage collection not available',
               suggestion: 'Start Node.js with --expose-gc flag'
             },)
@@ -438,30 +398,26 @@ export const POST: RequestHandler = async ({ request }) => {
           )
         }
       }
-
       case 'benchmark': {
         // Run performance benchmarks
         const benchmarks = await runPerformanceBenchmarks()
-
         return json({
-          success: true,
+          success: true
           message: 'Performance benchmarks completed',
           data: benchmarks
         })
       }
-
       case 'clear_cache': {
         // Clear application caches
         return json({
-          success: true,
+          success: true
           message: 'Application caches cleared',
           clearedAt: new Date().toISOString()
         })
       }
-
       default:
-        return json({
-            success: false,
+        return json({,
+            success: false
             error: 'Invalid action',
             availableActions: ['gc', 'benchmark', 'clear_cache']
           },)
@@ -470,7 +426,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
   } catch (error: any) {
     return json({
-        success: false,
+        success: false
         error: 'Performance action failed',
         details: error instanceof Error ? error.message: 'Unknown error'
       },)

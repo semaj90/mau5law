@@ -1,7 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import UploadArea from './UploadArea.svelte';
   let uploadComponent: UploadArea = $state();
   let uploadStatus = $state('');
@@ -10,7 +8,6 @@
   let autoUpload = $state(false);
   let maxFiles = $state(5);
   let maxFileSize = $state(10 * 1024 * 1024); // 10MB
-
   function handleUploadStart(event: CustomEvent) {
     uploadStatus = `Starting upload of ${event.detail.files.length} files...`;
     console.log('Upload started:', event.detail);
@@ -48,12 +45,10 @@
     uploadedFiles = [];
   }
 </script>
-
 <div class="space-y-4">
   <div class="space-y-4">
     <div class="space-y-4">
       <h3>Enhanced UploadArea Component Demo</h3>
-
       <!-- Configuration Controls -->
       <div class="space-y-4">
         <div class="space-y-4">
@@ -73,7 +68,6 @@
                   Show Progress
                 </label>
               </div>
-
               <div class="space-y-4">
                 <input
                   class="space-y-4"
@@ -86,7 +80,6 @@
                 </label>
               </div>
             </div>
-
             <div class="space-y-4">
               <div class="space-y-4">
                 <label for="maxFiles" class="space-y-4">Max Files:</label>
@@ -99,7 +92,6 @@
                   max="20"
                 >
               </div>
-
               <div class="space-y-4">
                 <label for="maxSize" class="space-y-4">Max Size (MB):</label>
                 <input
@@ -120,7 +112,6 @@
           </div>
         </div>
       </div>
-
       <!-- Upload Component -->
       <UploadArea
         bind:this={uploadComponent}
@@ -148,7 +139,6 @@
         files-selected={handleFilesSelected}
         validation-error={handleValidationError}
       />
-
       <!-- Status Display -->
       {#if uploadStatus}
         <div class="space-y-4" role="status">
@@ -163,7 +153,6 @@
         </div>
       {/if}
     </div>
-
     <div class="space-y-4">
       <div class="space-y-4">
         <div class="space-y-4">
@@ -207,7 +196,6 @@
           {/if}
         </div>
       </div>
-
       <!-- Feature List -->
       <div class="space-y-4">
         <div class="space-y-4">
@@ -231,10 +219,9 @@
     </div>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
-  .container {;
+  .container {
     max-width: 1200px;
   }
   .alert {
@@ -246,6 +233,3 @@
     right: 0.5rem;
   }
 </style>
-
-
-

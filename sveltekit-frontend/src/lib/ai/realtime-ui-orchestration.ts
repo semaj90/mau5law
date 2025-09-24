@@ -9,25 +9,21 @@
  * - XState orchestration for complex UI state management
  * - GPU-accelerated rendering for smooth animations
  */
-
 import { fabric } from 'fabric';
 import Loki from 'lokijs';
 import amqp from 'amqplib';
 import { createMachine, interpret, assign } from 'xstate';
 import { performance } from 'perf_hooks';
-
 // =============================================================================
 // FABRIC.JS REAL-TIME CANVAS MANAGER
 // =============================================================================
-
 export class LegalCanvasManager {
   private canvas: fabric.Canvas | null = null;
   private progressIndicators: Map<string, ProgressIndicator> = new Map();
   private vectorVisualization: VectorVisualization | null = null;
   private animationFrameId: number = 0;
   private isRendering = false;
-
-  // Performance tracking;
+  // Performance tracking
   private renderMetrics = {
     frameCount: 0,
     avgFrameTime: 0,
@@ -35,12 +31,10 @@ export class LegalCanvasManager {
     lastFrameTime: 0,
     droppedFrames: 0
   };
-
   constructor(canvasElement: HTMLCanvasElement, config: CanvasConfig) {
     this.initializeFabricCanvas(canvasElement, config);
     this.startRenderLoop();
   }
-
   /**
    * Initialize Fabric.js canvas with optimizations
    */;
@@ -48,72 +42,61 @@ export class LegalCanvasManager {
     this.canvas = new fabric.Canvas(canvasElement, {
       width: config.width || 1920,
       height: config.height || 1080,
-      backgroundColor: '#1a1a1a',;
-      selection: true,
-      preserveObjectStacking: true,
+      backgroundColor: '#1a1a1a',
+      selection: true
+      preserveObjectStacking: true
       renderOnAddRemove: false, // Manual rendering for 60fps control
-      skipTargetFind: false,
-      perPixelTargetFind: true,
-      enableRetinaScaling: true,
+      skipTargetFind: false
+      perPixelTargetFind: true
+      enableRetinaScaling: true
       imageSmoothingEnabled: true
     });
-
     // Configure canvas for high performance
     this.canvas.freeDrawingBrush.width = 2;
     this.canvas.freeDrawingBrush.color = '#00ff88';
-
     // Set up interaction handlers
     this.setupCanvasInteractions();
-
     console.log('🎨 Fabric.js canvas initialized with GPU acceleration');
     console.log(`   - Resolution: ${config.width}x${config.height}`);
     console.log(`   - Retina scaling: enabled`);
   }
-
   /**
    * Setup canvas interaction handlers
    */;
   private setupCanvasInteractions(): void {
     if (!this.canvas) return;
-
-    // Object selection with real-time updates;
+    // Object selection with real-time updates
     this.canvas.on('selection:created', (e) => {
       this.broadcastSelection(e.selected);
     });
-
-    // Mouse interactions for collaborative features;
+    // Mouse interactions for collaborative features
     this.canvas.on('mouse:move', (e) => {
       this.updateCursorPosition(e.pointer);
     });
-
-    // Path drawing for evidence mapping;
+    // Path drawing for evidence mapping
     this.canvas.on('path:created', (e) => {
       this.handlePathCreation(e.path);
     });
   }
-
   /**
    * Create real-time progress indicator
    */
   createProgressIndicator(
-    id: string,;
+    id: string
     config: ProgressConfig;
   ): ProgressIndicator {
     if (!this.canvas) throw new Error('Canvas not initialized');
-
     const indicator = new ProgressIndicator(id, config, this.canvas);
     this.progressIndicators.set(id, indicator);
-
     console.log(`📊 Created progress indicator: ${id}`);
     return indicator;
   }
-
   /**
    * Update progress with smooth animation
    */
   updateProgress(
-    id: string,;
-    progress: number,
+    id: string
+    progress: number
     details?: ProgressDetails;
   ): void {
     const indicator = this.progressIndicators.get(id);
@@ -121,74 +104,58 @@ export class LegalCanvasManager {
       indicator.updateProgress(progress, details);
     }
   }
-
   /**
    * Create vector similarity visualization
    */;
   createVectorVisualization(vectors: VectorData[]): void {
     if (!this.canvas) return;
-
     this.vectorVisualization = new VectorVisualization(vectors, this.canvas);
     console.log(`🔬 Created vector visualization: ${vectors.length} vectors`);
   }
-
   /**
    * Start 60fps render loop with performance monitoring
    */;
   private startRenderLoop(): void {
     const renderFrame = (timestamp: number) => {
       if (!this.canvas || !this.isRendering) return;
-
       const frameTime = timestamp - this.renderMetrics.lastFrameTime;
-
-      // Target 60fps (16.67ms per frame);
+      // Target 60fps (16.67ms per frame)
       if (frameTime >= 16.67) {
         this.renderFrame(timestamp);
         this.updateRenderMetrics(frameTime);
         this.renderMetrics.lastFrameTime = timestamp;
       }
-
       this.animationFrameId = requestAnimationFrame(renderFrame);
     };
-
     this.isRendering = true;
     this.animationFrameId = requestAnimationFrame(renderFrame);
-
     console.log('🎬 Started 60fps render loop');
   }
-
   /**
    * Render single frame with optimizations
    */;
   private renderFrame(timestamp: number): void {
     if (!this.canvas) return;
-
     const startTime = performance.now();
-
     try {
       // Update animations
       this.updateProgressAnimations();
       this.updateVectorAnimations();
-
-      // Render canvas (only if dirty);
+      // Render canvas (only if dirty)
       if (this.canvas.isDirty) {
         this.canvas.renderAll();
         this.canvas.isDirty = false;
       }
-
       const renderTime = performance.now() - startTime;
-
-      // Performance warning for slow frames;
+      // Performance warning for slow frames
       if (renderTime > 16.67) {
         this.renderMetrics.droppedFrames++;
         console.warn(`⚠️ Slow frame: ${renderTime.toFixed(2)}ms (target: 16.67ms)`);
       }
-
     } catch (error) {
       console.error('❌ Render frame error:', error);
     }
   }
-
   /**
    * Update progress indicator animations
    */;
@@ -197,7 +164,6 @@ export class LegalCanvasManager {
       indicator.animate();
     });
   }
-
   /**
    * Update vector visualization animations
    */;
@@ -206,7 +172,6 @@ export class LegalCanvasManager {
       this.vectorVisualization.animate();
     }
   }
-
   /**
    * Update render performance metrics
    */;
@@ -215,7 +180,6 @@ export class LegalCanvasManager {
     this.renderMetrics.avgFrameTime = (this.renderMetrics.avgFrameTime * (this.renderMetrics.frameCount - 1) + frameTime) / this.renderMetrics.frameCount;
     this.renderMetrics.fps = 1000 / this.renderMetrics.avgFrameTime;
   }
-
   /**
    * Broadcast selection to other users
    */;
@@ -223,14 +187,12 @@ export class LegalCanvasManager {
     // Would broadcast via RabbitMQ in production
     console.log(`📡 Broadcasting selection: ${selected.length} objects`);
   }
-
   /**
    * Update cursor position for collaborative features
    */;
   private updateCursorPosition(pointer: { x: number; y: number }): void {
     // Would update cursor via RabbitMQ for real-time collaboration
   }
-
   /**
    * Handle path creation for evidence mapping
    */;
@@ -238,7 +200,6 @@ export class LegalCanvasManager {
     console.log('✏️ Evidence path created');
     // Would save to Loki.js and broadcast via RabbitMQ
   }
-
   /**
    * Get rendering performance metrics
    */;
@@ -250,13 +211,11 @@ export class LegalCanvasManager {
       memoryUsage: this.getCanvasMemoryUsage()
     };
   }
-
   /**
    * Estimate canvas memory usage
    */;
   private getCanvasMemoryUsage(): number {
     if (!this.canvas) return 0;
-
     const objects = this.canvas.getObjects();
     return objects.reduce((memory, obj) => {
       // Rough estimation based on object type
@@ -265,32 +224,25 @@ export class LegalCanvasManager {
       return memory + 1024; // 1KB for basic objects
     }, 0);
   }
-
   /**
    * Stop rendering and cleanup
    */;
   cleanup(): void {
     this.isRendering = false;
-
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
     }
-
     this.progressIndicators.clear();
     this.vectorVisualization = null;
-
     if (this.canvas) {
       this.canvas.dispose();
     }
-
     console.log('🧹 Fabric.js canvas cleanup completed');
   }
 }
-
 // =============================================================================
 // PROGRESS INDICATOR CLASS
 // =============================================================================
-
 class ProgressIndicator {
   private id: string;
   private canvas: fabric.Canvas;
@@ -300,18 +252,16 @@ class ProgressIndicator {
   private animationTarget = 0;
   private currentProgress = 0;
   private animationSpeed = 0.1;
-
   constructor(id: string, config: ProgressConfig, canvas: fabric.Canvas) {
     this.id = id;
     this.canvas = canvas;
     this.createProgressIndicator(config);
   }
-
   /**
    * Create visual progress indicator
    */;
   private createProgressIndicator(config: ProgressConfig): void {
-    // Progress background;
+    // Progress background
     const background = new fabric.Rect({
       left: config.x,
       top: config.y,
@@ -320,90 +270,75 @@ class ProgressIndicator {
       fill: '#333333',
       stroke: '#555555',
       strokeWidth: 1,
-      rx: 4,;
+      rx: 4,
       ry: 4
     });
-
-    // Progress bar;
+    // Progress bar
     this.progressBar = new fabric.Rect({
       left: config.x + 2,
       top: config.y + 2,
       width: 0,
       height: config.height - 4,
       fill: config.color || '#00ff88',
-      rx: 2,;
+      rx: 2,
       ry: 2
     });
-
-    // Progress text;
+    // Progress text
     this.progressText = new fabric.Text('0%', {
       left: config.x + config.width / 2,
       top: config.y + config.height / 2,
       fontSize: 12,
-      fontFamily: 'monospace',;
+      fontFamily: 'monospace',
       fill: '#ffffff',
       textAlign: 'center',
       originX: 'center',
       originY: 'center'
     });
-
-    // Group elements;
+    // Group elements
     this.progressGroup = new fabric.Group([background, this.progressBar, this.progressText], {
-      selectable: false,;
+      selectable: false
       evented: false
     });
-
     this.canvas.add(this.progressGroup);
   }
-
   /**
    * Update progress with animation
    */;
   updateProgress(progress: number, details?: ProgressDetails): void {
     this.animationTarget = Math.max(0, Math.min(1, progress);
-
     if (details && this.progressText) {
       const text = details.customText || `${Math.round(progress * 100)}%`;
       this.progressText.set('text', text);
     }
-
     this.canvas.isDirty = true;
   }
-
   /**
    * Animate progress bar smoothly
    */;
   animate(): void {
     if (Math.abs(this.currentProgress - this.animationTarget) < 0.001) return;
-
     // Smooth interpolation
     this.currentProgress += (this.animationTarget - this.currentProgress) * this.animationSpeed;
-
     if (this.progressBar) {
       const maxWidth = 296; // Total width minus padding
       const width = this.currentProgress * maxWidth;
       this.progressBar.set('width', width);
     }
-
     this.canvas.isDirty = true;
   }
 }
-
 // =============================================================================
 // VECTOR VISUALIZATION CLASS
 // =============================================================================
-
 class VectorVisualization {
   private canvas: fabric.Canvas;
   private vectorPoints: VectorPoint[] = [];
   private connections: fabric.Line[] = [];
   private animationPhase = 0;
-
   constructor(vectors: VectorData[], canvas: fabric.Canvas) {
     this.canvas = canvas;
     this.createVectorVisualization(vectors);
   }
-
   /**
    * Create 3D-like vector visualization
    */;
@@ -411,41 +346,36 @@ class VectorVisualization {
     const centerX = this.canvas.width! / 2;
     const centerY = this.canvas.height! / 2;
     const radius = 200;
-
-    // Create vector points;
+    // Create vector points
     vectors.forEach((vector, index) => {
       const angle = (index / vectors.length) * 2 * Math.PI;
       const x = centerX + Math.cos(angle) * radius;
       const y = centerY + Math.sin(angle) * radius;
-
       const point = new fabric.Circle({
-        left: x,
-        top: y,
+        left: x
+        top: y
         radius: 5 + vector.similarity * 10,
         fill: this.getColorFromSimilarity(vector.similarity),
         stroke: '#ffffff',
         strokeWidth: 1,
         originX: 'center',
-        originY: 'center',;
+        originY: 'center',
         selectable: false
       });
-
       this.canvas.add(point);
       this.vectorPoints.push({
-        object: point,
-        originalX: x,
-        originalY: y,
-        similarity: vector.similarity,;
+        object: point
+        originalX: x
+        originalY: y
+        similarity: vector.similarity,
         phase: Math.random() * Math.PI * 2
       });
-
-      // Create connections to similar vectors;
+      // Create connections to similar vectors
       if (vector.similarity > 0.7) {
         this.createConnectionLines(x, y, centerX, centerY);
       }
     });
   }
-
   /**
    * Get color based on similarity score
    */;
@@ -455,7 +385,6 @@ class VectorVisualization {
     if (similarity > 0.5) return '#ffff00'; // Yellow for medium similarity
     return '#00ff88'; // Green for low similarity
   }
-
   /**
    * Create connection lines between vectors
    */;
@@ -464,48 +393,39 @@ class VectorVisualization {
       stroke: '#444444',
       strokeWidth: 1,
       opacity: 0.3,
-      selectable: false,;
+      selectable: false
       evented: false
     });
-
     this.canvas.add(line);
     this.connections.push(line);
   }
-
   /**
    * Animate vector visualization
    */;
   animate(): void {
     this.animationPhase += 0.02;
-
     this.vectorPoints.forEach(point => {
       // Pulsing animation based on similarity
       const pulse = 1 + Math.sin(this.animationPhase + point.phase) * 0.2 * point.similarity;
       point.object.set('scaleX', pulse);
       point.object.set('scaleY', pulse);
-
       // Floating animation
       const float = Math.sin(this.animationPhase * 0.5 + point.phase) * 5;
       point.object.set('top', point.originalY + float);
     });
-
     this.canvas.isDirty = true;
   }
 }
-
 // =============================================================================
 // LOKI.JS INDEXEDDB CACHE MANAGER
 // =============================================================================
-
 export class LokiCacheManager {
   private db: Loki | null = null;
   private collections: Map<string, Collection<any> = new Map();
   private isInitialized = false;
-
   constructor() {
     this.initializeLoki();
   }
-
   /**
    * Initialize Loki.js with IndexedDB adapter
    */;
@@ -513,84 +433,71 @@ export class LokiCacheManager {
     try {
       // LokiJS IndexedDB adapter
       const LokiIndexedAdapter = Loki.LokiIndexedAdapter;
-
       this.db = new Loki('legal-ai-cache', {
-        adapter: new LokiIndexedAdapter(),;
-        autoload: true,
+        adapter: new LokiIndexedAdapter(),
+        autoload: true
         autoloadCallback: () => {
           this.setupCollections();
           this.isInitialized = true;
           console.log('📦 Loki.js IndexedDB cache initialized');
         },
-        autosave: true,
+        autosave: true
         autosaveInterval: 4000 // Save every 4 seconds
       });
-
     } catch (error) {
       console.error('❌ Loki.js initialization failed:', error);
       throw error;
     }
   }
-
   /**
    * Setup database collections
    */;
   private setupCollections(): void {
     if (!this.db) return;
-
-    // Vector embeddings cache;
+    // Vector embeddings cache
     const vectorsCollection = this.db.addCollection('vectors', {
-      indices: ['document_id', 'similarity', 'timestamp'],;
+      indices: ['document_id', 'similarity', 'timestamp'],
       unique: ['document_id']
     });
-
-    // Progress states cache;
+    // Progress states cache
     const progressCollection = this.db.addCollection('progress', {
       indices: ['id', 'status', 'timestamp']
     });
-
-    // Canvas state cache;
+    // Canvas state cache
     const canvasCollection = this.db.addCollection('canvas_state', {
       indices: ['canvas_id', 'user_id', 'timestamp']
     });
-
-    // User interactions cache;
+    // User interactions cache
     const interactionsCollection = this.db.addCollection('interactions', {
       indices: ['user_id', 'action_type', 'timestamp']
     });
-
     this.collections.set('vectors', vectorsCollection);
     this.collections.set('progress', progressCollection);
     this.collections.set('canvas_state', canvasCollection);
     this.collections.set('interactions', interactionsCollection);
-
     console.log('📚 Loki.js collections initialized');
   }
-
   /**
    * Cache vector similarity results
    */
   async cacheVectorResults(
-    queryId: string,
+    queryId: string
     results: SimilarityResult[];
   ): Promise<void> {
     if (!this.isInitialized) return;
-
     const collection = this.collections.get('vectors');
     if (!collection) return;
-
     try {
       const cacheEntry = {
-        query_id: queryId,
-        results: results.map(result => ({
+        query_id: queryId
+        results: results.map(result => ({,
           document_id: result.document_id,
           similarity: result.similarity,
           metadata: result.metadata
         })),
-        timestamp: Date.now(),;
+        timestamp: Date.now(),
         ttl: Date.now() + 3600000 // 1 hour TTL
       };
-
       // Upsert cache entry
       const existing = collection.findOne({ query_id: queryId });
       if (existing) {
@@ -599,121 +506,96 @@ export class LokiCacheManager {
       } else {
         collection.insert(cacheEntry);
       }
-
       console.log(`💾 Cached vector results: ${queryId} (${results.length} results)`);
-
     } catch (error) {
       console.warn('⚠️ Vector cache failed:', error);
     }
   }
-
   /**
    * Retrieve cached vector results
    */;
   async getCachedVectorResults(queryId: string): Promise<SimilarityResult[] | null> {
     if (!this.isInitialized) return null;
-
     const collection = this.collections.get('vectors');
     if (!collection) return null;
-
     try {
       const cached = collection.findOne({
-        query_id: queryId,
+        query_id: queryId
         ttl: { $gt: Date.now() } // Check TTL
       });
-
       if (cached) {
         console.log(`🎯 Cache hit for vector query: ${queryId}`);
         return cached.results;
       }
-
       return null;
-
     } catch (error) {
       console.warn('⚠️ Vector cache retrieval failed:', error);
       return null;
     }
   }
-
   /**
    * Cache canvas state for offline editing
    */
   async cacheCanvasState(
-    canvasId: string,
-    canvasData: any,
+    canvasId: string
+    canvasData: any
     userId: string;
   ): Promise<void> {
     if (!this.isInitialized) return;
-
     const collection = this.collections.get('canvas_state');
     if (!collection) return;
-
     try {
       const stateEntry = {
-        canvas_id: canvasId,
-        user_id: userId,
-        canvas_data: canvasData,
-        timestamp: Date.now(),;
+        canvas_id: canvasId
+        user_id: userId
+        canvas_data: canvasData
+        timestamp: Date.now(),
         version: Date.now() // Simple versioning
       };
-
       collection.insert(stateEntry);
-
       // Keep only last 10 versions per canvas
       const allStates = collection.find({ canvas_id: canvasId });
       if (allStates.length > 10) {
         const oldStates = allStates
           .sort((a, b) => a.timestamp - b.timestamp)
           .slice(0, allStates.length - 10);
-
         oldStates.forEach(state => collection.remove(state);
       }
-
       console.log(`🎨 Cached canvas state: ${canvasId}`);
-
     } catch (error) {
       console.warn('⚠️ Canvas state cache failed:', error);
     }
   }
-
   /**
    * Get cached canvas state
    */;
   async getCachedCanvasState(canvasId: string): Promise<any | null> {
     if (!this.isInitialized) return null;
-
     const collection = this.collections.get('canvas_state');
     if (!collection) return null;
-
     try {
       const latest = collection.chain()
         .find({ canvas_id: canvasId })
         .simplesort('timestamp', true)
         .limit(1)
         .data()[0];
-
       if (latest) {
         console.log(`🎯 Retrieved canvas state: ${canvasId}`);
         return latest.canvas_data;
       }
-
       return null;
-
     } catch (error) {
       console.warn('⚠️ Canvas state retrieval failed:', error);
       return null;
     }
   }
-
   /**
    * Cleanup expired cache entries
    */;
   async cleanupExpiredEntries(): Promise<void> {
     if (!this.isInitialized) return;
-
     const now = Date.now();
     let cleanedCount = 0;
-
     try {
       // Clean expired vector results
       const vectorsCollection = this.collections.get('vectors');
@@ -722,30 +604,25 @@ export class LokiCacheManager {
         expired.forEach(entry => vectorsCollection.remove(entry);
         cleanedCount += expired.length;
       }
-
       // Clean old interactions (keep last 1000)
       const interactionsCollection = this.collections.get('interactions');
       if (interactionsCollection) {
         const allInteractions = interactionsCollection.chain()
           .simplesort('timestamp', true)
           .data();
-
         if (allInteractions.length > 1000) {
           const toRemove = allInteractions.slice(1000);
           toRemove.forEach(interaction => interactionsCollection.remove(interaction);
           cleanedCount += toRemove.length;
         }
       }
-
       if (cleanedCount > 0) {
         console.log(`🧹 Cleaned up ${cleanedCount} expired cache entries`);
       }
-
     } catch (error) {
       console.warn('⚠️ Cache cleanup failed:', error);
     }
   }
-
   /**
    * Get cache statistics
    */;
@@ -753,13 +630,11 @@ export class LokiCacheManager {
     if (!this.isInitialized || !this.db) {
       return { totalEntries: 0, collectionStats: {}, isInitialized: false };
     }
-
     const stats: CacheStats = {
       totalEntries: 0,
       collectionStats: {},
       isInitialized: true
     };
-
     this.collections.forEach((collection, name) => {
       const count = collection.count();
       stats.totalEntries += count;
@@ -768,22 +643,19 @@ export class LokiCacheManager {
         size: this.estimateCollectionSize(collection)
       };
     });
-
     return stats;
   }
-
   /**
    * Estimate collection size in bytes
    */;
   private estimateCollectionSize(collection: Collection<any>): number {
     try {
       const data = collection.data;
-      return JSON.stringify(data).length * 2; // Rough UTF-16 estimation;
+      return JSON.stringify(data).length * 2; // Rough UTF-16 estimation
     } catch {
       return 0;
     }
   }
-
   /**
    * Cleanup cache resources
    */;
@@ -791,27 +663,21 @@ export class LokiCacheManager {
     if (this.db) {
       this.db.close();
     }
-
     this.collections.clear();
     this.isInitialized = false;
-
     console.log('🧹 Loki.js cache cleanup completed');
   }
 }
-
 // =============================================================================
 // RABBITMQ REAL-TIME MESSAGING
 // =============================================================================
-
 export class RabbitMQRealtimeMessenger {
   private connection: amqp.Connection | null = null;
   private channel: amqp.Channel | null = null;
   private isConnected = false;
   private messageHandlers: Map<string, MessageHandler[]> = new Map();
   private subscriptions: Set<string> = new Set();
-
   constructor(private rabbitmqUrl: string = 'amqp://localhost:5672') {}
-
   /**
    * Initialize RabbitMQ connection
    */;
@@ -819,63 +685,49 @@ export class RabbitMQRealtimeMessenger {
     try {
       this.connection = await amqp.connect(this.rabbitmqUrl);
       this.channel = await this.connection.createChannel();
-
       // Setup exchanges for real-time messaging
       await this.setupExchanges();
-
       // Setup connection error handling
       this.connection.on('error', this.handleConnectionError.bind(this);
       this.connection.on('close', this.handleConnectionClose.bind(this);
-
       this.isConnected = true;
       console.log('📡 RabbitMQ real-time messenger initialized');
-
     } catch (error) {
       console.error('❌ RabbitMQ initialization failed:', error);
       throw error;
     }
   }
-
   /**
    * Setup RabbitMQ exchanges and queues
    */;
   private async setupExchanges(): Promise<void> {
     if (!this.channel) return;
-
     // Real-time progress updates
     await this.channel.assertExchange('legal-ai-realtime', 'topic', { durable: false });
-
     // Collaborative canvas updates
     await this.channel.assertExchange('canvas-collaboration', 'fanout', { durable: false });
-
     // Vector processing notifications
     await this.channel.assertExchange('vector-processing', 'direct', { durable: true });
-
     console.log('🔄 RabbitMQ exchanges configured');
   }
-
   /**
    * Subscribe to real-time progress updates
    */
   async subscribeToProgress(
-    progressId: string,
+    progressId: string
     handler: ProgressMessageHandler;
   ): Promise<void> {
     if (!this.channel) throw new Error('RabbitMQ not connected');
-
     const queueName = `progress-${progressId}`;
     const routingKey = `progress.${progressId}`;
-
-    // Create temporary queue;
+    // Create temporary queue
     const queue = await this.channel.assertQueue(queueName, {
-      exclusive: true,
+      exclusive: true
       autoDelete: true
     });
-
     // Bind to progress exchange
     await this.channel.bindQueue(queue.queue, 'legal-ai-realtime', routingKey);
-
-    // Setup message consumer;
+    // Setup message consumer
     await this.channel.consume(queue.queue, (msg) => {
       if (msg) {
         try {
@@ -888,27 +740,23 @@ export class RabbitMQRealtimeMessenger {
         }
       }
     });
-
     this.subscriptions.add(queueName);
     console.log(`📊 Subscribed to progress: ${progressId}`);
   }
-
   /**
    * Publish progress update
    */
   async publishProgress(
-    progressId: string,
+    progressId: string
     progressData: ProgressUpdate;
   ): Promise<void> {
     if (!this.channel) return;
-
     const routingKey = `progress.${progressId}`;
     const message = {
       ...progressData,
-      timestamp: Date.now(),;
+      timestamp: Date.now(),
       id: progressId
     };
-
     await this.channel.publish(
       'legal-ai-realtime',
       routingKey,
@@ -916,28 +764,23 @@ export class RabbitMQRealtimeMessenger {
       { persistent: false, timestamp: Date.now() }
     );
   }
-
   /**
    * Subscribe to canvas collaboration updates
    */
   async subscribeToCanvasUpdates(
-    canvasId: string,
+    canvasId: string
     handler: CanvasUpdateHandler;
   ): Promise<void> {
     if (!this.channel) throw new Error('RabbitMQ not connected');
-
     const queueName = `canvas-${canvasId}`;
-
-    // Create queue for canvas updates;
+    // Create queue for canvas updates
     const queue = await this.channel.assertQueue(queueName, {
-      exclusive: true,
+      exclusive: true
       autoDelete: true
     });
-
     // Bind to canvas collaboration exchange
     await this.channel.bindQueue(queue.queue, 'canvas-collaboration', '');
-
-    // Setup message consumer with filtering;
+    // Setup message consumer with filtering
     await this.channel.consume(queue.queue, (msg) => {
       if (msg) {
         try {
@@ -952,26 +795,22 @@ export class RabbitMQRealtimeMessenger {
         }
       }
     });
-
     this.subscriptions.add(queueName);
     console.log(`🎨 Subscribed to canvas updates: ${canvasId}`);
   }
-
   /**
    * Publish canvas collaboration update
    */
   async publishCanvasUpdate(
-    canvasId: string,
+    canvasId: string
     updateData: CanvasUpdate;
   ): Promise<void> {
     if (!this.channel) return;
-
     const message = {
       ...updateData,
       canvasId,
       timestamp: Date.now()
     };
-
     await this.channel.publish(
       'canvas-collaboration',
       '',
@@ -979,7 +818,6 @@ export class RabbitMQRealtimeMessenger {
       { persistent: false }
     );
   }
-
   /**
    * Subscribe to vector processing notifications
    */
@@ -987,18 +825,14 @@ export class RabbitMQRealtimeMessenger {
     handler: VectorUpdateHandler;
   ): Promise<void> {
     if (!this.channel) throw new Error('RabbitMQ not connected');
-
     const queueName = 'vector-updates';
-
-    // Create durable queue for vector updates;
+    // Create durable queue for vector updates
     const queue = await this.channel.assertQueue(queueName, {
       durable: true
     });
-
     // Bind to vector processing exchange
     await this.channel.bindQueue(queue.queue, 'vector-processing', 'vector.completed');
-
-    // Setup message consumer;
+    // Setup message consumer
     await this.channel.consume(queue.queue, (msg) => {
       if (msg) {
         try {
@@ -1011,11 +845,9 @@ export class RabbitMQRealtimeMessenger {
         }
       }
     });
-
     this.subscriptions.add(queueName);
     console.log('🔬 Subscribed to vector processing updates');
   }
-
   /**
    * Handle connection errors
    */;
@@ -1024,7 +856,6 @@ export class RabbitMQRealtimeMessenger {
     this.isConnected = false;
     // Would implement reconnection logic here
   }
-
   /**
    * Handle connection close
    */;
@@ -1033,7 +864,6 @@ export class RabbitMQRealtimeMessenger {
     this.isConnected = false;
     // Would implement reconnection logic here
   }
-
   /**
    * Get connection status
    */;
@@ -1044,41 +874,35 @@ export class RabbitMQRealtimeMessenger {
       messageHandlers: this.messageHandlers.size
     };
   }
-
   /**
    * Cleanup RabbitMQ resources
    */;
   async cleanup(): Promise<void> {
     this.subscriptions.clear();
     this.messageHandlers.clear();
-
     if (this.channel) {
       await this.channel.close();
     }
-
     if (this.connection) {
       await this.connection.close();
     }
-
     this.isConnected = false;
     console.log('🧹 RabbitMQ messenger cleanup completed');
   }
 }
-
 // =============================================================================
 // XSTATE UI ORCHESTRATION MACHINE
 // =============================================================================
-
 export const realTimeUIMachine = createMachine({
   id: 'realTimeUI',
   initial: 'initializing',
   context: {
-    canvasManager: null,
-    cacheManager: null,
-    messenger: null,
+    canvasManager: null
+    cacheManager: null
+    messenger: null
     activeProgress: new Map(),
-    vectorVisualization: null,
-    collaborativeMode: false,
+    vectorVisualization: null
+    collaborativeMode: false
     renderMetrics: {
       fps: 0,
       droppedFrames: 0
@@ -1092,7 +916,6 @@ export const realTimeUIMachine = createMachine({
         INITIALIZATION_FAILED: 'error'
       }
     },
-
     idle: {
       on: {
         START_PROGRESS: {
@@ -1109,7 +932,6 @@ export const realTimeUIMachine = createMachine({
         }
       }
     },
-
     trackingProgress: {
       entry: 'startProgressTracking',
       on: {
@@ -1126,7 +948,6 @@ export const realTimeUIMachine = createMachine({
         }
       }
     },
-
     renderingVectors: {
       entry: 'startVectorRendering',
       on: {
@@ -1137,7 +958,6 @@ export const realTimeUIMachine = createMachine({
         VECTOR_ERROR: 'error'
       }
     },
-
     collaborative: {
       entry: 'setupCollaboration',
       on: {
@@ -1156,7 +976,6 @@ export const realTimeUIMachine = createMachine({
         }
       }
     },
-
     error: {
       entry: 'logError',
       on: {
@@ -1168,86 +987,70 @@ export const realTimeUIMachine = createMachine({
       }
     }
   }
-}, {;
+}, {
   actions: {
     initializeComponents: assign((context, event) => {
       console.log('🚀 Initializing real-time UI components');
       // Components would be initialized here
       return context;
     }),
-
     createProgressIndicator: assign((context, event: any) => {
       const { progressId, config } = event;
       console.log(`📊 Creating progress indicator: ${progressId}`);
-
       if (context.canvasManager) {
         const indicator = context.canvasManager.createProgressIndicator(progressId, config);
         context.activeProgress.set(progressId, indicator);
       }
-
       return context;
     }),
-
     updateProgress: assign((context, event: any) => {
       const { progressId, progress, details } = event;
-
       if (context.canvasManager) {
         context.canvasManager.updateProgress(progressId, progress, details);
       }
-
       return context;
     }),
-
     loadVectorVisualization: assign((context, event: any) => {
       const { vectors } = event;
       console.log(`🔬 Loading vector visualization: ${vectors.length} vectors`);
-
       if (context.canvasManager) {
         context.canvasManager.createVectorVisualization(vectors);
       }
-
       return context;
     }),
-
     enableCollaborativeMode: assign((context, event) => {
       console.log('👥 Enabling collaborative mode');
       return { ...context, collaborativeMode: true };
     }),
-
     broadcastCanvasUpdate: (context, event: any) => {
       const { canvasId, updateData } = event;
       if (context.messenger) {
         context.messenger.publishCanvasUpdate(canvasId, updateData);
       }
     },
-
     logError: (context, event) => {
       console.error('❌ Real-time UI error:', event);
     },
-
     resetState: assign((context, event) => {
       console.log('🔄 Resetting UI state');
       return {
         ...context,
         activeProgress: new Map(),
-        vectorVisualization: null,
+        vectorVisualization: null
         collaborativeMode: false
       };
     })
   }
 });
-
 // =============================================================================
 // TYPE DEFINITIONS
 // =============================================================================
-
 interface CanvasConfig {
   width: number;
   height: number;
   backgroundColor?: string;
   enableGPUAcceleration?: boolean;
 }
-
 interface ProgressConfig {
   x: number;
   y: number;
@@ -1255,20 +1058,17 @@ interface ProgressConfig {
   height: number;
   color?: string;
 }
-
 interface ProgressDetails {
   customText?: string;
   stage?: string;
   eta?: number;
 }
-
 interface VectorData {
   id: string;
   embedding: number[];
   similarity: number;
   metadata: any;
 }
-
 interface VectorPoint {
   object: fabric.Circle;
   originalX: number;
@@ -1276,7 +1076,6 @@ interface VectorPoint {
   similarity: number;
   phase: number;
 }
-
 interface RenderMetrics {
   frameCount: number;
   avgFrameTime: number;
@@ -1287,43 +1086,36 @@ interface RenderMetrics {
   canvasObjects: number;
   memoryUsage: number;
 }
-
 interface SimilarityResult {
   document_id: string;
   similarity: number;
   metadata: any;
 }
-
 interface CacheStats {
   totalEntries: number;
   collectionStats: Record<string, { count: number; size: number }>;
   isInitialized: boolean;
 }
-
 interface ProgressUpdate {
   progress: number;
   stage: string;
   details?: any;
 }
-
 interface CanvasUpdate {
   action: 'add' | 'modify' | 'delete';
   objectId: string;
   objectData: any;
   userId: string;
 }
-
 interface MessengerStatus {
   isConnected: boolean;
   activeSubscriptions: number;
   messageHandlers: number;
 }
-
 type MessageHandler = (message: any) => void;
 type ProgressMessageHandler = (progress: ProgressUpdate) => void;
 type CanvasUpdateHandler = (update: CanvasUpdate) => void;
 type VectorUpdateHandler = (vectors: any) => void;
-
 export {
   LegalCanvasManager,
   LokiCacheManager,

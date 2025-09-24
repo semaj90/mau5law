@@ -1,36 +1,31 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: suggest
  * Category: conservative
  * Memory Bank: PRG_ROM
  * Priority: 150
  * Redis Type: aiAnalysis
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 import { json } from '@sveltejs/kit'
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 import type { RequestHandler } from './$types.js'
-
-
 const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
   try {
     const { prompt, vibe, context } = await request.json()
-
     if (!prompt || typeof prompt !== "string") {
       return json({ error: "Prompt is required" }, { status: 400 })
     }
     // Use Ollama for real AI response
     const response = await generateAIResponse(prompt, vibe, context)
-
     return json({
       response: response.text,
       suggestions: response.suggestions,
@@ -41,40 +36,33 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     return json({ error: "Failed to generate AI suggestion" }, { status: 500 })
   }
 }
-
 async function generateAIResponse(
-  prompt: string,
+  prompt: string
   vibe: string = "professional",
-  context?: unknown,
+  context?: unknown
 ): Promise<any> {
   try {
     // Use the ollama service instance
     await ollamaService.initialize()
-
     // Create enhanced prompt based on vibe and context
     const systemPrompt = createSystemPrompt(vibe, context)
     const enhancedPrompt = `${systemPrompt}\n\nUser request: ${prompt}`
-
     // Get response from Ollama
     const aiResponse = await ollamaService.generate(enhancedPrompt, {
       temperature: getTemperatureForVibe(vibe),
       maxTokens: 500
     })
-
     // Parse and structure the response
     const structuredResponse = parseAIResponse(aiResponse, prompt)
-
     return structuredResponse
   } catch (error: any) {
     console.error("Ollama integration error:", error)
-
     // Fallback to mock response if Ollama fails
     return generateMockResponse(prompt, vibe, context)
   }
 }
 function createSystemPrompt(vibe: string, context?: unknown): string {
   const basePrompt = `You are an AI assistant for legal case management. You help prosecutors and legal professionals analyze cases, organize evidence, and provide insights.`
-
   const vibeInstructions = {
     professional:
       "Respond in a formal, structured manner with clear legal terminology.",
@@ -85,20 +73,16 @@ function createSystemPrompt(vibe: string, context?: unknown): string {
     technical: "Provide detailed, precise information with legal specifics.",
     collaborative: "Use inclusive language that builds on existing work."
   }
-
   const contextInstruction =
     context === "canvas"
       ? " You are specifically helping with an interactive case canvas where users can visualize evidence, timelines, and case relationships."
       : ""
-
   return `${basePrompt} ${vibeInstructions[vibe as keyof typeof vibeInstructions] || vibeInstructions.professional}${contextInstruction}
-
 When responding:
 1. Provide actionable insights
 2. Suggest specific next steps
 3. Focus on legal case management context
 4. Be helpful and constructive
-
 Format your response as clear, professional advice.`
 }
 function getTemperatureForVibe(vibe: string): number {
@@ -110,17 +94,15 @@ function getTemperatureForVibe(vibe: string): number {
     technical: 0.1,
     collaborative: 0.5
   }
-
   return temperatureMap[vibe as keyof typeof temperatureMap] || 0.3
 }
 function parseAIResponse(aiResponse: string, originalPrompt: string) {
   // Extract suggestions and actions from the AI response
   const suggestions = extractSuggestions(aiResponse, originalPrompt)
   const actions = extractActions(aiResponse, originalPrompt)
-
   return {
-    text: aiResponse,
-    suggestions: suggestions,
+    text: aiResponse
+    suggestions: suggestions
     actions: actions
   }
 }
@@ -133,12 +115,10 @@ function extractSuggestions(response: string, prompt: string): string[] {
     "Identify missing information",
     "Consider legal precedents"
   ]
-
   // Try to extract specific suggestions from the AI response
   const suggestionPattern =
     /(?:suggest|recommend|consider|try|should|could) => [^.!?]+)/gi
   const matches = response.match(suggestionPattern)
-
   if (matches && matches.length > 0) {
     const extracted = matches
       .slice(0, 3)
@@ -148,7 +128,6 @@ function extractSuggestions(response: string, prompt: string): string[] {
           .trim(),
       )
       .filter((s: string) => s.length > 10 && s.length < 100)
-
     if (extracted.length > 0) {
       return extracted
     }
@@ -174,7 +153,6 @@ function extractSuggestions(response: string, prompt: string): string[] {
 function extractActions(response: string, prompt: string) {
   // Generate actionable items based on response content and prompt
   const actions: any[] = []
-
   if (
     response.toLowerCase().includes("highlight") ||
     prompt.toLowerCase().includes("evidence")
@@ -217,15 +195,14 @@ function extractActions(response: string, prompt: string) {
 }
 // Fallback mock response (original implementation)
 async function generateMockResponse(
-  prompt: string,
+  prompt: string
   vibe: string = "professional",
-  context?: unknown,
+  context?: unknown
 ): Promise<any> {
   // Simulate AI processing delay
   await new Promise((resolve) =>
     setTimeout(resolve, 1000 + Math.random() * 2000),
   )
-
   const vibeResponses = {
     professional: {
       prefix: "Based on my analysis of the case materials,",
@@ -244,14 +221,11 @@ async function generateMockResponse(
       style: "inclusive and building"
     }
   }
-
   const currentVibe =
     vibeResponses[vibe as keyof typeof vibeResponses] ||
     vibeResponses.professional
-
   // Generate response based on prompt content
   let responseText = `${currentVibe.prefix} `
-
   if (prompt.toLowerCase().includes("evidence")) {
     responseText +=
       "I recommend focusing on the documentary evidence patterns that show consistency in the timeline. Consider cross-referencing witness statements with physical evidence locations."
@@ -276,7 +250,6 @@ async function generateMockResponse(
     "Identify gaps that need additional research",
     "Consider alternative interpretations"
   ]
-
   // Generate actionable items
   const actions = [
     {
@@ -295,9 +268,8 @@ async function generateMockResponse(
       data: { keywords: extractKeywords(prompt) }
     }
   ]
-
   return {
-    text: responseText,
+    text: responseText
     suggestions: suggestions.slice(0, 3), // Return top 3 suggestions
     actions: actions
   }
@@ -325,9 +297,6 @@ function extractKeywords(text: string): string[] {
     .replace(/[^\w\s]/g, " ")
     .split(/\s+/)
     .filter((word: string) => word.length > 3 && !commonWords.includes(word)
-
   return [...new Set(words)].slice(0, 5)
 }
-
-
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)

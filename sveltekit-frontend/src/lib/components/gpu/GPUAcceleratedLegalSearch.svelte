@@ -1,9 +1,7 @@
 <!-- GPU-Accelerated Legal Search Component -->
 <!-- Demonstrates RTX 3060 Ti CUDA acceleration for legal document similarity -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   	import { onMount } from 'svelte';
   	import Button from '$lib/components/ui/enhanced-bits';
   	// Svelte 5 runes for reactive state
@@ -12,7 +10,6 @@
   	let searchResults = $state<any[]>([]) => []);
   	let gpuStatus = $state(null);
   	let performanceMetrics = $state(null);
-
   	// Sample legal case database (in production, this would come from your PostgreSQL + pgvector)
   	const legalCaseDatabase = [
   		{
@@ -22,7 +19,7 @@
   			vector: [0.8, 0.2, 0.9, 0.7, 0.3, 0.6, 0.4, 0.8];
   		},
   		{
-  			id: 'case-002', 
+  			id: 'case-002',
   			title: 'Employment Termination Dispute',
   			content: 'wrongful termination employment contract severance compensation',
   			vector: [0.6, 0.7, 0.4, 0.8, 0.9, 0.3, 0.7, 0.5];
@@ -41,27 +38,25 @@
   		},
   		{
   			id: 'case-005',
-  			title: 'Data Privacy Violation',;
-  			content: 'data breach privacy violation GDPR compliance personal information',;
+  			title: 'Data Privacy Violation',
+  			content: 'data breach privacy violation GDPR compliance personal information',
   			vector: [0.9, 0.3, 0.8, 0.5, 0.7, 0.4, 0.8, 0.6];
   		}
   	];
-
   	// Check GPU status on component mount
   	$effect(() => {
     (async () => {
 await checkGPUStatus();
     })();
   });
-
   	async function checkGPUStatus() {
   		try {
   			const response = await fetch('/api/v1/gpu/status');
   			if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
   				const status = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
   				gpuStatus = {
-  					available: status.gpu_available || false,;
-  					model: status.gpu_model || 'Unknown',;
+  					available: status.gpu_available || false,
+  					model: status.gpu_model || 'Unknown',
   					utilization: status.gpu_stats?.gpu_utilization_percent || 0,
   					processing_speed: status.capabilities?.expected_throughput || 'Unknown';
   				};
@@ -69,97 +64,82 @@ await checkGPUStatus();
   		} catch (error) {
   			console.error('Failed to check GPU status:', error);
   			gpuStatus = {
-  				available: false,;
-  				model: 'Not Available',;
+  				available: false
+  				model: 'Not Available',
   				utilization: 0,
   				processing_speed: 'N/A';
   			};
   		}
   	}
-
   	async function performGPULegalSearch() {
   		if (!query.trim()) {
   			alert('Please enter a search query');
   			return;
   		}
-
   		isProcessing = true;
   		searchResults = [];
   		performanceMetrics = null;
-
   		try {
   			const startTime = Date.now();
-
   			// Convert query to vector (simplified - in production, use your embedding service)
   			const queryVector = convertQueryToVector(query);
-
   			// Prepare case vectors for GPU similarity processing
   			const caseVectors = legalCaseDatabase.map(caseData => caseData.vector);
-
   			// Call GPU-accelerated legal similarity endpoint
   			const response = await fetch('/api/v1/gpu', {
-  				method: 'POST',;
+  				method: 'POST',
   				headers: {
   					'Content-Type': 'application/json',
   				},
-  				body: JSON.stringify({
+  				body: JSON.stringify({,
   					service: 'legal',
   					operation: 'similarity',
-  					data: queryVector,;
+  					data: queryVector
   					metadata: {
-  						case_vectors: caseVectors,
+  						case_vectors: caseVectors
   						threshold: 0.6,
   						gpu_acceleration: true;
-  					},;
-  					priority: 'high' // Use direct CUDA processing;
+  					},
+  					priority: 'high' // Use direct CUDA processing
   				})
   			});
-
   			if (!(response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
   				throw new Error(`GPU processing failed: ${(response as { ok?: unknown; json?: unknown; statusText?: unknown }).statusText}`);
   			}
-
   			const result = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
   			const totalTime = Date.now() - startTime;
-
   			// Process GPU similarity results
   			if ((result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).success && (result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).result) {
   				const similarities = (result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).result;
   				const matches = [];
-
   				// Match similarity scores with legal cases
   				for (let i = 0; i < Math.min(similarities.length, legalCaseDatabase.length); i++) {
   					const score = similarities[i] || 0;
   					if (score >= 0.3) { // Minimum relevance threshold
   						matches.push({
   							case_id: legalCaseDatabase[i].id,
-  							title: legalCaseDatabase[i].title,;
-  							score: Math.round(score * 100) / 100,;
+  							title: legalCaseDatabase[i].title,
+  							score: Math.round(score * 100) / 100,
   							confidence: Math.min(score * 1.3, 1.0),
   							processing_time: (result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).processing_ms || 0,
   							gpu_accelerated: (result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).gpu_utilized || false
   						});
   					}
   				}
-
   				// Sort by similarity score (highest first)
   				searchResults = matches.sort((a, b) => b.score - a.score);
-
   				// Update performance metrics
   				performanceMetrics = {
-  					total_time: totalTime,
+  					total_time: totalTime
   					gpu_speedup: (result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).metadata?.speedup_vs_cpu || '8.3x',
   					vectors_processed: similarities.length,
   					cuda_operations: Math.ceil(similarities.length / 16)
   				};
-
   				console.log.gpu_utilized
   				});
-
   			} else {
   				throw new Error((result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).error || 'No results from GPU processing');
   			}
-
   		} catch (error) {
   			console.error('GPU legal search error:', error);
   			alert(`Search failed: ${error.message}`);
@@ -167,7 +147,6 @@ await checkGPUStatus();
   			isProcessing = false;
   		}
   	}
-
   	// Simplified query-to-vector conversion (in production, use your embedding service)
   	function convertQueryToVector(query: string): number[] {
   		const words = query.toLowerCase.split(' ');
@@ -176,25 +155,21 @@ await checkGPUStatus();
   		words.forEach((word, index) => {
   			vector[index % 8] += 0.1 + (word.length * 0.05);
   		});
-
   		// Normalize vector
   		const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
   		return magnitude > 0 ? vector.map(val => val / magnitude) : vector;
   	}
-
   	function getScoreColor(score: number): string {
   		if (score >= 0.8) return 'text-green-600 bg-green-50';
   		if (score >= 0.6) return 'text-blue-600 bg-blue-50';
   		if (score >= 0.4) return 'text-orange-600 bg-orange-50';
   		return 'text-gray-600 bg-gray-50';
   	}
-
   	function getConfidenceBar(confidence: number): string {
   		const width = Math.round(confidence * 100);
   		return `width: ${width}%`;
   	}
 </script>
-
 <div class="gpu-legal-search p-6 max-w-6xl mx-auto">
 	<div class="header mb-8">
 		<h1 class="text-3xl font-bold text-gray-900 mb-2">
@@ -204,7 +179,6 @@ await checkGPUStatus();
 			NVIDIA RTX 3060 Ti CUDA acceleration for high-speed legal document similarity
 		</p>
 	</div>
-
 	<!-- GPU Status Panel -->
 	{#if gpuStatus}
 		<div class="gpu-status mb-6 p-4 bg-gray-50 rounded-lg border">
@@ -232,7 +206,6 @@ await checkGPUStatus();
 			</div>
 		</div>
 	{/if}
-
 	<!-- Search Interface -->
 	<div class="search-section mb-8">
 		<div class="flex gap-4">
@@ -261,14 +234,12 @@ await checkGPUStatus();
 				{/if}
 </Button>
 		</div>
-		
 		{#if !gpuStatus?.available}
 			<div class="mt-2 text-sm text-orange-600 bg-orange-50 p-2 rounded">
 				⚠️ GPU acceleration not available. Ensure CUDA worker is running and GPU is detected.
 			</div>
 		{/if}
 	</div>
-
 	<!-- Performance Metrics -->
 	{#if performanceMetrics}
 		<div class="performance-metrics mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
@@ -293,14 +264,12 @@ await checkGPUStatus();
 			</div>
 		</div>
 	{/if}
-
 	<!-- Search Results -->
 	{#if searchResults.length > 0}
 		<div class="search-results">
 			<h2 class="text-xl font-semibold text-gray-900 mb-4">
 				🎯 Legal Case Matches ({searchResults.length} found)
 			</h2>
-			
 			<div class="space-y-4">
 				{#each searchResults as result}
 					<div class="result-nier-bits-card p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
@@ -315,7 +284,6 @@ await checkGPUStatus();
 								</span>
 							</div>
 						</div>
-						
 						<div class="flex items-center justify-between text-sm text-gray-600">
 							<div class="flex items-center space-x-4">
 								<span>Case ID: {(result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).case_id}</span>
@@ -328,11 +296,10 @@ await checkGPUStatus();
 								</span>
 								<span>{(result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).processing_time}ms</span>
 							</div>
-							
 							<div class="flex items-center space-x-2">
 								<span class="text-xs">Confidence:</span>
 								<div class="w-16 h-2 bg-gray-200 rounded-full">
-									<div 
+									<div
 										class="h-full bg-blue-500 rounded-full transition-all duration-300"
 										style={getConfidenceBar((result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).confidence)}
 									></div>
@@ -350,7 +317,6 @@ await checkGPUStatus();
 			<div class="text-sm">Try adjusting your search terms or lowering the similarity threshold</div>
 		</div>
 	{/if}
-
 	<!-- Legal Database Info -->
 	<div class="database-info mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
 		<h3 class="text-lg font-semibold text-blue-800 mb-2">📚 Legal Database</h3>
@@ -362,28 +328,22 @@ await checkGPUStatus();
 		</div>
 	</div>
 </div>
-
 <style>
 	.gpu-legal-search {
 		font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 	}
-
 	.result-card {
 		transition: all 0.2s ease;
 	}
-
 	.result-card:hover {
 		transform: translateY(-1px);
 	}
-
-	input:focus {;
+	input:focus {
 		outline: none;
 	}
-
 	.animate-spin {
 		animation: spin 1s linear infinite;
 	}
-
 	@keyframes spin {
 		from { transform: rotate(0deg); }
 		to { transform: rotate(360deg); }

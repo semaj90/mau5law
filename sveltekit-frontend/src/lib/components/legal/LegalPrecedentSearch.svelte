@@ -1,12 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-
   interface LegalPrecedent {
     id: string
     caseTitle: string
@@ -19,7 +17,6 @@ https://svelte.dev/e/js_parse_error -->
     legalPrinciples: string[];
     linkedCases: string[];
   }
-
   interface SearchFilters {
     query: string;
     jurisdiction: string;
@@ -27,15 +24,13 @@ https://svelte.dev/e/js_parse_error -->
     yearFrom: number | null;
     yearTo: number | null;
   }
-
   let searchFilters: SearchFilters = {
-    query: '',;
-    jurisdiction: '',;
+    query: '',
+    jurisdiction: '',
     court: '',
-    yearFrom: null,
+    yearFrom: null
     yearTo: null;
   };
-
   let precedents: LegalPrecedent[] = [];
   let loading = false;
   let error = '';
@@ -44,14 +39,12 @@ https://svelte.dev/e/js_parse_error -->
   let itemsPerPage = 10;
   let searchTerms: string[] = [];
   let processingTime = 0;
-
   const jurisdictions = [
     'Federal',
     'State',
     'Local',
     'International'
   ];
-
   const courts = [
     'Supreme Court',
     'Court of Appeals',
@@ -59,37 +52,32 @@ https://svelte.dev/e/js_parse_error -->
     'Circuit Court',
     'Administrative Court'
   ];
-
   async function searchPrecedents() {
     if (!searchFilters.query.trim()) {
       error = 'Please enter a search query';
       return;
     }
-
     loading = true;
     error = '';
     try {
       const params = new URLSearchParams({
-        query: searchFilters.query,;
-        limit: itemsPerPage.toString(),;
+        query: searchFilters.query,
+        limit: itemsPerPage.toString(),
         offset: ((currentPage - 1) * itemsPerPage).toString();
       });
-
       if (searchFilters.jurisdiction) params.set('jurisdiction', searchFilters.jurisdiction);
       if (searchFilters.court) params.set('court', searchFilters.court);
       if (searchFilters.yearFrom) params.set('yearFrom', searchFilters.yearFrom.toString());
       if (searchFilters.yearTo) params.set('yearTo', searchFilters.yearTo.toString());
-
       const response = await fetch(`/api/legal/precedents?${params}`);
       if (!response.ok) {
         throw new Error(`Search failed: ${response.statusText}`);
       }
-
       const data = await response.json();
-      precedents = data.precedents;
+      precedents = data.precedent;
       totalCount = data.totalCount;
-      searchTerms = data.searchTerms;
-      processingTime = data.processingTime;
+      searchTerms = data.searchTerm;
+      processingTime = data.processingTim;
     } catch (err) {
       error = err instanceof Error ? err.message: 'Search failed';
       console.error('Precedent search error:', err);
@@ -97,34 +85,29 @@ https://svelte.dev/e/js_parse_error -->
       loading = false;
     }
   }
-
   function clearFilters() {
     searchFilters = {
-      query: '',;
-      jurisdiction: '',;
+      query: '',
+      jurisdiction: '',
       court: '',
-      yearFrom: null,
+      yearFrom: null
       yearTo: null;
     };
     precedents = [];
     totalCount = 0;
     currentPage = 1;
   }
-
   function changePage(newPage: number) {
-    currentPage = newPage;
+    currentPage = newPag;
     searchPrecedents();
   }
-
   let totalPages = $derived(Math.ceil(totalCount / itemsPerPage));
   let startItem = $derived((currentPage - 1) * itemsPerPage + 1;
   let endItem = $derived(Math.min(currentPage * itemsPerPage, totalCount));
 </script>
-
 <div class="space-y-6">
   <div class="bg-white p-6 border border-gray-200 rounded-lg">
     <h2 class="text-xl font-semibold mb-4">Legal Precedent Search</h2>
-    
     <!-- Search Form -->
     <div class="space-y-4">
       <div>
@@ -140,14 +123,13 @@ https://svelte.dev/e/js_parse_error -->
           onkeydown={(e) => e.key === 'Enter' && searchPrecedents()}
         />
       </div>
-
       <!-- Filter Row -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div>
           <label for="jurisdiction" class="block text-sm font-medium mb-2">
             Jurisdiction
           </label>
-          <select 
+          <select
             id="jurisdiction";
             bind:value={searchFilters.jurisdiction}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -158,12 +140,11 @@ https://svelte.dev/e/js_parse_error -->
             {/each}
           </select>
         </div>
-
         <div>
           <label for="court" class="block text-sm font-medium mb-2">
             Court
           </label>
-          <select 
+          <select
             id="court"
             bind:value={searchFilters.court}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -174,7 +155,6 @@ https://svelte.dev/e/js_parse_error -->
             {/each}
           </select>
         </div>
-
         <div>
           <label for="year-from" class="block text-sm font-medium mb-2">
             Year From
@@ -189,7 +169,6 @@ https://svelte.dev/e/js_parse_error -->
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-
         <div>
           <label for="year-to" class="block text-sm font-medium mb-2">
             Year To
@@ -205,7 +184,6 @@ https://svelte.dev/e/js_parse_error -->
           />
         </div>
       </div>
-
       <!-- Action Buttons -->
       <div class="flex gap-3">
         <button
@@ -231,7 +209,6 @@ https://svelte.dev/e/js_parse_error -->
           Clear Filters
         </button>
       </div>
-
       {#if error}
         <div class="p-3 bg-red-50 border border-red-200 rounded-md">
           <p class="text-sm text-red-600">{error}</p>
@@ -239,7 +216,6 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
     </div>
   </div>
-
   <!-- Search Results -->
   {#if precedents.length > 0}
     <div class="bg-white border border-gray-200 rounded-lg">
@@ -266,7 +242,6 @@ https://svelte.dev/e/js_parse_error -->
           {/if}
         </div>
       </div>
-
       <!-- Results List -->
       <div class="divide-y divide-gray-200">
         {#each precedents as precedent}
@@ -279,18 +254,15 @@ https://svelte.dev/e/js_parse_error -->
                 Relevance: {(precedent.relevanceScore * 100).toFixed(1)}%
               </div>
             </div>
-            
             <div class="text-sm text-gray-600 mb-2">
               <span class="font-medium">{precedent.citation}</span>
               {#if precedent.court} • {precedent.court}{/if}
               {#if precedent.year} • {precedent.year}{/if}
               {#if precedent.jurisdiction} • {precedent.jurisdiction}{/if}
             </div>
-
             {#if precedent.summary}
               <p class="text-sm text-gray-700 mb-3">{precedent.summary}</p>
             {/if}
-
             {#if precedent.legalPrinciples.length > 0}
               <div class="mb-2">
                 <span class="text-xs font-medium text-gray-500">Legal Principles:</span>
@@ -303,7 +275,6 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
               </div>
             {/if}
-
             {#if precedent.linkedCases.length > 0}
               <div>
                 <span class="text-xs font-medium text-gray-500">Related Cases:</span>
@@ -315,7 +286,6 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/each}
       </div>
-
       <!-- Pagination -->
       {#if totalPages > 1}
         <div class="p-4 border-t border-gray-200">

@@ -5,13 +5,11 @@
 import { json, error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { ensureError } from '$lib/utils/ensure-error'
-
 // Mock Go service manager since the actual service doesn't exist
 const goServiceManager = {
   async healthCheck() {
     return { success: true, message: 'Mock Go service health check' }
   },
-
   async checkAllServices() {
     return {
       enhancedRAG: { success: true, status: 'healthy' },
@@ -19,12 +17,11 @@ const goServiceManager = {
       vectorDB: { success: true, status: 'healthy' }
     }
   },
-
   getEnhancedRAG() {
     return {
       async ragQuery(query: string, options: any) {
         return {
-          success: true,
+          success: true
           results: [
             { id: '1', content: 'Mock legal document result', score: 0.95 },
             { id: '2', content: 'Mock case law result', score: 0.87 }
@@ -36,10 +33,9 @@ const goServiceManager = {
           error: null
         }
       },
-
       async semanticSearch(query: string, options: any) {
         return {
-          success: true,
+          success: true
           results: [
             { id: '1', content: 'Mock semantic search result', score: 0.92 },
             { id: '2', content: 'Mock legal context result', score: 0.84 }
@@ -52,22 +48,20 @@ const goServiceManager = {
       }
     }
   },
-
   getUploadService() {
     return {
       async uploadDocument(file: any, metadata: any) {
         return {
-          success: true,
+          success: true
           documentId: 'mock-doc-123',
           filename: file.name || 'test.pdf',
           size: file.size || 1024,
           processed: true
         }
       },
-
       async health() {
         return {
-          success: true,
+          success: true
           status: 'healthy',
           uptime: '2h 15m',
           activeConnections: 5,
@@ -76,29 +70,26 @@ const goServiceManager = {
       }
     }
   },
-
   getClient(service: string) {
     return {
       async request(method: string, data: any) {
         return {
-          success: true,
+          success: true
           service,
           method,
-          mockResponse: true,
+          mockResponse: true
           timestamp: new Date().toISOString()
         }
       }
     }
   }
 }
-
 /*
  * GET /api/test/quic-go-integration - Test all QUIC-Go integrations
  */
 export const GET: RequestHandler = async ({ url }) => {
-  const testResults: Record<string, any> = {}
+  const testResults: { [key: string]: any } = {}
   let overallSuccess = true
-
   try {
     // Test 1: Go Service Manager Health Check
     console.log('Testing Go Service Manager health check...')
@@ -108,7 +99,6 @@ export const GET: RequestHandler = async ({ url }) => {
       status: Object.values(servicesHealth).every((s) => s.success) ? 'PASS' : 'PARTIAL',
       details: servicesHealth
     }
-
     // Test 2: Enhanced RAG Service
     console.log('Testing Enhanced RAG service...')
     try {
@@ -117,7 +107,6 @@ export const GET: RequestHandler = async ({ url }) => {
         maxResults: 3,
         threshold: 0.5
       })
-
       testResults.enhancedRag = {
         test: 'Enhanced RAG Query',
         status: ragResponse.success ? 'PASS' : 'FAIL',
@@ -125,7 +114,6 @@ export const GET: RequestHandler = async ({ url }) => {
         protocol: ragResponse.protocol,
         error: ragResponse.error || null
       }
-
       if (!ragResponse.success) overallSuccess = false
     } catch (ragError) {
       testResults.enhancedRag = {
@@ -135,7 +123,6 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       overallSuccess = false
     }
-
     // Test 3: Vector Service via Enhanced RAG
     console.log('Testing Vector service...')
     try {
@@ -144,7 +131,6 @@ export const GET: RequestHandler = async ({ url }) => {
         collection: 'legal_documents',
         limit: 5
       })
-
       testResults.vectorService = {
         test: 'Vector Semantic Search',
         status: vectorResponse.success ? 'PASS' : 'FAIL',
@@ -152,7 +138,6 @@ export const GET: RequestHandler = async ({ url }) => {
         protocol: vectorResponse.protocol,
         error: vectorResponse.error || null
       }
-
       if (!vectorResponse.success) overallSuccess = false
     } catch (vectorError) {
       testResults.vectorService = {
@@ -162,13 +147,11 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       overallSuccess = false
     }
-
     // Test 4: Upload Service
     console.log('Testing Upload service...')
     try {
       const uploadClient = goServiceManager.getUploadService()
       const healthResponse = await uploadClient.health()
-
       testResults.uploadService = {
         test: 'Upload Service Health',
         status: healthResponse.success ? 'PASS' : 'FAIL',
@@ -176,7 +159,6 @@ export const GET: RequestHandler = async ({ url }) => {
         protocol: healthResponse.protocol,
         error: healthResponse.error || null
       }
-
       if (!healthResponse.success) overallSuccess = false
     } catch (uploadError) {
       testResults.uploadService = {
@@ -186,7 +168,6 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       overallSuccess = false
     }
-
     // Test 5: QUIC Endpoints Integration Test
     console.log('Testing QUIC endpoints...')
     try {
@@ -194,22 +175,19 @@ export const GET: RequestHandler = async ({ url }) => {
       const ragProxyResponse = await fetch('/api/v1/quic/rag-proxy', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           query: 'test legal query',
           maxResults: 3,
           threshold: 0.7
         })
       })
-
       const ragProxyResult = ragProxyResponse.ok
-
       testResults.quicEndpoints = {
         test: 'QUIC RAG Proxy Integration',
         status: ragProxyResult ? 'PASS' : 'FAIL',
         httpStatus: ragProxyResponse.status,
         statusText: ragProxyResponse.statusText
       }
-
       if (!ragProxyResult) overallSuccess = false
     } catch (quicError) {
       testResults.quicEndpoints = {
@@ -219,7 +197,6 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       overallSuccess = false
     }
-
     // Summary
     const summary = {
       overallStatus: overallSuccess ? 'ALL_TESTS_PASSED' : 'SOME_TESTS_FAILED',
@@ -229,9 +206,8 @@ export const GET: RequestHandler = async ({ url }) => {
       testsFailed: Object.values(testResults).filter((t) => t.status === 'FAIL').length,
       testsError: Object.values(testResults).filter((t) => t.status === 'ERROR').length
     }
-
     return json({
-      success: overallSuccess,
+      success: overallSuccess
       message: 'QUIC-Go Integration Test Complete',
       summary,
       testResults,
@@ -248,14 +224,13 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (err: any) {
     console.error('Integration test failed:', err)
     return json({
-      success: false,
+      success: false
       message: 'QUIC-Go Integration Test Failed',
       error: err instanceof Error ? err.message: 'Unknown error',
       timestamp: new Date().toISOString()
     })
   }
 }
-
 /*
  * POST /api/test/quic-go-integration - Test specific integration with custom payload
  */
@@ -263,13 +238,10 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const testConfig = await request.json()
     const { service, endpoint, payload } = testConfig
-
     if (!service || !endpoint) {
       error(400, ensureError({ message: 'Service and endpoint are required' })
     }
-
     let testResult: any = {}
-
     switch (service) {
       case 'enhancedRag':
         const enhancedRagClient = goServiceManager.getEnhancedRAG()
@@ -279,14 +251,12 @@ export const POST: RequestHandler = async ({ request }) => {
           testResult = await enhancedRagClient.semanticSearch(payload.query, payload.options)
         }
         break
-
       case 'uploadService':
         const uploadClient = goServiceManager.getUploadService()
         if (endpoint === 'health') {
           testResult = await uploadClient.health()
         }
         break
-
       default:
         const client = goServiceManager.getClient(service as any)
         if (!client) {
@@ -295,13 +265,12 @@ export const POST: RequestHandler = async ({ request }) => {
         testResult = await client.request(endpoint, payload)
         break
     }
-
     return json({
-      success: true,
+      success: true
       message: 'Custom integration test completed',
       service,
       endpoint,
-      result: testResult,
+      result: testResult
       timestamp: new Date().toISOString()
     })
   } catch (err: any) {

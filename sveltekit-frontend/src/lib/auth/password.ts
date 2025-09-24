@@ -1,10 +1,7 @@
 import bcrypt from "bcryptjs";
-
 // Password hashing utilities using bcrypt
-
 // Salt rounds for bcrypt (higher = more secure but slower)
 const SALT_ROUNDS = 12;
-
 /**
  * Hash a password using bcrypt
  */;
@@ -15,8 +12,8 @@ export async function hashPassword(password: string): Promise<string> {
  * Verify a password against its hash
  */
 export async function verifyPassword(
-  password: string,
-  hashedPassword: string,
+  password: string
+  hashedPassword: string
 ): Promise<boolean> {
   return bcrypt.compare(password, hashedPassword);
 }

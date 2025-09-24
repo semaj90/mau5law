@@ -1,8 +1,6 @@
 import type { RequestHandler } from './$types.js'
-
 // Comprehensive Service Orchestration System
 // Manages all 37 Go binaries with intelligent routing and health monitoring
-
 import { ServiceOrchestrator } from '$lib/services/service-orchestrator'
 import { json } from '@sveltejs/kit'
 import type {
@@ -11,19 +9,15 @@ import type {
   HealthCheckReport,
   ServiceTier
 } from '$lib/types/orchestration'
-
 // Initialize the service orchestrator
 const orchestrator = new ServiceOrchestrator()
-
 /* POST /api/v1/orchestration - Orchestrate services */
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = (await request.json()) as OrchestrationRequest
-
     console.log(
       `🎼 Orchestrator: Processing ${body.action} request for ${body.services?.length || 'all'} services`
     )
-
     let result
     switch (body.action) {
       case 'start':
@@ -47,11 +41,9 @@ export const POST: RequestHandler = async ({ request }) => {
       default:
         throw new Error(`Unsupported orchestration action: ${body.action}`)
     }
-
     console.log(`✅ Orchestrator: ${body.action} completed successfully`)
-
     return json({
-      success: true,
+      success: true
       action: body.action,
       result,
       timestamp: new Date().toISOString(),
@@ -59,10 +51,9 @@ export const POST: RequestHandler = async ({ request }) => {
     })
   } catch (error: any) {
     console.error('Orchestration Error:', error)
-
     return json()
       {
-        success: false,
+        success: false
         error: 'Service orchestration failed',
         details: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString()
@@ -71,24 +62,21 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 /* GET /api/v1/orchestration - Get orchestration status and capabilities */
 export const GET: RequestHandler = async () => {
 	try {
 		const status = await orchestrator.getSystemStatus()
 		const capabilities = orchestrator.getCapabilities()
-
 		return json({
 			service: 'Comprehensive Service Orchestrator',
 			status: 'operational',
 			version: '2.0.0',
-			system_status: status,
+			system_status: status
 			capabilities,
 			managed_services: orchestrator.getManagedServices(),
 			performance_metrics: await orchestrator.getPerformanceMetrics(),
 			timestamp: new Date().toISOString()
 		})
-
 	} catch (error: any) {
 		return json({
 			service: 'Comprehensive Service Orchestrator',
@@ -99,12 +87,10 @@ export const GET: RequestHandler = async () => {
 		}, { status: 503 })
 	}
 }
-
 /* GET /api/v1/orchestration/health - Comprehensive health check */
 export const GET_HEALTH: RequestHandler = async () => {
 	try {
 		const healthReport = await orchestrator.comprehensiveHealthCheck()
-
 		return json(healthReport, {
       status:
         healthReport.overall_health === 'healthy'
@@ -113,7 +99,6 @@ export const GET_HEALTH: RequestHandler = async () => {
             ? 206
             : 503
     })
-
 	} catch (error: any) {
 		return json({
 			overall_health: 'critical',
@@ -123,14 +108,11 @@ export const GET_HEALTH: RequestHandler = async () => {
 		}, { status: 503 })
 	}
 }
-
 /* POST /api/v1/orchestration/emergency - Emergency service management */
 export const POST_EMERGENCY: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json()
-
 		console.log(`🚨 Emergency Orchestration: ${body.emergency_action}`)
-
 		let result
 		switch (body.emergency_action) {
 			case 'shutdown_all':
@@ -148,31 +130,26 @@ export const POST_EMERGENCY: RequestHandler = async ({ request }) => {
 			default:
 				throw new Error(`Unsupported emergency action: ${body.emergency_action}`)
 		}
-
 		return json({
-			success: true,
+			success: true
 			emergency_action: body.emergency_action,
 			result,
 			timestamp: new Date().toISOString()
 		})
-
 	} catch (error: any) {
 		console.error('Emergency Orchestration Error:', error)
-
 		return json({
-			success: false,
+			success: false
 			error: 'Emergency orchestration failed',
 			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString()
 		}, { status: 500 })
 	}
 }
-
 // Helper functions
 function generateOrchestrationId(): string {
 	return `orch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 }
-
 // Extend the GET handler to include health endpoint
 export const GET_orchestration_health = GET_HEALTH
 export const POST_orchestration_emergency = POST_EMERGENCY

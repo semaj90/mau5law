@@ -1,12 +1,10 @@
 <!-- GPU-Accelerated Streaming Chat Interface with Memory Optimization -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import { GPULLMStreamingPipeline } from '$lib/services/gpu-llm-streaming-pipeline';
   import { fade, slide } from 'svelte/transition';
   import { Cpu, Zap, Database, Brain, Activity, HardDrive } from 'lucide-svelte';
-  
   // Svelte 5 runes
   let prompt = $state('');
   let messages = $state<any[]>([]) => []);
@@ -19,40 +17,33 @@
     chunksInMemory: 0
   });
   let similarDocuments = $state<any[]>([]) => []);
-  
   // Pipeline instance
-  let pipeline: GPULLMStreamingPipeline;
+  let pipeline: GPULLMStreamingPipeli;
   let streamController: AbortController | null = null;
   let memoryMonitorInterval: number;
-  
   // Virtual scrolling for memory efficiency
   let visibleMessages = $derived(
     messages.slice(Math.max(0, messages.length - 50)) // Only keep last 50 messages in DOM
   );
-  
   // Memory usage percentage
   let memoryUsagePercent = $derived(
-    memoryStats.totalVRAM > 0 
-      ? (memoryStats.usedVRAM / memoryStats.totalVRAM) * 100 
+    memoryStats.totalVRAM > 0
+      ? (memoryStats.usedVRAM / memoryStats.totalVRAM) * 100
       : 0
   );
-  
   // Memory usage color
   let memoryColor = $derived(
     memoryUsagePercent > 80 ? 'text-red-500' :
     memoryUsagePercent > 60 ? 'text-yellow-500' :
     'text-green-500'
   );
-  
   $effect(() => {
     (async () => {
 // Initialize GPU pipeline
     pipeline = new GPULLMStreamingPipeline();
-    
     try {
       await pipeline.initializeGPU();
       console.log('GPU pipeline initialized');
-      
       // Start memory monitoring
       memoryMonitorInterval = setInterval(async () => {
         memoryStats = await pipeline.getMemoryStats();
@@ -60,48 +51,39 @@
     } catch (error) {
       console.error('Failed to initialize GPU:', error);
       messages.push({
-        role: 'system',;
+        role: 'system',
         content: 'GPU initialization failed. Falling back to CPU mode.';
     })();
   });
     }
   });
-  
   onDestroy(() => {
     // Cleanup
     if (memoryMonitorInterval) {
       clearInterval(memoryMonitorInterval);
     }
-    
     if (streamController) {
       streamController.abort();
     }
-    
     if (pipeline) {
       pipeline.cleanup();
     }
   });
-  
   async function handleSubmit() {
     if (!prompt.trim() || isStreaming) return;
-    
     const userMessage = prompt;
     prompt = '';
-    
     // Add user message
     messages.push({ role: 'user', content: userMessage });
-    messages = messages;
-    
+    messages = message;
     // Start streaming
     isStreaming = true;
     currentStreamContent = '';
     streamController = new AbortController();
-    
     try {
       // Create assistant message placeholder
       const assistantMessageIndex = messages.length;
       messages.push({ role: 'assistant', content: '' });
-      
       // Stream generation
       const stream = pipeline.streamGeneration(userMessage, {
         modelPath: '/models/gemma-3b',
@@ -115,24 +97,20 @@
           messages = messages; // Trigger reactivity
         }
       });
-      
       // Process stream
       for await (const chunk of stream) {
         if (streamController?.signal.aborted) break;
         // Chunk is already handled by streamCallback
       }
-      
       // Generate embedding for the response
       const embedding = await pipeline.generateEmbeddingsGPUSOM(currentStreamContent);
       messages[assistantMessageIndex].embedding = embedding;
-      
       // Find similar documents
       await searchSimilarDocuments(embedding);
-      
     } catch (error) {
       console.error('Streaming error:', error);
       messages.push({
-        role: 'system',;
+        role: 'system',
         content: `Error: ${error.message}`
       });
     } finally {
@@ -141,35 +119,30 @@
       streamController = null;
     }
   }
-  
   async function searchSimilarDocuments(embedding: Float32Array) {
     try {
       const results = await pipeline.semanticSearch.join(','), // Convert embedding to query
         5, // Get top 5 similar
         0.7 // Similarity threshold
       );
-      
       similarDocuments = results.map(r => ({
-        content: r.content.substring(0, 200) + '...',;
+        content: r.content.substring(0, 200) + '...',
         similarity: r.similarity;
       }));
     } catch (error) {
       console.error('Semantic search error:', error);
     }
   }
-  
   function stopStreaming() {
     if (streamController) {
       streamController.abort();
       isStreaming = false;
     }
   }
-  
   function clearChat() {
     messages = [];
     similarDocuments = [];
   }
-  
   // Debounced input handler for real-time suggestions
   let suggestionTimeout: number;
   function handleInputChange() {
@@ -181,7 +154,6 @@
     }, 300);
   }
 </script>
-
 <div class="gpu-streaming-chat">
   <!-- Memory Stats Dashboard -->
   <div class="memory-stats" transition:fade>
@@ -192,7 +164,7 @@
     <div class="stat-item">
       <HardDrive class="icon {memoryColor}" />
       <span class={memoryColor}>
-        VRAM: {(memoryStats.usedVRAM / 1024 / 1024 / 1024).toFixed(2)}GB / 
+        VRAM: {(memoryStats.usedVRAM / 1024 / 1024 / 1024).toFixed(2)}GB /
         {(memoryStats.totalVRAM / 1024 / 1024 / 1024).toFixed(2)}GB
       </span>
     </div>
@@ -205,12 +177,11 @@
       <span>GPU: Active</span>
     </div>
   </div>
-  
   <!-- Chat Messages -->
   <div class="chat-container">
     <div class="messages-wrapper">
       {#each visibleMessages as message, i (i)}
-        <div 
+        <div
           class="message {message.role}"
           transitionslide={{ duration: 300 }}
         >
@@ -242,7 +213,6 @@
         </div>
       {/each}
     </div>
-    
     <!-- Similar Documents Panel -->
     {#if similarDocuments.length > 0}
       <div class="similar-docs" transition:slide>
@@ -260,7 +230,6 @@
       </div>
     {/if}
   </div>
-  
   <!-- Input Area -->
   <div class="input-area">
     <form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
@@ -275,15 +244,15 @@
         />
         <div class="button-group">
           {#if isStreaming}
-            <button 
-              type="button" 
+            <button
+              type="button"
               onclick={stopStreaming}
               class="btn btn-stop"
             >
               Stop
             </button>
           {:else}
-            <button 
+            <button
               type="submit"
               disabled={!prompt.trim()}
               class="btn btn-send"
@@ -292,7 +261,7 @@
               Send
             </button>
           {/if}
-          <button 
+          <button
             type="button"
             onclick={clearChat}
             class="btn btn-clear"
@@ -304,9 +273,8 @@
     </form>
   </div>
 </div>
-
 <style>
-  .gpu-streaming-chat {;
+  .gpu-streaming-chat {
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -315,7 +283,6 @@
     color: #fff;
     font-family: 'JetBrains Mono', monospace;
   }
-  
   .memory-stats {
     display: flex;
     gap: 1rem;
@@ -324,19 +291,16 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
   }
-  
   .stat-item {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-size: 0.875rem;
   }
-  
   .icon {
     width: 16px;
     height: 16px;
   }
-  
   .chat-container {
     flex: 1;
     overflow-y: auto;
@@ -344,14 +308,12 @@
     display: flex;
     gap: 1rem;
   }
-  
   .messages-wrapper {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-  
   .message {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
@@ -359,25 +321,21 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
   }
-  
   .message.user {
     background: rgba(59, 130, 246, 0.1);
     border-color: rgba(59, 130, 246, 0.3);
     margin-left: 20%;
   }
-  
   .message.assistant {
     background: rgba(34, 197, 94, 0.1);
     border-color: rgba(34, 197, 94, 0.3);
     margin-right: 20%;
   }
-  
   .message.system {
     background: rgba(239, 68, 68, 0.1);
     border-color: rgba(239, 68, 68, 0.3);
     font-size: 0.875rem;
   }
-  
   .message-role {
     display: flex;
     align-items: center;
@@ -386,7 +344,6 @@
     font-size: 0.875rem;
     opacity: 0.7;
   }
-  
   .role-icon {
     display: inline-flex;
     align-items: center;
@@ -394,22 +351,18 @@
     width: 20px;
     height: 20px;
   }
-  
   .message-content {
     line-height: 1.6;
     word-wrap: break-word;
   }
-  
   .cursor {
     animation: blink 1s infinite;
-    color: #22c55e;
+    color: #22c55;
   }
-  
   @keyframes blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
   }
-  
   .embedding-indicator {
     position: absolute;
     top: 0.5rem;
@@ -420,7 +373,6 @@
     font-size: 0.75rem;
     opacity: 0.5;
   }
-  
   .similar-docs {
     width: 300px;
     background: rgba(255, 255, 255, 0.05);
@@ -428,12 +380,10 @@
     padding: 1rem;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
-  
   .similar-docs h3 {
     margin: 0 0 1rem 0;
     font-size: 1rem;
   }
-  
   .similar-doc {
     display: flex;
     gap: 0.5rem;
@@ -441,32 +391,27 @@
     padding-bottom: 0.75rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
-  
   .similarity-score {
     min-width: 50px;
     font-size: 0.875rem;
-    color: #22c55e;
+    color: #22c55;
     font-weight: bold;
   }
-  
   .doc-content {
     flex: 1;
     font-size: 0.75rem;
     opacity: 0.8;
     line-height: 1.4;
   }
-  
   .input-area {
     padding: 1rem;
     background: rgba(0, 0, 0, 0.5);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
-  
   .input-wrapper {
     display: flex;
     gap: 1rem;
   }
-  
   .chat-input {
     flex: 1;
     background: rgba(255, 255, 255, 0.05);
@@ -477,83 +422,68 @@
     resize: none;
     font-family: inherit;
   }
-  
   .chat-input:focus {
     outline: none;
     border-color: #3b82f6;
     background: rgba(255, 255, 255, 0.08);
   }
-  
   .chat-input:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
-  
   .button-group {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-  
   .btn {
     padding: 0.5rem 1rem;
     border: none;
     border-radius: 6px;
     font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.25rem;
   }
-  
   .btn-send {
     background: #3b82f6;
     color: white;
   }
-  
-  .btn-send:hover:not(:disabled) {
+  .btn-send:hover:not(:disabled) {,
     background: #2563eb;
   }
-  
   .btn-send:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
-  
   .btn-stop {
     background: #ef4444;
     color: white;
   }
-  
   .btn-stop:hover {
     background: #dc2626;
   }
-  
   .btn-clear {
     background: rgba(255, 255, 255, 0.1);
     color: white;
   }
-  
   .btn-clear:hover {
     background: rgba(255, 255, 255, 0.2);
   }
-  
   /* Scrollbar styling */
   .chat-container::-webkit-scrollbar {
     width: 8px;
   }
-  
   .chat-container::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.2);
   }
-  
   .chat-container::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
   }
-  
   .chat-container::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.3);
   }

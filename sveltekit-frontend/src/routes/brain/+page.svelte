@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { YoRHaAPIClient } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
   import * as THREE from 'three';
@@ -12,12 +11,11 @@ https://svelte.dev/e/js_parse_error -->
   const client = new YoRHaAPIClient({ onData: (id, data) => { if (id === 'brainGraph') { graphData = data; updateScene(); } }});
   let canvasContainer = $state<HTMLDivElement | null>(null);
   let renderer = $state<THREE.WebGLRenderer | null>(null);
-  let scene: THREE.Scene;
+  let scene: THREE.Sce;
   let camera: THREE.PerspectiveCamera;
   let animationId: number;
   let nodeMeshes = $state<Record<string, THREE.Mesh>({});
   let linkLines = $state<THREE.Line[]>([]);
-
   const nodeGeometry = new THREE.SphereGeometry(0.25, 24, 24);
   const typeColor: Record<string, number> = {
     db: 0x3b82f6,
@@ -28,11 +26,10 @@ https://svelte.dev/e/js_parse_error -->
     edge: 0xef4444,
     'ui-lib': 0x94a3b8,
     routing: 0x22c55e,
-    automation: 0x14b8a6,;
-    table: 0x8b5cf6,;
-    default: 0xffffff;
+    automation: 0x14b8a6,
+    table: 0x8b5cf6,
+    default: 0xffffff
   };
-
   function initThree() {
     if (!canvasContainer) return;
     scene = new THREE.Scene();
@@ -47,14 +44,12 @@ https://svelte.dev/e/js_parse_error -->
     scene.add(light);
   scene.add(new THREE.AmbientLight(0x404040));
   }
-
   function buildGraph() {
     // Clear existing
   Object.values(nodeMeshes).forEach(m => scene.remove(m));
   linkLines.forEach(l => scene.remove(l));
     nodeMeshes = {};
     linkLines = [];
-
     const radius = 4;
     graphData.nodes.forEach((n: unknown, idx: number) => {
       const mat = new THREE.MeshStandardMaterial({ color: typeColor[n.type] ?? typeColor.default, emissive: 0x111111 });
@@ -69,7 +64,6 @@ https://svelte.dev/e/js_parse_error -->
       scene.add(mesh);
       nodeMeshes[n.id] = mesh;
     });
-
     // Links
     graphData.links.forEach((l: unknown) => {
       const from = nodeMeshes[l.source];
@@ -83,11 +77,9 @@ https://svelte.dev/e/js_parse_error -->
       linkLines.push(line);
     });
   }
-
   function updateScene() {
     buildGraph();
   }
-
   function animate() {
     animationId = requestAnimationFrame(animate);
     // Light weight drift animation
@@ -98,7 +90,6 @@ https://svelte.dev/e/js_parse_error -->
       renderer.render(scene, camera);
     }
   }
-
   $effect(() => {
     (async () => {
 initThree();
@@ -119,10 +110,8 @@ initThree();
     })();
   });
 </script>
-
 <h1 class="text-2xl font-bold mb-4 font-mono">🧠 System Brain Graph</h1>
 <p class="mb-4 opacity-80">Live topology of backend services, database entities and frontend modules.</p>
-
 <div class="grid gap-4 md:grid-cols-3">
   <div class="col-span-2 flex flex-col gap-3">
     <div bind:this={canvasContainer} class="w-full border rounded bg-zinc-900/40 relative">
@@ -148,8 +137,6 @@ initThree();
     </ul>
   </div>
 </div>
-
 <style>
   :global(body) { font-family: system-ui, sans-serif; }
 </style>
-

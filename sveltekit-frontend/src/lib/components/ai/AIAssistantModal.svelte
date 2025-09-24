@@ -1,7 +1,7 @@
 
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
 <!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -12,8 +12,7 @@ https://svelte.dev/e/js_parse_error -->
   -->
   <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-interface EvidenceItem {;
+interface EvidenceItem {
   id: string;
   title: string;
   description?: string;
@@ -21,7 +20,6 @@ interface EvidenceItem {;
   createdAt: string;
   metadata?: Record<string, unknown>;
 }
-
 interface CaseData {
   id: string;
   title: string;
@@ -29,33 +27,28 @@ interface CaseData {
   evidence?: EvidenceItem[];
   createdAt: string;
 }
-
 interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
   message?: string;
 }
-
 interface FileData {
   name: string;
   size: number;
   type: string;
   lastModified: number;
 }
-
 interface UserData {
   id: string;
   name: string;
   email?: string;
   role?: string;
 }
-
 </script>
     import { getContext, onMount } from 'svelte';
-
     // UI components (Svelte 5 + melt v0.39.0 compatible)
-    import Button from '$lib/components/ui/button/Button.svelte';
+    import Button from '$lib/components/ui/Button.svelte';
     import {
     Card,
     CardHeader,
@@ -63,7 +56,6 @@ interface UserData {
     CardContent
   } from '$lib/components/ui/enhanced-bits';
     import { aiGlobalStore, aiGlobalActions } from '$lib/stores/ai';
-
     // Type definition for AI store context
     interface AIStoreContext {
       loading?: boolean;
@@ -72,54 +64,46 @@ interface UserData {
       stream?: string;
       sources?: Array;
     }
-
     interface AIStore {
       context: AIStoreContext;
     }
-
     // Get user from context (SSR-safe)
     const getUser = getContext<unknown>('user');
     const user = typeof getUser === 'function' ? getUser() : undefined;
-
     interface Props {
       contextItems?: any[];
       caseId?: string;
     }
-
     let {
       contextItems = [],
       caseId = ''
     }: Props = $props();
-
     // Use the global AI store (XState-based, memoized, streaming-ready)
     // Access store state via $aiGlobalStore, send actions via aiGlobalActions.send
     // The actorRef is not directly used in the component's script, but can be accessed via aiGlobalStore if needed.
     // const { snapshot, send, actorRef } = useAIGlobalStore(); // Old usage
-
     $effect(() => {
       // getSummaryCache(); // Uncomment and use this if you need to initialize cache on client
     });
-
     // Trigger summary
     function handleSummarize() {
       if (!user?.id) return;
       aiGlobalActions.summarize(caseId, contextItems, user?.id || '');
     }
-
       // Save summary to DB using the comprehensive summaries API
       async function saveSummary() {
         if (!(($aiGlobalStore as AIStore).context.summary) || !caseId || !user?.id) return;
         try {
           try {
     const response = await fetch('/api/summaries', {
-            method: 'POST',;
-            body: JSON.stringify({
+            method: 'POST',
+            body: JSON.stringify({,
               type: 'case',
-              targetId: caseId,;
+              targetId: caseId
               depth: 'comprehensive',
-              includeRAG: true,
-              includeUserActivity: false,
-              enableStreaming: false,
+              includeRAG: true
+              includeUserActivity: false
+              enableStreaming: false
               userId: user.id;
             }));
     if (!response.ok) {
@@ -131,7 +115,6 @@ interface UserData {
   },
             headers: { 'Content-Type': 'application/json' }
           });
-
           const result = await (response as { json?: any }).json();
           if ((result as { success?: any; error?: any }).success) {
             // Optionally show a success notification here
@@ -141,11 +124,9 @@ interface UserData {
           }
         } catch (error) {
           console.error('Error saving summary:', error);
-        
-    errorMessage = error instanceof Error ? error.message: 'An error occurred';}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred'}
       }
     </script>
-
     <div class="nier-nier-bits-card p-6 nes-container">
       <div class="nier-header mb-4">
         <h3 class="nier-title text-lg font-bold mb-2">AI Evidence Summary</h3>
@@ -157,7 +138,6 @@ interface UserData {
           class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
         >
 {!user ? 'Sign in to Summarize' : ($aiGlobalStore.context.loading ? 'Summarizing...' : 'Summarize Evidence')}
-
         <Button
           onclick={(event: MouseEvent) => saveSummary}
           disabled={!$aiGlobalStore.context.summary || $aiGlobalStore.context.loading}
@@ -165,10 +145,8 @@ interface UserData {
           class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
         >
 Save Summary
-
       </div>
     </div>
-
     <main>
       {#if $aiGlobalStore.context.loading}
         <div class="nier-loading">
@@ -207,7 +185,6 @@ Save Summary
       {/if}
     </div>
   </div>
-
   <style>
     /* Nier.css inspired styles */
     :global(.nier-card) {
@@ -215,23 +192,19 @@ Save Summary
       border: 2px solid #000;
       box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
     }
-
     :global(.nier-title) {
       letter-spacing: 0.05em;
       text-transform: uppercase;
     }
-
     :global(.nier-button) {
       position: relative;
       overflow: hidden;
       transition: all 0.3s ease;
     }
-
     :global(.nier-button\:hover) {
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
-
     :global(.nier-code) {
       background: #f4f4f4;
       border: 1px solid #ddd;
@@ -239,12 +212,10 @@ Save Summary
       font-family: 'Courier New', monospace;
       font-size: 0.875rem;
     }
-
     :global(.nier-error) {
       background: rgba(255, 0, 0, 0.05);
       border: 2px solid #ff0000;
     }
-
     :global(.nier-badge) {
       display: inline-flex;
       align-items: center;
@@ -257,12 +228,10 @@ Save Summary
       font-size: 0.75rem;
       margin-right: 0.5rem;
     }
-
     :global(.nier-text-muted) {
       color: #666;
       font-style: italic;
     }
-
     :global(.nier-list-item) {
       display: flex;
       align-items: center;

@@ -1,6 +1,5 @@
-// TypeScript types for Rust WASM Bridge integration;
+// TypeScript types for Rust WASM Bridge integration
 }
-
 export interface SystemInfo {
   os: string;
   arch: string;
@@ -10,7 +9,6 @@ export interface SystemInfo {
   gpu_info: string[];
   timestamp: string;
 }
-
 export interface FileSystemResult {
   success: boolean;
   data?: string;
@@ -18,7 +16,6 @@ export interface FileSystemResult {
   file_size?: number;
   file_type?: string;
 }
-
 export interface PerformanceMetrics {
   timestamp?: number;
   memory_used?: number;
@@ -27,14 +24,12 @@ export interface PerformanceMetrics {
   disk_io?: number;
   [key: string]: unknown; // Allow additional metrics
 }
-
 export interface WindowsService {
   name: string;
   status: 'Running' | 'Stopped' | 'Error';
   port?: number;
   description?: string;
 }
-
 export interface DocumentProcessingResult {
   processed: boolean;
   word_count: number;
@@ -46,7 +41,6 @@ export interface DocumentProcessingResult {
     confidence?: number;
   };
 }
-
 export interface BenchmarkResult {
   textProcessing: number;
   vectorOperations: number;
@@ -58,7 +52,6 @@ export interface BenchmarkResult {
     memoryLimit?: number;
   };
 }
-
 export interface RustBridgeStatus {
   initialized: boolean;
   capabilities: string[];
@@ -70,8 +63,7 @@ export interface RustBridgeStatus {
     features: string[];
   };
 }
-
-// Legal document processing specific types;
+// Legal document processing specific types
 export interface LegalDocumentMetadata {
   documentType: 'contract' | 'case-law' | 'statute' | 'evidence' | 'brief' | 'other';
   jurisdiction?: string;
@@ -83,7 +75,6 @@ export interface LegalDocumentMetadata {
   keyTerms?: string[];
   confidentiality: 'public' | 'confidential' | 'privileged';
 }
-
 export interface LegalTextAnalysis {
   wordCount: number;
   characterCount: number;
@@ -96,7 +87,6 @@ export interface LegalTextAnalysis {
   keyPhrases: string[];
   entities: LegalEntity[];
 }
-
 export interface LegalEntity {
   text: string;
   type: 'person' | 'organization' | 'location' | 'date' | 'statute' | 'case' | 'other';
@@ -104,7 +94,6 @@ export interface LegalEntity {
   startOffset: number;
   endOffset: number;
 }
-
 export interface VectorSimilarityResult {
   similarity: number;
   documentId1: string;
@@ -112,7 +101,6 @@ export interface VectorSimilarityResult {
   computationTimeMs: number;
   method: 'cosine' | 'euclidean' | 'manhattan' | 'dot-product';
 }
-
 export interface BatchProcessingResult {
   totalDocuments: number;
   successfullyProcessed: number;
@@ -122,21 +110,20 @@ export interface BatchProcessingResult {
   results: DocumentProcessingResult[];
   errors?: string[];
 }
-
-// System monitoring types;
+// System monitoring types
 export interface SystemResourceUsage {
-  cpu: {;
+  cpu: {
     usage: number; // percentage
     cores: number;
     frequency?: number; // MHz
   };
-  memory: {;
+  memory: {
     total: number; // bytes
     used: number;
     available: number;
     percentage: number;
   };
-  disk: {;
+  disk: {
     reads: number;
     writes: number;
     totalSpace?: number;
@@ -149,7 +136,6 @@ export interface SystemResourceUsage {
     packetsSent: number;
   };
 }
-
 export interface GpuInfo {
   name: string;
   vendor: 'NVIDIA' | 'AMD' | 'Intel' | 'Other';
@@ -161,8 +147,7 @@ export interface GpuInfo {
   supportsCUDA?: boolean;
   supportsOpenCL?: boolean;
 }
-
-// Configuration types;
+// Configuration types
 export interface RustBridgeConfig {
   enableSystemMonitoring: boolean;
   enableFileSystemAccess: boolean;
@@ -173,8 +158,7 @@ export interface RustBridgeConfig {
   cachingEnabled: boolean;
   maxCacheSize: number; // bytes
 }
-
-// Error types;
+// Error types
 export interface RustBridgeError {
   code: string;
   message: string;
@@ -182,8 +166,7 @@ export interface RustBridgeError {
   timestamp: string;
   stack?: string;
 }
-
-// Event types for monitoring;
+// Event types for monitoring
 export interface SystemEvent {
   type: 'service-start' | 'service-stop' | 'resource-warning' | 'error' | 'info';
   timestamp: string;
@@ -192,37 +175,35 @@ export interface SystemEvent {
   source: string;
   metadata?: unknown;
 }
-
-// Legal AI specific integration types;
+// Legal AI specific integration types
 export interface LegalAISystemStatus {
-  database: {;
+  database: {
     postgres: boolean;
     connectionPool: number;
     activeQueries: number;
   };
-  ai: {;
+  ai: {
     ollama: boolean;
     modelLoaded: string;
     availableModels: string[];
     queueLength: number;
   };
-  cache: {;
+  cache: {
     redis: boolean;
     memoryUsage: number;
     hitRate: number;
   };
-  search: {;
+  search: {
     qdrant: boolean;
     indexedDocuments: number;
     searchPerformance: number; // ms average
   };
-  services: {;
+  services: {
     go: boolean;
     python: boolean;
     node: boolean;
   };
 }
-
 export interface LegalCaseContext {
   caseId: string;
   title: string;
@@ -234,7 +215,6 @@ export interface LegalCaseContext {
   tags: string[];
   relatedCases: string[];
 }
-
 // Export utility types
 export type RustBridgeCallback<T = any> = (result: T, error?: RustBridgeError) => void;
 export type AsyncRustBridgeFunction<T = any> = (...args: any[]) => Promise<T>;

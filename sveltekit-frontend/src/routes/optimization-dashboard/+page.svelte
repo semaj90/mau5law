@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -7,11 +7,9 @@ https://svelte.dev/e/js_parse_error -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store.js';
   import type { WorkerStats } from '$lib/workers/specialized-worker-system.js';
-
   // Reactive state using Svelte 5 runes
   let systemStatus = $state({
     neuralMemory: {
@@ -31,100 +29,86 @@ https://svelte.dev/e/js_parse_error -->
       activeWorkers: 0,
       systemHealth: 'healthy' as const,
       queuedJobs: 0
-    } as WorkerStats,;
+    } as WorkerStats,
     recommendations: [] as string[];
   });
-
   let isMonitoring = $state(false);
   let lastUpdate = $state(new Date());
-
   // Real-time performance metrics
   let performanceChart = $state({
     memoryUsage: [] as Array,
     cacheHitRate: [] as Array,
     processingTime: [] as Array
   });
-
   // Demo job for testing worker system
   let testJobResult = $state<any>(null);
   let isSubmittingJob = $state(false);
-
   async function updateSystemMetrics() {
     try {
       // Get neural memory metrics
       const memoryReport = await enhancedRAGStore.neuralMemory.generatePerformanceReport();
       systemStatus.neuralMemory = {
         currentUsage: enhancedRAGStore.neuralMemory.getCurrentMemoryUsage(),
-        efficiency: memoryReport.memoryEfficiency,;
+        efficiency: memoryReport.memoryEfficiency,
         predictions: [],
         lodLevel: "medium" as const;
       };
-
       // Get caching metrics
-      const ragState = enhancedRAGStore.state;
-      systemStatus.mlCaching = ragState.cacheMetrics;
-
+      const ragState = enhancedRAGStore.stat;
+      systemStatus.mlCaching = ragState.cacheMetric;
       // Get worker system stats
       const workerResponse = await fetch('/api/workers?stats=true');
       if (workerResponse.ok) {
         const data = await workerResponse.json();
-        systemStatus.workerSystem = (data as { stats?: unknown }).stats;
+        systemStatus.workerSystem = (data as { stats?: unknown }).stat;
       }
-
       // Update performance charts
       const now = new Date());
       performanceChart.memoryUsage.push({
-        time: now,;
-        value: systemStatus.neuralMemory.currentUsage;
+        time: now
+        value: systemStatus.neuralMemory.currentUsag;
       });
       performanceChart.cacheHitRate.push({
-        time: now,;
-        value: systemStatus.mlCaching.hitRate;
+        time: now
+        value: systemStatus.mlCaching.hitRat;
       });
-
       // Keep only last 20 data points
       if (performanceChart.memoryUsage.length > 20) {
         performanceChart.memoryUsage.shift();
         performanceChart.cacheHitRate.shift();
       }
-
       lastUpdate = now;
     } catch (error) {
       console.error('Failed to update metrics:', error);
     }
   }
-
   async function testWorkerSystem() {
     isSubmittingJob = true;
     testJobResult = null;
-
     try {
       // Submit a test summarization job
       const jobResponse = await fetch('/api/workers', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'SUMMARIZE_DOCUMENT',;
+        body: JSON.stringify({,
+          type: 'SUMMARIZE_DOCUMENT',
           document: {
             id: 'test-doc-001',
-            content: 'This is a test legal document for our specialized worker system. It demonstrates how the event-driven architecture with RabbitMQ can process documents efficiently using our legal AI models. The system uses neural memory management, ML-based caching, and adaptive resource management to optimize performance.',;
+            content: 'This is a test legal document for our specialized worker system. It demonstrates how the event-driven architecture with RabbitMQ can process documents efficiently using our legal AI models. The system uses neural memory management, ML-based caching, and adaptive resource management to optimize performance.',
             metadata: { source: 'test' }
           },
-          options: { maxLength: 100, style: 'brief' },;
+          options: { maxLength: 100, style: 'brief' },
           priority: 'high';
         })
       });
-
       if (jobResponse.ok) {
         const { jobId } = await jobResponse.json();
-
         // Wait for job completion
         const resultResponse = await fetch('/api/workers/wait', {
-          method: 'PUT',;
-          headers: { 'Content-Type': 'application/json' },;
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ jobId, timeout: 30000 })
         });
-
         if (resultResponse.ok) {
           testJobResult = await resultResponse.json();
         }
@@ -136,20 +120,17 @@ https://svelte.dev/e/js_parse_error -->
       isSubmittingJob = false;
     }
   }
-
   async function runRAGSearch() {
     try {
       await enhancedRAGStore.search('legal AI optimization neural networks', {
         limit: 5,
         useMLRanking: true;
       });
-
       systemStatus.recommendations = enhancedRAGStore.intelligentSuggestions();
     } catch (error) {
       console.error('RAG search failed:', error);
     }
   }
-
   async function optimizeCache() {
     try {
       await enhancedRAGStore.optimizeCache();
@@ -158,11 +139,9 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Cache optimization failed:', error);
     }
   }
-
   function startMonitoring() {
     isMonitoring = true;
     updateSystemMetrics();
-
     // Update every 5 seconds
     const interval = setInterval(() => {
       if (isMonitoring) {
@@ -172,16 +151,13 @@ https://svelte.dev/e/js_parse_error -->
       }
     }, 5000);
   }
-
   function stopMonitoring() {
     isMonitoring = false;
   }
-
   $effect(() => {
     updateSystemMetrics();
   });
 </script>
-
 <div class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-6">
   <div class="max-w-7xl mx-auto">
     <!-- Header -->
@@ -204,7 +180,6 @@ https://svelte.dev/e/js_parse_error -->
         </span>
       </div>
     </div>
-
     <!-- System Status Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       <!-- Neural Memory Status -->
@@ -227,7 +202,6 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       </div>
-
       <!-- ML Caching Status -->
       <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700">
         <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
@@ -248,7 +222,6 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       </div>
-
       <!-- Worker System Status -->
       <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700">
         <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
@@ -269,7 +242,6 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       </div>
-
       <!-- Performance Overview -->
       <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700">
         <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
@@ -291,7 +263,6 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </div>
-
     <!-- Action Buttons -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
       <!-- RAG Search Test -->
@@ -317,7 +288,6 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/if}
       </div>
-
       <!-- Cache Optimization -->
       <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700">
         <h3 class="text-lg font-semibold mb-4">⚡ Cache Optimization</h3>
@@ -331,7 +301,6 @@ https://svelte.dev/e/js_parse_error -->
           Optimize Cache
         </button>
       </div>
-
       <!-- Worker System Test -->
       <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700">
         <h3 class="text-lg font-semibold mb-4">🏗️ Test Worker System</h3>
@@ -345,7 +314,6 @@ https://svelte.dev/e/js_parse_error -->
         >
           {isSubmittingJob ? '⏳ Processing...' : 'Test Workers'}
         </button>
-
         {#if testJobResult}
           <div class="mt-4 p-3 bg-slate-700 rounded-lg">
             <h4 class="text-sm font-semibold mb-2">Job Result:</h4>
@@ -365,7 +333,6 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       </div>
     </div>
-
     <!-- Real-time Charts -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Memory Usage Chart -->
@@ -381,7 +348,6 @@ https://svelte.dev/e/js_parse_error -->
           {/each}
         </div>
       </div>
-
       <!-- Cache Performance Chart -->
       <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700">
         <h3 class="text-lg font-semibold mb-4">⚡ Cache Hit Rate</h3>
@@ -396,7 +362,6 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </div>
-
     <!-- Feature Status -->
     <div class="mt-8 bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700">
       <h3 class="text-xl font-semibold mb-4">✅ Advanced Features Status</h3>
@@ -437,23 +402,19 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
-
 <style>
   /* Custom scrollbar for webkit browsers */
-  ::-webkit-scrollbar {;
+  ::-webkit-scrollbar {
     width: 8px;
   }
-
   ::-webkit-scrollbar-track {
     background: rgb(30 41 59);
     border-radius: 4px;
   }
-
   ::-webkit-scrollbar-thumb {
     background: rgb(100 116 139);
     border-radius: 4px;
   }
-
   ::-webkit-scrollbar-thumb:hover {
     background: rgb(148 163 184);
   }

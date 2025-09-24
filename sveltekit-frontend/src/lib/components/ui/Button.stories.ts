@@ -1,9 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
 import Button from './Button.svelte.js';
-
 const meta = {
   title: 'UI/Button',
-  component: Button,
+  component: Button
   parameters: {
     layout: 'centered',
     docs: {
@@ -36,21 +35,18 @@ const meta = {
       control: 'boolean'
     },
     loading: {
-      control: 'boolean',;
+      control: 'boolean',
       description: 'Show loading state with spinner'
     }
   }
 } satisfies Meta<Button>;
-
 export default meta;
 type Story = StoryObj<typeof meta>;
-
 export const Default: Story = {
-  args: {;
+  args: {
     children: 'Button'
   }
 };
-
 export const Legal: Story = {
   args: {
     variant: 'legal',
@@ -58,13 +54,12 @@ export const Legal: Story = {
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Legal-themed button variant for law-related actions'
       }
     }
   }
 };
-
 export const Evidence: Story = {
   args: {
     variant: 'evidence',
@@ -72,13 +67,12 @@ export const Evidence: Story = {
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Evidence-themed button for evidence management actions'
       }
     }
   }
 };
-
 export const Case: Story = {
   args: {
     variant: 'case',
@@ -86,13 +80,12 @@ export const Case: Story = {
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Case-themed button for case management actions'
       }
     }
   }
 };
-
 export const Destructive: Story = {
   args: {
     variant: 'destructive',
@@ -100,13 +93,12 @@ export const Destructive: Story = {
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Destructive actions like deletion with warning styling'
       }
     }
   }
 };
-
 export const Outline: Story = {
   args: {
     variant: 'outline',
@@ -114,42 +106,38 @@ export const Outline: Story = {
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Outline variant for secondary actions'
       }
     }
   }
 };
-
 export const Small: Story = {
   args: {
-    size: 'sm',;
+    size: 'sm',
     children: 'Small Button'
   }
 };
-
 export const Large: Story = {
   args: {
-    size: 'lg',;
+    size: 'lg',
     children: 'Large Button'
   }
 };
-
 export const Disabled: Story = {
   args: {
-    disabled: true,;
+    disabled: true
     children: 'Disabled Button'
   }
 };
-
 export const Loading: Story = {
   args: {
-    loading: true,
+    loading: true
     children: 'Loading...'
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Button with loading state and spinner animation'
       }
     }

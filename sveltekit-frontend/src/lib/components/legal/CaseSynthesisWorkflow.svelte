@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
-https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     caseId: string;
     documents: CaseDocument[] ;
@@ -16,20 +15,17 @@ https://svelte.dev/e/js_parse_error -->
     documents = [],
     evidenceReports = []
   : unknown } = $props();
-
-
-
   import { useMachine } from '@xstate/svelte';
   import { createMachine, assign } from 'xstate';
   import AISummaryReader from './AISummaryReader.svelte';
   import EvidenceReportSummary from './EvidenceReportSummary.svelte';
-  import { 
-    FileText, 
-    Brain, 
-    GitMerge, 
-    Scale, 
-    Target, 
-    CheckCircle, 
+  import {
+    FileText,
+    Brain,
+    GitMerge,
+    Scale,
+    Target,
+    CheckCircle,
     AlertTriangle,
     Clock,
     Users,
@@ -38,7 +34,6 @@ https://svelte.dev/e/js_parse_error -->
     Pause
   } from 'lucide-svelte';
   import { fly, fade } from 'svelte/transition';
-
   interface CaseDocument {
     id: string;
     title: string;
@@ -50,7 +45,6 @@ https://svelte.dev/e/js_parse_error -->
       relevanceScore: number;
     };
   }
-
   interface EvidenceReport {
     id: string
     title: string
@@ -66,7 +60,6 @@ https://svelte.dev/e/js_parse_error -->
     legalImplications: unknown;
     attachments: unknown[];
   }
-
   interface SynthesisContext {
     caseId: string
     documents: CaseDocument[];
@@ -78,7 +71,6 @@ https://svelte.dev/e/js_parse_error -->
     error: string | null;
     loading: boolean;
   }
-
   interface CaseSynthesis {
     executiveSummary: string;
     timeline: TimelineEvent[];
@@ -89,14 +81,12 @@ https://svelte.dev/e/js_parse_error -->
     gaps: string[];
     nextSteps: string[];
   }
-
   interface TimelineEvent {
     date: string;
     event: string;
     sources: string[];
     significance: 'critical' | 'high' | 'medium' | 'low';
   }
-
   interface StrengthAssessment {
     overall: number
     evidenceQuality: number
@@ -109,7 +99,6 @@ https://svelte.dev/e/js_parse_error -->
       details: string;
     }[];
   }
-
   interface LegalStrategy {
     primaryCharges: string[];
     supportingEvidence: string[];
@@ -117,7 +106,6 @@ https://svelte.dev/e/js_parse_error -->
     prosecutionApproach: string
     keyArguments: string[];
   }
-
   interface RiskAnalysis {
     challengePoints: {
       issue: string
@@ -127,7 +115,6 @@ https://svelte.dev/e/js_parse_error -->
     }[];
     overallRisk: number
   }
-
   interface Recommendation {
     priority: 'immediate' | 'high' | 'medium' | 'low';
     category: 'evidence' | 'legal' | 'procedural' | 'strategic';
@@ -135,32 +122,31 @@ https://svelte.dev/e/js_parse_error -->
     rationale: string
     timeline: string;
   }
-
   const synthesisMachine = createMachine<SynthesisContext>({
     id: 'synthesis',
-    initial: 'idle',;
+    initial: 'idle',
     context: {
       caseId,
       documents,
       evidenceReports,
       selectedItems: [],
       synthesisMode: 'thematic',
-      synthesisResult: null,
+      synthesisResult: null
       progressStage: 'selecting',
-      error: null,
+      error: null
       loading: false;
     },
     states: {
       idle: {
         on: {
           SELECT_ITEMS: {
-            actions: assign({
+            actions: assign({,
               selectedItems: ({ event }) => event.items,
               progressStage: 'analyzing'
             })
           },
           START_SYNTHESIS: {
-            target: 'synthesizing',;
+            target: 'synthesizing',
             actions: assign({ loading: true, progressStage: 'synthesizing' })
           }
         }
@@ -169,16 +155,16 @@ https://svelte.dev/e/js_parse_error -->
         invoke: {
           src: 'performSynthesis',
           onDone: {
-            target: 'complete',;
-            actions: assign({
+            target: 'complete',
+            actions: assign({,
               synthesisResult: ({ event }) => event.data,
-              loading: false,
+              loading: false
               progressStage: 'complete';
             })
           },
           onError: {
-            target: 'error',;
-            actions: assign({
+            target: 'error',
+            actions: assign({,
               error: ({ event }) => event.data.message,
               loading: false;
             })
@@ -188,10 +174,10 @@ https://svelte.dev/e/js_parse_error -->
       complete: {
         on: {
           RESTART: {
-            target: 'idle',;
-            actions: assign({
+            target: 'idle',
+            actions: assign({,
               selectedItems: [],
-              synthesisResult: null,
+              synthesisResult: null
               progressStage: 'selecting',
               error: null;
             })
@@ -201,14 +187,14 @@ https://svelte.dev/e/js_parse_error -->
       error: {
         on: {
           RETRY: {
-            target: 'synthesizing',;
+            target: 'synthesizing',
             actions: assign({ error: null, loading: true })
           },
           RESTART: {
-            target: 'idle',;
-            actions: assign({
+            target: 'idle',
+            actions: assign({,
               selectedItems: [],
-              synthesisResult: null,
+              synthesisResult: null
               progressStage: 'selecting',
               error: null;
             })
@@ -255,7 +241,7 @@ https://svelte.dev/e/js_parse_error -->
                 evidenceQuality: 0.90,
                 legalBasis: 0.88,
                 witnessCredibility: 0.75,
-                expertOpinions: 0.92,;
+                expertOpinions: 0.92,
                 areas: [
                   {
                     name: "Digital Evidence",
@@ -343,7 +329,7 @@ https://svelte.dev/e/js_parse_error -->
                   rationale: "Defendant may provide information about broader criminal network",
                   timeline: "After initial evidence presentation";
                 }
-              ],;
+              ],
               gaps: [
                 "Need additional witness interviews to establish motive",
                 "Require expert analysis of encryption methods used",
@@ -361,19 +347,14 @@ https://svelte.dev/e/js_parse_error -->
       }
     }
   });
-
   const { state, send } = useMachine(synthesisMachine);
-
   let selectedDocuments = new Set<string>();
   let selectedReports = new Set<string>();
-
   let allItems = $derived([])
     ...documents.map(d => ({ id: d.id, type: 'document', title: d.title, data: d })),
     ...evidenceReports.map(r => ({ id: r.id, type: 'report', title: r.title, data: r }))
   ];
-
   let selectedCount = $derived(selectedDocuments.size + selectedReports.size)
-
   function toggleSelection(id: string, type: 'document' | 'report') {
     if (type === 'document') {
       if (selectedDocuments.has(id)) {
@@ -391,19 +372,16 @@ https://svelte.dev/e/js_parse_error -->
       selectedReports = new Set(selectedReports);
     }
   }
-
   function startSynthesis() {
     const items = [...selectedDocuments, ...selectedReports];
     send({ type: 'SELECT_ITEMS', items });
     send({ type: 'START_SYNTHESIS' });
   }
-
   function getScoreColor(score: number): string {
     if (score >= 0.8) return 'text-green-600';
     if (score >= 0.6) return 'text-yellow-600';
     return 'text-red-600';
   }
-
   function getPriorityColor(priority: string): string {
     switch (priority) {
       case 'immediate': return 'bg-red-100 text-red-800 border-red-200';
@@ -413,34 +391,26 @@ https://svelte.dev/e/js_parse_error -->
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
-
   function exportSynthesis() {
     if (!$state.context.synthesisResult) return;
     const synthesis = $state.context.synthesisResult;
     const content = `# Case Synthesis Report - ${caseId}
-
   ## Executive Summary
   ${synthesis.executiveSummary}
-
   ## Strength Assessment
   - Overall: ${Math.round(synthesis.strengthAssessment.overall * 100)}%
   - Evidence Quality: ${Math.round(synthesis.strengthAssessment.evidenceQuality * 100)}%
   - Legal Basis: ${Math.round(synthesis.strengthAssessment.legalBasis * 100)}%
-
   ## Legal Strategy
   ### Primary Charges
   ${synthesis.legalStrategy.primaryCharges.map.join('\n')}
-
   ### Prosecution Approach
   ${synthesis.legalStrategy.prosecutionApproach}
-
   ## Recommendations
   ${synthesis.recommendations.map(rec => `### ${rec.priority.toUpperCase()} - ${rec.action}\n${rec.rationale}\n`).join('\n')}
-
   ## Next Steps
   ${synthesis.nextSteps.map.join('\n')}
   `;
-
     const blob = new Blob([content], { type: 'text/markdown' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -452,7 +422,6 @@ https://svelte.dev/e/js_parse_error -->
     URL.revokeObjectURL(url);
   }
 </script>
-
 <div class="case-synthesis-workflow max-w-7xl mx-auto space-y-6">
   <!-- Header -->
   <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
@@ -461,13 +430,11 @@ https://svelte.dev/e/js_parse_error -->
         <h1 class="text-2xl font-bold text-gray-900 mb-2">Case Synthesis Workflow</h1>
         <p class="text-gray-600">Case ID: {caseId} • Comprehensive analysis and strategic planning</p>
       </div>
-      
       <div class="flex items-center gap-4">
         <div class="text-right text-sm text-gray-600">
           <div>{allItems.length} items available</div>
           <div>{selectedCount} items selected</div>
         </div>
-        
         {#if $state.context.synthesisResult}
           <button
             onclick={exportSynthesis}
@@ -479,7 +446,6 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       </div>
     </div>
-
     <!-- Progress Bar -->
     <div class="mt-6">
       <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
@@ -487,7 +453,7 @@ https://svelte.dev/e/js_parse_error -->
         <span class="capitalize">{$state.context.progressStage}</span>
       </div>
       <div class="w-full bg-gray-200 rounded-full h-2">
-        <div 
+        <div
           class="bg-blue-600 h-2 rounded-full transition-all duration-300"
           style="width: {
             $state.context.progressStage === 'selecting' ? '25%' :
@@ -499,12 +465,10 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   </div>
-
   {#if $state.matches('idle') || $state.context.progressStage === 'selecting'}
     <!-- Item Selection -->
     <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
       <h2 class="text-lg font-semibold text-gray-900 mb-4">Select Items for Synthesis</h2>
-      
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Documents -->
         <div>
@@ -531,7 +495,6 @@ https://svelte.dev/e/js_parse_error -->
             {/each}
           </div>
         </div>
-
         <!-- Evidence Reports -->
         <div>
           <h3 class="font-medium text-gray-900 mb-3">Evidence Reports ({evidenceReports.length})</h3>
@@ -558,7 +521,6 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       </div>
-
       <div class="mt-6 flex items-center justify-between">
         <div class="text-sm text-gray-600">
           {selectedCount} items selected for synthesis
@@ -573,7 +535,6 @@ https://svelte.dev/e/js_parse_error -->
         </button>
       </div>
     </div>
-
   {:else if $state.matches('synthesizing')}
     <!-- Loading State -->
     <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-12">
@@ -589,7 +550,6 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </div>
-
   {:else if $state.matches('error')}
     <!-- Error State -->
     <div class="bg-red-50 border border-red-200 rounded-lg p-6">
@@ -615,7 +575,6 @@ https://svelte.dev/e/js_parse_error -->
         </button>
       </div>
     </div>
-
   {:else if $state.matches('complete') && $state.context.synthesisResult}
     <!-- Synthesis Results -->
     <div class="space-y-6" transitionfly={{ y: 20, duration: 300 }}>
@@ -627,14 +586,12 @@ https://svelte.dev/e/js_parse_error -->
         </h2>
         <p class="text-blue-800 leading-relaxed">{$state.context.synthesisResult.executiveSummary}</p>
       </div>
-
       <!-- Strength Assessment -->
       <div class="bg-white border border-gray-200 rounded-lg p-6">
         <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
           <Target class="w-6 h-6" />
           Strength Assessment
         </h2>
-        
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
           <div class="text-center">
             <div class="text-2xl font-bold {getScoreColor($state.context.synthesisResult.strengthAssessment.overall)}">
@@ -667,7 +624,6 @@ https://svelte.dev/e/js_parse_error -->
             <div class="text-sm text-gray-600">Experts</div>
           </div>
         </div>
-
         <div class="space-y-4">
           {#each $state.context.synthesisResult.strengthAssessment.areas as area}
             <div class="border border-gray-200 rounded-lg p-4">
@@ -682,14 +638,12 @@ https://svelte.dev/e/js_parse_error -->
           {/each}
         </div>
       </div>
-
       <!-- Legal Strategy -->
       <div class="bg-white border border-gray-200 rounded-lg p-6">
         <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
           <Scale class="w-6 h-6" />
           Legal Strategy
         </h2>
-        
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div>
             <h3 class="font-medium text-gray-900 mb-3">Primary Charges</h3>
@@ -701,7 +655,6 @@ https://svelte.dev/e/js_parse_error -->
                 </li>
               {/each}
             </ul>
-
             <h3 class="font-medium text-gray-900 mb-3 mt-6">Supporting Evidence</h3>
             <ul class="space-y-2">
               {#each $state.context.synthesisResult.legalStrategy.supportingEvidence as evidence}
@@ -712,11 +665,9 @@ https://svelte.dev/e/js_parse_error -->
               {/each}
             </ul>
           </div>
-
           <div>
             <h3 class="font-medium text-gray-900 mb-3">Prosecution Approach</h3>
             <p class="text-gray-700 mb-6">{$state.context.synthesisResult.legalStrategy.prosecutionApproach}</p>
-
             <h3 class="font-medium text-gray-900 mb-3">Potential Defenses</h3>
             <ul class="space-y-2">
               {#each $state.context.synthesisResult.legalStrategy.potentialDefenses as defense}
@@ -729,14 +680,12 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       </div>
-
       <!-- Timeline -->
       <div class="bg-white border border-gray-200 rounded-lg p-6">
         <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
           <Clock class="w-6 h-6" />
           Case Timeline
         </h2>
-        
         <div class="space-y-4">
           {#each $state.context.synthesisResult.timeline as event}
             <div class="flex gap-4">
@@ -761,14 +710,12 @@ https://svelte.dev/e/js_parse_error -->
           {/each}
         </div>
       </div>
-
       <!-- Recommendations -->
       <div class="bg-white border border-gray-200 rounded-lg p-6">
         <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
           <Users class="w-6 h-6" />
           Recommendations
         </h2>
-        
         <div class="space-y-4">
           {#each $state.context.synthesisResult.recommendations as rec}
             <div class="border border-gray-200 rounded-lg p-4">
@@ -787,7 +734,6 @@ https://svelte.dev/e/js_parse_error -->
           {/each}
         </div>
       </div>
-
       <!-- Next Steps -->
       <div class="bg-green-50 border border-green-200 rounded-lg p-6">
         <h2 class="text-xl font-semibold text-green-900 mb-4">Next Steps</h2>
@@ -802,7 +748,6 @@ https://svelte.dev/e/js_parse_error -->
           {/each}
         </div>
       </div>
-
       <!-- Action Buttons -->
       <div class="flex gap-4">
         <button

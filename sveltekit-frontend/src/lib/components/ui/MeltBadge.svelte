@@ -1,12 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   	import { cva, type VariantProps } from 'class-variance-authority';
   	import { cn } from '$lib/utils';
-
   	const badgeVariants = cva(
   		'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:focus:ring-gray-800',
   		{
@@ -31,14 +29,12 @@ https://svelte.dev/e/js_parse_error -->
   				}
   			},
   			defaultVariants: {
-  				variant: 'default',;
+  				variant: 'default',
   				size: 'default';
   			}
   		}
   	);
-
   	import type { BadgeProps } from '$lib/types/component-props.js';
-
   	interface Props extends BadgeProps {
   		// Content
   		text?: string;
@@ -48,7 +44,6 @@ https://svelte.dev/e/js_parse_error -->
   		role?: string;
   		'aria-label'?: string;
   	}
-
   	let {
   		variant = 'default',
   		size = 'default',
@@ -56,17 +51,14 @@ https://svelte.dev/e/js_parse_error -->
   		text,
   		onclick,
   		role,
-  		'aria-label': ariaLabel,
-  		'data-testid': testId,
-  		children;
+  		'aria-label': ariaLabel
+  		'data-testid': testId
+  		childre;
   	}: Props = $props();
-
   	let badgeClass = $derived(cn(badgeVariants({ variant, size }), class));
   	let isClickable = $derived(!!onclick);
-
-  	type $$Props = Props;
+  	type $$Props = Prop;
 </script>
-
 {#if isClickable}
 	<button
 		class={badgeClass}

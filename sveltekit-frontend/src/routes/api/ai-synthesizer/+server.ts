@@ -1,76 +1,61 @@
 import type { RequestHandler } from './$types.js'
-
 // AI Synthesizer API Route - Full Stack Integration
 // Uses Neo4j, PostgreSQL/pgvector, XState, Redis, Ollama with gemma3-legal:latest
 // TypeScript-safe with Drizzle ORM and MCP Context7 best practices
-
 import { aiOrchestrator } from "$lib/server/ai/enhanced-ai-synthesis-orchestrator"
 import { monitoringService } from "$lib/server/ai/monitoring-service"
 import stream from "stream"
 import { URL } from "url"
-
 // SSE stream storage for real-time updates
 const activeStreams = new Map<string, any>()
-
 // Main synthesis endpoint
 export const POST: RequestHandler = async ({ request, url }) => {
   const startTime = Date.now()
   let requestId: string | undefined
-
   try {
     // Parse request body
     const body = await request.json()
     const { query, context, options = {} } = body
-
     // Validate input
     if (!query || typeof query !== 'string') {
       throw error(400, 'Query is required and must be a string')
     }
-
     // Generate request ID for tracking
     requestId = `req_${Date.now()}_${Math.random().toString(36).substring(7)}`
-
     logger.info(`[API] Processing synthesis request ${requestId}: "${query}"`)
-
     // Check if streaming is requested
     if (options.stream) {
       // Create stream ID for SSE
       const streamId = `stream_${requestId}`
-
       // Initialize stream tracking
       activeStreams.set(streamId, {
         query,
         startTime,
         status: 'initializing'
       })
-
       // Start async processing
       processStreamingRequest(streamId, query, context, options)
-
       // Return stream ID immediately
       return json({
-        success: true,
+        success: true
         streamId,
         message: 'Streaming synthesis initiated',
         streamUrl: `/api/ai-synthesizer/stream/${streamId}`
       })
     }
-
     // Non-streaming request - process synchronously
     const result = await aiOrchestrator.process(query, {
       ...options,
       context,
       requestId
     })
-
     // Track metrics
     const processingTime = Date.now() - startTime
     await monitoringService.recordMetric('api_request_duration', processingTime)
     await monitoringService.recordMetric('api_requests_total', 1)
-
     // Return successful result
     return json({
-      success: true,
+      success: true
       requestId,
       result: {
         synthesis: (result as { synthesis?: any; sources?: any; confidence?: any; metadata?: any }).synthesis,
@@ -86,14 +71,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
   } catch (err: any) {
     // Log error
     logger.error('[API] Synthesis error:', err)
-
     // Track error metrics
     await monitoringService.recordMetric('api_errors_total', 1)
-
     // Return error response
     return json()
       {
-        success: false,
+        success: false
         error: err.message || 'An error occurred during synthesis',
         requestId,
         processingTime: Date.now() - startTime
@@ -102,19 +85,15 @@ export const POST: RequestHandler = async ({ request, url }) => {
     )
   }
 }
-
 // Health check endpoint
 export const GET: RequestHandler = async ({ url }) => {
   try {
     // Get orchestrator health
     const health = await aiOrchestrator.health()
-
     // Get cache stats
     const cacheStats = await cachingLayer.getStats()
-
     // Get monitoring metrics
     const metrics = await monitoringService.getMetrics()
-
     // Compile comprehensive health status
     const status = {
       status: health.status,
@@ -153,21 +132,19 @@ export const GET: RequestHandler = async ({ url }) => {
         pgvector: health.services.postgres === 'healthy',
         redis: health.services.redis === 'healthy',
         ollama: health.services.ollama === 'healthy',
-        xstate: true,
-        langchain: true,
-        legalbert: true,
-        drizzle: true,
-        autosolve: true,
-        streaming: true,
-        caching: true,
+        xstate: true
+        langchain: true
+        legalbert: true
+        drizzle: true
+        autosolve: true
+        streaming: true
+        caching: true
         monitoring: true
       }
     }
-
     // Determine overall health
     const healthyServices = Object.values(health.services).filter((s) => s === 'healthy').length
     const totalServices = Object.keys(health.services).length
-
     if (healthyServices === totalServices) {
       status.status = 'healthy'
     } else if (healthyServices >= totalServices * 0.5) {
@@ -175,11 +152,9 @@ export const GET: RequestHandler = async ({ url }) => {
     } else {
       status.status = 'unhealthy'
     }
-
     return json(status)
   } catch (err: any) {
     logger.error('[API] Health check error:', err)
-
     return json()
       {
         status: 'error',
@@ -190,13 +165,11 @@ export const GET: RequestHandler = async ({ url }) => {
     )
   }
 }
-
 // Test endpoint for integration testing (consolidated with health check)
 export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
   if (url.pathname.endsWith('/test')) {
     try {
       logger.info('[API] Running integration test...')
-
       // Test queries following MCP best practices
       const testQueries = [
         {
@@ -212,21 +185,17 @@ export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
           expectedSources: ['neo4j', 'context7', 'ollama']
         }
       ]
-
       const results = []
-
       for (const test of testQueries) {
         const startTime = Date.now()
-
         try {
           const result = await aiOrchestrator.process(test.query, {
-            test: true,
+            test: true
             timeout: 10000
           })
-
           results.push({
             query: test.query,
-            success: true,
+            success: true
             processingTime: Date.now() - startTime,
             confidence: (result as { synthesis?: any; sources?: any; confidence?: any; metadata?: any }).confidence,
             sourcesUsed: ((result as { synthesis?: any; sources?: any; confidence?: any; metadata?: any }).metadata as any)?.sourcesUsed || [],
@@ -235,22 +204,20 @@ export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
         } catch (err: any) {
           results.push({
             query: test.query,
-            success: false,
+            success: false
             error: err.message,
             processingTime: Date.now() - startTime
           })
         }
       }
-
       // Calculate test metrics
       const successCount = results.filter((r) => r.success).length
       const avgProcessingTime =
         results.reduce((sum, r) => sum + r.processingTime, 0) / results.length
-
       return json({
         success: successCount === results.length,
         testsRun: results.length,
-        testsPassed: successCount,
+        testsPassed: successCount
         avgProcessingTime: Math.round(avgProcessingTime),
         results,
         services: await aiOrchestrator.health(),
@@ -258,10 +225,9 @@ export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
       })
     } catch (err: any) {
       logger.error('[API] Test error:', err)
-
       return json()
         {
-          success: false,
+          success: false
           error: err.message,
           timestamp: new Date().toISOString()
         },
@@ -269,17 +235,15 @@ export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
       )
     }
   }
-
   // Default GET returns health
   // Construct a minimal fake event for GET handler
-  return GET({ url, request: new Request(url), params: Record<string, any> } as any)
+  return GET({ url, request: new Request(url), params: { [key: string]: any } } as any)
 }
-
 // Helper function for streaming requests
 async function processStreamingRequest(
-  streamId: string,
-  query: string,
-  context: any,
+  streamId: string
+  query: string
+  context: any
   options: any
 ): Promise<void> {
   try {
@@ -288,27 +252,22 @@ async function processStreamingRequest(
     if (stream) {
       stream.status = 'processing'
     }
-
     // Process with streaming
     const generator = aiOrchestrator.processStream(query, {
       ...options,
       context,
       streamId
     })
-
     // Collect stream updates
     const updates = []
-
     for await (const update of generator) {
       updates.push(update)
-
       // Update stream state
       if (stream) {
         stream.lastUpdate = update
         stream.updates = updates
       }
     }
-
     // Mark as complete
     if (stream) {
       stream.status = 'complete'
@@ -316,7 +275,6 @@ async function processStreamingRequest(
     }
   } catch (err: any) {
     logger.error(`[API] Streaming error for ${streamId}:`, err)
-
     const stream = activeStreams.get(streamId)
     if (stream) {
       stream.status = 'error'
@@ -324,12 +282,10 @@ async function processStreamingRequest(
     }
   }
 }
-
 // Cleanup old streams periodically
 setInterval(() => {
   const now = Date.now()
   const maxAge = 5 * 60 * 1000; // 5 minutes
-
   for (const [streamId, stream] of activeStreams.entries()) {
     if (now - stream.startTime > maxAge) {
       activeStreams.delete(streamId)
@@ -337,6 +293,5 @@ setInterval(() => {
     }
   }
 }, 60000); // Check every minute
-
 // Export for testing
 export { activeStreams }

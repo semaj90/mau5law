@@ -1,8 +1,7 @@
 <!-- EvidenceCard.svelte - Fixed for Svelte 5 -->
 <script lang="ts">
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/enhanced-bits';
-
   // Define Evidence interface locally
   interface Evidence {
     id: string;
@@ -23,7 +22,6 @@
     };
     hash?: string;
   }
-
   // --- SVELTE 5 PROPS ---
   // The new way to define props using runes with callback functions
   interface Props {
@@ -32,7 +30,6 @@
     onMoreOptions?: (item: Evidence) => void;
   }
   let { item, onView, onMoreOptions }: Props = $props();
-
   // --- Helper Functions ---
   function getEvidenceIcon(type: string) {
     switch (type) {
@@ -50,7 +47,6 @@
         return "i-lucide-file";
     }
   }
-
   function getTypeColor(type: string) {
     switch (type) {
       case "document":
@@ -62,12 +58,11 @@
       case "audio":
         return "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300";
       case "digital":
-        return "bg-orange-50 text-orange-700 dark:bg-orange-950 dark:text-orange-300";
+        return "bg-orange-50 text-orange-700 dark: bg-orange-950 dark:text-orange-300";
       default:
         return "bg-gray-50 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
     }
   }
-
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return "0 Bytes";
     const k = 1024;
@@ -75,17 +70,15 @@
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   }
-
   function formatDate(date: string | Date): string {
     return new Date(date).toLocaleDateString("en-US", {
       month: "short",
-      day: "numeric",;
-      hour: "2-digit",;
-      minute: "2-digit",;
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   }
 </script>
-
 <Card
   class="nes-container is-rounded group hover:shadow-md transition-shadow duration-200 cursor-pointer"
   role="article"
@@ -113,7 +106,6 @@
           </p>
         </div>
       </div>
-
       <!-- Quick Actions -->
       <div
         class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -139,7 +131,6 @@
       </div>
     </div>
   </div>
-
   <div class="yorha-panel-content space-y-3">
     <!-- Preview/Thumbnail -->
     {#if item.thumbnailUrl}
@@ -168,7 +159,6 @@
         </div>
       </div>
     {/if}
-
     <!-- AI Summary Preview -->
     {#if item.aiSummary || item.analysis?.aiSummary}
       <div class="bg-muted/50 rounded-md p-3 space-y-2">
@@ -181,7 +171,6 @@
         </p>
       </div>
     {/if}
-
     <!-- Metadata -->
     <div class="space-y-3">
       <!-- Tags -->
@@ -195,7 +184,6 @@
           {/if}
         </div>
       {/if}
-
       <!-- File Info -->
       <div
         class="flex items-center justify-between text-xs nes-text is-disabled"
@@ -203,7 +191,6 @@
         <span>{formatFileSize(item.fileSize || 0)}</span>
         <span>{formatDate(item.createdAt || item.timeline?.createdAt || new Date())}</span>
       </div>
-
       <!-- Hash Verification -->
       {#if item.hash}
         <div class="flex items-center gap-2">
@@ -217,39 +204,31 @@
     </div>
   </div>
 </Card>
-
 <style>
   /* Modern CSS line clamping with fallback */
-  .line-clamp-2 {;
+  .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-
-    /* Modern CSS fallback */
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-
+    /* Fallback for older browsers */
+    text-overflow: ellipsis;
+    white-space: nowrap;
     /* Additional constraints for better browser support */
     max-height: calc(1.2em * 2); /* 2 lines at 1.2 line height */
     line-height: 1.2em;
   }
-
   /* Enhanced NES styling for better legal UI */
   .yorha-panel-header {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   }
-
   .yorha-panel-content {
     padding-top: 0.75rem;
   }
-
   /* Improved hover effects */
   .group:hover .yorha-panel-header {
     background: rgba(0, 0, 0, 0.02);
   }
-
   /* Better accessibility focus styles */
   .group:focus-within {
     outline: 2px solid #3b82f6;

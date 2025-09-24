@@ -2,19 +2,16 @@
  * MCP Multi-Core Server API Integration
  * Real-time communication with the MCP server backend
  */
-
 export class MCPApiClient {
   private baseUrl: string;
   private wsConnection: WebSocket | null = null;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
   private reconnectDelay = 1000;
-
   constructor(baseUrl = 'http://localhost:3001/mcp') {
     this.baseUrl = baseUrl;
   }
-
-  // Health check endpoint;
+  // Health check endpoint
   async getHealth(): Promise<MCPHealthStatus> {
     try {
       const response = await fetch(`${this.baseUrl}/health`);
@@ -26,13 +23,12 @@ export class MCPApiClient {
         status: 'error',
         uptime: 0,
         workers: 0,
-        version: 'unknown',;
+        version: 'unknown',
         timestamp: new Date().toISOString()
       };
     }
   }
-
-  // Get server metrics;
+  // Get server metrics
   async getMetrics(): Promise<MCPMetrics> {
     try {
       const response = await fetch(`${this.baseUrl}/metrics`);
@@ -47,13 +43,12 @@ export class MCPApiClient {
         completedJobs: 0,
         errorCount: 0,
         avgProcessingTime: 0,
-        throughput: 0,;
+        throughput: 0,
         timestamp: new Date().toISOString()
       };
     }
   }
-
-  // Get worker status;
+  // Get worker status
   async getWorkers(): Promise<MCPWorker[]> {
     try {
       const response = await fetch(`${this.baseUrl}/workers`);
@@ -65,23 +60,18 @@ export class MCPApiClient {
       return [];
     }
   }
-
-  // Submit documents for processing;
+  // Submit documents for processing
   async processDocuments(files: File[], options: ProcessingOptions = {}): Promise<MCPJobSubmission> {
     try {
       const formData = new FormData();
-
       files.forEach((file, index) => {
         formData.append(`document_${index}`, file);
       });
-
       formData.append('options', JSON.stringify(options);
-
       const response = await fetch(`${this.baseUrl}/process`, {
-        method: 'POST',;
+        method: 'POST',
         body: formData
       });
-
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return await response.json();
     } catch (error) {
@@ -89,8 +79,7 @@ export class MCPApiClient {
       throw error;
     }
   }
-
-  // Get job status;
+  // Get job status
   async getJobStatus(jobId: string): Promise<MCPJob> {
     try {
       const response = await fetch(`${this.baseUrl}/jobs/${jobId}`);
@@ -101,8 +90,7 @@ export class MCPApiClient {
       throw error;
     }
   }
-
-  // Get job results;
+  // Get job results
   async getJobResults(jobId: string): Promise<MCPJobResult> {
     try {
       const response = await fetch(`${this.baseUrl}/jobs/${jobId}/results`);
@@ -113,8 +101,7 @@ export class MCPApiClient {
       throw error;
     }
   }
-
-  // Cancel a job;
+  // Cancel a job
   async cancelJob(jobId: string): Promise<boolean> {
     try {
       const response = await fetch(`${this.baseUrl}/jobs/${jobId}/cancel`, {
@@ -126,19 +113,15 @@ export class MCPApiClient {
       return false;
     }
   }
-
-  // Real-time updates via WebSocket;
+  // Real-time updates via WebSocket
   connectWebSocket(onMessage: (data: MCPRealtimeEvent) => void): void {
     const wsUrl = this.baseUrl.replace('http', 'ws') + '/ws';
-
     try {
       this.wsConnection = new WebSocket(wsUrl);
-
       this.wsConnection.onopen = () => {
         console.log('WebSocket connected to MCP server');
         this.reconnectAttempts = 0;
       };
-
       this.wsConnection.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
@@ -147,12 +130,10 @@ export class MCPApiClient {
           console.error('WebSocket message parse error:', error);
         }
       };
-
       this.wsConnection.onclose = () => {
         console.log('WebSocket disconnected');
         this.attemptReconnect(onMessage);
       };
-
       this.wsConnection.onerror = (error) => {
         console.error('WebSocket error:', error);
       };
@@ -160,31 +141,27 @@ export class MCPApiClient {
       console.error('WebSocket connection failed:', error);
     }
   }
-
   private attemptReconnect(onMessage: (data: MCPRealtimeEvent) => void): void {
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
       this.reconnectAttempts++;
       const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1);
-
       setTimeout(() => {
         console.log(`Reconnecting to WebSocket (attempt ${this.reconnectAttempts})`);
         this.connectWebSocket(onMessage);
       }, delay);
     }
   }
-
   disconnectWebSocket(): void {
     if (this.wsConnection) {
       this.wsConnection.close();
       this.wsConnection = null;
     }
   }
-
-  // Restart server (admin function);
+  // Restart server (admin function)
   async restartServer(): Promise<boolean> {
     try {
       const response = await fetch(`${this.baseUrl}/admin/restart`, {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         }
@@ -195,8 +172,7 @@ export class MCPApiClient {
       return false;
     }
   }
-
-  // Get system logs;
+  // Get system logs
   async getLogs(limit = 100): Promise<MCPLogEntry[]> {
     try {
       const response = await fetch(`${this.baseUrl}/logs?limit=${limit}`);
@@ -208,8 +184,7 @@ export class MCPApiClient {
       return [];
     }
   }
-
-  // GPU status and metrics;
+  // GPU status and metrics
   async getGPUStatus(): Promise<MCPGPUStatus> {
     try {
       const response = await fetch(`${this.baseUrl}/gpu/status`);
@@ -218,19 +193,18 @@ export class MCPApiClient {
     } catch (error) {
       console.error('GPU status fetch failed:', error);
       return {
-        available: false,
+        available: false
         temperature: 0,
         memoryUsed: 0,
         memoryTotal: 0,
         powerUsage: 0,
-        utilization: 0,;
+        utilization: 0,
         name: 'Unknown'
       };
     }
   }
 }
-
-// Type definitions for MCP API;
+// Type definitions for MCP API
 export interface MCPHealthStatus {
   status: 'healthy' | 'degraded' | 'error' | 'restarting';
   uptime: number;
@@ -238,7 +212,6 @@ export interface MCPHealthStatus {
   version: string;
   timestamp: string;
 }
-
 export interface MCPMetrics {
   cpu: number;
   memory: number;
@@ -249,7 +222,6 @@ export interface MCPMetrics {
   throughput: number;
   timestamp: string;
 }
-
 export interface MCPWorker {
   id: number;
   status: 'idle' | 'busy' | 'error' | 'starting';
@@ -260,7 +232,6 @@ export interface MCPWorker {
   memoryUsage: number;
   cpuUsage: number;
 }
-
 export interface ProcessingOptions {
   mode?: 'parallel' | 'sequential';
   priority?: 'high' | 'normal' | 'low';
@@ -268,7 +239,6 @@ export interface ProcessingOptions {
   analysisType?: 'full' | 'summary' | 'entities' | 'compliance';
   outputFormat?: 'json' | 'xml' | 'text';
 }
-
 export interface MCPJobSubmission {
   jobId: string;
   status: 'submitted';
@@ -276,7 +246,6 @@ export interface MCPJobSubmission {
   queuePosition: number;
   workers: number[];
 }
-
 export interface MCPJob {
   id: string;
   filename: string;
@@ -288,11 +257,10 @@ export interface MCPJob {
   duration?: number;
   error?: string;
 }
-
 export interface MCPJobResult {
   jobId: string;
   filename: string;
-  results: {;
+  results: {
     summary: string;
     entities: LegalEntity[];
     riskAssessment: RiskAssessment;
@@ -308,17 +276,15 @@ export interface MCPJobResult {
     documentType: string;
   };
 }
-
 export interface LegalEntity {
   name: string;
   type: 'person' | 'organization' | 'location' | 'date' | 'amount';
   confidence: number;
   context: string;
 }
-
 export interface RiskAssessment {
   overall: number;
-  categories: {;
+  categories: {
     financial: number;
     legal: number;
     operational: number;
@@ -326,27 +292,23 @@ export interface RiskAssessment {
   };
   factors: string[];
 }
-
 export interface ComplianceCheck {
   regulation: string;
   status: 'compliant' | 'non-compliant' | 'unclear';
   confidence: number;
   notes: string;
 }
-
 export interface LegalPrecedent {
   case: string;
   relevance: number;
   summary: string;
   citation: string;
 }
-
 export interface MCPRealtimeEvent {
   type: 'job_update' | 'worker_status' | 'metrics' | 'log' | 'alert';
   timestamp: string;
   data: any;
 }
-
 export interface MCPLogEntry {
   timestamp: string;
   level: 'debug' | 'info' | 'warn' | 'error';
@@ -354,7 +316,6 @@ export interface MCPLogEntry {
   source: string;
   metadata?: any;
 }
-
 export interface MCPGPUStatus {
   available: boolean;
   name: string;
@@ -364,6 +325,5 @@ export interface MCPGPUStatus {
   powerUsage: number;
   utilization: number;
 }
-
 // Singleton instance for easy import
 export const mcpApi = new MCPApiClient();

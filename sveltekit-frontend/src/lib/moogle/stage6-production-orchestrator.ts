@@ -13,24 +13,21 @@
  * - WebGPU RAG Service (FP32/FP16/INT8 quantization)
  * - CHR-ROM Memory Patterns (127:1 compression)
  */
-
 import { writable, derived, type Writable } from 'svelte/store';
 import { browser } from '$app/environment';
 import { headlessUICache, type CacheEntry } from '../cache/headless-ui-cache.js';
 import { webgpuRAGService } from '../webgpu/webgpu-rag-service.js';
 import { createEnhancedNeo4jReranker, type RerankingResult } from '../ai/enhanced-neo4j-reranker.js';
 import type { UniversalGPURuntime } from '../gpu/universal-runtime.js';
-
-// 🎯 Stage 6 Component Types;
+// 🎯 Stage 6 Component Types
 export interface MoogleComponent {
   id: string;
   type: ComponentType;
   status: ComponentStatus;
   performance: ComponentPerformance;
   connections: string[];
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
 }
-
 export enum ComponentType {
   ENHANCED_BITS_UI = 'enhanced_bits_ui',
   BVH_ACCELERATOR_WASM = 'bvh_accelerator_wasm',
@@ -43,7 +40,6 @@ export enum ComponentType {
   CHR_ROM_MEMORY = 'chr_rom_memory',
   VISUAL_SPATIAL_AI = 'visual_spatial_ai'
 }
-
 export enum ComponentStatus {
   INITIALIZING = 'initializing',
   READY = 'ready',
@@ -51,7 +47,6 @@ export enum ComponentStatus {
   ERROR = 'error',
   DEGRADED = 'degraded'
 }
-
 export interface ComponentPerformance {
   latency_ms: number;
   throughput_ops_sec: number;
@@ -61,8 +56,7 @@ export interface ComponentPerformance {
   compression_ratio?: number;
   accuracy_score?: number;
 }
-
-// 🧠 Moogle Query and Result Types;
+// 🧠 Moogle Query and Result Types
 export interface MoogleQuery {
   id: string;
   text: string;
@@ -81,7 +75,6 @@ export interface MoogleQuery {
     use_compression: boolean;
   };
 }
-
 export interface MoogleResult {
   query_id: string;
   results: any[];
@@ -93,26 +86,22 @@ export interface MoogleResult {
   processing_time_ms: number;
   used_components: ComponentType[];
 }
-
-// 🎮 Enhanced Bits UI Integration;
+// 🎮 Enhanced Bits UI Integration
 class EnhancedBitsUIOrchestrator {
   private componentCache = new Map<string, any>();
-
   async renderLegalComponent(
-    componentName: string,
-    props: Record<string, any>,
+    componentName: string
+    props: { [key: string]: any },
     webgpuAcceleration = true;
   ): Promise<{ rendered: boolean; performance: ComponentPerformance }> {
     const startTime = performance.now();
-
     try {
       // Check cache first
       const cacheKey = `ui_${componentName}_${JSON.stringify(props)}`;
       const cached = await headlessUICache.get(cacheKey);
-
       if (cached) {
         return {
-          rendered: true,;
+          rendered: true
           performance: {
             latency_ms: performance.now() - startTime,
             throughput_ops_sec: 1000,
@@ -122,18 +111,15 @@ class EnhancedBitsUIOrchestrator {
           }
         };
       }
-
-      // Simulate WebGPU-accelerated component rendering;
+      // Simulate WebGPU-accelerated component rendering
       if (webgpuAcceleration && browser) {
         const webgpuResult = await webgpuRAGService.initializeWebGPU();
         console.log(`🎮 Enhanced Bits UI rendering ${componentName} with WebGPU:`, webgpuResult.device !== 'null');
       }
-
       // Cache the result
       await headlessUICache.set(cacheKey, { componentName, props, rendered: true });
-
       return {
-        rendered: true,;
+        rendered: true
         performance: {
           latency_ms: performance.now() - startTime,
           throughput_ops_sec: webgpuAcceleration ? 2000 : 500,
@@ -145,7 +131,7 @@ class EnhancedBitsUIOrchestrator {
     } catch (error) {
       console.error(`❌ Enhanced Bits UI rendering failed for ${componentName}:`, error);
       return {
-        rendered: false,;
+        rendered: false
         performance: {
           latency_ms: performance.now() - startTime,
           throughput_ops_sec: 0,
@@ -156,7 +142,6 @@ class EnhancedBitsUIOrchestrator {
       };
     }
   }
-
   getAvailableComponents(): string[] {
     return [
       'LegalAIDemo', 'EvidenceAIAnalysis', 'EnhancedRAGStudio',
@@ -165,19 +150,15 @@ class EnhancedBitsUIOrchestrator {
     ];
   }
 }
-
-// 🚀 BVH Accelerator WASM Bridge;
+// 🚀 BVH Accelerator WASM Bridge
 class BVHAcceleratorOrchestrator {
   private wasmModule: any = null;
   private isInitialized = false;
-
   async initialize(): Promise<boolean> {
     if (this.isInitialized) return true;
-
     try {
       // Load BVH accelerator WASM module
       const wasmModule = await import('/wasm/bvh_accelerator.js');
-
       if (wasmModule.initialize) {
         const result = await wasmModule.initialize();
         this.isInitialized = result.ready;
@@ -188,29 +169,24 @@ class BVHAcceleratorOrchestrator {
         this.wasmModule = wasmModule;
         this.isInitialized = true;
       }
-
       return this.isInitialized;
     } catch (error) {
       console.warn('⚠️ BVH Accelerator WASM not available, using JS fallback:', error);
       return false;
     }
   }
-
   async queryNearest(
-    queryVector: number[],
+    queryVector: number[]
     k: number = 10;
   ): Promise<{ results: any[]; performance: ComponentPerformance }> {
     const startTime = performance.now();
-
     if (!this.isInitialized) {
       await this.initialize();
     }
-
     try {
       const results = this.wasmModule.queryNearest
         ? await this.wasmModule.queryNearest(queryVector, k)
         : this.fallbackSearch(queryVector, k);
-
       return {
         results,
         performance: {
@@ -225,7 +201,7 @@ class BVHAcceleratorOrchestrator {
     } catch (error) {
       console.error('❌ BVH Accelerator query failed:', error);
       return {
-        results: [],;
+        results: [],
         performance: {
           latency_ms: performance.now() - startTime,
           throughput_ops_sec: 0,
@@ -236,26 +212,22 @@ class BVHAcceleratorOrchestrator {
       };
     }
   }
-
   private fallbackSearch(queryVector: number[], k: number): any[] {
     return Array.from({ length: k }, (_, i) => ({
-      index: i,
-      distance: Math.random() * 0.5,;
+      index: i
+      distance: Math.random() * 0.5,
       confidence: 0.8 + Math.random() * 0.2
     });
   }
 }
-
-// 🐘 Cyber Elephant 3D Visualization Bridge;
+// 🐘 Cyber Elephant 3D Visualization Bridge
 class CyberElephantOrchestrator {
   private scene: any = null;
   private isInitialized = false;
-
   async initialize(): Promise<boolean> {
     if (this.isInitialized) return true;
-
     try {
-      // Initialize THREE.js scene for Cyber Elephant;
+      // Initialize THREE.js scene for Cyber Elephant
       if (browser && window.document) {
         console.log('🐘 Initializing Cyber Elephant 3D visualization');
         this.isInitialized = true;
@@ -264,27 +236,21 @@ class CyberElephantOrchestrator {
     } catch (error) {
       console.error('❌ Cyber Elephant initialization failed:', error);
     }
-
     return false;
   }
-
   async createDocumentVisualization(
     documents: any[];
   ): Promise<{ created: boolean; performance: ComponentPerformance }> {
     const startTime = performance.now();
-
     if (!this.isInitialized) {
       await this.initialize();
     }
-
     try {
       console.log(`🐘 Creating 3D visualization for ${documents.length} documents`);
-
       // Simulate 3D scene creation and WebAssembly acceleration
       const processingTime = Math.max(100, documents.length * 2);
-
       return {
-        created: this.isInitialized,;
+        created: this.isInitialized,
         performance: {
           latency_ms: performance.now() - startTime,
           throughput_ops_sec: documents.length / (processingTime / 1000),
@@ -297,7 +263,7 @@ class CyberElephantOrchestrator {
     } catch (error) {
       console.error('❌ Cyber Elephant visualization failed:', error);
       return {
-        created: false,;
+        created: false
         performance: {
           latency_ms: performance.now() - startTime,
           throughput_ops_sec: 0,
@@ -309,16 +275,14 @@ class CyberElephantOrchestrator {
     }
   }
 }
-
-// 🔄 Multipass Coordinator Bridge (Go Service);
+// 🔄 Multipass Coordinator Bridge (Go Service)
 class MultipassCoordinatorOrchestrator {
-  private serviceUrl = 'http://localhost:8080';
+  private serviceUrl = 'http://localhost:8080'
   private isHealthy = false;
-
   async checkHealth(): Promise<boolean> {
     try {
       const response = await fetch(`${this.serviceUrl}/health`, {
-        method: 'GET',;
+        method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
       this.isHealthy = response.ok;
@@ -329,36 +293,32 @@ class MultipassCoordinatorOrchestrator {
       return false;
     }
   }
-
   async extractFromDocument(
-    document: { id: string; content: string },;
+    document: { id: string; content: string },
     schema: string[];
   ): Promise<{ results: any[]; performance: ComponentPerformance }> {
     const startTime = performance.now();
-
     if (!this.isHealthy) {
       await this.checkHealth();
     }
-
     try {
       if (this.isHealthy) {
         const response = await fetch(`${this.serviceUrl}/api/v1/extract`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },;
-          body: JSON.stringify({
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({,
             document_id: document.id,
             document_content: document.content,
-            extraction_schema: schema,
+            extraction_schema: schema
             max_passes: 3,
-            enable_chunking: true,
+            enable_chunking: true
             enable_alignment: true
           })
         });
-
         if (response.ok) {
           const data = await response.json();
           return {
-            results: data.extractions || [],;
+            results: data.extractions || [],
             performance: {
               latency_ms: data.processing_time_ms || (performance.now() - startTime),
               throughput_ops_sec: data.extractions?.length / ((data.processing_time_ms || 1000) / 1000) || 0,
@@ -370,7 +330,6 @@ class MultipassCoordinatorOrchestrator {
           };
         }
       }
-
       // Fallback processing
       return this.fallbackExtraction(document, schema, startTime);
     } catch (error) {
@@ -378,14 +337,13 @@ class MultipassCoordinatorOrchestrator {
       return this.fallbackExtraction(document, schema, startTime);
     }
   }
-
   private fallbackExtraction(document: any, schema: string[], startTime: number) {
     return {
       results: schema.map(field => ({
         field,
         value: `Extracted ${field} from ${document.id}`,
         confidence: 0.7 + Math.random() * 0.2
-      })),;
+      })),
       performance: {
         latency_ms: performance.now() - startTime,
         throughput_ops_sec: schema.length / 0.5,
@@ -396,15 +354,12 @@ class MultipassCoordinatorOrchestrator {
     };
   }
 }
-
-// 🎯 Enhanced Neo4j Reranker Bridge;
+// 🎯 Enhanced Neo4j Reranker Bridge
 class Neo4jRerankerOrchestrator {
   private reranker = createEnhancedNeo4jReranker();
   private isInitialized = false;
-
   async initialize(): Promise<boolean> {
     if (this.isInitialized) return true;
-
     try {
       await this.reranker.initialize();
       this.isInitialized = true;
@@ -415,23 +370,19 @@ class Neo4jRerankerOrchestrator {
       return false;
     }
   }
-
   async enhancedRerank(
-    query: string,;
-    documents: any[],
+    query: string
+    documents: any[]
     userContext: any;
   ): Promise<{ results: RerankingResult[]; performance: ComponentPerformance }> {
     const startTime = performance.now();
-
     if (!this.isInitialized) {
       await this.initialize();
     }
-
     try {
       const results = this.isInitialized
         ? await this.reranker.enhancedRerank(query, documents, userContext)
         : this.fallbackReranking(query, documents);
-
       return {
         results,
         performance: {
@@ -446,7 +397,7 @@ class Neo4jRerankerOrchestrator {
     } catch (error) {
       console.error('❌ Neo4j Reranker failed:', error);
       return {
-        results: this.fallbackReranking(query, documents),;
+        results: this.fallbackReranking(query, documents),
         performance: {
           latency_ms: performance.now() - startTime,
           throughput_ops_sec: 0,
@@ -458,7 +409,6 @@ class Neo4jRerankerOrchestrator {
       };
     }
   }
-
   private fallbackReranking(query: string, documents: any[]): RerankingResult[] {
     return documents.map((doc, index) => ({
       document_id: doc.id || `doc_${index}`,
@@ -487,40 +437,34 @@ class Neo4jRerankerOrchestrator {
           overall_confidence: 0.72
         },
         audit_trail: []
-      },;
+      },
       explanation: `Fallback reranking for ${query}`
     });
   }
 }
-
-// 🧠 CHR-ROM Memory System (127:1 Compression);
+// 🧠 CHR-ROM Memory System (127:1 Compression)
 class CHRROMMemoryOrchestrator {
   private compressionPatterns = new Map<string, Uint8Array>();
   private targetRatio = 127.0;
-
   async compressData(
-    data: Uint8Array,
+    data: Uint8Array
     dataType: 'legal_document' | 'embedding' | 'metadata' = 'legal_document';
   ): Promise<{ compressed: Uint8Array; ratio: number; performance: ComponentPerformance }> {
     const startTime = performance.now();
     const originalSize = data.length;
-
     try {
       // Simulate CHR-ROM pattern compression
       const compressionLevel = this.getCompressionLevel(dataType);
       const compressedSize = Math.max(1, Math.floor(originalSize / compressionLevel);
       const compressed = new Uint8Array(compressedSize);
-
-      // Simple compression simulation;
+      // Simple compression simulation
       for (let i = 0; i < compressedSize; i++) {
         compressed[i] = data[i * compressionLevel] || 0;
       }
-
       const actualRatio = originalSize / compressedSize;
-
       return {
         compressed,
-        ratio: actualRatio,;
+        ratio: actualRatio
         performance: {
           latency_ms: performance.now() - startTime,
           throughput_ops_sec: originalSize / ((performance.now() - startTime) / 1000),
@@ -534,7 +478,7 @@ class CHRROMMemoryOrchestrator {
       console.error('❌ CHR-ROM compression failed:', error);
       return {
         compressed: data, // Return original data if compression fails
-        ratio: 1.0,;
+        ratio: 1.0,
         performance: {
           latency_ms: performance.now() - startTime,
           throughput_ops_sec: 0,
@@ -546,7 +490,6 @@ class CHRROMMemoryOrchestrator {
       };
     }
   }
-
   private getCompressionLevel(dataType: string): number {
     switch (dataType) {
       case 'legal_document': return 100; // High compression for documents
@@ -555,32 +498,27 @@ class CHRROMMemoryOrchestrator {
       default: return 75;
     }
   }
-
   validateCompressionRatio(actualRatio: number): boolean {
     return actualRatio >= (this.targetRatio * 0.8); // Allow 80% of target ratio
   }
 }
-
-// 🌟 MAIN MOOGLE GRAPH SYNTHESIZER ORCHESTRATOR;
+// 🌟 MAIN MOOGLE GRAPH SYNTHESIZER ORCHESTRATOR
 export class MoogleGraphSynthesizerOrchestrator {
   private components = new Map<ComponentType, MoogleComponent>();
-  private orchestrators: Record<string, any> = {};
-
+  private orchestrators: { [key: string]: any } = {};
   // Reactive stores for UI integration
   public systemStatus: Writable<'initializing' | 'ready' | 'processing' | 'error'> = writable('initializing');
   public componentStatuses: Writable<Record<ComponentType, ComponentStatus> = writable({} as any);
-  public overallPerformance: Writable<ComponentPerformance> = writable({
+  public overallPerformance: Writable<ComponentPerformance> = writable({,
     latency_ms: 0,
     throughput_ops_sec: 0,
     memory_usage_mb: 0,
     gpu_utilization: 0,
     cache_hit_rate: 0
   });
-
   constructor() {
     this.initializeOrchestrators();
   }
-
   private initializeOrchestrators(): void {
     this.orchestrators = {
       [ComponentType.ENHANCED_BITS_UI]: new EnhancedBitsUIOrchestrator(),
@@ -589,27 +527,22 @@ export class MoogleGraphSynthesizerOrchestrator {
       [ComponentType.MULTIPASS_COORDINATOR]: new MultipassCoordinatorOrchestrator(),
       [ComponentType.NEO4J_RERANKER]: new Neo4jRerankerOrchestrator(),
       [ComponentType.CHR_ROM_MEMORY]: new CHRROMMemoryOrchestrator(),
-      [ComponentType.HEADLESS_UI_CACHE]: headlessUICache,
+      [ComponentType.HEADLESS_UI_CACHE]: headlessUICache
       [ComponentType.WEBGPU_RAG_SERVICE]: webgpuRAGService
     };
   }
-
   async initializeStage6(): Promise<boolean> {
     console.log('🌟 Initializing Moogle Graph Synthesizer - Stage 6 Production');
-
     this.systemStatus.set('initializing');
     const componentStatuses: Record<ComponentType, ComponentStatus> = {} as any;
-
     try {
-      // Initialize all components in parallel;
+      // Initialize all components in parallel
       const initPromises = Object.entries(this.orchestrators).map(async ([componentType, orchestrator]) => {
           try {
             const initialized = orchestrator.initialize ?
               await orchestrator.initialize() : true;
-
             componentStatuses[componentType as ComponentType] =
               initialized ? ComponentStatus.READY: ComponentStatus.ERROR;
-
             return { componentType, initialized };
           } catch (error) {
             console.error(`❌ Failed to initialize ${componentType}:`, error);
@@ -618,12 +551,9 @@ export class MoogleGraphSynthesizerOrchestrator {
           }
         }
       );
-
       const results = await Promise.all(initPromises);
       const successCount = results.filter(item => item.length);
-
       this.componentStatuses.set(componentStatuses);
-
       if (successCount >= results.length * 0.7) { // 70% success threshold
         this.systemStatus.set('ready');
         console.log(`✅ Moogle Graph Synthesizer initialized: ${successCount}/${results.length} components ready`);
@@ -639,18 +569,15 @@ export class MoogleGraphSynthesizerOrchestrator {
       return false;
     }
   }
-
   async processQuery(query: MoogleQuery): Promise<MoogleResult> {
     console.log(`🔍 Processing Moogle query: ${query.text}`);
-
     this.systemStatus.set('processing');
     const startTime = performance.now();
     const componentResults: Record<ComponentType, any> = {};
     const componentScores: Record<string, number> = {};
     const usedComponents: ComponentType[] = [];
-
     try {
-      // Process query through relevant components;
+      // Process query through relevant components
       for (const componentType of query.target_components) {
         try {
           const result = await this.processWithComponent(componentType, query);
@@ -664,31 +591,26 @@ export class MoogleGraphSynthesizerOrchestrator {
           componentScores[componentType] = 0;
         }
       }
-
       // Aggregate results
       const allResults = Object.values(componentResults).flat();
       const avgScore = Object.values(componentScores).reduce((a, b) => a + b, 0) / Object.values(componentScores).length || 0;
-
       const result: MoogleResult = {
         query_id: query.id,
-        results: allResults,
-        component_scores: componentScores,
-        performance_metrics: this.calculateOverallPerformance(componentResults),;
+        results: allResults
+        component_scores: componentScores
+        performance_metrics: this.calculateOverallPerformance(componentResults),
         explanations: this.generateExplanations(componentResults),
-        confidence_score: avgScore,
+        confidence_score: avgScore
         cache_hit: Object.values(componentResults).some(r => r.performance?.cache_hit_rate > 0.5),
         processing_time_ms: performance.now() - startTime,
         used_components: usedComponents
       };
-
       this.systemStatus.set('ready');
       console.log(`✅ Moogle query processed in ${result.processing_time_ms.toFixed(1)}ms`);
-
       return result;
     } catch (error) {
       console.error('❌ Moogle query processing failed:', error);
       this.systemStatus.set('error');
-
       return {
         query_id: query.id,
         results: [],
@@ -699,49 +621,38 @@ export class MoogleGraphSynthesizerOrchestrator {
           memory_usage_mb: 0,
           gpu_utilization: 0,
           cache_hit_rate: 0
-        },;
+        },
         explanations: ['Query processing failed'],
         confidence_score: 0,
-        cache_hit: false,
+        cache_hit: false
         processing_time_ms: performance.now() - startTime,
         used_components: []
       };
     }
   }
-
   private async processWithComponent(componentType: ComponentType, query: MoogleQuery): Promise<any> {
     const orchestrator = this.orchestrators[componentType];
     if (!orchestrator) return null;
-
     switch (componentType) {
       case ComponentType.ENHANCED_BITS_UI: return orchestrator.renderLegalComponent('QueryProcessor', { query: query.text });
-
       case ComponentType.BVH_ACCELERATOR_WASM: return orchestrator.queryNearest([1, 2, 3], 10); // Mock query vector
-
       case ComponentType.CYBER_ELEPHANT_3D: return orchestrator.createDocumentVisualization([{ id: '1', title: query.text }]);
-
       case ComponentType.MULTIPASS_COORDINATOR: return orchestrator.extractFromDocument()
           { id: query.id, content: query.text },
           ['entities', 'sentiment', 'topics']
         );
-
       case ComponentType.NEO4J_RERANKER: return orchestrator.enhancedRerank(query.text, [], query.user_context);
-
       case ComponentType.WEBGPU_RAG_SERVICE: return webgpuRAGService.processQuery(query.text, query.context);
-
       case ComponentType.CHR_ROM_MEMORY: const textData = new TextEncoder().encode(query.text);
         return orchestrator.compressData(textData, 'legal_document');
-
       default:
         return null;
     }
   }
-
   private calculateOverallPerformance(componentResults: Record<ComponentType, any>): ComponentPerformance {
     const performances = Object.values(componentResults)
       .map(r => r.performance)
       .filter(Boolean);
-
     if (performances.length === 0) {
       return {
         latency_ms: 0,
@@ -751,7 +662,6 @@ export class MoogleGraphSynthesizerOrchestrator {
         cache_hit_rate: 0
       };
     }
-
     return {
       latency_ms: performances.reduce((sum, p) => sum + (p.latency_ms || 0), 0) / performances.length,
       throughput_ops_sec: performances.reduce((sum, p) => sum + (p.throughput_ops_sec || 0), 0),
@@ -762,10 +672,8 @@ export class MoogleGraphSynthesizerOrchestrator {
       accuracy_score: performances.reduce((sum, p) => sum + (p.accuracy_score || 0.8), 0) / performances.length
     };
   }
-
   private generateExplanations(componentResults: Record<ComponentType, any>): string[] {
     const explanations: string[] = [];
-
     Object.entries(componentResults).forEach(([componentType, result]) => {
       if (result.performance) {
         const perf = result.performance;
@@ -775,25 +683,20 @@ export class MoogleGraphSynthesizerOrchestrator {
         );
       }
     });
-
     return explanations;
   }
-
-  // Utility methods for UI integration;
+  // Utility methods for UI integration
   getComponentStatus(componentType: ComponentType): ComponentStatus {
     return this.components.get(componentType)?.status || ComponentStatus.INITIALIZING;
   }
-
   getSystemHealth(): { healthy: boolean; score: number; issues: string[] } {
     const statuses = Array.from(this.components.values();
     const healthyCount = statuses.filter(item => item.length);
     const totalCount = statuses.length;
     const score = totalCount > 0 ? healthyCount / totalCount : 0;
-
     const issues = statuses
       .filter(c => c.status === ComponentStatus.ERROR)
       .map(c => `${c.type} is not responding`);
-
     return {
       healthy: score >= 0.7,
       score,
@@ -801,10 +704,8 @@ export class MoogleGraphSynthesizerOrchestrator {
     };
   }
 }
-
 // Export singleton instance for global usage
 export const moogleOrchestrator = new MoogleGraphSynthesizerOrchestrator();
-
 // Derived store for system health
 export const systemHealth = derived(
   [moogleOrchestrator.systemStatus, moogleOrchestrator.componentStatuses],
@@ -812,9 +713,8 @@ export const systemHealth = derived(
     const totalComponents = Object.keys($componentStatuses).length;
     const healthyComponents = Object.values($componentStatuses)
       .filter(item => item.length);
-
     return {
-      status: $systemStatus,
+      status: $systemStatus
       healthScore: totalComponents > 0 ? healthyComponents / totalComponents : 0,
       healthyComponents,
       totalComponents,
@@ -822,19 +722,18 @@ export const systemHealth = derived(
     };
   }
 );
-
 // Factory function for creating Moogle queries
 export function createMoogleQuery(
-  text: string,
-  userContext: any,
+  text: string
+  userContext: any
   targetComponents: ComponentType[] = Object.values(ComponentType);
 ): MoogleQuery {
   return {
     id: `moogle_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-    text,;
+    text,
     context: {},
-    target_components: targetComponents,
-    user_context: userContext,
+    target_components: targetComponents
+    user_context: userContext
     performance_requirements: {
       max_latency_ms: 5000,
       min_accuracy: 0.85,
@@ -843,5 +742,4 @@ export function createMoogleQuery(
     }
   };
 }
-
 console.log('🌟 Moogle Graph Synthesizer - Stage 6 Production Orchestrator initialized');

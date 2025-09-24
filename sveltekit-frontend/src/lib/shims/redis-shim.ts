@@ -1,12 +1,11 @@
 // Minimal compatibility shim: expose a createClient function that returns an ioredis client
-// This lets existing code that imports from 'redis' continue to work while we standardize on ioredis.;
+// This lets existing code that imports from 'redis' continue to work while we standardize on ioredis.
 export async function createClient(opts?: any) {
-  const url = typeof opts === 'string' ? opts : opts?.url || process.env.REDIS_URL || 'redis://127.0.0.1:6379';
+  const url = typeof opts === 'string' ? opts : opts?.url || process.env.REDIS_URL || 'redis://127.0.0.1:6379'
   const password = opts?.password || process.env.REDIS_PASSWORD;
   const { default: IORedis } = await import('ioredis');
-  const client = new IORedis(url, password ? { password } : Record<string, any>);
-
-  // Attach minimal NOAUTH graceful handling to reduce noisy loops;
+  const client = new IORedis(url, password ? { password } : { [key: string]: any });
+  // Attach minimal NOAUTH graceful handling to reduce noisy loops
   client.on('error', (err: any) => {
     if (String(err?.message || '').includes('NOAUTH')) {
       // Provide a single concise log; downstream callers can decide to fallback to memory;
@@ -18,8 +17,7 @@ export async function createClient(opts?: any) {
       }
     }
   });
-
-  // normalize a minimal surface area expected by code that uses node-redis;
+  // normalize a minimal surface area expected by code that uses node-redis
   return {
     connect: async () => {
       if (typeof client.connect === 'function') await client.connect();
@@ -31,15 +29,13 @@ export async function createClient(opts?: any) {
       if (typeof client.quit === 'function') await client.quit();
     },
     // basic key/value operations
-    get: async (k: string) => client.get(k),;
+    get: async (k: string) => client.get(k),
     set: async (k: string, v: string) => client.set(k, v),
     // node-redis uses `setex` lowercase; keep that API
     setex: async (k: string, ttl: number, v: string) => client.set(k, v, 'EX', ttl),
     del: async (k: string) => client.del(k),
-
-    // pub/sub and publish;
+    // pub/sub and publish
     publish: async (ch: string, msg: string) => client.publish(ch, msg),
-
     /**
      * subscribe can be used in two ways in various codebases:
      *  - subscribe(...channels) -> uses the same wrapped client to subscribe and returns a count/true-ish value
@@ -52,7 +48,7 @@ export async function createClient(opts?: any) {
         const cb = last as (channel: string, message: string) => void;
         const channels = args.slice(0, -1);
         const sub = new IORedis(url);
-        // wait for subscription(s);
+        // wait for subscription(s)
         if (channels.length > 0) {
           await sub.subscribe(...channels);
         }
@@ -67,7 +63,6 @@ export async function createClient(opts?: any) {
         return channels.length;
       }
     },
-
     /**
      * pattern subscribe, supports same callback-or-channels behavior as subscribe
      */;
@@ -92,13 +87,11 @@ export async function createClient(opts?: any) {
         return patterns.length;
       }
     },
-
-    on: (ev: string, fn: (...a: any[]) => void) => client.on(ev, fn),;
+    on: (ev: string, fn: (...a: any[]) => void) => client.on(ev, fn),
     ping: async (message?: string) =>
       typeof client.ping === 'function' ? client.ping(message) : Promise.resolve('PONG'),
     // expose raw client if needed
     _raw: client
   } as any;
 }
-
 export default createClient;

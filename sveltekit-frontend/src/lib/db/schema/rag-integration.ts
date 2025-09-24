@@ -2,20 +2,18 @@ import { pgTable, serial, varchar, text, integer, timestamp, jsonb, vector, bool
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { eq } from 'drizzle-orm';
-
-// Cases table for organizing documents;
+// Cases table for organizing documents
 export const cases = pgTable('cases', {
   id: serial('id').primaryKey(),
   uuid: varchar('uuid', { length: 36 }).notNull().unique(),
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
-  status: varchar('status', { length: 50 }).notNull().default('active'),;
+  status: varchar('status', { length: 50 }).notNull().default('active'),
   metadata: jsonb('metadata'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow()
 });
-
-// Documents table with file information;
+// Documents table with file information
 export const documents = pgTable('documents', {
   id: serial('id').primaryKey(),
   uuid: varchar('uuid', { length: 36 }).notNull().unique(),
@@ -27,13 +25,12 @@ export const documents = pgTable('documents', {
   minioPath: varchar('minio_path', { length: 500 }).notNull(),
   extractedText: text('extracted_text'),
   processingStatus: varchar('processing_status', { length: 50 }).notNull().default('pending'),
-  processingError: text('processing_error'),;
+  processingError: text('processing_error'),
   metadata: jsonb('metadata'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow()
 });
-
-// Document chunks for RAG retrieval;
+// Document chunks for RAG retrieval
 export const documentChunks = pgTable('document_chunks', {
   id: serial('id').primaryKey(),
   uuid: varchar('uuid', { length: 36 }).notNull().unique(),
@@ -41,12 +38,11 @@ export const documentChunks = pgTable('document_chunks', {
   chunkIndex: integer('chunk_index').notNull(),
   content: text('content').notNull(),
   wordCount: integer('word_count').notNull(),
-  embedding: vector('embedding', { dimensions: 384 }), // nomic-embed-text dimensions;
+  embedding: vector('embedding', { dimensions: 384 }), // nomic-embed-text dimensions
   metadata: jsonb('metadata'), // Contains entities, concepts, etc.
   createdAt: timestamp('created_at').notNull().defaultNow()
 });
-
-// Processing jobs for Redis job queue tracking;
+// Processing jobs for Redis job queue tracking
 export const processingJobs = pgTable('processing_jobs', {
   id: serial('id').primaryKey(),
   uuid: varchar('uuid', { length: 36 }).notNull().unique(),
@@ -55,14 +51,13 @@ export const processingJobs = pgTable('processing_jobs', {
   status: varchar('status', { length: 50 }).notNull().default('queued'),
   currentStep: varchar('current_step', { length: 50 }),
   progress: integer('progress').notNull().default(0),
-  result: jsonb('result'),;
+  result: jsonb('result'),
   error: text('error'),
   startedAt: timestamp('started_at'),
   completedAt: timestamp('completed_at'),
   createdAt: timestamp('created_at').notNull().defaultNow()
 });
-
-// Entity extraction results;
+// Entity extraction results
 export const extractedEntities = pgTable('extracted_entities', {
   id: serial('id').primaryKey(),
   documentId: integer('document_id').references(() => documents.id).notNull(),
@@ -71,19 +66,18 @@ export const extractedEntities = pgTable('extracted_entities', {
   entityValue: text('entity_value').notNull(),
   confidence: real('confidence').notNull(),
   startOffset: integer('start_offset'),
-  endOffset: integer('end_offset'),;
+  endOffset: integer('end_offset'),
   context: text('context'), // Surrounding text
   createdAt: timestamp('created_at').notNull().defaultNow()
 });
-
-// RAG queries for analytics and improvement;
+// RAG queries for analytics and improvement
 export const ragQueries = pgTable('rag_queries', {
   id: serial('id').primaryKey(),
   uuid: varchar('uuid', { length: 36 }).notNull().unique(),
   caseId: integer('case_id').references(() => cases.id),
   query: text('query').notNull(),
   queryEmbedding: vector('query_embedding', { dimensions: 384 }),
-  response: text('response'),;
+  response: text('response'),
   model: varchar('model', { length: 50 }).notNull(),
   tokensUsed: integer('tokens_used'),
   processingTimeMs: integer('processing_time_ms'),
@@ -92,69 +86,49 @@ export const ragQueries = pgTable('rag_queries', {
   userFeedback: jsonb('user_feedback'),
   createdAt: timestamp('created_at').notNull().defaultNow()
 });
-
-// RAG query results for source tracking;
+// RAG query results for source tracking
 export const ragQueryResults = pgTable('rag_query_results', {
   id: serial('id').primaryKey(),
   queryId: integer('query_id').references(() => ragQueries.id).notNull(),
   chunkId: integer('chunk_id').references(() => documentChunks.id).notNull(),
   similarityScore: real('similarity_score').notNull(),
-  rank: integer('rank').notNull(), // 1, 2, 3... order in results;
+  rank: integer('rank').notNull(), // 1, 2, 3... order in results
   used: boolean('used').notNull().default(true), // Was this chunk actually used in response?
   createdAt: timestamp('created_at').notNull().defaultNow()
 });
-
 // Zod schemas for validation - Fixed compatibility issues
 export const insertCaseSchema = createInsertSchema(cases) as any;
-
 export const selectCaseSchema = createSelectSchema(cases) as any;
-
 export const insertDocumentSchema = createInsertSchema(documents) as any;
-
 export const selectDocumentSchema = createSelectSchema(documents) as any;
-
 export const insertDocumentChunkSchema = createInsertSchema(documentChunks) as any;
-
 export const selectDocumentChunkSchema = createSelectSchema(documentChunks) as any;
-
 export const insertProcessingJobSchema = createInsertSchema(processingJobs) as any;
-
 export const selectProcessingJobSchema = createSelectSchema(processingJobs) as any;
-
 export const insertRAGQuerySchema = createInsertSchema(ragQueries) as any;
-
 export const selectRAGQuerySchema = createSelectSchema(ragQueries) as any;
-
 // Types for TypeScript
 export type Case = typeof cases.$inferSelect;
 export type NewCase = typeof cases.$inferInsert;
-
 export type Document = typeof documents.$inferSelect;
 export type NewDocument = typeof documents.$inferInsert;
-
 export type DocumentChunk = typeof documentChunks.$inferSelect;
 export type NewDocumentChunk = typeof documentChunks.$inferInsert;
-
 export type ProcessingJob = typeof processingJobs.$inferSelect;
 export type NewProcessingJob = typeof processingJobs.$inferInsert;
-
 export type ExtractedEntity = typeof extractedEntities.$inferSelect;
 export type NewExtractedEntity = typeof extractedEntities.$inferInsert;
-
 export type RAGQuery = typeof ragQueries.$inferSelect;
 export type NewRAGQuery = typeof ragQueries.$inferInsert;
-
 export type RAGQueryResult = typeof ragQueryResults.$inferSelect;
 export type NewRAGQueryResult = typeof ragQueryResults.$inferInsert;
-
-// Helper functions for common operations;
+// Helper functions for common operations
 export const getDocumentsByCase = (db: any, caseId: number) => {
   return db.select().from(documents).where(eq(documents.caseId, caseId);
 };
-
 export const getDocumentChunksWithSimilarity = (
-  db: any,
-  queryEmbedding: number[],
+  db: any
+  queryEmbedding: number[]
   threshold = 0.7,
   limit = 10;
 ) => {

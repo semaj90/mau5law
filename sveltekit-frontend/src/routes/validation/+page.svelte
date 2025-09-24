@@ -3,12 +3,10 @@
   import { page } from '$app/state';
   let pageTitle = 'Integration Validation - Legal AI Platform';
 </script>
-
 <svelte:head>
   <title>{pageTitle}</title>
   <meta name="description" content="Comprehensive integration validation for the Legal AI Platform" />
-</svelte:head>
-
+</svelte: head>
 <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
   <div class="max-w-7xl mx-auto">
     <!-- Header -->
@@ -27,10 +25,8 @@
         <span>⚖️ Legal AI Workflows Active</span>
       </div>
     </div>
-
     <!-- Integration Validator Component -->
     <IntegrationValidator />
-
     <!-- Integration Status Footer -->
     <div class="mt-8 text-center">
       <div class="inline-flex items-center gap-3 px-6 py-3 bg-slate-700/50 border border-slate-600 rounded-lg">
@@ -46,20 +42,17 @@
     </div>
   </div>
 </div>
-
 <style>
   /* Global dark theme styles */
   :global(body) {
     background: #0f172a;
     color: #f8fafc;
   }
-  
   /* Animation for the status indicator */
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
   }
-  
   .animate-pulse {
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }

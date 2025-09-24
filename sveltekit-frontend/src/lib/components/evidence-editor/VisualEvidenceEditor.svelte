@@ -1,20 +1,16 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     caseId: string | null;
-    readOnly?: unknown;
+    readOnly?: boolean;
   }
   let {
     caseId = null,
     readOnly = false
   }: Props = $props();
-
-
-
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import CanvasEditor from './CanvasEditor.svelte';
@@ -23,10 +19,12 @@ https://svelte.dev/e/js_parse_error -->
   // Store for selected node
   export const selectedNode = writable(null);
   // Props
-  let canvasComponent = $state<CanvasEditorlet currentSelectedNode = $state<any  | null>(null); const data = null);
+  let canvasComponent = $state<CanvasEditor | null>(null);
+  let currentSelectedNode = $state<any | null>(null);
   // Subscribe to selected node changes
-  selectedNode.subscribe(node >(> {
-    currentSelectedNode = node);
+  selectedNode.subscribe(node => {
+    currentSelectedNode = node;
+  });
   });
   function handleNodeSelect(event: CustomEvent) {
     selectedNode.set(event.detail);
@@ -36,14 +34,12 @@ https://svelte.dev/e/js_parse_error -->
     const nodeData = event.detail;
     console.log('Saving node:', nodeData);
     // TODO: Implement actual save to database
-    // await fetch('/api/evidence', { method: 'POST', body: JSON.stringify(nodeData) });
+    // await fetch('/api/evidence', { method: 'POST', body: JSON.stringify(nodeData) })
   }
 </script>
-
 <div class="space-y-4">
   <!-- Golden Ratio Layout: 61.8% main canvas, 19.1% inspector, 19.1% AI assistant -->
   <div class="space-y-4">
-
     <!-- Main Canvas Area -->
     <div class="space-y-4">
       <CanvasEditor
@@ -54,7 +50,6 @@ https://svelte.dev/e/js_parse_error -->
         onnodesave={handleNodeSave}
       />
     </div>
-
     <!-- Inspector Panel -->
     <div class="space-y-4">
       <InspectorPanel
@@ -63,7 +58,6 @@ https://svelte.dev/e/js_parse_error -->
         onsave={handleNodeSave}
       />
     </div>
-
     <!-- AI Assistant Panel -->
     <div class="space-y-4">
       <AIAssistantPanel
@@ -76,10 +70,8 @@ https://svelte.dev/e/js_parse_error -->
         }}
       />
     </div>
-
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   .visual-evidence-editor {
@@ -93,4 +85,3 @@ https://svelte.dev/e/js_parse_error -->
 }
 }
 </style>
-

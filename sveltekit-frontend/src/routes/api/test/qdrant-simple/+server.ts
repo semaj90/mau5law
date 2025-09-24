@@ -1,12 +1,9 @@
 import type { RequestHandler } from './$types.js'
-
 // Simple Qdrant Service Test API
 // Basic test without Redis dependencies
-
 import { json } from '@sveltejs/kit'
 import { URL } from "url"
 }
-
 export interface TestResult {
   test: string
   status: 'success' | 'error' | 'warning'
@@ -14,11 +11,9 @@ export interface TestResult {
   error?: string
   duration?: number
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   const testType = url.searchParams.get('test') || 'all'
   const results: TestResult[] = []
-
   try {
     // Test 1: Basic Configuration
     if (testType === 'all' || testType === 'config') {
@@ -28,16 +23,15 @@ export const GET: RequestHandler = async ({ url }) => {
           url: 'http://localhost:6333',
           collectionName: 'legal_documents',
           vectorDimensions: 384,
-          enableBatching: true,
-          enableSOMClustering: true,
-          enableNESCache: true,
+          enableBatching: true
+          enableSOMClustering: true
+          enableNESCache: true
           memoryLimit: '32MB'
         }
-
         results.push({
           test: 'qdrant_config',
           status: 'success',
-          data: config,
+          data: config
           duration: Date.now() - startTime
         })
       } catch (error: any) {
@@ -49,7 +43,6 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       }
     }
-
     // Test 2: Vector Simulation
     if (testType === 'all' || testType === 'vector') {
       const startTime = Date.now()
@@ -58,7 +51,6 @@ export const GET: RequestHandler = async ({ url }) => {
         const sampleVector = Array.from({ length: 768 }, () => Math.random() * 2 - 1)
         const magnitude = Math.sqrt(sampleVector.reduce((sum, val) => sum + val * val, 0)
         const normalizedVector = sampleVector.map(val => val / magnitude)
-
         // Simulate search results
         const mockResults = Array.from({ length: 5 }, (_, i) => ({
           id: `doc_${i + 1}`,
@@ -69,7 +61,6 @@ export const GET: RequestHandler = async ({ url }) => {
             caseId: `case_${Math.floor(Math.random() * 3) + 1}`
           }
         })
-
         results.push({
           test: 'vector_operations',
           status: 'success',
@@ -90,7 +81,6 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       }
     }
-
     // Test 3: Memory Usage Simulation
     if (testType === 'all' || testType === 'memory') {
       const startTime = Date.now()
@@ -103,11 +93,10 @@ export const GET: RequestHandler = async ({ url }) => {
           som_clusters: 12,
           status: 'optimal'
         }
-
         results.push({
           test: 'memory_efficiency',
           status: 'success',
-          data: memoryStats,
+          data: memoryStats
           duration: Date.now() - startTime
         })
       } catch (error: any) {
@@ -119,12 +108,11 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       }
     }
-
     return json({
-      success: true,
+      success: true
       timestamp: new Date().toISOString(),
       service: 'qdrant_simple_test',
-      tests: results,
+      tests: results
       summary: {
         total: results.length,
         passed: results.filter(item => item.length),
@@ -137,15 +125,14 @@ export const GET: RequestHandler = async ({ url }) => {
       configuration: {
         vector_dimensions: 384,
         embedding_model: 'nomic-embed-text',
-        memory_efficient: true,
-        clustering_enabled: true,
+        memory_efficient: true
+        clustering_enabled: true
         caching_enabled: true
       }
     })
-
   } catch (error: any) {
     return json({
-      success: false,
+      success: false
       error: error instanceof Error ? error.message: String(error),
       timestamp: new Date().toISOString()
     }, { status: 500 })

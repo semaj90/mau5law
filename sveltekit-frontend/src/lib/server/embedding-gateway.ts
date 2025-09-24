@@ -1,22 +1,19 @@
 import type { BackendId } from '$lib/types/pipeline';
 import { embedText as embedWithService, getEmbeddingServiceStatus } from './ai/embedder.js';
 }
-
 export interface EmbedGatewayOptions {
   model?: string;
   tags?: string[];
 }
-
 export interface EmbedGatewayResult {
   embedding: number[];
   backend: BackendId;
   model: string;
 }
-
 // Backend-agnostic embedding gateway: tries New Embedder -> FastAPI -> vLLM -> Ollama -> Go
 export async function getEmbeddingViaGate(
-  fetchFn: typeof fetch,
-  text: string,;
+  fetchFn: typeof fetch
+  text: string
   opts: EmbedGatewayOptions = {}
 ): Promise<EmbedGatewayResult> {
   const model =
@@ -26,8 +23,7 @@ export async function getEmbeddingViaGate(
     process.env.EMBED_MODEL_DEFAULT ||
     process.env.PUBLIC_EMBED_MODEL_DEFAULT ||
     'nomic-embed-text';
-
-  // Try new embedder service first (Local Gemma3 + Nomic fallback);
+  // Try new embedder service first (Local Gemma3 + Nomic fallback)
   try {
     const status = await getEmbeddingServiceStatus();
     if (status.activeService !== 'none') {
@@ -41,14 +37,13 @@ export async function getEmbeddingViaGate(
   } catch (error) {
     console.warn('New embedder service failed, trying fallback services...', error);
   }
-
   // FastAPI
   const fastApiUrl = process.env.FASTAPI_URL || process.env.PUBLIC_FASTAPI_URL;
   if (fastApiUrl) {
     try {
       const resp = await fetchFn(`${fastApiUrl.replace(/\/$/, '')}/embed`, {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },;
+        headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ text, model, tags: opts.tags || [] })
       });
       if (resp.ok) {
@@ -57,16 +52,15 @@ export async function getEmbeddingViaGate(
           return { embedding: data.embedding, backend: 'fastapi', model };
         }
       }
-    } catch {}
+    } catch (error) {}
   }
-
   // vLLM / OpenAI compatible
   const vllmUrl = (process.env.VLLM_ENDPOINT || process.env.PUBLIC_VLLM_ENDPOINT || '').replace(/\/$/, '');
   if (vllmUrl) {
     try {
       const vResp = await fetchFn(`${vllmUrl}/embeddings`, {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },;
+        headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ model, input: text })
       });
       if (vResp.ok) {
@@ -76,15 +70,14 @@ export async function getEmbeddingViaGate(
           return { embedding: emb, backend: 'vllm', model };
         }
       }
-    } catch {}
+    } catch (error) {}
   }
-
-  // Ollama;
+  // Ollama
   try {
-    const ollamaUrl = (process.env.OLLAMA_URL || process.env.PUBLIC_OLLAMA_URL || 'http://localhost:11434').replace(/\/$/, '');
+    const ollamaUrl = (process.env.OLLAMA_URL || process.env.PUBLIC_OLLAMA_URL || 'http://localhost:11434').replace(/\/$/, '')
     const oResp = await fetchFn(`${ollamaUrl}/api/embeddings`, {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },;
+      headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ model, prompt: text })
     });
     if (oResp.ok) {
@@ -94,19 +87,18 @@ export async function getEmbeddingViaGate(
         return { embedding: emb, backend: 'ollama', model };
       }
     }
-  } catch {}
-
-  // Go bridge;
+  } catch (error) {}
+  // Go bridge
   try {
     const goReq = {
       operation: 'vectorize',
       documentId: `doc:${Date.now()}`,
-      data: [] as number[],;
+      data: [] as number[],
       options: { timeout: 5000 }
     };
     const goResp = await fetchFn('/api/tensor', {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },;
+      headers: { 'content-type': 'application/json' },
       body: JSON.stringify(goReq)
     });
     if (goResp.ok) {
@@ -116,12 +108,10 @@ export async function getEmbeddingViaGate(
         return { embedding: emb, backend: 'go', model };
       }
     }
-  } catch {}
-
+  } catch (error) {}
   throw new Error('No embedding backend available');
 }
-
-// Simple batch wrapper to align with sample endpoint usage;
+// Simple batch wrapper to align with sample endpoint usage
 export async function embedText(fetchFn: typeof fetch, texts: string[], model?: string): Promise<any> {
   let backend: BackendId = 'unknown';
   let lastModel = model || process.env.EMBED_MODEL || process.env.PUBLIC_EMBED_MODEL || 'nomic-embed-text';
@@ -129,7 +119,7 @@ export async function embedText(fetchFn: typeof fetch, texts: string[], model?: 
   for (const t of texts) {
     const res = await getEmbeddingViaGate(fetchFn, t, { model });
     backend = res.backend; // last write wins; heterogeneous batches not expected here
-    lastModel = res?.model || "unknown" // @ts-ignore - Model property access;
+    lastModel = res?.model || "unknown" // @ts-ignore - Model property access
     out.push(res.embedding);
   }
   return { embeddings: out, backend, model: lastModel };

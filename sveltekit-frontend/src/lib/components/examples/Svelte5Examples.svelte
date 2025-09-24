@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import type {     Snippet     } from 'svelte';
   import { useIsMobile, useIsTablet, useIsDesktop, useIsDark } from '$lib/utils/media-query.svelte';
   // Props using Svelte 5 children pattern
@@ -11,12 +10,12 @@
     sidebar?: Snippet;
     footer?: Snippet;
   }
-  let { 
+  let {
     title = 'Svelte 5 Example',
-    children, 
-    header, 
-    sidebar, 
-    footer 
+    children,
+    header,
+    sidebar,
+    footer
   }: Props = $props();
   // Reactive media queries using Svelte 5 runes
   const mobile = useIsMobile();
@@ -40,10 +39,8 @@
     currentBreakpoint: mobile.matches ? 'mobile' : tablet.matches ? 'tablet' : 'desktop'
   }));
 </script>
-
 <!-- Responsive layout using media query reactivity -->
 <div class="responsive-container {layoutClass} {themeClass}">
-  
   <!-- Header with snippet parameters -->
   {#if header}
     <header class="header">
@@ -58,17 +55,14 @@
       </div>
     </header>
   {/if}
-  
   <!-- Main content area -->
   <main class="main-content">
-    
     <!-- Sidebar (hidden on mobile) -->
     {#if sidebar && !mobile.matches}
       <aside class="sidebar">
         {@render sidebar()}
       </aside>
     {/if}
-    
     <!-- Main content -->
     <div class="content">
       {#if children}
@@ -94,13 +88,11 @@
               <span>{darkMode.matches ? '🌙' : '☀️'}</span>
             </div>
           </div>
-          
           <p>Resize your window or change your theme to see reactive updates!</p>
         </div>
       {/if}
     </div>
   </main>
-  
   <!-- Footer -->
   {#if footer}
     <footer class="footer">
@@ -108,23 +100,20 @@
     </footer>
   {/if}
 </div>
-
 <style>
-  .responsive-container {;
+  .responsive-container {
     min-height: 100vh;
     display: grid;
     grid-template-rows: auto 1fr auto;
     transition: all 0.3s ease;
   }
-  
   .header {
     padding: 1rem;
     border-bottom: 1px solid var(--border-color);
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
   }
-  
   .breakpoint-indicator {
     font-family: 'Roboto Mono', monospace;
     font-size: 0.875rem;
@@ -133,33 +122,28 @@
     background: var(--accent-bg);
     color: var(--accent-text);
   }
-  
   .main-content {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1rem;
     padding: 1rem;
   }
-  
   .sidebar {
     background: var(--sidebar-bg);
     padding: 1rem;
     border-radius: 0.5rem;
   }
-  
   .content {
     background: var(--content-bg);
     padding: 1.5rem;
     border-radius: 0.5rem;
   }
-  
   .info-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 1rem;
     margin: 1rem 0;
   }
-  
   .info-card {
     display: flex;
     flex-direction: column;
@@ -169,13 +153,11 @@
     border-radius: 0.5rem;
     transition: all 0.3s ease;
   }
-  
   .info-card.active {
     border-color: var(--accent-color);
     background: var(--accent-bg);
     transform: scale(1.05);
   }
-  
   .footer {
     padding: 1rem;
     border-top: 1px solid var(--border-color);
@@ -185,28 +167,25 @@
     grid-template-columns: 1fr;
     padding: 0.5rem;
   }
-  
   .layout-tablet .main-content {
     grid-template-columns: 200px 1fr;
   }
-  
   .layout-desktop .main-content {
     grid-template-columns: 250px 1fr;
   }
 /* Theme variations */ .theme-light {
     --border-color: #e5e5e5;
     --accent-color: #3b82f6;
-    --accent-bg: #dbeafe;
+    --accent-bg: #dbeaf;
     --accent-text: #1e40af;
     --sidebar-bg: #f8fafc;
     --content-bg: #ffffff;
   }
-  
   .theme-dark {
     --border-color: #374151;
     --accent-color: #60a5fa;
     --accent-bg: #1e3a8a;
-    --accent-text: #dbeafe;
+    --accent-text: #dbeaf;
     --sidebar-bg: #1f2937;
     --content-bg: #111827;
   }

@@ -14,7 +14,6 @@ export class HistoryManager {
   private history: ContentNode[][] = [];
   private currentIndex = -1;
   private maxHistorySize = 50;
-
   constructor(initialValue?: ContentNode[]) {
     if (initialValue) {
       this.addSnapshot(initialValue);
@@ -26,12 +25,10 @@ export class HistoryManager {
   addSnapshot(value: ContentNode[]): void {
     // Remove any history after current index (when making changes after undo)
     this.history = this.history.slice(0, this.currentIndex + 1);
-
     // Add new snapshot
     this.history.push(JSON.parse(JSON.stringify(value));
     this.currentIndex = this.history.length - 1;
-
-    // Limit history size;
+    // Limit history size
     if (this.history.length > this.maxHistorySize) {
       this.history = this.history.slice(-this.maxHistorySize);
       this.currentIndex = this.history.length - 1;

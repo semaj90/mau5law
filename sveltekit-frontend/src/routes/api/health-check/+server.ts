@@ -1,14 +1,11 @@
 
-
 import type { RequestHandler } from './$types.js'
-
 export const GET: RequestHandler = async () => {
   const health = {
     timestamp: new Date().toISOString(),
-    services: Record<string, any>,
+    services: { [key: string]: any },
     overall: 'unknown'
   }
-
   const checks = [
     // Redis Health Check
     {
@@ -26,7 +23,6 @@ export const GET: RequestHandler = async () => {
         }
       }
     },
-    
     // Qdrant Health Check
     {
       name: 'qdrant',
@@ -37,7 +33,6 @@ export const GET: RequestHandler = async () => {
             signal: AbortSignal.timeout(5000)
           })
           const responseTime = Date.now() - start
-          
           if ((response as { ok?: any; status?: any; json?: any }).ok) {
             return { status: 'healthy', responseTime }
           } else {
@@ -48,7 +43,6 @@ export const GET: RequestHandler = async () => {
         }
       }
     },
-    
     // Ollama Health Check
     {
       name: 'ollama',
@@ -59,11 +53,10 @@ export const GET: RequestHandler = async () => {
             signal: AbortSignal.timeout(5000)
           })
           const responseTime = Date.now() - start
-          
           if ((response as { ok?: any; status?: any; json?: any }).ok) {
             const data = await (response as { ok?: any; status?: any; json?: any }).json()
-            return { 
-              status: 'healthy', 
+            return {
+              status: 'healthy',
               responseTime,
               models: (data as { models?: any }).models?.length || 0
             }
@@ -75,7 +68,6 @@ export const GET: RequestHandler = async () => {
         }
       }
     },
-    
     // SvelteKit App Health Check
     {
       name: 'sveltekit',
@@ -87,7 +79,6 @@ export const GET: RequestHandler = async () => {
             signal: AbortSignal.timeout(5000)
           })
           const responseTime = Date.now() - start
-          
           if ((response as { ok?: any; status?: any; json?: any }).ok) {
             return { status: 'healthy', responseTime }
           } else {
@@ -98,7 +89,6 @@ export const GET: RequestHandler = async () => {
         }
       }
     },
-    
     // Cache Layer Health Check
     {
       name: 'cache_layers',
@@ -106,15 +96,13 @@ export const GET: RequestHandler = async () => {
         try {
           const { cacheManager } = await import('$lib/services/cache-layer-manager')
           const stats = cacheManager.getLayerStats()
-          
           const enabledLayers = Object.values(stats).filter((layer: any) => layer.enabled).length
           const avgHitRate = Object.values(stats)
             .filter((layer: any) => layer.enabled)
             .reduce((sum, layer) => sum + layer.hitRate, 0) / enabledLayers
-          
           return {
             status: 'healthy',
-            layers: enabledLayers,
+            layers: enabledLayers
             avgHitRate: Math.round(avgHitRate * 100),
             stats
           }
@@ -124,18 +112,15 @@ export const GET: RequestHandler = async () => {
       }
     }
   ]
-
   // Run all health checks in parallel
   const results = await Promise.allSettled(checks.map(async ({ name, check }) => {
       const result = await check())
       return { name, ...result }
     })
   )
-
   // Process results
   let healthyCount = 0
   let totalCount = 0
-
   results.forEach((result) => {
     totalCount++
     if ((result as { status?: any; value?: any; reason?: any }).status === 'fulfilled') {
@@ -152,7 +137,6 @@ export const GET: RequestHandler = async () => {
       }
     }
   })
-
   // Determine overall health
   if (healthyCount === totalCount) {
     health.overall = 'healthy'
@@ -161,9 +145,7 @@ export const GET: RequestHandler = async () => {
   } else {
     health.overall = 'unhealthy'
   }
-
-  const statusCode = health.overall === 'healthy' ? 200 : 
+  const statusCode = health.overall === 'healthy' ? 200 :
                     health.overall === 'degraded' ? 206 : 503
-
   return json(health, { status: statusCode })
 }

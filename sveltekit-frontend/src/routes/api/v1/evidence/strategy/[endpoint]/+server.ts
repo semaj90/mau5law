@@ -2,14 +2,11 @@
  * Legal Strategy Recommendation Engine
  * AI-powered case strategy analysis and recommendations
  */
-
 import { json, type RequestHandler } from '@sveltejs/kit'
 import { z } from 'zod'
-
 // Configuration
 const OLLAMA_BASE_URL = 'http://localhost:11434'
 const LEGAL_MODEL = 'gemma3-legal:latest'
-
 // Request schemas
 const StrategyAnalysisSchema = z.object({
   caseId: z.string().uuid(),
@@ -21,28 +18,25 @@ const StrategyAnalysisSchema = z.object({
   timeline: z.enum(['urgent', 'normal', 'extended']).optional(),
   riskTolerance: z.enum(['conservative', 'moderate', 'aggressive']).default('moderate')
 })
-
 const PrecedentSearchSchema = z.object({
   jurisdiction: z.string(),
   legalIssues: z.array(z.string()),
   factPattern: z.string(),
-  dateRange: z.object({
+  dateRange: z.object({,
     start: z.string(),
     end: z.string()
   }).optional(),
   courtLevel: z.enum(['trial', 'appellate', 'supreme', 'all']).default('all')
 })
-
 const RiskAssessmentSchema = z.object({
   caseId: z.string().uuid(),
-  scenarios: z.array(z.object({
+  scenarios: z.array(z.object({,
     name: z.string(),
     likelihood: z.number().min(0).max(1),
     description: z.string()
   })),
   mitigationStrategies: z.array(z.string()).optional()
 })
-
 // Types
 interface StrategyRecommendation {
   id: string
@@ -65,7 +59,6 @@ interface StrategyRecommendation {
   alternatives: string[]
   precedents: LegalPrecedent[]
 }
-
 interface LegalPrecedent {
   caseId: string
   title: string
@@ -78,7 +71,6 @@ interface LegalPrecedent {
   jurisdiction: string
   citation: string
 }
-
 interface RiskFactor {
   factor: string
   likelihood: number
@@ -86,7 +78,6 @@ interface RiskFactor {
   severity: 'low' | 'medium' | 'high' | 'critical'
   mitigation: string[]
 }
-
 interface CaseOutcomeProjection {
   scenario: string
   probability: number
@@ -99,19 +90,15 @@ interface CaseOutcomeProjection {
     currency: string
   }
 }
-
 // Advanced Strategy Engine
 class LegalStrategyEngine {
-
   static async generateStrategies(
-    caseType: string,
-    evidence: any[],
-    clientGoals: string[],
+    caseType: string
+    evidence: any[]
+    clientGoals: string[]
     riskTolerance: string
   ): Promise<StrategyRecommendation[]> {
-
     const strategies: StrategyRecommendation[] = []
-
     // Strategy 1: Evidence-Driven Approach
     strategies.push({
       id: 'strategy_evidence_driven',
@@ -141,7 +128,6 @@ class LegalStrategyEngine {
       ],
       precedents: await this.findRelevantPrecedents(caseType, evidence)
     })
-
     // Strategy 2: Negotiated Settlement
     if (riskTolerance === 'conservative') {
       strategies.push({
@@ -173,7 +159,6 @@ class LegalStrategyEngine {
         precedents: []
       })
     }
-
     // Strategy 3: Aggressive Litigation
     if (riskTolerance === 'aggressive') {
       strategies.push({
@@ -206,32 +191,24 @@ class LegalStrategyEngine {
         precedents: await this.findAggressivePrecedents(caseType)
       })
     }
-
     return strategies
   }
-
   static generateEvidenceRationale(evidence: any[]): string {
     const evidenceTypes = evidence.map(e => e.type || 'document')
     const uniqueTypes = [...new Set(evidenceTypes)]
-
     return `Analysis of ${evidence.length} pieces of evidence (${uniqueTypes.join(', ')}) ` +
            `indicates strong factual foundation. Key evidence strength factors include ` +
            `documentary proof, witness corroboration, and contemporaneous records.`
   }
-
   static calculateEvidenceConfidence(evidence: any[]): number {
     let baseConfidence = 0.5
-
     // More evidence increases confidence
     baseConfidence += Math.min(evidence.length * 0.05, 0.25)
-
     // Diverse evidence types increase confidence
     const evidenceTypes = [...new Set(evidence.map(e => e.type || 'document'))]
     baseConfidence += Math.min(evidenceTypes.length * 0.1, 0.2)
-
     return Math.min(baseConfidence, 0.95)
   }
-
   static async findRelevantPrecedents(caseType: string, evidence: any[]): Promise<LegalPrecedent[]> {
     // Mock precedent database - in production, query legal database
     const mockPrecedents: LegalPrecedent[] = [
@@ -268,10 +245,8 @@ class LegalStrategyEngine {
         citation: '2022 State Rep. 891'
       }
     ]
-
     return mockPrecedents.filter(p => p.relevance > 0.7)
   }
-
   static async findAggressivePrecedents(caseType: string): Promise<LegalPrecedent[]> {
     // Precedents supporting aggressive litigation strategies
     return [
@@ -293,15 +268,12 @@ class LegalStrategyEngine {
       }
     ]
   }
-
   static async assessRisks(
-    caseType: string,
-    strategies: StrategyRecommendation[],
+    caseType: string
+    strategies: StrategyRecommendation[]
     evidence: any[]
   ): Promise<RiskFactor[]> {
-
     const risks: RiskFactor[] = []
-
     // Evidence-related risks
     risks.push({
       factor: 'Evidence Authentication',
@@ -314,7 +286,6 @@ class LegalStrategyEngine {
         'Prepare authenticating witnesses'
       ]
     })
-
     // Procedural risks
     risks.push({
       factor: 'Statute of Limitations',
@@ -327,7 +298,6 @@ class LegalStrategyEngine {
         'Document all tolling events'
       ]
     })
-
     // Strategic risks
     risks.push({
       factor: 'Counter-Claims',
@@ -340,17 +310,13 @@ class LegalStrategyEngine {
         'Consider indemnification claims'
       ]
     })
-
     return risks
   }
-
   static async projectOutcomes(
-    strategies: StrategyRecommendation[],
+    strategies: StrategyRecommendation[]
     caseFactors: any
   ): Promise<CaseOutcomeProjection[]> {
-
     const projections: CaseOutcomeProjection[] = []
-
     // Best case scenario
     projections.push({
       scenario: 'Best Case - Full Victory',
@@ -369,7 +335,6 @@ class LegalStrategyEngine {
         currency: 'USD'
       }
     })
-
     // Most likely scenario
     projections.push({
       scenario: 'Most Likely - Partial Victory',
@@ -387,7 +352,6 @@ class LegalStrategyEngine {
         currency: 'USD'
       }
     })
-
     // Worst case scenario
     projections.push({
       scenario: 'Worst Case - Unfavorable Outcome',
@@ -405,7 +369,6 @@ class LegalStrategyEngine {
         currency: 'USD'
       }
     })
-
     // Settlement scenario
     projections.push({
       scenario: 'Early Settlement',
@@ -423,24 +386,20 @@ class LegalStrategyEngine {
         currency: 'USD'
       }
     })
-
     return projections
   }
 }
-
 /*
  * POST /api/v1/evidence/strategy/analyze
  * Generate comprehensive case strategy recommendations
  */
 export const POST: RequestHandler = async ({ request, locals, url }) => {
   const endpoint = url.pathname.split('/').pop()
-
   if (endpoint === 'analyze') {
     try {
       if (!locals.session || !locals.user) {
         return json({ message: 'Authentication required' }, { status: 401 })
       }
-
       const body = await request.json()
       const {
         caseId,
@@ -452,7 +411,6 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
         timeline,
         riskTolerance
       } = StrategyAnalysisSchema.parse(body)
-
       // Fetch evidence details (mock data for demo)
       const evidence = evidenceIds.map(id => ({
         id,
@@ -460,7 +418,6 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
         type: 'document',
         analysisScore: Math.random()
       })
-
       // Generate strategies
       const strategies = await LegalStrategyEngine.generateStrategies(
         caseType,
@@ -468,10 +425,8 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
         clientGoals,
         riskTolerance
       )
-
       // Assess risks
       const risks = await LegalStrategyEngine.assessRisks(caseType, strategies, evidence)
-
       // Project outcomes
       const outcomes = await LegalStrategyEngine.projectOutcomes(strategies, {
         caseType,
@@ -479,7 +434,6 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
         budget,
         timeline
       })
-
       // Generate AI-enhanced recommendations using Ollama
       const aiRecommendation = await generateAIStrategySummary(
         caseType,
@@ -487,15 +441,14 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
         risks,
         clientGoals
       )
-
       return json({
-        success: true,
+        success: true
         data: {
           caseId,
           analysis: {
             strategies,
             risks,
-            projections: outcomes,
+            projections: outcomes
             aiRecommendation,
             confidence: strategies.reduce((sum, s) => sum + s.confidence, 0) / strategies.length,
             recommendedStrategy: strategies[0]?.id,
@@ -504,24 +457,20 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           }
         }
       })
-
     } catch (error: any) {
       console.error('Strategy analysis failed:', error)
-
       if (error instanceof z.ZodError) {
         return json({
           message: 'Invalid analysis parameters',
           details: error.errors
         }, { status: 400 })
       }
-
       return json({
         message: 'Strategy analysis failed',
         details: error.message
       }, { status: 500 })
     }
   }
-
   /*
    * POST /api/v1/evidence/strategy/precedents
    * Search legal precedents relevant to case
@@ -531,7 +480,6 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       if (!locals.session || !locals.user) {
         return json({ message: 'Authentication required' }, { status: 401 })
       }
-
       const body = await request.json()
       const {
         jurisdiction,
@@ -540,7 +488,6 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
         dateRange,
         courtLevel
       } = PrecedentSearchSchema.parse(body)
-
       // Mock precedent search - in production, query legal databases
       const precedents = await searchLegalPrecedents(
         jurisdiction,
@@ -548,15 +495,13 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
         factPattern,
         courtLevel
       )
-
       // Analyze precedent relevance using AI
       const aiAnalysis = await analyzePrecedentRelevance(precedents, factPattern, legalIssues)
-
       return json({
-        success: true,
+        success: true
         data: {
           precedents,
-          analysis: aiAnalysis,
+          analysis: aiAnalysis
           searchCriteria: {
             jurisdiction,
             legalIssues,
@@ -567,68 +512,56 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           highRelevanceCount: precedents.filter(item => item.length)
         }
       })
-
     } catch (error: any) {
       console.error('Precedent search failed:', error)
-
       if (error instanceof z.ZodError) {
         return json({
           message: 'Invalid search parameters',
           details: error.errors
         }, { status: 400 })
       }
-
       return json({
         message: 'Precedent search failed',
         details: error.message
       }, { status: 500 })
     }
   }
-
   return json({ message: 'Endpoint not found' }, { status: 404 })
 }
-
 // Helper functions
 async function generateAIStrategySummary(
-  caseType: string,
-  strategies: StrategyRecommendation[],
-  risks: RiskFactor[],
+  caseType: string
+  strategies: StrategyRecommendation[]
+  risks: RiskFactor[]
   clientGoals: string[]
 ): Promise<string> {
   const prompt = `Analyze this legal case strategy analysis:
-
 Case Type: ${caseType}
 Client Goals: ${clientGoals.join(', ')}
-
 Available Strategies:
 ${strategies.map(s => `- ${s.title}: ${s.description} (Confidence: ${s.confidence})`).join('\n')}
-
 Key Risks:
 ${risks.map(r => `- ${r.factor}: ${r.severity} severity`).join('\n')}
-
 Provide a concise strategic recommendation focusing on:
 1. Most promising approach
 2. Critical risk mitigation
 3. Resource allocation priorities
 4. Timeline considerations
-
 Keep response under 200 words and focus on actionable insights.`
-
   try {
     const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: LEGAL_MODEL,
+      body: JSON.stringify({,
+        model: LEGAL_MODEL
         prompt,
-        stream: false,
+        stream: false
         options: {
           temperature: 0.2,
           num_predict: 200
         }
       })
     })
-
     if (response.ok) {
       const data = await response.json()
       return data.response
@@ -636,14 +569,12 @@ Keep response under 200 words and focus on actionable insights.`
   } catch (error) {
     console.warn('AI strategy summary failed:', error)
   }
-
   return 'AI analysis unavailable. Recommend reviewing strategy options based on evidence strength and risk tolerance.'
 }
-
 async function searchLegalPrecedents(
-  jurisdiction: string,
-  legalIssues: string[],
-  factPattern: string,
+  jurisdiction: string
+  legalIssues: string[]
+  factPattern: string
   courtLevel: string
 ): Promise<LegalPrecedent[]> {
   // Mock precedent database - replace with actual legal database API
@@ -661,7 +592,7 @@ async function searchLegalPrecedents(
         'Damages calculated using defendant\'s unjust enrichment'
       ],
       factSimilarity: 0.85,
-      jurisdiction: jurisdiction,
+      jurisdiction: jurisdiction
       citation: '2023 U.S. Dist. LEXIS 45678'
     },
     {
@@ -677,26 +608,23 @@ async function searchLegalPrecedents(
         'Attorney fees not recoverable without contractual provision'
       ],
       factSimilarity: 0.71,
-      jurisdiction: jurisdiction,
+      jurisdiction: jurisdiction
       citation: '2022 State App. 234'
     }
   ]
-
   // Filter by relevance to legal issues
   return mockPrecedents.filter(item => item.includes(issue.toLowerCase()
       )
     )
   )
 }
-
 async function analyzePrecedentRelevance(
-  precedents: LegalPrecedent[],
-  factPattern: string,
+  precedents: LegalPrecedent[]
+  factPattern: string
   legalIssues: string[]
 ): Promise<string> {
   const highRelevance = precedents.filter(p => p.relevance > 0.8)
   const avgSimilarity = precedents.reduce((sum, p) => sum + p.factSimilarity, 0) / precedents.length || 0
-
   return `Analysis of ${precedents.length} relevant precedents reveals ${highRelevance.length} ` +
          `cases with high relevance (>80%). Average fact similarity: ${(avgSimilarity * 100).toFixed(0)}%. ` +
          `Key patterns suggest ${precedents.length > 3 ? 'strong' : 'moderate'} precedential support for ` +

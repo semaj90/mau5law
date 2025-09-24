@@ -1,10 +1,9 @@
 <!-- @migration-task Error while migrating Svelte code: Expected a `#` character immediately following the opening bracket;
-https://svelte.dev/e/block_unexpected_character -->
+https: //svelte.dev/e/block_unexpected_character -->
 <!-- @migration-task Error while migrating Svelte code: Expected a `#` character immediately following the opening bracket -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  interface Props {;
+  interface Props {
     evidence: ExtendedEvidence;
     onView: (evidence: Evidence) => void;
     onEdit: (evidence: Evidence) => void;
@@ -24,9 +23,6 @@ https://svelte.dev/e/block_unexpected_character -->
     compact = false,
     expandOnHover = false
   }: Props = $props();
-
-
-
   import {
     Download,
     PenLine,
@@ -43,49 +39,41 @@ https://svelte.dev/e/block_unexpected_character -->
   import { fly, scale } from "svelte/transition";
   // import { createTooltip, melt } from '@melt-ui/svelte'; // Replaced with bits-ui
   import type { Evidence } from '$lib/stores/report';
-
   type ExtendedEvidence = Evidence & { evidenceType?: string;
     fileSize?: number;
     createdAt?: Date | string;
     updatedAt?: Date | string;
    };
-
                   export const showPreview = true;
-
   // Melt UI component creation removed - replace with bits-ui declarative components
-
   const getIcon = (type: Evidence["type"]) => { switch (type) {
       case "document":
         return FileText;
       case "image":
-        return Image;
+        return Imag;
       case "video":
         return Video;
       case "audio":
-        return Headphones;
+        return Headphone;
       case "link":
         return Link;
       default:
         return FileText;
      }
   };
-
   const formatFileSize = (bytes: number): string => { if (bytes === 0) return "0 Bytes";
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k);
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
    };
-
   const fileSize = evidence.metadata?.size || evidence.fileSize || 0;
   let isHovered = false;
-
   let IconComponent = $derived(getIcon(
     ["document", "image", "video", "audio", "link"].includes(evidence.evidenceType || evidence.type)
       ? (evidence.evidenceType || evidence.type) as Evidence["type"]
       : "document"
   );
-
   function handleMouseEnter() { if (expandOnHover) {
       isHovered = true;
      }
@@ -95,7 +83,6 @@ https://svelte.dev/e/block_unexpected_character -->
      }
   }
 </script>
-
 <div
   class="bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-200 shadow hover:shadow-lg hover:border-blue-500
     relative
@@ -130,7 +117,6 @@ https://svelte.dev/e/block_unexpected_character -->
       <svelte:component this={ IconComponent } size={ 16 } />
       <span>{ evidence.evidenceType || evidence.type }</span>
     </div>
-
     <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
       <button
         class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-blue-600"
@@ -139,7 +125,6 @@ https://svelte.dev/e/block_unexpected_character -->
       >
         <Eye size={ 14 } />
       </button>
-
       { #if evidence.url || evidence.file }
         <button
           class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-indigo-600"
@@ -149,7 +134,6 @@ https://svelte.dev/e/block_unexpected_character -->
           <Download size={ 14 } />
         </button>
       { /if }
-
       <button
         class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-green-600"
         onclick={ () => onEdit(evidence as Evidence) }
@@ -157,7 +141,6 @@ https://svelte.dev/e/block_unexpected_character -->
       >
         <PenLine size={ 14 } />
       </button>
-
       <button
         class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-red-600"
         onclick={ () => onDelete(evidence as Evidence) }
@@ -167,7 +150,6 @@ https://svelte.dev/e/block_unexpected_character -->
       </button>
     </div>
   </div>
-
   <!-- Content -->
   <div class="px-3 py-3">
     <!-- Preview (for images/videos) -->
@@ -194,19 +176,16 @@ https://svelte.dev/e/block_unexpected_character -->
         </div>
       </div>
     { /if }
-
     <!-- Title and Description -->
     <div class="flex flex-col gap-2">
       <h3 class="font-semibold text-base text-gray-900 leading-tight line-clamp-2" >
         { evidence.title }
       </h3>
-
       { #if evidence.description && !compact }
         <p class="text-sm text-gray-500 leading-snug line-clamp-3">
           { evidence.description }
         </p>
       { /if }
-
       <!-- Metadata -->
       <div class="flex flex-wrap gap-2 my-2">
         { #if evidence.metadata?.createdAt || evidence.createdAt }
@@ -214,20 +193,17 @@ https://svelte.dev/e/block_unexpected_character -->
             { new Date(evidence.metadata?.createdAt || evidence.createdAt || '').toLocaleDateString() }
           </span>
         { /if }
-
         { #if fileSize > 0 }
           <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
             { formatFileSize(fileSize) }
           </span>
         { /if }
-
         { #if evidence.metadata?.format }
           <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
             { evidence.metadata.format.toUpperCase() }
           </span>
         { /if }
       </div>
-
       <!-- Tags -->
       { #if evidence.tags && evidence.tags.length > 0 }
         <div class="flex flex-wrap gap-1 mt-2">
@@ -244,7 +220,6 @@ https://svelte.dev/e/block_unexpected_character -->
       { /if }
     </div>
   </div>
-
   <!-- Footer (if has URL) -->
   { #if evidence.url && ((evidence.evidenceType || evidence.type) === "link") }
     <div class="px-3 py-3 border-t border-gray-200 bg-gray-50">
@@ -260,6 +235,4 @@ https://svelte.dev/e/block_unexpected_character -->
     </div>
   { /if }
 </div>
-
 <!-- Tooltip section removed - replaced with native title attributes -->
-

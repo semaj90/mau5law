@@ -2,14 +2,11 @@
  * SvelteKit API endpoint for GPU-accelerated LLM streaming
  * Handles chunked responses and VRAM management
  */
-
 import type { RequestHandler } from './$types.js'
 import { GPULLMStreamingPipeline } from '$lib/services/gpu-llm-streaming-pipeline'
 import { error } from '@sveltejs/kit'
-
 // Single pipeline instance for efficiency
 let pipeline: GPULLMStreamingPipeline | null = null
-
 // Initialize pipeline on first request
 async function getPipeline(): Promise<GPULLMStreamingPipeline> {
   if (!pipeline) {
@@ -19,17 +16,13 @@ async function getPipeline(): Promise<GPULLMStreamingPipeline> {
   }
   return pipeline
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { prompt, config = {} } = await request.json()
-    
     if (!prompt) {
       throw error(400, 'Prompt is required')
     }
-    
     const llmPipeline = await getPipeline()
-    
     // Default configuration
     const streamConfig = {
       modelPath: config.modelPath || '/models/gemma-3b',
@@ -38,32 +31,27 @@ export const POST: RequestHandler = async ({ request }) => {
       topP: config.topP || 0.9,
       ...config
     }
-    
     // Create a ReadableStream for chunked response
     const stream = new ReadableStream({
       async start(controller) {
         try {
           // Stream generation
           const generator = llmPipeline.streamGeneration(prompt, streamConfig)
-          
           for await (const chunk of generator) {
             // Send each chunk as a Server-Sent Event
             const data = JSON.stringify({
               type: 'token',
-              content: chunk,
+              content: chunk
               timestamp: Date.now()
             })
-            
             controller.enqueue(new TextEncoder().encode(`data: ${data}\n\n`)
           }
-          
           // Send completion event
           const completeData = JSON.stringify({
             type: 'complete',
             timestamp: Date.now()
           })
           controller.enqueue(new TextEncoder().encode(`data: ${completeData}\n\n`)
-          
           controller.close()
         } catch (err) {
           console.error('Streaming error:', err)
@@ -76,7 +64,6 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       }
     })
-    
     // Return as Server-Sent Events stream
     return new Response(stream, {
       headers: {
@@ -86,17 +73,14 @@ export const POST: RequestHandler = async ({ request }) => {
         'X-Accel-Buffering': 'no' // Disable Nginx buffering
       }
     })
-    
   } catch (err) {
     console.error('API error:', err)
     throw error(500, err instanceof Error ? err.message: 'Internal server error')
   }
 }
-
 export const GET: RequestHandler = async () => {
   try {
     const llmPipeline = await getPipeline()
-    
     // Return memory stats and system info
     const stats = {
       status: 'ready',
@@ -115,19 +99,16 @@ export const GET: RequestHandler = async () => {
         supported: true
       }
     }
-    
     return new Response(JSON.stringify(stats), {
       headers: {
         'Content-Type': 'application/json'
       }
     })
-    
   } catch (err) {
     console.error('Stats error:', err)
     throw error(500, 'Failed to get system stats')
   }
 }
-
 // Cleanup on server shutdown
 if (typeof process !== 'undefined') {
   process.on('SIGTERM', async () => {

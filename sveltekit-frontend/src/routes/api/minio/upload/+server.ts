@@ -1,11 +1,9 @@
 // MinIO Upload API Endpoint
 // Connects SvelteKit frontend to MinIO Docker container
-
 import { json } from '@sveltejs/kit'
 import { env } from '$env/dynamic/private'
 import { Client as MinIOClient } from 'minio'
 import type { RequestHandler } from './$types'
-
 interface MinIOUploadResult {
   success: boolean
   document_id: string
@@ -16,27 +14,22 @@ interface MinIOUploadResult {
   etag?: string
   error?: string
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const formData = await request.formData()
     const file = formData.get('document') as File
-
     if (!file) {
       return json({ error: 'No file provided' }, { status: 400 })
     }
-
     const priority = formData.get('priority') || '128'
     const caseId = formData.get('case_id')
     const documentType = formData.get('document_type')
-
     // MinIO configuration from environment
     const minioEndpoint = env.MINIO_ENDPOINT || 'localhost:9000'
     const accessKey = env.MINIO_ACCESS_KEY || 'minio'
     const secretKey = env.MINIO_SECRET_KEY || 'minio123'
     const bucketName = env.MINIO_BUCKET_NAME || 'legal-documents'
     const useSSL = env.MINIO_USE_SSL === 'true'
-
     // Initialize MinIO client
     const minioClient = new MinIOClient({
       endPoint: minioEndpoint.split(':')[0],
@@ -45,22 +38,18 @@ export const POST: RequestHandler = async ({ request }) => {
       accessKey,
       secretKey
     })
-
     // Generate unique object path
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
     const folder = caseId ? `cases/${caseId}` : 'general'
     const objectPath = `${folder}/${timestamp}-${file.name}`
-
     // Convert file to buffer
     const buffer = Buffer.from(await file.arrayBuffer())
-
     // Ensure bucket exists
     const bucketExists = await minioClient.bucketExists(bucketName)
     if (!bucketExists) {
       await minioClient.makeBucket(bucketName, 'us-east-1')
       console.log(`📁 Created MinIO bucket: ${bucketName}`)
     }
-
     // Upload file to MinIO
     const uploadInfo = await minioClient.putObject(
       bucketName,
@@ -76,31 +65,25 @@ export const POST: RequestHandler = async ({ request }) => {
         'x-amz-meta-uploaded-at': new Date().toISOString()
       }
     )
-
     const documentId = `doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-
     const uploadResult: MinIOUploadResult = {
-      success: true,
-      document_id: documentId,
-      object_path: objectPath,
+      success: true
+      document_id: documentId
+      object_path: objectPath
       size: file.size,
       content_type: file.type,
       uploaded_at: new Date().toISOString(),
       etag: uploadInfo.etag
     }
-
     console.log(`📁 MinIO Upload Success: ${objectPath} (${file.size} bytes) ETag: ${uploadInfo.etag}`)
-
     // TODO: Store metadata in PostgreSQL
     // TODO: Trigger document processing pipeline
-
     return json(uploadResult)
-
   } catch (error) {
     console.error('MinIO upload error:', error)
     return json(
       {
-        success: false,
+        success: false
         error: error instanceof Error ? error.message : 'Upload failed'
       },
       { status: 500 }

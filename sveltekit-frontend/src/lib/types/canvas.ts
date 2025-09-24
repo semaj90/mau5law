@@ -1,5 +1,5 @@
 
-// Canvas types for interactive features;
+// Canvas types for interactive features
 export interface CanvasNode {
   id: string;
   x: number;
@@ -9,7 +9,6 @@ export interface CanvasNode {
   type: 'case' | 'evidence' | 'person' | 'connection';
   data: any;
 }
-
 export interface CanvasConnection {
   id: string;
   sourceId: string;
@@ -17,12 +16,11 @@ export interface CanvasConnection {
   type: 'related' | 'involves' | 'contains';
   strength: number;
 }
-
 export interface InteractiveCanvasState {
   id?: string;
   nodes: CanvasNode[];
   connections: CanvasConnection[];
-  viewport: {;
+  viewport: {
     x: number;
     y: number;
     zoom: number;
@@ -30,5 +28,5 @@ export interface InteractiveCanvasState {
   animation?: string;
   frame?: number;
   fabricJSON?: string;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 }

@@ -2,12 +2,10 @@
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
 <!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'autoFetch' has already been declared;
-https://svelte.dev/e/js_parse_error -->
+https: //svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // $props is a Svelte rune provided by the compiler/runtime — do not import it.
-
   interface Props {
     autoFetch: boolean ;
     data: ValidateResponse | null ;
@@ -16,11 +14,7 @@ https://svelte.dev/e/js_parse_error -->
     autoFetch = true,
     data = null
   }: Props = $props();
-
-
-
   import { onMount } from 'svelte';
-
   type ValidateResponse = {
     ok: boolean;
     message?: string;
@@ -30,8 +24,6 @@ https://svelte.dev/e/js_parse_error -->
       go_service?: { ok: boolean; endpoint?: string };
     };
   };
-
-
   async function load() {
     performance.mark('function-start');
     try {
@@ -53,10 +45,9 @@ https://svelte.dev/e/js_parse_error -->
       }
     })();
     } catch (e) {
-      data = { ok: false, message: 'Validation failed to load' } as ValidateResponse;
+      data = { ok: false, message: 'Validation failed to load' } as ValidateRespon;
     }
   }
-
   async function pullModel() {
     performance.mark('function-start');
     const required = data?.details?.ollama?.required_model;
@@ -64,8 +55,8 @@ https://svelte.dev/e/js_parse_error -->
     try {
       try {
     const res = await fetch('/api/ollama/pull', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ model: required }));
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
@@ -82,12 +73,10 @@ https://svelte.dev/e/js_parse_error -->
       // ignore; show no toast in this minimal banner
     }
   }
-
   $effect(() => {
     if (autoFetch) load();
   });
 </script>
-
 {#if data}
   {#if !data.ok}
     <div class="ai-setup-banner">
@@ -124,7 +113,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   {/if}
-
 <style>
   .ai-setup-banner { border: 1px solid #f5c2c7; background: #fff5f5; color: #842029; padding: 12px; border-radius: 8px; }
   .title { font-weight: 600; margin-bottom: 6px; }
@@ -138,4 +126,3 @@ https://svelte.dev/e/js_parse_error -->
   .pull:hover { background: #dceaff; }
   @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
 </style>
-

@@ -1,29 +1,22 @@
 /// <reference types="vite/client" />
-
 import type { RequestHandler } from './$types.js'
-
 // Server-Sent Events API route for SSR-safe real-time updates
 import { createClient } from "redis"
 import { URL } from "url"
-
 // SSE connection manager
 class SSEConnectionManager {
   private connections: Map<string, Response> = new Map()
   private redisSubscriber: any
   private isInitialized = false
-
   async initialize() {
     if (this.isInitialized) return
-
     try {
       // createClient may be undefined in some runtimes; cast pragmatically
       // to any to avoid TS invocation errors during triage
       this.redisSubscriber = (createClient as any)({
         url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
       })
-
       await this.redisSubscriber.connect()
-
       // Subscribe to all update channels
       const channels = [
         'evidence_update',
@@ -34,7 +27,6 @@ class SSEConnectionManager {
         'canvas_update',
         'user_activity'
       ]
-
       for (const channel of channels) {
         await this.redisSubscriber.subscribe(channel, (message: string) => {
           this.broadcastToConnections(channel, message)
@@ -52,7 +44,6 @@ class SSEConnectionManager {
       data: JSON.parse(message),
       timestamp: new Date().toISOString()
     }
-
     // Broadcast to all active SSE connections
     for (const [connectionId, response] of this.connections) {
       try {
@@ -81,16 +72,13 @@ class SSEConnectionManager {
 }
 // Global SSE manager instance
 const sseManager = new SSEConnectionManager()
-
 export const GET: RequestHandler = async ({ url, request }) => {
   // Initialize SSE manager if not already done
   await sseManager.initialize()
-
   // Get connection parameters
   const userId = url.searchParams.get("userId")
   const subscriptions = url.searchParams.get("subscriptions")?.split(",") || []
   const connectionId = `${userId || "anonymous"}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-
   // Create SSE response
   const stream = new ReadableStream({
     start(controller) {
@@ -102,13 +90,10 @@ export const GET: RequestHandler = async ({ url, request }) => {
         subscriptions,
         timestamp: new Date().toISOString()
       }
-
       controller.enqueue(`data: ${JSON.stringify(initialMessage)}\n\n`)
-
       // Store connection for broadcasting
       // Note: This is a simplified approach - in production, you'd store the controller
       console.log(`SSE connection established: ${connectionId}`)
-
       // Send heartbeat every 30 seconds
       const heartbeatInterval = setInterval(() => {
         try {
@@ -120,7 +105,6 @@ export const GET: RequestHandler = async ({ url, request }) => {
           clearInterval(heartbeatInterval)
         }
       }, 30000)
-
       // Handle client disconnect
       request.signal.addEventListener("abort", () => {
         clearInterval(heartbeatInterval)
@@ -130,7 +114,6 @@ export const GET: RequestHandler = async ({ url, request }) => {
       })
     }
   })
-
   return new Response(stream, {
     headers: {
       "Content-Type": "text/event-stream",
@@ -141,7 +124,6 @@ export const GET: RequestHandler = async ({ url, request }) => {
     }
   })
 }
-
 // Health check endpoint
 export const POST: RequestHandler = async () => {
   const status = {
@@ -149,7 +131,6 @@ export const POST: RequestHandler = async () => {
     redisInitialized: sseManager["isInitialized"],
     timestamp: new Date().toISOString()
   }
-
   return new Response(JSON.stringify(status), {
     headers: { "Content-Type": "application/json" }
   })

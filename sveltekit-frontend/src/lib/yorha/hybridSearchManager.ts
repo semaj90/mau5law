@@ -1,20 +1,16 @@
 import { ensureLocalIndex, addOrUpdateDocuments } from './localSearch.js';
 import type { LocalLegalDoc } from './localSearch.js';
-
 let lokiDb: any = null;
 let lokiCollection: any = null;
 let lastRefresh = 0;
 let refreshing = false;
 }
-
 export interface HybridInitOptions {
   refreshIntervalMs?: number;
   maxDocs?: number;
 }
-
 export function getLastRefresh() { return lastRefresh; };
 export function isRefreshing() { return refreshing; };
-;
 export async function initHybridLayer(opts: HybridInitOptions = {}): Promise<any> {
   if (typeof window === 'undefined') return;
   const { refreshIntervalMs = 5 * 60_000, maxDocs = 750 } = opts;
@@ -29,7 +25,6 @@ export async function initHybridLayer(opts: HybridInitOptions = {}): Promise<any
     setInterval(() => { void refreshRemote({ maxDocs }); }, refreshIntervalMs);
   }
 }
-
 export interface RefreshOpts { maxDocs?: number; }
 export async function refreshRemote(opts: RefreshOpts = {}): Promise<any> {
   if (refreshing) return;
@@ -40,12 +35,12 @@ export async function refreshRemote(opts: RefreshOpts = {}): Promise<any> {
     if (res.ok) {
       const data = await res.json();
       const raw = (data as { results?: any; documents?: any; matches?: any }).results || (data as { results?: any; documents?: any; matches?: any }).documents || [];
-      const docs: LocalLegalDoc[] = raw.map((d: any, i: number) => ({
+      const docs: LocalLegalDoc[] = raw.map((d: any, i: number) => ({,
         id: d.id || d.uuid || i + 1,
         title: d.title || d.name || `Document ${i + 1}`,
         content: d.content || d.text || d.body || '',
         type: d.type || d.category || 'Legal Document',
-        status: d.status || 'active',;
+        status: d.status || 'active',
         metadata: d
       });
       addOrUpdateDocuments(docs);
@@ -61,7 +56,6 @@ export async function refreshRemote(opts: RefreshOpts = {}): Promise<any> {
     refreshing = false;
   }
 }
-
 export async function reRankWithPgVector(query: string, current: any[], endpoint = '/api/ai/vector-search'): Promise<any> {
   if (!query.trim() || current.length === 0) return current;
   try {
@@ -88,7 +82,6 @@ export async function reRankWithPgVector(query: string, current: any[], endpoint
     return current;
   }
 }
-
 export function getLokiCount() { return lokiCollection ? lokiCollection.count() : 0; };
 export function queryLokiTitle(term: string, limit = 25) {
   if (!lokiCollection || !term.trim()) return [];

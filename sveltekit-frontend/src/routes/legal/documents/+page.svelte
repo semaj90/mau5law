@@ -1,13 +1,12 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
-  import { 
-    Plus, Upload, FileText, Search, Filter, Eye, Download, 
+  import {
+    Plus, Upload, FileText, Search, Filter, Eye, Download,
     Trash2, Edit2, Bot, Zap, AlertCircle, CheckCircle,
     Clock, BarChart3
   } from 'lucide-svelte';
@@ -23,7 +22,6 @@ https://svelte.dev/e/js_parse_error -->
   import { Progress } from '$lib/components/ui/progress';
   import { toast } from 'svelte-sonner';
   import { cn } from '$lib/utils';
-
   interface Document {
     id: string;
     title: string;
@@ -47,7 +45,6 @@ https://svelte.dev/e/js_parse_error -->
       embeddings: 'pending' | 'processing' | 'completed' | 'failed';
     };
   }
-
   // State management with Svelte 5 runes
   let documents = $state<Document[]>([]);
   let filteredDocuments = $state<Document[]>([]);
@@ -61,7 +58,6 @@ https://svelte.dev/e/js_parse_error -->
   let showAIAnalysisDialog = $state(false);
   let selectedDocument = $state<Document | null>(null);
   let dragOver = $state(false);
-
   // Upload form state
   let uploadTitle = $state('');
   let uploadType = $state('other');
@@ -69,7 +65,6 @@ https://svelte.dev/e/js_parse_error -->
   let uploadCaseId = $state('');
   let uploadTags = $state('');
   let enableAIProcessing = $state(true);
-
   // Computed properties
   let documentStats = $derived(() => {
     const total = documents.length;
@@ -78,13 +73,11 @@ https://svelte.dev/e/js_parse_error -->
     const withAI = documents.filter(item => item.length);
     return { total, processing, completed, withAI };
   });
-
   $effect(() => {
     (async () => {
 await loadDocuments();
     })();
   });
-
   async function loadDocuments() {
     try {
       loading = true;
@@ -95,21 +88,19 @@ await loadDocuments();
         filterDocuments();
       } else {
         // Fallback to mock data for development
-        documents = mockDocuments;
+        documents = mockDocument;
         filterDocuments();
       }
     } catch (error) {
       console.error('Error loading documents:', error);
-      documents = mockDocuments;
+      documents = mockDocument;
       filterDocuments();
     } finally {
       loading = false;
     }
   }
-
   function filterDocuments() {
-    let filtered = documents;
-
+    let filtered = document;
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(doc =>
@@ -118,18 +109,14 @@ await loadDocuments();
         doc.tags.some(tag => tag.toLowerCase().includes(query))
       );
     }
-
     if (statusFilter !== 'all') {
       filtered = filtered.filter(doc => doc.status === statusFilter);
     }
-
     if (typeFilter !== 'all') {
       filtered = filtered.filter(doc => doc.type === typeFilter);
     }
-
     filteredDocuments = filtered;
   }
-
   // Mock data for development
   const mockDocuments: Document[] = [
     {
@@ -141,7 +128,7 @@ await loadDocuments();
       updated: '2024-01-18',
       size: 2548720,
       author: 'Attorney Smith',
-      caseId: 'case-001',;
+      caseId: 'case-001',
       tags: ['criminal', 'priority', 'federal'],
       aiAnalysis: {
         summary: 'Comprehensive legal brief for federal criminal case involving financial fraud.',
@@ -166,7 +153,7 @@ await loadDocuments();
       status: 'processing',
       created: '2024-01-18',
       size: 1024000,
-      author: 'Forensic Analyst',;
+      author: 'Forensic Analyst',
       tags: ['evidence', 'digital-forensics'],
       processingStatus: {
         ocr: 'completed',
@@ -180,24 +167,22 @@ await loadDocuments();
       type: 'contract',
       status: 'draft',
       created: '2024-01-20',
-      size: 256000,;
+      size: 256000,
       author: 'Legal Counsel',
-      caseId: 'case-002',;
+      caseId: 'case-002',
       tags: ['contract', 'amendment', 'corporate'];
     }
   ];
-
   function getStatusColor(status: string) {
     switch (status) {
       case 'draft': return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
       case 'processing': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
       case 'review': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
       case 'final': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
-      case 'archived': return 'bg-gray-100 text-gray-600 dark:bg-gray-900 dark:text-gray-400';
+      case 'archived': return 'bg-gray-100 text-gray-600 dark: bg-gray-900 dark:text-gray-400';
       default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
     }
   }
-
   function getTypeIcon(type: string) {
     switch (type) {
       case 'legal_brief': return '📋';
@@ -208,7 +193,6 @@ await loadDocuments();
       default: return '📎';
     }
   }
-
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 B';
     const k = 1024;
@@ -216,50 +200,43 @@ await loadDocuments();
     const i = Math.floor(Math.log(bytes) / Math.log(k);
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-
   // File upload handlers
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;
     const file = target.files?.[0];
     if (file) {
-      uploadFile = file;
+      uploadFile = fil;
       if (!uploadTitle) {
         uploadTitle = file.name.replace(/\.[^/.]+$/, '');
       }
     }
   }
-
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
     dragOver = true;
   }
-
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
   }
-
   function handleDrop(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
     const file = event.dataTransfer?.files?.[0];
     if (file) {
-      uploadFile = file;
+      uploadFile = fil;
       if (!uploadTitle) {
         uploadTitle = file.name.replace(/\.[^/.]+$/, '');
       }
     }
   }
-
   async function uploadDocument() {
     if (!uploadFile || !uploadTitle) {
       toast.error('Please provide a file and title');
       return;
     }
-
     uploading = true;
     uploadProgress = 0;
-
     try {
       const formData = new FormData();
       formData.append('file', uploadFile);
@@ -269,17 +246,15 @@ await loadDocuments();
       formData.append('tags', uploadTags);
       formData.append('enableAI', enableAIProcessing.toString();
       const response = await fetch('/api/documents/upload', {
-        method: 'POST',;
+        method: 'POST',
         body: formData;
       });
-
       if (response.ok) {
         const result = await response.json();
         toast.success('Document uploaded successfully');
         showUploadDialog = false;
         resetUploadForm();
         await loadDocuments();
-
         if (enableAIProcessing) {
           toast.info('AI analysis started - check back in a few minutes');
         }
@@ -294,7 +269,6 @@ await loadDocuments();
       uploadProgress = 0;
     }
   }
-
   function resetUploadForm() {
     uploadTitle = '';
     uploadType = 'other';
@@ -303,24 +277,19 @@ await loadDocuments();
     uploadTags = '';
     enableAIProcessing = true;
   }
-
   function viewDocument(doc: Document) {
     selectedDocument = doc;
     showAIAnalysisDialog = true;
   }
-
   function editDocument(doc: Document) {
     goto(`/legal/documents/${doc.id}/edit`);
   }
-
   async function deleteDocument(doc: Document) {
     if (!confirm('Are you sure you want to delete this document?')) return;
-
     try {
       const response = await fetch(`/api/legal/documents/${doc.id}`, {
         method: 'DELETE';
       });
-
       if (response.ok) {
         toast.success('Document deleted');
         await loadDocuments();
@@ -332,18 +301,15 @@ await loadDocuments();
       toast.error('Failed to delete document');
     }
   }
-
   // Watch for search/filter changes
   $effect(() => {
     filterDocuments();
   });
 </script>
-
 <svelte:head>
   <title>Legal Documents - AI-Powered Document Management</title>
   <meta name="description" content="Upload, analyze, and manage legal documents with AI-powered processing and vector search" />
 </svelte:head>
-
 <div class="container mx-auto py-6 px-4 max-w-7xl">
   <div class="flex flex-col space-y-6">
     <!-- Header -->
@@ -359,15 +325,12 @@ await loadDocuments();
 goto('/legal/documents/templates')}>
           <FileText class="h-4 w-4 mr-2" />
           Templates
-
         <Button class="bits-btn" onclick={() =>
 showUploadDialog = true}>
           <Plus class="h-4 w-4 mr-2" />
           Upload Document
-
       </div>
     </div>
-
     <!-- Statistics Overview -->
     <div class="grid gap-4 md:grid-cols-4">
       <div.Root>
@@ -379,7 +342,6 @@ showUploadDialog = true}>
           <div class="text-2xl font-bold">{documentStats.total}</div>
         </div>
       </div>
-      
       <div.Root>
         <div.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
           <div.Title class="text-sm font-medium">Processing</div.Title>
@@ -389,7 +351,6 @@ showUploadDialog = true}>
           <div class="text-2xl font-bold text-blue-600">{documentStats.processing}</div>
         </div>
       </div>
-      
       <div.Root>
         <div.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
           <div.Title class="text-sm font-medium">Completed</div.Title>
@@ -399,7 +360,6 @@ showUploadDialog = true}>
           <div class="text-2xl font-bold text-green-600">{documentStats.completed}</div>
         </div>
       </div>
-      
       <div.Root>
         <div.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
           <div.Title class="text-sm font-medium">AI Analyzed</div.Title>
@@ -410,7 +370,6 @@ showUploadDialog = true}>
         </div>
       </div>
     </div>
-
     <!-- Search and Filters -->
     <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div class="flex flex-col gap-4 md:flex-row md:items-center">
@@ -422,7 +381,6 @@ showUploadDialog = true}>
             class="pl-8 w-full md:w-[400px]"
           />
         </div>
-
         <Select.Root bind:selected={statusFilter}>
           <Select.Trigger class="w-[140px]">
             <Select.Value placeholder="Status" />
@@ -436,7 +394,6 @@ showUploadDialog = true}>
             <Select.Item value="archived">Archived</Select.Item>
           </Select.Content>
         </Select.Root>
-
         <Select.Root bind:selected={typeFilter}>
           <Select.Trigger class="w-[140px]">
             <Select.Value placeholder="Type" />
@@ -453,7 +410,6 @@ showUploadDialog = true}>
         </Select.Root>
       </div>
     </div>
-
     <!-- Documents Grid -->
     {#if loading}
       <div class="flex items-center justify-center py-12">
@@ -467,13 +423,13 @@ showUploadDialog = true}>
         <div.Content class="flex flex-col items-center justify-center py-12">
           <FileText class="h-12 w-12 nes-text is-disabled mb-4" />
           <h3 class="text-lg font-semibold mb-2">
-            {searchQuery || statusFilter !== 'all' || typeFilter !== 'all' 
-              ? 'No documents found matching your filters' 
+            {searchQuery || statusFilter !== 'all' || typeFilter !== 'all'
+              ? 'No documents found matching your filters'
               : 'No documents found'
             }
           </h3>
           <p class="nes-text is-disabled mb-4">
-            {documents.length === 0 
+            {documents.length === 0
               ? 'Upload your first document to get started with AI-powered analysis'
               : 'Try adjusting your search terms or filters'
             }
@@ -482,7 +438,6 @@ showUploadDialog = true}>
 showUploadDialog = true}>
             <Plus class="h-4 w-4 mr-2" />
             Upload Document
-
         </div>
       </div>
     {:else}
@@ -512,11 +467,9 @@ showUploadDialog = true}>
                   <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) =>
 { e.stopPropagation(); editDocument(document); }}>
                     <Edit2 class="h-4 w-4" />
-
                   <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) =>
 { e.stopPropagation(); deleteDocument(document); }}>
                     <Trash2 class="h-4 w-4" />
-
                 </div>
               </div>
             </div.Header>
@@ -532,7 +485,6 @@ showUploadDialog = true}>
                     {/if}
                   </div>
                 </div>
-                
                 {#if document.tags.length > 0}
                   <div class="flex flex-wrap gap-1">
                     {#each document.tags.slice(0, 3) as tag}
@@ -543,7 +495,6 @@ showUploadDialog = true}>
                     {/if}
                   </div>
                 {/if}
-                
                 {#if document.processingStatus}
                   <div class="space-y-2">
                     <div class="text-xs nes-text is-disabled">Processing Status:</div>
@@ -565,7 +516,6 @@ showUploadDialog = true}>
     {/if}
   </div>
 </div>
-
 <!-- Upload Document Dialog -->
 <Dialog.Root bind:open={showUploadDialog}>
   <Dialog.Content class="sm:max-w-[600px]">
@@ -575,12 +525,11 @@ showUploadDialog = true}>
         Upload and analyze legal documents with AI-powered processing including OCR, summarization, and vector embeddings.
       </Dialog.Description>
     </Dialog.Header>
-    
     <div class="grid gap-4 py-4">
       <!-- File Upload Area -->
       <div class="grid gap-2">
         <Label>Document File *</Label>
-        <div 
+        <div
           class="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors
                  {dragOver ? 'border-primary bg-primary/5' : 'border-muted-foreground/25 hover:border-muted-foreground/50'}
                  {uploadFile ? 'border-green-500 bg-green-50' : ''}"
@@ -596,7 +545,6 @@ showUploadDialog = true}>
               <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 uploadFile = null}>
                 Remove
-
             </div>
           {:else}
             <div class="space-y-2">
@@ -605,12 +553,12 @@ uploadFile = null}>
                 <p class="font-medium">Drop your document here, or</p>
                 <label for="file-upload" class="text-primary cursor-pointer hover:underline">
                   browse files
-                  <input 
-                    id="file-upload" 
-                    type="file" 
-                    class="sr-only" 
-                    accept=".pdf,.doc,.docx,.txt,.rtf" 
-                    onchange={handleFileSelect} 
+                  <input
+                    id="file-upload"
+                    type="file"
+                    class="sr-only"
+                    accept=".pdf,.doc,.docx,.txt,.rtf"
+                    onchange={handleFileSelect}
                   />
                 </label>
               </div>
@@ -621,7 +569,6 @@ uploadFile = null}>
           {/if}
         </div>
       </div>
-
       <div class="grid grid-cols-2 gap-4">
         <div class="grid gap-2">
           <Label for="upload-title">Document Title *</Label>
@@ -644,24 +591,20 @@ uploadFile = null}>
           </Select.Root>
         </div>
       </div>
-
       <div class="grid gap-2">
         <Label for="upload-case">Case ID (Optional)</Label>
         <Input id="upload-case" bind:value={uploadCaseId} placeholder="Link to specific case" />
       </div>
-
       <div class="grid gap-2">
         <Label for="upload-tags">Tags (comma-separated)</Label>
         <Input id="upload-tags" bind:value={uploadTags} placeholder="e.g., contract, confidential, priority" />
       </div>
-
       <div class="flex items-center space-x-2">
         <input type="checkbox" id="enable-ai" bind:checked={enableAIProcessing} class="rounded" />
         <Label for="enable-ai" class="text-sm font-medium">
           Enable AI Processing (OCR, Analysis, Embeddings)
         </Label>
       </div>
-
       {#if uploading}
         <div class="space-y-2">
           <div class="flex justify-between text-sm">
@@ -672,12 +615,10 @@ uploadFile = null}>
         </div>
       {/if}
     </div>
-
     <Dialog.Footer>
       <Button class="bits-btn" variant="ghost" onclick={() =>
 { showUploadDialog = false; resetUploadForm(); }}>
         Cancel
-
       <Button class="bits-btn" onclick={uploadDocument} disabled={uploading || !uploadFile || !uploadTitle}>
 {#if uploading}
           <div class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2"></div>
@@ -685,11 +626,9 @@ uploadFile = null}>
           <Upload class="h-4 w-4 mr-2" />
         {/if}
         Upload Document
-
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>
-
 <!-- AI Analysis Dialog -->
 <Dialog.Root bind:open={showAIAnalysisDialog}>
   <Dialog.Content class="sm:max-w-[700px]">
@@ -703,7 +642,6 @@ uploadFile = null}>
           Document analysis and details
         </Dialog.Description>
       </Dialog.Header>
-      
       <div class="space-y-4">
         <div class="grid grid-cols-2 gap-4 text-sm">
           <div><strong>Type:</strong> {selectedDocument.type.replace('_', ' ')}</div>
@@ -715,7 +653,6 @@ uploadFile = null}>
             <div><strong>Updated:</strong> {new Date(selectedDocument.updated).toLocaleDateString()}</div>
           {/if}
         </div>
-
         {#if selectedDocument.tags.length > 0}
           <div>
             <strong class="text-sm">Tags:</strong>
@@ -726,7 +663,6 @@ uploadFile = null}>
             </div>
           </div>
         {/if}
-
         {#if selectedDocument.aiAnalysis}
           <div class="space-y-3">
             <div class="flex items-center gap-2">
@@ -734,13 +670,11 @@ uploadFile = null}>
               <h3 class="font-semibold">AI Analysis</h3>
               <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Confidence: {(selectedDocument.aiAnalysis.confidence * 100).toFixed(1)}%</span>
             </div>
-            
             <div class="space-y-2">
               <div>
                 <strong class="text-sm">Summary:</strong>
                 <p class="text-sm nes-text is-disabled mt-1">{selectedDocument.aiAnalysis.summary}</p>
               </div>
-              
               <div>
                 <strong class="text-sm">Key Points:</strong>
                 <ul class="text-sm nes-text is-disabled mt-1 space-y-1">
@@ -752,7 +686,6 @@ uploadFile = null}>
                   {/each}
                 </ul>
               </div>
-              
               <div>
                 <strong class="text-sm">Legal Concepts:</strong>
                 <div class="flex flex-wrap gap-1 mt-1">
@@ -769,7 +702,6 @@ uploadFile = null}>
             <p>AI analysis not available for this document</p>
           </div>
         {/if}
-
         {#if selectedDocument.processingStatus}
           <div class="space-y-2">
             <strong class="text-sm">Processing Status:</strong>
@@ -796,24 +728,20 @@ uploadFile = null}>
           </div>
         {/if}
       </div>
-      
       <Dialog.Footer>
         <Button class="bits-btn" variant="ghost" onclick={() =>
 showAIAnalysisDialog = false}>
           Close
-
         <Button class="bits-btn" onclick={() =>
 editDocument(selectedDocument)}>
           <Edit2 class="h-4 w-4 mr-2" />
           Edit Document
-
       </Dialog.Footer>
     {/if}
   </Dialog.Content>
 </Dialog.Root>
-
 <style>
-  .line-clamp-2 {;
+  .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;

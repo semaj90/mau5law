@@ -1,11 +1,8 @@
 import { getContext7MulticoreService } from '$lib/services/context7-multicore.js'
 import type { RequestHandler } from './$types.js'
-
-
 let startTime = Date.now()
 let requestCount = 0
 }
-
 export interface YoRHaSystemStatus {
   database: { connected: boolean; latency: number; activeConnections: number; queryCount: number }
   backend: { healthy: boolean; uptime: number; activeServices: number; cpuUsage: number; memoryUsage: number }
@@ -25,23 +22,20 @@ export interface YoRHaSystemStatus {
   gpuUtilization: number
   networkLatency: number
 }
-
 function collectStatus(): YoRHaSystemStatus {
   const mem = process.memoryUsage()
   const rssMB = Math.round(mem.rss / 1024 / 1024)
   const cpuApprox = 5 + Math.random() * 20; // placeholder approximation
-
   // Try to get Context7 multicore service status
   let multicoreStatus = null
   try {
     const multicoreService = getContext7MulticoreService({
       workerCount: 4,
-      enableLegalBert: true,
-      enableGoLlama: true,
+      enableLegalBert: true
+      enableGoLlama: true
       maxConcurrentTasks: 20
     })
     const systemStatus = multicoreService.getSystemStatus()
-
     multicoreStatus = {
       totalWorkers: systemStatus.workers.length,
       healthyWorkers: systemStatus.workers.filter((w) => w.status === 'healthy').length,
@@ -56,16 +50,15 @@ function collectStatus(): YoRHaSystemStatus {
     // Multicore service not available
     console.warn('Context7 multicore service not available:', error.message)
   }
-
   return {
     database: {
-      connected: true,
+      connected: true
       latency: Math.floor(Math.random() * 50) + 10,
       activeConnections: Math.floor(Math.random() * 20) + 5,
       queryCount: Math.floor(Math.random() * 1000) + 500
     },
     backend: {
-      healthy: true,
+      healthy: true
       uptime: Math.floor((Date.now() - startTime) / 1000),
       activeServices: multicoreStatus?.healthyWorkers || 5,
       cpuUsage: Number(cpuApprox.toFixed(2)),
@@ -77,14 +70,13 @@ function collectStatus(): YoRHaSystemStatus {
       activeComponents: Math.floor(Math.random() * 50) + 150,
       webGPUEnabled: true
     },
-    ...(multicoreStatus ? { multicore: multicoreStatus } : Record<string, any>),
+    ...(multicoreStatus ? { multicore: multicoreStatus } : { [key: string]: any }),
     timestamp: new Date().toISOString(),
     systemLoad: Math.floor(Math.random() * 30) + 45,
     gpuUtilization: Math.floor(Math.random() * 20) + 78,
     networkLatency: Math.floor(Math.random() * 30) + 23
   }
 }
-
 export const GET: RequestHandler = async () => {
   requestCount++
   const status = collectStatus()

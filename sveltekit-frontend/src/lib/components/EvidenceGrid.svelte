@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be uniqu;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import type { Evidence } from '$lib/types';
   import Button from '$lib/components/ui/enhanced-bits';
   import {
@@ -18,7 +17,7 @@ https://svelte.dev/e/attribute_duplicate -->
     isImageFile,
   } from "$lib/utils/file-utils";
   // Note: file-saver package would need to be installed
-  // import { saveAs } from "file-saver";
+  // import { saveAs } from "file-saver"
   import {
     Archive,
     Download,
@@ -38,13 +37,11 @@ https://svelte.dev/e/attribute_duplicate -->
     Video,
   } from "lucide-svelte";
   import { onMount } from "svelte";
-
   interface Props {
     caseId?: string;
     showHeader?: boolean;
     columns?: number;
   }
-
   let {
     caseId = undefined,
     showHeader = true,
@@ -52,25 +49,22 @@ https://svelte.dev/e/attribute_duplicate -->
   }: Props = $props();
   let searchInput: HTMLInputElement = $state(undefined as any);
   let selectedItem: Evidence | null = $state(null);
-
   // In Svelte 5, access store values directly
   let gridData = $state<EvidenceGridState | undefined>(undefined);
   let filteredData = $state<Evidence[]>([]);
-
   // Subscribe to store changes
   $effect(() => {
     const unsubscribe = evidenceGrid.subscribe(value => {
-      gridData = value;
+      gridData = valu;
     });
     const unsubscribeFiltered = filteredEvidence.subscribe(value => {
-      filteredData = value;
+      filteredData = valu;
     });
     return () => {
       unsubscribe();
       unsubscribeFiltered();
     };
   });
-
   // Derived values
   let items = $derived(gridData?.items || []);
   let searchQuery = $derived(gridData?.searchQuery || '');
@@ -80,12 +74,10 @@ https://svelte.dev/e/attribute_duplicate -->
   let viewMode = $derived(gridData?.viewMode || 'grid');
   let isLoading = $derived(gridData?.isLoading || false);
   let error = $derived(gridData?.error);
-
   // Load evidence on mount
   $effect(() => {
     evidenceActions.loadEvidence(caseId);
   });
-
   function handleSearch(event: Event) {
     const target = event.target as HTMLInputElement;
     evidenceActions.setSearchQuery(target.value);
@@ -114,14 +106,14 @@ https://svelte.dev/e/attribute_duplicate -->
   }
   function getFileIcon(evidenceType: string, mimeType?: string) {
     if (mimeType) {
-      if (isImageFile(mimeType)) return Image;
+      if (isImageFile(mimeType)) return Imag;
       if (mimeType.startsWith("video/")) return Video;
       if (mimeType.startsWith("audio/")) return Music;
       if (mimeType.includes("pdf")) return FileText;
   }
     switch (evidenceType.toLowerCase()) {
       case "image":
-        return Image;
+        return Imag;
       case "video":
         return Video;
       case "audio":
@@ -130,19 +122,17 @@ https://svelte.dev/e/attribute_duplicate -->
       case "pdf":
         return FileText;
       default:
-        return File;
+        return Fil;
   }}  function formatDate(date: string | Date | undefined): string {
     if (!date) return 'Unknown';
-    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    const dateObj = typeof date === 'string' ? new Date(date) : dat;
     return new Intl.DateTimeFormat.format(dateObj);
   }
   async function downloadEvidence(item: Evidence) {
     if (!(item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).fileUrl) return;
-
     try {
       const response = await fetch((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).fileUrl);
       const blob = await (response as { blob?: unknown }).blob();
-
       // Native browser download without file-saver library
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -185,7 +175,6 @@ https://svelte.dev/e/attribute_duplicate -->
     { label: "Add Tags", icon: Tag, action: "tag" },
     { label: "Delete", icon: Trash2, action: "delete", destructive: true },
   ];
-
   function handleContextAction(action: string, item: Evidence) {
     switch (action) {
       case "preview":
@@ -207,7 +196,6 @@ https://svelte.dev/e/attribute_duplicate -->
         break;
   }}
 </script>
-
 <div class="space-y-4">
   {#if showHeader}
     <!-- Header with search and controls -->
@@ -225,13 +213,12 @@ https://svelte.dev/e/attribute_duplicate -->
           />
         </div>
       </div>
-
       <div class="flex items-center gap-3">
         <!-- Sort dropdown -->
         <select
           value={sortBy}
           onchange={(e) => {
-            const value = (e.target as HTMLSelectElement)?.value;
+            const value = (e.target as HTMLSelectElement)?.valu;
             if (value === 'title' || value === 'evidenceType' || value === 'fileSize' || value === 'uploadedAt') {
               toggleSort(value);
             }
@@ -243,9 +230,8 @@ https://svelte.dev/e/attribute_duplicate -->
           <option value="evidenceType">Sort by Type</option>
           <option value="fileSize">Sort by Size</option>
         </select>
-
         <!-- Sort direction -->
-        <Button 
+        <Button
           class="bits-btn flex items-center gap-2"
           variant="secondary"
           size="sm"
@@ -258,7 +244,6 @@ toggleSort(sortBy)}
             <SortDesc class="w-4 h-4" />
           {/if}
 </Button>
-
         <!-- View mode toggle -->
         <Button class="bits-btn"
           variant="secondary"
@@ -275,7 +260,6 @@ toggleViewMode()}
 </Button>
       </div>
     </div>
-
     <!-- Selection controls -->
     {#if selectedItems.size > 0}
       <div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg mt-4">
@@ -302,7 +286,6 @@ clearSelection()}
         </div>
       </div>
     {/if}
-
   <!-- Loading state -->
   {#if isLoading}
     <div class="flex items-center justify-center py-12">
@@ -367,7 +350,6 @@ evidenceActions.loadEvidence(caseId)}
                     class="space-y-4"
                   />
                 {/if}
-
                 <!-- Overlay with selection checkbox -->
                 <div class="space-y-4">
                   <input
@@ -377,7 +359,6 @@ evidenceActions.loadEvidence(caseId)}
                     class="space-y-4"
                   />
                 </div>
-
                 <!-- File type badge -->
                 <div class="space-y-4">
                   <span
@@ -387,19 +368,16 @@ evidenceActions.loadEvidence(caseId)}
                   </span>
                 </div>
               </div>
-
               <!-- Content -->
               <div class="space-y-4">
                 <h3 class="space-y-4">
                   {(item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).title}
                 </h3>
-
                 {#if (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).description}
                   <p class="space-y-4">
                     {(item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).description}
                   </p>
                 {/if}
-
                 <!-- Metadata -->
                 <div class="space-y-4">
                   <div class="space-y-4">
@@ -408,7 +386,6 @@ evidenceActions.loadEvidence(caseId)}
                       <span>{formatFileSize((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).fileSize)}</span>
                     {/if}
                   </div>
-
                   {#if (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).tags && (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).tags.length > 0}
                     <div class="space-y-4">
                       {#each (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).tags.slice(0, 3) as tag}
@@ -449,14 +426,12 @@ evidenceActions.loadEvidence(caseId)}
                 checked={selectedItems.has.id)} onchange={() => toggleSelection(item)}
                 class="space-y-4"
               />
-
               <!-- File icon -->
               <div class="space-y-4">
                 <SvelteComponent_1
                   class="space-y-4"
                 />
               </div>
-
               <!-- Content -->
               <div class="space-y-4">
                 <div class="space-y-4">
@@ -470,7 +445,6 @@ evidenceActions.loadEvidence(caseId)}
                       </p>
                     {/if}
                   </div>
-
                   <div class="space-y-4">
                     <p class="space-y-4">
                       {formatDate((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).uploadedAt)}
@@ -482,7 +456,6 @@ evidenceActions.loadEvidence(caseId)}
                     {/if}
                   </div>
                 </div>
-
                 <!-- Tags -->
                 {#if (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).tags && (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).tags.length > 0}
                   <div class="space-y-4">
@@ -503,7 +476,6 @@ evidenceActions.loadEvidence(caseId)}
                   </div>
                 {/if}
               </div>
-
               <!-- Actions -->
               <div class="space-y-4">
                 <Button variant="ghost" size="sm" class="space-y-4 bits-btn bits-btn">
@@ -517,7 +489,6 @@ evidenceActions.loadEvidence(caseId)}
     </div>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
   .line-clamp-2 {
@@ -535,4 +506,3 @@ evidenceActions.loadEvidence(caseId)}
     overflow: hidden;
 }
 </style>
-

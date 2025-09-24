@@ -3,17 +3,14 @@
  * Converts complex stateful components into simple "dumb" prop receivers
  * following the decoupled architecture pattern
  */
-
 import { writable, derived, type Readable } from 'svelte/store';
-
 // Simple interfaces for UI consumption
 export interface ComponentState {
   loading: boolean;
   error: string | null;
   data: any;
-  meta: Record<string, any>;
+  meta: { [key: string]: any };
 }
-
 export interface UIProps {
   variant?: string;
   size?: string;
@@ -22,60 +19,55 @@ export interface UIProps {
   style?: string;
   [key: string]: any;
 }
-
 export interface ComponentAdapter<TData = any> {
   state: Readable<ComponentState>;
   props: Readable<UIProps>;
-  actions: {;
+  actions: {
     update: (data: Partial<TData>) => void;
     reset: () => void;
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
   };
 }
-
 /**
  * Base Component Adapter Factory
  * Creates simplified adapters for complex components
  */
 export function createComponentAdapter<TData = any>(
-  initialData: TData,
+  initialData: TData
   options: {
     loading?: boolean;
     error?: string | null;
-    meta?: Record<string, any>;
+    meta?: { [key: string]: any };
   } = {}
 ): ComponentAdapter<TData> {
-  
   const state = writable<ComponentState>({
     loading: options.loading ?? false,
     error: options.error ?? null,
-    data: initialData,;
+    data: initialData
     meta: options.meta ?? {}
   });
-
   const props = writable<UIProps>({
     variant: 'default',
-    size: 'medium',;
+    size: 'medium',
     disabled: false
   });
-
   return {
     state: { subscribe: state.subscribe },
     props: { subscribe: props.subscribe },
     actions: {
       update: (newData: Partial<TData>) => {
         state.update(current => ({
-          ...current,;
+          ...current,
           data: { ...current.data, ...newData }
         });
       },
       reset: () => {
         state.set({
-          loading: false,
-          error: null,
-          data: initialData,;
-          meta: Record<string, any>
+          loading: false
+          error: null
+          data: initialData
+          meta: { [key: string]: any }
         });
       },
       setLoading: (loading: boolean) => {
@@ -87,7 +79,6 @@ export function createComponentAdapter<TData = any>(
     }
   };
 }
-
 /**
  * Chat Component Adapter
  * Simplifies complex chat component state
@@ -98,20 +89,18 @@ export interface ChatData {
   isTyping: boolean;
   connectionStatus: 'connected' | 'disconnected' | 'connecting';
 }
-
 export function createChatAdapter(initialMessages: ChatData['messages'] = []): ComponentAdapter<ChatData> {
   const adapter = createComponentAdapter<ChatData>({
-    messages: initialMessages,
+    messages: initialMessages
     currentInput: '',
-    isTyping: false,
+    isTyping: false
     connectionStatus: 'disconnected'
   });
-
-  // Enhanced actions for chat-specific operations;
+  // Enhanced actions for chat-specific operations
   const chatActions = {
     ...adapter.actions,
     addMessage: (message: { role: 'user' | 'assistant'; content: string }) => {
-      adapter.actions.update({;
+      adapter.actions.update({
         messages: [
           ...adapter.state.subscribe(s => s.data.messages)[0]?.messages || [],
           { ...message, timestamp: Date.now() }
@@ -128,13 +117,11 @@ export function createChatAdapter(initialMessages: ChatData['messages'] = []): C
       adapter.actions.update({ connectionStatus: status });
     }
   };
-
   return {
     ...adapter,
     actions: chatActions
   };
 }
-
 /**
  * Search Component Adapter
  * Simplifies complex search component state
@@ -142,8 +129,8 @@ export function createChatAdapter(initialMessages: ChatData['messages'] = []): C
 export interface SearchData {
   query: string;
   results: any[];
-  filters: Record<string, any>;
-  pagination: {;
+  filters: { [key: string]: any };
+  pagination: {
     page: number;
     limit: number;
     total: number;
@@ -151,25 +138,23 @@ export interface SearchData {
   sortBy: string;
   sortOrder: 'asc' | 'desc';
 }
-
 export function createSearchAdapter(): ComponentAdapter<SearchData> {
   const adapter = createComponentAdapter<SearchData>({
     query: '',
     results: [],
-    filters: Record<string, any>,;
+    filters: { [key: string]: any },
     pagination: { page: 1, limit: 20, total: 0 },
     sortBy: 'relevance',
     sortOrder: 'desc'
   });
-
   const searchActions = {
     ...adapter.actions,
     setQuery: (query: string) => {
       adapter.actions.update({ query });
     },
     setResults: (results: any[], total: number = results.length) => {
-      adapter.actions.update({ 
-        results,;
+      adapter.actions.update({
+        results,
         pagination: { ...adapter.state.subscribe(s => s.data.pagination)[0]?.pagination, total }
       });
     },
@@ -179,18 +164,16 @@ export function createSearchAdapter(): ComponentAdapter<SearchData> {
     },
     setPage: (page: number) => {
       const currentPagination = adapter.state.subscribe(s => s.data.pagination)[0]?.pagination;
-      adapter.actions.update({ 
+      adapter.actions.update({
         pagination: { ...currentPagination, page }
       });
     }
   };
-
   return {
     ...adapter,
     actions: searchActions
   };
 }
-
 /**
  * Upload Component Adapter
  * Simplifies complex file upload component state
@@ -203,7 +186,6 @@ export interface UploadData {
   allowedTypes: string[];
   multiple: boolean;
 }
-
 export function createUploadAdapter(options: {
     maxFileSize?: number;
     allowedTypes?: string[];
@@ -212,31 +194,27 @@ export function createUploadAdapter(options: {
 ): ComponentAdapter<UploadData> {
   const adapter = createComponentAdapter<UploadData>({
     files: [],
-    uploadProgress: Record<string, any>,
-    uploadStatus: Record<string, any>,
+    uploadProgress: { [key: string]: any },
+    uploadStatus: { [key: string]: any },
     maxFileSize: options.maxFileSize || 10 * 1024 * 1024, // 10MB
-    allowedTypes: options.allowedTypes || ['*'],;
+    allowedTypes: options.allowedTypes || ['*'],
     multiple: options.multiple ?? true
   });
-
   const uploadActions = {
     ...adapter.actions,
     addFiles: (newFiles: File[]) => {
       const currentFiles = adapter.state.subscribe(s => s.data.files)[0]?.files || [];
       const currentProgress = adapter.state.subscribe(s => s.data.uploadProgress)[0]?.uploadProgress || {};
       const currentStatus = adapter.state.subscribe(s => s.data.uploadStatus)[0]?.uploadStatus || {};
-      
       const updatedProgress = { ...currentProgress };
       const updatedStatus = { ...currentStatus };
-      
       newFiles.forEach(file => {
         updatedProgress[file.name] = 0;
         updatedStatus[file.name] = 'pending';
       });
-      
       adapter.actions.update({
         files: [...currentFiles, ...newFiles],
-        uploadProgress: updatedProgress,
+        uploadProgress: updatedProgress
         uploadStatus: updatedStatus
       });
     },
@@ -255,61 +233,52 @@ export function createUploadAdapter(options: {
     removeFile: (fileName: string) => {
       const current = adapter.state.subscribe(s => s.data)[0];
       if (!current) return;
-      
       const updatedFiles = current.files.filter(f => f.name !== fileName);
       const updatedProgress = { ...current.uploadProgress };
       const updatedStatus = { ...current.uploadStatus };
-      
       delete updatedProgress[fileName];
       delete updatedStatus[fileName];
-      
       adapter.actions.update({
-        files: updatedFiles,
-        uploadProgress: updatedProgress,
+        files: updatedFiles
+        uploadProgress: updatedProgress
         uploadStatus: updatedStatus
       });
     }
   };
-
   return {
     ...adapter,
     actions: uploadActions
   };
 }
-
 /**
  * Form Component Adapter
  * Simplifies complex form component state
  */;
 export interface FormData {
-  values: Record<string, any>;
+  values: { [key: string]: any };
   errors: Record<string, string>;
   touched: Record<string, boolean>;
   isSubmitting: boolean;
   isValid: boolean;
 }
-
 export function createFormAdapter(
-  initialValues: Record<string, any> = {},
+  initialValues: { [key: string]: any } = {},
   validationRules: Record<string, (value: any) => string | null> = {}
 ): ComponentAdapter<FormData> {
   const adapter = createComponentAdapter<FormData>({
-    values: initialValues,
-    errors: Record<string, any>,;
-    touched: Record<string, any>,
-    isSubmitting: false,
+    values: initialValues
+    errors: { [key: string]: any },
+    touched: { [key: string]: any },
+    isSubmitting: false
     isValid: true
   });
-
   const formActions = {
     ...adapter.actions,
     setValue: (field: string, value: any) => {
       const current = adapter.state.subscribe(s => s.data)[0];
       if (!current) return;
-      
       const newValues = { ...current.values, [field]: value };
       const newTouched = { ...current.touched, [field]: true };
-      
       // Validate field if rules exist
       const errors = { ...current.errors };
       if (validationRules[field]) {
@@ -320,10 +289,9 @@ export function createFormAdapter(
           delete errors[field];
         }
       }
-      
       adapter.actions.update({
-        values: newValues,;
-        touched: newTouched,
+        values: newValues
+        touched: newTouched
         errors,
         isValid: Object.keys(errors).length === 0
       });
@@ -331,16 +299,15 @@ export function createFormAdapter(
     setError: (field: string, error: string) => {
       const current = adapter.state.subscribe(s => s.data)[0];
       if (!current) return;
-      
       const newErrors = { ...current.errors, [field]: error };
       adapter.actions.update({
-        errors: newErrors,
+        errors: newErrors
         isValid: Object.keys(newErrors).length === 0
       });
     },
     clearErrors: () => {
       adapter.actions.update({
-        errors: Record<string, any>,
+        errors: { [key: string]: any },
         isValid: true
       });
     },
@@ -348,67 +315,56 @@ export function createFormAdapter(
       adapter.actions.update({ isSubmitting });
     }
   };
-
   return {
     ...adapter,
     actions: formActions
   };
 }
-
 /**
  * Component Adapter Registry
  * Central registry for managing component adapters
  */;
 class ComponentAdapterRegistry {
   private adapters = new Map<string, ComponentAdapter>();
-
   register<T>(id: string, adapter: ComponentAdapter<T>): void {
     this.adapters.set(id, adapter);
   }
-
   get<T>(id: string): ComponentAdapter<T> | undefined {
     return this.adapters.get(id) as ComponentAdapter<T>;
   }
-
   unregister(id: string): void {
     this.adapters.delete(id);
   }
-
   clear(): void {
     this.adapters.clear();
   }
-
   list(): string[] {
     return Array.from(this.adapters.keys();
   }
 }
-
 export const componentRegistry = new ComponentAdapterRegistry();
-
 /**
  * Utility functions for Svelte 5 component migration
  */;
 export const svelte5Utils = {
-  // Safe prop access for Svelte 5 components;
-  safeProps: <T extends Record<string, any>(props: T, defaults: Partial<T>): T => {
+  // Safe prop access for Svelte 5 components
+  safeProps: <T extends { [key: string]: any }(props: T, defaults: Partial<T>): T => {
     return { ...defaults, ...props };
   },
-
-  // Convert complex state to simple props;
+  // Convert complex state to simple props
   stateToProps: (state: ComponentState): UIProps => {
     return {
       loading: state.loading,
-      disabled: state.loading,;
+      disabled: state.loading,
       error: !!state.error,
       'data-error': state.error,
       'aria-busy': state.loading,
       'aria-invalid': !!state.error
     };
   },
-
   // Event handler factory for simplified components
-  createHandler: <T extends (...args: any[]) => void>(
-    fn: T,;
+  createHandler: <T extends (...args: any[]) => void>(,
+    fn: T
     options: { preventDefault?: boolean; stopPropagation?: boolean } = {}
   ) => {
     return (event: Event, ...args: Parameters<T>) => {

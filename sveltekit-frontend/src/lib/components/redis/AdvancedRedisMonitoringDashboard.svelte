@@ -2,44 +2,36 @@
 🎮 Advanced Redis Orchestrator Dashboard - Nintendo-Style Real-Time Monitoring
 Enhanced with live metrics, GPU integration, and SIMD parser statistics
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import { redisStats, redisOrchestratorClient } from '$lib/stores/redis-orchestrator-store';
-  
   // Create unified SIMD parser instance
   let unifiedSIMDParser: unknown;
-  
   // Real-time metrics stores
   const liveMetrics = writable({
-    timestamp: Date.now(),;
+    timestamp: Date.now(),
     redis: { hit_rate: 0, memory_usage: 0, connections: 0 },
     gpu: { utilization: 0, memory_used: 0, temperature: 0 },
     simd: { cache_hit_rate: 0, parse_performance: 0, backends_active: 0 },
-    mcp: { workers_active: 0, requests_per_second: 0, avg_response_time: 0 },;
+    mcp: { workers_active: 0, requests_per_second: 0, avg_response_time: 0 },
     endpoints: { optimized: 78, total: 90, performance_gain: 0 }
   });
-
   const performanceHistory = writable([]);
   const alertsLog = writable([]);
-  
   let updateInterval: NodeJS.Timeout;
   let wsConnection: WebSocket;
   let isConnected = false;
-
   // Nintendo-style color scheme
   const nintendoColors = {
     primary: '#00d800',
-    secondary: '#3cbcfc', 
+    secondary: '#3cbcfc',
     warning: '#fcfc54',
-    error: '#fc5454',;
-    background: '#0f0f23',;
+    error: '#fc5454',
+    background: '#0f0f23',
     surface: '#1e1e3f';
   };
-
   $effect(() => {
     (async () => {
 // Initialize SIMD parser first
@@ -49,7 +41,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     } catch (error) {
       console.warn('SIMD parser not available, using fallback metrics');
       unifiedSIMDParser = {
-        getExtendedStats: () => Promise.resolve({
+        getExtendedStats: () => Promise.resolve({,
           cache_hit_rates: { redis: 0 },
           ultra_stats: { performance_score: 0 },
           backends_available: []
@@ -57,32 +49,26 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
         clearAllCaches: () => Promise.resolve()
       };
     }
-    
     await initializeRealTimeMonitoring();
     startPerformancePolling();
     })();
   });
-
   onDestroy(() => {
     if (updateInterval) clearInterval(updateInterval);
     if (wsConnection) wsConnection.close();
   });
-
   async function initializeRealTimeMonitoring() {
     try {
       // Initialize WebSocket for real-time updates
-      wsConnection = new WebSocket('ws://localhost:5173/websocket/redis-monitor');
-      
+      wsConnection = new WebSocket('ws://localhost:5173/websocket/redis-monitor')
       wsConnection.onopen = () => {
         isConnected = true;
         console.log('🎮 Redis monitoring WebSocket connected');
       };
-      
       wsConnection.onmessage = (event) => {
         const data = JSON.parse(event.data);
         updateLiveMetrics(data);
       };
-      
       wsConnection.onerror = () => {
         isConnected = false;
         console.warn('⚠️ WebSocket connection failed, falling back to polling');
@@ -92,29 +78,23 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
       isConnected = false;
     }
   }
-
   async function startPerformancePolling() {
     updateInterval = setInterval(async () => {
       await updateMetrics();
     }, 1000); // Update every second for Nintendo-level responsiveness
   }
-
   async function updateMetrics() {
     try {
       // Get Redis stats
       const redisData = await redisOrchestratorClient.getSystemHealth();
-      
-      // Get SIMD parser stats  
+      // Get SIMD parser stats
       const simdStats = await unifiedSIMDParser.getExtendedStats();
-      
       // Get GPU metrics (simulated - replace with actual GPU monitoring)
       const gpuStats = await getGPUMetrics();
-      
       // Get MCP worker stats
       const mcpStats = await getMCPStats();
-      
       const newMetrics = {
-        timestamp: Date.now(),;
+        timestamp: Date.now(),
         redis: {
           hit_rate: redisData.cache_hit_rate || 0,
           memory_usage: redisData.memory_usage_mb || 0,
@@ -137,44 +117,38 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
           avg_response_time: mcpStats.avg_response_ms || 0
         },
         endpoints: {
-          optimized: 78,;
+          optimized: 78,
           total: 90,
           performance_gain: calculatePerformanceGain(redisData.cache_hit_rate);
         }
       };
-
       liveMetrics.set(newMetrics);
-      
       // Update performance history
       performanceHistory.update(history => {
         const newHistory = [...history, newMetrics].slice(-60); // Keep last 60 seconds
         return newHistory;
       });
-
       // Check for alerts
       checkPerformanceAlerts(newMetrics);
-      
     } catch (error) {
       console.error('Error updating metrics:', error);
     }
   }
-
   async function getGPUMetrics() {
     try {
       // Simulate GPU metrics - replace with actual NVIDIA-ML or GPU monitoring
       return {
         utilization: Math.random() * 30 + 20, // 20-50% utilization
-        memory_used_mb: Math.random() * 2000 + 1500, // 1.5-3.5GB;
-        temperature: Math.random() * 10 + 45 // 45-55°C;
+        memory_used_mb: Math.random() * 2000 + 1500, // 1.5-3.5GB
+        temperature: Math.random() * 10 + 45 // 45-55°C
       };
     } catch {
       return { utilization: 0, memory_used_mb: 0, temperature: 0 };
     }
   }
-
   async function getMCPStats() {
     try {
-      const response = await fetch('http://localhost:3002/mcp/metrics');
+      const response = await fetch('http://localhost:3002/mcp/metrics')
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         return await (response as { ok?: unknown; json?: unknown }).json();
       }
@@ -183,15 +157,12 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
       return { active_workers: 16, rps: 0, avg_response_ms: 0 };
     }
   }
-
   function calculatePerformanceGain(hitRate: number): number {
     // Calculate performance improvement based on cache hit rate
     return hitRate > 0 ? Math.round((hitRate / 100) * 2500) : 0; // Up to 2500x improvement
   }
-
   function checkPerformanceAlerts(metrics: unknown) {
     const alerts = [];
-    
     if (metrics.redis.hit_rate < 70) {
       alerts.push({ type: 'warning', message: 'Redis hit rate below 70%' });
     }
@@ -204,7 +175,6 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     if (metrics.mcp.avg_response_time > 1000) {
       alerts.push({ type: 'warning', message: 'MCP response time elevated' });
     }
-
     if (alerts.length > 0) {
       alertsLog.update(log => [
         ...alerts.map(alert => ({
@@ -215,12 +185,10 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
       ].slice(0, 10)); // Keep last 10 alerts
     }
   }
-
   // Format numbers for display
-  const formatNumber = (num: number, decimals = 1) => 
+  const formatNumber = (num: number, decimals = 1) =>
     num?.toFixed(decimals) || '0.0';
 </script>
-
 <div class="nintendo-dashboard">
   <div class="dashboard-header">
     <h1>🎮 Redis Orchestrator Command Center</h1>
@@ -228,7 +196,6 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
       {isConnected ? '🟢 Live' : '🟡 Polling'}
     </div>
   </div>
-
   <!-- Real-time Metrics Grid -->
   <div class="metrics-grid">
     <!-- Redis Performance -->
@@ -247,7 +214,6 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
         <span>Connections: {$liveMetrics.redis.connections}</span>
       </div>
     </div>
-
     <!-- GPU Performance -->
     <div class="metric-nier-bits-card gpu-nier-bits-card">
       <div class="nier-bits-yorha-panel-header">
@@ -263,7 +229,6 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
         <span>Temp: {formatNumber($liveMetrics.gpu.temperature, 0)}°C</span>
       </div>
     </div>
-
     <!-- SIMD Parser Performance -->
     <div class="metric-nier-bits-card simd-nier-bits-card">
       <div class="nier-bits-yorha-panel-header">
@@ -279,7 +244,6 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
         <span>Performance: {formatNumber($liveMetrics.simd.parse_performance, 0)}</span>
       </div>
     </div>
-
     <!-- MCP Workers -->
     <div class="metric-nier-bits-card mcp-nier-bits-card">
       <div class="nier-bits-yorha-panel-header">
@@ -296,27 +260,25 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
       </div>
     </div>
   </div>
-
   <!-- Endpoint Optimization Status -->
   <div class="optimization-status">
     <div class="status-header">
       <h3>🎮 Nintendo-Level Endpoint Optimization</h3>
     </div>
     <div class="progress-bar">
-      <div 
-        class="progress-fill" 
+      <div
+        class="progress-fill"
         style="width: {($liveMetrics.endpoints.optimized / $liveMetrics.endpoints.total) * 100}%"
       ></div>
     </div>
     <div class="status-text">
-      {$liveMetrics.endpoints.optimized} / {$liveMetrics.endpoints.total} endpoints optimized 
+      {$liveMetrics.endpoints.optimized} / {$liveMetrics.endpoints.total} endpoints optimized
       ({formatNumber(($liveMetrics.endpoints.optimized / $liveMetrics.endpoints.total) * 100, 0)}%)
     </div>
     <div class="performance-gain">
       🚀 Performance Gain: {$liveMetrics.endpoints.performance_gain}x faster
     </div>
   </div>
-
   <!-- Performance Chart -->
   {#if $performanceHistory.length > 10}
   <div class="performance-chart">
@@ -327,9 +289,8 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
         {#each Array(10) as _, i}
           <line x1="0" y1="{i * 10}" x2="400" y2="{i * 10}" class="grid-line" />
         {/each}
-        
         <!-- Cache hit rate line -->
-        <polyline 
+        <polyline
           points={$performanceHistory
             .map((point, i) => `${(i / $performanceHistory.length) * 400},${100 - point.redis.hit_rate}`)
             .join(' ')
@@ -337,9 +298,8 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
           class="performance-line redis-line"
           fill="none"
         />
-        
         <!-- GPU utilization line -->
-        <polyline 
+        <polyline
           points={$performanceHistory
             .map((point, i) => `${(i / $performanceHistory.length) * 400},${100 - point.gpu.utilization}`)
             .join(' ')
@@ -355,7 +315,6 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     </div>
   </div>
   {/if}
-
   <!-- Alerts Panel -->
   {#if $alertsLog.length > 0}
   <div class="alerts-panel">
@@ -370,7 +329,6 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     </div>
   </div>
   {/if}
-
   <!-- Control Panel -->
   <div class="control-panel">
     <h3>🎮 System Controls</h3>
@@ -390,91 +348,77 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     </div>
   </div>
 </div>
-
 <style>
-  .nintendo-dashboard {;
+  .nintendo-dashboard {
     background: #0f0f23;
     color: #cccccc;
     font-family: 'Courier New', monospace;
     padding: 20px;
     min-height: 100vh;
   }
-
   .dashboard-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 30px;
     border-bottom: 2px solid #00d800;
     padding-bottom: 15px;
   }
-
   .dashboard-header h1 {
     color: #00d800;
     margin: 0;
     font-size: 2em;
   }
-
   .connection-status {
     padding: 8px 15px;
     border-radius: 5px;
     background: #fc5454;
     font-weight: bold;
   }
-
   .connection-status.connected {
     background: #00d800;
     color: black;
   }
-
   .metrics-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 20px;
     margin-bottom: 30px;
   }
-
   .metric-card {
     background: #1e1e3f;
     border: 2px solid;
     border-radius: 10px;
     padding: 20px;
-    transition: transform 0.2s;
+    transition: transform 0.2;
   }
-
   .metric-card:hover {
     transform: translateY(-5px);
   }
-
   .redis-card { border-color: #fc5454; }
   .gpu-card { border-color: #3cbcfc; }
   .simd-card { border-color: #fcfc54; }
   .mcp-card { border-color: #00d800; }
-
   .card-header {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 15px;
   }
-
   .icon {
     font-size: 1.5em;
   }
-
   .metric-value {
     font-size: 3em;
     font-weight: bold;
     color: #00d800;
     line-height: 1;
   }
-
   .metric-label {
     color: #3cbcfc;
     font-size: 1.1em;
     margin: 10px 0;
   }
-
   .sub-metrics {
     display: flex;
     flex-direction: column;
@@ -482,7 +426,6 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     font-size: 0.9em;
     color: #cccccc;
   }
-
   .optimization-status {
     background: #1e1e3f;
     border: 2px solid #00d800;
@@ -490,7 +433,6 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     padding: 20px;
     margin-bottom: 30px;
   }
-
   .progress-bar {
     background: #0f0f23;
     height: 20px;
@@ -498,24 +440,20 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     margin: 15px 0;
     overflow: hidden;
   }
-
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #00d800, #3cbcfc);
     transition: width 1s ease;
   }
-
   .status-text {
     font-size: 1.1em;
     margin-bottom: 10px;
   }
-
   .performance-gain {
     color: #fcfc54;
     font-weight: bold;
     font-size: 1.2em;
   }
-
   .performance-chart {
     background: #1e1e3f;
     border: 2px solid #3cbcfc;
@@ -523,59 +461,47 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     padding: 20px;
     margin-bottom: 30px;
   }
-
   .chart-container {
     margin-top: 15px;
   }
-
   .performance-svg {
     width: 100%;
     height: 200px;
   }
-
   .grid-line {
     stroke: #333;
     stroke-width: 1;
   }
-
   .performance-line {
     stroke-width: 3;
   }
-
   .redis-line {
     stroke: #fc5454;
   }
-
   .gpu-line {
     stroke: #3cbcfc;
   }
-
   .chart-legend {
     display: flex;
     gap: 20px;
     margin-top: 10px;
   }
-
   .legend-item {
     display: flex;
     align-items: center;
     gap: 8px;
   }
-
   .redis-color,
   .gpu-color {
     width: 20px;
     height: 3px;
   }
-
   .redis-color {
     background: #fc5454;
   }
-
   .gpu-color {
     background: #3cbcfc;
   }
-
   .alerts-panel {
     background: #1e1e3f;
     border: 2px solid #fcfc54;
@@ -583,43 +509,36 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     padding: 20px;
     margin-bottom: 30px;
   }
-
   .alerts-list {
     margin-top: 15px;
   }
-
   .alert-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 10px;
   }
-
   .alert-.warning {
     background: rgba(252, 252, 84, 0.1);
     border-left: 4px solid #fcfc54;
   }
-
   .alert-.error {
     background: rgba(252, 84, 84, 0.1);
     border-left: 4px solid #fc5454;
   }
-
   .control-panel {
     background: #1e1e3f;
     border: 2px solid #00d800;
     border-radius: 10px;
     padding: 20px;
   }
-
   .controls-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 15px;
     margin-top: 15px;
   }
-
   .control-btn {
     background: #00d800;
     color: black;
@@ -629,19 +548,16 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     font-family: 'Courier New', monospace;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2;
   }
-
   .control-btn:hover {
     background: #3cbcfc;
     transform: translateY(-2px);
   }
-
   @media (max-width: 768px) {
     .metrics-grid {
       grid-template-columns: 1fr;
     }
-    
     .controls-grid {
       grid-template-columns: 1fr;
     }

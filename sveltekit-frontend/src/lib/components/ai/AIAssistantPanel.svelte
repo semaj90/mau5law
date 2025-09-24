@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-	import Button from '$lib/components/ui/button/Button.svelte';
+	import Button from '$lib/components/ui/Button.svelte';
 	import Card from '$lib/components/ui/Card/Card.svelte';
 	import CardContent from '$lib/components/ui/Card/CardContent.svelte';
 	import CardHeader from '$lib/components/ui/Card/CardHeader.svelte';
@@ -12,8 +11,6 @@
 	import { aiAssistant } from '$lib/stores/ai-assistant-unified.svelte';
 	import { acceleratedLegalAssistant, enhanceAIResponse } from '$lib/ai/accelerated-legal-assistant';
 	import { MessageSquare, Bot, User, Loader, Lightbulb, Link, FileText, Search, Zap } from 'lucide-svelte';
-	import {   } from "svelte";
-
 	// Svelte 5: Replace event dispatcher with callback props
 	interface Props {
 		caseId?: string;
@@ -23,7 +20,6 @@
 		onEvidenceHighlight?: (data: { evidenceIds: string[] }) => void;
 		onActionTrigger?: (data: { type: string; data: any }) => void;
 	}
-
 	let {
 		caseId = 'case-001',
 		selectedEvidenceIds = [],
@@ -32,7 +28,6 @@
 		onEvidenceHighlight,
 		onActionTrigger
 	}: Props = $props();
-
 	// Svelte 5 state
 	let userInput = $state('');
 	let isLoading = $state(false);
@@ -42,26 +37,22 @@
 	let useAcceleration = $state(false);
 	let accelerationStatus = $state<'initializing' | 'ready' | 'error' | 'disabled'>('disabled');
 	let lastAccelerationResults = $state<any>(null);
-
 	// Reactive values using Svelte 5 $derived - properly connected to unified store
 	const messages = $derived(aiAssistant.currentMessages);
 	const caseContext = $derived(aiAssistant.currentCase);
 	const insights = $derived(caseContext?.insights || []);
 	const isAssistantLoading = $derived(aiAssistant.isLoading);
-
 	// Initialize case and acceleration when component mounts
 	$effect(() => {
 		if (caseId) {
 			aiAssistant.initializeCase(caseId, `Case ${caseId}`);
 			aiAssistant.setCurrentCase(caseId);
 		}
-
 		// Initialize acceleration if enabled
 		if (useAcceleration && accelerationStatus === 'disabled') {
 			initializeAcceleration();
 		}
 	});
-
 	// Initialize WebGPU + SIMD acceleration
 	async function initializeAcceleration() {
 		accelerationStatus = 'initializing';
@@ -76,20 +67,17 @@
 			accelerationStatus = 'error';
 		}
 	}
-
 	// Handle user input submission with optional acceleration
 	async function handleSendMessage() {
 		if (!userInput.trim() || isLoading) return;
-
 		const prompt = userInput.trim();
 		userInput = '';
 		isLoading = true;
-
 		try {
 			// Use the unified store's sendMessage method with acceleration support
 			await aiAssistant.sendMessage(caseId, prompt, selectedEvidenceIds, {
 				useAcceleration: useAcceleration && accelerationStatus === 'ready',
-				includeHistory: true,
+				includeHistory: true
 				legalContext: `Evidence IDs: ${selectedEvidenceIds.join(', ')}`
 			});
 		} catch (error) {
@@ -98,18 +86,14 @@
 			isLoading = false;
 		}
 	}
-
-
 	// Quick action handlers using unified store
 	async function analyzeSelectedEvidence() {
 		if (selectedEvidenceIds.length === 0) return;
-
 		isLoading = true;
 		try {
 			const prompt = selectedEvidenceIds.length === 1
 				? `Please analyze evidence item ${selectedEvidenceIds[0]} and provide insights.`
 				: `Please analyze the connections between evidence items: ${selectedEvidenceIds.join(', ')}`;
-
 			await aiAssistant.sendMessage(caseId, prompt, selectedEvidenceIds, {
 				useAcceleration: useAcceleration && accelerationStatus === 'ready',
 				legalContext: 'Evidence analysis request'
@@ -120,20 +104,17 @@
 			isLoading = false;
 		}
 	}
-
 	async function suggestNextSteps() {
 		isLoading = true;
 		try {
 			const prompt = 'Based on the current evidence, what should be the next steps in this investigation?';
-
 			const response = await aiAssistant.sendMessage(caseId, prompt, selectedEvidenceIds, {
 				useAcceleration: useAcceleration && accelerationStatus === 'ready',
 				legalContext: 'Investigation planning'
 			});
-
 			// Trigger action suggestions in parent component
 			ondispatch?.({
-				type: 'suggestions',;
+				type: 'suggestions',
 				data: response.metadata?.suggestions || [];
 			});
 		} catch (error) {
@@ -142,29 +123,24 @@
 			isLoading = false;
 		}
 	}
-
 	function handleKeydown(event: KeyboardEvent) {
 		if (event.key === 'Enter' && !event.shiftKey) {
 			event.preventDefault();
 			handleSendMessage();
 		}
 	}
-
 	function formatTimestamp(timestamp: number): string {
 		return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 	}
-
 	function handleInsightClick(insight: any) {
 		if (insight.evidenceIds && insight.evidenceIds.length > 0) {
 			ondispatch?.({ evidenceIds: insight.evidenceIds });
 		}
 	}
-
 	function setContext(context: typeof currentContext) {
 		currentContext = context;
 	}
 </script>
-
 <div class="ai-assistant-panel" class:hidden={!isVisible}>
 	<Card class="h-full flex flex-col">
 		<CardHeader class="pb-3">
@@ -182,12 +158,11 @@
 							{selectedEvidenceIds.length} selected
 						</span>
 					{/if}
-
 					<!-- Acceleration Toggle -->
 					<button
 						class="acceleration-toggle {useAcceleration && accelerationStatus === 'ready' ? 'enabled' : ''} {accelerationStatus === 'initializing' ? 'initializing' : ''} {accelerationStatus === 'error' ? 'error' : ''}"
 						onclick={() => {
-							useAcceleration = !useAcceleration;
+							useAcceleration = !useAcceleratio;
 							if (useAcceleration && accelerationStatus === 'disabled') {
 								initializeAcceleration();
 							}
@@ -198,7 +173,6 @@
 					</button>
 				</div>
 			</div>
-
 			<!-- Context Selector -->
 			<div class="flex gap-1 mt-2">
 				<Button
@@ -235,7 +209,6 @@
 				</Button>
 			</div>
 		</CardHeader>
-
 		<CardContent class="flex-1 flex flex-col gap-4 overflow-hidden">
 			<!-- Messages Area -->
 			<div class="flex-1 overflow-y-auto space-y-3 min-h-0">
@@ -251,7 +224,7 @@
 							message={{
 								role: message.role,
 								content: message.content,
-								timestamp: formatTimestamp(message.timestamp),;
+								timestamp: formatTimestamp(message.timestamp),
 								references: message.evidenceIds?.map(id => ({ id, score: 1.0 })) || []
 							}}
 							showReferences={true}
@@ -274,7 +247,6 @@
 					{/each}
 				{/if}
 			</div>
-
 			<!-- Quick Actions -->
 			<div class="quick-actions">
 				<div class="flex gap-2 mb-2">
@@ -300,14 +272,13 @@
 					</Button>
 				</div>
 			</div>
-
 			<!-- AI Search Input Area -->
 			<div class="input-area">
 				<AISearchBar
 					placeholder={`Ask about ${currentContext === 'general' ? 'the case' : currentContext}...`}
 					userContext={{
 						caseId,
-						selectedEvidenceIds,;
+						selectedEvidenceIds,
 						context: currentContext;
 					}}
 					analyticsLog={(event) => console.log('AI Search Analytics:', event)}
@@ -317,7 +288,6 @@
 					}}
 				/>
 			</div>
-
 			<!-- Acceleration Results Panel -->
 			{#if useAcceleration && lastAccelerationResults}
 				<div class="acceleration-panel">
@@ -363,7 +333,6 @@
 					{/if}
 				</div>
 			{/if}
-
 			<!-- Insights Panel -->
 			{#if showInsights && insights.length > 0}
 				<div class="insights-panel">
@@ -395,115 +364,87 @@
 		</CardContent>
 	</Card>
 </div>
-
 <style>
 	.ai-assistant-panel {
 		@apply w-full h-full;
 	}
-
 	/* Cleaned up - using AIChatMessage component styles */
-
 	.quick-actions {
 		@apply border-t pt-2;
 	}
-
 	.input-area {
 		@apply border-t pt-2;
 	}
-
 	.acceleration-toggle {
 		@apply p-1.5 rounded border hover:bg-muted transition-colors text-muted-foreground;
 	}
-
 	.acceleration-toggle.enabled {
 		@apply bg-green-500/10 text-green-600 border-green-500/20;
 	}
-
 	.acceleration-toggle.initializing {
 		@apply bg-yellow-500/10 text-yellow-600 border-yellow-500/20;
 		animation: pulse 2s infinite;
 	}
-
 	.acceleration-toggle.error {
 		@apply bg-red-500/10 text-red-600 border-red-500/20;
 	}
-
 	.acceleration-panel {
 		@apply border-t pt-2;
 	}
-
 	.acceleration-header {
-		@apply flex items-center gap-2 text-sm font-medium text-green-600 hover:text-green-700 transition-colors;
+		@apply flex items-center gap-2 text-sm font-medium text-green-600 hover:text-green-700 transition-color;
 	}
-
 	.acceleration-content {
 		@apply space-y-3 mt-2;
 	}
-
 	.performance-metrics {
-		@apply grid grid-cols-2 gap-2 text-xs;
+		@apply grid grid-cols-2 gap-2 text-x;
 	}
-
 	.metric {
 		@apply flex justify-between p-1.5 bg-green-50 rounded border border-green-200;
 	}
-
 	.metric-label {
 		@apply text-muted-foreground;
 	}
-
 	.metric-value {
 		@apply font-medium text-green-700;
 	}
-
 	.recommendation-list {
 		@apply space-y-2;
 	}
-
 	.recommendation-item {
 		@apply p-2 bg-blue-50 rounded border border-blue-200;
 	}
-
 	.rec-type {
-		@apply text-xs font-medium text-blue-600 capitalize;
+		@apply text-xs font-medium text-blue-600 capitaliz;
 	}
-
 	.rec-description {
 		@apply text-sm mt-1;
 	}
-
 	.rec-confidence {
 		@apply text-xs text-blue-500 mt-1;
 	}
-
 	.insights-panel {
 		@apply border-t pt-2;
 	}
-
 	.insights-header {
-		@apply flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-colors;
+		@apply flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-color;
 	}
-
 	.insights-content {
 		@apply space-y-2 mt-2;
 	}
-
 	.insight-item {
-		@apply w-full text-left p-2 bg-muted/50 rounded border hover:bg-muted transition-colors;
+		@apply w-full text-left p-2 bg-muted/50 rounded border hover:bg-muted transition-color;
 	}
-
 	.insight-type {
-		@apply text-xs font-medium text-primary capitalize;
+		@apply text-xs font-medium text-primary capitaliz;
 	}
-
 	.insight-description {
 		@apply text-sm mt-1;
 	}
-
 	.insight-confidence {
 		@apply text-xs text-muted-foreground mt-1;
 	}
-
 	.hidden {
 		@apply hidden;
 	}

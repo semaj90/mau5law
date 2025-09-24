@@ -2,7 +2,6 @@
 export interface EmbeddingResponse {
   embedding: number[];
 }
-
 export interface GenerateResponse {
   model: string;
   created_at: string;
@@ -16,14 +15,12 @@ export interface GenerateResponse {
   eval_count?: number;
   eval_duration?: number;
 }
-
 export interface StreamingGenerateResponse {
   model: string;
   created_at: string;
   response: string;
   done: boolean;
 }
-
 export interface OllamaModel {
   name: string;
   modified_at: string;
@@ -37,11 +34,9 @@ export interface OllamaModel {
     quantization_level: string;
   };
 }
-
 export interface OllamaTagsResponse {
   models: OllamaModel[];
 }
-
 export interface DocumentChunk {
   content: string;
   embedding: number[];
@@ -52,17 +47,15 @@ export interface DocumentChunk {
     [key: string]: unknown;
   };
 }
-
 export interface EmbeddingMetadata {
   model: string;
   dimension: number;
   timestamp: Date;
-  context?: Record<string, any>;
+  context?: { [key: string]: any };
 }
-
 export interface AnalysisResult {
   type: 'summary' | 'entities' | 'sentiment' | 'classification';
   content: string;
   confidence?: number;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 }

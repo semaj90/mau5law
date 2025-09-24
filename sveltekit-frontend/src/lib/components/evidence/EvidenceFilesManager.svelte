@@ -1,6 +1,4 @@
 <script lang="ts">
-  import {   } from "svelte";
-
   export interface EvidenceFile {
 	name: string;
 	size: number;
@@ -8,7 +6,6 @@
 	uploadedAt?: string;
 	id?: string;
   }
-
   let {
     files = $bindable([]),
     readonly = false,
@@ -22,7 +19,6 @@
     onupload?: (event: { files: File[] }) => void;
     onremove?: (event: { index: number }) => void;
   } = $props();
-
   function handleChange(e: Event) {
 	const input = e.target as HTMLInputElement;
 	if (!input.files) return;
@@ -31,18 +27,15 @@
 	// reset input so same file can be re-selected
 	input.value = '';
   }
-
   function removeFile(index: number) {
 	if (readonly) return;
 	onremove?.({ index });
   }
 </script>
-
 <div class="evidence-files-manager">
   {#if files.length === 0}
 	<p>No evidence files added yet.</p>
   {/if}
-
   <ul>
 	{#each files as f, i}
 	  <li class="file-item">
@@ -56,7 +49,6 @@
 	  </li>
 	{/each}
   </ul>
-
   {#if !readonly}
 	<div class="upload">
 	  <label class="upload-label">
@@ -67,7 +59,6 @@
 	</div>
   {/if}
 </div>
-
 <style>
   .evidence-files-manager {
 	padding: 0.5rem;
@@ -80,7 +71,7 @@
   }
   .file-item {
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-betwee;
 	align-items: center;
 	padding: 0.25rem 0;
 	border-bottom: 1px solid rgba(0,0,0,0.04);

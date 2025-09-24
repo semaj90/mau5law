@@ -5,7 +5,6 @@
   import { cubicOut, backOut } from 'svelte/easing';
   import { getCurrentPalette } from '$lib/themes/retro-console-palettes';
   import Portal from './Portal.svelte';
-
   interface Props {
     open: boolean;
     title?: string;
@@ -14,7 +13,6 @@
     glassEffect?: boolean;
     diamondPattern?: boolean;
   }
-
   let {
     open = $bindable(false),
     title = '',
@@ -23,69 +21,54 @@
     glassEffect = true,
     diamondPattern = true
   }: Props = $props();
-
   const dispatch = createEventDispatcher();
   let modalElement: HTMLDivElement;
   let canvasElement: HTMLCanvasElement;
   let animationFrame: number;
-
   const sizeClasses = {
     small: 'max-w-md',
-    medium: 'max-w-2xl',;
-    large: 'max-w-4xl',;
+    medium: 'max-w-2xl',
+    large: 'max-w-4xl',
     fullscreen: 'max-w-full h-full';
   };
-
   onMount(() => {
     if (diamondPattern && canvasElement) {
       drawDiamondPattern();
     }
-
     return () => {
       if (animationFrame) {
         cancelAnimationFrame(animationFrame);
       }
     };
   });
-
   function drawDiamondPattern() {
     if (!canvasElement) return;
-
     const ctx = canvasElement.getContext('2d');
     if (!ctx) return;
-
     const palette = getCurrentPalette();
     const width = canvasElement.width = 400;
     const height = canvasElement.height = 400;
-
     // Diamond pattern generation
     const diamondSize = 40;
     const rows = Math.ceil(height / diamondSize) + 2;
     const cols = Math.ceil(width / diamondSize) + 2;
-
     let offset = 0;
-
     function animate() {
       ctx.clearRect(0, 0, width, height);
-
       // Create gradient
       const gradient = ctx.createLinearGradient(0, 0, width, height);
       gradient.addColorStop(0, palette.colors.primary + '20');
       gradient.addColorStop(0.5, palette.colors.secondary + '15');
       gradient.addColorStop(1, palette.colors.tertiary + '10');
-
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, width, height);
-
       // Draw diamond pattern
       ctx.strokeStyle = palette.colors.accent[0] + '30';
       ctx.lineWidth = 1;
-
       for (let row = -1; row < rows; row++) {
         for (let col = -1; col < cols; col++) {
           const x = col * diamondSize + (row % 2 === 0 ? 0 : diamondSize / 2);
           const y = row * diamondSize / 2;
-
           // Draw playing card diamond
           ctx.beginPath();
           ctx.moveTo(x + diamondSize / 2, y + offset);
@@ -94,7 +77,6 @@
           ctx.lineTo(x, y + diamondSize / 4 + offset);
           ctx.closePath();
           ctx.stroke();
-
           // Add suit symbols occasionally
           if (Math.random() > 0.95) {
             ctx.font = '12px serif';
@@ -103,26 +85,21 @@
           }
         }
       }
-
-      offset = (offset + 0.5) % diamondSize;
+      offset = (offset + 0.5) % diamondSiz;
       animationFrame = requestAnimationFrame(animate);
     }
-
     animate();
   }
-
   function closeModal() {
     open = false;
     dispatch('close');
   }
-
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
       closeModal();
     }
   }
 </script>
-
 {#if open}
   <Portal>
     <div
@@ -150,10 +127,8 @@
             class="diamond-canvas"
           ></canvas>
         {/if}
-
         <!-- Modal gradient overlay -->
         <div class="gradient-overlay"></div>
-
         <!-- Modal content -->
         <div class="modal-content">
           <!-- Header with playing card styling -->
@@ -170,33 +145,30 @@
               </div>
             </div>
           {/if}
-
           <!-- Body -->
           <div class="modal-body">
-            <slot />
+            {#snippet children(/)}
           </div>
-
           <!-- Footer -->
           <div class="modal-footer">
             <div class="card-corner bottom-left">
               <span class="suit">♦</span>
               <span class="rank">A</span>
             </div>
-            <slot name="footer">
+            {#snippet children(name="footer")}
               <button
                 class="close-button"
                 onclick={closeModal}
               >
                 Close
               </button>
-            </slot>
+            {/snippet}
             <div class="card-corner bottom-right">
               <span class="suit">♦</span>
               <span class="rank">A</span>
             </div>
           </div>
         </div>
-
         <!-- Close button -->
         <button
           class="modal-close"
@@ -209,10 +181,10 @@
     </div>
   </Portal>
 {/if}
-
 <style>
-  .modal-overlay {;
+  .modal-overlay {
     position: fixed;
+d;
     top: 0;
     left: 0;
     right: 0;
@@ -225,7 +197,6 @@
     z-index: 9999;
     padding: 1rem;
   }
-
   .modal-container {
     position: relative;
     background: linear-gradient(135deg,
@@ -242,7 +213,6 @@
     overflow: hidden;
     width: 100%;
   }
-
   .glass-effect {
     backdrop-filter: blur(12px) saturate(1.8);
     background: linear-gradient(135deg,
@@ -251,7 +221,6 @@
       rgba(16, 16, 32, 0.85)
     );
   }
-
   .diamond-canvas {
     position: absolute;
     top: 0;
@@ -261,7 +230,6 @@
     opacity: 0.3;
     pointer-events: none;
   }
-
   .gradient-overlay {
     position: absolute;
     top: 0;
@@ -274,7 +242,6 @@
       linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent);
     pointer-events: none;
   }
-
   .modal-content {
     position: relative;
     z-index: 1;
@@ -283,11 +250,10 @@
     min-height: 200px;
     max-height: 85vh;
   }
-
   .modal-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betwee;
     padding: 1.5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     background: linear-gradient(90deg,
@@ -296,7 +262,6 @@
       transparent
     );
   }
-
   .modal-title {
     font-size: 1.5rem;
     font-weight: bold;
@@ -306,18 +271,16 @@
     flex: 1;
     text-align: center;
   }
-
   .modal-body {
     padding: 2rem;
     overflow-y: auto;
     flex: 1;
     color: rgba(255, 255, 255, 0.9);
   }
-
   .modal-footer {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betwee;
     padding: 1rem 1.5rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     background: linear-gradient(90deg,
@@ -326,7 +289,6 @@
       transparent
     );
   }
-
   .card-corner {
     display: flex;
     flex-direction: column;
@@ -337,23 +299,19 @@
     color: rgba(255, 64, 64, 0.8);
     font-family: 'Georgia', serif;
   }
-
   .card-corner.bottom-left,
   .card-corner.bottom-right {
     transform: rotate(180deg);
   }
-
   .suit {
     font-size: 1.2rem;
     line-height: 1;
   }
-
   .rank {
     font-size: 0.9rem;
     font-weight: bold;
     line-height: 1;
   }
-
   .modal-close {
     position: absolute;
     top: 1rem;
@@ -369,16 +327,14 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2;
     z-index: 2;
   }
-
   .modal-close:hover {
     background: rgba(255, 64, 64, 0.3);
     border-color: rgba(255, 64, 64, 0.5);
     transform: scale(1.1) rotate(90deg);
   }
-
   .close-button {
     padding: 0.5rem 1.5rem;
     background: linear-gradient(135deg,
@@ -390,9 +346,8 @@
     color: #fff;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3;
   }
-
   .close-button:hover {
     background: linear-gradient(135deg,
       rgba(138, 43, 226, 0.5),
@@ -401,17 +356,14 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(138, 43, 226, 0.3);
   }
-
   /* Scrollbar styling */
   .modal-body::-webkit-scrollbar {
     width: 8px;
   }
-
   .modal-body::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.2);
     border-radius: 4px;
   }
-
   .modal-body::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg,
       rgba(138, 43, 226, 0.5),
@@ -419,7 +371,6 @@
     );
     border-radius: 4px;
   }
-
   .modal-body::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(180deg,
       rgba(138, 43, 226, 0.7),

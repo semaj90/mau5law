@@ -5,7 +5,6 @@ import type { RequestHandler } from "@sveltejs/kit"
 import { URL } from "url"
 // TODO: Fix import - // Orphaned content: import {  // Set this to your Coqui TTS server URL
 const COQUI_TTS_URL = "http://localhost:5002/api/tts"
-
 export const GET: RequestHandler = async ({ url }) => {
   const text = url.searchParams.get("text")
   if (!text) {

@@ -5,7 +5,6 @@ import { json } from "@sveltejs/kit"
 import { randomUUID } from "crypto"
 import { promises as fs } from "fs"
 }
-
 export interface EvidenceRecord {
   id: string
   title: string
@@ -24,7 +23,6 @@ export interface EvidenceRecord {
   summary: string | null
   aiSummary: string | null
 }
-
 import type { RequestHandler } from './$types.js'
 export const POST: RequestHandler = (async ({ request, locals }) => {
   const user = locals.user
@@ -56,26 +54,24 @@ export const POST: RequestHandler = (async ({ request, locals }) => {
   } catch (e: any) {
     return json({ error: "File upload failed", details: String(e) }, { status: 500 })
   }
-
   // Auto-tagging (simple: by file type)
   const tags: string[] = [ext.replace(".", ""), "uploaded", `case:${caseId}`]
-
   const newEvidence: EvidenceRecord = {
     id,
     title: file.name,
     description,
     caseId,
-    criminalId: null,
+    criminalId: null
     evidenceType: ext.replace(".", "") || "document",
     fileUrl: `/uploads/${caseId}/${safeName}`,
     fileType: ext.replace(".", ""),
     fileSize: file.size,
     tags,
     uploadedBy: user.id,
-    uploadedAt: now,
-    updatedAt: now,
+    uploadedAt: now
+    updatedAt: now
     fileName: file.name,
-    summary: null,
+    summary: null
     aiSummary: null
   }
   try {

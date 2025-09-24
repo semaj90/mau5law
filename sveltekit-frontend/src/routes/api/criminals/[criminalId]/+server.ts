@@ -2,8 +2,6 @@ import { json } from "@sveltejs/kit"
 import { criminals } from "$lib/server/db/schema-postgres"
 import { db } from "$lib/server/db/index"
 import type { RequestHandler } from './$types.js'
-
-
 export const GET: RequestHandler = async ({ params, locals }) => {
   try {
     if (!locals.user) {
@@ -21,7 +19,6 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       .from(criminals)
       .where(eq(criminals.id, criminalId)
       .limit(1)
-
     if (!criminalResult.length) {
       return json({ error: "Criminal record not found" }, { status: 404 })
     }
@@ -31,7 +28,6 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     return json({ error: "Failed to fetch criminal record" }, { status: 500 })
   }
 }
-
 export const PUT: RequestHandler = async ({ params, request, locals }) => {
   try {
     if (!locals.user) {
@@ -45,21 +41,18 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       return json({ error: "Criminal ID is required" }, { status: 400 })
     }
     const data = await request.json()
-
     // Check if criminal exists
     const existingCriminal = await db
       .select()
       .from(criminals)
       .where(eq(criminals.id, criminalId)
       .limit(1)
-
     if (!existingCriminal.length) {
       return json({ error: "Criminal record not found" }, { status: 404 })
     }
-    const updateData: Record<string, any> = {
+    const updateData: { [key: string]: any } = {
       updatedAt: new Date()
     }
-
     // Map frontend fields to schema fields - only update provided fields
     if (data.firstName !== undefined)
       updateData.firstName = data.firstName.trim()
@@ -104,20 +97,17 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     if (data.aiSummary !== undefined)
       updateData.aiSummary = data.aiSummary?.trim() || null
     if (data.aiTags !== undefined) updateData.aiTags = data.aiTags
-
     const [updatedCriminal] = await db
       .update(criminals)
       .set(updateData)
       .where(eq(criminals.id, criminalId)
       .returning()
-
     return json(updatedCriminal)
   } catch (error: any) {
     console.error("Error updating criminal record:", error)
     return json({ error: "Failed to update criminal record" }, { status: 500 })
   }
 }
-
 export const DELETE: RequestHandler = async ({ params, locals }) => {
   try {
     if (!locals.user) {
@@ -136,7 +126,6 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       .from(criminals)
       .where(eq(criminals.id, criminalId)
       .limit(1)
-
     if (!existingCriminal.length) {
       return json({ error: "Criminal record not found" }, { status: 404 })
     }
@@ -145,14 +134,12 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       .delete(criminals)
       .where(eq(criminals.id, criminalId)
       .returning()
-
     return json({ success: true, deletedCriminal })
   } catch (error: any) {
     console.error("Error deleting criminal record:", error)
     return json({ error: "Failed to delete criminal record" }, { status: 500 })
   }
 }
-
 // PATCH endpoint for partial updates (like status changes)
 export const PATCH: RequestHandler = async ({ params, request, locals }) => {
   try {
@@ -167,21 +154,18 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       return json({ error: "Criminal ID is required" }, { status: 400 })
     }
     const data = await request.json()
-
     // Check if criminal exists
     const existingCriminal = await db
       .select()
       .from(criminals)
       .where(eq(criminals.id, criminalId)
       .limit(1)
-
     if (!existingCriminal.length) {
       return json({ error: "Criminal record not found" }, { status: 404 })
     }
-    const updateData: Record<string, any> = {
+    const updateData: { [key: string]: any } = {
       updatedAt: new Date()
     }
-
     // Handle specific patch operations
     if (data.operation === "updateThreatLevel") {
       updateData.threatLevel = data.threatLevel
@@ -214,7 +198,6 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       .set(updateData)
       .where(eq(criminals.id, criminalId)
       .returning()
-
     return json(updatedCriminal)
   } catch (error: any) {
     console.error("Error patching criminal record:", error)

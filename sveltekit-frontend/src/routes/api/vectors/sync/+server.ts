@@ -1,9 +1,7 @@
 import type { RequestHandler } from './$types.js'
-
 // src/routes/api/vectors/sync/+server.ts
 // Automatic vector synchronization to Qdrant after CUDA processing
 // Triggered by Go microservice after successful vector generation
-
 import { json } from '@sveltejs/kit'
 import { drizzle } from 'drizzle-orm/node-postgres'
 import postgres from 'postgres'
@@ -11,13 +9,11 @@ import type { Redis } from 'ioredis'
 import { createRedisInstance } from '$lib/server/redis'
 import { vectors, vectorJobs, evidence, reports } from '$lib/server/db/schema-postgres.js'
 import { eq } from 'drizzle-orm'
-
 // Initialize connections
 const sql = postgres(
   import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db'
 )
 const db = drizzle(sql)
-
 let redis: ReturnType<typeof createRedisInstance> | null = null
 try { redis = createRedisInstance(); } catch {
   const RedisCtor = (require('ioredis') as any).default || (require('ioredis') as any)
@@ -25,58 +21,48 @@ try { redis = createRedisInstance(); } catch {
     import.meta.env.REDIS_URL || `redis://localhost:${(import.meta.env.REDIS_PORT as any) || 4005}`
   )
 }
-
 // Qdrant client (simple HTTP implementation)
 class QdrantClient {
   private _baseUrl: string
-
   constructor(baseUrl = 'http://localhost:6333') {
     this._baseUrl = baseUrl
   }
-
   get baseUrl() {
     return this._baseUrl
   }
-
   async upsertPoint(
-    collectionName: string,
+    collectionName: string
     pointData: {
       id: string
       vector: number[]
-      payload: Record<string, any>
+      payload: { [key: string]: any }
     }
   ) {
     const response = await fetch(`${this._baseUrl}/collections/${collectionName}/points`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      body: JSON.stringify({,
         points: [pointData]
       })
     })
-
     if (!response.ok) {
       throw new Error(`Qdrant upsert failed: ${response.statusText}`)
     }
-
     return await response.json()
   }
-
   async deletePoint(collectionName: string, pointId: string) {
     const response = await fetch(`${this._baseUrl}/collections/${collectionName}/points/delete`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      body: JSON.stringify({,
         points: [pointId]
       })
     })
-
     if (!response.ok) {
       throw new Error(`Qdrant delete failed: ${response.statusText}`)
     }
-
     return await response.json()
   }
-
   async ensureCollection(collectionName: string, vectorSize = 768) {
     try {
       // Check if collection exists
@@ -84,23 +70,20 @@ class QdrantClient {
       if (checkResponse.ok) {
         return; // Collection already exists
       }
-
       // Create collection
       const createResponse = await fetch(`${this._baseUrl}/collections/${collectionName}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           vectors: {
-            size: vectorSize,
+            size: vectorSize
             distance: 'Cosine'
           }
         })
       })
-
       if (!createResponse.ok) {
         throw new Error(`Failed to create collection: ${createResponse.statusText}`)
       }
-
       console.log(`✅ Created Qdrant collection: ${collectionName}`)
     } catch (error: any) {
       console.error(`❌ Qdrant collection error for ${collectionName}:`, error)
@@ -108,17 +91,13 @@ class QdrantClient {
     }
   }
 }
-
 const qdrant = new QdrantClient()
-
 export const POST: RequestHandler = async ({ request }) => {
   let body: any
   try {
     body = await request.json()
     const { jobId, vectorId, ownerType, ownerId, event } = body
-
     console.log(`🔄 Syncing vector to Qdrant: ${jobId} (${event})`)
-
     // Validate required fields
     if (!jobId || !ownerType || !ownerId || !event) {
       return json({
@@ -127,7 +106,6 @@ export const POST: RequestHandler = async ({ request }) => {
         { status: 400 }
       )
     }
-
     // Update job status to processing
     await db
       .update(vectorJobs)
@@ -137,9 +115,7 @@ export const POST: RequestHandler = async ({ request }) => {
         startedAt: new Date()
       })
       .where(eq(vectorJobs.jobId, jobId)
-
     let result
-
     if (event === 'delete') {
       // Handle deletion
       result = await handleVectorDeletion(ownerType, ownerId)
@@ -147,7 +123,6 @@ export const POST: RequestHandler = async ({ request }) => {
       // Handle upsert/reembed
       result = await handleVectorUpsert(ownerType, ownerId, vectorId)
     }
-
     // Update job status to succeeded
     await db
       .update(vectorJobs)
@@ -158,18 +133,15 @@ export const POST: RequestHandler = async ({ request }) => {
         result: result
       })
       .where(eq(vectorJobs.jobId, jobId)
-
     console.log(`✅ Vector sync completed: ${jobId}`)
-
     return json({
-      success: true,
+      success: true
       jobId,
       result,
       message: `Vector ${event} completed successfully`
     })
   } catch (error: any) {
     console.error('❌ Vector sync error:', error)
-
     // Update job status to failed
     if (body?.jobId) {
       await db
@@ -182,57 +154,47 @@ export const POST: RequestHandler = async ({ request }) => {
         .where(eq(vectorJobs.jobId, body.jobId)
         .catch(console.error)
     }
-
     return json({
-        success: false,
+        success: false
         error: error instanceof Error ? error.message: 'Unknown error'
       },)
       { status: 500 }
     )
   }
 }
-
 async function handleVectorUpsert(
-  ownerType: string,
-  ownerId: string,
+  ownerType: string
+  ownerId: string
   vectorId?: string
 ): Promise<any> {
   // Get vector from PostgreSQL
   const [vector] = await db.select().from(vectors).where(eq(vectors.ownerId, ownerId)).limit(1)
-
   if (!vector || !vector.embedding) {
     throw new Error('Vector not found or embedding missing')
   }
-
   // Get source data for payload
   let sourceData
   let collectionName
-
   switch (ownerType) {
     case 'evidence':
       [sourceData] = await db.select().from(evidence).where(eq(evidence.id, ownerId)).limit(1)
       collectionName = 'legal_evidence'
       break
-
     case 'report':
       [sourceData] = await db.select().from(reports).where(eq(reports.id, ownerId)).limit(1)
       collectionName = 'legal_reports'
       break
-
     default:
       throw new Error(`Unsupported owner type: ${ownerType}`)
   }
-
   if (!sourceData) {
     throw new Error(`Source data not found for ${ownerType}:${ownerId}`)
   }
-
   // Ensure Qdrant collection exists
   await qdrant.ensureCollection(collectionName)
-
   // Prepare point data for Qdrant
   const pointData = {
-    id: ownerId,
+    id: ownerId
     vector: Array.isArray(vector.embedding) ? vector.embedding: [],
     payload: {
       ownerType,
@@ -254,52 +216,43 @@ async function handleVectorUpsert(
       })
     }
   }
-
   // Upsert to Qdrant
   const qdrantResult = await qdrant.upsertPoint(collectionName, pointData)
-
   return {
     action: 'upserted',
-    collection: collectionName,
-    pointId: ownerId,
+    collection: collectionName
+    pointId: ownerId
     vectorDimensions: pointData.vector.length,
     qdrantResult
   }
 }
-
 async function handleVectorDeletion(ownerType: string, ownerId: string): Promise<any> {
   const collectionName = ownerType === 'evidence' ? 'legal_evidence' : 'legal_reports'
-
   // Delete from Qdrant
   const qdrantResult = await qdrant.deletePoint(collectionName, ownerId)
-
   return {
     action: 'deleted',
-    collection: collectionName,
-    pointId: ownerId,
+    collection: collectionName
+    pointId: ownerId
     qdrantResult
   }
 }
-
 // Health check endpoint
 export const GET: RequestHandler = async () => {
   try {
     // Check Qdrant connection
     const response = await fetch(`${qdrant.baseUrl || 'http://localhost:6333'}/collections`)
     const collections = response.ok ? await response.json() : null
-
     // Check PostgreSQL connection
     const [pgTest] = await db.select().from(vectors).limit(1)
-
     // Check Redis connection (ioredis)
     let redisOk = false
     try {
   const pong = await (redis as any)?.ping?.()
       redisOk = pong === 'PONG' || pong === 'pong'
-    } catch {}
-
+    } catch (error) {}
     return json({
-      success: true,
+      success: true
       services: {
         qdrant: {
           connected: response.ok,
@@ -314,7 +267,7 @@ export const GET: RequestHandler = async () => {
     })
   } catch (error: any) {
     return json({
-        success: false,
+        success: false
         error: error instanceof Error ? error.message: 'Health check failed'
       },)
       { status: 500 }

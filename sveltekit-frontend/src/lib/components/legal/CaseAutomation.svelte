@@ -1,12 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import {  , onMount  } from "svelte";
+  import { onMount  } from "svelte";
   import Dropdown from '$lib/components/ui/Dropdown.svelte';
   import Checkbox from '$lib/components/ui/Checkbox.svelte';
   import { goTensorService, type TensorRequest, generateTensorRequest } from '$lib/services/go-tensor-service-client';
-  
-
   // Automation configuration
   let selectedAutomationType: string = $state('');
   let selectedSource: string = $state('');
@@ -25,7 +22,6 @@
     totalBatches: 0,
     processingTime: 0
   });
-
   // Legal automation types with AI capabilities
   async function fetchAutomationTypes() {
     await new Promise(resolve => setTimeout(resolve, 500));
@@ -40,7 +36,6 @@
     ];
     loadingAutomationTypes = false;
   }
-
   // Enhanced source options for legal workflows
   const sourceOptions = [
     { value: 'shared_drive_litigation', label: 'Litigation Shared Drive' },
@@ -51,7 +46,6 @@
     { value: 'document_scanner', label: 'Document Scanner Integration' },
     { value: 'cloud_storage', label: 'Cloud Storage (AWS S3/MinIO)' }
   ];
-
   // AI processing configuration options
   const processingOptions = [
     { value: 'entity_extraction', label: 'Legal Entity Extraction', checked: true },
@@ -62,33 +56,28 @@
     { value: 'sentiment_analysis', label: 'Sentiment Analysis', checked: false },
     { value: 'compliance_check', label: 'Compliance Validation', checked: false }
   ];
-
   let selectedProcessingOptions = $state(new Set(['entity_extraction', 'document_classification', 'similarity_analysis', 'key_phrase_extraction']));
-
   // Handle automation configuration submission
   const handleSubmit = async () => {
     if (!selectedAutomationType || !selectedSource) {
       ondispatch?.('Please select automation type and source');
       return;
     }
-
     processing = true;
     const startTime = Date.now();
-
     try {
       // Create automation configuration
       const automationConfig = {
         id: `automation_${Date.now()}_${Math.random.toString-substr(2, 9)}`,
-        type: selectedAutomationType,;
-        source: selectedSource,
-        autoProcessing: enableAutoProcessing,
-        gpuAcceleration: enableGPUAcceleration,
-        batchSize: batchSize,
-        confidenceThreshold: confidenceThreshold,
+        type: selectedAutomationType
+        source: selectedSource
+        autoProcessing: enableAutoProcessing
+        gpuAcceleration: enableGPUAcceleration
+        batchSize: batchSize
+        confidenceThreshold: confidenceThreshold
         processingOptions: Array.from(selectedProcessingOptions),
         createdAt: new Date().toISOString();
       };
-
       // Initialize tensor service if GPU acceleration is enabled
       if (enableGPUAcceleration) {
         try {
@@ -100,30 +89,25 @@
           console.log('Tensor service not available, using fallback mode');
         }
       }
-
       // Simulate batch processing setup
       if (enableAutoProcessing) {
         await simulateBatchProcessing(automationConfig);
       }
-
       // Save configuration (in real app, this would call your API)
       const response = await fetch('/api/legal/automation/config', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(automationConfig);
       });
-
       if (!response.ok) {
         throw new Error('Failed to save automation configuration');
       }
-
       processingStats.processingTime = Date.now() - startTime;
       ondispatch?.({
-        type: selectedAutomationType,;
-        source: selectedSource,;
+        type: selectedAutomationType
+        source: selectedSource
         config: automationConfig;
       });
-
       // Reset form
       selectedAutomationType = '';
       selectedSource = '';
@@ -135,7 +119,6 @@
       processing = false;
     }
   };
-
   // Simulate batch document processing with GPU acceleration
   async function simulateBatchProcessing(config: unknown) {
     const mockDocuments = generateMockLegalDocuments(config.batchSize);
@@ -143,13 +126,12 @@
     processingStats.totalBatches = Math.ceil(mockDocuments.length / 10);
     const batchId = `batch_${Date.now()}`;
     ondispatch?.({ batchId, documentCount: mockDocuments.length });
-
     for (let i = 0; i < processingStats.totalBatches; i++) {
       processingStats.currentBatch = i + 1;
       const batch = mockDocuments.slice(i * 10, (i + 1) * 10);
       if (config.gpuAcceleration) {
         // Process batch with tensor service
-        const tensorRequests: TensorRequest[] = batch.map(doc => 
+        const tensorRequests: TensorRequest[] = batch.map(doc =>
           generateTensorRequest(doc.id, doc.vectorData, 'analyze')
         );
         try {
@@ -163,21 +145,18 @@
       await new Promise(resolve => setTimeout(resolve, 200));
     }
   }
-
   // Generate mock legal documents for testing
   function generateMockLegalDocuments(count: number) {
     return Array.from({ length: count }, (_, i) => ({
-      id: `doc_${i + 1}`,;
+      id: `doc_${i + 1}`,
       type: ['contract', 'evidence', 'brief', 'motion', 'discovery'][Math.floor(Math.random() * 5)],
       vectorData: new Float32Array(768).map(() => Math.random() * 2 - 1);
     }));
   }
-
   $effect(() => {
     fetchAutomationTypes();
   });
 </script>
-
 <div class="rounded-xl bg-white shadow-lg border border-gray-200 p-8 max-w-4xl mx-auto">
   <div class="border-b border-gray-200 pb-4 mb-6">
     <h3 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
@@ -185,7 +164,6 @@
       <span class="text-sm font-normal text-gray-500">AI-Powered Document Processing</span>
     </h3>
   </div>
-
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
     <!-- Configuration Panel -->
     <div class="space-y-6">
@@ -196,33 +174,31 @@
         {#if loadingAutomationTypes}
           <div class="w-full h-10 bg-gray-100 animate-pulse rounded-md"></div>
         {:else}
-          <Dropdown 
-            id="automationTypeSelect" 
-            bind:selected={selectedAutomationType} 
+          <Dropdown
+            id="automationTypeSelect"
+            bind:selected={selectedAutomationType}
             options={automationTypeOptions}
             placeholder="Select automation type..."
           />
         {/if}
       </div>
-
       <div>
         <label for="sourceSelect" class="block font-semibold mb-2 text-gray-700">
           Document Source
         </label>
-        <Dropdown 
+        <Dropdown
           id="sourceSelect" ;
-          bind:selected={selectedSource} 
+          bind:selected={selectedSource}
           options={sourceOptions}
           placeholder="Select document source..."
         />
       </div>
-
       <!-- Processing Options -->
       <div>
         <label class="block font-semibold mb-3 text-gray-700">AI Processing Options</label>
         <div class="space-y-2 max-h-32 overflow-y-auto">
           {#each processingOptions as option}
-            <Checkbox 
+            <Checkbox
               id="processing_{option.value}"
               label={option.label}
               checked={selectedProcessingOptions.has(option.value)}
@@ -232,54 +208,49 @@
                 } else {
                   selectedProcessingOptions.delete(option.value);
                 }
-                selectedProcessingOptions = selectedProcessingOptions;
+                selectedProcessingOptions = selectedProcessingOption;
               }}
             />
           {/each}
         </div>
       </div>
-
       <!-- Advanced Settings -->
       <div class="space-y-4 p-4 bg-gray-50 rounded-lg">
         <h4 class="font-medium text-gray-800">Advanced Configuration</h4>
-        
-        <Checkbox 
-          id="autoProcessCheckbox" 
-          bind:checked={enableAutoProcessing} 
-          label="Enable Automatic Processing" 
+        <Checkbox
+          id="autoProcessCheckbox"
+          bind:checked={enableAutoProcessing}
+          label="Enable Automatic Processing"
         />
-        
-        <Checkbox 
-          id="gpuAccelCheckbox" 
-          bind:checked={enableGPUAcceleration} 
-          label="GPU Acceleration (Tensor Service)" 
+        <Checkbox
+          id="gpuAccelCheckbox"
+          bind:checked={enableGPUAcceleration}
+          label="GPU Acceleration (Tensor Service)"
         />
-
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label for="batchSize" class="block text-sm font-medium text-gray-700">
               Batch Size
             </label>
-            <input 
+            <input
               id="batchSize"
-              type="number" 
+              type="number"
               bind:value={batchSize}
-              min="1" 
+              min="1"
               max="100"
               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
-          
           <div>
             <label for="confidence" class="block text-sm font-medium text-gray-700">
               Confidence Threshold
             </label>
-            <input 
+            <input
               id="confidence"
               type="number" ;
               bind:value={confidenceThreshold}
-              min="0.1" 
-              max="1" 
+              min="0.1"
+              max="1"
               step="0.05"
               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
@@ -287,7 +258,6 @@
         </div>
       </div>
     </div>
-
     <!-- Status Panel -->
     <div class="space-y-6">
       {#if processing}
@@ -303,7 +273,7 @@
               <span class="font-mono">{processingStats.currentBatch}/{processingStats.totalBatches}</span>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-2">
-              <div 
+              <div
                 class="bg-blue-600 h-2 rounded-full transition-all duration-300"
                 style="width: {processingStats.totalDocuments > 0 ? (processingStats.documentsProcessed / processingStats.totalDocuments) * 100 : 0}%"
               ></div>
@@ -311,7 +281,6 @@
           </div>
         </div>
       {/if}
-
       <div class="p-4 bg-gray-50 rounded-lg">
         <h4 class="font-medium text-gray-800 mb-3">Configuration Summary</h4>
         <div class="space-y-2 text-sm">
@@ -339,7 +308,6 @@
           </div>
         </div>
       </div>
-
       {#if processingStats.processingTime > 0}
         <div class="p-4 bg-green-50 rounded-lg border border-green-200">
           <h4 class="font-medium text-green-800 mb-2">Last Processing Results</h4>
@@ -351,10 +319,9 @@
       {/if}
     </div>
   </div>
-
   <!-- Action Button -->
   <div class="mt-8 pt-6 border-t border-gray-200">
-    <button 
+    <button
       class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
       onclick={handleSubmit}
       disabled={processing || !selectedAutomationType || !selectedSource}
@@ -369,23 +336,19 @@
     </button>
   </div>
 </div>
-
 <style>
   /* Custom scrollbar for processing options */
-  .overflow-y-auto::-webkit-scrollbar {;
+  .overflow-y-auto::-webkit-scrollbar {
     width: 4px;
   }
-  
   .overflow-y-auto::-webkit-scrollbar-track {
     background: #f1f5f9;
     border-radius: 2px;
   }
-  
   .overflow-y-auto::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 2px;
   }
-  
   .overflow-y-auto::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
   }

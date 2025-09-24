@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { enhance } from '$app/forms';
   import { page } from '$app/state';
   import type { PageData, ActionData } from './$types';
@@ -26,8 +25,8 @@
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric',;
-      hour: '2-digit',;
+      day: 'numeric',
+      hour: '2-digit',
       minute: '2-digit';
     });
   }
@@ -56,7 +55,7 @@
     }
   }
   function openSessionModal(session: unknown) {
-    selectedSession = session;
+    selectedSession = sessio;
     showSessionModal = true;
   }
   function closeSessionModal() {
@@ -75,18 +74,16 @@
     return true;
   }
 </script>
-
 <svelte:head>
   <title>User Details - {(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.firstName} {(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.lastName} - YoRHa Legal AI</title>
 </svelte:head>
-
 <div class="min-h-screen bg-black text-amber-300 font-mono">
   <!-- YoRHa Header -->
   <header class="border-b-2 border-amber-300 bg-gray-900 p-4">
     <div class="container mx-auto">
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-4">
-          <button 
+          <button
             onclick={() => goto('/admin/users')}
             class="px-4 py-2 bg-gray-700 text-amber-300 border-2 border-amber-300 hover:bg-gray-600 transition-colors"
           >
@@ -102,7 +99,6 @@
           <span class="text-sm">ACTIVE</span>
         </div>
       </div>
-      
       <!-- User Header Info -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
         <div class="bg-gray-800 p-3 rounded border border-amber-300">
@@ -126,7 +122,6 @@
       </div>
     </div>
   </header>
-
   <main class="container mx-auto p-6 space-y-6">
     <!-- Statistics Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -134,23 +129,19 @@
         <div class="text-3xl font-bold text-amber-300 mb-2">{(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).stats.casesCount}</div>
         <div class="text-sm text-gray-300 font-semibold tracking-wider">TOTAL CASES</div>
       </div>
-      
       <div class="bg-gray-900 border-2 border-amber-300 p-6 text-center">
         <div class="text-3xl font-bold text-amber-300 mb-2">{(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).stats.evidenceCount}</div>
         <div class="text-sm text-gray-300 font-semibold tracking-wider">EVIDENCE ITEMS</div>
       </div>
-      
       <div class="bg-gray-900 border-2 border-amber-300 p-6 text-center">
         <div class="text-3xl font-bold text-amber-300 mb-2">{(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).stats.aiHistoryCount}</div>
         <div class="text-sm text-gray-300 font-semibold tracking-wider">AI INTERACTIONS</div>
       </div>
-      
       <div class="bg-gray-900 border-2 border-amber-300 p-6 text-center">
         <div class="text-3xl font-bold text-amber-300 mb-2">{(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).stats.sessionsCount}</div>
         <div class="text-sm text-gray-300 font-semibold tracking-wider">ACTIVE SESSIONS</div>
       </div>
     </div>
-
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- User Management Panel -->
       <div class="bg-gray-900 border-2 border-amber-300">
@@ -164,14 +155,12 @@
           >
             [EDIT PROFILE] Update name and details
           </button>
-          
           <button
             onclick={() => showPasswordModal = true}
             class="w-full px-4 py-2 bg-orange-900 text-amber-300 border-2 border-orange-500 hover:bg-orange-800 transition-colors text-left"
           >
             [RESET PASSWORD] Force password change
           </button>
-          
           <div class="grid grid-cols-2 gap-2">
             <button
               onclick={() => goto(`/admin/users/${(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.id}/cases`)}
@@ -188,7 +177,6 @@
           </div>
         </div>
       </div>
-
       <!-- Recent Cases -->
       <div class="bg-gray-900 border-2 border-amber-300">
         <div class="border-b border-amber-300 p-4">
@@ -218,7 +206,6 @@
         </div>
       </div>
     </div>
-
     <!-- Recent AI Interactions -->
     <div class="bg-gray-900 border-2 border-amber-300">
       <div class="border-b border-amber-300 p-4">
@@ -275,7 +262,6 @@
         </table>
       </div>
     </div>
-
     <!-- Active Sessions -->
     <div class="bg-gray-900 border-2 border-amber-300">
       <div class="border-b border-amber-300 p-4">
@@ -287,7 +273,7 @@
             <div>
               <div class="text-sm font-mono text-amber-400">Session: {session.id.substring(0, 8)}...</div>
               <div class="text-xs text-gray-400">
-                Created: {formatDate(session.created_at)} | 
+                Created: {formatDate(session.created_at)} |
                 Expires: {formatDate(session.expires_at)}
               </div>
             </div>
@@ -305,7 +291,6 @@
     </div>
   </main>
 </div>
-
 <!-- Profile Edit Modal -->
 {#if showProfileModal}
   <div class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
@@ -313,7 +298,6 @@
       <div class="border-b border-amber-300 pb-4 mb-4">
         <h2 class="text-xl font-bold">EDIT PROFILE</h2>
       </div>
-      
       <form method="POST" action="?/updateProfile" use:enhance={() => {
         formLoading = true;
         return ({ result }) => {
@@ -335,7 +319,6 @@
               class="w-full px-3 py-2 bg-black border-2 border-amber-300 text-amber-300 focus:outline-none focus:border-amber-400"
             />
           </div>
-          
           <div>
             <label for="lastName" class="block text-sm font-bold mb-2">LAST NAME</label>
             <input
@@ -348,17 +331,16 @@
             />
           </div>
         </div>
-        
         <div class="flex justify-end gap-3 mt-6">
-          <button 
-            type="button" 
+          <button
+            type="button"
             onclick={() => showProfileModal = false}
             class="px-4 py-2 bg-gray-700 text-amber-300 border-2 border-amber-300 hover:bg-gray-600 transition-colors"
           >
             [CANCEL]
           </button>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={formLoading}
             class="px-4 py-2 bg-amber-300 text-black border-2 border-amber-300 hover:bg-amber-400 transition-colors disabled:opacity-50"
           >
@@ -369,7 +351,6 @@
     </div>
   </div>
 {/if}
-
 <!-- Password Reset Modal -->
 {#if showPasswordModal}
   <div class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
@@ -377,14 +358,12 @@
       <div class="border-b border-red-500 pb-4 mb-4">
         <h2 class="text-xl font-bold text-red-300">RESET PASSWORD</h2>
       </div>
-      
       <div class="bg-red-900/20 border border-red-500 p-4 mb-4">
         <p class="text-red-300 font-bold mb-2">WARNING</p>
         <p class="text-gray-300 text-sm">
           This will reset the user's password and revoke all active sessions.
         </p>
       </div>
-      
       <form method="POST" action="?/resetPassword" use:enhance={() => {
         if (!validatePasswordForm()) return false;
         formLoading = true;
@@ -410,7 +389,6 @@
               class="w-full px-3 py-2 bg-black border-2 border-amber-300 text-amber-300 focus:outline-none focus:border-amber-400"
             />
           </div>
-          
           <div>
             <label for="confirmPassword" class="block text-sm font-bold mb-2">CONFIRM PASSWORD</label>
             <input
@@ -424,17 +402,16 @@
             />
           </div>
         </div>
-        
         <div class="flex justify-end gap-3 mt-6">
-          <button 
-            type="button" 
+          <button
+            type="button"
             onclick={() => showPasswordModal = false}
             class="px-4 py-2 bg-gray-700 text-amber-300 border-2 border-amber-300 hover:bg-gray-600 transition-colors"
           >
             [CANCEL]
           </button>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={formLoading}
             class="px-4 py-2 bg-red-800 text-amber-300 border-2 border-red-500 hover:bg-red-700 transition-colors disabled:opacity-50"
           >
@@ -445,7 +422,6 @@
     </div>
   </div>
 {/if}
-
 <!-- Session Revoke Modal -->
 {#if showSessionModal && selectedSession}
   <div class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
@@ -453,7 +429,6 @@
       <div class="border-b border-red-500 pb-4 mb-4">
         <h2 class="text-xl font-bold text-red-300">REVOKE SESSION</h2>
       </div>
-      
       <div class="space-y-4">
         <div class="bg-red-900/20 border border-red-500 p-4">
           <p class="text-red-300 font-bold mb-2">CONFIRM REVOCATION</p>
@@ -461,7 +436,6 @@
             This will immediately terminate session {selectedSession.id.substring(0, 8)}... and log the user out.
           </p>
         </div>
-        
         <form method="POST" action="?/revokeSession" use:enhance={() => {
           formLoading = true;
           return ({ result }) => {
@@ -472,17 +446,16 @@
           };
         }}>
           <input type="hidden" name="sessionId" value={selectedSession.id} />
-          
           <div class="flex justify-end gap-3 mt-6">
-            <button 
-              type="button" 
+            <button
+              type="button"
               onclick={closeSessionModal}
               class="px-4 py-2 bg-gray-700 text-amber-300 border-2 border-amber-300 hover:bg-gray-600 transition-colors"
             >
               [CANCEL]
             </button>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={formLoading}
               class="px-4 py-2 bg-red-800 text-amber-300 border-2 border-red-500 hover:bg-red-700 transition-colors disabled:opacity-50"
             >
@@ -494,33 +467,28 @@
     </div>
   </div>
 {/if}
-
 <style>
   /* YoRHa cyberpunk aesthetic */
-  :global(body) {;
+  :global(body) {
     background: #000;
     color: #fbbf24;
   }
-  
   /* Custom scrollbar */
   .overflow-y-auto::-webkit-scrollbar,
   .overflow-x-auto::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
-  
   .overflow-y-auto::-webkit-scrollbar-track,
   .overflow-x-auto::-webkit-scrollbar-track {
     background: #1f2937;
   }
-  
   .overflow-y-auto::-webkit-scrollbar-thumb,
   .overflow-x-auto::-webkit-scrollbar-thumb {
     background: #fbbf24;
     border-radius: 4px;
   }
-  
-  .overflow-y-auto::-webkit-scrollbar-thumb:hover,
+  .overflow-y-auto::-webkit-scrollbar-thumb: hover
   .overflow-x-auto::-webkit-scrollbar-thumb:hover {
     background: #f59e0b;
   }

@@ -1,11 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import { tweened } from 'svelte/motion';
   import { cubicOut } from 'svelte/easing';
   import { Brain, Cpu, Zap, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-svelte';
-
   let {
     isLoading = false,
     title = 'Processing...',
@@ -31,49 +29,41 @@
     size?: 'sm' | 'md' | 'lg';
     variant?: 'overlay' | 'inline' | 'modal';
   } = $props();
-
   const progressTween = tweened(0, {
-    duration: 300,;
+    duration: 300,
     easing: cubicOut;
   });
-
   let startTime = Date.now();
   let elapsedTime = $state(0);
   let intervalId: ReturnType<typeof setInterval> | null = null;
-
   $effect(() => { progressTween.set(progress); });
-
   let sizeClasses = $derived({
-    sm: 'text-sm p-3',;
-    md: 'text-base p-4',;
+    sm: 'text-sm p-3',
+    md: 'text-base p-4',
     lg: 'text-lg p-6';
   });
-
   let iconSize = $derived({
-    sm: 'w-4 h-4',;
-    md: 'w-5 h-5',;
+    sm: 'w-4 h-4',
+    md: 'w-5 h-5',
     lg: 'w-6 h-6';
   });
-
   function getOperationIcon(op: string) {
     switch (op) {
-      case 'ai': return Brain;
+      case 'ai': return Brai;
       case 'gpu': return Zap;
       case 'cpu': return Cpu;
-      case 'upload': return CheckCircle;
-      default: return Brain;
+      case 'upload': return CheckCircl;
+      default: return Brai;
     }
   }
-
   function getStatusIcon(st: string) {
     switch (st) {
-      case 'success': return CheckCircle;
-      case 'error': return XCircle;
-      case 'warning': return AlertCircle;
+      case 'success': return CheckCircl;
+      case 'error': return XCircl;
+      case 'warning': return AlertCircl;
       default: return getOperationIcon(operation);
     }
   }
-
   function getStatusColor(st: string) {
     switch (st) {
       case 'success': return 'text-green-400';
@@ -90,31 +80,26 @@
       default: return 'text-gray-400';
     }
   }
-
   function formatTime(seconds: number) {
     if (seconds < 60) return `${Math.round(seconds)}s`;
     if (seconds < 3600) return `${Math.round(seconds / 60)}m ${Math.round(seconds % 60)}s`;
     return `${Math.round(seconds / 3600)}h ${Math.round((seconds % 3600) / 60)}m`;
   }
-
   function updateElapsedTime() {
     elapsedTime = (Date.now() - startTime) / 1000;
   }
-
   $effect(() => {
     if (isLoading) {
       startTime = Date.now();
       intervalId = setInterval(updateElapsedTime, 100);
     }
   });
-
   onDestroy(() => {
     if (intervalId) {
       clearInterval(intervalId);
       intervalId = null;
     }
   });
-
   $effect(() => {
     if (isLoading) {
       if (!intervalId) {
@@ -129,7 +114,6 @@
     }
   });
 </script>
-
 {#if isLoading || status !== 'loading'}
   <div class="ai-loading-component {variant} {sizeClasses[size]}">
     {#if variant === 'overlay'}
@@ -157,21 +141,18 @@
                   />
                 {/if}
               </div>
-
               <!-- Content -->
               <div class="flex-1 min-w-0">
                 <!-- Title -->
                 <h3 class="font-semibold text-gray-900 dark:text-gray-100 truncate">
                   {title}
                 </h3>
-
                 <!-- Description -->
                 {#if description}
                   <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
                     {description}
                   </p>
                 {/if}
-
                 <!-- Progress Bar -->
                 {#if showProgress && status === 'loading'}
                   <div class="mt-3">
@@ -187,7 +168,6 @@
                     </div>
                   </div>
                 {/if}
-
                 <!-- Time Information -->
                 {#if isLoading && (showEstimate || elapsedTime > 0)}
                   <div class="mt-2 flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
@@ -204,7 +184,6 @@
                     {/if}
                   </div>
                 {/if}
-
                 <!-- Operation Details -->
                 {#if operation && status === 'loading'}
                   <div class="mt-2">
@@ -246,21 +225,18 @@
                 />
               {/if}
             </div>
-
             <!-- Content -->
             <div class="flex-1 min-w-0">
               <!-- Title -->
               <h3 class="font-semibold text-gray-900 dark:text-gray-100 truncate">
                 {title}
               </h3>
-
               <!-- Description -->
               {#if description}
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
                   {description}
                 </p>
               {/if}
-
               <!-- Progress Bar -->
               {#if showProgress && status === 'loading'}
                 <div class="mt-3">
@@ -276,7 +252,6 @@
                   </div>
                 </div>
               {/if}
-
               <!-- Time Information -->
               {#if isLoading && (showEstimate || elapsedTime > 0)}
                 <div class="mt-2 flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
@@ -293,7 +268,6 @@
                   {/if}
                 </div>
               {/if}
-
               <!-- Operation Details -->
               {#if operation && status === 'loading'}
                 <div class="mt-2">
@@ -333,21 +307,18 @@
               />
             {/if}
           </div>
-
           <!-- Content -->
           <div class="flex-1 min-w-0">
             <!-- Title -->
             <h3 class="font-semibold text-gray-900 dark:text-gray-100 truncate">
               {title}
             </h3>
-
             <!-- Description -->
             {#if description}
               <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
                 {description}
               </p>
             {/if}
-
             <!-- Progress Bar -->
             {#if showProgress && status === 'loading'}
               <div class="mt-3">
@@ -363,7 +334,6 @@
                 </div>
               </div>
             {/if}
-
             <!-- Time Information -->
             {#if isLoading && (showEstimate || elapsedTime > 0)}
               <div class="mt-2 flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
@@ -380,7 +350,6 @@
                 {/if}
               </div>
             {/if}
-
             <!-- Operation Details -->
             {#if operation && status === 'loading'}
               <div class="mt-2">
@@ -399,30 +368,24 @@
     {/if}
   </div>
 {/if}
-
 <style>
   .ai-loading-component.inline {
     @apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm;
   }
-
   .ai-loading-component.modal {
     @apply bg-transparent;
   }
-
   .ai-loading-component.overlay {
     @apply bg-transparent;
   }
-
   @keyframes shimmer {
     0% { transform: translateX(-100%); }
     100% { transform: translateX(100%); }
   }
-
   .loading-shimmer {
     position: relative;
     overflow: hidden;
   }
-
   .loading-shimmer::after {
     position: absolute;
     top: 0;

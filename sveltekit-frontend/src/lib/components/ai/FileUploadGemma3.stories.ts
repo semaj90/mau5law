@@ -1,9 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
 import FileUploadGemma3 from './FileUploadGemma3.svelte.js';
-
 const meta = {
   title: 'AI/FileUploadGemma3',
-  component: FileUploadGemma3,
+  component: FileUploadGemma3
   parameters: {
     layout: 'padded',
     docs: {
@@ -33,17 +32,15 @@ const meta = {
     enableAIProcessing: {
       control: 'boolean',
       description: 'Enable AI processing and analysis',
-      table: {;
+      table: {
         type: { summary: 'boolean' },
         defaultValue: { summary: 'true' }
       }
     }
   }
 } satisfies Meta<FileUploadGemma3>;
-
 export default meta;
 type Story = StoryObj<typeof meta>;
-
 // Default file upload interface
 export const Default: Story = {
   args: {
@@ -58,8 +55,7 @@ export const Default: Story = {
     enableAIProcessing: true
   }
 };
-
-// Large file support;
+// Large file support
 export const LargeFileSupport: Story = {
   args: {
     maxFileSize: 104857600, // 100MB
@@ -76,14 +72,13 @@ export const LargeFileSupport: Story = {
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'File upload with large file support (100MB) and multimedia types'
       }
     }
   }
 };
-
-// AI processing disabled;
+// AI processing disabled
 export const SimpleUpload: Story = {
   args: {
     maxFileSize: 5242880, // 5MB
@@ -92,14 +87,13 @@ export const SimpleUpload: Story = {
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Simple file upload without AI processing - faster for basic use cases'
       }
     }
   }
 };
-
-// Legal document specific;
+// Legal document specific
 export const LegalDocuments: Story = {
   args: {
     maxFileSize: 52428800, // 50MB
@@ -114,14 +108,13 @@ export const LegalDocuments: Story = {
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Optimized for legal document formats with enhanced AI analysis'
       }
     }
   }
 };
-
-// Image and media upload;
+// Image and media upload
 export const MediaUpload: Story = {
   args: {
     maxFileSize: 209715200, // 200MB
@@ -139,14 +132,13 @@ export const MediaUpload: Story = {
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Media upload with OCR and audio transcription capabilities'
       }
     }
   }
 };
-
-// Minimal configuration;
+// Minimal configuration
 export const Minimal: Story = {
   args: {
     maxFileSize: 1048576, // 1MB
@@ -155,7 +147,7 @@ export const Minimal: Story = {
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Minimal upload component for simple text files only'
       }
     }

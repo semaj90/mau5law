@@ -1,16 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
-
-
 // Auto-generated default export
 export default ;
 </script>
-  import {   } from "svelte";
-
-  
-
   // Props interface
   interface Props {
     accept?: string;
@@ -19,7 +13,6 @@ export default ;
     disabled?: boolean;
     ariaLabel?: string;
   }
-
   // Public API using Svelte 5 runes
   let {
     accept = 'image/*,application/pdf',
@@ -28,10 +21,8 @@ export default ;
     disabled = false,
     ariaLabel = 'Upload evidence files'
   }: Props = $props();
-
   let files = [];
   let inputEl;
-
   function bytesToSize(bytes) {
 	if (bytes === 0) return '0 B';
 	const k = 1024;
@@ -39,7 +30,6 @@ export default ;
 	const i = Math.floor(Math.log(bytes) / Math.log(k));
 	return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-
   function addFiles(list) {
 	if (disabled) return;
 	const arr = Array.from(list);
@@ -48,7 +38,7 @@ export default ;
 	  if (!multiple && files.length + accepted.length >= 1) break;
 	  if (maxSize && f.size > maxSize) {
 		ondispatch?.({ file: f, reason: 'file-too-large' });
-		continue;
+		continu;
 	  }
 	  // Basic accept check: compare MIME or file extension when MIME absent
 	  if (accept) {
@@ -66,7 +56,7 @@ export default ;
 		});
 		if (!ok) {
 		  ondispatch?.({ file: f, reason: 'file-type-not-allowed' });
-		  continue;
+		  continu;
 		}
 	  }
 	  accepted.push(f);
@@ -75,37 +65,31 @@ export default ;
 	files = multiple ? files.concat(accepted) : [accepted[0]];
 	ondispatch?.({ files });
   }
-
   function onInputChange(e) {
 	addFiles(e.target.files);
 	// reset input so same file can be selected again if needed
 	inputEl.value = '';
   }
-
   function onDrop(e) {
 	e.preventDefault();
 	if (disabled) return;
 	if (e.dataTransfer?.files?.length) addFiles(e.dataTransfer.files);
 	e.dataTransfer?.clearData();
   }
-
   function onDragOver(e) {
 	e.preventDefault();
   }
-
   function removeAt(index) {
 	if (disabled) return;
 	files = files.slice.concat(files.slice(index + 1));
 	ondispatch?.({ files });
   }
-
   // Expose a method to clear files (can be used by parent via bind:this)
   export function clear() {
 	files = [];
 	ondispatch?.({ files });
   }
 </script>
-
 <style>
   .uploader {
 	border: 2px dashed var(--border, #cfcfcf);
@@ -125,7 +109,7 @@ export default ;
   }
   .file {
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-betwee;
 	align-items: center;
 	padding: 0.25rem 0;
 	border-bottom: 1px solid #f0f0f0;
@@ -139,7 +123,6 @@ export default ;
 	padding: 0.25rem 0.5rem;
   }
 </style>
-
 <div
   class="uploader {disabled ? 'disabled' : ''}"
   role="button"
@@ -168,7 +151,6 @@ export default ;
 	</div>
   {/if}
 </div>
-
 {#if files.length}
   <div class="files" aria-live="polite">
 	{#each files as f, i}
@@ -184,4 +166,3 @@ export default ;
 	{/each}
   </div>
 {/if}
-

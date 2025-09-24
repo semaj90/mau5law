@@ -1,20 +1,16 @@
 /*
  * RabbitMQ Queue Statistics API Endpoint
- * 
+ *
  * Provides detailed statistics about queue performance and message flow
  */
-
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
 export const GET: RequestHandler = async ({ url }) => {
 	try {
 		const queueName = url.searchParams.get('queue')
 		const detailed = url.searchParams.get('detailed') === 'true'
-
 		// In a real implementation, this would query actual RabbitMQ Management API
 		// For development, we'll simulate realistic queue statistics
-		
 		const timestamp = new Date().toISOString()
 		const baseStats = {
 			'legal.docs.process': {
@@ -33,7 +29,7 @@ export const GET: RequestHandler = async ({ url }) => {
 				}
 			},
 			'legal.chunks.embed': {
-				name: 'legal.chunks.embed', 
+				name: 'legal.chunks.embed',
 				messages: Math.floor(Math.random() * 50),
 				messages_ready: Math.floor(Math.random() * 25),
 				messages_unacknowledged: Math.floor(Math.random() * 10),
@@ -78,11 +74,9 @@ export const GET: RequestHandler = async ({ url }) => {
 				}
 			}
 		}
-
 		// If specific queue requested, return only that queue's stats
 		if (queueName && baseStats[queueName as keyof typeof baseStats]) {
 			const queueStats = baseStats[queueName as keyof typeof baseStats]
-			
 			if (detailed) {
 				return json({
 					...queueStats,
@@ -106,16 +100,14 @@ export const GET: RequestHandler = async ({ url }) => {
 							tag: `consumer_${i + 1}`,
 							channel: `channel_${i + 1}`,
 							prefetch_count: 10,
-							ack_required: true,
+							ack_required: true
 							active: true
 						})
 					}
 				})
 			}
-			
 			return json({ [queueName]: queueStats, timestamp })
 		}
-
 		// Return all queue statistics
 		const allStats = {
 			timestamp,
@@ -124,7 +116,6 @@ export const GET: RequestHandler = async ({ url }) => {
 			total_consumers: Object.values(baseStats).reduce((sum, queue) => sum + queue.consumers, 0),
 			queues: baseStats
 		}
-
 		if (detailed) {
 			allStats['system_metrics'] = {
 				memory_usage: '256MB',
@@ -140,17 +131,14 @@ export const GET: RequestHandler = async ({ url }) => {
 				channel_count: 24
 			}
 		}
-
 		return json(allStats, {
 			headers: {
 				'Cache-Control': 'max-age=30', // Cache for 30 seconds
 				'X-Queue-Count': String(Object.keys(baseStats).length)
 			}
 		})
-
 	} catch (error) {
 		console.error('Failed to fetch queue statistics:', error)
-		
 		return json({
 			error: 'Failed to fetch queue statistics',
 			details: error instanceof Error ? error.message: 'Unknown error',
@@ -158,18 +146,15 @@ export const GET: RequestHandler = async ({ url }) => {
 		}, { status: 500 })
 	}
 }
-
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const { action, queue } = await request.json()
-
 		// Handle queue management actions
 		switch (action) {
 			case 'purge':
 				if (!queue) {
 					return json({ error: 'Queue name required for purge action' }, { status: 400 })
 				}
-				
 				console.log(`🧹 Purging queue: ${queue}`)
 				return json({
 					action: 'purge',
@@ -178,7 +163,6 @@ export const POST: RequestHandler = async ({ request }) => {
 					messages_purged: Math.floor(Math.random() * 50),
 					timestamp: new Date().toISOString()
 				})
-
 			case 'reset_stats':
 				console.log('📊 Resetting queue statistics')
 				return json({
@@ -186,14 +170,11 @@ export const POST: RequestHandler = async ({ request }) => {
 					result: 'success',
 					timestamp: new Date().toISOString()
 				})
-
 			default:
 				return json({ error: `Unknown action: ${action}` }, { status: 400 })
 		}
-
 	} catch (error) {
 		console.error('Queue management action failed:', error)
-		
 		return json({
 			error: 'Queue management action failed',
 			details: error instanceof Error ? error.message: 'Unknown error',

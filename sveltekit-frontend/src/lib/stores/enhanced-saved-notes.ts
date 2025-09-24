@@ -2,12 +2,10 @@
  * Enhanced Saved Notes Store - Integrated with Legal AI Platform
  * Features: OCR integration, AI-generated notes, legal citations, embeddings
  */
-
 import { browser } from "$app/environment";
 import { derived, writable } from "svelte/store";
 import { fastParse, fastStringify, createSIMDJSONCache } from '$lib/utils/simd-json-cache';
 import { createWorkerPool } from '$lib/workers/legal-ai-worker-pool';
-
 // Enhanced Legal Note Interface
 export interface LegalNote {
   id: string;
@@ -29,7 +27,6 @@ export interface LegalNote {
     confidence?: number;
     sourceDocument?: string;
     processingJobId?: string;
-
     // OCR Integration
     ocrExtracted?: boolean;
     ocrConfidence?: number;
@@ -38,12 +35,10 @@ export interface LegalNote {
       confidence: number;
       bbox: { x: number; y: number; width: number; height: number };
     }>;
-
     // Embeddings & Semantic Search
     embeddings?: number[][];
     embeddingModel?: string;
     semanticSimilarity?: number;
-
     // Legal Context
     relatedCases?: string[];
     legalCitations?: Array<{
@@ -55,7 +50,6 @@ export interface LegalNote {
     riskLevel?: 'low' | 'medium' | 'high' | 'critical';
     practiceArea?: string;
     jurisdiction?: string;
-
     // Neo4j Integration
     neo4jNodeId?: string;
     graphRelationships?: Array<{
@@ -63,7 +57,6 @@ export interface LegalNote {
       targetId: string;
       properties: any;
     }>;
-
     // RAG Integration
     ragDocumentId?: string;
     ragChunks?: Array<{
@@ -72,16 +65,13 @@ export interface LegalNote {
       embedding: number[];
       relevance: number;
     }>;
-
     // Processing Status
     processingStatus?: 'pending' | 'processing' | 'completed' | 'failed';
     lastProcessed?: Date;
-
     // User Interaction
     starred?: boolean;
     priority?: 'low' | 'medium' | 'high' | 'urgent';
     archived?: boolean;
-
     // File Attachments
     attachments?: Array<{
       id: string;
@@ -92,7 +82,6 @@ export interface LegalNote {
     }>;
   };
 }
-
 export interface NoteFilters {
   search: string;
   noteType: string;
@@ -104,7 +93,6 @@ export interface NoteFilters {
   starred?: boolean;
   dateRange?: [Date, Date];
 }
-
 export interface NoteStats {
   total: number;
   byType: Record<string, number>;
@@ -115,22 +103,19 @@ export interface NoteStats {
   averageConfidence: number;
   recentlyUpdated: number;
 }
-
 // Stores
 export const legalNotes = writable<LegalNote[]>([]);
 export const noteFilters = writable<NoteFilters>({
   search: "",
-  noteType: "",;
+  noteType: "",
   tags: [],
   caseId: undefined
 });
-
 // Enhanced fuzzy search with legal-specific weighting
 export const filteredNotes = derived(
   [legalNotes, noteFilters],
   ([$legalNotes, $noteFilters]) => {
     let notes = $legalNotes;
-
     // Apply filters
     if ($noteFilters.noteType) {
       notes = notes.filter((note) => note.noteType === $noteFilters.noteType);
@@ -162,7 +147,6 @@ export const filteredNotes = derived(
         return noteDate >= start && noteDate <= end;
       });
     }
-
     // Enhanced search with legal context
     if ($noteFilters.search.trim()) {
       const searchTerm = $noteFilters.search.toLowerCase();
@@ -174,43 +158,36 @@ export const filteredNotes = derived(
           note.markdown,
           ...note.tags
         ].some(field => field?.toLowerCase().includes(searchTerm));
-
         // Search in legal citations
         const citationMatch = note.metadata.legalCitations?.some(citation =>
           citation.citation.toLowerCase().includes(searchTerm) ||
           citation.snippet?.toLowerCase().includes(searchTerm)
         );
-
         // Search in related cases
         const caseMatch = note.metadata.relatedCases?.some(caseId =>
           caseId.toLowerCase().includes(searchTerm)
         );
-
         return basicMatch || citationMatch || caseMatch;
       });
     }
-
     // Sort by relevance and date
     return notes.sort((a, b) => {
       // Prioritize starred notes
       if (a.metadata.starred && !b.metadata.starred) return -1;
       if (!a.metadata.starred && b.metadata.starred) return 1;
-
       // Then by priority
       const priorityOrder = { urgent: 4, high: 3, medium: 2, low: 1 };
       const aPriority = priorityOrder[a.metadata.priority || 'low'];
       const bPriority = priorityOrder[b.metadata.priority || 'low'];
       if (aPriority !== bPriority) return bPriority - aPriority;
-
       // Finally by date
       return new Date(b.updatedAt || b.savedAt).getTime() - new Date(a.updatedAt || a.savedAt).getTime();
     });
   }
 );
-
 // Enhanced stats
 export const noteStats = derived(legalNotes, ($legalNotes): NoteStats => {
-  const stats: NoteStats = {;
+  const stats: NoteStats = {
     total: $legalNotes.length,
     byType: {},
     byRiskLevel: {},
@@ -220,77 +197,64 @@ export const noteStats = derived(legalNotes, ($legalNotes): NoteStats => {
     averageConfidence: 0,
     recentlyUpdated: 0
   };
-
   const recentThreshold = Date.now() - (7 * 24 * 60 * 60 * 1000); // 7 days
   let totalConfidence = 0;
   let confidenceCount = 0;
-
   for (const note of $legalNotes) {
     // Count by type
     stats.byType[note.noteType] = (stats.byType[note.noteType] || 0) + 1;
-
     // Count by risk level
     if (note.metadata.riskLevel) {
       stats.byRiskLevel[note.metadata.riskLevel] = (stats.byRiskLevel[note.metadata.riskLevel] || 0) + 1;
     }
-
     // AI generated count
     if (note.metadata.aiGenerated) stats.aiGenerated++;
-
     // OCR extracted count
     if (note.metadata.ocrExtracted) stats.ocrExtracted++;
-
     // Confidence tracking
     if (note.metadata.confidence !== undefined) {
       totalConfidence += note.metadata.confidence;
       confidenceCount++;
     }
-
     // Recently updated count
     const updatedTime = new Date(note.updatedAt || note.savedAt).getTime();
     if (updatedTime > recentThreshold) stats.recentlyUpdated++;
   }
-
   stats.totalTags = Array.from(new Set($legalNotes.flatMap(note => note.tags))).length;
   stats.averageConfidence = confidenceCount > 0 ? totalConfidence / confidenceCount : 0;
-
   return stats;
 });
-
 class EnhancedNotesManager {
   private static instance: EnhancedNotesManager;
   private dbPrefix = "legal-note-";
   private simdCache = createSIMDJSONCache({
     defaultTTL: 3600,
-    compressionEnabled: true,
+    compressionEnabled: true
     enableMetrics: true
   });
   private workerPool = createWorkerPool({
     maxWorkers: 4,
-    enableSIMD: true,
+    enableSIMD: true
     redisCache: true
   });
-
   static getInstance(): EnhancedNotesManager {
     if (!EnhancedNotesManager.instance) {
       EnhancedNotesManager.instance = new EnhancedNotesManager();
     }
     return EnhancedNotesManager.instance;
   }
-
   // Enhanced save with AI processing
   async saveNote(note: Omit<LegalNote, "savedAt" | "updatedAt">): Promise<void> {
     const now = new Date();
     const enhancedNote: LegalNote = {
       ...note,
-      savedAt: note.id ? (await this.getExistingNote(note.id))?.savedAt || now : now,
-      updatedAt: now,
+      savedAt: note.id ? (await this.getExistingNote(note.id))?.savedAt || now : now
+      updatedAt: now
       metadata: {
         ...note.metadata,
         lastProcessed: now
       }
     };
-
     // Process with AI if content has changed and it's not already AI-generated
     if (!note.metadata.aiGenerated && note.content) {
       try {
@@ -299,7 +263,6 @@ class EnhancedNotesManager {
         console.warn('AI enhancement failed, saving note without enhancement:', error);
       }
     }
-
     // Update store
     legalNotes.update((notes) => {
       const existingIndex = notes.findIndex((n) => n.id === note.id);
@@ -310,7 +273,6 @@ class EnhancedNotesManager {
         return [enhancedNote, ...notes];
       }
     });
-
     // Save to storage with SIMD compression
     if (browser) {
       try {
@@ -320,11 +282,9 @@ class EnhancedNotesManager {
         console.warn("Failed to save note to storage:", error);
       }
     }
-
     // Sync to server
     this.syncNoteToServer(enhancedNote);
   }
-
   // AI Enhancement Pipeline
   private async enhanceNoteWithAI(note: LegalNote): Promise<void> {
     try {
@@ -334,12 +294,10 @@ class EnhancedNotesManager {
         'embeddinggemma:latest',
         { normalize: true, chunkSize: 512 }
       );
-
       if (embeddingResult.success) {
         note.metadata.embeddings = embeddingResult.data.embeddings;
         note.metadata.embeddingModel = 'embeddinggemma:latest';
       }
-
       // AI analysis for legal content
       if (note.noteType === 'legal_analysis' || note.content.length > 100) {
         const analysisResult = await this.workerPool.analyzeDocument(
@@ -347,20 +305,17 @@ class EnhancedNotesManager {
           note.noteType,
           'gemma3:legal-latest'
         );
-
         if (analysisResult.success) {
           const analysis = analysisResult.data;
-
           // Extract legal citations
           if (analysis.citations) {
-            note.metadata.legalCitations = analysis.citations.map((citation: any) => ({
+            note.metadata.legalCitations = analysis.citations.map((citation: any) => ({,
               type: citation.type,
               citation: citation.citation,
-              relevance: citation.relevance,;
+              relevance: citation.relevance,
               snippet: citation.excerpt
             }));
           }
-
           // Set risk level
           if (analysis.risks && analysis.risks.length > 0) {
             const maxRisk = analysis.risks.reduce((max: any, risk: any) =>
@@ -368,48 +323,41 @@ class EnhancedNotesManager {
             );
             note.metadata.riskLevel = maxRisk.severity.toLowerCase();
           }
-
           // Extract practice area
           if (analysis.practiceArea) {
             note.metadata.practiceArea = analysis.practiceArea;
           }
-
           // Set confidence
           note.metadata.confidence = analysis.confidence || 0.8;
           note.metadata.aiGenerated = true;
           note.metadata.aiModel = 'gemma3:legal-latest';
         }
       }
-
       // Store in Neo4j for relationship mapping
       await this.storeInNeo4j(note);
-
       // Index in RAG system
       await this.indexInRAG(note);
-
     } catch (error) {
       console.error('AI enhancement failed:', error);
       note.metadata.processingStatus = 'failed';
     }
   }
-
   // Neo4j storage
   private async storeInNeo4j(note: LegalNote): Promise<void> {
     try {
       const response = await fetch('/api/graph/neo4j/notes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           noteId: note.id,
           title: note.title,
           content: note.content,
           noteType: note.noteType,
           caseId: note.caseId,
-          tags: note.tags,;
+          tags: note.tags,
           metadata: note.metadata
         })
       });
-
       if (response.ok) {
         const result = await response.json();
         note.metadata.neo4jNodeId = result.nodeId;
@@ -419,27 +367,25 @@ class EnhancedNotesManager {
       console.warn('Neo4j storage failed:', error);
     }
   }
-
   // RAG system indexing
   private async indexInRAG(note: LegalNote): Promise<void> {
     try {
       const response = await fetch('/api/rag/index/notes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           documentId: note.id,
           content: note.content,
           embeddings: note.metadata.embeddings,
           metadata: {
             noteType: note.noteType,
-            caseId: note.caseId,;
+            caseId: note.caseId,
             tags: note.tags,
             riskLevel: note.metadata.riskLevel,
             practiceArea: note.metadata.practiceArea
           }
         })
       });
-
       if (response.ok) {
         const result = await response.json();
         note.metadata.ragDocumentId = result.documentId;
@@ -449,11 +395,9 @@ class EnhancedNotesManager {
       console.warn('RAG indexing failed:', error);
     }
   }
-
   // Get existing note
   private async getExistingNote(noteId: string): Promise<LegalNote | null> {
     if (!browser) return null;
-
     try {
       const stored = localStorage.getItem(`${this.dbPrefix}${noteId}`);
       if (stored) {
@@ -464,25 +408,23 @@ class EnhancedNotesManager {
     }
     return null;
   }
-
   // Create note from OCR results
   async createNoteFromOCR(ocrResult: any, caseId?: string): Promise<LegalNote> {
     const noteId = `ocr-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
     const note: LegalNote = {
-      id: noteId,
+      id: noteId
       title: `OCR Extract - ${new Date().toLocaleDateString()}`,
       content: ocrResult.text,
       markdown: ocrResult.text,
       html: `<p>${ocrResult.text.replace(/\n/g, '<br>')}</p>`,
-      contentJson: ocrResult,
+      contentJson: ocrResult
       noteType: 'ocr_extracted',
       tags: ['ocr', 'extracted'],
       caseId,
       userId: 'current-user', // TODO: Get from auth
-      savedAt: new Date(),;
+      savedAt: new Date(),
       metadata: {
-        ocrExtracted: true,
+        ocrExtracted: true
         ocrConfidence: ocrResult.confidence,
         ocrBoundingBoxes: ocrResult.boundingBoxes,
         sourceDocument: ocrResult.sourceDocument,
@@ -490,30 +432,27 @@ class EnhancedNotesManager {
         processingStatus: 'completed'
       }
     };
-
     await this.saveNote(note);
     return note;
   }
-
   // Create note from AI analysis
   async createNoteFromAIAnalysis(analysis: any, sourceContent: string, caseId?: string): Promise<LegalNote> {
     const noteId = `ai-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
     const note: LegalNote = {
-      id: noteId,
+      id: noteId
       title: analysis.title || `AI Analysis - ${new Date().toLocaleDateString()}`,
       content: analysis.summary || sourceContent,
       markdown: analysis.markdown || analysis.summary,
       html: analysis.html || `<p>${analysis.summary}</p>`,
-      contentJson: analysis,
+      contentJson: analysis
       noteType: 'ai_generated',
       tags: ['ai-generated', 'analysis', ...(analysis.tags || [])],
       caseId,
       userId: 'current-user',
       savedAt: new Date(),
       metadata: {
-        aiGenerated: true,
-        aiModel: analysis.model || 'gemma3:legal-latest',;
+        aiGenerated: true
+        aiModel: analysis.model || 'gemma3:legal-latest',
         confidence: analysis.confidence,
         legalCitations: analysis.citations,
         riskLevel: analysis.riskLevel,
@@ -522,11 +461,9 @@ class EnhancedNotesManager {
         processingStatus: 'completed'
       }
     };
-
     await this.saveNote(note);
     return note;
   }
-
   // Enhanced search with semantic similarity
   async semanticSearch(query: string, limit: number = 10): Promise<LegalNote[]> {
     try {
@@ -535,11 +472,9 @@ class EnhancedNotesManager {
         query,
         'embeddinggemma:latest'
       );
-
       if (!queryEmbedding.success) {
         return [];
       }
-
       // Get all notes with embeddings
       const allNotes = await new Promise<LegalNote[]>((resolve) => {
         const unsubscribe = legalNotes.subscribe((notes) => {
@@ -547,7 +482,6 @@ class EnhancedNotesManager {
           unsubscribe();
         });
       });
-
       // Calculate cosine similarity
       const similarities = allNotes.map(note => {
         const similarity = this.cosineSimilarity(
@@ -556,7 +490,6 @@ class EnhancedNotesManager {
         );
         return { note, similarity };
       });
-
       // Sort by similarity and return top results
       return similarities
         .sort((a, b) => b.similarity - a.similarity)
@@ -568,13 +501,11 @@ class EnhancedNotesManager {
             semanticSimilarity: item.similarity
           }
         }));
-
     } catch (error) {
       console.error('Semantic search failed:', error);
       return [];
     }
   }
-
   // Cosine similarity calculation
   private cosineSimilarity(a: number[], b: number[]): number {
     const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0);
@@ -582,27 +513,23 @@ class EnhancedNotesManager {
     const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
     return dotProduct / (magnitudeA * magnitudeB);
   }
-
   // Sync individual note to server
   private async syncNoteToServer(note: LegalNote): Promise<void> {
     try {
       await fetch('/api/notes/sync', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },;
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(note)
       });
     } catch (error) {
       console.warn('Failed to sync note to server:', error);
     }
   }
-
   // Load notes from storage
   async loadSavedNotes(): Promise<void> {
     if (!browser) return;
-
     try {
       const notes: LegalNote[] = [];
-
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key?.startsWith(this.dbPrefix)) {
@@ -621,24 +548,19 @@ class EnhancedNotesManager {
           }
         }
       }
-
       legalNotes.set(notes.sort((a, b) =>
         new Date(b.updatedAt || b.savedAt).getTime() - new Date(a.updatedAt || a.savedAt).getTime()
       ));
-
     } catch (error) {
       console.error('Failed to load notes:', error);
     }
   }
-
   // Remove note
   async removeNote(noteId: string): Promise<void> {
     legalNotes.update((notes) => notes.filter((n) => n.id !== noteId));
-
     if (browser) {
       localStorage.removeItem(`${this.dbPrefix}${noteId}`);
     }
-
     // Remove from server
     try {
       await fetch(`/api/notes/${noteId}`, { method: 'DELETE' });
@@ -646,7 +568,6 @@ class EnhancedNotesManager {
       console.warn('Failed to remove note from server:', error);
     }
   }
-
   // Validation
   private isValidNote(obj: any): obj is LegalNote {
     return (
@@ -659,22 +580,18 @@ class EnhancedNotesManager {
       typeof obj.metadata === "object"
     );
   }
-
   // Enhanced export with legal formatting
   async exportNotes(format: "json" | "markdown" | "legal_brief" = "json"): Promise<void> {
     if (!browser) return;
-
     const notes = await new Promise<LegalNote[]>((resolve) => {
       const unsubscribe = legalNotes.subscribe((notes) => {
         resolve(notes);
         unsubscribe();
       });
     });
-
     let content: string;
     let filename: string;
     let mimeType: string;
-
     switch (format) {
       case "legal_brief":
         content = this.formatAsLegalBrief(notes);
@@ -691,7 +608,6 @@ class EnhancedNotesManager {
         filename = `notes-export-${new Date().toISOString().split("T")[0]}.json`;
         mimeType = "application/json";
     }
-
     const blob = new Blob([content], { type: mimeType });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -702,24 +618,20 @@ class EnhancedNotesManager {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
-
   private formatAsLegalBrief(notes: LegalNote[]): string {
     const legalNotes = notes.filter(note =>
       note.noteType === 'legal_analysis' ||
       note.noteType === 'case_note' ||
       note.noteType === 'evidence_note'
     );
-
     let brief = `# Legal Brief\n\n`;
     brief += `Generated: ${new Date().toLocaleDateString()}\n\n`;
-
     // Executive Summary
     brief += `## Executive Summary\n\n`;
     const aiNotes = legalNotes.filter(note => note.metadata.aiGenerated);
     if (aiNotes.length > 0) {
       brief += `Based on ${aiNotes.length} AI-analyzed documents and ${legalNotes.length - aiNotes.length} manual notes.\n\n`;
     }
-
     // High-risk items
     const highRiskNotes = legalNotes.filter(note =>
       note.metadata.riskLevel === 'high' || note.metadata.riskLevel === 'critical'
@@ -736,14 +648,12 @@ class EnhancedNotesManager {
         brief += `---\n\n`;
       });
     }
-
     // All notes by type
     const notesByType = legalNotes.reduce((acc, note) => {
       if (!acc[note.noteType]) acc[note.noteType] = [];
       acc[note.noteType].push(note);
       return acc;
     }, {} as Record<string, LegalNote[]>);
-
     Object.entries(notesByType).forEach(([type, typeNotes]) => {
       brief += `## ${type.replace(/_/g, ' ').toUpperCase()}\n\n`;
       typeNotes.forEach(note => {
@@ -751,10 +661,8 @@ class EnhancedNotesManager {
         brief += `${note.content}\n\n`;
       });
     });
-
     return brief;
   }
-
   private formatAsMarkdown(notes: LegalNote[]): string {
     return notes.map(note => {
       let md = `# ${note.title}\n\n`;
@@ -765,7 +673,6 @@ class EnhancedNotesManager {
       if (note.metadata.confidence) md += `**AI Confidence:** ${(note.metadata.confidence * 100).toFixed(1)}%\n`;
       md += `**Tags:** ${note.tags.join(', ')}\n\n`;
       md += `${note.markdown || note.content}\n\n`;
-
       if (note.metadata.legalCitations?.length) {
         md += `## Legal Citations\n\n`;
         note.metadata.legalCitations.forEach(citation => {
@@ -773,56 +680,44 @@ class EnhancedNotesManager {
         });
         md += `\n`;
       }
-
       md += `---\n\n`;
       return md;
     }).join('');
   }
 }
-
 // Export singleton
 export const enhancedNotesManager = EnhancedNotesManager.getInstance();
-
 // Convenience functions
 export async function saveLegalNote(note: Omit<LegalNote, "savedAt" | "updatedAt">): Promise<void> {
   await enhancedNotesManager.saveNote(note);
 }
-
 export async function removeLegalNote(noteId: string): Promise<void> {
   await enhancedNotesManager.removeNote(noteId);
 }
-
 export async function loadLegalNotes(): Promise<void> {
   await enhancedNotesManager.loadSavedNotes();
 }
-
 export async function createNoteFromOCR(ocrResult: any, caseId?: string): Promise<LegalNote> {
   return enhancedNotesManager.createNoteFromOCR(ocrResult, caseId);
 }
-
 export async function createNoteFromAI(analysis: any, sourceContent: string, caseId?: string): Promise<LegalNote> {
   return enhancedNotesManager.createNoteFromAIAnalysis(analysis, sourceContent, caseId);
 }
-
 export async function performSemanticSearch(query: string, limit?: number): Promise<LegalNote[]> {
   return enhancedNotesManager.semanticSearch(query, limit);
 }
-
 export function setNoteFilter(filter: Partial<NoteFilters>): void {
   noteFilters.update((current) => ({ ...current, ...filter }));
 }
-
 export function clearNoteFilters(): void {
   noteFilters.set({
     search: "",
-    noteType: "",;
+    noteType: "",
     tags: [],
     caseId: undefined
   });
 }
-
 export async function exportLegalNotes(format: "json" | "markdown" | "legal_brief" = "json"): Promise<void> {
   await enhancedNotesManager.exportNotes(format);
 }
-
 export default enhancedNotesManager;

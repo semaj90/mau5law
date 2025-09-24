@@ -1,12 +1,10 @@
 <!--
   3D Legal Data Visualization LOD Component - N64-Inspired Mesh Detail
-  
   Implements progressive 3D detail similar to N64 polygon reduction:
   - LOD 0: Full mesh detail (10,000+ polygons per object)
   - LOD 1: High detail meshes (5,000 polygons)
-  - LOD 2: Medium detail meshes (1,000 polygons) 
-  - LOD 3: Low poly N64-style (100-500 polygons) with distance fog
-  
+  - LOD 2: Medium detail meshes (1,000 polygons)
+  - LOD 3: Low poly N64-style (100-500 polygons) with distance fog,
   Features:
   - WebGPU accelerated 3D rendering with instanced objects
   - Camera distance-based mesh LOD switching
@@ -14,24 +12,22 @@
   - Interactive case data exploration with spatial clustering
   - N64-style fog effects and retro polygon aesthetics
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { browser } from '$app/environment';
   import { onMount, onDestroy } from 'svelte';
   import { LoadingButton } from '$lib/headless';
   import * as Card from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge';
-  import { 
+  import {
     Box, Eye, Layers, RotateCcw, ZoomIn, ZoomOut, Move3D,
     Cube, Sphere, Pyramid, Users, FileText, Building, MapPin
   } from 'lucide-svelte';
-
   interface Legal3DEntity {
     id: string;
     type: 'person' | 'organization' | 'document' | 'location' | 'event';
-    position: { x: number; y: number; z: number };
+    position: ;
+{ x: number; y: number; z: number };
     scale: { x: number; y: number; z: number };
     rotation: { x: number; y: number; z: number };
     importance: number; // 0-1, affects LOD visibility and mesh detail
@@ -39,9 +35,8 @@
     meshType: 'cube' | 'sphere' | 'pyramid' | 'cylinder' | 'complex';
     color: { r: number; g: number; b: number; a: number };
     label: string;
-    metadata: Record<string, any>;
+    metadata: { [key: string]: any };
   }
-
   interface MeshLODLevel {
     vertices: Float32Array;
     indices: Uint16Array;
@@ -49,7 +44,6 @@
     triangleCount: number;
     complexity: number; // 0-1 complexity rating
   }
-
   interface Legal3DConnection {
     id: string;
     source: string;
@@ -58,16 +52,15 @@
     strength: number; // 0-1, affects line thickness and visibility
     color: { r: number; g: number; b: number; a: number };
   }
-
   interface Camera3D {
-    position: { x: number; y: number; z: number };
+    position: ;
+{ x: number; y: number; z: number };
     target: { x: number; y: number; z: number };
     up: { x: number; y: number; z: number };
     fov: number;
     near: number;
     far: number;
   }
-
   interface Legal3DVisualizationLODProps {
     caseId: string;
     sceneData?: { entities: Legal3DEntity[]; connections: Legal3DConnection[] };
@@ -78,7 +71,6 @@
     onCameraChange?: (camera: Camera3D) => void;
     onLODChange?: (level: number) => void;
   }
-
   let {
     caseId,
     sceneData = { entities: [], connections: [] },
@@ -89,45 +81,39 @@
     onCameraChange,
     onLODChange
   }: Legal3DVisualizationLODProps = $props();
-
   // Svelte 5 state management
   let canvasElement: HTMLCanvasElement = $state(undefined as any);
   let gpuDevice = $state<GPUDevice | null>(null);
   let context = $state<GPUCanvasContext | null>(null);
   let isWebGPUReady = $state(false);
-  
   let allEntities = $state<Legal3DEntity[]>([]);
   let visibleEntities = $state<Legal3DEntity[]>([]);
   let allConnections = $state<Legal3DConnection[]>([]);
   let visibleConnections = $state<Legal3DConnection[]>([]);
-  
   let currentLOD = $state(1);
   let camera = $state<Camera3D>(initialCamera || {
-    position: { x: 0, y: 5, z: 15 },
+    position: ;
+{ x: 0, y: 5, z: 15 },
     target: { x: 0, y: 0, z: 0 },
     up: { x: 0, y: 1, z: 0 },
-    fov: 45,;
-    near: 0.1,;
+    fov: 45,
+    near: 0.1,
     far: 100;
   });
-  
   let isLoading = $state(false);
   let selectedEntity = $state<Legal3DEntity | null>(null);
   let hoveredEntity = $state<Legal3DEntity | null>(null);
   let isDragging = $state(false);
   let lastMousePos = $state({ x: 0, y: 0 });
-
   // Camera controls
   let cameraDistance = $state(15);
   let cameraRotation = $state({ horizontal: 0, vertical: 20 });
   let autoRotate = $state(false);
-
   // Rendering state
   let meshBuffers = $state<Map<string, Map<number, GPUBuffer>(0)>>(new Map());
   let renderPipeline = $state<GPURenderPipeline | null>(null);
   let uniformBuffer = $state<GPUBuffer | null>(null);
   let bindGroup = $state<GPUBindGroup | null>(null);
-
   // LOD configuration for 3D meshes (N64-inspired polygon counts)
   const lodConfig = {
     0: {
@@ -162,16 +148,14 @@
       minImportance: 0.7,
       maxDistance: 100,
       fogStart: 70,
-      fogEnd: 100,;
+      fogEnd: 100,
       description: 'Low Poly (N64 Style)',
       renderComplexity: 0.2;
     }
   };
-
   // Derived values for automatic LOD calculation
   let averageEntityDistance = $derived(() => {
     if (visibleEntities.length === 0) return 0;
-    
     return visibleEntities.reduce((sum, entity) => {
       const dx = entity.position.x - camera.position.x;
       const dy = entity.position.y - camera.position.y;
@@ -179,22 +163,19 @@
       return sum + Math.sqrt(dx * dx + dy * dy + dz * dz);
     }, 0) / visibleEntities.length;
   });
-
   let recommendedLOD = $derived(() => {
     // N64-style LOD based on camera distance and entity density
-    const distance = averageEntityDistance;
+    const distance = averageEntityDistanc;
     const entityCount = allEntities.length;
-    
     if (distance < 20 && entityCount < 50) return 0; // Ultra high for close views
     if (distance < 40 && entityCount < 100) return 1; // High detail
     if (distance < 70 && entityCount < 200) return 2; // Medium detail
     return 3; // Low poly N64 style for distant/dense scenes
   });
-
   let scene3DStats = $derived(() => {
     const config = lodConfig[currentLOD as keyof typeof lodConfig];
     return {
-      level: currentLOD,
+      level: currentLOD
       visibleEntities: visibleEntities.length,
       visibleConnections: visibleConnections.length,
       totalPolygons: calculateTotalPolygons(),
@@ -204,12 +185,10 @@
       memoryUsage: calculateMemoryUsage()
     };
   });
-
   // Initialize 3D scene
   $effect(() => {
     (async () => {
 if (!browser) return;
-    
     try {
       if (enableWebGPU) {
         await initializeWebGPU();
@@ -223,7 +202,6 @@ if (!browser) return;
     }
     })();
   });
-
   onDestroy(() => {
     // Cleanup WebGPU resources
     if (gpuDevice) {
@@ -233,13 +211,10 @@ if (!browser) return;
       });
     }
   });
-
   async function initializeWebGPU(): Promise<void> {
     if (!navigator.gpu) throw new Error('WebGPU not supported');
-
     const adapter = await navigator.gpu.requestAdapter();
     if (!adapter) throw new Error('WebGPU adapter not found');
-
     gpuDevice = await adapter.requestDevice({
       requiredFeatures: ['depth24plus'],
       requiredLimits: {
@@ -248,86 +223,70 @@ if (!browser) return;
         maxVertexAttributes: 16
       }
     });
-
     if (!canvasElement) throw new Error('Canvas element not found');
-
     context = canvasElement.getContext('webgpu');
     if (!context) throw new Error('WebGPU context creation failed');
-
     context.configure({
-      device: gpuDevice,;
+      device: gpuDevice
       format: 'bgra8unorm',
-      alphaMode: 'premultiplied',;
+      alphaMode: 'premultiplied',
       usage: GPUTextureUsage.RENDER_ATTACHMENT;
     });
-
     isWebGPUReady = true;
     console.log('[Legal3DVisualizationLOD] WebGPU initialized for 3D rendering');
   }
-
   async function setupRenderPipeline(): Promise<void> {
     if (!gpuDevice) return;
-
     // Vertex shader with N64-style effects
     const vertexShaderCode = `
       struct Uniforms {
-        modelViewProjectionMatrix : mat4x4<f32>,
-        fogStart : f32,
-        fogEnd : f32,
-        time : f32,
-        lodLevel : f32,
+        modelViewProjectionMatrix : mat4x4<f32>
+        fogStart : f32
+        fogEnd : f32
+        time : f32
+        lodLevel : f32
       }
-      
       struct VertexOutput {
-        @builtin(position) position : vec4<f32>,
-        @location(0) color : vec4<f32>,
-        @location(1) worldPos : vec3<f32>,
-        @location(2) fogFactor : f32,
+        @builtin(position) position : vec4<f32>
+        @location(0) color : vec4<f32>
+        @location(1) worldPos : vec3<f32>
+        @location(2) fogFactor : f32
       }
-      
-      @group(0) @binding(0) var<uniform> uniforms : Uniforms;
-      
+      @group(0) @binding(0) var<uniform> uniforms : Uniform;
       @vertex
       fn main(
-        @location(0) position : vec3<f32>,
-        @location(1) color : vec4<f32>,
+        @location(0) position : vec3<f32>
+        @location(1) color : vec4<f32>
       ) -> VertexOutput {
         var output : VertexOutput;
-        
         // Apply N64-style vertex wobble for low LOD levels
-        var wobbledPosition = position;
+        var wobbledPosition = positio;
         if (uniforms.lodLevel >= 2.0) {
           let wobbleIntensity = (uniforms.lodLevel - 1.0) * 0.1;
           wobbledPosition.x += sin(uniforms.time + position.y * 10.0) * wobbleIntensity;
           wobbledPosition.z += cos(uniforms.time + position.x * 10.0) * wobbleIntensity;
         }
-        
-        output.worldPos = wobbledPosition;
+        output.worldPos = wobbledPositio;
         output.position = uniforms.modelViewProjectionMatrix * vec4<f32>(wobbledPosition, 1.0);
         output.color = color;
-        
         // Calculate fog factor based on distance
         let distance = length(wobbledPosition);
         output.fogFactor = clamp((uniforms.fogEnd - distance) / (uniforms.fogEnd - uniforms.fogStart), 0.0, 1.0);
-        
         return output;
       }
     `;
-
     // Fragment shader with N64-style fog and color effects
     const fragmentShaderCode = `
       @fragment
       fn main(
-        @location(0) color : vec4<f32>,
-        @location(1) worldPos : vec3<f32>,
-        @location(2) fogFactor : f32,
+        @location(0) color : vec4<f32>
+        @location(1) worldPos : vec3<f32>
+        @location(2) fogFactor : f32
       ) -> @location(0) vec4<f32> {
         // N64-style fog color (purple/blue)
         let fogColor = vec3<f32>(0.2, 0.1, 0.4);
-        
         // Apply fog mixing
         let finalColor = mix(fogColor, color.rgb, fogFactor);
-        
         // N64-style color quantization for low LOD levels
         // This simulates the limited color palette of N64
         return vec4<f32>(
@@ -338,17 +297,15 @@ if (!browser) return;
         );
       }
     `;
-
     const vertexShader = gpuDevice.createShaderModule({ code: vertexShaderCode });
     const fragmentShader = gpuDevice.createShaderModule({ code: fragmentShaderCode });
-
     // Create render pipeline
     renderPipeline = gpuDevice.createRenderPipeline({
-      layout: 'auto',;
+      layout: 'auto',
       vertex: {
-        module: vertexShader,
-        entryPoint: 'main',;
-        buffers: [{
+        module: vertexShader
+        entryPoint: 'main',
+        buffers: [{,
           arrayStride: 7 * 4, // 3 position + 4 color floats
           attributes: [
             { shaderLocation: 0, offset: 0, format: 'float32x3' }, // position
@@ -357,8 +314,8 @@ if (!browser) return;
         }]
       },
       fragment: {
-        module: fragmentShader,
-        entryPoint: 'main',;
+        module: fragmentShader
+        entryPoint: 'main',
         targets: [{ format: 'bgra8unorm' }]
       },
       primitive: {
@@ -366,28 +323,25 @@ if (!browser) return;
         cullMode: 'back';
       },
       depthStencil: {
-        depthWriteEnabled: true,
-        depthCompare: 'less',;
+        depthWriteEnabled: true
+        depthCompare: 'less',
         format: 'depth24plus';
       }
     });
-
     // Create uniform buffer
     uniformBuffer = gpuDevice.createBuffer({
-      size: 4 * 16 + 4 * 4, // mat4x4 + 4 floats;
+      size: 4 * 16 + 4 * 4, // mat4x4 + 4 float
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST;
     });
-
     // Create bind group
     bindGroup = gpuDevice.createBindGroup({
-      layout: renderPipeline.getBindGroupLayout(0),;
-      entries: [{
-        binding: 0,;
+      layout: renderPipeline.getBindGroupLayout(0),
+      entries: [{,
+        binding: 0,
         resource: { buffer: uniformBuffer }
       }]
     });
   }
-
   async function initializeCanvas3DFallback(): Promise<void> {
     // Fallback to Canvas2D with pseudo-3D rendering
     const ctx = canvasElement?.getContext('2d');
@@ -395,24 +349,18 @@ if (!browser) return;
       isWebGPUReady = true;
     }
   }
-
   async function loadSceneData(): Promise<void> {
     isLoading = true;
-    
     try {
       // Load 3D scene data from API
       const response = await fetch(`/api/v1/cases/${caseId}/3d-visualization`);
       const data = await response.json();
-      
       allEntities = data.entities || sceneData.entities || [];
       allConnections = data.connections || sceneData.connections || [];
-      
       // Generate mesh LOD levels for each entity
       await generateEntityMeshLODs();
-      
       // Apply initial LOD filtering
       applyLODFiltering();
-      
     } catch (error) {
       console.error('[Legal3DVisualizationLOD] Failed to load scene data:', error);
       // Use demo data for development
@@ -421,36 +369,28 @@ if (!browser) return;
       isLoading = false;
     }
   }
-
   async function generateEntityMeshLODs(): Promise<void> {
     if (!gpuDevice) return;
-
     for (const entity of allEntities) {
       const entityLODs = new Map<number, GPUBuffer>();
-      
       // Generate mesh for each LOD level
       for (let lod = 0; lod < 4; lod++) {
         const mesh = generateMeshForLOD(entity, lod);
         const buffer = gpuDevice.createBuffer({
-          size: mesh.vertices.byteLength + mesh.indices.byteLength,;
+          size: mesh.vertices.byteLength + mesh.indices.byteLength,
           usage: GPUBufferUsage.VERTEX | GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST;
         });
-        
         // Upload mesh data
         gpuDevice.queue.writeBuffer(buffer, 0, mesh.vertices);
         gpuDevice.queue.writeBuffer(buffer, mesh.vertices.byteLength, mesh.indices);
-        
         entityLODs.set(lod, buffer);
       }
-      
       meshBuffers.set(entity.id, entityLODs);
     }
   }
-
   function generateMeshForLOD(entity: Legal3DEntity, lodLevel: number): MeshLODLevel {
     const config = lodConfig[lodLevel as keyof typeof lodConfig];
     const complexity = config?.renderComplexity || 0.2;
-    
     switch (entity.meshType) {
       case 'cube':
         return generateCubeMesh(complexity);
@@ -464,14 +404,11 @@ if (!browser) return;
         return generateCubeMesh(complexity); // Default fallback
     }
   }
-
   function generateCubeMesh(complexity: number): MeshLODLevel {
     // N64-style cube with variable detail based on complexity
     const subdivisions = Math.max(1, Math.floor(complexity * 4)); // 1-4 subdivisions
-    
     const vertices: number[] = [];
     const indices: number[] = [];
-    
     // Generate cube vertices with subdivisions
     // This is a simplified version - full implementation would include proper subdivision
     const cubeVertices = [
@@ -480,75 +417,63 @@ if (!browser) return;
        1, -1,  1,  1, 0, 0, 1,
        1,  1,  1,  1, 0, 0, 1,
       -1,  1,  1,  1, 0, 0, 1,
-      // Back face  
+      // Back face
       -1, -1, -1,  0, 1, 0, 1, // Green
        1, -1, -1,  0, 1, 0, 1,
        1,  1, -1,  0, 1, 0, 1,
       -1,  1, -1,  0, 1, 0, 1,
     ];
-    
     const cubeIndices = [
       0, 1, 2,  0, 2, 3, // Front
       4, 7, 6,  4, 6, 5, // Back
       // Add other faces...
     ];
-    
     return {
-      vertices: new Float32Array(cubeVertices),;
+      vertices: new Float32Array(cubeVertices),
       indices: new Uint16Array(cubeIndices),
       vertexCount: cubeVertices.length / 7,
       triangleCount: cubeIndices.length / 3,
       complexity;
     };
   }
-
   function generateSphereMesh(complexity: number): MeshLODLevel {
     // N64-style sphere with variable subdivision
     const rings = Math.max(4, Math.floor(complexity * 16)); // 4-16 rings
     const sectors = Math.max(4, Math.floor(complexity * 16)); // 4-16 sectors
-    
     const vertices: number[] = [];
     const indices: number[] = [];
-    
     // Generate sphere vertices
     for (let r = 0; r <= rings; r++) {
-      const theta = (r * Math.PI) / rings;
+      const theta = (r * Math.PI) / ring;
       const sinTheta = Math.sin(theta);
       const cosTheta = Math.cos(theta);
-      
       for (let s = 0; s <= sectors; s++) {
-        const phi = (s * 2 * Math.PI) / sectors;
+        const phi = (s * 2 * Math.PI) / sector;
         const sinPhi = Math.sin(phi);
         const cosPhi = Math.cos(phi);
-        
         const x = sinTheta * cosPhi;
         const y = cosTheta;
         const z = sinTheta * sinPhi;
-        
         vertices.push(x, y, z, 0, 0, 1, 1); // Blue sphere
       }
     }
-    
     // Generate sphere indices
     for (let r = 0; r < rings; r++) {
       for (let s = 0; s < sectors; s++) {
-        const first = r * (sectors + 1) + s;
+        const first = r * (sectors + 1) + ;
         const second = first + sectors + 1;
-        
         indices.push(first, second, first + 1);
         indices.push(second, second + 1, first + 1);
       }
     }
-    
     return {
-      vertices: new Float32Array(vertices),;
+      vertices: new Float32Array(vertices),
       indices: new Uint16Array(indices),
       vertexCount: vertices.length / 7,
       triangleCount: indices.length / 3,
       complexity;
     };
   }
-
   function generatePyramidMesh(complexity: number): MeshLODLevel {
     // Simple pyramid - complexity doesn't affect this much
     const vertices = [
@@ -560,137 +485,110 @@ if (!browser) return;
       // Top
        0, 2,  0,  1, 0, 1, 1  // Magenta
     ];
-    
     const indices = [
       // Base
       0, 2, 1,  0, 3, 2,
       // Sides
       0, 1, 4,  1, 2, 4,  2, 3, 4,  3, 0, 4
     ];
-    
     return {
-      vertices: new Float32Array(vertices),;
+      vertices: new Float32Array(vertices),
       indices: new Uint16Array(indices),
       vertexCount: vertices.length / 7,
       triangleCount: indices.length / 3,
       complexity;
     };
   }
-
   function generateCylinderMesh(complexity: number): MeshLODLevel {
     // N64-style cylinder with variable sides
     const sides = Math.max(6, Math.floor(complexity * 24)); // 6-24 sides
-    
     const vertices: number[] = [];
     const indices: number[] = [];
-    
     // Generate cylinder vertices
     for (let i = 0; i <= sides; i++) {
-      const angle = (i * 2 * Math.PI) / sides;
+      const angle = (i * 2 * Math.PI) / side;
       const x = Math.cos(angle);
       const z = Math.sin(angle);
-      
       // Bottom vertex
       vertices.push(x, -1, z, 0, 1, 1, 1); // Cyan
       // Top vertex
       vertices.push(x, 1, z, 0, 1, 1, 1);
     }
-    
     // Generate cylinder indices
     for (let i = 0; i < sides; i++) {
       const bottom1 = i * 2;
       const top1 = i * 2 + 1;
       const bottom2 = ((i + 1) % sides) * 2;
       const top2 = ((i + 1) % sides) * 2 + 1;
-      
       // Side faces
       indices.push(bottom1, top1, bottom2);
       indices.push(top1, top2, bottom2);
     }
-    
     return {
-      vertices: new Float32Array(vertices),;
+      vertices: new Float32Array(vertices),
       indices: new Uint16Array(indices),
       vertexCount: vertices.length / 7,
       triangleCount: indices.length / 3,
       complexity;
     };
   }
-
   function applyLODFiltering(): void {
     const config = lodConfig[currentLOD as keyof typeof lodConfig];
     if (!config) return;
-
     // Filter entities based on distance and importance
     visibleEntities = allEntities.filter(entity => {
       const distance = calculateEntityDistance(entity);
-      
       // Check distance cutoff
       if (distance > config.maxDistance) return false;
-      
       // Check importance threshold
       if (entity.importance < config.minImportance) return false;
-      
       return true;
     });
-
     // Filter connections based on entity visibility
     const visibleEntityIds = new Set(visibleEntities.map(e => e.id));
-    visibleConnections = allConnections.filter(connection => 
+    visibleConnections = allConnections.filter(connection =>
       visibleEntityIds.has(connection.source) && visibleEntityIds.has(connection.target)
     );
-
     console.log(`[Legal3DVisualizationLOD] LOD ${currentLOD}: ${visibleEntities.length} entities, ${visibleConnections.length} connections`);
   }
-
   function calculateEntityDistance(entity: Legal3DEntity): number {
     const dx = entity.position.x - camera.position.x;
     const dy = entity.position.y - camera.position.y;
     const dz = entity.position.z - camera.position.z;
     return Math.sqrt(dx * dx + dy * dy + dz * dz);
   }
-
   function startRenderLoop(): void {
     const render = () => {
       if (!isWebGPUReady) return;
-      
       // Update camera if auto-rotating
       if (autoRotate) {
         cameraRotation.horizontal += 0.5;
         updateCameraFromControls();
       }
-      
       renderScene();
       requestAnimationFrame(render);
     };
-    
     render();
   }
-
   async function renderScene(): Promise<void> {
     if (!gpuDevice || !context || !renderPipeline || !uniformBuffer || !bindGroup) return;
-
     const config = lodConfig[currentLOD as keyof typeof lodConfig];
-    
     // Update uniforms
     const modelViewProjectionMatrix = calculateMVPMatrix();
     const uniformData = new Float32Array([
       ...modelViewProjectionMatrix, // 16 floats
       config?.fogStart || 70,        // fog start
-      config?.fogEnd || 100,         // fog end  
+      config?.fogEnd || 100,         // fog end
       performance.now() / 1000,      // time for animations
       currentLOD                     // LOD level for shader effects
     ]);
-    
     gpuDevice.queue.writeBuffer(uniformBuffer, 0, uniformData);
-
     // Create depth texture
     const depthTexture = gpuDevice.createTexture({
       size: { width: canvasElement?.width || 800, height: canvasElement?.height || 600 },
-      format: 'depth24plus',;
+      format: 'depth24plus',
       usage: GPUTextureUsage.RENDER_ATTACHMENT;
     });
-
     // Begin render pass
     const commandEncoder = gpuDevice.createCommandEncoder();
     const renderPass = commandEncoder.beginRenderPass.createView(),
@@ -698,22 +596,19 @@ if (!browser) return;
         loadOp: 'clear',
         storeOp: 'store'
       }],
-      depthStencilAttachment: {;
+      depthStencilAttachment: {
         view: depthTexture.createView(),
         depthClearValue: 1.0,
         depthLoadOp: 'clear',
         depthStoreOp: 'store';
       }
     });
-
     renderPass.setPipeline(renderPipeline);
     renderPass.setBindGroup(0, bindGroup);
-
     // Render visible entities with appropriate LOD meshes
     for (const entity of visibleEntities) {
       const entityBuffers = meshBuffers.get(entity.id);
       const lodBuffer = entityBuffers?.get(currentLOD);
-      
       if (lodBuffer) {
         renderPass.setVertexBuffer(0, lodBuffer);
         // Calculate vertex count based on LOD
@@ -721,14 +616,11 @@ if (!browser) return;
         renderPass.draw(mesh.vertexCount);
       }
     }
-
     renderPass.end();
     gpuDevice.queue.submit([commandEncoder.finish()]);
-
     // Clean up
     depthTexture.destroy();
   }
-
   function calculateMVPMatrix(): number[] {
     // Simplified MVP matrix calculation
     // In a real implementation, you'd use a proper 3D math library
@@ -740,171 +632,143 @@ if (!browser) return;
     ];
     return identity; // Placeholder
   }
-
   function updateCameraFromControls(): void {
-    const distance = cameraDistance;
+    const distance = cameraDistanc;
     const horizontalRad = (cameraRotation.horizontal * Math.PI) / 180;
     const verticalRad = (cameraRotation.vertical * Math.PI) / 180;
-    
     camera.position = {
-      x: Math.sin(horizontalRad) * Math.cos(verticalRad) * distance,;
-      y: Math.sin(verticalRad) * distance,;
-      z: Math.cos(horizontalRad) * Math.cos(verticalRad) * distance;
+      x: Math.sin(horizontalRad) * Math.cos(verticalRad) * distance,
+      y: Math.sin(verticalRad) * distance,
+      z: Math.cos(horizontalRad) * Math.cos(verticalRad) * distanc;
     };
-    
     onCameraChange?.(camera);
   }
-
   // Event handlers
   function handleMouseDown(event: MouseEvent): void {
     isDragging = true;
     lastMousePos = { x: event.clientX, y: event.clientY };
   }
-
   function handleMouseMove(event: MouseEvent): void {
     if (!isDragging) return;
-    
     const deltaX = event.clientX - lastMousePos.x;
     const deltaY = event.clientY - lastMousePos.y;
-    
     cameraRotation.horizontal += deltaX * 0.5;
     cameraRotation.vertical = Math.max(-80, Math.min(80, cameraRotation.vertical - deltaY * 0.5));
-    
     updateCameraFromControls();
-    
     lastMousePos = { x: event.clientX, y: event.clientY };
   }
-
   function handleMouseUp(): void {
     isDragging = false;
   }
-
   function handleWheel(event: WheelEvent): void {
     event.preventDefault();
     cameraDistance = Math.max(5, Math.min(100, cameraDistance + event.deltaY * 0.01));
     updateCameraFromControls();
   }
-
   function handleZoomIn(): void {
     cameraDistance = Math.max(5, cameraDistance * 0.8);
     updateCameraFromControls();
   }
-
   function handleZoomOut(): void {
     cameraDistance = Math.min(100, cameraDistance * 1.2);
     updateCameraFromControls();
   }
-
   function handleResetCamera(): void {
     cameraDistance = 15;
     cameraRotation = { horizontal: 0, vertical: 20 };
     updateCameraFromControls();
   }
-
   function handleLODChange(): void {
     applyLODFiltering();
     onLODChange?.(currentLOD);
   }
-
   function calculateTotalPolygons(): number {
     return visibleEntities.reduce((sum, entity) => {
       const mesh = generateMeshForLOD(entity, currentLOD);
       return sum + mesh.triangleCount;
     }, 0);
   }
-
   function calculateMemoryUsage(): number {
     let totalMemory = 0;
-    
     meshBuffers.forEach(entityBuffers => {
       entityBuffers.forEach(buffer => {
-        totalMemory += buffer.size;
+        totalMemory += buffer.siz;
       });
     });
-    
     return totalMemory / (1024 * 1024); // Convert to MB
   }
-
   async function loadDemo3DData(): Promise<void> {
     // Demo 3D scene data for development
     const demoEntities: Legal3DEntity[] = [
       {
         id: 'person_1',
-        type: 'person',;
-        position: { x: 0, y: 0, z: 0 },
+        type: 'person',
+        position: ;
+{ x: 0, y: 0, z: 0 },
         scale: { x: 1, y: 1, z: 1 },
         rotation: { x: 0, y: 0, z: 0 },
         importance: 0.9,
         connections: ['org_1'],
-        meshType: 'sphere',;
+        meshType: 'sphere',
         color: { r: 1, g: 0, b: 0, a: 1 },
-        label: 'John Doe',;
+        label: 'John Doe',
         metadata: { role: 'plaintiff' }
       },
       {
         id: 'org_1',
-        type: 'organization',;
-        position: { x: 3, y: 0, z: 0 },
+        type: 'organization',
+        position: ;
+{ x: 3, y: 0, z: 0 },
         scale: { x: 1.5, y: 1.5, z: 1.5 },
         rotation: { x: 0, y: 45, z: 0 },
         importance: 0.8,
         connections: ['person_1'],
-        meshType: 'cube',;
+        meshType: 'cube',
         color: { r: 0, g: 1, b: 0, a: 1 },
-        label: 'ABC Corp',;
+        label: 'ABC Corp',
         metadata: { type: 'corporation' }
       }
     ];
-    
     const demoConnections: Legal3DConnection[] = [
       {
         id: 'conn_1',
         source: 'person_1',
         target: 'org_1',
-        type: 'business',;
-        strength: 0.8,;
+        type: 'business',
+        strength: 0.8,
         color: { r: 1, g: 1, b: 0, a: 1 }
       }
     ];
-    
-    allEntities = demoEntities;
-    allConnections = demoConnections;
-    
+    allEntities = demoEntitie;
+    allConnections = demoConnection;
     await generateEntityMeshLODs();
     applyLODFiltering();
   }
 </script>
-
 <div class="legal-3d-visualization-lod nes-container with-title">
   <p class="title">🎲 3D Legal Data Visualization</p>
-  
   <!-- 3D Controls -->
   <div class="visualization-controls">
     <div class="camera-controls">
       <LoadingButton onclick={handleZoomIn} variant="ghost" size="sm">
         {#snippet children()}<ZoomIn class="w-4 h-4" />{/snippet}
       </LoadingButton>
-      
       <span class="distance-info">
         {cameraDistance.toFixed(1)}m
       </span>
-      
       <LoadingButton onclick={handleZoomOut} variant="ghost" size="sm">
         {#snippet children()}<ZoomOut class="w-4 h-4" />{/snippet}
       </LoadingButton>
-      
       <LoadingButton onclick={handleResetCamera} variant="ghost" size="sm">
         {#snippet children()}<RotateCcw class="w-4 h-4" />{/snippet}
       </LoadingButton>
-      
       <label class="nes-checkbox">
         <input type="checkbox" bind:checked={autoRotate} />
         <span>Auto Rotate</span>
       </label>
     </div>
-    
     <div class="lod-controls">
-      <select 
+      <select
         class="nes-select"
         bind:value={currentLOD}
         onchange={handleLODChange}
@@ -915,14 +779,12 @@ if (!browser) return;
           </option>
         {/each}
       </select>
-      
       <Badge variant="ghost" class="lod-badge">
         <Layers class="w-3 h-3 mr-1" />
         Rec: LOD {recommendedLOD}
       </Badge>
     </div>
   </div>
-  
   <!-- 3D Canvas -->
   <div class="canvas-container">
     <canvas
@@ -935,7 +797,6 @@ if (!browser) return;
       onmouseup={handleMouseUp}
       onwheel={handleWheel}
     ></canvas>
-    
     <!-- Loading overlay -->
     {#if isLoading}
       <div class="loading-overlay">
@@ -945,7 +806,6 @@ if (!browser) return;
         <p>Loading 3D scene...</p>
       </div>
     {/if}
-    
     <!-- Controls overlay -->
     <div class="controls-overlay">
       <div class="control-hint">
@@ -953,7 +813,6 @@ if (!browser) return;
       </div>
     </div>
   </div>
-  
   <!-- Entity Details Panel -->
   {#if selectedEntity}
     <div class="entity-details nes-container">
@@ -966,17 +825,14 @@ if (!browser) return;
           Importance: {(selectedEntity.importance * 100).toFixed(0)}%
         </span>
       </div>
-      
       <div class="entity-position">
         <span>Position: ({selectedEntity.position.x.toFixed(1)}, {selectedEntity.position.y.toFixed(1)}, {selectedEntity.position.z.toFixed(1)})</span>
       </div>
-      
       <div class="entity-connections">
         <span>Connections: {selectedEntity.connections.length}</span>
       </div>
     </div>
   {/if}
-  
   <!-- 3D Scene Statistics -->
   <div class="scene-stats nes-container">
     <h4>📊 3D Scene Statistics</h4>
@@ -1008,14 +864,12 @@ if (!browser) return;
     </div>
   </div>
 </div>
-
 <style>
-  .legal-3d-visualization-lod {;
+  .legal-3d-visualization-lod {
     background: linear-gradient(135deg, #0f0f23, #1a1a2e);
     color: #fff;
     min-height: 800px;
   }
-
   .visualization-controls {
     display: grid;
     grid-template-columns: 1fr auto;
@@ -1026,13 +880,11 @@ if (!browser) return;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 4px;
   }
-
   .camera-controls {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
-
   .distance-info {
     padding: 0.25rem 0.5rem;
     background: rgba(255, 255, 255, 0.1);
@@ -1041,30 +893,25 @@ if (!browser) return;
     min-width: 60px;
     text-align: center;
   }
-
   .lod-controls {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
-
   .lod-badge {
     font-size: 0.75rem;
   }
-
   .canvas-container {
     position: relative;
-    background: #1a1a2e;
+    background: #1a1a2;
     border: 2px solid #444;
     border-radius: 4px;
     margin-bottom: 1rem;
     overflow: hidden;
   }
-
   .visualization-canv.visualization-canvas:active {
     cursor: grabbing;
   }
-
   .loading-overlay {
     position: absolute;
     top: 0;
@@ -1078,7 +925,6 @@ if (!browser) return;
     align-items: center;
     gap: 1rem;
   }
-
   .controls-overlay {
     position: absolute;
     bottom: 10px;
@@ -1086,7 +932,6 @@ if (!browser) return;
     right: 10px;
     pointer-events: none;
   }
-
   .control-hint {
     background: rgba(0, 0, 0, 0.8);
     color: #ccc;
@@ -1096,85 +941,70 @@ if (!browser) return;
     text-align: center;
     border: 1px solid #444;
   }
-
   .entity-details {
     background: rgba(0, 0, 0, 0.6);
     border: 2px solid #4ade80;
     margin-bottom: 1rem;
   }
-
   .entity-meta {
     display: flex;
     align-items: center;
     gap: 1rem;
     margin: 0.5rem 0;
   }
-
   .entity-type-badge {
     font-size: 0.75rem;
   }
-
   .entity-importance {
     font-size: 0.875rem;
     color: #4ade80;
   }
-
   .entity-position,
   .entity-connections {
     font-size: 0.875rem;
     color: #ccc;
     margin: 0.25rem 0;
   }
-
   .scene-stats {
     background: rgba(0, 0, 0, 0.4);
   }
-
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 1rem;
     margin-top: 0.5rem;
   }
-
   .stat-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
   }
-
   .label {
     font-size: 0.875rem;
     color: #ccc;
   }
-
   .value {
     font-weight: bold;
     color: #4ade80;
   }
-
   /* N64-style animations */
   @keyframes indeterminate {
     0% { transform: translateX(-100%); }
     100% { transform: translateX(100%); }
   }
-
   .nes-progress-bar.indeterminate {
     animation: indeterminate 1.5s linear infinite;
   }
-
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .visualization-controls {
       grid-template-columns: 1fr;
       gap: 0.5rem;
     }
-
     .camera-controls,
     .lod-controls {
       justify-self: center;
     }
-
     .visualization-canv.stats-grid {
       grid-template-columns: repeat(2, 1fr);
     }

@@ -1,11 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { createMachine, assign } from 'xstate';
   import { useMachine } from '@xstate/svelte';
   // Toast notifications removed - using simple state instead
-
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import {
     Card,
     CardHeader,
@@ -14,24 +12,23 @@
   } from '$lib/components/ui/enhanced-bits';
   import { Textarea } from '$lib/components/ui/textarea';
   import EnhancedButton from '$lib/components/ui/EnhancedButton.svelte';
-
   // Legal AI Assistant State Machine (XState Best Practices)
   const legalAIMachine = createMachine({
     id: 'legalAI',
-    initial: 'idle',;
+    initial: 'idle',
     context: {
       prompt: '',
       response: '',
-      error: null,
+      error: null
       conversationHistory: [];
     },
     states: {
       idle: {
         on: {
           QUERY: {
-            target: 'querying',;
+            target: 'querying',
             guard: ({ event }) => !!event.prompt?.trim(),
-            actions: assign({
+            actions: assign({,
               prompt: ({ event }) => event.prompt,
               error: null;
             })
@@ -40,11 +37,11 @@
       },
       querying: {
         invoke: {
-          src: 'queryGemma3Legal',;
+          src: 'queryGemma3Legal',
           input: ({ context }) => ({ prompt: context.prompt }),
           onDone: {
-            target: 'success',;
-            actions: assign({
+            target: 'success',
+            actions: assign({,
               response: ({ event }) => event.output.response,
               conversationHistory: ({ context, event }) => [
                 ...context.conversationHistory,
@@ -53,8 +50,8 @@
             })
           },
           onError: {
-            target: 'error',;
-            actions: assign({
+            target: 'error',
+            actions: assign({,
               error: ({ event }) => event.error?.message || 'Failed to connect to Legal AI'
             })
           }
@@ -63,16 +60,16 @@
       success: {
         on: {
           QUERY: {
-            target: 'querying',;
+            target: 'querying',
             guard: ({ event }) => !!event.prompt?.trim(),
-            actions: assign({
+            actions: assign({,
               prompt: ({ event }) => event.prompt,
               error: null;
             })
           },
           CLEAR: {
-            target: 'idle',;
-            actions: assign({
+            target: 'idle',
+            actions: assign({,
               prompt: '',
               response: '',
               error: null;
@@ -86,9 +83,9 @@
             target: 'querying';
           },
           QUERY: {
-            target: 'querying',;
+            target: 'querying',
             guard: ({ event }) => !!event.prompt?.trim(),
-            actions: assign({
+            actions: assign({,
               prompt: ({ event }) => event.prompt,
               error: null;
             })
@@ -100,13 +97,13 @@
     actors: {
       queryGemma3Legal: async ({ input }: { input: { prompt: string } }) => {
         const response = await fetch('http://localhost:11434/api/generate', {
-          method: 'POST',;
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: 'gemma3-legal:latest', // Updated to latest model;
+          body: JSON.stringify({,
+            model: 'gemma3-legal:latest', // Updated to latest model
             prompt: `As a legal AI assistant, please provide accurate and helpful information about: ${input.prompt}`,
-            stream: false,;
-            options: {;
+            stream: false
+            options: {
               temperature: 0.3, // Lower temperature for more consistent legal advice
               max_tokens: 2048,  // Increased for detailed legal responses
               top_p: 0.9,
@@ -115,30 +112,24 @@
             }
           })
         });
-
         if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
           throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
         }
-
         const data = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
         return { response: (data as { response?: any }).response };
       }
     }
   });
-
   // Initialize XState machine
   const { snapshot, send } = useMachine(legalAIMachine);
-
   // Reactive state (Svelte 5 best practices)
   let promptInput = $state('');
   let isLoading = $derived(snapshot.matches('querying'));
   let currentResponse = $derived(snapshot.context.response);
   let errorMessage = $derived(snapshot.context.error);
   let canSubmit = $derived(promptInput.trim.length > 0 && !isLoading);
-
   // Simple notification state (replacing melt-ui toaster)
   let notifications = $state([]);
-
   function showNotification(title: string, description: string) {
     const id = Date.now();
     notifications.push({ id, title, description });
@@ -146,26 +137,20 @@
       notifications = notifications.filter(n => n.id !== id);
     }, 5000);
   }
-
   // Enhanced query function with error handling
   function handleQuery() {
     if (!canSubmit) return;
-
     send({ type: 'QUERY', prompt: promptInput });
-
     // Show notification
     showNotification('Legal AI Query', 'Processing your legal question...');
   }
-
   function handleRetry() {
     send({ type: 'RETRY' });
   }
-
   function handleClear() {
     send({ type: 'CLEAR' });
     promptInput = '';
   }
-
   // Keyboard shortcuts (best practices)
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
@@ -174,7 +159,6 @@
     }
   }
 </script>
-
 <!-- Simple Notifications -->
 {#each notifications as notification ((notification as { id?: any; title?: any; description?: any }).id)}
   <div class="fixed top-4 right-4 bg-blue-500 text-white p-4 rounded shadow-lg z-50">
@@ -184,11 +168,10 @@
       class="absolute top-2 right-2 text-white hover:text-gray-200"
       onclick={() => notifications = notifications.filter(item => item.id))}
     >
-      &times;
+      &time;
     </button>
   </div>
 {/each}
-
 <div class="w-full max-w-4xl yorha-nier-bits-card nes-container">
   <div class="yorha-panel-header yorha-header">
     <h3 class="nes-text is-primary flex items-center gap-2">
@@ -206,7 +189,6 @@
       {/if}
     </div>
   </div>
-
   <div class="yorha-panel-content space-y-6">
     <!-- Input Section -->
     <div class="space-y-2">
@@ -225,7 +207,6 @@
         <span>Ctrl+Enter to submit</span>
       </div>
     </div>
-
     <!-- Action Buttons -->
     <div class="flex gap-2">
       <EnhancedButton
@@ -239,7 +220,6 @@
       >
         {isLoading ? 'Processing Legal Query...' : 'Ask Legal AI'}
       </EnhancedButton>
-
       {#if snapshot.matches('error')}
         <EnhancedButton
           variant="ghost"
@@ -249,7 +229,6 @@
           Retry
         </EnhancedButton>
       {/if}
-
       {#if currentResponse}
         <EnhancedButton
           variant="ghost"
@@ -260,7 +239,6 @@
         </EnhancedButton>
       {/if}
     </div>
-
     <!-- Response Section -->
     {#if errorMessage}
       <div class="p-4 bg-red-50 border border-red-200 rounded-lg yorha-error">
@@ -274,7 +252,6 @@
         </p>
       </div>
     {/if}
-
     {#if currentResponse}
       <div class="space-y-4">
         <div class="flex items-center justify-between">
@@ -284,13 +261,11 @@
             Gemma3-Legal Latest
           </div>
         </div>
-
         <div class="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg yorha-response">
           <div class="prose max-w-none">
             <p class="whitespace-pre-wrap text-sm leading-relaxed">{currentResponse}</p>
           </div>
         </div>
-
         <!-- Response Actions -->
         <div class="flex gap-2 text-xs">
           <button class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">
@@ -305,7 +280,6 @@
         </div>
       </div>
     {/if}
-
     <!-- Conversation History Preview -->
     {#if snapshot.context.conversationHistory.length > 0}
       <details class="mt-6">
@@ -327,7 +301,6 @@
     {/if}
   </div>
 </div>
-
 <style>
   /* YoRHa Legal AI Assistant Styling */
   :global(.yorha-card) {
@@ -335,31 +308,26 @@
     border: 2px solid #e5e5e5;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   }
-
   :global(.yorha-header) {
     background: linear-gradient(45deg, #ffbf00, #ffd700);
     color: #000;
     border-bottom: 2px solid #ffbf00;
   }
-
   :global(.yorha-textarea) {
     background: #ffffff;
     border: 2px solid #e5e5e5;
     transition: all 0.2s ease;
     font-family: 'JetBrains Mono', monospace;
   }
-
   :global(.yorha-textarea:focus) {
     border-color: #ffbf00;
     box-shadow: 0 0 0 3px rgba(255, 191, 0, 0.1);
   }
-
   :global(.yorha-response) {
     position: relative;
     overflow: hidden;
   }
-
-  :global(.yorha-response::before) {
+  :global($1) {
     content: '';
     position: absolute;
     top: 0;
@@ -369,12 +337,10 @@
     background: linear-gradient(90deg, transparent, #ffbf00, transparent);
     animation: shimmer 2s infinite;
   }
-
   :global(.yorha-error) {
     border-left: 4px solid #ef4444;
     background: #fef2f2;
   }
-
   /* Toast Styling */
   :global(.yorha-toast) {
     background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
@@ -385,7 +351,6 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     min-width: 300px;
   }
-
   :global(.toast-close) {
     background: none;
     border: none;
@@ -399,12 +364,10 @@
     align-items: center;
     justify-content: center;
   }
-
   @keyframes shimmer {
     0% { left: -100%; }
     100% { left: 100%; }
   }
-
   /* Responsive Design */
   @media (max-width: 768px) {
     :global(.yorha-card) {
@@ -413,4 +376,3 @@
     }
   }
 </style>
-

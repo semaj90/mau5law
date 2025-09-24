@@ -2,7 +2,6 @@
  * Gallery API Server - Main Gallery Data Handler
  * Provides unified access to all media types across the legal AI platform
  */
-
 import { json, error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { db } from '$lib/server/database'
@@ -10,7 +9,6 @@ import { cases, evidence, users, legalDocuments } from '$lib/server/database'
 import { eq, desc, asc, and, or, like, isNull } from 'drizzle-orm'
 import { URL } from "url"
 }
-
 export interface GalleryItem {
   id: string
   type: 'evidence' | 'document' | 'image' | 'ai-generated' | 'upload'
@@ -25,12 +23,11 @@ export interface GalleryItem {
   caseId?: string
   caseTitle?: string
   tags?: string[]
-  metadata?: Record<string, any>
+  metadata?: { [key: string]: any }
   isPublic: boolean
   category: string
   searchableText?: string
 }
-
 export interface GalleryResponse {
   items: GalleryItem[]
   totalCount: number
@@ -45,7 +42,6 @@ export interface GalleryResponse {
     totalPages: number
   }
 }
-
 interface GalleryFilters {
   type?: string
   category?: string
@@ -58,7 +54,6 @@ interface GalleryFilters {
   fileTypes?: string[]
   isPublic?: boolean
 }
-
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     // Parse query parameters
@@ -66,7 +61,6 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const pageSize = Math.min(100, Math.max(10, parseInt(url.searchParams.get('pageSize') || '20'))
     const sortBy = url.searchParams.get('sortBy') || 'uploadedAt'
     const sortOrder = url.searchParams.get('sortOrder') || 'desc'
-
     // Parse filters
     const filters: GalleryFilters = {
       type: url.searchParams.get('type') || undefined,
@@ -80,9 +74,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       fileTypes: url.searchParams.get('fileTypes')?.split(',').filter(Boolean) || undefined,
       isPublic: url.searchParams.get('isPublic') ? url.searchParams.get('isPublic') === 'true' : undefined
     }
-
     const startTime = Date.now()
-
     // Get gallery items from multiple sources
     const [evidenceItems, documentItems, aiGeneratedItems, categories, casesData, usersData] = await Promise.all([
       getEvidenceItems(filters, page, pageSize, sortBy, sortOrder),
@@ -92,51 +84,43 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       getCases(),
       getUsers()
     ])
-
     // Combine and sort all items
     const allItems = [
       ...evidenceItems.items,
       ...documentItems.items,
       ...aiGeneratedItems.items
     ]
-
     // Sort combined items
     allItems.sort((a, b) => {
       const aVal = a[sortBy as keyof GalleryItem] || ''
       const bVal = b[sortBy as keyof GalleryItem] || ''
-      
       if (sortOrder === 'desc') {
         return bVal > aVal ? 1 : -1
       }
       return aVal > bVal ? 1 : -1
     })
-
     // Apply pagination to combined results
     const offset = (page - 1) * pageSize
     const paginatedItems = allItems.slice(offset, offset + pageSize)
     const totalCount = allItems.length
-
     // Prepare filter options
     const filterOptions = {
       types: ['evidence', 'document', 'image', 'ai-generated', 'upload'],
       cases: casesData.map(c => ({ id: c.id, title: c.title })),
       users: usersData.map(u => ({ id: u.id, name: u.email || 'Unknown' })
     }
-
     const processingTime = Date.now() - startTime
-
     const response: GalleryResponse = {
-      items: paginatedItems,
+      items: paginatedItems
       totalCount,
       categories,
-      filters: filterOptions,
+      filters: filterOptions
       pagination: {
         page,
         pageSize,
         totalPages: Math.ceil(totalCount / pageSize)
       }
     }
-
     return json(response, {
       headers: {
         'X-Processing-Time': `${processingTime}ms`,
@@ -144,13 +128,11 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         'Cache-Control': 'public, max-age=60' // Cache for 1 minute
       }
     })
-
   } catch (err) {
     console.error('Gallery API error:', err)
     throw error(500, `Failed to fetch gallery data: ${err instanceof Error ? err.message: 'Unknown error'}`)
   }
 }
-
 async function getEvidenceItems(filters: GalleryFilters, page: number, pageSize: number, sortBy: string, sortOrder: string) {
   try {
     const evidenceQuery = db
@@ -172,14 +154,11 @@ async function getEvidenceItems(filters: GalleryFilters, page: number, pageSize:
       })
       .from(evidence)
       .leftJoin(cases, eq(evidence.caseId, cases.id)
-
     // Apply filters
     const conditions = []
-    
     if (filters.caseId) {
       conditions.push(eq(evidence.caseId, filters.caseId)
     }
-    
     if (filters.search) {
       conditions.push(
         or(
@@ -189,24 +168,19 @@ async function getEvidenceItems(filters: GalleryFilters, page: number, pageSize:
         )
       )
     }
-    
     if (filters.fileTypes && filters.fileTypes.length > 0) {
       conditions.push(
         or(...filters.fileTypes.map(type => like(evidence.fileType, `%${type}%`))
       )
     }
-
     if (filters.isPublic !== undefined) {
       conditions.push(eq(evidence.isPublic, filters.isPublic)
     }
-
     if (conditions.length > 0) {
       evidenceQuery.where(and(...conditions)
     }
-
     const evidenceData = await evidenceQuery.execute()
-
-    const items: GalleryItem[] = evidenceData.map(item => ({
+    const items: GalleryItem[] = evidenceData.map(item => ({,
       id: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).id,
       type: 'evidence' as const,
       title: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).title || (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).fileName || 'Untitled Evidence',
@@ -220,19 +194,17 @@ async function getEvidenceItems(filters: GalleryFilters, page: number, pageSize:
       caseId: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).caseId || undefined,
       caseTitle: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).caseTitle || undefined,
       tags: Array.isArray((item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).tags) ? (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).tags: [],
-      metadata: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).metadata as Record<string, any> || {},
+      metadata: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).metadata as { [key: string]: any } || {},
       isPublic: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).isPublic || false,
       category: 'Legal Evidence',
-      searchableText: [(item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).title, (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).description, (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).contentText].filter(item => item.join)(' ')
+      searchableText: [(item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).title, (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).description, (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).contentText].filter(Boolean).join(' ')
     })
-
     return { items, total: items.length }
   } catch (err) {
     console.error('Error fetching evidence items:', err)
     return { items: [], total: 0 }
   }
 }
-
 async function getDocumentItems(filters: GalleryFilters, page: number, pageSize: number, sortBy: string, sortOrder: string) {
   try {
     // TODO: Implement documents table query when schema is available
@@ -243,23 +215,19 @@ async function getDocumentItems(filters: GalleryFilters, page: number, pageSize:
     return { items: [], total: 0 }
   }
 }
-
 async function getAIGeneratedItems(filters: GalleryFilters, page: number, pageSize: number, sortBy: string, sortOrder: string) {
   try {
     // Check if we have AI-generated content in local storage or service
     // This would integrate with the image generation service we created
     const aiItems: GalleryItem[] = []
-
     // TODO: Query AI-generated images from storage or database
     // For now, return empty array - this will be populated by the image generation service
-    
     return { items: aiItems, total: aiItems.length }
   } catch (err) {
     console.error('Error fetching AI-generated items:', err)
     return { items: [], total: 0 }
   }
 }
-
 async function getCategories() {
   return [
     { name: 'Legal Evidence', count: 0 },
@@ -274,7 +242,6 @@ async function getCategories() {
     { name: 'Spreadsheets', count: 0 }
   ]
 }
-
 async function getCases() {
   try {
     return await db
@@ -290,7 +257,6 @@ async function getCases() {
     return []
   }
 }
-
 async function getUsers() {
   try {
     return await db
@@ -306,66 +272,51 @@ async function getUsers() {
     return []
   }
 }
-
 function generateThumbnailUrl(filePath: string | null, fileType: string | null): string | undefined {
   if (!filePath || !fileType) return undefined
-  
   // For images, we can serve them directly as thumbnails
   if (fileType.startsWith('image/')) {
     return `/api/files/thumbnails/${encodeURIComponent(filePath)}`
   }
-  
   // For other file types, return appropriate icons
   if (fileType.includes('pdf')) {
     return '/icons/pdf-thumbnail.svg'
   }
-  
   if (fileType.includes('video')) {
     return '/icons/video-thumbnail.svg'
   }
-  
   if (fileType.includes('audio')) {
     return '/icons/audio-thumbnail.svg'
   }
-  
   return '/icons/file-thumbnail.svg'
 }
-
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const data = await request.json()
-    
     // Handle bulk operations like delete, move, tag
     if ((data as { action?: any; ids?: any; tags?: any; caseId?: any }).action === 'bulk_delete') {
       return await handleBulkDelete((data as { action?: any; ids?: any; tags?: any; caseId?: any }).ids)
     }
-    
     if ((data as { action?: any; ids?: any; tags?: any; caseId?: any }).action === 'bulk_tag') {
       return await handleBulkTag((data as { action?: any; ids?: any; tags?: any; caseId?: any }).ids, (data as { action?: any; ids?: any; tags?: any; caseId?: any }).tags)
     }
-    
     if ((data as { action?: any; ids?: any; tags?: any; caseId?: any }).action === 'bulk_move') {
       return await handleBulkMove((data as { action?: any; ids?: any; tags?: any; caseId?: any }).ids, (data as { action?: any; ids?: any; tags?: any; caseId?: any }).caseId)
     }
-    
     throw error(400, 'Invalid action')
-    
   } catch (err) {
     console.error('Gallery POST error:', err)
     throw error(500, `Gallery operation failed: ${err instanceof Error ? err.message: 'Unknown error'}`)
   }
 }
-
 async function handleBulkDelete(ids: string[]) {
   // TODO: Implement bulk delete across different item types
   return json({ success: true, deleted: ids.length })
 }
-
 async function handleBulkTag(ids: string[], tags: string[]) {
   // TODO: Implement bulk tagging across different item types
   return json({ success: true, tagged: ids.length })
 }
-
 async function handleBulkMove(ids: string[], caseId: string) {
   // TODO: Implement bulk move to different case
   return json({ success: true, moved: ids.length })

@@ -1,18 +1,14 @@
 <script lang="ts">
   import { dev } from '$app/environment';
-
   interface Props {
     status?: number;
     error?: { message?: string };
   }
-
   let { status = 500, error }: Props = $props();
 </script>
-
 <svelte:head>
   <title>Error {status}</title>
 </svelte:head>
-
 <div class="min-h-screen flex items-center justify-center bg-gray-50">
   <div class="max-w-md w-full space-y-8 text-center">
     <div class="space-y-4">
@@ -26,11 +22,9 @@
           Something went wrong
         {/if}
       </h2>
-
       {#if error?.message}
         <p class="text-gray-600">{error.message}</p>
       {/if}
-
       {#if dev && error}
         <details class="mt-6 text-left">
           <summary class="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
@@ -41,7 +35,6 @@
           </pre>
         </details>
       {/if}
-
       <div class="mt-8">
         <a
           href="/"

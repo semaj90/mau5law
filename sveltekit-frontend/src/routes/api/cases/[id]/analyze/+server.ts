@@ -5,11 +5,10 @@ import { db } from '$lib/server/db/unified-client'
 import { legalCases, evidence, documentMetadata } from '$lib/server/db/schema-unified'
 import { eq, sql } from 'drizzle-orm'
 import { GemmaEmbeddingService } from '$lib/services/gemma-embedding'
-
 interface AnalysisResult {
   caseId: string
   summary: string
-  riskLevel: 'low' | 'medium' | 'high' | 'critical'
+  riskLevel: 'low' | 'medium' | 'high' | 'critical',
   keyFindings: string[]
   recommendations: string[]
   similarCases: Array<{
@@ -17,85 +16,67 @@ interface AnalysisResult {
     title: string
     similarity: number
   }>
-  complianceStatus: 'compliant' | 'non-compliant' | 'needs-review'
+  complianceStatus: 'compliant' | 'non-compliant' | 'needs-review',
   timeline: Array<{
     event: string
     date: string
     importance: 'low' | 'medium' | 'high'
   }>
 }
-
 export const POST: RequestHandler = async ({ params, request }) => {
   const caseId = params.id
-
   if (!caseId) {
     return json({ error: 'Case ID is required' }, { status: 400 })
   }
-
   try {
     const startTime = Date.now()
-
     // 1. Fetch case and related evidence from database
     const caseData = await db
       .select()
       .from(legalCases)
       .where(eq(legalCases.id, caseId)
       .limit(1)
-
     if (caseData.length === 0) {
       return json({ error: 'Case not found' }, { status: 404 })
     }
-
     const case_ = caseData[0]
-
     // 2. Fetch related evidence
     const evidenceData = await db
       .select()
       .from(evidence)
       .where(eq(evidence.caseId, caseId)
       .limit(50)
-
     // 3. Get document metadata with embeddings for vector similarity
     const documentsWithEmbeddings = await db
       .select()
       .from(documentMetadata)
       .where(eq(documentMetadata.caseId, caseId)
       .limit(20)
-
     // 4. Perform AI-powered analysis
     const embeddingService = new GemmaEmbeddingService()
-
     // Create analysis prompt
     const analysisPrompt = `
       Analyze this legal case for compliance and risk assessment:
-
       Case: ${case_.title}
       Description: ${case_.description || 'No description'}
       Priority: ${case_.priority}
       Status: ${case_.status}
-
       Evidence Count: ${evidenceData.length}
       Document Count: ${documentsWithEmbeddings.length}
-
       Evidence Summary: ${evidenceData.map(e => e.title).join(', ')}
-
       Provide a comprehensive legal analysis including:
       1. Risk assessment (low/medium/high/critical)
       2. Key legal findings
       3. Compliance status
       4. Actionable recommendations
     `
-
     // Generate analysis using embeddings for context
     const analysisEmbedding = await embeddingService.embedText(analysisPrompt)
-
     // 5. Find similar cases using vector similarity
     let similarCases: Array<{ id: string; title: string; similarity: number }> = []
-
     if (documentsWithEmbeddings.length > 0) {
       // Use first document's embedding for similarity search
       const queryEmbedding = documentsWithEmbeddings[0].contentEmbedding
-
       if (queryEmbedding) {
         const similarityResults = await db.execute(sql`
           SELECT
@@ -109,15 +90,13 @@ export const POST: RequestHandler = async ({ params, request }) => {
           ORDER BY similarity DESC
           LIMIT 5
         `)
-
-        similarCases = similarityResults.map((row: any) => ({
+        similarCases = similarityResults.map((row: any) => ({,
           id: row.id,
           title: row.title,
           similarity: Math.round(row.similarity * 100) / 100
         })
       }
     }
-
     // 6. Generate mock AI analysis (replace with actual AI service call)
     const analysisResult: AnalysisResult = {
       caseId,
@@ -158,25 +137,22 @@ export const POST: RequestHandler = async ({ params, request }) => {
         }
       ]
     }
-
     const processingTime = Date.now() - startTime
-
     return json({
-      success: true,
-      analysis: analysisResult,
+      success: true
+      analysis: analysisResult
       metadata: {
-        processingTimeMs: processingTime,
+        processingTimeMs: processingTime
         evidenceCount: evidenceData.length,
         documentCount: documentsWithEmbeddings.length,
         similarCasesFound: similarCases.length,
         timestamp: new Date().toISOString()
       }
     })
-
   } catch (error) {
     console.error('Case analysis error:', error)
     return json({
-      success: false,
+      success: false
       error: 'Failed to analyze case',
       details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })

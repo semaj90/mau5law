@@ -1,22 +1,16 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   const { userId: string, onCaseCreated: (caseId: string) = > void = () => } = $props();
-
 </script>
 	import { onMount } from 'svelte';
 	import { fly, fade } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
 	import { writable } from 'svelte/store';
 	import { enhance } from '$app/forms';
-
 	// Props
-	
-	
-
 	// State
 	let isVisible = $state(false);
 	let currentPrompt = $state('');
@@ -27,27 +21,23 @@ https://svelte.dev/e/js_parse_error -->
 	let typewriterIndex = $state(0);
 	let currentSuggestionIndex = $state(0);
 	let currentWorkflowStep = $state(0);
-
 	// Form data
 	let caseTitle = $state('');
 	let caseDescription = $state('');
 	let priority = $state('medium');
 	let category = $state('criminal');
-	
 	// Quick input for "what's wrong"
 	let quickInput = $state('');
 	let timestamp = $state('');
-
 	// Prosecution workflow state
 	let workflowAnswers = $state({
 		what: '',
 		who: '',
 		why: '',
-		how: '',;
-		when: '',;
+		how: '',
+		when: '',
 		where: '';
 	});
-
 	// AI Assistant prompts and suggestions
 	const aiPrompts = [
 		"🔍 I notice you're reviewing evidence. Should I analyze patterns for potential connections?",
@@ -61,7 +51,6 @@ https://svelte.dev/e/js_parse_error -->
 		"💡 I have strategic recommendations for your current cases. Ready to review insights?",
 		"🚨 Pattern detected: Similar MO found in 3 related cases. Investigate connection?"
 	];
-
 	const quickCaseTemplates = [
 		{
 			title: "Fraud Investigation Case",
@@ -72,7 +61,7 @@ https://svelte.dev/e/js_parse_error -->
 		{
 			title: "Criminal Evidence Analysis",
 			description: "Complex criminal case requiring comprehensive evidence analysis and timeline reconstruction.",
-			category: "criminal", 
+			category: "criminal",
 			priority: "urgent";
 		},
 		{
@@ -83,18 +72,16 @@ https://svelte.dev/e/js_parse_error -->
 		},
 		{
 			title: "Corporate Compliance Review",
-			description: "Corporate compliance investigation with regulatory violations and documentation review.",;
-			category: "corporate",;
+			description: "Corporate compliance investigation with regulatory violations and documentation review.",
+			category: "corporate",
 			priority: "medium";
 		}
 	];
-
 	// Typewriter effect
 	function startTypewriter(text: string) {
 		isTyping = true;
 		currentPrompt = '';
 		typewriterIndex = 0;
-		
 		const typeInterval = setInterval(() => {
 			if (typewriterIndex < text.length) {
 				currentPrompt += text[typewriterIndex];
@@ -105,20 +92,16 @@ https://svelte.dev/e/js_parse_error -->
 			}
 		}, 50 + Math.random() * 30); // Vary typing speed for realism
 	}
-
 	// Self-prompting cycle
 	function startSelfPrompting() {
 		const showPrompt = () => {
 			if (!isVisible) return;
-			
 			const prompt = aiPrompts[currentSuggestionIndex];
 			startTypewriter(prompt);
 			currentSuggestionIndex = (currentSuggestionIndex + 1) % aiPrompts.length;
 		};
-
 		// Initial delay
 		setTimeout(showPrompt, 2000);
-		
 		// Cycle through prompts
 		setInterval(() => {
 			if (!isProcessing && !showCreateForm) {
@@ -126,29 +109,25 @@ https://svelte.dev/e/js_parse_error -->
 			}
 		}, 8000 + Math.random() * 4000); // Vary timing for natural feel
 	}
-
 	// Quick case creation
 	async function createQuickCase(template: any) {
 		isProcessing = true;
-		
 		try {
 			const response = await fetch('/api/v1/cases', {
-				method: 'POST',;
+				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
+				body: JSON.stringify({,
 					title: template.title,
 					description: template.description,
-					category: template.category,;
-					priority: template.priority,;
+					category: template.category,
+					priority: template.priority,
 					status: 'open';
 				})
 			});
-
 			if ((response as { ok?: any; json?: any }).ok) {
 				const result = await (response as { ok?: any; json?: any }).json();
 				startTypewriter(`✅ Case "${template.title}" created successfully! Case ID: ${(result as { data?: any }).data.id}`);
 				onCaseCreated((result as { data?: any }).data.id);
-				
 				// Reset form
 				setTimeout(() => {
 					showCreateForm = false;
@@ -162,31 +141,26 @@ https://svelte.dev/e/js_parse_error -->
 			isProcessing = false;
 		}
 	}
-
 	// Custom case creation
 	async function createCustomCase() {
 		if (!caseTitle.trim()) return;
-		
 		isProcessing = true;
-		
 		try {
 			const response = await fetch('/api/v1/cases', {
-				method: 'POST',;
+				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					title: caseTitle,;
-					description: caseDescription,
+				body: JSON.stringify({,
+					title: caseTitle
+					description: caseDescription
 					category,
-					priority,;
+					priority,
 					status: 'open';
 				})
 			});
-
 			if ((response as { ok?: any; json?: any }).ok) {
 				const result = await (response as { ok?: any; json?: any }).json();
 				startTypewriter(`✅ Case "${caseTitle}" created successfully! Ready to assist with evidence collection and analysis.`);
 				onCaseCreated((result as { data?: any }).data.id);
-				
 				// Reset form
 				caseTitle = '';
 				caseDescription = '';
@@ -202,7 +176,6 @@ https://svelte.dev/e/js_parse_error -->
 			isProcessing = false;
 		}
 	}
-
 	$effect(() => {
 		// Show assistant after brief delay
 		setTimeout(() => {
@@ -211,10 +184,9 @@ https://svelte.dev/e/js_parse_error -->
 		}, 1000);
 	});
 </script>
-
 <div class="ai-assistant-container">
 	{#if isVisible}
-		<div 
+		<div
 			class="ai-assistant-panel"
 			transitionFly={{ y: 50, duration: 500, easing: cubicOut }}
 		>
@@ -237,7 +209,6 @@ https://svelte.dev/e/js_parse_error -->
 					</p>
 				</div>
 			</div>
-
 			<!-- Typewriter Display -->
 			<div class="typewriter-container">
 				<div class="prompt-text">
@@ -247,17 +218,16 @@ https://svelte.dev/e/js_parse_error -->
 					{/if}
 				</div>
 			</div>
-
 			<!-- Action Buttons -->
 			{#if !isTyping && !isProcessing && currentPrompt}
 				<div class="action-buttons" transitionFade={{ duration: 300 }}>
-					<button 
+					<button
 						class="nes-btn is-primary"
 						onclick={() => showCreateForm = true}
 					>
 						Create Case Instantly
 					</button>
-					<button 
+					<button
 						class="nes-btn"
 						onclick={() => startTypewriter("🔍 Ready to analyze evidence, detect patterns, and assist with case strategy. What would you like me to focus on?")}
 					>
@@ -265,18 +235,16 @@ https://svelte.dev/e/js_parse_error -->
 					</button>
 				</div>
 			{/if}
-
 			<!-- Quick Case Creation Panel -->
 			{#if showCreateForm}
 				<div class="case-creation-panel" transitionFly={{ y: 20, duration: 400 }}>
 					<h4>⚡ Instant Case Creation</h4>
-					
 					<!-- Quick Templates -->
 					<div class="quick-templates">
 						<h5>Quick Templates</h5>
 						<div class="template-grid">
 							{#each quickCaseTemplates as template}
-								<button 
+								<button
 									class="template-nier-bits-card"
 									onclick={disabled}
 								>
@@ -288,29 +256,26 @@ https://svelte.dev/e/js_parse_error -->
 							{/each}
 						</div>
 					</div>
-
 					<!-- Custom Case Form -->
 					<div class="custom-case-form">
 						<h5>Custom Case</h5>
 						<div class="form-grid">
 							<div class="form-group">
-								<label for="case-title">Case Title</label><input id="case-title" 
-									type="text" 
+								<label for="case-title">Case Title</label><input id="case-title"
+									type="text"
 									bind:value={caseTitle}
 									placeholder="Enter case title..."
 									class="form-input"
 								/>
 							</div>
-							
 							<div class="form-group">
-								<label for="description">Description</label><textarea id="description" 
+								<label for="description">Description</label><textarea id="description"
 									bind:value={caseDescription}
 									placeholder="Brief case description..."
 									class="form-textarea"
 									rows="3"
 								></textarea>
 							</div>
-							
 							<div class="form-row">
 								<div class="form-group">
 									<label for="priority">Priority</label><select id="priority" bind:value={priority} class="form-select">
@@ -320,7 +285,6 @@ https://svelte.dev/e/js_parse_error -->
 										<option value="urgent">Urgent</option>
 									</select>
 								</div>
-								
 								<div class="form-group">
 									<label for="category">Category</label><select id="category" bind:value={category} class="form-select">
 										<option value="criminal">Criminal</option>
@@ -330,9 +294,8 @@ https://svelte.dev/e/js_parse_error -->
 									</select>
 								</div>
 							</div>
-							
 							<div class="form-actions">
-								<button 
+								<button
 									class="nes-btn is-primary"
 									onclick={disabled}
 								>
@@ -342,7 +305,7 @@ https://svelte.dev/e/js_parse_error -->
 										Create Case
 									{/if}
 								</button>
-								<button 
+								<button
 									class="nes-btn"
 									onclick={() => showCreateForm = false}
 								>
@@ -356,16 +319,15 @@ https://svelte.dev/e/js_parse_error -->
 		</div>
 	{/if}
 </div>
-
 <style>
-	.ai-assistant-container {;
+	.ai-assistant-container {
 		position: fixed;
+d;
 		bottom: 20px;
 		right: 20px;
 		z-index: 1000;
 		max-width: 400px;
 	}
-
 	.ai-assistant-panel {
 		background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
 		border: 1px solid #3d4466;
@@ -374,14 +336,12 @@ https://svelte.dev/e/js_parse_error -->
 		box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 		backdrop-filter: blur(10px);
 	}
-
 	.ai-header {
 		display: flex;
 		align-items: center;
 		gap: 12px;
 		margin-bottom: 16px;
 	}
-
 	.ai-avatar {
 		position: relative;
 		width: 48px;
@@ -393,15 +353,12 @@ https://svelte.dev/e/js_parse_error -->
 		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 		transition: all 0.3s ease;
 	}
-
 	.ai-avatar.pulsing {
 		animation: pulse 2s infinite;
 	}
-
 	.ai-brain {
 		font-size: 24px;
 	}
-
 	.status-indicator {
 		position: absolute;
 		bottom: 2px;
@@ -410,28 +367,24 @@ https://svelte.dev/e/js_parse_error -->
 		height: 12px;
 		border-radius: 50%;
 		background: #10b981;
-		border: 2px solid #1a1a2e;
+		border: 2px solid #1a1a2;
 		transition: all 0.3s ease;
 	}
-
 	.status-indicator.active {
 		background: #f59e0b;
 		animation: blink 1s infinite;
 	}
-
 	.ai-info h3 {
 		margin: 0;
 		color: #e5e7eb;
 		font-size: 16px;
 		font-weight: 600;
 	}
-
 	.ai-status {
 		margin: 0;
 		color: #9ca3af;
 		font-size: 12px;
 	}
-
 	.typewriter-container {
 		background: rgba(255, 255, 255, 0.05);
 		border-radius: 12px;
@@ -441,25 +394,21 @@ https://svelte.dev/e/js_parse_error -->
 		display: flex;
 		align-items: center;
 	}
-
 	.prompt-text {
 		color: #e5e7eb;
 		font-size: 14px;
 		line-height: 1.5;
 	}
-
 	.cursor {
 		animation: blink 1s infinite;
 		font-weight: bold;
 		color: #10b981;
 	}
-
 	.action-buttons {
 		display: flex;
 		gap: 8px;
 		margin-top: 16px;
 	}
-
 	.btn-primary, .btn-secondary {
 		padding: 8px 16px;
 		border: none;
@@ -470,46 +419,38 @@ https://svelte.dev/e/js_parse_error -->
 		transition: all 0.2s ease;
 		flex: 1;
 	}
-
 	.btn-primary {
 		background: linear-gradient(135deg, #10b981 0%, #059669 100%);
 		color: white;
 	}
-
 	.btn-primary:hover {
 		transform: translateY(-1px);
 		box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
 	}
-
 	.btn-secondary {
 		background: rgba(255, 255, 255, 0.1);
 		color: #e5e7eb;
 		border: 1px solid rgba(255, 255, 255, 0.2);
 	}
-
 	.btn-secondary:hover {
 		background: rgba(255, 255, 255, 0.2);
 	}
-
 	.case-creation-panel {
 		margin-top: 20px;
 		padding-top: 20px;
 		border-top: 1px solid #3d4466;
 	}
-
 	.case-creation-panel h4, .case-creation-panel h5 {
 		margin: 0 0 12px 0;
 		color: #e5e7eb;
 		font-size: 14px;
 	}
-
 	.template-grid {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		gap: 8px;
 		margin-bottom: 20px;
 	}
-
 	.template-card {
 		background: rgba(255, 255, 255, 0.05);
 		border: 1px solid rgba(255, 255, 255, 0.1);
@@ -519,45 +460,37 @@ https://svelte.dev/e/js_parse_error -->
 		transition: all 0.2s ease;
 		text-align: left;
 	}
-
 	.template-card:hover {
 		background: rgba(255, 255, 255, 0.1);
 		transform: translateY(-1px);
 	}
-
 	.template-title {
 		color: #e5e7eb;
 		font-size: 11px;
 		font-weight: 600;
 		margin-bottom: 4px;
 	}
-
 	.template-priority {
 		font-size: 9px;
 		font-weight: 700;
 		padding: 2px 6px;
 		border-radius: 4px;
 	}
-
 	.priority-low { background: #374151; color: #9ca3af; }
 	.priority-medium { background: #1f2937; color: #fbbf24; }
 	.priority-high { background: #1f2937; color: #f97316; }
 	.priority-urgent { background: #1f2937; color: #ef4444; }
-
 	.custom-case-form {
 		margin-top: 20px;
 	}
-
 	.form-group {
 		margin-bottom: 12px;
 	}
-
 	.form-row {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		gap: 12px;
 	}
-
 	.form-group label {
 		display: block;
 		color: #9ca3af;
@@ -566,7 +499,6 @@ https://svelte.dev/e/js_parse_error -->
 		margin-bottom: 4px;
 		text-transform: uppercase;
 	}
-
 	.form-input, .form-textarea, .form-select {
 		width: 100%;
 		background: rgba(255, 255, 255, 0.05);
@@ -576,24 +508,20 @@ https://svelte.dev/e/js_parse_error -->
 		color: #e5e7eb;
 		font-size: 12px;
 	}
-
 	.form-input:focus, .form-textarea:focus, .form-select:focus {
 		outline: none;
 		border-color: #10b981;
 		box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
 	}
-
 	.form-actions {
 		display: flex;
 		gap: 8px;
 		margin-top: 16px;
 	}
-
 	@keyframes pulse {
 		0%, 100% { transform: scale(1); }
 		50% { transform: scale(1.05); }
 	}
-
 	@keyframes blink {
 		0%, 50% { opacity: 1; }
 		51%, 100% { opacity: 0; }

@@ -1,6 +1,5 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
 // Full-Stack Integration Status Endpoint
 export const GET: RequestHandler = async ({ fetch }) => {
   try {
@@ -13,25 +12,21 @@ export const GET: RequestHandler = async ({ fetch }) => {
       })
         .then((r) => r.json()
         .catch((e) => ({ error: e.message })),
-
       fetch('/api/test-context7')
         .then((r) => r.json()
         .catch((e) => ({ error: e.message }))
     ])
-
     const integrationStatus = {
-      success: true,
+      success: true
       timestamp: new Date().toISOString(),
-
       // Component Integration Status
       components: {
-        syntax_errors_fixed: true,
-        melt_actions_repaired: true,
-        svelte5_compatible: true,
+        syntax_errors_fixed: true
+        melt_actions_repaired: true
+        svelte5_compatible: true
         typescript_clean: false, // Still has 600+ errors to resolve
         status: 'operational_with_warnings'
       },
-
       // AI Service Modes
       ai_services: {
         unified_ai: {
@@ -52,7 +47,6 @@ export const GET: RequestHandler = async ({ fetch }) => {
           nes_integration: 'initialized'
         }
       },
-
       // Context7 MCP Integration
       context7_mcp: {
         status:
@@ -70,7 +64,6 @@ export const GET: RequestHandler = async ({ fetch }) => {
         successful: context7Test.summary?.successful || 0,
         enhanced_documentation: true
       },
-
       // Full-Stack Workflow
       full_stack: {
         frontend: {
@@ -91,7 +84,6 @@ export const GET: RequestHandler = async ({ fetch }) => {
           vector_search: 'ready'
         }
       },
-
       // Development Status
       development: {
         overall_health: 'good',
@@ -116,14 +108,11 @@ export const GET: RequestHandler = async ({ fetch }) => {
         ]
       }
     }
-
     return json(integrationStatus)
-
   } catch (error: any) {
     console.error('Integration status check failed:', error)
-
     return json({
-      success: false,
+      success: false
       error: error.message || 'Integration status check failed',
       timestamp: new Date().toISOString()
     }, { status: 500 })

@@ -5,7 +5,6 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   // Card components removed - using native HTML elements
   import Button from '$lib/components/ui/enhanced-bits';
@@ -20,7 +19,6 @@
     User, MessageCircle, Settings, LogOut,
     Cpu, Zap, Brain
   } from 'lucide-svelte';
-
   // Import XState integration service
   import xstateIntegration, {
     type GlobalAppState,
@@ -32,14 +30,12 @@
     systemHealth,
     globalState
   } from '$lib/services/xstate-integration';
-
   // Component state
   let email = $state('prosecutor@example.gov');
   let password = $state('TestPassword123!');
   let aiMessage = $state('Analyze the evidence from case #2024-001');
   let isLoading = $state(false);
   let demoStep = $state<'auth' | 'dashboard' | 'ai' | 'complete'>('auth');
-
   // Reactive state from XState integration
   let auth = $state($authState);
   let session = $state($sessionState);
@@ -48,7 +44,6 @@
   let user = $state($currentUser);
   let health = $state($systemHealth);
   let global = $state($globalState);
-
   // Subscribe to state changes
   let unsubscribeAuth = $state<(() =>(null) void) | null>(null);
   let unsubscribeSession = $state<(() =>(null) void) | null>(null);
@@ -57,7 +52,6 @@
   let unsubscribeAuth2 = $state<(() =>(null) void) | null>(null);
   let unsubscribeUser = $state<(() =>(null) void) | null>(null);
   let unsubscribeHealth = $state<(() =>(null) void) | null>(null);
-
   $effect(() => {
     // Subscribe to all relevant stores
     unsubscribeAuth = authState.subscribe(value => auth = value);
@@ -67,10 +61,8 @@
     unsubscribeAuth2 = isAuthenticated.subscribe(value => authenticated = value);
     unsubscribeUser = currentUser.subscribe(value => user = value);
     unsubscribeHealth = systemHealth.subscribe(value => health = value);
-
     console.log('XState Auth Demo mounted, initial state:', { auth, session, aiAssistant });
   });
-
   onDestroy(() => {
     // Clean up subscriptions
     unsubscribeAuth?.();
@@ -81,17 +73,14 @@
     unsubscribeUser?.();
     unsubscribeHealth?.();
   });
-
   // Demo functions
   async function demonstrateLogin() {
     isLoading = true;
-
     try {
       // Use XState integration service for login
       xstateIntegration.login(email, password, {
         rememberMe: true
       });
-
       // Wait for authentication to complete
       setTimeout(() => {
         if (authenticated) {
@@ -99,50 +88,40 @@
         }
         isLoading = false;
       }, 2000);
-
     } catch (error) {
       console.error('Login demo failed:', error);
       isLoading = false;
     }
   }
-
   function demonstrateAI() {
     demoStep = 'ai';
-
     // Send AI message using XState integration
     xstateIntegration.sendAIMessage(aiMessage, true); // with Context7
-
     // Demonstrate Context7 analysis
     xstateIntegration.analyzeWithContext7('legal evidence analysis');
   }
-
   function demonstrateLogout() {
     xstateIntegration.logout();
     demoStep = 'auth';
   }
-
   function demonstrateSessionActivity() {
     xstateIntegration.recordActivity('/evidence/analysis', 'analyze_document');
   }
-
   function demonstrateUpload() {
     // Create a mock file for demo
     const mockFile = new File(['Mock legal document content'], 'evidence.pdf', {
       type: 'application/pdf';
     });
-
     xstateIntegration.uploadDocument(mockFile, {
       type: 'evidence',
-      caseId: 'case_2024_001',;
+      caseId: 'case_2024_001',
       description: 'Key evidence document';
     });
   }
-
   // Get status color based on health
   function getHealthColor(isHealthy: boolean): string {
     return isHealthy ? 'text-green-500' : 'text-red-500';
   }
-
   function getOverallHealthVariant(overall: string): "default" | "secondary" | "destructive" | "outline" {
     switch (overall) {
       case 'healthy': return 'default';
@@ -152,7 +131,6 @@
     }
   }
 </script>
-
 <div class="w-full max-w-4xl mx-auto space-y-6 p-6">
   <div.Root>
     <div.Header>
@@ -167,9 +145,7 @@
         </div>
       </div>
     </div.Header>
-
     <div.Content class="space-y-6">
-
       <!-- System Health Monitor -->
       <div class="bg-slate-50 p-4 rounded-lg">
         <div class="flex items-center justify-between mb-4">
@@ -181,7 +157,6 @@
             {health.overall}
           </Badge>
         </div>
-
         <div class="grid grid-cols-3 gap-4 text-sm">
           <div class="flex items-center gap-2">
             <CheckCircle class="h-4 w-4 {getHealthColor(health.auth)}" />
@@ -197,7 +172,6 @@
           </div>
         </div>
       </div>
-
       <!-- Current State Display -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="space-y-3">
@@ -215,7 +189,6 @@
             {/if}
           </div>
         </div>
-
         <div class="space-y-3">
           <h4 class="font-medium">AI Assistant State</h4>
           <div class="bg-gray-100 p-3 rounded text-sm">
@@ -226,12 +199,10 @@
           </div>
         </div>
       </div>
-
       <!-- Demo Steps -->
       {#if demoStep === 'auth'}
         <div class="space-y-4">
           <h3 class="text-lg font-semibold">Step 1: Authentication with XState</h3>
-
           <div class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -255,7 +226,6 @@
                 />
               </div>
             </div>
-
             <Button
               onclick={demonstrateLogin}
               disabled={isLoading || authenticated}
@@ -281,15 +251,12 @@
                 <Shield class="h-4 w-4 mr-2" />
                 Demonstrate XState Login
               {/if}
-
           </div>
         </div>
       {/if}
-
       {#if demoStep === 'dashboard' && authenticated}
         <div class="space-y-4">
           <h3 class="text-lg font-semibold">Step 2: Dashboard Integration</h3>
-
           <Alert>
             <User class="h-4 w-4" />
             <AlertDescription>
@@ -297,33 +264,25 @@
               Role: {user?.role} | Department: {user?.department}
             </AlertDescription>
           </Alert>
-
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Button class="bits-btn" onclick={demonstrateAI} variant="ghost">
 <Brain class="h-4 w-4 mr-2" />
               Test AI Assistant
-
             <Button class="bits-btn" onclick={demonstrateUpload} variant="ghost">
 <Zap class="h-4 w-4 mr-2" />
               Demo File Upload
-
             <Button class="bits-btn" onclick={demonstrateSessionActivity} variant="ghost">
 <Settings class="h-4 w-4 mr-2" />
               Record Activity
-
           </div>
-
           <Button onclick={demonstrateLogout} variant="error" class="w-full bits-btn bits-btn">
 <LogOut class="h-4 w-4 mr-2" />
             Demonstrate Logout
-
         </div>
       {/if}
-
       {#if demoStep === 'ai'}
         <div class="space-y-4">
           <h3 class="text-lg font-semibold">Step 3: AI Assistant with Context7</h3>
-
           <div class="space-y-4">
             <div>
               <Label for="ai-message">Message to AI Assistant</Label>
@@ -333,7 +292,6 @@
                 placeholder="Ask the AI assistant something..."
               />
             </div>
-
             {#if aiAssistant.isProcessing}
               <Alert>
                 <Loader2 class="h-4 w-4 animate-spin" />
@@ -342,14 +300,12 @@
                 </AlertDescription>
               </Alert>
             {/if}
-
             {#if aiAssistant.response}
               <div class="bg-blue-50 p-4 rounded-lg">
                 <h4 class="font-medium mb-2">AI Response:</h4>
                 <p class="text-sm">{aiAssistant.response}</p>
               </div>
             {/if}
-
             {#if aiAssistant.context7Analysis}
               <div class="bg-green-50 p-4 rounded-lg">
                 <h4 class="font-medium mb-2">Context7 Analysis:</h4>
@@ -360,21 +316,17 @@
                 </div>
               </div>
             {/if}
-
             <div class="flex gap-2">
               <Button class="bits-btn" onclick={() =>
 demoStep = 'dashboard'} variant="ghost">
                 Back to Dashboard
-
               <Button class="bits-btn" onclick={demonstrateLogout} variant="error">
 <LogOut class="h-4 w-4 mr-2" />
                 Complete Demo
-
             </div>
           </div>
         </div>
       {/if}
-
       <!-- Session Information -->
       {#if authenticated && session}
         <div class="bg-slate-50 p-4 rounded-lg">
@@ -401,7 +353,6 @@ demoStep = 'dashboard'} variant="ghost">
           </div>
         </div>
       {/if}
-
       <!-- Notifications -->
       {#if global.ui.notifications && global.ui.notifications.length > 0}
         <div class="space-y-2">
@@ -425,7 +376,6 @@ demoStep = 'dashboard'} variant="ghost">
           {/each}
         </div>
       {/if}
-
     </div.Content>
   </div.Root>
 </div>

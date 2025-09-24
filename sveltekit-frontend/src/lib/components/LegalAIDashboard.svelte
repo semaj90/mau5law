@@ -4,22 +4,18 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { websocketStore, isEvidenceBeingEdited, getActiveEditorsForEvidence, formatRecentActivity } from '$lib/stores/websocket-store';
   import { getLegalAIApiClient } from '$lib/api/enhanced-api-client';
-
   // Svelte 5 runes for reactive state
   let loading = $state(true);
   let error = $state<string | null>(null);
   let selectedCase = $state<any | null>(null);
   let showEvidenceModal = $state(false);
   let searchQuery = $state('');
-
   // API client
   const apiClient = getLegalAIApiClient();
-
   // Derived reactive values
   let filteredCases = $derived(
     websocketStore.dashboardData.cases.filter((case_: any) =>
@@ -28,32 +24,26 @@
       case_.description.toLowerCase().includes(searchQuery.toLowerCase())
     )
   );
-
   let recentEvidence = $derived(
     websocketStore.dashboardData.evidence.slice(0, 10)
   );
-
   let pendingProcessingJobs = $derived(
     websocketStore.processingJobs.filter(job =>
       job.status.status === 'processing' || job.status.status === 'queued'
     )
   );
-
   // Load initial dashboard data
   $effect(() => {
     (async () => {
 try {
       loading = true;
       error = null;
-
       // Subscribe to dashboard updates
       websocketStore.subscribeToDashboard();
-
       // Load initial data if not connected to WebSocket
       if (!websocketStore.connected) {
         await loadInitialData();
       }
-
     } catch (err) {
       error = err instanceof Error ? err.message: 'Failed to load dashboard';
       console.error('Dashboard load error:', err);
@@ -62,40 +52,32 @@ try {
     }
     })();
   });
-
   async function loadInitialData(): Promise<void> {
     const [casesResponse, evidenceResponse, statsResponse] = await Promise.all([
       apiClient.getCases({ limit: 20 }),
       apiClient.getEvidence({ limit: 50 }),
       fetch('/api/dashboard/stats').then(r => r.json())
     ]);
-
     if (casesResponse.success) {
-      websocketStore.dashboardData.cases = casesResponse.data.cases;
+      websocketStore.dashboardData.cases = casesResponse.data.case;
     }
-
     if (evidenceResponse.success) {
-      websocketStore.dashboardData.evidence = evidenceResponse.data.evidence;
+      websocketStore.dashboardData.evidence = evidenceResponse.data.evidenc;
     }
-
     if (statsResponse.success) {
       websocketStore.dashboardData.stats = statsResponse.data;
     }
   }
-
   async function createNewCase(): Promise<void> {
     const title = prompt('Enter case title:');
     if (!title) return;
-
     const description = prompt('Enter case description:');
     if (!description) return;
-
     try {
       const response = await apiClient.createCase({
-        title: title.trim(),;
+        title: title.trim(),
         description: description.trim();
       });
-
       if (response.success) {
         // WebSocket will handle the real-time update
         console.log('Case created successfully');
@@ -106,24 +88,20 @@ try {
       error = err instanceof Error ? err.message: 'Failed to create case';
     }
   }
-
   async function uploadEvidence(caseId: number): Promise<void> {
     const input = document.createElement('input');
     input.type = 'file';
     input.multiple = true;
     input.accept = '.pdf,.doc,.docx,.txt,.jpg,.png';
-
     input.onchange = async (event) => {
-      const files = (event.target as HTMLInputElement).files;
+      const files = (event.target as HTMLInputElement).file;
       if (!files || files.length === 0) return;
-
       try {
         for (const file of Array.from(files)) {
           const response = await apiClient.uploadEvidence(caseId, file, {
-            title: file.name,;
+            title: file.name,
             description: `Uploaded file: ${file.name}`
           });
-
           if (!response.success) {
             console.error('Failed to upload evidence:', response.error);
           }
@@ -132,15 +110,12 @@ try {
         error = err instanceof Error ? err.message: 'Failed to upload evidence';
       }
     };
-
     input.click();
   }
-
   function selectCase(case_: any): void {
     selectedCase = case_;
     websocketStore.subscribeToCase(case_.id);
   }
-
   function getStatusColor(status: string): string {
     switch (status) {
       case 'open': return 'bg-green-100 text-green-800';
@@ -150,7 +125,6 @@ try {
       default: return 'bg-gray-100 text-gray-800';
     }
   }
-
   function getHealthStatusColor(status: string): string {
     switch (status) {
       case 'healthy': return 'text-green-600';
@@ -160,11 +134,9 @@ try {
     }
   }
 </script>
-
 <svelte:head>
   <title>Legal AI Dashboard - Real-time Case Management</title>
 </svelte:head>
-
 <div class="min-h-screen bg-gray-50">
   <!-- Header -->
   <header class="bg-white shadow">
@@ -172,7 +144,6 @@ try {
       <div class="flex justify-between items-center py-6">
         <div class="flex items-center">
           <h1 class="text-3xl font-bold text-gray-900">Legal AI Dashboard</h1>
-
           <!-- WebSocket Connection Status -->
           <div class="ml-4 flex items-center">
             {#if websocketStore.connected}
@@ -193,7 +164,6 @@ try {
             {/if}
           </div>
         </div>
-
         <div class="flex items-center space-x-4">
           <button
             onclick={createNewCase}
@@ -205,7 +175,6 @@ try {
       </div>
     </div>
   </header>
-
   {#if loading}
     <div class="flex justify-center items-center py-12">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -237,7 +206,6 @@ try {
             </div>
           </div>
         </div>
-
         <div class="bg-white overflow-hidden shadow rounded-lg">
           <div class="p-5">
             <div class="flex items-center">
@@ -255,7 +223,6 @@ try {
             </div>
           </div>
         </div>
-
         <div class="bg-white overflow-hidden shadow rounded-lg">
           <div class="p-5">
             <div class="flex items-center">
@@ -273,7 +240,6 @@ try {
             </div>
           </div>
         </div>
-
         <div class="bg-white overflow-hidden shadow rounded-lg">
           <div class="p-5">
             <div class="flex items-center">
@@ -292,7 +258,6 @@ try {
           </div>
         </div>
       </div>
-
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Cases Section -->
         <div class="lg:col-span-2">
@@ -309,7 +274,6 @@ try {
                   />
                 </div>
               </div>
-
               <div class="space-y-3">
                 {#each filteredCases as case_ (case_.id)}
                   <div
@@ -340,7 +304,6 @@ try {
                     </div>
                   </div>
                 {/each}
-
                 {#if filteredCases.length === 0}
                   <div class="text-center py-6 text-gray-500">
                     {searchQuery ? 'No cases match your search' : 'No cases yet. Create your first case!'}
@@ -350,7 +313,6 @@ try {
             </div>
           </div>
         </div>
-
         <!-- Sidebar -->
         <div class="space-y-6">
           <!-- System Health -->
@@ -385,7 +347,6 @@ try {
               </div>
             </div>
           </div>
-
           <!-- Processing Jobs -->
           {#if pendingProcessingJobs.length > 0}
             <div class="bg-white shadow rounded-lg">
@@ -416,7 +377,6 @@ try {
               </div>
             </div>
           {/if}
-
           <!-- Recent Activity -->
           <div class="bg-white shadow rounded-lg">
             <div class="px-4 py-5 sm:p-6">
@@ -427,14 +387,12 @@ try {
                     {formatRecentActivity(activity)}
                   </div>
                 {/each}
-
                 {#if websocketStore.recentActivity.length === 0}
                   <div class="text-sm text-gray-500">No recent activity</div>
                 {/if}
               </div>
             </div>
           </div>
-
           <!-- Recent Evidence -->
           <div class="bg-white shadow rounded-lg">
             <div class="px-4 py-5 sm:p-6">
@@ -446,7 +404,6 @@ try {
                       <div class="flex-1">
                         <h4 class="text-sm font-medium text-gray-900">{evidence.title}</h4>
                         <p class="text-xs text-gray-600 mt-1">Case #{evidence.caseId}</p>
-
                         <!-- Collaborative editing indicator -->
                         {#if isEvidenceBeingEdited(evidence.id)}
                           <div class="mt-2 flex items-center">
@@ -455,7 +412,6 @@ try {
                           </div>
                         {/if}
                       </div>
-
                       {#if evidence.aiSummary}
                         <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                           Analyzed
@@ -468,7 +424,6 @@ try {
                     </div>
                   </div>
                 {/each}
-
                 {#if recentEvidence.length === 0}
                   <div class="text-sm text-gray-500">No evidence uploaded yet</div>
                 {/if}
@@ -480,13 +435,11 @@ try {
     </div>
   {/if}
 </div>
-
 <style>
   /* Custom styles for the dashboard */
-  .animate-pulse {;
+  .animate-pulse {
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
-
   @keyframes pulse {
     0%, 100% {
       opacity: 1;

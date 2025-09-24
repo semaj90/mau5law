@@ -1,9 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { browser } from '$app/environment';
   import {
-    Brain, Activity, Zap, Shield, Search, Users,
+    Brain, Activity, Zap, Shield, Search, Users, User,
     Database, Folder, Eye, TrendingUp, Clock,
     CheckCircle, FileText, MapPin, Calendar, Pencil, Edit3
   } from 'lucide-svelte';
@@ -12,7 +11,6 @@
   import EvidenceCard from '$lib/components/ui/EvidenceCard.svelte';
   import Card from '$lib/components/ui/enhanced-bits/Card.svelte';
   import RAGAssistantChat from '$lib/components/ai/RAGAssistantChat.svelte';
-
   let isLoading = $state(false);
   let systemMetrics = $state({
     totalCases: 247,
@@ -24,7 +22,6 @@
     systemUptime: '99.8%',
     responseTime: '0.3s'
   });
-
   let recentActivity = $state([
     {
       id: 1,
@@ -32,7 +29,7 @@
       title: 'New case opened: Corporate Fraud Investigation',
       timestamp: '2 minutes ago',
       priority: 'high',
-      icon: Folder;
+      icon: Folder
     },
     {
       id: 2,
@@ -40,7 +37,7 @@
       title: 'Person of interest added: Marcus Chen',
       timestamp: '15 minutes ago',
       priority: 'medium',
-      icon: Users;
+      icon: User
     },
     {
       id: 3,
@@ -48,7 +45,7 @@
       title: 'Evidence uploaded: Financial records batch',
       timestamp: '1 hour ago',
       priority: 'medium',
-      icon: FileText;
+      icon: FileText
     },
     {
       id: 4,
@@ -59,13 +56,12 @@
       icon: Brain
     }
   ]);
-
   let quickActions = [
     {
       title: 'New Investigation',
       description: 'Start a new legal investigation',
       href: '/cases/create',
-      icon: Folder,
+      icon: Folder
       gradient: 'from-blue-600 to-blue-700',
       stats: '+12 this month'
     },
@@ -73,7 +69,7 @@
       title: 'AI Analysis',
       description: 'Run intelligent case analysis',
       href: '/analysis',
-      icon: Brain,
+      icon: Brain
       gradient: 'from-purple-600 to-purple-700',
       stats: '567 completed'
     },
@@ -81,7 +77,7 @@
       title: 'Evidence Search',
       description: 'Search across all evidence',
       href: '/evidence',
-      icon: Search,
+      icon: Search
       gradient: 'from-green-600 to-green-700',
       stats: '892 items indexed'
     },
@@ -89,7 +85,7 @@
       title: 'Person Tracking',
       description: 'Manage persons of interest',
       href: '/persons-of-interest',
-      icon: Users,
+      icon: Users
       gradient: 'from-yellow-600 to-yellow-700',
       stats: '156 active records'
     },
@@ -97,7 +93,7 @@
       title: '🧠 AI Legal Chat',
       description: 'TensorRT-powered legal AI assistant',
       href: '/ai-chat',
-      icon: Brain,
+      icon: Brain
       gradient: 'from-blue-600 to-purple-700',
       stats: 'TensorRT Q4_K_M',
       isNew: true
@@ -106,7 +102,7 @@
       title: '🎮 SPA Canvas',
       description: 'Full-screen gaming UX with gemma3:legal-latest',
       href: '/spa',
-      icon: Brain,
+      icon: Brain
       gradient: 'from-purple-600 to-blue-700',
       stats: 'NEW',
       isNew: true
@@ -115,19 +111,17 @@
       title: 'Text Editor',
       description: 'NieR-themed rich text editor',
       href: '/text-editor',
-      icon: Pencil,
+      icon: Pencil
       gradient: 'from-red-600 to-red-700',
       stats: 'Legal documents'
     }
   ];
-
   let systemStatus = $state([
     { name: 'AI Engine', status: 'operational', uptime: '99.9%', color: 'green' },
     { name: 'Database', status: 'operational', uptime: '99.8%', color: 'green' },
     { name: 'Search Index', status: 'operational', uptime: '99.7%', color: 'green' },
     { name: 'GPU Cluster', status: 'limited', uptime: '87.3%', color: 'yellow' }
   ]);
-
   let demoRoutes = $state([
     // AI Category Routes
     { path: '/demo/ai-assistant', title: 'AI Assistant', description: 'Interactive AI assistant testing interface with conversation capabilities.', category: 'AI' },
@@ -145,7 +139,6 @@
     { path: '/demo/productivity-ai-integration', title: 'Productivity AI', description: 'AI integration for enhanced legal productivity workflows.', category: 'AI' },
     { path: '/demo/rag-integration', title: 'RAG Integration', description: 'Retrieval Augmented Generation for legal document processing.', category: 'AI' },
     { path: '/demo/webasm-ai-complete', title: 'WebAssembly AI', description: 'WebAssembly-powered AI processing for browser performance.', category: 'AI' },
-
     // GPU Category Routes
     { path: '/demo/cuda-minio-upload', title: 'CUDA MinIO Upload', description: 'GPU-accelerated file upload with CUDA and MinIO storage.', category: 'GPU' },
     { path: '/demo/cuda-rtx-integration', title: 'CUDA RTX Integration', description: 'RTX GPU integration with CUDA acceleration for legal AI.', category: 'GPU' },
@@ -163,7 +156,6 @@
     { path: '/demo/webgpu-graph', title: 'WebGPU Graph', description: 'Graph visualization powered by WebGPU acceleration.', category: 'GPU' },
     { path: '/demo/webgpu-quantization', title: 'WebGPU Quantization', description: 'Model quantization using WebGPU for efficiency.', category: 'GPU' },
     { path: '/demo/webgpu-webasm-integration', title: 'WebGPU WebAssembly', description: 'WebGPU and WebAssembly integration for performance.', category: 'GPU' },
-
     // UI Category Routes
     { path: '/demo/bits-ui', title: 'Bits UI Showcase', description: 'Complete Bits UI component library with YoRHa theme.', category: 'UI' },
     { path: '/demo/component-gallery', title: 'Component Gallery', description: 'Full showcase of UI components with interactive examples.', category: 'UI' },
@@ -180,7 +172,6 @@
     { path: '/demo/ui-components', title: 'UI Components', description: 'General UI components library for the platform.', category: 'UI' },
     { path: '/demo/unocss-svelte5', title: 'UnoCSS Svelte 5', description: 'UnoCSS utility framework with Svelte 5 integration.', category: 'UI' },
     { path: '/demo/yorha-tables', title: 'YoRHa Tables', description: 'Data tables with YoRHa theme and styling.', category: 'UI' },
-
     // Search Category Routes
     { path: '/demo/enhanced-rag-demo', title: 'Enhanced RAG Demo', description: 'Enhanced RAG demonstration with semantic search.', category: 'Search' },
     { path: '/demo/enhanced-rag-semantic', title: 'Enhanced RAG Semantic', description: 'Semantic RAG processing with advanced search.', category: 'Search' },
@@ -193,7 +184,6 @@
     { path: '/demo/vector-intelligence', title: 'Vector Intelligence', description: 'Vector AI capabilities with intelligent processing.', category: 'Search' },
     { path: '/demo/vector-pipeline', title: 'Vector Pipeline', description: 'Vector processing pipeline for document embeddings.', category: 'Search' },
     { path: '/demo/vector-search', title: 'Vector Search', description: 'Vector similarity search for document retrieval.', category: 'Search' },
-
     // Integration Category Routes
     { path: '/demo/clean-architecture', title: 'Clean Architecture', description: 'Clean architecture patterns in legal AI system.', category: 'Integration' },
     { path: '/demo/complete-integration', title: 'Complete Integration', description: 'Complete system integration with all components.', category: 'Integration' },
@@ -206,7 +196,6 @@
     { path: '/demo/unified-architecture', title: 'Unified Architecture', description: 'Unified system architecture design demonstration.', category: 'Integration' },
     { path: '/demo/unified-integration', title: 'Unified Integration', description: 'Unified integration patterns and practices.', category: 'Integration' },
     { path: '/demo/unified-vector', title: 'Unified Vector', description: 'Unified vector operations across the platform.', category: 'Integration' },
-
     // Performance Category Routes
     { path: '/demo/glyph-cache', title: 'Glyph Cache', description: 'Font glyph caching system for performance.', category: 'Performance' },
     { path: '/demo/glyph-generator', title: 'Glyph Generator', description: 'Dynamic glyph generation with caching optimization.', category: 'Performance' },
@@ -217,7 +206,6 @@
     { path: '/demo/shader-cache', title: 'Shader Cache', description: 'GPU shader caching for improved rendering performance.', category: 'Performance' },
     { path: '/demo/simd-glyphs', title: 'SIMD Glyphs', description: 'SIMD-accelerated glyph processing for performance.', category: 'Performance' },
     { path: '/demo/upload-analytics', title: 'Upload Analytics', description: 'File upload analytics and performance tracking.', category: 'Performance' },
-
     // Advanced Category Routes
     { path: '/demo/case-scoring', title: 'Case Scoring', description: 'AI-powered legal case scoring and evaluation.', category: 'Advanced' },
     { path: '/demo/chat-stream', title: 'Chat Stream', description: 'Streaming chat interface with real-time updates.', category: 'Advanced' },
@@ -238,7 +226,6 @@
     { path: '/demo/streaming-workflow', title: 'Streaming Workflow', description: 'Real-time streaming workflow for legal processes.', category: 'Advanced' },
     { path: '/demo/wasm-parser', title: 'WebAssembly Parser', description: 'WebAssembly-powered document parsing for performance.', category: 'Advanced' },
     { path: '/demo/xstate-auth', title: 'XState Auth', description: 'XState-powered authentication and authorization system.', category: 'Advanced' },
-
     // Development Category Routes
     { path: '/demo/notes', title: 'Notes', description: 'Note-taking and annotation system for legal documents.', category: 'Development' },
     { path: '/demo/phase14', title: 'Phase 14', description: 'Development phase 14 features and functionality.', category: 'Development' },
@@ -246,14 +233,11 @@
     { path: '/demo/simple-test', title: 'Simple Test', description: 'Simple testing interface for development validation.', category: 'Development' },
     { path: '/demo/system-summary', title: 'System Summary', description: 'System summary and status overview for development.', category: 'Development' }
   ]);
-
   $effect(() => {
     if (!browser) return;
-
     let cancelled = false;
     isLoading = true;
     console.debug('Initializing dashboard; isLoading =', isLoading);
-
     (async () => {
       try {
         // Simulate loading dashboard data
@@ -266,7 +250,6 @@
         }
       }
     })();
-
     return () => {
       cancelled = true;
     };
@@ -279,7 +262,6 @@
       default: return 'text-gray-400';
     }
   }
-
   function getStatusColor(status: string) {
     switch (status) {
       case 'operational': return 'text-green-400';
@@ -288,7 +270,6 @@
       default: return 'text-gray-400';
     }
   }
-
   function getCategoryColor(category: string) {
     switch (category) {
       case 'AI': return 'from-blue-600/20 to-blue-800/40 border-blue-500/30';
@@ -302,26 +283,20 @@
       default: return 'from-gray-600/20 to-gray-800/40 border-gray-500/30';
     }
   }
-
   // removed unused getCategoryIcon and userId to prevent TypeScript noUnusedLocals
-
   function handleCaseCreated(caseId: string | number) {
     console.log('New case created:', caseId);
     // navigate to case or show a notification here
   }
-
   function handleCaseCreatedEvent(e: CustomEvent<string | number>) {
     console.log('New case created (event):', e.detail);
   }
-
   // reference to RAGAssistantChat instance for event wiring
   let ragAssistantRef: any = null;
-
   // wire up caseCreated event without relying on typed on: directive
   $effect(() => {
     if (!browser) return;
     if (!ragAssistantRef) return;
-
     const off = ragAssistantRef.$on('caseCreated', (e: CustomEvent<string | number>) => {
       const caseId = e.detail;
       // ignore invalid sentinel id "0"
@@ -333,18 +308,15 @@
       // Also call the event handler
       handleCaseCreatedEvent(e);
     });
-
     return () => {
       off && off();
     };
   });
 </script>
-
 <svelte:head>
   <title>Legal AI Platform - Professional Command Center</title>
   <meta name="description" content="Professional legal investigation platform with AI-powered analysis and intelligent case management" />
 </svelte:head>
-
 <EvidenceBoardLayout
   title="LEGAL AI COMMAND CENTER"
   caseInfo="CORPORATE ESPIONAGE INVESTIGATION"
@@ -363,7 +335,6 @@
         <div class="text-3xl font-bold text-white mb-1">{systemMetrics.totalCases}</div>
         <div class="text-sm text-gray-400">Legal Cases</div>
       </div>
-
       <div class="yorha-3d-panel p-6">
         <div class="flex items-center justify-between mb-2">
           <div class="p-2 bg-green-600/20 rounded-lg">
@@ -374,7 +345,6 @@
         <div class="text-3xl font-bold text-white mb-1">{systemMetrics.activeCases}</div>
         <div class="text-sm text-gray-400">In Progress</div>
       </div>
-
       <div class="yorha-3d-panel p-6">
         <div class="flex items-center justify-between mb-2">
           <div class="p-2 bg-yellow-600/20 rounded-lg">
@@ -385,7 +355,6 @@
         <div class="text-3xl font-bold text-white mb-1">{systemMetrics.personsOfInterest}</div>
         <div class="text-sm text-gray-400">Persons</div>
       </div>
-
       <div class="yorha-3d-panel p-6">
         <div class="flex items-center justify-between mb-2">
           <div class="p-2 bg-purple-600/20 rounded-lg">
@@ -397,7 +366,6 @@
         <div class="text-sm text-gray-400">Evidence Items</div>
       </div>
     </div>
-
     <!-- Quick Actions -->
     <section aria-label="Quick action shortcuts">
     <div class="yorha-3d-panel">
@@ -406,7 +374,6 @@
           <Zap class="w-6 h-6 text-amber-400" />
           <h2 class="text-xl font-semibold text-amber-400 tracking-wide">Quick Actions</h2>
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {#each quickActions as action}
             <a
@@ -422,12 +389,10 @@
                 <h3 class="font-bold text-lg mb-2">{action.title}</h3>
                 <p class="text-sm opacity-90">{action.description}</p>
               </div>
-
               <!-- Hover effect overlay -->
               <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </a>
           {/each}
-
           <!-- Live Demo Button -->
           <a
             href="/w1"
@@ -442,11 +407,9 @@
               <h3 class="font-bold text-lg mb-2">🚀 Live Demo</h3>
               <p class="text-sm opacity-90">Full AI Assistant with auto case creation</p>
             </div>
-
             <!-- Special glow effect -->
             <div class="absolute inset-0 bg-gradient-to-r from-emerald-400/20 to-teal-400/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
           </a>
-
           <!-- SPA Canvas Button -->
           <a
             href="/spa"
@@ -464,11 +427,9 @@
               <h3 class="font-bold text-lg mb-2">🎮 SPA Canvas</h3>
               <p class="text-sm opacity-90">Full-screen gaming UX with gemma3:legal-latest</p>
             </div>
-
             <!-- Special gaming glow effect -->
             <div class="absolute inset-0 bg-gradient-to-r from-purple-400/20 to-blue-400/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
           </a>
-
           <!-- All Routes Button - Enhanced -->
           <a
             href="/all-routes"
@@ -486,7 +447,6 @@
               <h3 class="font-bold text-lg mb-2">🗺️ All Routes</h3>
               <p class="text-sm opacity-90">66 essential + 100+ demos with live testing</p>
             </div>
-
             <!-- Special routes glow effect -->
             <div class="absolute inset-0 bg-gradient-to-r from-indigo-400/20 to-purple-400/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
           </a>
@@ -494,7 +454,6 @@
       </div>
     </div>
     </section>
-
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Recent Activity -->
       <div class="yorha-3d-panel">
@@ -508,7 +467,6 @@
               View All →
             </a>
           </div>
-
           <div class="space-y-4">
             {#each recentActivity as activity}
               <div class="flex items-start gap-4 p-4 bg-gray-800/50 rounded-lg border border-gray-600 hover:border-yellow-600/50 transition-colors">
@@ -531,7 +489,6 @@
           </div>
         </div>
       </div>
-
       <!-- System Status -->
       <div class="yorha-3d-panel">
         <div class="p-6">
@@ -545,7 +502,6 @@
               <span class="text-sm font-medium">All Systems Operational</span>
             </div>
           </div>
-
           <div class="space-y-4">
             {#each systemStatus as system}
               <div class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg border border-gray-600">
@@ -566,7 +522,6 @@
               </div>
             {/each}
           </div>
-
           <!-- Performance Metrics -->
           <div class="mt-6 pt-6 border-t border-gray-600">
             <h4 class="text-sm font-bold text-gray-300 mb-4 uppercase tracking-wide">Performance</h4>
@@ -584,7 +539,6 @@
         </div>
       </div>
     </div>
-
     <!-- Demo Routes Showcase -->
     <section aria-label="Demo routes and testing dashboard">
     <div class="yorha-3d-panel">
@@ -598,7 +552,6 @@
             Browse All 148+ Routes →
           </a>
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <!-- Essential Routes -->
           <div class="group p-4 bg-green-600/10 rounded-lg border border-green-600/20 hover:border-green-400/40 transition-colors">
@@ -616,7 +569,6 @@
               <div>• Admin & reporting</div>
             </div>
           </div>
-
           <!-- AI Demo Routes -->
           <div class="group p-4 bg-blue-600/10 rounded-lg border border-blue-600/20 hover:border-blue-400/40 transition-colors">
             <div class="flex items-center justify-between mb-3">
@@ -633,7 +585,6 @@
               <div>• Legal AI pipeline</div>
             </div>
           </div>
-
           <!-- UI Component Demos -->
           <div class="group p-4 bg-purple-600/10 rounded-lg border border-purple-600/20 hover:border-purple-400/40 transition-colors">
             <div class="flex items-center justify-between mb-3">
@@ -650,7 +601,6 @@
               <div>• Gaming effects</div>
             </div>
           </div>
-
           <!-- Integration Demos -->
           <div class="group p-4 bg-amber-600/10 rounded-lg border border-amber-600/20 hover:border-amber-400/40 transition-colors">
             <div class="flex items-center justify-between mb-3">
@@ -668,7 +618,6 @@
             </div>
           </div>
         </div>
-
         <!-- Popular Demo Routes Quick Access -->
         <div class="mt-6 pt-6 border-t border-gray-600">
           <h4 class="text-sm font-bold text-gray-300 mb-4 uppercase tracking-wide flex items-center gap-2">
@@ -697,7 +646,6 @@
       </div>
     </div>
     </section>
-
     <!-- Interactive Demo Routes Grid -->
     <section aria-label="Interactive demo routes grid" class="mt-8">
     <div class="yorha-3d-panel">
@@ -711,7 +659,6 @@
             {demoRoutes.length} Live Demos
           </div>
         </div>
-
         <!-- 3-Column CSS Flexbox Grid -->
 <!-- 3-Column CSS Flexbox Grid -->
 <div class="demo-routes-grid">
@@ -746,11 +693,9 @@
             <Eye class="w-4 h-4" />
           </div>
         </div>
-
         <p class="text-white/90 text-sm leading-relaxed group-hover:text-white transition-colors">
           {route.description}
         </p>
-
         <div class="mt-4 pt-4 border-t border-white/10">
           <div class="flex items-center justify-between">
             <span class="text-xs text-white/60 uppercase tracking-wide font-medium">
@@ -769,7 +714,6 @@
 </div>
     </div>
     </section>
-
     <!-- AI Intelligence Summary -->
     <section aria-label="AI Intelligence Summary">
     <div class="yorha-3d-panel">
@@ -784,27 +728,23 @@
             <span class="text-sm">Analysis Active</span>
           </div>
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="text-center p-4 bg-gray-800/30 rounded-lg border border-purple-600/30">
             <div class="text-3xl font-bold text-purple-400 mb-2">{systemMetrics.aiAnalyses}</div>
             <div class="text-sm text-gray-400">AI Analyses Completed</div>
             <div class="text-xs text-purple-300 mt-1">+23% this week</div>
           </div>
-
           <div class="text-center p-4 bg-gray-800/30 rounded-lg border border-blue-600/30">
             <div class="text-3xl font-bold text-blue-400 mb-2">{systemMetrics.searchQueries}</div>
             <div class="text-sm text-gray-400">Search Queries Processed</div>
             <div class="text-xs text-blue-300 mt-1">+15% this week</div>
           </div>
-
           <div class="text-center p-4 bg-gray-800/30 rounded-lg border border-green-600/30">
             <div class="text-3xl font-bold text-green-400 mb-2">94.2%</div>
             <div class="text-sm text-gray-400">Pattern Recognition Accuracy</div>
             <div class="text-xs text-green-300 mt-1">+2.1% improvement</div>
           </div>
         </div>
-
         <!-- AI Assistant Section -->
         <div class="mt-6 pt-6 border-t border-gray-600">
           {#if systemMetrics.totalCases === 0}
@@ -819,9 +759,7 @@
         </div>
       </div>
     </section>
-
     {/snippet}
-
   {#snippet rightPanel()}
     <!-- Right Status Panel (matching Evidence Board) -->
     <div class="space-y-4">
@@ -871,7 +809,6 @@
           </EvidenceCard>
         </div>
       </div>
-
       <!-- System Status -->
       <div class="nes-container is-rounded">
         <h3 class="nes-text is-primary mb-4">🛡 SYSTEM STATUS</h3>
@@ -903,7 +840,6 @@
     </div>
     {/snippet}
   </EvidenceBoardLayout>
-
   <style>
   .yorha-3d-panel {
       /* Professional card styling with modern glass morphism */
@@ -917,7 +853,6 @@
       inset 0 1px 0 rgba(248, 250, 252, 0.05);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-
   .yorha-3d-panel:hover {
     transform: translateY(-2px);
     box-shadow:
@@ -926,17 +861,14 @@
       inset 0 1px 0 rgba(248, 250, 252, 0.1);
     border-color: rgba(251, 191, 36, 0.2);
   }
-
   /* Animation enhancements */
   @keyframes glow {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.7; }
   }
-
   .neural-pulse {
     animation: glow 2s ease-in-out infinite;
   }
-
   /* 3-Column Demo Routes Grid */
   .demo-routes-grid {
     display: flex;
@@ -944,30 +876,25 @@
     gap: 1.5rem;
     align-items: stretch;
   }
-
   .demo-route-modal {
     flex: 1 1 calc(33.333% - 1rem);
     min-width: 320px;
     display: flex;
   }
-
   /* Responsive adjustments */
   @media (max-width: 1024px) {
     .demo-route-modal {
       flex: 1 1 calc(50% - 0.75rem);
     }
   }
-
   @media (max-width: 640px) {
     .demo-route-modal {
       flex: 1 1 100%;
     }
-
     .demo-routes-grid {
       gap: 1rem;
     }
   }
-
   .demo-route-card {
     height: 100%;
     display: flex;
@@ -981,7 +908,6 @@
     position: relative;
     overflow: hidden;
   }
-
   .demo-route-card:hover {
     transform: translateY(-4px) scale(1.02);
     box-shadow:
@@ -989,7 +915,6 @@
       0 0 0 1px rgba(251, 191, 36, 0.15),
       inset 0 1px 0 rgba(255, 255, 255, 0.15);
   }
-
   .demo-route-card::before {
     content: '';
     position: absolute;
@@ -1002,11 +927,9 @@
     opacity: 0;
     transition: opacity 0.3s ease;
   }
-
   .demo-route-card:hover::before {
     opacity: 1;
   }
-
   /* Accessibility improvements */
   /* svelte-ignore css-unused-selector */
   .demo-route-card a:focus {
@@ -1014,7 +937,6 @@
     outline-offset: 2px;
     border-radius: 0.75rem;
   }
-
   /* svelte-ignore css-unused-selector */
   .demo-route-card a:focus-visible {
     box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);

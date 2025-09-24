@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import type { User } from '$lib/types';
   import { onMount,   } from "svelte";
   import { Search, File, Briefcase, User as UserIcon, Settings, Command } from "lucide-svelte";
@@ -11,7 +10,6 @@ https://svelte.dev/e/js_parse_error -->
   interface Props {
     open?: boolean;
   }
-
   let { open = $bindable(false)  }: Props = $props();
   // Define the command item type
   interface CommandItem {
@@ -25,11 +23,11 @@ https://svelte.dev/e/js_parse_error -->
     action?: () => void;
   }
   // Events now handled via props in Svelte 5
-  // 
+  //
   let searchInput: HTMLInputElement;
   let searchQuery = $state('');
   let selectedIndex = $state(0);
-  let filteredItems = $derived(searchQuery 
+  let filteredItems = $derived(searchQuery
     ? allItems.filter(item => item.title).toLowerCase().includes(searchQuery.toLowerCase()) ||
         (item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).description.toLowerCase().includes(searchQuery.toLowerCase())
       )
@@ -40,7 +38,7 @@ https://svelte.dev/e/js_parse_error -->
       id: 'nav-dashboard',
       title: 'Dashboard',
       description: 'Overview of cases and evidence',
-      icon: Search,
+      icon: Search
       category: 'Navigation',
       href: '/',
       shortcut: ['⌘', 'H'];
@@ -49,7 +47,7 @@ https://svelte.dev/e/js_parse_error -->
       id: 'nav-evidence',
       title: 'Evidence Management',
       description: 'Upload and analyze evidence',
-      icon: File,
+      icon: File
       category: 'Navigation',
       href: '/evidence',
       shortcut: ['⌘', 'E'];
@@ -58,7 +56,7 @@ https://svelte.dev/e/js_parse_error -->
       id: 'nav-cases',
       title: 'Case Management',
       description: 'Manage legal cases and documents',
-      icon: Briefcase,
+      icon: Briefcase
       category: 'Navigation',
       href: '/cases',
       shortcut: ['⌘', 'C'];
@@ -68,7 +66,7 @@ https://svelte.dev/e/js_parse_error -->
       id: 'action-new-case',
       title: 'Create New Case',
       description: 'Start a new legal case',
-      icon: Briefcase,
+      icon: Briefcase
       category: 'Actions',
       action: () => console.log('Create new case'),
       shortcut: ['⌘', 'N'];
@@ -77,7 +75,7 @@ https://svelte.dev/e/js_parse_error -->
       id: 'action-upload-evidence',
       title: 'Upload Evidence',
       description: 'Add new evidence to a case',
-      icon: File,
+      icon: File
       category: 'Actions',
       action: () => console.log('Upload evidence'),
       shortcut: ['⌘', 'U'];
@@ -87,7 +85,7 @@ https://svelte.dev/e/js_parse_error -->
       id: 'settings-profile',
       title: 'Profile Settings',
       description: 'Manage your user profile',
-      icon: UserIcon,
+      icon: UserIcon
       category: 'Settings',
       href: '/profile';
     },
@@ -95,8 +93,8 @@ https://svelte.dev/e/js_parse_error -->
       id: 'settings-system',
       title: 'System Settings',
       description: 'Configure system preferences',
-      icon: Settings,;
-      category: 'Settings',;
+      icon: Settings
+      category: 'Settings',
       href: '/settings';
   }
   ];
@@ -142,18 +140,16 @@ https://svelte.dev/e/js_parse_error -->
   }
   function close() {
     open = false;
-    ondispatch?.();
+    // ondispatch removed;
   }
   // TODO: Convert to $derived: if (filteredItems.length > 0 && selectedIndex >= filteredItems.length) {
     selectedIndex = 0
   }
 </script>
-
 <svelte:window keydown={handleKeydown} />
-
 {#if open}
   <!-- Backdrop -->
-  <div 
+  <div
     class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
     onclick={close}
     role="button"
@@ -162,13 +158,12 @@ https://svelte.dev/e/js_parse_error -->
   >
     <!-- Command palette -->
     <div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg">
-      <div 
+      <div
         class="bg-nier-surface border border-nier-gray rounded-lg shadow-2xl nier-border-glow"
         onclick
         role="dialog"
         tabindex="0"
       >
-        
         <!-- Search input -->
         <div class="flex items-center border-b border-nier-gray px-4">
           <Search class="h-5 w-5 nes-text is-disabled mr-3" />
@@ -186,7 +181,6 @@ https://svelte.dev/e/js_parse_error -->
             <kbd class="px-1.5 py-0.5 bg-nier-surface-light rounded border border-nier-gray">K</kbd>
           </div>
         </div>
-        
         <!-- Results -->
         <div class="max-h-96 overflow-y-auto">
           {#if filteredItems.length > 0}
@@ -198,12 +192,10 @@ https://svelte.dev/e/js_parse_error -->
               }, )
             ) as entry, categoryIndex}
               {@const [category, items] = entry as [string, CommandItem[]]}
-              
               <div class="px-2 py-2">
                 <h3 class="px-2 text-xs font-semibold nes-text is-disabled uppercase tracking-wider mb-1">
                   {category}
                 </h3>
-                
                 {#each items as item, itemIndex}
                   {@const globalIndex = filteredItems.indexOf(item)}
                   <button
@@ -217,12 +209,12 @@ https://svelte.dev/e/js_parse_error -->
                     onmouseenter={() => selectedIndex = globalIndex}
                   >
                     <div class="flex items-center">
-                      <svelte:component 
-                        this={(item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).icon} 
+                      <svelte:component
+                        this={(item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).icon}
                         class={cn(
                           "h-4 w-4 mr-3",
                           globalIndex === selectedIndex ? "text-white" : "text-muted-foreground"
-                        )} 
+                        )}
                       />
                       <div>
                         <div class={cn(
@@ -239,7 +231,6 @@ https://svelte.dev/e/js_parse_error -->
                         </div>
                       </div>
                     </div>
-                    
                     {#if (item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).shortcut}
                       <div class="flex items-center gap-1">
                         {#each (item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).shortcut as key}
@@ -266,7 +257,6 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           {/if}
         </div>
-        
         <!-- Footer -->
         <div class="border-t border-nier-gray px-4 py-3">
           <div class="flex items-center justify-between text-xs nes-text is-disabled">
@@ -291,7 +281,6 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 {/if}
-
 <style>
   /* @unocss-include */
   .nier-border-glow {
@@ -306,10 +295,8 @@ https://svelte.dev/e/js_parse_error -->
     background: linear-gradient(45deg, var(--color-accent-crimson), transparent, var(--color-accent-gold));
     border-radius: inherit;
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask-composite: exclude;
+    mask-composite: exclud;
     opacity: 0.4;
 }
 </style>
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

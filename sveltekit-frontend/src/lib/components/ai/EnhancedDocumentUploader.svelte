@@ -1,16 +1,14 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Document Uploader with Bits UI v2, AI Processing, and Real-time Status -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // Updated to use melt-ui components
   import Button from '$lib/components/ui/bitsbutton.svelte';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
   import Select from '$lib/components/ui/MeltSelect.svelte';
   import Card from '$lib/components/ui/MeltCard.svelte';
-
   // TODO: Replace with melt-ui equivalents when available
   // import {
   //   Badge,
@@ -29,7 +27,7 @@ https://svelte.dev/e/js_parse_error -->
   //   SelectTrigger,
   //   SelectValue,
   //   Textarea,
-  // } from "bits-ui";
+  // } from "bits-ui"
   import {
     AlertTriangle,
     CheckCircle,
@@ -40,9 +38,8 @@ https://svelte.dev/e/js_parse_error -->
     Upload,
     X,
   } from "lucide-svelte";
-  import {  , onMount  } from "svelte";
+  import { onMount  } from "svelte";
   import { derived, writable } from "svelte/store";
-
   // Props with Svelte 5 syntax
   let { acceptedTypes = ".pdf,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp",
     maxFileSize = 50 * 1024 * 1024, // 50MB
@@ -51,24 +48,21 @@ https://svelte.dev/e/js_parse_error -->
     userId = "",
     autoProcess = true,
     showMetadataForm = true,
-    class: className = "",;
+    class: className = "",
    }: { acceptedTypes = ".pdf,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp",
     maxFileSize = 50 * 1024 * 1024, // 50MB
     maxFiles = 10,
     caseId = "",
     userId = "",
     autoProcess = true,
-    showMetadataForm = true,;
+    showMetadataForm = true,
     class: className = "",
   : any } = $props();
-
   // Event dispatcher
-
-
   // Types
   interface UploadFile {
     id: string;
-    file: File;
+    file: Fil;
     preview?: string;
     status: "pending" | "uploading" | "processing" | "completed" | "error";
     progress: number;
@@ -83,7 +77,6 @@ https://svelte.dev/e/js_parse_error -->
       extractEntities?: boolean;
     };
   }
-
   interface ProcessedFile {
     id: string;
     documentId: string;
@@ -93,35 +86,29 @@ https://svelte.dev/e/js_parse_error -->
     url?: string;
     thumbnail?: string;
   }
-
   interface ProcessingResult {
     summary?: string;
     entities?: Array;
     chunks?: number;
     embeddings?: boolean;
   }
-
   // State management
   const files = writable<UploadFile[]>([]);
   const isDragging = writable(false);
   const isProcessing = writable(false);
   const showMetadata = writable(false);
   const selectedFile = writable<UploadFile | null>(null);
-
   // Derived state
   const totalProgress = derived(files, ($files) => {
     if ($files.length === 0) return 0;
     return $files.reduce((acc, file) => acc + file.progress, 0) / $files.length;
   });
-
   const completedFiles = derived(files, ($files) =>
     $files.filter((file) => file.status === "completed")
   );
-
   const hasErrors = derived(files, ($files) =>
     $files.some((file) => file.status === "error")
   );
-
   // File input reference
   let fileInput = $state<HTMLInputElement;
   let dropZone = $state<HTMLDivElement// Document types for legal AI
@@ -136,23 +123,19 @@ https://svelte.dev/e/js_parse_error -->
     { value: "case_law", label: "Case Law" },
     { value: "other", label: "Other" },
   ]);
-
   const jurisdictions >([
     { value: "federal", label: "Federal" },
     { value: "state", label: "State" },
     { value: "local", label: "Local" },
     { value: "international", label: "International" },
   ]);
-
   // ============================================================================
   // DRAG & DROP HANDLERS
   // ============================================================================
-
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
     isDragging.set(true);
   }
-
   function handleDragLeave(event: DragEvent) {
     if (
       !event.relatedTarget ||
@@ -161,26 +144,21 @@ https://svelte.dev/e/js_parse_error -->
       isDragging.set(false);
     }
   }
-
   function handleDrop(event: DragEvent) {
     event.preventDefault();
     isDragging.set(false);
-
     const droppedFiles = Array.from(event.dataTransfer?.files || []);
     processSelectedFiles(droppedFiles);
   }
-
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;
     const selectedFiles = Array.from(target.files || []);
     processSelectedFiles(selectedFiles);
     target.value = ""; // Reset input
   }
-
   // ============================================================================
   // FILE PROCESSING
   // ============================================================================
-
   function processSelectedFiles(selectedFiles: File[]) {
     const validFiles = selectedFiles.filter((file) => {
       // Check file type
@@ -189,37 +167,32 @@ https://svelte.dev/e/js_parse_error -->
         console.warn(`File type ${extension} not accepted`);
         return false;
       }
-
       // Check file size
       if (file.size > maxFileSize) {
         console.warn(`File ${file.name} exceeds maximum size`);
         return false;
       }
-
       return true;
     });
-
     // Check total file count
     files.update((currentFiles) => {
       if (currentFiles.length + validFiles.length > maxFiles) {
         console.warn(`Maximum ${maxFiles} files allowed`);
-        return currentFiles;
+        return currentFile;
       }
-
-      const newFiles: UploadFile[] = validFiles.map((file) => ({
+      const newFiles: UploadFile[] = validFiles.map((file) => ({,
         id: crypto.randomUUID(),
         file,
         status: "pending",
-        progress: 0,;
+        progress: 0,
         metadata: {
           title: file.name.replace(/\.[^/.]+$/, ""),
           documentType: "other",
-          autoSummarize: true,
-          extractEntities: true,;
-          tags: [],;
+          autoSummarize: true
+          extractEntities: true
+          tags: [],
         },
       }));
-
       // Generate previews for images
       newFiles.forEach((uploadFile) => {
         if (uploadFile.file.type.startsWith("image/")) {
@@ -231,25 +204,19 @@ https://svelte.dev/e/js_parse_error -->
           reader.readAsDataURL(uploadFile.file);
         }
       });
-
       return [...currentFiles, ...newFiles];
     });
-
     // Auto-upload if enabled
     if (autoProcess) {
       uploadFiles();
     }
   }
-
   // ============================================================================
   // UPLOAD & AI PROCESSING
   // ============================================================================
-
   async function uploadFiles() {
     isProcessing.set(true);
-
     const currentFiles = $files.filter((file) => file.status === "pending");
-
     for (const uploadFile of currentFiles) {
       try {
         await uploadSingleFile(uploadFile);
@@ -258,65 +225,54 @@ https://svelte.dev/e/js_parse_error -->
         updateFileStatus(uploadFile.id, "error", 0, String(error));
       }
     }
-
     isProcessing.set(false);
   }
-
   async function uploadSingleFile(uploadFile: UploadFile) {
     updateFileStatus(uploadFile.id, "uploading", 10);
-
     // Create FormData
     const formData = new FormData();
     formData.append("file", uploadFile.file);
     formData.append("caseId", caseId);
     formData.append("userId", userId);
     formData.append("metadata", JSON.stringify(uploadFile.metadata));
-
     try {
       // Upload file
       const uploadResponse = await fetch("/api/documents/upload", {
-        method: "POST",;
-        body: formData,;
+        method: "POST",
+        body: formData
       });
-
       if (!uploadResponse.ok) {
         throw new Error(`Upload failed: ${uploadResponse.statusText}`);
       }
-
       const uploadResult = await uploadResponse.json();
       updateFileStatus(uploadFile.id, "processing", 50);
-
       // Start AI processing
       if (
         uploadFile.metadata.autoSummarize ||
         uploadFile.metadata.extractEntities
       ) {
         const processingResponse = await fetch("/api/ai/process-document", {
-          method: "POST",;
-          headers: { "Content-Type": "application/json" },;
-          body: JSON.stringify({
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({,
             documentId: uploadResult.documentId,
             extractEntities: uploadFile.metadata.extractEntities,
             generateSummary: uploadFile.metadata.autoSummarize,
-            riskAssessment: true,
+            riskAssessment: true
           }),
         });
-
         if (!processingResponse.ok) {
           throw new Error(
             `AI processing failed: ${processingResponse.statusText}`
           );
         }
-
         const processingResult = await processingResponse.json();
         updateFileStatus(uploadFile.id, "completed", 100);
-
         // Emit events
         ondispatch?.({
           fileId: uploadFile.id,
-          result: processingResult,;
+          result: processingResult
         });
-
         ondispatch?.({
           files: [
             {
@@ -324,9 +280,9 @@ https://svelte.dev/e/js_parse_error -->
               documentId: uploadResult.documentId,
               filename: uploadFile.file.name,
               size: uploadFile.file.size,
-              type: uploadFile.file.type,;
-              url: uploadResult.url,;
-              thumbnail: uploadFile.preview,;
+              type: uploadFile.file.type,
+              url: uploadResult.url,
+              thumbnail: uploadFile.preview,
             },
           ],
         });
@@ -337,15 +293,14 @@ https://svelte.dev/e/js_parse_error -->
       updateFileStatus(uploadFile.id, "error", 0, String(error));
       ondispatch?.({
         fileId: uploadFile.id,
-        error: String(error),;
+        error: String(error),
       });
     }
   }
-
   function updateFileStatus(
-    fileId: string,
-    status: UploadFile["status"],;
-    progress: number,
+    fileId: string
+    status: UploadFile["status"],
+    progress: number
     error?: string
   ) {
     files.update((currentFiles) =>
@@ -355,29 +310,24 @@ https://svelte.dev/e/js_parse_error -->
           : file
       )
     );
-
     if (status === "processing") {
       ondispatch?.({ fileId, progress });
     }
   }
-
   // ============================================================================
   // FILE MANAGEMENT
   // ============================================================================
-
   function removeFile(fileId: string) {
     files.update((currentFiles) =>
       currentFiles.filter((file) => file.id !== fileId)
     );
   }
-
   function openMetadataDialog(file: UploadFile) {
     selectedFile.set(file);
     showMetadata.set(true);
   }
-
   function updateFileMetadata(
-    fileId: string,
+    fileId: string
     metadata: Partial<UploadFile["metadata"]>
   ) {
     files.update((currentFiles) =>
@@ -388,13 +338,11 @@ https://svelte.dev/e/js_parse_error -->
       )
     );
   }
-
   function getFileIcon(file: File) {
-    if (file.type.startsWith("image/")) return FileImage;
+    if (file.type.startsWith("image/")) return FileImag;
     if (file.type.includes("pdf")) return FileText;
-    return File;
+    return Fil;
   }
-
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return "0 Bytes";
     const k = 1024;
@@ -402,7 +350,6 @@ https://svelte.dev/e/js_parse_error -->
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   }
-
   function getStatusColor(status: UploadFile["status"]): string {
     switch (status) {
       case "completed":
@@ -417,22 +364,18 @@ https://svelte.dev/e/js_parse_error -->
         return "gray";
     }
   }
-
   // ============================================================================
   // LIFECYCLE
   // ============================================================================
-
   $effect(() => {
     // Set up global drag and drop prevention
     const preventDefaults = (e: Event) => {
       e.preventDefault();
       e.stopPropagation();
     };
-
     ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
       document.addEventListener(eventName, preventDefaults, false);
     });
-
     return () => {
       ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
         document.removeEventListener(eventName, preventDefaults, false);
@@ -440,7 +383,6 @@ https://svelte.dev/e/js_parse_error -->
     };
   });
 </script>
-
 <!-- Main Upload Interface -->
 <div class="enhanced-document-uploader {className}">
   <!-- Drop Zone -->
@@ -451,8 +393,8 @@ https://svelte.dev/e/js_parse_error -->
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
     ondrop={handleDrop}
-    role="button" 
-    aria-label="Drop zone" 
+    role="button"
+    aria-label="Drop zone"
     tabindex="0"
     onclick={() => fileInput?.click()}
     onkeydown={(e) => e.key === "Enter" && fileInput?.click()}
@@ -469,14 +411,12 @@ https://svelte.dev/e/js_parse_error -->
         Supports: PDF, DOCX, TXT, Images • Max {formatFileSize(maxFileSize)} • Up
         to {maxFiles} files
       </p>
-
       <Button variant="ghost" class="mt-4 bits-btn bits-btn" disabled={$isProcessing}>
 <Upload class="mr-2" size={16} />
         Choose Files
 </Button>
     </div>
   </div>
-
   <!-- Hidden File Input -->
   <input
     bind:this={fileInput}
@@ -485,7 +425,6 @@ https://svelte.dev/e/js_parse_error -->
     accept={acceptedTypes} onchange={handleFileSelect}
     class="sr-only"
   />
-
   <!-- Progress Overview -->
   {#if $files.length > 0}
     <div class="mt-6 nes-container">
@@ -507,7 +446,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   {/if}
-
   <!-- File List -->
   {#if $files.length > 0}
     <div class="file-list mt-6">
@@ -524,7 +462,6 @@ https://svelte.dev/e/js_parse_error -->
                   <SvelteComponent size={24} />
                 {/if}
               </div>
-
               <!-- File Details -->
               <div class="file-details">
                 <h4 class="file-name">
@@ -538,12 +475,10 @@ https://svelte.dev/e/js_parse_error -->
                     )?.label}
                   {/if}
                 </p>
-
                 <!-- Progress Bar -->
                 {#if file.status !== "pending" && file.status !== "completed"}
                   <Progress value={file.progress} class="file-progress" />
                 {/if}
-
                 <!-- Error Message -->
                 {#if file.error}
                   <p class="error-message">
@@ -552,7 +487,6 @@ https://svelte.dev/e/js_parse_error -->
                   </p>
                 {/if}
               </div>
-
               <!-- Status & Actions -->
               <div class="file-actions">
                 <Badge variant={getStatusColor(file.status) as any}>
@@ -565,7 +499,6 @@ https://svelte.dev/e/js_parse_error -->
                   {/if}
                   {file.status}
                 </Badge>
-
                 <div class="action-buttons">
                   {#if showMetadataForm && file.status === "pending"}
                     <Button class="bits-btn"
@@ -577,7 +510,6 @@ openMetadataDialog(file)}
                       Edit
 </Button>
                   {/if}
-
                   <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
@@ -595,7 +527,6 @@ removeFile(file.id)}
         </div>
       {/each}
     </div>
-
     <!-- Upload Actions -->
     <div class="upload-actions mt-6">
       <Button class="bits-btn"
@@ -613,7 +544,6 @@ f.status !== "pending")}
             .length} files)
         {/if}
 </Button>
-
       <Button class="bits-btn"
         variant="ghost"
         onclick={() =>
@@ -624,14 +554,12 @@ files.set([])}
 </Button>
     </div>
   {/if}
-
   <!-- Metadata Dialog -->
   <Dialog.Root bind:open={$showMetadata}>
     <Dialog.RootContent class="max-w-md">
       <Dialog.Header>
         <Dialog.Title>Document Metadata</Dialog.Title>
       </Dialog.Header>
-
       {#if $selectedFile}
         <div class="metadata-form space-y-4">
           <div>
@@ -642,7 +570,6 @@ files.set([])}
               placeholder="Document title"
             />
           </div>
-
           <div>
             <Label for="description">Description</Label>
             <Textarea
@@ -652,7 +579,6 @@ files.set([])}
               rows={3}
             />
           </div>
-
           <div>
             <Label for="document-type">Document Type</Label>
             <Select bind:value={$selectedFile.metadata.documentType}>
@@ -666,7 +592,6 @@ files.set([])}
               </SelectContent>
             </Select>
           </div>
-
           <div>
             <Label for="jurisdiction">Jurisdiction</Label>
             <Select bind:value={$selectedFile.metadata.jurisdiction}>
@@ -682,7 +607,6 @@ files.set([])}
               </SelectContent>
             </Select>
           </div>
-
           <div class="ai-options">
             <Label>AI Processing Options</Label>
             <div class="checkbox-group">
@@ -694,7 +618,6 @@ files.set([])}
               </Checkbox>
             </div>
           </div>
-
           <div class="dialog-actions">
             <Button class="bits-btn" variant="ghost" onclick={() =>
 showMetadata.set(false)}>
@@ -717,103 +640,77 @@ showMetadata.set(false)}>
     </Dialog.Content>
   </Dialog.Root>
 </div>
-
 <style>
   .enhanced-document-uploader {
     @apply w-full;
   }
-
   .drop-zone {
     @apply border-2 border-dashed border-muted-foreground border-opacity-25 rounded-lg p-8 text-center cursor-pointer transition-colors hover:border-primary hover:border-opacity-50 hover:bg-muted hover:bg-opacity-50;
   }
-
   .drop-zone.dragging {
     @apply border-primary bg-primary bg-opacity-5;
   }
-
   .drop-zone-content {
     @apply space-y-2;
   }
-
   .drop-zone-icon {
     @apply mx-auto text-muted-foreground;
   }
-
   .drop-zone-title {
     @apply text-lg font-semibold;
   }
-
   .drop-zone-description {
     @apply text-sm text-muted-foreground;
   }
-
   .drop-zone-specs {
     @apply text-xs text-muted-foreground;
   }
-
   .file-list {
     @apply space-y-3;
   }
-
   .file-item {
     @apply transition-shadow hover:shadow-md;
   }
-
   .file-info {
     @apply flex items-center space-x-4;
   }
-
   .file-preview {
     @apply flex-shrink-0 w-12 h-12 rounded-lg bg-muted flex items-center justify-center overflow-hidden;
   }
-
   .preview-image {
     @apply w-full h-full object-cover;
   }
-
   .file-details {
     @apply flex-1 min-w-0;
   }
-
   .file-name {
-    @apply font-medium truncate;
+    @apply font-medium truncat;
   }
-
   .file-meta {
     @apply text-sm text-muted-foreground;
   }
-
   .file-progress {
     @apply mt-2;
   }
-
   .error-message {
     @apply text-sm text-destructive flex items-center mt-2;
   }
-
   .file-actions {
     @apply flex flex-col items-end space-y-2;
   }
-
   .action-buttons {
     @apply flex space-x-2;
   }
-
   .upload-actions {
     @apply flex items-center justify-center;
   }
-
   .metadata-form {
     @apply p-1;
   }
-
   .checkbox-group {
     @apply space-y-2 mt-2;
   }
-
   .dialog-actions {
     @apply flex justify-end space-x-2 mt-6;
   }
 </style>
-
-

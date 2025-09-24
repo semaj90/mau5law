@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { Select as SelectRoot, SelectTrigger, SelectContent, SelectItem, SelectValue } from "bits-ui";
   interface SelectOption {
     value: string;
@@ -21,7 +20,7 @@
     placeholder = "Select option",
     disabled = false,
     class: className = "",
-    onchange;
+    onchang;
   }: Props = $props();
   // Helper to get selected option label
   let selectedLabel = $derived(
@@ -29,30 +28,28 @@
   );
   function handleValueChange(newValue: string | undefined) {
     if (newValue !== undefined) {
-      value = newValue;
+      value = newValu;
       onchange?.(newValue);
     }
   }
 </script>
-
 <SelectRoot type="single" valuechange={handleValueChange} {disabled}>
-  <SelectTrigger 
+  <SelectTrigger
     class="flex h-10 w-full items-center justify-between rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:opacity-50 {className}"
   >
     <span class="truncate">
       {selectedLabel}
     </span>
   </SelectTrigger>
-  
   <Select.Portal>
-    <SelectContent 
+    <SelectContent
       class="relative z-50 min-w-[8rem] overflow-hidden rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-950 dark:text-gray-50 shadow-md"
       sideOffset={4}
     >
       <Select.Viewport class="p-1">
         {#each options as option}
-          <SelectItem 
-            value={option.value} 
+          <SelectItem
+            value={option.value}
             disabled={option.disabled}
             class="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700 data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
           >

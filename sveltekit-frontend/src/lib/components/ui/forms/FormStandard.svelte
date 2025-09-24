@@ -1,15 +1,12 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import type { HTMLFormAttributes } from "svelte/elements";
   import type {     Snippet     } from 'svelte';
   import { enhance } from "$app/forms";
   import type { SubmitFunction } from "@sveltejs/kit";
-
   interface Props extends HTMLFormAttributes {
     // Form validation and submission
-    onSubmit?: SubmitFunction;
+    onSubmit?: SubmitFunctio;
     validationErrors?: Record<string, string[]>;
     isSubmitting?: boolean;
     // Layout and styling
@@ -24,7 +21,6 @@
     footer?: Snippet;
     children?: Snippet;
   }
-
   let {
     onSubmit,
     validationErrors = ,
@@ -38,27 +34,23 @@
     footer,
     children,
     class: className = '',
-    ...formProps;
+    ...formProp;
   }: Props = $props();
-
   const variantClasses = {
-    default: '',;
-    card: 'bg-white rounded-lg border border-gray-200 shadow-sm p-6',;
+    default: '',
+    card: 'bg-white rounded-lg border border-gray-200 shadow-sm p-6',
     inline: 'flex flex-row items-center gap-4';
   };
-
   const sizeClasses = {
-    sm: 'text-sm',;
-    md: 'text-base',;
+    sm: 'text-sm',
+    md: 'text-base',
     lg: 'text-lg';
   };
-
   const spacingClasses = {
-    compact: 'space-y-2',;
-    normal: 'space-y-4',;
+    compact: 'space-y-2',
+    normal: 'space-y-4',
     relaxed: 'space-y-6';
   };
-
   // Enhanced submit function with error handling
   const enhancedSubmit: SubmitFunction = ({ formElement, formData, action, cancel, submitter, controller }) => {
     if (onSubmit) {
@@ -66,21 +58,19 @@
     }
     return async ({ result, update }) => {
       if ((result as { type?: unknown; data?: unknown }).type === 'failure' && (result as { type?: unknown; data?: unknown }).data?.validationErrors) {
-        validationErrors = (result as { type?: unknown; data?: unknown }).data.validationErrors;
+        validationErrors = (result as { type?: unknown; data?: unknown }).data.validationError;
       }
       await update();
     };
   };
-
   // Global form error display
   let hasErrors = $derived(Object.keys(errors).length > 0);
 </script>
-
-<form 
+<form
   use:enhance={enhancedSubmit}
   aria-label={ariaLabel}
   aria-describedby={ariaDescribedBy}
-  class="form-standard {variantClasses[variant]} {sizeClasses[size]} 
+  class="form-standard {variantClasses[variant]} {sizeClasses[size]}
          {variant !== 'inline' ? spacingClasses[spacing] : ''} {className}"
   {...formProps}
 >
@@ -89,7 +79,6 @@
       {@render header()}
     </div>
   {/if}
-
   {#if hasErrors}
     <div class="form-errors bg-red-50 border border-red-200 rounded-md p-4 mb-4">
       <div class="flex">
@@ -113,17 +102,14 @@
       </div>
     </div>
   {/if}
-
   <div class="form-content {variant === 'inline' ? 'flex flex-row items-center gap-4' : spacingClasses[spacing]}">
     {@render children?.()}
   </div>
-
   {#if footer}
     <div class="form-footer {variant !== 'inline' ? 'pt-4 border-t border-gray-200' : ''}">
       {@render footer()}
     </div>
   {/if}
-
   {#if isSubmitting}
     <div class="form-loading absolute inset-0 bg-white/80 flex items-center justify-center rounded-lg">
       <div class="flex items-center space-x-2">
@@ -133,9 +119,8 @@
     </div>
   {/if}
 </form>
-
 <style>
-  .form-standard {;
+  .form-standard {
     position: relative;
   }
 </style>

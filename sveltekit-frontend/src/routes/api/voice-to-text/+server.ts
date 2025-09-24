@@ -1,11 +1,9 @@
 
 import type { RequestHandler } from './$types.js'
-
 // Lazy require (keeps optional deps from breaking build)
 const nodeCrypto = () => {
   try { return require("crypto"); } catch { return null; }
 }
-
 function isNodeBuffer(x: any): x is Buffer {
   return (
     x &&
@@ -16,7 +14,6 @@ function isNodeBuffer(x: any): x is Buffer {
     typeof (x as any).copy === 'function'
   )
 }
-
 async function toArrayBuffer(
   buf: Buffer | Uint8Array | ArrayBuffer | SharedArrayBuffer
 ): Promise<ArrayBuffer> {
@@ -46,14 +43,12 @@ async function toArrayBuffer(
   new Uint8Array(out).set(view)
   return out
 }
-
 function getEnv(...keys: string[]): string | undefined {
   for (const k of keys) {
     const v = process.env[k]
     if (v && v.trim()) return v.trim()
   }
 }
-
 const candidateBaseUrls = (() => {
   const fromEnv = [
     getEnv("LOCAL_TTS_URL"),
@@ -71,7 +66,6 @@ const candidateBaseUrls = (() => {
   ]
   return Array.from(new Set([...fromEnv, ...defaults])
 })()
-
 const candidateTtsPaths = [
   "/api/tts",
   "/api/voice/tts",
@@ -80,7 +74,6 @@ const candidateTtsPaths = [
   "/v1/tts",
   "/api/v1/tts"
 ]
-
 // Attempt remote microservice first
 async function tryRemoteTTS(text: string, voice: string, format: string): Promise<ArrayBuffer | null> {
   for (const base of candidateBaseUrls) {
@@ -110,7 +103,6 @@ async function tryRemoteTTS(text: string, voice: string, format: string): Promis
   }
   return null
 }
-
 // Check if a binary exists (cross-platform best-effort)
 async function binaryExists(bin: string): Promise<boolean> {
   const { spawn } = await import("node:child_process")
@@ -121,7 +113,6 @@ async function binaryExists(bin: string): Promise<boolean> {
     p.on("close", (code) => resolve(code === 0)
   })
 }
-
 // Fallback: piper (local fast TTS) if installed
 async function tryPiper(text: string, voice: string, format: string): Promise<ArrayBuffer | null> {
   if (!(await binaryExists("piper"))) return null
@@ -158,7 +149,6 @@ async function tryPiper(text: string, voice: string, format: string): Promise<Ar
     })
   })
 }
-
 // Fallback: edge-tts CLI (if installed)
 async function tryEdgeTTS(text: string, voice: string, format: string): Promise<ArrayBuffer | null> {
   if (!(await binaryExists("edge-tts"))) return null
@@ -183,7 +173,6 @@ async function tryEdgeTTS(text: string, voice: string, format: string): Promise<
     })
   })
 }
-
 async function synthesizeSpeech(text: string, voice = "en-US-JennyNeural", format: "mp3" | "wav" = "mp3"): Promise<ArrayBuffer> {
   // 1. Remote microservice
   const remote = await tryRemoteTTS(text, voice, format)
@@ -198,7 +187,6 @@ async function synthesizeSpeech(text: string, voice = "en-US-JennyNeural", forma
   const fallback = Buffer.from([82, 73, 70, 70, 36, 0, 0, 0, 87, 65, 86, 69, 102, 109, 116, 32, 16, 0, 0, 0, 1, 0, 1, 0, 68, 172, 0, 0, 136, 88, 1, 0, 2, 0, 16, 0, 100, 97, 116, 97, 0, 0, 0, 0])
   return toArrayBuffer(fallback)
 }
-
 // (Optional) basic STT via remote service
 async function transcribeAudio(file: File): Promise<string> {
   const sttUrl = getEnv("LOCAL_STT_URL", "STT_SERVICE_URL")
@@ -218,11 +206,9 @@ async function transcribeAudio(file: File): Promise<string> {
   }
   return "[Simulated transcript: integrate Whisper/Piper STT service]"
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const contentType = request.headers.get("content-type") || ""
-
     if (contentType.includes("application/json")) {
       const body = await request.json()
       const { text, voice = "en-US-JennyNeural", format = "mp3", returnBase64 = true } = body || {}
@@ -233,11 +219,11 @@ export const POST: RequestHandler = async ({ request }) => {
       if (returnBase64) {
         const base64 = Buffer.from(audioBuffer).toString("base64")
         return json({
-          success: true,
+          success: true
           mode: "tts",
           voice,
           format,
-          audio: base64,
+          audio: base64
           encoding: "base64",
           source: "auto (remote|local|fallback)"
         })
@@ -250,7 +236,6 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       })
     }
-
     if (contentType.includes("multipart/form-data")) {
       const formData = await request.formData()
       const audioFile = formData.get("audio") as File | null
@@ -260,7 +245,6 @@ export const POST: RequestHandler = async ({ request }) => {
       const transcript = await transcribeAudio(audioFile)
       return json({ success: true, mode: "stt", transcript })
     }
-
     return json({ error: "Unsupported content type" }, { status: 415 })
   } catch (err: any) {
     return json({ error: err?.message || "Voice service failed" }, { status: 500 })

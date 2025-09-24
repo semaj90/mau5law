@@ -10,7 +10,6 @@
     Button,
     Input
   } from '$lib/components/ui/enhanced-bits';
-
   interface Citation {
     id: string;
     type: 'case' | 'statute' | 'regulation' | 'constitutional' | 'secondary' | 'foreign';
@@ -31,12 +30,11 @@
     dateAdded: string;
     lastChecked?: string;
   }
-
   interface CitationDatabase {
     citations: Citation[];
     categories: string[];
     jurisdictions: string[];
-    stats: {;
+    stats: {
       total: number;
       verified: number;
       pending: number;
@@ -44,23 +42,19 @@
       byJurisdiction: Record<string, number>;
     };
   }
-
   interface Props {
     citations?: Citation[];
     onVerify?: (citationId: string) => Promise<boolean>;
     onSearch?: (query: string) => Promise<Citation[]>;
     onExport?: (citations: Citation[], format: string) => void;
   }
-
   let { citations = [], onVerify, onSearch, onExport }: Props = $props();
-
   // Enhanced-Bits builder for citations
   const citationBuilder = createLegalEvidenceAnalyzer({
     caseType: 'civil',
     urgency: 'medium',
     aiModel: 'gemma3';
   });
-
   let citationData = $state<CitationDatabase>({
     citations: citations.length > 0 ? citations : [
       {
@@ -72,7 +66,7 @@
         court: 'Supreme Court',
         year: 1954,
         jurisdiction: 'Federal',
-        verified: true,
+        verified: true
         accuracy: 0.98,
         relevanceScore: 0.92,
         usageCount: 15,
@@ -89,7 +83,7 @@
         fullCitation: '42 U.S.C. § 1983',
         shortForm: '§ 1983',
         jurisdiction: 'Federal',
-        verified: true,
+        verified: true
         accuracy: 0.95,
         relevanceScore: 0.88,
         usageCount: 8,
@@ -105,7 +99,7 @@
         fullCitation: '29 C.F.R. § 1630.2(g)',
         shortForm: '29 C.F.R. § 1630.2(g)',
         jurisdiction: 'Federal',
-        verified: false,
+        verified: false
         accuracy: 0.82,
         relevanceScore: 0.75,
         usageCount: 3,
@@ -116,16 +110,15 @@
       }
     ],
     categories: ['Constitutional Law', 'Civil Rights', 'Employment Law', 'Contract Law'],
-    jurisdictions: ['Federal', 'California', 'New York', 'Texas'],;
+    jurisdictions: ['Federal', 'California', 'New York', 'Texas'],
     stats: {
-      total: 0,;
-      verified: 0,;
+      total: 0,
+      verified: 0,
       pending: 0,
       byType: {},
       byJurisdiction: {}
     }
   });
-
   let searchTerm = $state('');
   let filterType = $state<string>('all');
   let filterJurisdiction = $state<string>('all');
@@ -134,29 +127,24 @@
   let showAddForm = $state(false);
   let isVerifying = $state(false);
   let bulkOperations = $state(false);
-
   // Calculate statistics
   $effect(() => {
     const stats = {
-      total: citationData.citations.length,;
-      verified: citationData.citations.filter(c => c.verified).length,;
+      total: citationData.citations.length,
+      verified: citationData.citations.filter(c => c.verified).length,
       pending: citationData.citations.filter(c => !c.verified).length,
       byType: {} as Record<string, number>,
       byJurisdiction: {} as Record<string, number>
     };
-
     citationData.citations.forEach(citation => {
       stats.byType[citation.type] = (stats.byType[citation.type] || 0) + 1;
       stats.byJurisdiction[citation.jurisdiction] = (stats.byJurisdiction[citation.jurisdiction] || 0) + 1;
     });
-
-    citationData.stats = stats;
+    citationData.stats = stat;
   });
-
   // Filtered and sorted citations
   let filteredCitations = $derived(() => {
-    let filtered = citationData.citations;
-
+    let filtered = citationData.citation;
     // Search filter
     if (searchTerm) {
       filtered = filtered.filter(citation =>
@@ -166,22 +154,19 @@
         (citation.notes && citation.notes.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
-
     // Type filter
     if (filterType !== 'all') {
       filtered = filtered.filter(citation => citation.type === filterType);
     }
-
     // Jurisdiction filter
     if (filterJurisdiction !== 'all') {
       filtered = filtered.filter(citation => citation.jurisdiction === filterJurisdiction);
     }
-
     // Sort citations
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'relevance':
-          return b.relevanceScore - a.relevanceScore;
+          return b.relevanceScore - a.relevanceScor;
         case 'date':
           return new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime();
         case 'usage':
@@ -192,13 +177,10 @@
           return 0;
       }
     });
-
     return filtered;
   });
-
   async function verifyCitation(citationId: string) {
     if (!onVerify) return;
-
     isVerifying = true;
     try {
       const verified = await onVerify(citationId);
@@ -214,10 +196,8 @@
       isVerifying = false;
     }
   }
-
   async function searchCitations() {
     if (!onSearch || !searchTerm) return;
-
     try {
       const results = await onSearch(searchTerm);
       // Add search results to database
@@ -234,7 +214,6 @@
       console.error('Citation search failed:', error);
     }
   }
-
   function toggleSelection(citationId: string) {
     const newSelection = new Set(selectedCitations);
     if (newSelection.has(citationId)) {
@@ -242,17 +221,14 @@
     } else {
       newSelection.add(citationId);
     }
-    selectedCitations = newSelection;
+    selectedCitations = newSelectio;
   }
-
   function selectAll() {
     selectedCitations = new Set(filteredCitations.map(c => c.id));
   }
-
   function clearSelection() {
     selectedCitations = new Set();
   }
-
   function exportCitations(format: 'bluebook' | 'apa' | 'mla' | 'json' | 'csv') {
     if (onExport) {
       const citationsToExport = citationData.citations.filter(c =>
@@ -263,7 +239,6 @@
       console.log(`Exporting ${selectedCitations.size} citations as ${format.toUpperCase()}`);
     }
   }
-
   function addNewCitation() {
     const newCitation: Citation = {
       id: `new-${Date.now()}`,
@@ -271,53 +246,47 @@
       fullCitation: '',
       shortForm: '',
       jurisdiction: 'Federal',
-      verified: false,
+      verified: false
       accuracy: 0,
       relevanceScore: 0,
-      usageCount: 0,;
-      tags: [],;
+      usageCount: 0,
+      tags: [],
       status: 'pending',
       dateAdded: new Date().toISOString();
     };
-
     citationData.citations.unshift(newCitation);
     showAddForm = false;
   }
-
   function deleteCitation(citationId: string) {
     citationData.citations = citationData.citations.filter(c => c.id !== citationId);
     selectedCitations.delete(citationId);
   }
-
   function getCitationIcon(type: Citation['type']): string {
     const icons = {
       case: '⚖️',
       statute: '📜',
       regulation: '📋',
-      constitutional: '🏛️',;
-      secondary: '📚',;
+      constitutional: '🏛️',
+      secondary: '📚',
       foreign: '🌍';
     };
     return icons[type] || '📄';
   }
-
   function getStatusColor(status: Citation['status']) {
     const colors = {
       active: '#10b981',
-      superseded: '#f59e0b',;
-      overruled: '#ef4444',;
+      superseded: '#f59e0b',
+      overruled: '#ef4444',
       pending: '#6b7280';
     };
     return colors[status] || colors.pending;
   }
-
   function getAccuracyColor(accuracy: number) {
     if (accuracy >= 0.9) return '#10b981';
     if (accuracy >= 0.7) return '#f59e0b';
     return '#ef4444';
   }
 </script>
-
 <div class="citation-manager">
   <!-- Citation Manager Header -->
   <Card
@@ -339,7 +308,6 @@
             </div>
           </div>
         </div>
-
         <div class="citation-actions">
           <Button
             onclick={() => showAddForm = !showAddForm}
@@ -347,14 +315,12 @@
           >
             ➕ Add Citation
           </Button>
-
           <Button
             onclick={() => bulkOperations = !bulkOperations}
             variant="outline"
           >
             🔧 Bulk Operations
           </Button>
-
           {#if selectedCitations.size > 0}
             <div class="bulk-actions" transition:fade>
               <Button onclick={() => exportCitations('bluebook')} size="sm">
@@ -368,7 +334,6 @@
         </div>
       </CardTitle>
     </CardHeader>
-
     <CardContent>
       <!-- Add Citation Form -->
       {#if showAddForm}
@@ -387,7 +352,6 @@
           </div>
         </div>
       {/if}
-
       <!-- Bulk Operations Panel -->
       {#if bulkOperations}
         <div class="bulk-panel" transition:fly={{ y: -20, duration: 300 }}>
@@ -404,7 +368,6 @@
           </div>
         </div>
       {/if}
-
       <!-- Search and Filters -->
       <div class="controls-section">
         <div class="search-controls">
@@ -417,7 +380,6 @@
             🔍 Search
           </Button>
         </div>
-
         <div class="filter-controls">
           <select bind:value={filterType} class="filter-select">
             <option value="all">All Types</option>
@@ -428,14 +390,12 @@
             <option value="secondary">📚 Secondary</option>
             <option value="foreign">🌍 Foreign</option>
           </select>
-
           <select bind:value={filterJurisdiction} class="filter-select">
             <option value="all">All Jurisdictions</option>
             {#each citationData.jurisdictions as jurisdiction}
               <option value={jurisdiction}>{jurisdiction}</option>
             {/each}
           </select>
-
           <select bind:value={sortBy} class="sort-select">
             <option value="relevance">Sort by Relevance</option>
             <option value="date">Sort by Date Added</option>
@@ -444,7 +404,6 @@
           </select>
         </div>
       </div>
-
       <!-- Citation Statistics -->
       <div class="stats-section">
         <h3>Citation Statistics</h3>
@@ -460,7 +419,6 @@
               </div>
             {/each}
           </div>
-
           <!-- By Jurisdiction Stats -->
           <div class="stat-group">
             <h4>By Jurisdiction</h4>
@@ -472,7 +430,6 @@
               </div>
             {/each}
           </div>
-
           <!-- Verification Status -->
           <div class="stat-group">
             <h4>Verification Status</h4>
@@ -489,7 +446,6 @@
           </div>
         </div>
       </div>
-
       <!-- Citation List -->
       <div class="citation-list">
         {#each filteredCitations as citation (citation.id)}
@@ -507,12 +463,10 @@
                   class="citation-checkbox"
                 />
               </div>
-
               <div class="citation-type">
                 <span class="type-icon">{getCitationIcon(citation.type)}</span>
                 <span class="type-label">{citation.type.toUpperCase()}</span>
               </div>
-
               <div class="citation-status">
                 <div
                   class="status-badge"
@@ -520,7 +474,6 @@
                 >
                   {citation.status}
                 </div>
-
                 <div
                   class="verification-badge"
                   class:verified={citation.verified}
@@ -528,7 +481,6 @@
                   {citation.verified ? '✅ Verified' : '⏳ Pending'}
                 </div>
               </div>
-
               <div class="citation-actions">
                 <Button
                   onclick={() => verifyCitation(citation.id)}
@@ -542,25 +494,21 @@
                 </Button>
               </div>
             </div>
-
             <div class="citation-content">
               <div class="citation-main">
                 <div class="citation-full">
                   <strong>{citation.fullCitation}</strong>
                 </div>
-
                 {#if citation.shortForm}
                   <div class="citation-short">
                     Short form: <em>{citation.shortForm}</em>
                   </div>
                 {/if}
-
                 {#if citation.pinpoint}
                   <div class="citation-pinpoint">
                     Pinpoint: {citation.pinpoint}
                   </div>
                 {/if}
-
                 <div class="citation-details">
                   <div class="detail-item">
                     <span class="detail-label">Jurisdiction:</span>
@@ -583,13 +531,11 @@
                     <span class="detail-value">{citation.usageCount} times</span>
                   </div>
                 </div>
-
                 {#if citation.notes}
                   <div class="citation-notes">
                     <strong>Notes:</strong> {citation.notes}
                   </div>
                 {/if}
-
                 {#if citation.parentheticals && citation.parentheticals.length > 0}
                   <div class="citation-parentheticals">
                     <strong>Parentheticals:</strong>
@@ -600,21 +546,19 @@
                     </ul>
                   </div>
                 {/if}
-
                 <div class="citation-tags">
                   {#each citation.tags as tag}
                     <span class="citation-tag">#{tag}</span>
                   {/each}
                 </div>
               </div>
-
               <div class="citation-metrics">
                 <div class="metric-item">
                   <span class="metric-label">Relevance Score:</span>
                   <div class="metric-bar">
                     <div
                       class="metric-fill"
-                      style=";
+                      style="
                         width: {citation.relevanceScore * 100}%;
                         background: {citationBuilder.styling.colors.evidence};
                       "
@@ -624,7 +568,6 @@
                     {Math.round(citation.relevanceScore * 100)}%
                   </span>
                 </div>
-
                 <div class="metric-item">
                   <span class="metric-label">Accuracy:</span>
                   <div class="metric-bar">
@@ -640,7 +583,6 @@
                     {Math.round(citation.accuracy * 100)}%
                   </span>
                 </div>
-
                 <div class="citation-dates">
                   <div class="date-item">
                     <span class="date-label">Added:</span>
@@ -661,7 +603,6 @@
             </div>
           </div>
         {/each}
-
         {#if filteredCitations.length === 0}
           <div class="no-citations" transition:fade>
             <span class="no-citations-icon">📚</span>
@@ -676,7 +617,6 @@
     </CardContent>
   </Card>
 </div>
-
 <style>
   .citation-manager {
     max-width: 1400px;
@@ -684,55 +624,46 @@
     padding: 1rem;
     font-family: 'Courier New', monospace;
   }
-
   .citation-title {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: flex-start;
     gap: 2rem;
   }
-
   .title-section {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
-
   .citation-icon {
     font-size: 2rem;
   }
-
   .title-text h2 {
     margin: 0;
     color: var(--enhanced-bits-foreground);
     font-size: 1.5rem;
   }
-
   .citation-meta {
     display: flex;
     gap: 1rem;
     margin-top: 0.5rem;
     font-size: 0.875rem;
   }
-
   .total-count, .verified-count, .pending-count {
     padding: 0.25rem 0.5rem;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
   }
-
   .citation-actions {
     display: flex;
     gap: 0.5rem;
     align-items: center;
     flex-wrap: wrap;
   }
-
   .bulk-actions {
     display: flex;
     gap: 0.5rem;
   }
-
   .add-form, .bulk-panel {
     margin-bottom: 2rem;
     padding: 1.5rem;
@@ -740,51 +671,43 @@
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.02);
   }
-
   .form-header, .panel-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1rem;
   }
-
   .form-header h3, .panel-header h3 {
     margin: 0;
     color: var(--enhanced-bits-foreground);
   }
-
   .form-content, .bulk-controls {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
   }
-
   .controls-section {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 2rem;
     gap: 1rem;
     flex-wrap: wrap;
   }
-
   .search-controls {
     display: flex;
     gap: 1rem;
     flex: 1;
     min-width: 0;
   }
-
   .citation-search {
     flex: 1;
     min-width: 300px;
   }
-
   .filter-controls {
     display: flex;
     gap: 1rem;
   }
-
   .filter-select, .sort-select {
     background: var(--enhanced-bits-background);
     border: 2px solid var(--enhanced-bits-border);
@@ -793,28 +716,23 @@
     border-radius: 4px;
     font-family: inherit;
   }
-
   .stats-section {
     margin-bottom: 2rem;
   }
-
   .stats-section h3 {
     margin: 0 0 1rem 0;
     color: var(--enhanced-bits-foreground);
   }
-
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 2rem;
   }
-
   .stat-group h4 {
     margin: 0 0 1rem 0;
     color: var(--enhanced-bits-foreground);
     font-size: 1rem;
   }
-
   .stat-item {
     display: flex;
     align-items: center;
@@ -822,28 +740,23 @@
     padding: 0.5rem 0;
     border-bottom: 1px solid var(--enhanced-bits-border);
   }
-
   .stat-icon {
     font-size: 1rem;
   }
-
   .stat-label {
     flex: 1;
     font-size: 0.875rem;
     color: var(--enhanced-bits-muted-foreground);
   }
-
   .stat-count {
     font-weight: bold;
     color: var(--enhanced-bits-foreground);
   }
-
   .citation-list {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
-
   .citation-item {
     background: rgba(255, 255, 255, 0.03);
     border: 2px solid var(--enhanced-bits-border);
@@ -851,57 +764,47 @@
     padding: 1.5rem;
     transition: all 300ms ease;
   }
-
   .citation-item:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   }
-
   .citation-item.selected {
     border-color: var(--enhanced-bits-primary);
     box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
   }
-
   .citation-header {
     display: flex;
     align-items: center;
     gap: 1rem;
     margin-bottom: 1rem;
   }
-
   .citation-select {
     display: flex;
     align-items: center;
   }
-
   .citation-checkbox {
     width: 18px;
     height: 18px;
     accent-color: var(--enhanced-bits-primary);
   }
-
   .citation-type {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
-
   .type-icon {
     font-size: 1.25rem;
   }
-
   .type-label {
     font-size: 0.875rem;
     font-weight: bold;
     color: var(--enhanced-bits-foreground);
   }
-
   .citation-status {
     display: flex;
     gap: 0.5rem;
     margin-left: auto;
   }
-
   .status-badge, .verification-badge {
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
@@ -910,68 +813,57 @@
     text-transform: uppercase;
     border: 1px solid;
   }
-
   .verification-badge {
     background: rgba(245, 158, 11, 0.2);
     color: #f59e0b;
     border-color: #f59e0b;
   }
-
   .verification-badge.verified {
     background: rgba(16, 185, 129, 0.2);
     color: #10b981;
     border-color: #10b981;
   }
-
   .citation-actions {
     display: flex;
     gap: 0.5rem;
   }
-
   .citation-content {
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 2rem;
     align-items: start;
   }
-
   .citation-full {
     font-size: 1rem;
     color: var(--enhanced-bits-foreground);
     margin-bottom: 0.5rem;
     line-height: 1.4;
   }
-
   .citation-short, .citation-pinpoint {
     font-size: 0.875rem;
     color: var(--enhanced-bits-muted-foreground);
     margin-bottom: 0.25rem;
   }
-
   .citation-details {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 0.75rem;
     margin: 1rem 0;
   }
-
   .detail-item {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
   }
-
   .detail-label {
     font-size: 0.75rem;
     color: var(--enhanced-bits-muted-foreground);
     text-transform: uppercase;
   }
-
   .detail-value {
     font-size: 0.875rem;
     color: var(--enhanced-bits-foreground);
   }
-
   .citation-notes, .citation-parentheticals {
     margin: 1rem 0;
     padding: 1rem;
@@ -981,24 +873,20 @@
     font-size: 0.875rem;
     line-height: 1.5;
   }
-
   .citation-parentheticals ul {
     margin: 0.5rem 0 0 0;
     padding-left: 1.5rem;
   }
-
   .citation-parentheticals li {
     margin-bottom: 0.25rem;
     font-style: italic;
   }
-
   .citation-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     margin-top: 1rem;
   }
-
   .citation-tag {
     background: rgba(157, 74, 221, 0.2);
     color: var(--enhanced-bits-ai);
@@ -1007,120 +895,98 @@
     font-size: 0.75rem;
     border: 1px solid var(--enhanced-bits-ai);
   }
-
   .citation-metrics {
     display: flex;
     flex-direction: column;
     gap: 1rem;
     min-width: 200px;
   }
-
   .metric-item {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .metric-label {
     font-size: 0.875rem;
     color: var(--enhanced-bits-muted-foreground);
   }
-
   .metric-bar {
     height: 8px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
     overflow: hidden;
   }
-
   .metric-fill {
     height: 100%;
     transition: width 300ms ease;
     border-radius: 4px;
   }
-
   .metric-value {
     font-size: 0.875rem;
     font-weight: bold;
     color: var(--enhanced-bits-evidence);
   }
-
   .citation-dates {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .date-item {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
   }
-
   .date-label {
     font-size: 0.75rem;
     color: var(--enhanced-bits-muted-foreground);
     text-transform: uppercase;
   }
-
   .date-value {
     font-size: 0.875rem;
     color: var(--enhanced-bits-foreground);
   }
-
   .no-citations {
     text-align: center;
     padding: 4rem 2rem;
     color: var(--enhanced-bits-muted-foreground);
   }
-
   .no-citations-icon {
     font-size: 3rem;
     display: block;
     margin-bottom: 1rem;
   }
-
   .no-citations h3 {
     margin: 0 0 1rem 0;
     color: var(--enhanced-bits-foreground);
   }
-
   .no-citations p {
     margin: 0 0 2rem 0;
   }
-
   @media (max-width: 768px) {
     .citation-title {
       flex-direction: column;
       gap: 1rem;
     }
-
     .controls-section {
       flex-direction: column;
       align-items: stretch;
     }
-
     .search-controls {
       flex-direction: column;
     }
-
     .citation-search {
       min-width: auto;
     }
-
     .filter-controls {
       flex-direction: column;
     }
-
     .citation-content {
       grid-template-columns: 1fr;
       gap: 1rem;
     }
-
     .citation-details {
       grid-template-columns: 1fr;
     }
-
     .stats-grid {
       grid-template-columns: 1fr;
     }

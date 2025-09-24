@@ -4,7 +4,6 @@
  * PUT /api/v1/cases/[id] - Update specific case
  * DELETE /api/v1/cases/[id] - Delete specific case
  */
-
 import { json, error, type RequestHandler } from '@sveltejs/kit'
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
 import {
@@ -13,10 +12,8 @@ import {
   type UpdateCaseData
 } from '$lib/server/services/user-scoped-crud'
 import { z } from 'zod'
-
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid case ID format')
-
 /*
  * GET /api/v1/cases/[id]
  * Get a specific case by ID
@@ -30,23 +27,18 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
       )
     }
-
     // Validate case ID
     const caseId = UUIDSchema.parse(params.id)
-
     // Create service instance
     const casesService = new CasesCRUDService(locals.user.id)
-
     // Get case
     const caseData = await casesService.getById(caseId)
-
     if (!caseData) {
       return error(
         404,
         makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' })
       )
     }
-
     const CaseResponse = z
       .object({
         success: z.literal(true),
@@ -60,16 +52,14 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         meta: z.record(z.any()).optional()
       })
       .passthrough()
-
     const payload = {
-      success: true,
-      data: caseData,
+      success: true
+      data: caseData
       meta: {
         userId: locals.user.id,
         timestamp: new Date().toISOString()
       }
     }
-
     const validated = CaseResponse.safeParse(payload)
     if (!validated.success) {
       console.error('Case response validation failed', validated.error)
@@ -81,11 +71,9 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         })
       )
     }
-
     return json(payload)
   } catch (err: any) {
     console.error('Error fetching case:', err)
-
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -96,14 +84,12 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         })
       )
     }
-
     if (err.message.includes('not found') || err.message.includes('access denied')) {
       return error(
         404,
         makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' })
       )
     }
-
     return error(
       500,
       makeHttpErrorPayload({
@@ -114,7 +100,6 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     )
   }
 }
-
 /*
  * PUT /api/v1/cases/[id]
  * Update a specific case
@@ -128,29 +113,23 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
       )
     }
-
     // Validate case ID
     const caseId = UUIDSchema.parse(params.id)
-
     // Parse request body
     const body = await request.json()
     const validatedData = UpdateCaseSchema.parse({
-      id: caseId,
+      id: caseId
       ...body
     }) as UpdateCaseData
-
     // Create service instance
     const casesService = new CasesCRUDService(locals.user.id)
-
     // Update case (service expects id, data)
     await casesService.update(caseId, validatedData)
-
     // Get updated case details
     const updatedCase = await casesService.getById(caseId)
-
     return json({
-      success: true,
-      data: updatedCase,
+      success: true
+      data: updatedCase
       meta: {
         userId: locals.user.id,
         timestamp: new Date().toISOString()
@@ -158,7 +137,6 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     })
   } catch (err: any) {
     console.error('Error updating case:', err)
-
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -169,14 +147,12 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         })
       )
     }
-
     if (err.message.includes('not found') || err.message.includes('access denied')) {
       return error(
         404,
         makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' })
       )
     }
-
     return error(
       500,
       makeHttpErrorPayload({
@@ -187,7 +163,6 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     )
   }
 }
-
 /*
  * DELETE /api/v1/cases/[id]
  * Delete a specific case
@@ -201,28 +176,23 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
         makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
       )
     }
-
     // Validate case ID
     const caseId = UUIDSchema.parse(params.id)
-
     // Create service instance
     const casesService = new CasesCRUDService(locals.user.id)
-
     // Delete case
     await casesService.delete(caseId)
-
     return json({
-      success: true,
+      success: true
       message: 'Case deleted successfully',
       meta: {
-        deletedCaseId: caseId,
+        deletedCaseId: caseId
         userId: locals.user.id,
         timestamp: new Date().toISOString()
       }
     })
   } catch (err: any) {
     console.error('Error deleting case:', err)
-
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -233,14 +203,12 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
         })
       )
     }
-
     if (err.message.includes('not found') || err.message.includes('access denied')) {
       return error(
         404,
         makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' })
       )
     }
-
     return error(
       500,
       makeHttpErrorPayload({

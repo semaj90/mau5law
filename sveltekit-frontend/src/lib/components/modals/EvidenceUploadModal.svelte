@@ -1,14 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import {   } from "svelte";
-
-
-  import Button from '$lib/components/ui/button/Button.svelte';
-  
+  import Button from '$lib/components/ui/Button.svelte';
   import { uploadActions, uploadModal } from "$lib/stores/evidence-store";
   import { formatFileSize } from "$lib/utils/file-utils";
   import {
@@ -19,20 +14,14 @@ https://svelte.dev/e/js_parse_error -->
     Upload,
     X,
   } from "lucide-svelte";
-  
-
-  
-
   let fileInput: HTMLInputElement;
   let dragActive = $state(false);
-
   let isOpen = $derived($uploadModal.isOpen);
   let files = $derived($uploadModal.files || []);
   let activeUploads = $derived(files.filter(
     (f) => f?.status === "uploading" || f?.status === "processing"
   ));
   let completedUploads = $derived(files.filter((f) => f?.status === "completed"));
-
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
@@ -42,7 +31,6 @@ https://svelte.dev/e/js_parse_error -->
   function handleDrop(event: DragEvent) {
     event.preventDefault();
     dragActive = false;
-
     if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
       uploadActions.addFiles(Array.from(event.dataTransfer.files));
     }
@@ -60,10 +48,9 @@ https://svelte.dev/e/js_parse_error -->
   }
   function closeModal() {
     uploadActions.closeModal();
-    ondispatch?.();
+    // ondispatch removed;
   }
 </script>
-
 {#if isOpen}
   <div class="container mx-auto px-4">
     <div class="container mx-auto px-4">
@@ -78,7 +65,6 @@ closeModal()}>
           <X class="container mx-auto px-4" />
 </Button>
       </div>
-
       <!-- Body -->
       <div class="container mx-auto px-4">
         <!-- File Drop Zone -->
@@ -114,14 +100,12 @@ fileInput?.click()}>
             accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.csv,.xlsx,.xls" onchange={handleFileSelect}
           />
         </div>
-
         <!-- File List -->
         {#if files.length > 0}
           <div class="container mx-auto px-4">
             <h3 class="container mx-auto px-4">
               Files ({files.length})
             </h3>
-
             <div class="container mx-auto px-4">
               {#each files as file (file.id)}
                 {#if file?.file}
@@ -138,7 +122,6 @@ fileInput?.click()}>
                           <File class="container mx-auto px-4" />
                         {/if}
                       </div>
-
                       <div class="container mx-auto px-4">
                         <p class="container mx-auto px-4">
                           {file.file?.name || "Unknown file"}
@@ -157,7 +140,6 @@ fileInput?.click()}>
                             • Upload complete
                           {/if}
                         </p>
-
                         {#if file.status === "uploading" && file.progress && file.progress > 0}
                           <div class="container mx-auto px-4">
                             <div
@@ -166,13 +148,11 @@ fileInput?.click()}>
                             ></div>
                           </div>
                         {/if}
-
                         {#if file.error}
                           <p class="container mx-auto px-4">{file.error}</p>
                         {/if}
                       </div>
                     </div>
-
                     <div class="container mx-auto px-4">
                       <Button class="bits-btn"
                         variant="ghost"
@@ -190,7 +170,6 @@ removeFile(file.id)}
           </div>
         {/if}
       </div>
-
       <!-- Footer -->
       <div class="container mx-auto px-4">
         <div class="container mx-auto px-4">
@@ -206,13 +185,11 @@ removeFile(file.id)}
             Ready to upload files
           {/if}
         </div>
-
         <div class="container mx-auto px-4">
           <Button class="bits-btn" variant="ghost" onclick={() =>
 closeModal()}>
             {activeUploads.length > 0 ? "Continue in Background" : "Close"}
 </Button>
-
           {#if completedUploads.length > 0}
             <Button class="bits-btn" onclick={() =>
 ondispatch?.(completedUploads)}>
@@ -224,6 +201,3 @@ ondispatch?.(completedUploads)}>
     </div>
   </div>
 {/if}
-
-
-

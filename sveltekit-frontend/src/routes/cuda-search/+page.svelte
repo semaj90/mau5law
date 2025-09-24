@@ -1,24 +1,20 @@
 <!-- Test page for CUDA Search integration -->
 <script>
 	import SearchBox from '$lib/components/SearchBox.svelte';
-
 	// Handle search results
 	function handleResults(data) {
 		console.log('Search results received:', data);
 	}
-
 	// Handle search errors
 	function handleError(error) {
 		console.error('Search error:', error);
 	}
 </script>
-
 <svelte:head>
 	<title>CUDA Legal AI Search - Test</title>
 	<link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
 	<link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
 </svelte:head>
-
 <main class="container">
 	<section class="hero nes-container with-title">
 		<h1 class="title">⚡ CUDA Legal AI Search</h1>
@@ -30,7 +26,6 @@
 			⚡ <strong>GPU acceleration</strong> for embedding generation and vector operations
 		</p>
 	</section>
-
 	<section class="search-section">
 		<SearchBox
 			placeholder="Search legal precedents, contract clauses, case law..."
@@ -40,7 +35,6 @@
 			onError={handleError}
 		/>
 	</section>
-
 	<section class="features nes-container with-title">
 		<h2 class="title">🔧 System Features</h2>
 		<div class="feature-grid">
@@ -53,7 +47,6 @@
 					<li>GPU-optimized embedding generation</li>
 				</ul>
 			</div>
-
 			<div class="feature-item nes-container">
 				<h3 class="nes-text is-success">🤖 Ollama Integration</h3>
 				<ul class="nes-list is-disc">
@@ -63,7 +56,6 @@
 					<li>Real-time processing</li>
 				</ul>
 			</div>
-
 			<div class="feature-item nes-container">
 				<h3 class="nes-text is-warning">📊 Vector Database</h3>
 				<ul class="nes-list is-disc">
@@ -75,24 +67,21 @@
 			</div>
 		</div>
 	</section>
-
 	<section class="api-info nes-container with-title">
 		<h2 class="title">🔗 API Integration</h2>
 		<div class="api-details">
 			<h3 class="nes-text">Search Endpoint</h3>
 			<div class="code-block nes-container is-dark">
-				<pre class="nes-text">POST http://localhost:8096/api/v1/search
+				<pre class="nes-text">{@html `POST http://localhost:8096/api/v1/search
 Content-Type: application/json
-
 {
   "q": "contract termination clause",
   "limit": 5
-}</pre>
+}`}</pre>
 			</div>
-
 			<h3 class="nes-text">Response Format</h3>
 			<div class="code-block nes-container is-dark">
-				<pre class="nes-text">{
+				<pre class="nes-text">{@html `{
   "query": "contract termination clause",
   "results": [
     {
@@ -105,24 +94,23 @@ Content-Type: application/json
   ],
   "count": 1,
   "limit": 5
-}</pre>
+}`}</pre>
 			</div>
 		</div>
 	</section>
-
 	<section class="system-status nes-container with-title">
 		<h2 class="title">📡 System Status</h2>
 		<div class="status-grid">
 			<div class="status-item nes-container">
 				<p class="nes-text">🖥️ <strong>CUDA Service:</strong>
-					<a href="http://localhost:8096/api/v1/health" target="_blank" class="nes-text is-primary">
+					<a href="http://localhost:8096/api/v1/health" target="_blank" class="nes-text is-primary">,
 						localhost:8096
 					</a>
 				</p>
 			</div>
 			<div class="status-item nes-container">
 				<p class="nes-text">🤖 <strong>Ollama:</strong>
-					<a href="http://localhost:11434/api/tags" target="_blank" class="nes-text is-success">;
+					<a href="http://localhost:11434/api/tags" target="_blank" class="nes-text is-success">,
 						localhost:11434
 					</a>
 				</p>
@@ -135,71 +123,58 @@ Content-Type: application/json
 		</div>
 	</section>
 </main>
-
 <style>
-	:global(body) {;
+	:global(body) {
 		font-family: "Press Start 2P", cursive;
 		background-color: #212529;
 		color: #f8f9fa;
 		line-height: 1.6;
 	}
-
 	.container {
 		max-width: 1200px;
 		margin: 0 auto;
 		padding: 20px;
 	}
-
 	.hero {
 		text-align: center;
 		margin-bottom: 40px;
 		background-color: #0f4c75;
 	}
-
 	.hero h1 {
 		margin-bottom: 20px;
 		color: #92cc41;
 	}
-
 	.search-section {
 		margin-bottom: 40px;
 	}
-
 	.features {
 		margin-bottom: 40px;
 		background-color: #2d3436;
 	}
-
 	.feature-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 		gap: 20px;
 		margin-top: 20px;
 	}
-
 	.feature-item {
 		background-color: #1a1a1a;
 	}
-
 	.feature-item h3 {
 		margin-bottom: 15px;
 	}
-
 	.api-info {
 		margin-bottom: 40px;
 		background-color: #2d3436;
 	}
-
 	.api-details h3 {
 		margin: 20px 0 10px 0;
 		color: #92cc41;
 	}
-
 	.code-block {
 		margin: 15px 0;
 		background-color: #000;
 	}
-
 	.code-block pre {
 		margin: 0;
 		color: #00ff00;
@@ -207,62 +182,50 @@ Content-Type: application/json
 		line-height: 1.4;
 		overflow-x: auto;
 	}
-
 	.system-status {
 		background-color: #2d3436;
 	}
-
 	.status-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 		gap: 15px;
 		margin-top: 20px;
 	}
-
 	.status-item {
 		background-color: #1a1a1a;
 		text-align: center;
 		padding: 15px;
 	}
-
 	.status-item a {
 		text-decoration: none;
 	}
-
-	.status-item a:hover {;
+	.status-item a:hover {
 		text-decoration: underline;
 	}
-
 	/* Responsive design */
 	@media (max-width: 768px) {
 		.container {
 			padding: 10px;
 		}
-
 		.feature-grid {
 			grid-template-columns: 1fr;
 		}
-
 		.status-grid {
 			grid-template-columns: 1fr;
 		}
-
 		.code-block pre {
 			font-size: 8px;
 		}
 	}
-
 	/* NES.css enhancements */
 	:global(.nes-container.with-title > .title) {
 		background-color: inherit;
 		padding: 0 20px;
 	}
-
 	:global(.nes-list.is-disc) {
 		list-style-type: disc;
 		margin-left: 20px;
 	}
-
 	:global(.nes-list.is-disc li) {
 		margin-bottom: 5px;
 	}

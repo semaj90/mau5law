@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const config = {
   preprocess: vitePreprocess({
     typescript: true,
-    script: false,
+    script: true,
   }),
 
   kit: {

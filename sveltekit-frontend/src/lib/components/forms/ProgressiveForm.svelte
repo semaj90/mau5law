@@ -1,18 +1,16 @@
 <!-- ProgressiveForm.svelte - Example of properly progressive enhanced form -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { enhance } from '$app/forms';
   import { createProgressiveForm, type ProgressiveEnhancementConfig } from '$lib/utils/progressive-enhancement-audit.js';
   import type { SubmitFunction } from '@sveltejs/kit';
-
   // Props for form configuration
   let {
     // Form behavior props
     action = '/api/submit-form',
     method = 'POST' as 'GET' | 'POST',
     // Data props
-    initialData = as Record<string, any>,
+    initialData = as { [key: string]: any },
     // Configuration props
     config = as Partial<ProgressiveEnhancementConfig>,
     // Event handlers
@@ -26,7 +24,6 @@
     title = 'Progressive Form',
     description = ''
   } = $props();
-
   // Initialize progressive form utilities
   const progressiveForm = createProgressiveForm(config);
   // Form state
@@ -34,22 +31,20 @@
   let isSubmitting = $state(false);
   let submitMessage = $state('');
   let submitMessageType = $state<'success' | 'error' | ''>('');
-
   // Generate field IDs for accessibility
   const fieldIds = {
-    email: progressiveForm.generateFieldId('email', formId),;
+    email: progressiveForm.generateFieldId('email', formId),
     password: progressiveForm.generateFieldId('password', formId),
     confirmPassword: progressiveForm.generateFieldId('confirmPassword', formId),
     firstName: progressiveForm.generateFieldId('firstName', formId),
-    lastName: progressiveForm.generateFieldId('lastName', formId),;
+    lastName: progressiveForm.generateFieldId('lastName', formId),
     terms: progressiveForm.generateFieldId('terms', formId);
   };
-
   // Validation functions
   function validateField(fieldName: string, value: unknown): string | null {
     switch (fieldName) {
       case 'email':
-        return progressiveForm.validateRequired(value, 'Email') || 
+        return progressiveForm.validateRequired(value, 'Email') ||
                progressiveForm.validateEmail(value);
       case 'password':
         return progressiveForm.validateRequired(value, 'Password') ||
@@ -71,11 +66,10 @@
         return null;
     }
   }
-
   // Handle field changes with validation
   function handleFieldChange(fieldName: string, value: unknown) {
     // Update form data
-    formState.data[fieldName] = value;
+    formState.data[fieldName] = valu;
     formState.isDirty = true;
     // Mark field as touched
     formState.touched[fieldName] = true;
@@ -89,7 +83,6 @@
       }
     }
   }
-
   // Validate entire form
   function validateForm(): boolean {
     const fields = ['email', 'password', 'confirmPassword', 'firstName', 'lastName', 'terms'];
@@ -105,7 +98,6 @@
     }
     return isValid;
   }
-
   // Enhanced submit function for SvelteKit
   const handleEnhancedSubmit: SubmitFunction = ({ formData, cancel }) => {
     // Client-side validation before submit
@@ -159,13 +151,12 @@
       if (progressiveForm.config.announceErrors && submitMessage) {
         const announcement = document.getElementById(`${formId}-announcements`);
         if (announcement) {
-          announcement.textContent = submitMessage;
+          announcement.textContent = submitMessag;
         }
       }
       await update();
     };
   };
-
   // Handle form submission without JavaScript
   function handleNativeSubmit(event: Event) {
     const form = event.target as HTMLFormElement;
@@ -176,31 +167,27 @@
       alert('Please correct the errors in the form');
     }
   }
-
   // Check if field has error
   function hasError(fieldName: string): boolean {
     return !!(formState.errors[fieldName] && formState.touched[fieldName]);
   }
-
   // Get field error message
   function getError(fieldName: string): string {
     return hasError(fieldName) ? formState.errors[fieldName] : '';
   }
-
   // Generate ARIA attributes for fields
   function getFieldAria(fieldName: string) {
     const fieldId = fieldIds[fieldName as keyof typeof fieldIds];
     const errorId = progressiveForm.generateErrorId(fieldId);
     const descriptionId = progressiveForm.generateDescriptionId(fieldId);
     return {
-      id: fieldId,
+      id: fieldId
       'aria-invalid': hasError(fieldName) ? 'true' : 'false',
-      'aria-describedby': hasError(fieldName) ? errorId : undefined,
+      'aria-describedby': hasError(fieldName) ? errorId : undefined
       'aria-required': 'true';
     };
   }
 </script>
-
 <!-- Progressive Enhancement Form -->
 <form
   id={formId}
@@ -221,7 +208,6 @@
       {/if}
     </div>
   {/if}
-
   <!-- Live region for announcements -->
   <div
     id="{formId}-announcements"
@@ -229,7 +215,6 @@
     aria-live="polite"
     aria-atomic="true"
   ></div>
-
   <!-- Form errors summary -->
   {#if Object.keys(errors).length > 0 && progressiveForm.config.showSummaryErrors}
     <div class="error-summary" role="alert" aria-labelledby="{formId}-error-heading">
@@ -243,11 +228,9 @@
       </ul>
     </div>
   {/if}
-
   <!-- Personal Information Fieldset -->
   <fieldset class="form-section">
     <legend>Personal Information</legend>
-    
     <div class="form-row">
       <div class="form-group">
         <label for={fieldIds.firstName} class="form-label required">
@@ -264,7 +247,7 @@
           required
         />
         {#if hasError('firstName')}
-          <div 
+          <div
             id={progressiveForm.generateErrorId(fieldIds.firstName)}
             class="field-error"
             role="alert"
@@ -273,7 +256,6 @@
           </div>
         {/if}
       </div>
-
       <div class="form-group">
         <label for={fieldIds.lastName} class="form-label required">
           Last Name
@@ -289,7 +271,7 @@
           required
         />
         {#if hasError('lastName')}
-          <div 
+          <div
             id={progressiveForm.generateErrorId(fieldIds.lastName)}
             class="field-error"
             role="alert"
@@ -300,11 +282,9 @@
       </div>
     </div>
   </fieldset>
-
   <!-- Account Information Fieldset -->
   <fieldset class="form-section">
     <legend>Account Information</legend>
-    
     <div class="form-group">
       <label for={fieldIds.email} class="form-label required">
         Email Address
@@ -321,7 +301,7 @@
         required
       />
       {#if hasError('email')}
-        <div 
+        <div
           id={progressiveForm.generateErrorId(fieldIds.email)}
           class="field-error"
           role="alert"
@@ -330,7 +310,6 @@
         </div>
       {/if}
     </div>
-
     <div class="form-group">
       <label for={fieldIds.password} class="form-label required">
         Password
@@ -351,7 +330,7 @@
         Password must be at least 8 characters long
       </div>
       {#if hasError('password')}
-        <div 
+        <div
           id={progressiveForm.generateErrorId(fieldIds.password)}
           class="field-error"
           role="alert"
@@ -360,7 +339,6 @@
         </div>
       {/if}
     </div>
-
     <div class="form-group">
       <label for={fieldIds.confirmPassword} class="form-label required">
         Confirm Password
@@ -377,7 +355,7 @@
         required
       />
       {#if hasError('confirmPassword')}
-        <div 
+        <div
           id={progressiveForm.generateErrorId(fieldIds.confirmPassword)}
           class="field-error"
           role="alert"
@@ -387,11 +365,9 @@
       {/if}
     </div>
   </fieldset>
-
   <!-- Terms and Conditions -->
   <fieldset class="form-section">
     <legend>Terms and Conditions</legend>
-    
     <div class="form-group checkbox-group">
       <input
         id={fieldIds.terms}
@@ -408,7 +384,7 @@
         and <a href="/privacy" target="_blank">Privacy Policy</a>
       </label>
       {#if hasError('terms')}
-        <div 
+        <div
           id={progressiveForm.generateErrorId(fieldIds.terms)}
           class="field-error"
           role="alert"
@@ -418,7 +394,6 @@
       {/if}
     </div>
   </fieldset>
-
   <!-- Form actions -->
   <div class="form-actions">
     <button
@@ -434,7 +409,6 @@
         Submit Form
       {/if}
     </button>
-
     <button
       type="button"
       class="reset-button secondary"
@@ -448,7 +422,6 @@
       Reset Form
     </button>
   </div>
-
   <!-- Submit status message -->
   {#if submitMessage}
     <div
@@ -460,7 +433,6 @@
       {submitMessage}
     </div>
   {/if}
-
   <!-- Development info -->
   {#if process.env.NODE_ENV === 'development'}
     <details class="dev-info">
@@ -474,7 +446,6 @@
     </details>
   {/if}
 </form>
-
 <style>
   .progressive-form {
     max-width: 600px;
@@ -482,24 +453,20 @@
     padding: 24px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   }
-
   .form-header {
     margin-bottom: 32px;
     text-align: center;
   }
-
   .form-header h2 {
     margin: 0 0 8px 0;
     font-size: 24px;
     font-weight: 600;
     color: #1f2937;
   }
-
   .form-header p {
     margin: 0;
     color: #6b7280;
   }
-
   .sr-only {
     position: absolute;
     width: 1px;
@@ -511,7 +478,6 @@
     white-space: nowrap;
     border: 0;
   }
-
   .error-summary {
     background: #fef2f2;
     border: 1px solid #fecaca;
@@ -519,66 +485,55 @@
     padding: 16px;
     margin-bottom: 24px;
   }
-
   .error-summary h3 {
     margin: 0 0 12px 0;
     font-size: 16px;
     font-weight: 600;
     color: #dc2626;
   }
-
   .error-summary ul {
     margin: 0;
     padding-left: 20px;
   }
-
   .error-summary li {
     margin-bottom: 4px;
   }
-
   .error-summary a {
     color: #dc2626;
-    text-decoration: underline;
+    text-decoration: underli;
   }
-
   .form-section {
     border: 1px solid #d1d5db;
     border-radius: 8px;
     padding: 24px;
     margin-bottom: 24px;
   }
-
   .form-section legend {
     font-size: 18px;
     font-weight: 600;
     color: #1f2937;
     padding: 0 8px;
   }
-
   .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
   }
-
   .form-group {
     display: flex;
     flex-direction: column;
     gap: 8px;
     margin-bottom: 20px;
   }
-
   .form-label {
     font-size: 14px;
     font-weight: 500;
     color: #374151;
   }
-
   .form-label.required::after {
     content: ' *';
     color: #dc2626;
   }
-
   .form-input {
     padding: 12px 16px;
     border: 1px solid #d1d5db;
@@ -587,65 +542,54 @@
     line-height: 1.5;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
-
   .form-input:focus {
     outline: none;
     border-color: #3b82f6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   }
-
   .form-input.error {
     border-color: #dc2626;
   }
-
   .form-input.error:focus {
     border-color: #dc2626;
     box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
   }
-
   .checkbox-group {
     flex-direction: row;
     align-items: flex-start;
     gap: 12px;
   }
-
   .form-checkbox {
     width: 18px;
     height: 18px;
     margin-top: 2px;
     flex-shrink: 0;
   }
-
   .checkbox-label {
     font-size: 14px;
     line-height: 1.5;
     color: #374151;
     margin: 0;
   }
-
   .checkbox-label a {
     color: #3b82f6;
-    text-decoration: underline;
+    text-decoration: underli;
   }
-
   .field-hint {
     font-size: 12px;
     color: #6b7280;
   }
-
   .field-error {
     font-size: 12px;
     color: #dc2626;
     font-weight: 500;
   }
-
   .form-actions {
     display: flex;
     gap: 16px;
     justify-content: center;
     margin-top: 32px;
   }
-
   .submit-button,
   .reset-button {
     display: flex;
@@ -659,36 +603,29 @@
     transition: all 0.2s ease;
     border: none;
   }
-
   .submit-button.primary {
     background: #3b82f6;
     color: white;
   }
-
-  .submit-button.primary:hover:not(:disabled) {
+  .submit-button.primary:hover:not(:disabled) {,
     background: #2563eb;
   }
-
   .submit-button.primary:disabled {
     background: #9ca3af;
     cursor: not-allowed;
   }
-
   .reset-button.secondary {
     background: #f3f4f6;
     color: #374151;
     border: 1px solid #d1d5db;
   }
-
-  .reset-button.secondary:hover:not(:disabled) {
+  .reset-button.secondary:hover:not(:disabled) {,
     background: #e5e7eb;
   }
-
   .reset-button.secondary:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
-
   .loading-spinner {
     width: 16px;
     height: 16px;
@@ -697,7 +634,6 @@
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-
   .submit-message {
     margin-top: 16px;
     padding: 12px;
@@ -705,19 +641,16 @@
     text-align: center;
     font-weight: 500;
   }
-
   .submit-message.success {
     background: #f0fdf4;
     color: #166534;
     border: 1px solid #bbf7d0;
   }
-
   .submit-message.error {
     background: #fef2f2;
     color: #dc2626;
     border: 1px solid #fecaca;
   }
-
   .dev-info {
     margin-top: 32px;
     padding: 16px;
@@ -726,13 +659,11 @@
     border-radius: 6px;
     font-size: 12px;
   }
-
   .dev-info summary {
     cursor: pointer;
     font-weight: 600;
     margin-bottom: 8px;
   }
-
   .dev-content pre {
     background: #1e293b;
     color: #e2e8f0;
@@ -743,28 +674,23 @@
     font-family: 'Fira Code', 'Consolas', monospace;
     font-size: 11px;
   }
-
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-
   /* Responsive design */
   @media (max-width: 768px) {
     .progressive-form {
       padding: 16px;
     }
-
     .form-row {
       grid-template-columns: 1fr;
       gap: 0;
     }
-
     .form-actions {
       flex-direction: column;
     }
   }
-
   /* High contrast mode support */
   @media (prefers-contrast: high) {
     .form-input,
@@ -773,7 +699,6 @@
       border-width: 2px;
     }
   }
-
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
     .form-input,
@@ -781,14 +706,12 @@
     .reset-button {
       transition: none;
     }
-
     .loading-spinner {
       animation: none;
       border: 2px solid currentColor;
       border-top-color: transparent;
     }
   }
-
   /* Print styles */
   @media print {
     .form-actions,

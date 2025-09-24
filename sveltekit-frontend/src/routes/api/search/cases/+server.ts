@@ -1,27 +1,22 @@
 
 import type { RequestHandler } from './$types.js'
-
 // Optimized case search API endpoint
 // Supports multiple search strategies with automatic fallbacks
 import { json } from "@sveltejs/kit"
 import { and, desc, ilike, or, sql } from "drizzle-orm"
 import { db, isPostgreSQL } from "$lib/server/db/index"
 import { URL } from "url"
-
-
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const query = url.searchParams.get("q")
     const limit = parseInt(url.searchParams.get("limit") || "20")
     const offset = parseInt(url.searchParams.get("offset") || "0")
     const searchType = url.searchParams.get("type") || "hybrid"; // 'text', 'semantic', 'hybrid'
-
     const filters = {
       status: url.searchParams.get("status"),
       priority: url.searchParams.get("priority"),
       category: url.searchParams.get("category")
     }
-
     if (!query || query.length < 2) {
       return json({
         results: [],
@@ -31,15 +26,11 @@ export const GET: RequestHandler = async ({ url }) => {
         message: "Query too short"
       })
     }
-
     const startTime = Date.now()
     let results = []
-
     // For now, use text search only until vector search is properly configured
     results = await searchCasesText(query, limit + offset, filters)
-
     const executionTime = Date.now() - startTime
-
     return json({
       results: results.slice(offset, offset + limit),
       searchType: "text",
@@ -60,12 +51,11 @@ export const GET: RequestHandler = async ({ url }) => {
     )
   }
 }
-
 // Fast text-based search using SQL LIKE
 async function searchCasesText(
-  query: string,
-  limit: number,
-  filters: any,
+  query: string
+  limit: number
+  filters: any
 ): Promise<any[]> {
   try {
     const whereConditions = [
@@ -75,7 +65,6 @@ async function searchCasesText(
         ilike(cases.caseNumber, `%${query}%`),
       )
     ]
-
     // Add filters
     if (filters.status) {
       whereConditions.push(sql`${cases.status} = ${filters.status}`)
@@ -86,14 +75,12 @@ async function searchCasesText(
     if (filters.category) {
       whereConditions.push(sql`${cases.category} = ${filters.category}`)
     }
-
     const results = await db
       .select()
       .from(cases)
       .where(and(...whereConditions)
       .orderBy(desc(cases.createdAt)
       .limit(limit)
-
     return results.map((case_) => ({
       ...case_,
       searchScore: 1.0,

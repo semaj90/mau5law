@@ -1,8 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
-
   interface Props {
     stage?: 'nes' | 'snes' | 'n64' | 'modern';
     autoEvolution?: boolean;
@@ -11,7 +9,6 @@
     yorhaMode?: boolean;
     headless?: boolean;
   }
-
   let {
     stage = $bindable(),
     autoEvolution = true,
@@ -20,7 +17,6 @@
     yorhaMode = false,
     headless = false
   }: Props = $props();
-
   // Evolution stages
   const stages = ['nes', 'snes', 'n64', 'modern'] as const;
   let currentStageIndex = $state(0);
@@ -28,56 +24,53 @@
   let canvas: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D;
   let animationId: number;
-
   // NES.css to N64 evolution parameters
   const evolutionConfig = {
     nes: {
       pixelSize: 8,
       colors: ['#000', '#FFF', '#FF0000', '#00FF00'],
       dimension: '2D',
-      shading: false,
+      shading: false
       particles: 0;
     },
     snes: {
       pixelSize: 4,
       colors: ['#000', '#FFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
       dimension: '2.5D',
-      shading: true,
+      shading: true
       particles: 10;
     },
     n64: {
       pixelSize: 1,
       colors: ['#FFD700', '#FF6B35', '#004E89', '#1A936F', '#88D4AB', '#FFFFFF'],
       dimension: '3D',
-      shading: true,
+      shading: true
       particles: 50,
-      fog: true,
-      antiAliasing: false // Authentic N64 look;
+      fog: true
+      antiAliasing: false // Authentic N64 look
     },
     modern: {
       pixelSize: 0,
       colors: ['#FFD700', '#FF6B35', '#004E89', '#1A936F', '#88D4AB', '#FFFFFF', '#000000'],
       dimension: '3D',
-      shading: true,;
-      particles: 100,;
-      fog: true,
-      antiAliasing: true,
+      shading: true
+      particles: 100,
+      fog: true
+      antiAliasing: true
       rayTracing: true;
     }
   };
-
   // 3D Matrix operations for N64-style rendering
   class Matrix4 {
     matrix: number[][];
     constructor() {
       this.matrix = [
         [1, 0, 0, 0],
-        [0, 1, 0, 0], 
+        [0, 1, 0, 0],
         [0, 0, 1, 0],
         [0, 0, 0, 1]
       ];
     }
-
     rotateY(angle: number) {
       const cos = Math.cos(angle);
       const sin = Math.sin(angle);
@@ -88,7 +81,6 @@
         [0, 0, 0, 1]
       ];
     }
-
     project(point: [number, number, number]): [number, number] {
       const [x, y, z] = point;
       // Simple perspective projection for N64-style 3D
@@ -98,13 +90,11 @@
       return [projectedX, projectedY];
     }
   }
-
   // N64-style 3D cube vertices
   const cubeVertices: [number, number, number][] = [
     [-50, -50, -50], [50, -50, -50], [50, 50, -50], [-50, 50, -50], // Back face
     [-50, -50, 50], [50, -50, 50], [50, 50, 50], [-50, 50, 50]     // Front face
   ];
-
   const cubeFaces = [
     [0, 1, 2, 3], // Back
     [4, 5, 6, 7], // Front
@@ -113,27 +103,22 @@
     [0, 3, 7, 4], // Left
     [1, 2, 6, 5]  // Right
   ];
-
   let rotation = $state(0);
   let evolutionProgress = $state(0);
-
   $effect(() => {
     if (!headless && canvas) {
       ctx = canvas.getContext('2d')!;
       startAnimation();
     }
-
     if (autoEvolution) {
       startEvolution();
     }
-
     return () => {
       if (animationId) {
         cancelAnimationFrame(animationId);
       }
     };
   });
-
   function startEvolution() {
     const evolutionInterval = setInterval(() => {
       if (currentStageIndex < stages.length - 1) {
@@ -152,7 +137,6 @@
       }
     }, evolutionSpeed);
   }
-
   function startAnimation() {
     function animate() {
       if (!ctx) return;
@@ -205,11 +189,10 @@
     }
     animate();
   }
-
   function renderNESStyle() {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const pixelSize = evolutionConfig.nes.pixelSize;
+    const pixelSize = evolutionConfig.nes.pixelSiz;
     // Simple pixelated square
     ctx.fillStyle = '#FF0000';
     for (let x = -32; x < 32; x += pixelSize) {
@@ -217,19 +200,18 @@
         const rotatedX = x * Math.cos(rotation) - y * Math.sin(rotation);
         const rotatedY = x * Math.sin(rotation) + y * Math.cos(rotation);
         ctx.fillRect(
-          centerX + rotatedX, 
-          centerY + rotatedY, 
-          pixelSize, 
+          centerX + rotatedX,
+          centerY + rotatedY,
+          pixelSize,
           pixelSize
         );
       }
     }
   }
-
   function renderSNESStyle() {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const pixelSize = evolutionConfig.snes.pixelSize;
+    const pixelSize = evolutionConfig.snes.pixelSiz;
     // Enhanced pixelated cube with basic shading
     const colors = ['#FF0000', '#CC0000', '#990000'];
     for (let z = -20; z < 20; z += 10) {
@@ -240,16 +222,15 @@
           const rotatedX = x * Math.cos(rotation) - y * Math.sin(rotation);
           const rotatedY = x * Math.sin(rotation) + y * Math.cos(rotation);
           ctx.fillRect(
-            centerX + rotatedX + z * 0.5, 
-            centerY + rotatedY + z * 0.3, 
-            pixelSize, 
+            centerX + rotatedX + z * 0.5,
+            centerY + rotatedY + z * 0.3,
+            pixelSize,
             pixelSize
           );
         }
       }
     }
   }
-
   function renderN64Style(isModern: boolean = false) {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
@@ -257,7 +238,7 @@
     matrix.rotateY(rotation);
     // Render cube faces with N64-style low-poly 3D
     const faceColors = [
-      '#FFD700', '#FF6B35', '#004E89', 
+      '#FFD700', '#FF6B35', '#004E89',
       '#1A936F', '#88D4AB', '#FFFFFF'
     ];
     cubeFaces.forEach((face, faceIndex) => {
@@ -267,7 +248,7 @@
       });
       ctx.beginPath();
       ctx.moveTo(
-        centerX + faceVertices[0][0], 
+        centerX + faceVertices[0][0],
         centerY + faceVertices[0][1]
       );
       faceVertices.slice.forEach(([x, y]) => {
@@ -299,16 +280,15 @@
       renderParticles();
     }
   }
-
   function renderParticles() {
-    const particleCount = evolutionConfig.modern.particles;
+    const particleCount = evolutionConfig.modern.particle;
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     for (let i = 0; i < particleCount; i++) {
       const angle = (i / particleCount) * Math.PI * 2 + rotation * 0.5;
       const radius = 100 + Math.sin(rotation * 2 + i) * 20;
-      const x = centerX + Math.cos(angle) * radius;
-      const y = centerY + Math.sin(angle) * radius;
+      const x = centerX + Math.cos(angle) * radiu;
+      const y = centerY + Math.sin(angle) * radiu;
       ctx.beginPath();
       ctx.arc(x, y, 2, 0, Math.PI * 2);
       ctx.fillStyle = `hsl(${(i * 360 / particleCount + rotation * 50) % 360}, 70%, 70%)`;
@@ -320,7 +300,6 @@
       ctx.shadowBlur = 0;
     }
   }
-
   function renderRAGOverlay() {
     // Enhanced RAG integration visual feedback
     const centerX = canvas.width / 2;
@@ -335,9 +314,9 @@
     ctx.stroke();
     // RAG data nodes
     for (let i = 0; i < 6; i++) {
-      const angle = (i / 6) * Math.PI * 2 + rotation;
-      const x = centerX + Math.cos(angle) * ragRadius;
-      const y = centerY + Math.sin(angle) * ragRadius;
+      const angle = (i / 6) * Math.PI * 2 + rotatio;
+      const x = centerX + Math.cos(angle) * ragRadiu;
+      const y = centerY + Math.sin(angle) * ragRadiu;
       ctx.fillStyle = '#00FF41';
       ctx.beginPath();
       ctx.arc(x, y, 3, 0, Math.PI * 2);
@@ -345,7 +324,6 @@
     }
     ctx.setLineDash([]);
   }
-
   function renderYoRHaEffects() {
     // YoRHa-style glitch effects and UI elements
     const centerX = canvas.width / 2;
@@ -392,110 +370,103 @@
     ctx.lineTo(canvas.width - 50, canvas.height - 50 - bracketSize);
     ctx.stroke();
   }
-
   // API for external control
   function setStage(newStage: typeof stages[number]) {
     currentStageIndex = stages.indexOf(newStage);
-    stage = newStage;
+    stage = newStag;
   }
-
   function nextStage() {
     if (currentStageIndex < stages.length - 1) {
       currentStageIndex++;
       stage = stages[currentStageIndex];
     }
   }
-
   function resetEvolution() {
     currentStageIndex = 0;
     stage = stages[0];
     evolutionProgress = 0;
   }
 </script>
-
 <!-- Headless mode returns just the data -->
 {#if headless}
   <div class="headless-data" style="display: none;">
-    {JSON.stringify({ 
-      stage: stages[currentStageIndex], 
-      progress: evolutionProgress,
+    {JSON.stringify({
+      stage: stages[currentStageIndex]
+      progress: evolutionProgress
       rotation: rotation ;
     })}
   </div>
 {:else}
   <div class="n64-evolution-container">
     <!-- Canvas for 3D rendering -->
-    <canvas 
+    <canvas
       bind:this={canvas as any}
-      width="400" 
+      width="400"
       height="400"
       class="evolution-canvas"
     ></canvas>
-    
     <!-- Stage indicator -->
     <div class="stage-indicator">
       <div class="stage-label">
         {stages[currentStageIndex].toUpperCase()}
       </div>
       <div class="evolution-progress">
-        <div 
-          class="progress-bar" 
+        <div
+          class="progress-bar"
           style="width: {evolutionProgress}%"
         ></div>
       </div>
     </div>
-    
     <!-- Controls -->
     <div class="controls">
-      <button 
-        class="control-btn" 
+      <button
+        class="control-btn"
         onclick={() => setStage('nes')}
         class:active={stages[currentStageIndex] === 'nes'}
       >
         NES
       </button>
-      <button 
-        class="control-btn" 
+      <button
+        class="control-btn"
         onclick={() => setStage('snes')}
         class:active={stages[currentStageIndex] === 'snes'}
       >
         SNES
       </button>
-      <button 
-        class="control-btn" 
+      <button
+        class="control-btn"
         onclick={() => setStage('n64')}
         class:active={stages[currentStageIndex] === 'n64'}
       >
         N64
       </button>
-      <button 
-        class="control-btn" 
+      <button
+        class="control-btn"
         onclick={() => setStage('modern')}
         class:active={stages[currentStageIndex] === 'modern'}
       >
         Modern
       </button>
     </div>
-    
     <!-- Feature toggles -->
     <div class="feature-toggles">
       <label>
-        <input 
-          type="checkbox" 
+        <input
+          type="checkbox"
           bind:checked={ragIntegration}
         />
         RAG Integration
       </label>
       <label>
-        <input 
-          type="checkbox" 
+        <input
+          type="checkbox"
           bind:checked={yorhaMode}
         />
         YoRHa Mode
       </label>
       <label>
-        <input 
-          type="checkbox" 
+        <input
+          type="checkbox"
           bind:checked={autoEvolution}
         />
         Auto Evolution
@@ -503,9 +474,8 @@
     </div>
   </div>
 {/if}
-
 <style>
-  .n64-evolution-container {;
+  .n64-evolution-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -515,24 +485,21 @@
     border-radius: 8px;
     font-family: 'Courier New', monospace;
   }
-
   .evolution-canv.stage-indicator {
     width: 100%;
     text-align: center;
   }
-
   .stage-label {
     color: #FFD700;
     font-size: 1.2rem;
     font-weight: bold;
     margin-bottom: 0.5rem;
-    text-shadow: 
+    text-shadow:
       1px 1px 0 #000,
       -1px -1px 0 #000,
       1px -1px 0 #000,
       -1px 1px 0 #000;
   }
-
   .evolution-progress {
     width: 100%;
     height: 8px;
@@ -540,18 +507,15 @@
     border: 1px solid #666;
     overflow: hidden;
   }
-
   .progress-bar {
     height: 100%;
     background: linear-gradient(90deg, #FFD700, #FF6B35);
     transition: width 0.3s ease;
   }
-
   .controls {
     display: flex;
     gap: 0.5rem;
   }
-
   .control-btn {
     padding: 0.5rem 1rem;
     background: #333;
@@ -561,42 +525,35 @@
     cursor: pointer;
     transition: all 0.2s ease;
   }
-
   .control-btn:hover {
     background: #444;
     border-color: #FFD700;
   }
-
   .control-btn.active {
     background: #FFD700;
     color: #000;
     border-color: #FFA500;
   }
-
   .feature-toggles {
     display: flex;
     gap: 1rem;
     color: #FFF;
     font-size: 0.9rem;
   }
-
   .feature-toggles label {
     display: flex;
     align-items: center;
     gap: 0.3rem;
     cursor: pointer;
   }
-
   .feature-toggles input[type="checkbox"] {
     accent-color: #FFD700;
   }
-
   /* Responsive design */
   @media (max-width: 640px) {
     .evolution-canv.controls {
       flex-wrap: wrap;
     }
-    
     .feature-toggles {
       flex-direction: column;
       gap: 0.5rem;

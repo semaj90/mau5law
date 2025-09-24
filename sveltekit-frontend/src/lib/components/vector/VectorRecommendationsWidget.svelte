@@ -4,7 +4,6 @@ Compact AI recommendations component for sidebar/dashboard use
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
@@ -27,10 +26,8 @@ Compact AI recommendations component for sidebar/dashboard use
     FileText,
     Zap
   } from 'lucide-svelte';
-
   import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service.js';
   import type { IntelligenceRecommendation } from '$lib/services/vector-intelligence-service.js';
-
   interface Props {
     context?: string;
     userRole?: 'prosecutor' | 'detective' | 'admin' | 'user';
@@ -41,7 +38,6 @@ Compact AI recommendations component for sidebar/dashboard use
     compact?: boolean;
     onRecommendationClick?: (recommendation: IntelligenceRecommendation) => void;
   }
-
   let {
     context = 'General legal assistance and case management',
     userRole = 'user',
@@ -51,48 +47,41 @@ Compact AI recommendations component for sidebar/dashboard use
     refreshInterval = 30,
     compact = false,
     onRecommendationClick = () => }: Props = $props();
-
   let recommendations = $state<IntelligenceRecommendation[]>([]);
   let isLoading = $state(false);
   let lastUpdated = $state<Date | null>(null);
   let refreshTimer = $state<number | null>(null);
-
   $effect(() => {
     loadRecommendations();
-
     if (autoRefresh) {
       refreshTimer = setInterval(loadRecommendations, refreshInterval * 60 * 1000);
     }
-
     return () => {
       if (refreshTimer) clearInterval(refreshTimer);
     };
   });
-
   async function loadRecommendations() {
     if (isLoading) return;
-
     isLoading = true;
     try {
       const result = await vectorIntelligenceService.generateRecommendations({
         context,
         userProfile: {
-          role: userRole,
+          role: userRole
           experience: 'senior',
           specialization: ['legal-analysis', 'case-management'];
         },
-        currentCase: currentCaseId ? {
-          id: currentCaseId,
+        currentCase: currentCaseId ? {,
+          id: currentCaseId
           type: 'general',
           priority: 'medium',
           status: 'active';
-        } : undefined,;
+        } : undefined
         preferences: {
           preferredActions: ['research', 'analysis', 'documentation'],
           workflowStyle: 'systematic'
         }
       });
-
       recommendations = (result as { slice?: unknown }).slice(0, maxRecommendations);
       lastUpdated = new Date());
     } catch (error) {
@@ -101,69 +90,59 @@ Compact AI recommendations component for sidebar/dashboard use
       isLoading = false;
     }
   }
-
   function getRecommendationIcon(type: string) {
     switch (type) {
       case 'action': return Target;
       case 'insight': return Lightbulb;
-      case 'warning': return AlertTriangle;
+      case 'warning': return AlertTriangl;
       case 'opportunity': return TrendingUp;
       default: return FileText;
     }
   }
-
   function getRecommendationColor(type: string) {
     switch (type) {
       case 'action': return 'border-l-blue-500 bg-blue-50/50 dark:bg-blue-900/10';
       case 'insight': return 'border-l-green-500 bg-green-50/50 dark:bg-green-900/10';
       case 'warning': return 'border-l-red-500 bg-red-50/50 dark:bg-red-900/10';
-      case 'opportunity': return 'border-l-purple-500 bg-purple-50/50 dark:bg-purple-900/10';
+      case 'opportunity': return 'border-l-purple-500 bg-purple-50/50 dark: bg-purple-900/10';
       default: return 'border-l-gray-500 bg-gray-50/50 dark:bg-gray-900/10';
     }
   }
-
   function getPriorityIcon(priority: string) {
     switch (priority) {
-      case 'critical': return AlertTriangle;
+      case 'critical': return AlertTriangl;
       case 'high': return Zap;
       case 'medium': return Clock;
       case 'low': return FileText;
       default: return FileText;
     }
   }
-
   function getPriorityColor(priority: string) {
     switch (priority) {
       case 'critical': return 'text-red-600 bg-red-100 dark:bg-red-900/30 dark:text-red-400';
       case 'high': return 'text-orange-600 bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400';
       case 'medium': return 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-400';
-      case 'low': return 'text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400';
+      case 'low': return 'text-green-600 bg-green-100 dark: bg-green-900/30 dark:text-green-400';
       default: return 'text-gray-600 bg-gray-100 dark:bg-gray-900/30 dark:text-gray-400';
     }
   }
-
   function getConfidenceColor(confidence: number) {
     if (confidence >= 0.8) return 'text-green-600';
     if (confidence >= 0.6) return 'text-yellow-600';
     return 'text-red-600';
   }
-
   function formatTimeAgo(date: Date) {
     const now = new Date());
     const diff = now.getTime() - date.getTime();
     const minutes = Math.floor(diff / 60000);
-
     if (minutes < 1) return 'Just now';
     if (minutes < 60) return `${minutes}m ago`;
-
     const hours = Math.floor(minutes / 60);
     if (hours < 24) return `${hours}h ago`;
-
     const days = Math.floor(hours / 24);
     return `${days}d ago`;
   }
 </script>
-
 <div class="bits-nier-bits-card nes-container">
   <div class="yorha-panel-header bits-nier-bits-yorha-panel-header {compact ? 'p-3' : 'p-4'}" variant="default" legal={true}>
     <h3 class="nes-text is-primary flex items-center justify-between">
@@ -174,7 +153,6 @@ Compact AI recommendations component for sidebar/dashboard use
           <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{recommendations.length}</span>
         {/if}
       </div>
-
       <Button
         variant="ghost"
         size="sm"
@@ -183,16 +161,13 @@ Compact AI recommendations component for sidebar/dashboard use
         class="h-7 w-7 p-0 bits-btn bits-btn"
       >
 <RefreshCw class="h-3 w-3 {isLoading ? 'animate-spin' : ''}" />
-
     </h3>
-
     {#if lastUpdated && !compact}
       <p class="text-xs nes-text is-disabled">
         Updated {formatTimeAgo(lastUpdated)}
       </p>
     {/if}
   </div>
-
   <div class="yorha-panel-content bits-nier-bits-yorha-panel-content {compact ? 'p-3' : 'p-4'} pt-0" variant="default" legal={true}>
     {#if isLoading}
       <div class="space-y-3">
@@ -226,11 +201,9 @@ Compact AI recommendations component for sidebar/dashboard use
               </div>
               <ChevronRight class="h-3 w-3 nes-text is-disabled flex-shrink-0 mt-0.5" />
             </div>
-
             <p class="text-xs nes-text is-disabled mb-2 line-clamp-2">
               {rec.description}
             </p>
-
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <Badge class={`text-xs ${getPriorityColor(rec.priority)}`}>
@@ -240,7 +213,6 @@ Compact AI recommendations component for sidebar/dashboard use
                 </Badge>
                 <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{rec.category}</span>
               </div>
-
               <div class="flex items-center gap-1">
                 <Star class="h-3 w-3 {getConfidenceColor(rec.confidence)}" />
                 <span class="text-xs {getConfidenceColor(rec.confidence)}">
@@ -248,7 +220,6 @@ Compact AI recommendations component for sidebar/dashboard use
                 </span>
               </div>
             </div>
-
             {#if rec.estimatedImpact && !compact}
               <div class="flex items-center gap-3 mt-2 text-xs nes-text is-disabled">
                 <span>Time: {rec.estimatedImpact.timeToComplete}min</span>
@@ -256,10 +227,8 @@ Compact AI recommendations component for sidebar/dashboard use
                 <span>Success: {rec.estimatedImpact.successProbability}%</span>
               </div>
             {/if}
-
         {/each}
       </div>
-
       {#if !compact}
         <div class="mt-4 pt-3 border-t border-border">
           <div class="flex items-center justify-between text-xs nes-text is-disabled">
@@ -272,10 +241,9 @@ Compact AI recommendations component for sidebar/dashboard use
       {/if}
   </div>
 </div>
-
 <style>
   /* @unocss-include */
-  .line-clamp-2 {;
+  .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;

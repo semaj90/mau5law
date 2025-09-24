@@ -1,7 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   	import { onMount } from 'svelte';
   import { fade, fly, scale } from 'svelte/transition';
   	import { quintOut } from 'svelte/easing';
@@ -57,7 +55,7 @@
   			// Simulate thinking time
   			await new Promise(resolve => setTimeout(resolve, 1500));
   			recommendations = await aiRecommendationEngine.generateRecommendations({
-  				userQuery: demoQuery,
+  				userQuery: demoQuery
   				legalDomain: 'contract',
   				userRole: 'legal_analyst',
   				priority: 'high';
@@ -86,8 +84,8 @@
   		const testData = { message: 'Cached legal document', timestamp: Date.now() };
   		// Set cache item
   		await advancedCache.set(testKey, testData, {
-  			priority: 'high',;
-  			ttl: 30000,;
+  			priority: 'high',
+  			ttl: 30000,
   			tags: ['demo', 'legal-doc'];
   		});
   		// Get cache item (should be a hit)
@@ -102,10 +100,10 @@
   			await new Promise(resolve => setTimeout(resolve, 1000));
   			return {
   				title: 'Legal Document Analysis',
-  				content: 'This document has been analyzed for compliance and risk factors.',;
+  				content: 'This document has been analyzed for compliance and risk factors.',
   				analysis: {
   					risk_level: 'medium',
-  					compliance_score: 85,;
+  					compliance_score: 85,
   					recommendations: ['Review clause 4.2', 'Update termination notice'];
   				}
   			};
@@ -130,12 +128,10 @@
   		return `${Math.round(confidence * 100)}%`;
   	}
 </script>
-
 <!-- Load advanced interaction styles -->
 <svelte:head>
 	<link rel="stylesheet" href="/src/lib/styles/advanced-interactions.css">
 </svelte:head>
-
 <div class="advanced-cache-demo p-6 bg-yorha-bg-secondary min-h-screen">
 	<div class="max-w-6xl mx-auto">
 		<!-- Header -->
@@ -147,51 +143,43 @@
 				Showcase of intelligent caching, lazy loading, typewriter effects, and AI recommendations
 			</p>
 		</header>
-
 		<!-- Cache Statistics -->
 		<section class="cache-stats-section mb-8" in:fly={{ y: 50, duration: 600, delay: 200 }}>
 			<h2 class="text-xl font-semibold text-yorha-primary mb-4">Cache Performance Metrics</h2>
-			
 			<div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
 				<div class="cache-stat-nier-bits-card bg-yorha-bg-tertiary border border-yorha-border p-4 rounded">
 					<div class="text-2xl font-bold text-yorha-accent">{cacheStats.hits}</div>
 					<div class="text-sm text-yorha-text-muted">Cache Hits</div>
 					<div class="cache-hit-indicator mt-2"></div>
 				</div>
-				
 				<div class="cache-stat-nier-bits-card bg-yorha-bg-tertiary border border-yorha-border p-4 rounded">
 					<div class="text-2xl font-bold text-yorha-warning">{cacheStats.misses}</div>
 					<div class="text-sm text-yorha-text-muted">Cache Misses</div>
 					<div class="cache-miss-indicator mt-2"></div>
 				</div>
-				
 				<div class="cache-stat-nier-bits-card bg-yorha-bg-tertiary border border-yorha-border p-4 rounded">
 					<div class="text-2xl font-bold text-yorha-text-primary">{cacheStats.items_count}</div>
 					<div class="text-sm text-yorha-text-muted">Items Cached</div>
 				</div>
-				
 				<div class="cache-stat-nier-bits-card bg-yorha-bg-tertiary border border-yorha-border p-4 rounded">
 					<div class="text-2xl font-bold text-yorha-text-primary">
 						{Math.round(cacheStats.total_size / 1024)}KB
 					</div>
 					<div class="text-sm text-yorha-text-muted">Cache Size</div>
 				</div>
-				
 				<div class="cache-stat-nier-bits-card bg-yorha-bg-tertiary border border-yorha-border p-4 rounded">
 					<div class="text-2xl font-bold text-yorha-success">{cacheStats.evictions}</div>
 					<div class="text-sm text-yorha-text-muted">Evictions</div>
 				</div>
 			</div>
-			
 			<div class="flex gap-4">
-				<button 
+				<button
 					class="bg-yorha-primary text-yorha-bg-primary px-4 py-2 rounded border border-yorha-primary hover:bg-yorha-secondary transition-colors focus-ring-enhanced"
 					onclick={testCaching}
 				>
 					Test Caching
 				</button>
-				
-				<button 
+				<button
 					class="bg-yorha-accent text-yorha-bg-primary px-4 py-2 rounded border border-yorha-accent hover:opacity-80 transition-opacity focus-ring-enhanced"
 					onclick={testLazyLoading}
 				>
@@ -199,11 +187,9 @@
 				</button>
 			</div>
 		</section>
-
 		<!-- AI Query Interface -->
 		<section class="ai-query-section mb-8" in:fly={{ y: 50, duration: 600, delay: 400 }}>
 			<h2 class="text-xl font-semibold text-yorha-primary mb-4">AI-Powered Legal Analysis</h2>
-			
 			<!-- Sample Queries -->
 			<div class="sample-queries mb-4">
 				<p class="text-sm text-yorha-text-muted mb-2">Quick start with sample queries:</p>
@@ -219,7 +205,6 @@
 					{/each}
 				</div>
 			</div>
-			
 			<!-- Query Input -->
 			<div class="query-input-section mb-4">
 				<div class="flex gap-4">
@@ -229,7 +214,6 @@
 						placeholder="Enter your legal query..."
 						class="flex-1 px-4 py-2 bg-yorha-bg-tertiary border border-yorha-border rounded text-yorha-text-primary placeholder-yorha-text-muted focus:border-yorha-primary focus:outline-none focus-ring-enhanced"
 					/>
-					
 					<button
 						class="bg-gradient-to-r from-yorha-primary to-yorha-secondary text-yorha-bg-primary px-6 py-2 rounded border border-yorha-primary hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed focus-ring-enhanced"
 						onclick={generateRecommendations}
@@ -239,7 +223,6 @@
 					</button>
 				</div>
 			</div>
-			
 			<!-- Loading State -->
 			{#if isLoading}
 				<div class="ai-loading-container" in:fade={{ duration: 300 }}>
@@ -255,13 +238,12 @@
 					</div>
 				</div>
 			{/if}
-			
 			<!-- Typewriter Response -->
 			{#if showTypewriter}
-				<div class="typewriter-section bg-yorha-bg-tertiary border border-yorha-border p-4 rounded mb-4" 
+				<div class="typewriter-section bg-yorha-bg-tertiary border border-yorha-border p-4 rounded mb-4"
 					 in:scale={{ duration: 400, start: 0.95 }}>
 					<h3 class="text-lg font-semibold text-yorha-primary mb-2">AI Analysis Results</h3>
-					<TypewriterResponse 
+					<TypewriterResponse
 						text={aiResponse}
 						speed={30}
 						showCursor={true}
@@ -273,18 +255,16 @@
 				</div>
 			{/if}
 		</section>
-
 		<!-- AI Recommendations -->
 		{#if recommendations.length > 0}
 			<section class="recommendations-section mb-8" in:fly={{ y: 50, duration: 600, delay: 600 }}>
 				<h2 class="text-xl font-semibold text-yorha-primary mb-4">
-					AI Recommendations 
+					AI Recommendations
 					<span class="text-sm text-yorha-text-muted">({recommendations.length} suggestions)</span>
 				</h2>
-				
 				<div class="grid gap-4">
 					{#each recommendations as rec, i}
-						<div 
+						<div
 							class="ai-recommendation enhanced-feature"
 							in:fly={{ x: -50, duration: 400, delay: i * 100 }}
 						>
@@ -297,25 +277,22 @@
 										{rec.riskLevel}
 									</div>
 								</div>
-								
 								<div class="confidence-section text-right">
 									<div class="text-sm text-yorha-text-muted">
 										{Math.round(rec.confidence * 100)}% confidence
 									</div>
 									<div class="confidence-indicator">
-										<div 
+										<div
 											class="confidence-bar"
 											style="width: {getConfidenceWidth(rec.confidence)}"
 										></div>
 									</div>
 								</div>
 							</div>
-							
 							<div class="recommendation-content mb-2">
 								<p class="text-yorha-text-primary font-medium">{rec.content}</p>
 								<p class="text-sm text-yorha-text-muted mt-1">{rec.reasoning}</p>
 							</div>
-							
 							{#if rec.estimatedTime}
 								<div class="recommendation-meta text-xs text-yorha-text-muted">
 									⏱️ Estimated time: {rec.estimatedTime}
@@ -326,20 +303,18 @@
 				</div>
 			</section>
 		{/if}
-
 		<!-- Context7 Best Practices -->
 		{#if bestPractices.length > 0}
 			<section class="best-practices-section mb-8" in:fly={{ y: 50, duration: 600, delay: 800 }}>
 				<h2 class="text-xl font-semibold text-yorha-primary mb-4">
-					Context7 Best Practices 
+					Context7 Best Practices
 					<span class="mcp-connection-indicator">
 						MCP Connected
 					</span>
 				</h2>
-				
 				<div class="grid gap-4">
 					{#each bestPractices as practice, i}
-						<div 
+						<div
 							class="context7-enhancement performance-optimized";
 							in:fly={{ y: 30, duration: 400, delay: i * 150 }}
 						>
@@ -349,10 +324,8 @@
 									{practice.priority}
 								</div>
 							</div>
-							
 							<p class="text-yorha-text-secondary mb-2">{practice.description}</p>
 							<p class="text-sm text-yorha-text-muted mb-3">{practice.implementation}</p>
-							
 							{#if practice.codeExample}
 								<details class="code-example">
 									<summary class="text-sm text-yorha-accent cursor-pointer hover:text-yorha-primary">
@@ -363,7 +336,6 @@
 									</pre>
 								</details>
 							{/if}
-							
 							<div class="practice-meta flex items-center gap-4 mt-3 text-xs text-yorha-text-muted">
 								<span>⏱️ {practice.estimatedEffort}</span>
 								{#if practice.dependencies.length > 0}
@@ -378,27 +350,23 @@
 				</div>
 			</section>
 		{/if}
-
 		<!-- Demo Controls -->
 		<section class="demo-controls" in:fade={{ duration: 600, delay: 1000 }}>
 			<h2 class="text-xl font-semibold text-yorha-primary mb-4">Demo Controls</h2>
-			
 			<div class="flex flex-wrap gap-4">
-				<button 
+				<button
 					class="bg-yorha-warning text-yorha-bg-primary px-4 py-2 rounded border border-yorha-warning hover:opacity-80 transition-opacity focus-ring-enhanced"
 					onclick={() => { recommendations = []; showTypewriter = false; }}
 				>
 					Clear Results
 				</button>
-				
-				<button 
+				<button
 					class="bg-yorha-secondary text-yorha-bg-primary px-4 py-2 rounded border border-yorha-secondary hover:opacity-80 transition-opacity focus-ring-enhanced"
 					onclick={loadBestPractices}
 				>
 					Refresh Best Practices
 				</button>
-				
-				<button 
+				<button
 					class="bg-yorha-error text-white px-4 py-2 rounded border border-yorha-error hover:opacity-80 transition-opacity focus-ring-enhanced"
 					onclick={() => advancedCache.clearRecommendations()}
 				>
@@ -408,35 +376,26 @@
 		</section>
 	</div>
 </div>
-
 <style>
 	/* Import advanced interactions first */
 	@import '../../../lib/styles/advanced-interactions.css';
-	
 	.advanced-cache-demo {
 		font-family: 'Inter', system-ui, sans-serif;
 	}
-	
 	.cache-stat-card {
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 	}
-	
 	.cache-stat-card:hover {
 		transform: translateY(-2px);
 		border-color: rgba(0, 255, 0, 0.4);
 	}
-	
 	.sample-query-btn:hover {
 		transform: translateX(2px);
 	}
-	
-	.code-example summary:hover {;
-		text-decoration: underline;
+	.code-example summary:hover {
+		text-decoration: underli;
 	}
-	
 	.recommendation-type {
 		font-family: 'Monaco', 'Menlo', monospace;
 	}
 </style>
-
-

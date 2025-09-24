@@ -4,31 +4,25 @@ TODO: Implement document upload, AI summarization, export functionality
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import EssentialRoutePage from '$lib/templates/EssentialRoutePage.svelte';
 	import Button from '$lib/components/ui/enhanced-bits';
 	import * as Card from '$lib/components/ui/card';
 	import { FileText, Upload, Download, Brain, Clock, Star } from 'lucide-svelte';
-
 	let selectedFile = $state(null);
 	let isUploading = $state(false);
 	let isSummarizing = $state(false);
 	let summary = $state('');
 	let summaryType = $state('detailed');
-
 	async function handleFileUpload(event) {
 		const file = event.target.files?.[0];
 		if (!file) return;
-
-		selectedFile = file;
+		selectedFile = fil;
 		isUploading = true;
-
 		try {
 			// TODO: Implement file upload
-			// const formData = new FormData();
-			// formData.append('file', file);
-			// await fetch('/api/ai/upload', { method: 'POST', body: formData });
-
+			// const formData = new FormData()
+			// formData.append('file', file)
+			// await fetch('/api/ai/upload', { method: 'POST', body: formData })
 			// Simulate upload
 			setTimeout(() => {
 				isUploading = false;
@@ -38,10 +32,8 @@ TODO: Implement document upload, AI summarization, export functionality
 			isUploading = false;
 		}
 	}
-
 	async function generateSummary() {
 		if (!selectedFile) return;
-
 		isSummarizing = true;
 		try {
 			// TODO: Implement AI summarization
@@ -49,9 +41,8 @@ TODO: Implement document upload, AI summarization, export functionality
 			// 	method: 'POST',
 			// 	headers: { 'Content-Type': 'application/json' },
 			// 	body: JSON.stringify({ fileId: selectedFile.id, type: summaryType })
-			// });
-			// const result = await response.json();
-
+			// })
+			// const result = await response.json()
 			// Simulate summarization
 			setTimeout(() => {
 				summary = `This legal document outlines the key provisions and requirements for ${selectedFile.name}. The main points include statutory obligations, procedural requirements, and compliance standards that must be followed. Key findings suggest that the document establishes clear guidelines for legal proceedings and evidence handling.`;
@@ -62,10 +53,8 @@ TODO: Implement document upload, AI summarization, export functionality
 			isSummarizing = false;
 		}
 	}
-
 	function exportSummary() {
 		if (!summary) return;
-
 		const blob = new Blob([summary], { type: 'text/plain' });
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement('a');
@@ -74,14 +63,12 @@ TODO: Implement document upload, AI summarization, export functionality
 		a.click();
 		URL.revokeObjectURL(url);
 	}
-
 	const summaryTypes = [
 		{ value: 'brief', label: 'Brief Summary', description: 'Key points only' },
 		{ value: 'detailed', label: 'Detailed Summary', description: 'Comprehensive analysis' },
 		{ value: 'bullet', label: 'Bullet Points', description: 'Structured list format' }
 	];
 </script>
-
 <EssentialRoutePage
 	pageTitle="Document Summarization"
 	description="AI-powered legal document analysis and summarization"
@@ -113,7 +100,6 @@ TODO: Implement document upload, AI summarization, export functionality
 									disabled={isUploading}
 								/>
 							</div>
-
 							{#if selectedFile}
 								<div class="nes-container with-title is-centered">
 									<p class="title">Selected File</p>
@@ -128,7 +114,6 @@ TODO: Implement document upload, AI summarization, export functionality
 									</div>
 								</div>
 							{/if}
-
 							{#if isUploading}
 								<div class="nes-text is-primary animate-pulse text-center">
 									Uploading document...
@@ -137,7 +122,6 @@ TODO: Implement document upload, AI summarization, export functionality
 						</div>
 					</div.Content>
 				</div.Root>
-
 				<!-- Summary Options -->
 				<Card class="nes-container is-rounded">
 					<CardHeader>
@@ -163,7 +147,6 @@ TODO: Implement document upload, AI summarization, export functionality
 									</div>
 								</label>
 							{/each}
-
 							<div class="pt-4 border-t border-gray-600">
 								<Button
 									class="nes-btn is-primary w-full"
@@ -182,7 +165,6 @@ TODO: Implement document upload, AI summarization, export functionality
 					</div.Content>
 				</div.Root>
 			</div>
-
 			<!-- Summary Output -->
 			<div>
 				<Card class="nes-container is-rounded">
@@ -221,7 +203,6 @@ TODO: Implement document upload, AI summarization, export functionality
 										{summary}
 									</div>
 								</div>
-
 								<!-- Summary Stats -->
 								<div class="grid grid-cols-3 gap-2">
 									<div class="text-center">
@@ -255,7 +236,6 @@ TODO: Implement document upload, AI summarization, export functionality
 						{/if}
 					</div.Content>
 				</div.Root>
-
 				<!-- Recent Summaries -->
 				<Card class="nes-container is-rounded mt-6">
 					<CardHeader>

@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import Fuse from 'fuse.js';
   // Use direct component imports to avoid broken barrels
   import { Card } from '$lib/components/ui/enhanced-bits';
@@ -8,11 +7,10 @@
   import CardHeader from '$lib/components/ui/enhanced-bits/CardHeader.svelte';
   import CardTitle from '$lib/components/ui/enhanced-bits/CardTitle.svelte';
   import Input from '$lib/components/ui/enhanced-bits/Input.svelte';
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import { Search, ExternalLink, Sparkles, FileText, Scale } from 'lucide-svelte';
   import { legalDocuments, type LegalDocument } from '$lib/data/legal-documents';
-
   // Props
   let { placeholder = 'Search laws, cases, and legal documents...',
     maxResults = 10,
@@ -23,7 +21,6 @@
     showCategories = true,
     compact = false,
   : unknown } = $props();
-
   // State
   let searchQuery = $state('');
   type MatchFragment = { key?: string; indices: [number, number][] };
@@ -33,10 +30,8 @@
     refIndex?: number;
     matches?: ReadonlyArray<MatchFragment>;
   };
-
   let searchResults = $state<SearchResult[]>([]);
   let isSearching = $state(false);
-
   // Fuse.js configuration for legal document search
   const fuseOptions = {
     keys: [
@@ -45,24 +40,21 @@
       { name: 'content', weight: 0.2 },
       { name: 'code', weight: 0.1 },
     ],
-    threshold: 0.4, // More permissive for legal terms;
+    threshold: 0.4, // More permissive for legal term
     distance: 100,
-    includeScore: true,
-    includeMatches: true,
+    includeScore: true
+    includeMatches: true
     minMatchCharLength: 2,
-    shouldSort: true,
-    findAllMatches: false,;
+    shouldSort: true
+    findAllMatches: false
   };
-
   const fuse = new Fuse(legalDocuments, fuseOptions);
-
   // Perform search
   function performSearch() {
     if (!searchQuery.trim()) {
       searchResults = [];
       return;
     }
-
     isSearching = true;
     try {
   // Fuse v6/v7 signatures vary; call with a single argument and slice
@@ -75,7 +67,6 @@
       isSearching = false;
     }
   }
-
   // Real-time search as user types (debounced)
   let debounceTimer = $state<ReturnType<typeof setTimeout> | null>(null);
   $effect(() => {
@@ -89,20 +80,16 @@
       if (debounceTimer) clearTimeout(debounceTimer);
     };
   });
-
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       event.preventDefault();
       performSearch();
     }
   }
-
   function highlightMatches(text: string, matches?: ReadonlyArray<MatchFragment>): string {/* JSX syntax converted to Svelte */}
     }
-
     return highlightedText;
   }
-
   function getCategoryColor(category: string): string {
     const colors: Record<string, string> = {
       criminal: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
@@ -110,22 +97,20 @@
       contract: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
       evidence: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
       corporate: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
-      constitutional: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',;
-      family: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200',;
-      administrative: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200',;
+      constitutional: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+      family: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200',
+      administrative: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200',
     };
-    return colors[category] || colors.administrative;
+    return colors[category] || colors.administrativ;
   }
-
   function getJurisdictionColor(jurisdiction: string): string {
     const colors: Record<string, string> = {
-      california: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',;
-      federal: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',;
-      state: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',;
+      california: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
+      federal: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+      state: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
     };
-    return colors[jurisdiction] || colors.state;
+    return colors[jurisdiction] || colors.stat;
   }
-
   function getConfidenceLabel(score?: number): string {
     if (!score) return 'Perfect';
     if (score < 0.1) return 'Perfect';
@@ -134,7 +119,6 @@
     return 'Fair';
   }
 </script>
-
 <div class="space-y-4">
   <!-- Search Input -->
   <div class="border-primary/20 nes-container">
@@ -166,9 +150,7 @@
           {:else}
             <Search class="h-4 w-4" />
           {/if}
-
       </div>
-
       {#if searchQuery && searchResults.length > 0}
         <div class="mt-2 text-sm nes-text is-disabled">
           Found {searchResults.length} result{searchResults.length === 1 ? '' : 's'} for "{searchQuery}"
@@ -176,7 +158,6 @@
       {/if}
     </div>
   </div>
-
   <!-- Search Results -->
   {#if searchResults.length > 0}
     <div class="space-y-3">
@@ -191,7 +172,6 @@
                     (result as { item?: unknown; matches?: unknown; score?: unknown }).matches?.filter((m: MatchFragment) => m.key === 'title')
                   )}
                 </h3>
-
                 <div class="flex flex-wrap gap-2">
                   <Badge class={getJurisdictionColor((result as { item?: unknown; matches?: unknown; score?: unknown }).item.jurisdiction)}>
                     {(result as { item?: unknown; matches?: unknown; score?: unknown }).item.jurisdiction}
@@ -206,13 +186,11 @@
                   </Badge>
                 </div>
               </div>
-
               <div class="text-right text-xs nes-text is-disabled">
                 #{index + 1}
               </div>
             </div>
           </div>
-
           <div class="yorha-panel-content pt-0">
             <p class="text-sm nes-text is-disabled mb-3">
               {@html highlightMatches(
@@ -220,7 +198,6 @@
                 (result as { item?: unknown; matches?: unknown; score?: unknown }).matches?.filter((m: MatchFragment) => m.key === 'description')
               )}
             </p>
-
             {#if (result as { item?: unknown; matches?: unknown; score?: unknown }).matches?.some((m) => m.key === 'content')}
               <div class="text-xs bg-muted/50 p-2 rounded mb-3">
                 <div class="font-medium mb-1">Content Match:</div>
@@ -232,7 +209,6 @@
                 </div>
               </div>
             {/if}
-
             {#if (result as { item?: unknown; matches?: unknown; score?: unknown }).item.sections && (result as { item?: unknown; matches?: unknown; score?: unknown }).item.sections.length > 0}
               <div class="flex flex-wrap gap-1 mb-3">
                 {#each (result as { item?: unknown; matches?: unknown; score?: unknown }).item.sections.slice(0, 3) as section}
@@ -246,16 +222,13 @@
                 {/if}
               </div>
             {/if}
-
             <div class="flex gap-2">
               <Button class="bits-btn" size="sm" variant="ghost">
 <FileText class="h-3 w-3 mr-1" />
                 AI Summary
-
               <Button class="bits-btn" size="sm" variant="ghost">
 <Sparkles class="h-3 w-3 mr-1" />
                 AI Analysis
-
               {#if (result as { item?: unknown; matches?: unknown; score?: unknown }).item.url}
                 <Button class="bits-btn" size="sm" variant="ghost">
 <a
@@ -266,7 +239,6 @@
                     <ExternalLink class="h-3 w-3" />
                     Full Text
                   </a>
-
               {/if}
             </div>
           </div>
@@ -288,7 +260,6 @@
       </div>
     </div>
   {/if}
-
   <!-- Quick Search Suggestions -->
   {#if !searchQuery}
     <div class="nes-container">
@@ -303,18 +274,16 @@
               size="sm"
                 onclick={() =>
 {
-                searchQuery = suggestion;
+                searchQuery = suggestio;
                 performSearch();
               }}>
               {suggestion}
-
           {/each}
         </div>
       </div>
     </div>
   {/if}
 </div>
-
 <style>
   :global(mark) {
     background-color: rgb(254 240 138 / 0.5);
@@ -322,11 +291,8 @@
     border-radius: 0.25rem;
     font-weight: 500;
   }
-
   :global(.dark mark) {
     background-color: rgb(133 77 14 / 0.8);
     color: rgb(254 240 138);
   }
 </style>
-
-

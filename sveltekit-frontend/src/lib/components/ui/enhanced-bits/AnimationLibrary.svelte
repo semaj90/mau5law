@@ -2,7 +2,6 @@
   import { fade, fly, scale, slide, blur, draw } from 'svelte/transition';
   import { quintOut, elasticOut, backOut, bounceOut } from 'svelte/easing';
   import { createEventDispatcher } from 'svelte';
-
   interface AnimationConfig {
     type: 'fade' | 'fly' | 'scale' | 'slide' | 'blur' | 'draw' | 'gaming' | 'legal';
     duration?: number;
@@ -25,14 +24,12 @@
     professional?: boolean;
     subtle?: boolean;
   }
-
   interface EnhancedAnimationLibraryProps {
     theme?: 'default' | 'gaming' | 'legal';
     globalDuration?: number;
     globalEasing?: typeof quintOut;
     reduceMotion?: boolean;
   }
-
   let {
     theme = 'default',
     globalDuration = 300,
@@ -40,41 +37,34 @@
     reduceMotion = false,
     children
   }: EnhancedAnimationLibraryProps = $props();
-
   const dispatch = createEventDispatcher();
-
   // Check for user's motion preferences
   let prefersReducedMotion = $state(false);
-
   $effect(() => {
     if (typeof window !== 'undefined') {
       const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-      prefersReducedMotion = mediaQuery.matches || reduceMotion;
-
+      prefersReducedMotion = mediaQuery.matches || reduceMotio;
       const handleChange = (e: MediaQueryListEvent) => {
-        prefersReducedMotion = e.matches || reduceMotion;
+        prefersReducedMotion = e.matches || reduceMotio;
         dispatch('motionPreferenceChange', { reduced: prefersReducedMotion });
       };
-
       mediaQuery.addEventListener('change', handleChange);
       return () => mediaQuery.removeEventListener('change', handleChange);
     }
   });
-
   // Animation presets
   export const animations = {
     // Basic animations
     fadeIn: (config: Partial<AnimationConfig> = {}) => ({
-      transition: fade,;
+      transition: fade
       config: {
         duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration),
         delay: config.delay ?? 0,
         easing: config.easing ?? globalEasing;
       }
     }),
-
     slideUp: (config: Partial<AnimationConfig> = {}) => ({
-      transition: fly,;
+      transition: fly
       config: {
         y: config.y ?? 20,
         duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration),
@@ -82,9 +72,8 @@
         easing: config.easing ?? globalEasing;
       }
     }),
-
     slideDown: (config: Partial<AnimationConfig> = {}) => ({
-      transition: fly,;
+      transition: fly
       config: {
         y: config.y ?? -20,
         duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration),
@@ -92,9 +81,8 @@
         easing: config.easing ?? globalEasing;
       }
     }),
-
     slideLeft: (config: Partial<AnimationConfig> = {}) => ({
-      transition: fly,;
+      transition: fly
       config: {
         x: config.x ?? 20,
         duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration),
@@ -102,9 +90,8 @@
         easing: config.easing ?? globalEasing;
       }
     }),
-
     slideRight: (config: Partial<AnimationConfig> = {}) => ({
-      transition: fly,;
+      transition: fly
       config: {
         x: config.x ?? -20,
         duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration),
@@ -112,9 +99,8 @@
         easing: config.easing ?? globalEasing;
       }
     }),
-
     scaleIn: (config: Partial<AnimationConfig> = {}) => ({
-      transition: scale,;
+      transition: scale
       config: {
         start: config.start ?? 0.8,
         duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration),
@@ -122,9 +108,8 @@
         easing: config.easing ?? globalEasing;
       }
     }),
-
     elastic: (config: Partial<AnimationConfig> = {}) => ({
-      transition: scale,;
+      transition: scale
       config: {
         start: config.start ?? 0.8,
         duration: prefersReducedMotion ? 0 : (config.duration ?? 600),
@@ -132,9 +117,8 @@
         easing: elasticOut;
       }
     }),
-
     bounce: (config: Partial<AnimationConfig> = {}) => ({
-      transition: fly,;
+      transition: fly
       config: {
         y: config.y ?? -10,
         duration: prefersReducedMotion ? 0 : (config.duration ?? 400),
@@ -142,15 +126,13 @@
         easing: bounceOut;
       }
     }),
-
     // Gaming-themed animations
-    glitchIn: (config: Partial<AnimationConfig> = {}) => ({;
+    glitchIn: (config: Partial<AnimationConfig> = {}) => ({
       transition: (node: Element, params: any) => {
         if (prefersReducedMotion) return { duration: 0 };
-
         return {
-          duration: config.duration ?? 500,;
-          delay: config.delay ?? 0,;
+          duration: config.duration ?? 500,
+          delay: config.delay ?? 0,
           css: (t: number) => {
             const shake = Math.random() * 2 - 1;
             const glitch = t < 0.5 ? Math.random() * 10 - 5 : 0;
@@ -168,14 +150,12 @@
       },
       config: {}
     }),
-
-    neonGlow: (config: Partial<AnimationConfig> = {}) => ({;
+    neonGlow: (config: Partial<AnimationConfig> = {}) => ({
       transition: (node: Element, params: any) => {
         if (prefersReducedMotion) return { duration: 0 };
-
         return {
-          duration: config.duration ?? 800,;
-          delay: config.delay ?? 0,;
+          duration: config.duration ?? 800,
+          delay: config.delay ?? 0,
           css: (t: number) => {
             const glow = t * 20;
             return `
@@ -192,14 +172,12 @@
       },
       config: {}
     }),
-
-    pixelate: (config: Partial<AnimationConfig> = {}) => ({;
+    pixelate: (config: Partial<AnimationConfig> = {}) => ({
       transition: (node: Element, params: any) => {
         if (prefersReducedMotion) return { duration: 0 };
-
         return {
-          duration: config.duration ?? 400,;
-          delay: config.delay ?? 0,;
+          duration: config.duration ?? 400,
+          delay: config.delay ?? 0,
           css: (t: number) => {
             const pixelSize = (1 - t) * 8;
             return `
@@ -213,15 +191,13 @@
       },
       config: {}
     }),
-
     // Legal-themed animations
-    professionalFade: (config: Partial<AnimationConfig> = {}) => ({;
+    professionalFade: (config: Partial<AnimationConfig> = {}) => ({
       transition: (node: Element, params: any) => {
         if (prefersReducedMotion) return { duration: 0 };
-
         return {
           duration: config.duration ?? 200,
-          delay: config.delay ?? 0,;
+          delay: config.delay ?? 0,
           css: (t: number) => `;
             opacity: ${t};
             transform: translateY(${(1 - t) * 5}px);
@@ -231,14 +207,12 @@
       },
       config: {}
     }),
-
-    documentSlide: (config: Partial<AnimationConfig> = {}) => ({;
+    documentSlide: (config: Partial<AnimationConfig> = {}) => ({
       transition: (node: Element, params: any) => {
         if (prefersReducedMotion) return { duration: 0 };
-
         return {
           duration: config.duration ?? 300,
-          delay: config.delay ?? 0,;
+          delay: config.delay ?? 0,
           css: (t: number) => `;
             opacity: ${t};
             transform: translateX(${(1 - t) * 30}px) scale(${0.98 + t * 0.02});
@@ -248,33 +222,28 @@
       },
       config: {}
     }),
-
     subtleScale: (config: Partial<AnimationConfig> = {}) => ({
-      transition: scale,;
+      transition: scale
       config: {
         start: 0.98,
-        duration: prefersReducedMotion ? 0 : (config.duration ?? 150),;
-        delay: config.delay ?? 0,;
+        duration: prefersReducedMotion ? 0 : (config.duration ?? 150),
+        delay: config.delay ?? 0,
         easing: quintOut;
       }
     })
   };
-
   // Stagger animation helper
   export function stagger(elements: Element[], animation: any, staggerDelay: number = 50): void {
     elements.forEach((element, index) => {
       const delay = index * staggerDelay;
       const animConfig = animation({ delay });
-
       // Apply animation to element
       element.setAttribute('data-stagger-delay', delay.toString());
     });
   }
-
   // Theme-specific animation selector
   export function getThemeAnimation(animationType: string, themeOverride?: string): any {
-    const currentTheme = themeOverride || theme;
-
+    const currentTheme = themeOverride || them;
     switch (currentTheme) {
       case 'gaming':
         switch (animationType) {
@@ -283,7 +252,6 @@
           case 'focus': return animations.pixelate();
           default: return animations.fadeIn();
         }
-
       case 'legal':
         switch (animationType) {
           case 'enter': return animations.professionalFade();
@@ -291,7 +259,6 @@
           case 'scale': return animations.subtleScale();
           default: return animations.fadeIn();
         }
-
       default:
         switch (animationType) {
           case 'enter': return animations.fadeIn();
@@ -302,38 +269,30 @@
         }
     }
   }
-
   // Export for external use
   export { prefersReducedMotion };
 </script>
-
 <!-- Animation library doesn't render anything, it's a utility component -->
 {#if children}
   {@render children()}
 {/if}
-
 <style>
   /* CSS-only animations for better performance */
   :global(.enhanced-bits-animate-in) {
     animation: enhanced-fade-in var(--animation-duration, 300ms) var(--animation-easing, ease-out) var(--animation-delay, 0ms) both;
   }
-
   :global(.enhanced-bits-animate-slide-up) {
     animation: enhanced-slide-up var(--animation-duration, 300ms) var(--animation-easing, ease-out) var(--animation-delay, 0ms) both;
   }
-
   :global(.enhanced-bits-animate-scale) {
     animation: enhanced-scale-in var(--animation-duration, 300ms) var(--animation-easing, ease-out) var(--animation-delay, 0ms) both;
   }
-
   :global(.enhanced-bits-animate-gaming) {
     animation: enhanced-gaming-glitch var(--animation-duration, 500ms) var(--animation-easing, ease-out) var(--animation-delay, 0ms) both;
   }
-
   :global(.enhanced-bits-animate-legal) {
     animation: enhanced-legal-professional var(--animation-duration, 200ms) var(--animation-easing, ease-out) var(--animation-delay, 0ms) both;
   }
-
   @keyframes enhanced-fade-in {
     from {
       opacity: 0;
@@ -342,7 +301,6 @@
       opacity: 1;
     }
   }
-
   @keyframes enhanced-slide-up {
     from {
       opacity: 0;
@@ -353,7 +311,6 @@
       transform: translateY(0);
     }
   }
-
   @keyframes enhanced-scale-in {
     from {
       opacity: 0;
@@ -364,7 +321,6 @@
       transform: scale(1);
     }
   }
-
   @keyframes enhanced-gaming-glitch {
     0%, 100% {
       opacity: 1;
@@ -385,7 +341,6 @@
       text-shadow: -2px 0 #00ff41, 2px 0 #ff0040, 0 0 5px #00ff41;
     }
   }
-
   @keyframes enhanced-legal-professional {
     from {
       opacity: 0;
@@ -398,7 +353,6 @@
       filter: blur(0);
     }
   }
-
   /* Respect reduced motion preferences */
   @media (prefers-reduced-motion: reduce) {
     :global(.enhanced-bits-animate-in),
@@ -409,7 +363,6 @@
       animation: none !important;
     }
   }
-
   /* Stagger animation support */
   :global([data-stagger-delay]) {
     animation-delay: calc(var(--stagger-delay, 0ms) + var(--animation-delay, 0ms));

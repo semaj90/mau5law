@@ -3,18 +3,14 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import { onMount } from 'svelte';
   import { MatrixUICompiler, type MatrixUINode } from '$lib/ui/matrix-compiler';
   import { MatrixLODSystem, type ViewportFocus } from '$lib/ui/matrix-lod';
   import { LegalAIReranker, type UserContext, enhancedSearch } from '$lib/ai/custom-reranker';
   import { PredictivePrefetcher } from '$lib/workers/predictive-prefetch';
-
   interface Props {
     class?: string;
   }
-
   let { class = '' }: Props = $props();
   // Phase 8 system components
   let matrixCompiler: MatrixUICompiler;
@@ -37,11 +33,11 @@ https://svelte.dev/e/js_parse_error -->
     {
       type: 'card',
       id: 'evidence-card-1',
-      matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 100, 50, 0, 1],;
+      matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 100, 50, 0, 1],
       styles: {
         base: 'yorha-card p-6 bg-gray-900 border border-yellow-400';
       },
-      events: ['click', 'mouseover'],;
+      events: ['click', 'mouseover'],
       metadata: {
         priority: 'high',
         confidence: 95,
@@ -52,11 +48,11 @@ https://svelte.dev/e/js_parse_error -->
     {
       type: 'button',
       id: 'analyze-btn-1',
-      matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 250, 150, 0, 1],;
+      matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 250, 150, 0, 1],
       styles: {
         base: 'yorha-button px-4 py-2 bg-yellow-400 text-black';
       },
-      events: ['click'],;
+      events: ['click'],
       metadata: {
         priority: 'critical',
         confidence: 88,
@@ -66,13 +62,13 @@ https://svelte.dev/e/js_parse_error -->
     {
       type: 'evidence-item',
       id: 'evidence-item-1',
-      matrix: [0.8, 0, 0, 0, 0, 0.8, 0, 0, 0, 0, 1, 0, 400, 100, 0, 1],;
+      matrix: [0.8, 0, 0, 0, 0, 0.8, 0, 0, 0, 0, 1, 0, 400, 100, 0, 1],
       styles: {
         base: 'yorha-evidence-item border-l-4 border-blue-400 pl-4';
       },
-      events: ['click', 'dblclick'],;
+      events: ['click', 'dblclick'],
       metadata: {
-        priority: 'medium',;
+        priority: 'medium',
         confidence: 72,
         evidenceType: 'digital',
         aiGenerated: true;
@@ -88,14 +84,12 @@ https://svelte.dev/e/js_parse_error -->
     userRole: 'prosecutor',
     workflowState: 'review';
   };
-
   $effect(() => {
     (async () => {
 await initializePhase8System();
     startDemoLoop();
     })();
   });
-
   async function initializePhase8System(): Promise<void> {
     try {
       // Initialize Matrix UI Compiler
@@ -132,14 +126,13 @@ await initializePhase8System();
       console.error('❌ Phase 8 system initialization failed:', error);
     }
   }
-
   function startDemoLoop(): void {
   let frameCount = $state(0);
     const demoLoop = () => {
       frameCount++;
       // Update performance metrics
       const metrics = lodSystem.getPerformanceMetrics();
-      performanceMetrics.frameRate = metrics.frameRate;
+      performanceMetrics.frameRate = metrics.frameRat;
       // Simulate viewport focus changes
       if (frameCount % 120 === 0) { // Every 2 seconds at 60fps
         simulateViewportFocus();
@@ -152,25 +145,23 @@ await initializePhase8System();
     };
     requestAnimationFrame(demoLoop);
   }
-
   function simulateViewportFocus(): void {
     const focus: ViewportFocus = {
       centerX: Math.random() * 800,
-      centerY: Math.random() * 600,;
+      centerY: Math.random() * 600,
       radius: 200 + Math.random() * 100,
       aiSuggestions: ['evidence-card-1', 'analyze-btn-1'],
       confidenceScore: 0.8 + Math.random() * 0.2;
     };
     lodSystem.updateViewportFocus(focus);
   }
-
   async function simulateAISuggestions(): Promise<void> {
     try {
       // Simulate AI reranking
       const mockResults = [
         {
           id: 'evidence-1',
-          content: 'Forensic DNA analysis report',;
+          content: 'Forensic DNA analysis report',
           metadata: { type: 'evidence-analysis', confidence: 95 },
           originalScore: 0.8,
           rerankScore: 0,
@@ -178,10 +169,10 @@ await initializePhase8System();
         },
         {
           id: 'precedent-1',
-          content: 'Similar case precedent from 2023',;
+          content: 'Similar case precedent from 2023',
           metadata: { type: 'case-precedent', confidence: 78 },
           originalScore: 0.6,
-          rerankScore: 0,;
+          rerankScore: 0,
           confidence: 78;
         }
       ];
@@ -197,7 +188,6 @@ await initializePhase8System();
       console.warn('Demo simulation error:', error);
     }
   }
-
   function switchDemo(demo: typeof currentDemo): void {
     currentDemo = demo;
     // Reset visual indicators
@@ -222,7 +212,6 @@ await initializePhase8System();
         break;
     }
   }
-
   function runPerformanceTest(): void {
     console.log('🚀 Running Phase 8 Performance Test...');
     // Stress test the LOD system
@@ -243,7 +232,6 @@ await initializePhase8System();
     }, 2000);
   }
 </script>
-
 <div class="phase8-demo {className}">
   <div class="demo-header yorha-panel p-6 mb-6">
     <h2 class="text-2xl font-bold text-yellow-400 mb-2">
@@ -252,7 +240,6 @@ await initializePhase8System();
     <p class="text-gray-300 mb-4">
       Complete integration of Custom Reranker + JSON UI Compiler + WebGL LOD + Predictive Prefetching
     </p>
-    
     <!-- System Status -->
     <div class="system-status flex items-center gap-4 mb-4">
       <div class="status-item">
@@ -269,34 +256,33 @@ await initializePhase8System();
         <span class="text-sm">Cache Hits: {performanceMetrics.cacheHits}</span>
       </div>
     </div>
-    
     <!-- Demo Controls -->
     <div class="demo-controls flex gap-2 mb-4">
-      <button 
+      <button
         class="yorha-button px-3 py-1 text-sm {currentDemo === 'reranker' ? 'bg-yellow-400 text-black' : 'bg-gray-700'}"
         onclick={() => switchDemo('reranker')}
       >
         AI Reranker
       </button>
-      <button 
+      <button
         class="yorha-button px-3 py-1 text-sm {currentDemo === 'matrix' ? 'bg-yellow-400 text-black' : 'bg-gray-700'}"
         onclick={() => switchDemo('matrix')}
       >
         Matrix Compiler
       </button>
-      <button 
+      <button
         class="yorha-button px-3 py-1 text-sm {currentDemo === 'lod' ? 'bg-yellow-400 text-black' : 'bg-gray-700'}"
         onclick={() => switchDemo('lod')}
       >
         LOD System
       </button>
-      <button 
+      <button
         class="yorha-button px-3 py-1 text-sm {currentDemo === 'prefetch' ? 'bg-yellow-400 text-black' : 'bg-gray-700'}"
         onclick={() => switchDemo('prefetch')}
       >
         Prefetcher
       </button>
-      <button 
+      <button
         class="yorha-button px-3 py-1 text-sm bg-blue-600 text-white ml-4"
         onclick={runPerformanceTest}
       >
@@ -304,7 +290,6 @@ await initializePhase8System();
       </button>
     </div>
   </div>
-
   <!-- Demo Content -->
   <div class="demo-content grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- WebGL Canvas -->
@@ -322,7 +307,6 @@ await initializePhase8System();
         </div>
       </div>
     </div>
-    
     <!-- UI Components Demo -->
     <div class="ui-section">
       <h3 class="text-lg font-semibold text-yellow-400 mb-3">Matrix UI Components</h3>
@@ -334,7 +318,6 @@ await initializePhase8System();
       </div>
     </div>
   </div>
-
   <!-- Technical Details -->
   <div class="technical-details mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
     <div class="tech-nier-bits-card yorha-panel p-4">
@@ -346,7 +329,6 @@ await initializePhase8System();
         <div>✅ Confidence weighting</div>
       </div>
     </div>
-    
     <div class="tech-nier-bits-card yorha-panel p-4">
       <h4 class="text-sm font-semibold text-yellow-400 mb-2">Matrix Compiler</h4>
       <div class="text-xs text-gray-300 space-y-1">
@@ -356,7 +338,6 @@ await initializePhase8System();
         <div>✅ Event handling</div>
       </div>
     </div>
-    
     <div class="tech-nier-bits-card yorha-panel p-4">
       <h4 class="text-sm font-semibold text-yellow-400 mb-2">LOD System</h4>
       <div class="text-xs text-gray-300 space-y-1">
@@ -366,7 +347,6 @@ await initializePhase8System();
         <div>✅ GPU load balancing</div>
       </div>
     </div>
-    
     <div class="tech-nier-bits-card yorha-panel p-4">
       <h4 class="text-sm font-semibold text-yellow-400 mb-2">Predictive Prefetch</h4>
       <div class="text-xs text-gray-300 space-y-1">
@@ -377,96 +357,82 @@ await initializePhase8System();
       </div>
     </div>
   </div>
-
   <!-- Current Demo Info -->
   <div class="demo-info mt-6 yorha-panel p-4">
     {#if currentDemo === 'reranker'}
       <h4 class="text-lg font-semibold text-yellow-400 mb-2">AI Reranker Demo</h4>
       <p class="text-gray-300 text-sm">
-        Watch as the AI reranker intelligently scores legal documents based on user context, 
-        role, and workflow state. The highlighted evidence card receives priority scoring 
+        Watch as the AI reranker intelligently scores legal documents based on user context,
+        role, and workflow state. The highlighted evidence card receives priority scoring
         for prosecutor workflows.
       </p>
     {:else if currentDemo === 'matrix'}
       <h4 class="text-lg font-semibold text-yellow-400 mb-2">Matrix Compiler Demo</h4>
       <p class="text-gray-300 text-sm">
-        The JSON UI compiler converts structured definitions into DOM elements with 
-        4x4 matrix transforms. AI-enhanced components show subtle glow effects and 
+        The JSON UI compiler converts structured definitions into DOM elements with
+        4x4 matrix transforms. AI-enhanced components show subtle glow effects and
         confidence-based styling.
       </p>
     {:else if currentDemo === 'lod'}
       <h4 class="text-lg font-semibold text-yellow-400 mb-2">LOD System Demo</h4>
       <p class="text-gray-300 text-sm">
-        Real-time Level of Detail system with cubic filter blending. Components 
-        automatically adjust quality based on viewport focus, AI suggestions, 
+        Real-time Level of Detail system with cubic filter blending. Components
+        automatically adjust quality based on viewport focus, AI suggestions,
         and GPU performance.
       </p>
     {:else if currentDemo === 'prefetch'}
       <h4 class="text-lg font-semibold text-yellow-400 mb-2">Predictive Prefetch Demo</h4>
       <p class="text-gray-300 text-sm">
-        Service Worker analyzes user behavior patterns to predict next actions 
-        and preload resources. Legal workflow awareness enables intelligent 
+        Service Worker analyzes user behavior patterns to predict next actions
+        and preload resources. Legal workflow awareness enables intelligent
         caching strategies.
       </p>
     {/if}
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   .phase8-demo {
     @apply max-w-7xl mx-auto p-6;
   }
-
   .indicator {
     @apply w-2 h-2 rounded-full inline-block mr-2;
   }
-
   .status-item {
     @apply flex items-center text-sm text-gray-300;
   }
-
   .tech-card {
     @apply bg-gray-800 border border-gray-700;
   }
-
   /* Demo-specific styling */
   :global(.demo-highlight) {
     @apply ring-2 ring-yellow-400 ring-opacity-50 bg-yellow-400 bg-opacity-10;
     animation: pulse 2s ease-in-out infinite;
   }
-
   :global(.ai-enhanced) {
     @apply ring-2 ring-blue-400 ring-opacity-50;
     box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
   }
-
   :global(.lod-demo) {
     transition: transform 0.3s ease, opacity 0.3s ease;
   }
-
   :global(.lod-low) {
     @apply opacity-60 scale-95;
   }
-
   :global(.lod-mid) {
     @apply opacity-80 scale-95;
   }
-
   :global(.lod-high) {
     @apply opacity-100 scale-100;
   }
-
   .canvas-container canvas {
     background: linear-gradient(45deg, #1a1a1a 0%, #2d2d2d 100%);
   }
-
   .overlay {
     background: rgba(0, 0, 0, 0.7);
     padding: 4px 8px;
     border-radius: 4px;
   }
-
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.7; }

@@ -1,33 +1,25 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import SearchBox from '$lib/components/ui/SearchBox.svelte';
 	import { onMount } from 'svelte';
-
 	let searchResults = $state<any[]>([]);
 	let selectedDocument = $state<any>(null);
 	let isAnalyzing = $state(false);
-
 	const handleSearchResults = (results: any[]) => {
-		searchResults = results;
+		searchResults = result;
 		selectedDocument = null;
 	};
-
 	const viewDocument = (document: any) => {
 		selectedDocument = document;
 	};
-
 	const closeDocument = () => {
 		selectedDocument = null;
 	};
-
 	const analyzeDocument = async (document: any) => {
 		isAnalyzing = true;
-
 		try {
 			// Simulate AI analysis
 			await new Promise(resolve => setTimeout(resolve, 2000));
-
 			// In a real implementation, this would call your legal AI analysis endpoint
 			console.log('Analyzing document:', document);
 		} catch (error) {
@@ -36,18 +28,15 @@
 			isAnalyzing = false;
 		}
 	};
-
 	$effect(() => {
 		// Set page title
 		document.title = 'Legal AI Search - Deeds Platform';
 	});
 </script>
-
 <svelte:head>
 	<title>Legal AI Search - Deeds Platform</title>
 	<meta name="description" content="Search legal documents using AI-powered semantic search" />
 </svelte:head>
-
 <div class="search-page">
 	<header class="search-header">
 		<div class="nes-container is-rounded header-content">
@@ -60,7 +49,6 @@
 			</p>
 		</div>
 	</header>
-
 	<main class="search-main">
 		<section class="search-section">
 			<SearchBox
@@ -69,7 +57,6 @@
 				className="main-search"
 			/>
 		</section>
-
 		{#if searchResults.length > 0}
 			<section class="results-section">
 				<div class="nes-container is-rounded">
@@ -77,7 +64,6 @@
 						<i class="nes-icon star"></i>
 						Search Results ({searchResults.length})
 					</h2>
-
 					<div class="results-grid">
 						{#each searchResults as result, index}
 							<div class="nes-container result-card">
@@ -91,13 +77,11 @@
 										</div>
 									{/if}
 								</div>
-
 								{#if result.content}
 									<p class="result-content">
 										{result.content.substring(0, 200)}...
 									</p>
 								{/if}
-
 								{#if result.metadata}
 									<div class="metadata-tags">
 										{#if result.metadata.caseId}
@@ -117,7 +101,6 @@
 										{/if}
 									</div>
 								{/if}
-
 								<div class="result-actions">
 									<button
 										onclick={() => viewDocument(result)}
@@ -139,7 +122,6 @@
 				</div>
 			</section>
 		{/if}
-
 		{#if selectedDocument}
 			<section class="document-viewer">
 				<div class="nes-container is-rounded document-modal">
@@ -155,7 +137,6 @@
 							×
 						</button>
 					</div>
-
 					<div class="modal-content">
 						{#if selectedDocument.content}
 							<div class="document-content">
@@ -165,7 +146,6 @@
 								</div>
 							</div>
 						{/if}
-
 						{#if selectedDocument.metadata}
 							<div class="document-metadata">
 								<h4>Metadata:</h4>
@@ -179,7 +159,6 @@
 								</div>
 							</div>
 						{/if}
-
 						{#if selectedDocument.embedding}
 							<div class="embedding-info">
 								<h4>Vector Information:</h4>
@@ -192,7 +171,6 @@
 			</section>
 		{/if}
 	</main>
-
 	<footer class="search-footer">
 		<div class="nes-container footer-content">
 			<p class="footer-text">
@@ -212,25 +190,21 @@
 		</div>
 	</footer>
 </div>
-
 <style>
-	.search-page {;
+	.search-page {
 		min-height: 100vh;
 		font-family: 'Press Start 2P', monospace;
 		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 		padding: 20px;
 	}
-
 	.search-header {
 		margin-bottom: 32px;
 	}
-
 	.header-content {
 		text-align: center;
 		background: rgba(255, 255, 255, 0.95);
 		backdrop-filter: blur(10px);
 	}
-
 	.page-title {
 		display: flex;
 		align-items: center;
@@ -240,34 +214,28 @@
 		font-size: 16px;
 		color: #212529;
 	}
-
 	.page-subtitle {
 		font-size: 10px;
 		color: #6c757d;
 		margin: 0;
 		line-height: 1.6;
 	}
-
 	.search-main {
 		max-width: 1200px;
 		margin: 0 auto;
 	}
-
 	.search-section {
 		margin-bottom: 32px;
 		display: flex;
 		justify-content: center;
 	}
-
 	:global(.main-search) {
 		max-width: 800px;
 		width: 100%;
 	}
-
 	.results-section {
 		margin-bottom: 32px;
 	}
-
 	.results-title {
 		display: flex;
 		align-items: center;
@@ -276,36 +244,30 @@
 		font-size: 14px;
 		color: #212529;
 	}
-
 	.results-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
 		gap: 20px;
 	}
-
 	.result-card {
 		background: white;
 		transition: transform 0.2s ease;
 	}
-
 	.result-card:hover {
 		transform: translateY(-2px);
 	}
-
 	.result-header {
 		display: flex;
-		justify-content: space-between;
+		justify-content: space-betwee;
 		align-items: flex-start;
 		margin-bottom: 12px;
 	}
-
 	.result-title {
 		font-size: 12px;
 		color: #212529;
 		margin: 0;
 		flex: 1;
 	}
-
 	.similarity-badge {
 		background: #007bff;
 		color: white;
@@ -314,31 +276,26 @@
 		font-size: 8px;
 		margin-left: 12px;
 	}
-
 	.result-content {
 		font-size: 9px;
 		line-height: 1.5;
 		color: #6c757d;
 		margin-bottom: 16px;
 	}
-
 	.metadata-tags {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 8px;
 		margin-bottom: 16px;
 	}
-
 	.result-actions {
 		display: flex;
 		gap: 12px;
 	}
-
 	.action-btn {
 		font-size: 8px;
 		padding: 8px 16px;
 	}
-
 	.document-viewer {
 		position: fixed;
 		top: 0;
@@ -352,7 +309,6 @@
 		z-index: 2000;
 		padding: 20px;
 	}
-
 	.document-modal {
 		background: white;
 		max-width: 800px;
@@ -360,16 +316,14 @@
 		width: 100%;
 		overflow-y: auto;
 	}
-
 	.modal-header {
 		display: flex;
-		justify-content: space-between;
+		justify-content: space-betwee;
 		align-items: center;
 		margin-bottom: 20px;
 		padding-bottom: 16px;
 		border-bottom: 2px solid #dee2e6;
 	}
-
 	.modal-title {
 		display: flex;
 		align-items: center;
@@ -378,7 +332,6 @@
 		color: #212529;
 		margin: 0;
 	}
-
 	.close-btn {
 		width: 40px;
 		height: 40px;
@@ -386,13 +339,11 @@
 		font-size: 16px;
 		line-height: 1;
 	}
-
 	.modal-content h4 {
 		font-size: 10px;
 		color: #495057;
 		margin: 20px 0 12px 0;
 	}
-
 	.content-text {
 		font-size: 9px;
 		line-height: 1.6;
@@ -402,12 +353,10 @@
 		border-radius: 4px;
 		white-space: pre-wrap;
 	}
-
 	.metadata-grid {
 		display: grid;
 		gap: 8px;
 	}
-
 	.metadata-item {
 		display: flex;
 		gap: 8px;
@@ -416,12 +365,10 @@
 		background: #f8f9fa;
 		border-radius: 4px;
 	}
-
 	.metadata-item strong {
 		color: #495057;
 		min-width: 120px;
 	}
-
 	.embedding-info {
 		font-size: 9px;
 		color: #6c757d;
@@ -430,18 +377,15 @@
 		border-radius: 4px;
 		margin-top: 16px;
 	}
-
 	.search-footer {
 		margin-top: 40px;
 	}
-
 	.footer-content {
 		display: flex;
-		justify-content: space-between;
+		justify-content: space-betwee;
 		align-items: center;
 		background: rgba(255, 255, 255, 0.9);
 	}
-
 	.footer-text {
 		display: flex;
 		align-items: center;
@@ -450,12 +394,10 @@
 		color: #6c757d;
 		margin: 0;
 	}
-
 	.footer-stats {
 		display: flex;
 		gap: 16px;
 	}
-
 	.stat {
 		display: flex;
 		align-items: center;
@@ -463,53 +405,42 @@
 		font-size: 8px;
 		color: #495057;
 	}
-
 	/* Responsive design */
 	@media (max-width: 768px) {
 		.search-page {
 			padding: 16px;
 		}
-
 		.page-title {
 			font-size: 14px;
 		}
-
 		.page-subtitle {
 			font-size: 8px;
 		}
-
 		.results-grid {
 			grid-template-columns: 1fr;
 		}
-
 		.footer-content {
 			flex-direction: column;
 			gap: 12px;
 		}
-
 		.document-viewer {
 			padding: 10px;
 		}
-
 		.document-modal {
 			max-height: 90vh;
 		}
 	}
-
 	@media (max-width: 480px) {
 		.result-actions {
 			flex-direction: column;
 		}
-
 		.action-btn {
 			width: 100%;
 		}
-
 		.modal-header {
 			flex-direction: column;
 			gap: 12px;
 		}
-
 		.close-btn {
 			align-self: flex-end;
 		}

@@ -4,12 +4,10 @@ Automatically handles server upload with localStorage fallback
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import enhancedFileUpload from '$lib/services/enhanced-file-upload.js';
   import type { UploadResponse } from '$lib/services/enhanced-file-upload.js';
   import localStorageFiles from '$lib/services/localStorage-file-fallback.js';
-
   // Props
   interface Props {
     caseId?: string;
@@ -23,7 +21,6 @@ Automatically handles server upload with localStorage fallback
     onerror?: (event: { error: string }) => void;
     onprogress?: (event: { completed: number; total: number; file: string }) => void;
   }
-
   let {
     caseId,
     description,
@@ -36,7 +33,6 @@ Automatically handles server upload with localStorage fallback
     onerror,
     onprogress
   }: Props = $props();
-
   // State
   let isDragOver = $state(false);
   let isUploading = $state(false);
@@ -44,19 +40,15 @@ Automatically handles server upload with localStorage fallback
   let currentFile = $state('');
   let uploadResults = $state<UploadResponse[]>([]);
   let error = $state<string | null>(null);
-
   // Storage stats
   let storageStats = $state(localStorageFiles.getStorageUsage());
-
   // File input reference
   let fileInput: HTMLInputElement;
-
   /**
    * Handle file selection
    */
   async function handleFileSelect(files: FileList) {
     if (files.length === 0) return;
-
     // Validate files
     const validFiles: File[] = [];
     for (const file of Array.from(files)) {
@@ -67,10 +59,8 @@ Automatically handles server upload with localStorage fallback
       }
       validFiles.push(file);
     }
-
     await uploadFiles(validFiles);
   }
-
   /**
    * Upload files with progress tracking
    */
@@ -80,31 +70,25 @@ Automatically handles server upload with localStorage fallback
     currentFile = '';
     error = null;
     uploadResults = [];
-
     try {
       const results = await enhancedFileUpload.uploadFiles(
         files,
         { caseId, description, tags, useLocalStorage: forceLocalStorage },
         (completed, total, file) => {
           uploadProgress = (completed / total) * 100);
-          currentFile = file;
+          currentFile = fil;
           onprogress?.({ completed, total, file });
         }
       );
-
-      uploadResults = results;
+      uploadResults = result;
       storageStats = localStorageFiles.getStorageUsage();
-
       const successCount = results.filter(item => item.length);
       const errorCount = results.length - successCount;
-
       if (errorCount > 0) {
         error = `${errorCount} file(s) failed to upload`;
         onerror?.({ error: error! });
       }
-
       onupload?.({ results });
-
     } catch (err: unknown) {
       error = err.message || 'Upload failed';
       onerror?.({ error: error! });
@@ -114,36 +98,30 @@ Automatically handles server upload with localStorage fallback
       currentFile = '';
     }
   }
-
   /**
    * Handle drag and drop
    */
   function handleDrop(event: DragEvent) {
     event.preventDefault();
     isDragOver = false;
-
-    const files = event.dataTransfer?.files;
+    const files = event.dataTransfer?.file;
     if (files) {
       handleFileSelect(files);
     }
   }
-
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
     isDragOver = true;
   }
-
   function handleDragLeave() {
     isDragOver = false;
   }
-
   /**
    * Open file selector
    */
   function openFileSelector() {
     fileInput.click();
   }
-
   /**
    * Clear results
    */
@@ -151,17 +129,14 @@ Automatically handles server upload with localStorage fallback
     uploadResults = [];
     error = null;
   }
-
   // Update storage stats periodically
   $effect(() => {
     const interval = setInterval(() => {
       storageStats = localStorageFiles.getStorageUsage();
     }, 5000);
-
     return () => clearInterval(interval);
   });
 </script>
-
 <div class="file-upload-container">
   <!-- Storage Usage Indicator -->
   {#if forceLocalStorage || storageStats.percentage > 0}
@@ -179,7 +154,6 @@ Automatically handles server upload with localStorage fallback
       </span>
     </div>
   {/if}
-
   <!-- Drop Zone -->
   <div
     class="drop-zone"
@@ -188,7 +162,7 @@ Automatically handles server upload with localStorage fallback
     ondrop={handleDrop}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
-    role="button" 
+    role="button"
     aria-label="Drop zone"
     tabindex="0"
     onclick={openFileSelector}
@@ -220,7 +194,6 @@ Automatically handles server upload with localStorage fallback
       {/if}
     </div>
   </div>
-
   <!-- Hidden file input -->
   <input;
     bind:this={fileInput}
@@ -233,14 +206,12 @@ Automatically handles server upload with localStorage fallback
       if (target?.files) handleFileSelect(target.files);
     }}
   />
-
   <!-- Error Display -->
   {#if error}
     <div class="error-message">
       ❌ {error}
     </div>
   {/if}
-
   <!-- Results Display -->
   {#if uploadResults.length > 0}
     <div class="results-container">
@@ -248,7 +219,6 @@ Automatically handles server upload with localStorage fallback
         <h4>Upload Results</h4>
         <button class="clear-btn" onclick={clearResults}>Clear</button>
       </div>
-
       <div class="results-list">
         {#each uploadResults as result}
           <div class="result-item" class:success={(result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).success} class:error={!(result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).success}>
@@ -275,13 +245,11 @@ Automatically handles server upload with localStorage fallback
     </div>
   {/if}
 </div>
-
 <style>
   .file-upload-container {
     width: 100%;
     max-width: 600px;
   }
-
   .storage-indicator {
     margin-bottom: 1rem;
     display: flex;
@@ -289,7 +257,6 @@ Automatically handles server upload with localStorage fallback
     gap: 0.5rem;
     font-size: 0.875rem;
   }
-
   .storage-bar {
     flex: 1;
     height: 4px;
@@ -297,26 +264,21 @@ Automatically handles server upload with localStorage fallback
     border-radius: 2px;
     overflow: hidden;
   }
-
   .storage-fill {
     height: 100%;
     background-color: #3b82f6;
     transition: width 0.3s ease;
   }
-
   .storage-fill.warning {
     background-color: #f59e0b;
   }
-
   .storage-fill.critical {
     background-color: #ef4444;
   }
-
   .storage-text {
     color: #6b7280;
     white-space: nowrap;
   }
-
   .drop-zone {
     border: 2px dashed #d1d5db;
     border-radius: 8px;
@@ -326,50 +288,41 @@ Automatically handles server upload with localStorage fallback
     transition: all 0.2s ease;
     background-color: #f9fafb;
   }
-
   .drop-zone:hover {
     border-color: #3b82f6;
     background-color: #f0f9ff;
   }
-
   .drop-zone.drag-over {
     border-color: #3b82f6;
-    background-color: #dbeafe;
+    background-color: #dbeaf;
     transform: scale(1.02);
   }
-
   .drop-zone.uploading {
     border-color: #10b981;
     background-color: #f0fdf4;
   }
-
   .upload-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
   }
-
   .upload-text strong {
     display: block;
     color: #374151;
     margin-bottom: 0.5rem;
   }
-
   .upload-subtitle {
     color: #6b7280;
     font-size: 0.875rem;
   }
-
   .fallback-notice {
     color: #f59e0b;
     font-weight: 500;
   }
-
   .upload-progress {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
-
   .spinner {
     width: 24px;
     height: 24px;
@@ -378,16 +331,13 @@ Automatically handles server upload with localStorage fallback
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-
   .progress-text {
     flex: 1;
   }
-
   .progress-bar {
     width: 100%;
     height: 8px;
@@ -396,13 +346,11 @@ Automatically handles server upload with localStorage fallback
     overflow: hidden;
     margin: 0.5rem 0;
   }
-
   .progress-fill {
     height: 100%;
     background-color: #10b981;
     transition: width 0.3s ease;
   }
-
   .error-message {
     margin-top: 1rem;
     padding: 1rem;
@@ -411,28 +359,24 @@ Automatically handles server upload with localStorage fallback
     border-radius: 6px;
     color: #dc2626;
   }
-
   .results-container {
     margin-top: 1rem;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     overflow: hidden;
   }
-
   .results-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 1rem;
     background-color: #f9fafb;
     border-bottom: 1px solid #e5e7eb;
   }
-
   .results-header h4 {
     margin: 0;
     color: #374151;
   }
-
   .clear-btn {
     padding: 0.25rem 0.5rem;
     background-color: #6b7280;
@@ -442,16 +386,13 @@ Automatically handles server upload with localStorage fallback
     cursor: pointer;
     font-size: 0.75rem;
   }
-
   .clear-btn:hover {
     background-color: #4b5563;
   }
-
   .results-list {
     max-height: 300px;
     overflow-y: auto;
   }
-
   .result-item {
     display: flex;
     align-items: center;
@@ -459,32 +400,25 @@ Automatically handles server upload with localStorage fallback
     padding: 0.75rem 1rem;
     border-bottom: 1px solid #f3f4f6;
   }
-
   .result-item:last-child {
     border-bottom: none;
   }
-
   .result-.success {
     background-color: #f0fdf4;
   }
-
   .result-.error {
     background-color: #fef2f2;
   }
-
   .result-icon {
     font-size: 1.2rem;
   }
-
   .result-details {
     flex: 1;
   }
-
   .result-name {
     font-weight: 500;
     color: #374151;
   }
-
   .result-meta {
     display: flex;
     align-items: center;
@@ -492,7 +426,6 @@ Automatically handles server upload with localStorage fallback
     margin-top: 0.25rem;
     font-size: 0.75rem;
   }
-
   .storage-type {
     padding: 0.125rem 0.375rem;
     background-color: #e0e7ff;
@@ -500,19 +433,16 @@ Automatically handles server upload with localStorage fallback
     border-radius: 12px;
     font-weight: 500;
   }
-
   .fallback-badge {
     padding: 0.125rem 0.375rem;
     background-color: #fef3c7;
-    color: #92400e;
+    color: #92400;
     border-radius: 12px;
     font-weight: 500;
   }
-
   .file-size {
     color: #6b7280;
   }
-
   .error-text {
     color: #dc2626;
   }

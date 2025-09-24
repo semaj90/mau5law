@@ -1,56 +1,46 @@
 // XState Machine Types for Legal AI Platform
-
 // AI Assistant Events - Strongly Typed
 export type AIAssistantEvent =
   // Core messaging
   | { type: "SEND_MESSAGE"; message: string; useContext7?: boolean; caseId?: string; priority?: 'low' | 'normal' | 'high' | 'urgent' }
   | { type: "SEND_BATCH_MESSAGES"; messages: BatchMessage[]; processingMode?: 'sequential' | 'parallel' }
-  
   // Enhanced document processing
   | { type: "UPLOAD_DOCUMENT"; file: File; caseId?: string; metadata?: DocumentMetadata }
   | { type: "PROCESS_DOCUMENT"; documentId: string; options?: ProcessingOptions }
   | { type: "ANALYZE_IMAGE"; imageData: string | File; analysisType?: ImageAnalysisType }
   | { type: "GENERATE_SUMMARY"; content: string; summaryType?: SummaryType; maxLength?: number }
-  
   // Service management and protocol switching
   | { type: "SET_PROTOCOL"; protocol: 'http' | 'grpc' | 'quic' | 'websocket' }
   | { type: "CHECK_SERVICE_HEALTH"; force?: boolean }
   | { type: "OPTIMIZE_RESOURCES"; target?: 'memory' | 'cpu' | 'gpu' | 'network' | 'all' }
   | { type: "BENCHMARK_PERFORMANCE"; suiteId?: string }
-  
   // Legal case context
   | { type: "SET_CASE_CONTEXT"; caseId: string; options?: ContextOptions }
   | { type: "LOAD_LEGAL_KNOWLEDGE_GRAPH"; caseId?: string; scope?: 'case' | 'jurisdiction' | 'global' }
   | { type: "UPDATE_CASE_TIMELINE"; caseId: string; events: TimelineEvent[] }
-  
   // Conversation management
   | { type: "CLEAR_CONVERSATION" }
   | { type: "EXPORT_CONVERSATION"; format: 'json' | 'pdf' | 'markdown' }
   | { type: "IMPORT_CONVERSATION"; data: ConversationImport }
-  
   // Model and configuration
   | { type: "SET_MODEL"; model: string; config?: ModelConfig }
   | { type: "UPDATE_SETTINGS"; settings: Partial<AISettings> }
   | { type: "RESET_TO_DEFAULTS" }
-  
   // Error handling and recovery
   | { type: "RETRY_LAST_ACTION" }
   | { type: "RECOVER_FROM_ERROR"; strategy?: 'restart' | 'fallback' | 'ignore' }
   | { type: "FORCE_RECONNECT"; services?: string[] }
-  
   // Analytics and monitoring
   | { type: "START_MONITORING"; metrics?: string[] }
   | { type: "STOP_MONITORING" }
   | { type: "EXPORT_ANALYTICS"; timeRange?: TimeRange; format?: 'csv' | 'json' | 'pdf' };
-
-// AI Assistant Context - Enterprise Grade;
+// AI Assistant Context - Enterprise Grade
 export interface AIAssistantContext {
   // Core query state
   currentQuery: string;
   response: string;
   conversationHistory: ConversationEntry[];
   sessionId: string;
-
   // AI Configuration with multi-model support
   isProcessing: boolean;
   model: string;
@@ -58,7 +48,6 @@ export interface AIAssistantContext {
   maxTokens: number;
   availableModels: ModelDefinition[];
   modelLoadBalancing: boolean;
-
   // Enhanced Database Integration
   databaseConnected: boolean;
   vectorSearchEnabled: boolean;
@@ -66,57 +55,48 @@ export interface AIAssistantContext {
   currentDocumentId?: string;
   databasePerformance: DatabaseMetrics;
   vectorIndexStatus: VectorIndexStatus;
-
   // Context7 Integration with caching
   context7Analysis?: Context7Analysis;
   context7Available: boolean;
   context7Cache: Map<string, Context7CacheEntry>;
-
   // Multi-modal Processing with Web Workers
   currentDocuments: Document[];
   currentImages: ImageAnalysis[];
   processingQueue: ProcessingJob[];
   workerPool: WebWorkerPool;
   gpuProcessingEnabled: boolean;
-
   // Advanced Service Health & Protocol Management
   serviceHealth: ServiceHealthStatus;
   preferredProtocol: 'http' | 'grpc' | 'quic' | 'websocket';
   activeProtocol: 'http' | 'grpc' | 'quic' | 'websocket';
   serviceLoadBalancer: LoadBalancerState;
   circuitBreakers: Map<string, CircuitBreakerState>;
-
   // Real-time Features with enhanced capabilities
   natsConnected: boolean;
   activeStreaming: boolean;
   streamBuffer: string;
   collaborationUsers: CollaborationUser[];
-
   // Performance & Analytics
   performanceMetrics: PerformanceMetrics;
   usageAnalytics: UsageAnalytics;
   errorLog: ErrorEntry[];
   benchmarkResults?: BenchmarkResults;
   garbageCollectionMetrics: GCMetrics;
-
   // Security & Audit
   auditTrail: AuditEntry[];
   securityContext: SecurityContext;
   rateLimiting: RateLimitingState;
-
   // User Interface State
   theme: 'light' | 'dark' | 'system';
   notifications: NotificationEntry[];
   modals: ModalState[];
   sidebarState: SidebarState;
-  
   // Error handling
   lastError?: ErrorDetails;
   recoveryAttempts: number;
   isRecovering: boolean;
 }
-
-// Supporting Types;
+// Supporting Types
 export interface BatchMessage {
   id: string;
   message: string;
@@ -124,7 +104,6 @@ export interface BatchMessage {
   caseId?: string;
   useContext7?: boolean;
 }
-
 export interface DocumentMetadata {
   title?: string;
   description?: string;
@@ -132,7 +111,6 @@ export interface DocumentMetadata {
   caseId?: string;
   confidentiality?: 'public' | 'confidential' | 'attorney_client' | 'work_product';
 }
-
 export interface ProcessingOptions {
   extractText?: boolean;
   generateSummary?: boolean;
@@ -141,18 +119,15 @@ export interface ProcessingOptions {
   generateEmbeddings?: boolean;
   priorityLevel?: 'low' | 'normal' | 'high';
 }
-
 export type ImageAnalysisType = 'text_extraction' | 'object_detection' | 'scene_analysis' | 'evidence_analysis';
 export type SummaryType = 'executive' | 'technical' | 'legal' | 'bullet_points' | 'timeline';
 }
-
 export interface ContextOptions {
   includeDocuments?: boolean;
   includeTimeline?: boolean;
   includePrecedents?: boolean;
   depth?: 'shallow' | 'medium' | 'deep';
 }
-
 export interface TimelineEvent {
   id: string;
   caseId: string;
@@ -163,7 +138,6 @@ export interface TimelineEvent {
   participants?: string[];
   documents?: string[];
 }
-
 export interface ConversationEntry {
   id: string;
   type: 'user' | 'assistant' | 'system';
@@ -173,13 +147,11 @@ export interface ConversationEntry {
   caseId?: string;
   documentId?: string;
 }
-
 export interface ConversationImport {
   format: 'json' | 'csv' | 'text';
   data: string;
   mergeStrategy: 'append' | 'replace' | 'merge';
 }
-
 export interface ModelDefinition {
   name: string;
   type: 'legal' | 'general' | 'code' | 'multimodal';
@@ -194,7 +166,6 @@ export interface ModelDefinition {
   status: 'available' | 'loading' | 'unavailable';
   performance: ModelPerformance;
 }
-
 export interface ModelConfig {
   temperature?: number;
   maxTokens?: number;
@@ -203,14 +174,12 @@ export interface ModelConfig {
   repeatPenalty?: number;
   systemPrompt?: string;
 }
-
 export interface ModelPerformance {
   averageLatency: number;
   tokensPerSecond: number;
   successRate: number;
   lastBenchmark: Date;
 }
-
 export interface AISettings {
   defaultModel: string;
   temperature: number;
@@ -222,21 +191,18 @@ export interface AISettings {
   enableAnalytics: boolean;
   privacyMode: 'standard' | 'enhanced' | 'maximum';
 }
-
 export interface TimeRange {
   start: Date;
   end: Date;
   timezone?: string;
 }
-
-// Service Health Types;
+// Service Health Types
 export interface ServiceHealthStatus {
   overall: 'healthy' | 'degraded' | 'unhealthy';
   services: Record<string, ServiceStatus>;
   lastCheck: Date;
   nextCheck: Date;
 }
-
 export interface ServiceStatus {
   name: string;
   status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
@@ -245,14 +211,12 @@ export interface ServiceStatus {
   lastResponse: Date;
   errorRate: number;
 }
-
 export interface LoadBalancerState {
   activeServices: string[];
   strategy: 'round_robin' | 'least_connections' | 'weighted' | 'performance';
   weights: Record<string, number>;
   healthCheckInterval: number;
 }
-
 export interface CircuitBreakerState {
   state: 'closed' | 'open' | 'half_open';
   errorCount: number;
@@ -260,8 +224,7 @@ export interface CircuitBreakerState {
   timeout: number;
   lastError?: Date;
 }
-
-// Database Types;
+// Database Types
 export interface DatabaseMetrics {
   connectionCount: number;
   queryLatency: number;
@@ -269,7 +232,6 @@ export interface DatabaseMetrics {
   vectorOperationsPerSecond: number;
   indexHealth: 'optimal' | 'degraded' | 'rebuilding';
 }
-
 export interface VectorIndexStatus {
   totalVectors: number;
   indexedVectors: number;
@@ -277,8 +239,7 @@ export interface VectorIndexStatus {
   averageSimilaritySearchTime: number;
   indexSize: number;
 }
-
-// Context7 Types;
+// Context7 Types
 export interface Context7Analysis {
   componentType: string;
   recommendations: Context7Recommendation[];
@@ -286,7 +247,6 @@ export interface Context7Analysis {
   performanceScore: number;
   lastAnalysis: Date;
 }
-
 export interface Context7Recommendation {
   type: 'performance' | 'security' | 'maintainability' | 'best_practice';
   priority: 'low' | 'medium' | 'high' | 'critical';
@@ -295,7 +255,6 @@ export interface Context7Recommendation {
   suggestion: string;
   effort: 'low' | 'medium' | 'high';
 }
-
 export interface Context7CacheEntry {
   key: string;
   data: unknown;
@@ -303,8 +262,7 @@ export interface Context7CacheEntry {
   expiresAt: Date;
   hitCount: number;
 }
-
-// Performance Types;
+// Performance Types
 export interface PerformanceMetrics {
   responseTime: number;
   throughput: number;
@@ -313,7 +271,6 @@ export interface PerformanceMetrics {
   gpuUsage?: number;
   networkLatency: number;
 }
-
 export interface UsageAnalytics {
   totalQueries: number;
   averageQueryLength: number;
@@ -321,7 +278,6 @@ export interface UsageAnalytics {
   peakHours: number[];
   errorRate: number;
 }
-
 export interface BenchmarkResults {
   suiteId: string;
   overallScore: number;
@@ -329,15 +285,13 @@ export interface BenchmarkResults {
   comparison: Record<string, number>;
   timestamp: Date;
 }
-
 export interface GCMetrics {
   collections: number;
   totalPauseTime: number;
   averagePauseTime: number;
   memoryFreed: number;
 }
-
-// Error Types;
+// Error Types
 export interface ErrorEntry {
   id: string;
   type: 'network' | 'processing' | 'validation' | 'service' | 'system';
@@ -348,7 +302,6 @@ export interface ErrorEntry {
   timestamp: Date;
   resolved: boolean;
 }
-
 export interface ErrorDetails {
   code: string;
   message: string;
@@ -357,8 +310,7 @@ export interface ErrorDetails {
   recoverable: boolean;
   timestamp: Date;
 }
-
-// UI State Types;
+// UI State Types
 export interface NotificationEntry {
   id: string;
   type: 'info' | 'success' | 'warning' | 'error';
@@ -368,13 +320,11 @@ export interface NotificationEntry {
   persistent: boolean;
   actions?: NotificationAction[];
 }
-
 export interface NotificationAction {
   label: string;
   action: () => void;
   style?: 'primary' | 'secondary' | 'danger';
 }
-
 export interface ModalState {
   id: string;
   type: string;
@@ -384,13 +334,11 @@ export interface ModalState {
   closable: boolean;
   persistent: boolean;
 }
-
 export interface SidebarState {
   collapsed: boolean;
   activeTab: string;
   tabs: SidebarTab[];
 }
-
 export interface SidebarTab {
   id: string;
   label: string;
@@ -398,8 +346,7 @@ export interface SidebarTab {
   component: string;
   visible: boolean;
 }
-
-// Security Types;
+// Security Types
 export interface SecurityContext {
   userId: string;
   sessionId: string;
@@ -407,14 +354,12 @@ export interface SecurityContext {
   rateLimits: Record<string, number>;
   securityLevel: 'standard' | 'elevated' | 'maximum';
 }
-
 export interface RateLimitingState {
   requests: number;
   windowStart: Date;
   limit: number;
   resetTime: Date;
 }
-
 export interface AuditEntry {
   id: string;
   userId: string;
@@ -425,8 +370,7 @@ export interface AuditEntry {
   ipAddress?: string;
   userAgent?: string;
 }
-
-// Additional Supporting Types;
+// Additional Supporting Types
 export interface Document {
   id: string;
   title: string;
@@ -436,7 +380,6 @@ export interface Document {
   caseId?: string;
   uploadedAt: Date;
 }
-
 export interface ImageAnalysis {
   id: string;
   url: string;
@@ -444,7 +387,6 @@ export interface ImageAnalysis {
   confidence: number;
   timestamp: Date;
 }
-
 export interface ProcessingJob {
   id: string;
   type: string;
@@ -454,7 +396,6 @@ export interface ProcessingJob {
   completedAt?: Date;
   error?: string;
 }
-
 export interface WebWorkerPool {
   size: number;
   activeWorkers: number;
@@ -462,7 +403,6 @@ export interface WebWorkerPool {
   completedJobs: number;
   failedJobs: number;
 }
-
 export interface CollaborationUser {
   id: string;
   name: string;

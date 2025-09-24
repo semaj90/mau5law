@@ -1,25 +1,20 @@
 <script lang="ts">
   import type { PageData } from './$types';
-
   let { data }: { data: PageData } = $props();
   const { user, session } = data;
 </script>
-
 <svelte:head>
   <title>Protected Area - Legal AI</title>
 </svelte:head>
-
 <div class="container mx-auto p-6 max-w-4xl">
   <div class="bg-white rounded-lg shadow-lg p-8">
     <h1 class="text-3xl font-bold text-gray-900 mb-6">🔒 Protected Area</h1>
-
     <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-8">
       <h2 class="text-xl font-semibold text-green-800 mb-4">✅ Authentication Successful</h2>
       <p class="text-green-700">
         You are successfully authenticated and can access this protected area!
       </p>
     </div>
-
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <!-- User Information -->
       <div class="bg-gray-50 rounded-lg p-6">
@@ -51,7 +46,6 @@
           </div>
         </div>
       </div>
-
       <!-- Session Information -->
       <div class="bg-gray-50 rounded-lg p-6">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">🔑 Session Information</h3>
@@ -75,7 +69,6 @@
         </div>
       </div>
     </div>
-
     <!-- Navigation -->
     <div class="mt-8 flex flex-wrap gap-4">
       <a href="/" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
@@ -93,7 +86,6 @@
         </button>
       </form>
     </div>
-
     <!-- Features Demo -->
     <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
       <h3 class="text-lg font-semibold text-blue-900 mb-4">🚀 Your Authentication System Features</h3>
@@ -110,12 +102,10 @@
     </div>
   </div>
 </div>
-
 <style>
-  .container {;
-    animation: fadeIn 0.5s ease-in;
+  .container {
+    animation: fadeIn 0.5s ease-i;
   }
-
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }

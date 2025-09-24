@@ -1,16 +1,13 @@
 <!-- Enhanced Document Upload Form with XState + Superforms + Zod -->
 <!-- Production-ready form with state management, validation, and progress tracking -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import {
     createDocumentUploadForm,
     FORM_STORAGE_KEYS,
     FormStatePersistence,
   } from "$lib/forms/superforms-xstate-integration";
   import { DocumentUploadSchema } from "$lib/state/legal-form-machines";
-
   // Use bits-ui (or enhanced-bits-ui) components
   import {
     Alert,
@@ -31,7 +28,6 @@
     SelectValue,
     Textarea,
   } from "bits-ui";
-
   import {
     AlertTriangle,
     CheckCircle,
@@ -46,23 +42,20 @@
   import { onMount } from "svelte";
   import type { Infer, SuperValidated } from "sveltekit-superforms";
 </script>
-
   // Props
-  let { data }: { data: unknown } = $props(); // SuperValidated<Infer<typeof DocumentUploadSchema>;
-  let { onSuccess = $bindable()  }: { onSuccess = $bindable() : unknown } = $props(); // ((result: unknown) => void) | undefined = undefined;
-  let { onError = $bindable()  }: { onError = $bindable() : unknown } = $props(); // ((error: string) => void) | undefined = undefined;
-  let { caseId = $bindable()  }: { caseId = $bindable() : unknown } = $props(); // string | undefined = undefined;
-  let { autoSave = $bindable()  }: { autoSave = $bindable() : unknown } = $props(); // true;
-
+  let { data }: { data: unknown } = $props(); // SuperValidated<Infer<typeof DocumentUploadSchema>
+  let { onSuccess = $bindable()  }: { onSuccess = $bindable() : unknown } = $props(); // ((result: unknown) => void) | undefined = undefined
+  let { onError = $bindable()  }: { onError = $bindable() : unknown } = $props(); // ((error: string) => void) | undefined = undefined
+  let { caseId = $bindable()  }: { caseId = $bindable() : unknown } = $props(); // string | undefined = undefined
+  let { autoSave = $bindable()  }: { autoSave = $bindable() : unknown } = $props(); // true
   // Form state management
   const formIntegration = createDocumentUploadForm(data, {
     onSuccess,
     onError,
     autoSave,
     autoSaveDelay: 2000,
-    resetOnSuccess: true,
+    resetOnSuccess: true
   });
-
   const {
     form,
     actor,
@@ -72,19 +65,16 @@
     isSubmitting,
     errors,
     progress,
-  } = formIntegration;
+  } = formIntegratio;
   const { form: formData, enhance } = form;
-
   // Form persistence
   const persistence = new FormStatePersistence(
     FORM_STORAGE_KEYS.DOCUMENT_UPLOAD
   );
-
   // File handling
   let fileInput: HTMLInputElement | null = null;
   let dragActive = false;
   let selectedFile: File | null = null;
-
   // Form options
   const documentTypes = [
     { value: "contract", label: "Contract" },
@@ -97,72 +87,59 @@
     { value: "case_law", label: "Case Law" },
     { value: "other", label: "Other" },
   ];
-
   const jurisdictions = [
     { value: "federal", label: "Federal" },
     { value: "state", label: "State" },
     { value: "local", label: "Local" },
     { value: "international", label: "International" },
   ];
-
   // ============================================================================
   // FILE HANDLING
   // ============================================================================
-
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;
     const file = target.files?.[0];
     if (file) {
-      selectedFile = file;
-      $formData.file = file;
-
+      selectedFile = fil;
+      $formData.file = fil;
       // Auto-populate title from filename
       if (!$formData.title) {
         $formData.title = file.name.replace(/\.[^/.]+$/, "");
       }
     }
   }
-
   function handleDrop(event: DragEvent) {
     event.preventDefault();
     dragActive = false;
-
     const file = event.dataTransfer?.files[0];
     if (file) {
-      selectedFile = file;
-      $formData.file = file;
-
+      selectedFile = fil;
+      $formData.file = fil;
       if (!$formData.title) {
         $formData.title = file.name.replace(/\.[^/.]+$/, "");
       }
     }
   }
-
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
     dragActive = true;
   }
-
   function handleDragLeave() {
     dragActive = false;
   }
-
   function removeFile() {
     selectedFile = null;
     $formData.file = null;
     if (fileInput) fileInput.value = "";
   }
-
   // ============================================================================
   // FORM ACTIONS
   // ============================================================================
-
   function handleSubmit() {
     if ($isValid && selectedFile) {
       actor.send({ type: "UPLOAD" });
     }
   }
-
   function handleReset() {
     actor.send({ type: "RESET" });
     selectedFile = null;
@@ -170,34 +147,30 @@
       title: "",
       description: "",
       documentType: "other",
-      jurisdiction: undefined,;
-      tags: [],;
-      file: null,
+      jurisdiction: undefined
+      tags: [],
+      file: null
       aiProcessing: {
-        generateSummary: true,
-        extractEntities: true,
-        riskAssessment: true,
-        generateRecommendations: false,
+        generateSummary: true
+        extractEntities: true
+        riskAssessment: true
+        generateRecommendations: false
       },
     };
     persistence.clear();
   }
-
   function handleSaveDraft() {
     persistence.save($formData);
   }
-
   function loadDraft() {
     const draft = persistence.load();
     if (draft) {
       Object.assign($formData, draft);
     }
   }
-
   // ============================================================================
   // REACTIVE STATEMENTS
   // ============================================================================
-
   let stateValue = $derived($state);
   let contextValue = $derived($context);
   let canSubmit = $derived($isValid && selectedFile && !$isSubmitting);
@@ -206,17 +179,16 @@
   let isError = $derived(stateValue === "uploadError" ||
     stateValue === "processingError" ||
     stateValue === "failed");
-
   // Ensure default form shape to prevent runtime errors
   // Ensure default form shape to prevent runtime errors
   // TODO: Convert to $derived
   if ($formData) {
     if (!$formData.aiProcessing) {
       $formData.aiProcessing = {
-        generateSummary: true,
-        extractEntities: true,
-        riskAssessment: true,
-        generateRecommendations: false,
+        generateSummary: true
+        extractEntities: true
+        riskAssessment: true
+        generateRecommendations: false
       };
     }
     if (!$formData.tags) {
@@ -229,7 +201,6 @@
     // ============================================================================
     // LIFECYCLE
     // ============================================================================
-
     $effect(() => {
       // Load draft if available
       loadDraft();
@@ -269,7 +240,6 @@
                     : "Ready"}
             </Badge>
           </div>
-
           <div class="flex gap-2">
             <Button class="bits-btn"
               variant="ghost"
@@ -290,7 +260,6 @@
           </div>
         </h3>
       </div>
-
     {#if showProgress}
       <div class="yorha-panel-content">
         <div class="space-y-2">
@@ -299,7 +268,6 @@
             <span>{Math.round($progress)}%</span>
           </div>
           <Progress value={$progress} class="h-2" />
-
           {#if stateValue === "uploading"}
             <p class="text-sm nes-text is-disabled">Uploading file...</p>
           {:else if stateValue === "processing"}
@@ -309,7 +277,6 @@
       </div>
     {/if}
   </div>
-
   <!-- File Drop Zone -->
   <div class="file-upload-nier-bits-card nes-container">
     <div class="yorha-panel-content p-6">
@@ -358,7 +325,6 @@
           </div>
         {/if}
       </div>
-
       <input
         bind:this={fileInput}
         type="file"
@@ -368,7 +334,6 @@
       />
     </div>
   </div>
-
   <!-- Form Fields -->
   <form use:enhance method="post" class="space-y-6">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -393,7 +358,6 @@
               <p class="text-sm text-red-600 mt-1">{$errors.title[0]}</p>
             {/if}
           </div>
-
           <div>
             <label for="description" class="block text-sm font-medium mb-2">
               Description
@@ -406,7 +370,6 @@
               disabled={$isSubmitting}
             />
           </div>
-
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label for="documentType" class="block text-sm font-medium mb-2">
@@ -426,7 +389,6 @@
                 </SelectContent>
               </Select>
             </div>
-
             <div>
               <label for="jurisdiction" class="block text-sm font-medium mb-2">
                 Jurisdiction
@@ -448,7 +410,6 @@
               </Select>
             </div>
           </div>
-
           <div>
             <label for="tags" class="block text-sm font-medium mb-2">
               Tags (comma-separated)
@@ -456,7 +417,7 @@
             <Input
               id="tags"
               value={$formData.tags.join(", ")} oninput={(e) => {
-                const value = e.currentTarget.value;
+                const value = e.currentTarget.valu;
                 $formData.tags = value
                   .split.map((tag) => tag.trim())
                   .filter((tag) => tag);
@@ -467,7 +428,6 @@
           </div>
         </div>
       </div>
-
       <!-- AI Processing Options -->
       <div class="nes-container">
         <div class="yorha-panel-header">
@@ -487,7 +447,6 @@
                 Create an AI-powered summary of the document
               </span>
             </Checkbox>
-
             <Checkbox
               bind:checked={$formData.aiProcessing.extractEntities}
               disabled={$isSubmitting}
@@ -497,7 +456,6 @@
                 Identify names, dates, amounts, and legal entities
               </span>
             </Checkbox>
-
             <Checkbox
               bind:checked={$formData.aiProcessing.riskAssessment}
               disabled={$isSubmitting}
@@ -507,7 +465,6 @@
                 Analyze potential legal risks and compliance issues
               </span>
             </Checkbox>
-
             <Checkbox;
               bind:checked={$formData.aiProcessing.generateRecommendations}
               disabled={$isSubmitting}
@@ -518,7 +475,6 @@
               </span>
             </Checkbox>
           </div>
-
           {#if Object.values.some(Boolean)}
             <Alert>
               <Zap class="h-4 w-4" />
@@ -531,14 +487,12 @@
         </div>
       </div>
     </div>
-
     <!-- Error Display -->
     {#if isError}
       <Alert variant="error">
         <AlertTriangle class="h-4 w-4" />
         <AlertDescription>
           {contextValue.error || "An error occurred during processing"}
-
           {#if stateValue === "uploadError" || stateValue === "processingError"}
             <div class="mt-2">
               <Button class="bits-btn"
@@ -551,7 +505,6 @@ actor.send({ type: "RETRY" })}
                 Retry ({contextValue.maxRetries - contextValue.retryCount} attempts
                 left)
 </Button>
-
               {#if stateValue === "processingError"}
                 <Button class="bits-btn"
                   variant="ghost"
@@ -568,14 +521,12 @@ actor.send({ type: "SKIP_PROCESSING" })}
         </AlertDescription>
       </Alert>
     {/if}
-
     <!-- Success Display -->
     {#if isCompleted}
       <Alert>
         <CheckCircle class="h-4 w-4" />
         <AlertDescription>
           Document uploaded and processed successfully!
-
           {#if contextValue.aiResults}
             <div class="mt-2">
               <p class="text-sm">
@@ -587,7 +538,6 @@ actor.send({ type: "SKIP_PROCESSING" })}
         </AlertDescription>
       </Alert>
     {/if}
-
     <!-- Form Actions -->
     <div class="flex justify-between items-center pt-4 border-t">
       <div class="text-sm nes-text is-disabled">
@@ -595,7 +545,6 @@ actor.send({ type: "SKIP_PROCESSING" })}
           Auto-save enabled
         {/if}
       </div>
-
       <div class="flex gap-3">
         <Button class="bits-btn"
           variant="ghost"
@@ -604,7 +553,6 @@ actor.send({ type: "SKIP_PROCESSING" })}
         >
 Reset Form
 </Button>
-
         <Button class="bits-btn"
           type="submit"
           onclick|preventDefault={handleSubmit}
@@ -626,56 +574,42 @@ Reset Form
     </div>
   </form>
 </div>
-
 <style>
   .enhanced-document-upload-form {
     @apply max-w-4xl mx-auto;
   }
-
   .file-upload-card {
-    @apply border-2 border-dashed border-gray-300 border-opacity-25 transition-colors;
+    @apply border-2 border-dashed border-gray-300 border-opacity-25 transition-color;
   }
-
   .file-upload-card:hover {
     @apply border-blue-500 border-opacity-50;
   }
-
   .drop-zone {
-    @apply min-h-32 rounded-lg flex items-center justify-center cursor-pointer transition-colors;
+    @apply min-h-32 rounded-lg flex items-center justify-center cursor-pointer transition-color;
   }
-
   .drop-zone.drag-active {
     @apply bg-blue-500 bg-opacity-5 border-blue-500;
   }
-
   .drop-zone-content {
     @apply text-center space-y-3;
   }
-
   .drop-zone-title {
     @apply text-lg font-semibold;
   }
-
   .drop-zone-description {
     @apply text-sm text-muted-foreground;
   }
-
   .selected-file {
     @apply flex items-center gap-4 p-4 bg-muted bg-opacity-50 rounded-lg;
   }
-
   .file-info {
     @apply flex-1 text-left;
   }
-
   .file-name {
-    @apply font-medium truncate;
+    @apply font-medium truncat;
   }
-
   .file-details {
     @apply text-sm text-muted-foreground;
   }
 </style>
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

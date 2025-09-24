@@ -2,18 +2,15 @@
  * Embedding Worker Management API
  * Controls RabbitMQ embedding workers and job queuing
  */
-
 import { json, type RequestHandler } from '@sveltejs/kit'
 import { rabbitmqEmbeddingWorker } from '$lib/workers/rabbitmq-embedding-worker'
 import { rabbitMQService } from '$lib/services/rabbitmq-connection'
 import { QUEUES } from '$lib/config/rabbitmq-config'
 import type { EmbeddingJobPayload, BulkEmbeddingJobPayload } from '$lib/workers/rabbitmq-embedding-worker'
-
 // Worker status and control endpoints
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action')
-
     switch (action) {
       case 'status':
         return await getWorkerStatus()
@@ -37,11 +34,9 @@ export const GET: RequestHandler = async ({ url }) => {
     )
   }
 }
-
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const action = url.searchParams.get('action')
-
     switch (action) {
       case 'start':
         return await startWorker()
@@ -71,12 +66,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
     )
   }
 }
-
 // Get worker status
 async function getWorkerStatus(): Promise<Response> {
   const stats = rabbitmqEmbeddingWorker.getStats()
   const rabbitHealth = await rabbitMQService.healthCheck()
-
   return json({
     worker: {
       running: stats.isRunning,
@@ -91,42 +84,35 @@ async function getWorkerStatus(): Promise<Response> {
     rabbitmq: rabbitHealth
   })
 }
-
 // Get worker health check
 async function getWorkerHealth(): Promise<Response> {
   const health = await rabbitmqEmbeddingWorker.healthCheck()
   const statusCode = health.status === 'healthy' ? 200 : 503
-
   return json(health, { status: statusCode })
 }
-
 // Get detailed worker statistics
 async function getWorkerStats(): Promise<Response> {
   const stats = rabbitmqEmbeddingWorker.getStats()
   const rabbitHealth = await rabbitMQService.healthCheck()
-
   return json({
     ...stats,
-    rabbitmq_health: rabbitHealth,
+    rabbitmq_health: rabbitHealth
     uptime_formatted: stats.uptime ? formatUptime(stats.uptime) : null
   })
 }
-
 // Get queue information
 async function getQueueInfo(): Promise<Response> {
   try {
     const queueNames = [QUEUES.DOCUMENT_EMBEDDING, QUEUES.CASE_EMBEDDING]
-    const queueInfo: Record<string, any> = {}
-
+    const queueInfo: { [key: string]: any } = {}
     for (const queueName of queueNames) {
       queueInfo[queueName] = {
-        name: queueName,
+        name: queueName
         status: 'unknown'
       }
     }
-
     return json({
-      queues: queueInfo,
+      queues: queueInfo
       timestamp: new Date().toISOString()
     })
   } catch (error) {
@@ -139,7 +125,6 @@ async function getQueueInfo(): Promise<Response> {
     )
   }
 }
-
 // Start worker
 async function startWorker(): Promise<Response> {
   try {
@@ -155,7 +140,6 @@ async function startWorker(): Promise<Response> {
     )
   }
 }
-
 // Stop worker
 async function stopWorker(): Promise<Response> {
   try {
@@ -171,7 +155,6 @@ async function stopWorker(): Promise<Response> {
     )
   }
 }
-
 // Restart worker
 async function restartWorker(): Promise<Response> {
   try {
@@ -189,7 +172,6 @@ async function restartWorker(): Promise<Response> {
     )
   }
 }
-
 // Reset worker statistics
 async function resetWorkerStats(): Promise<Response> {
   rabbitmqEmbeddingWorker.resetStats()
@@ -198,7 +180,6 @@ async function resetWorkerStats(): Promise<Response> {
     timestamp: new Date().toISOString()
   })
 }
-
 // Queue single embedding job
 async function queueEmbeddingJob(request: Request): Promise<Response> {
   try {
@@ -207,21 +188,18 @@ async function queueEmbeddingJob(request: Request): Promise<Response> {
       correlationId?: string
       maxRetries?: number
     }
-
     // Validate payload
     if (!payload.entity_type || !payload.entity_id) {
       return json({ error: 'entity_type and entity_id are required' }, { status: 400 })
     }
-
     // Determine job type based on entity type and embedding type
     const jobType = `generate_${payload.entity_type}_${payload.embedding_type || 'content'}_embedding`
-
     // Queue job
     const ok = await rabbitMQService.publish(
       'embeddings', // exchange name
       payload.entity_type === 'case' ? QUEUES.CASE_EMBEDDING: QUEUES.DOCUMENT_EMBEDDING, // routing key
       {
-        type: jobType,
+        type: jobType
         payload,
         meta: {
           priority: payload.priority || 5,
@@ -230,11 +208,10 @@ async function queueEmbeddingJob(request: Request): Promise<Response> {
         }
       }
     )
-
     return json(
       {
-        published: ok,
-        job_type: jobType,
+        published: ok
+        job_type: jobType
         queue: payload.entity_type === 'case' ? QUEUES.CASE_EMBEDDING: QUEUES.DOCUMENT_EMBEDDING,
         message: 'Embedding job queued successfully',
         timestamp: new Date().toISOString()
@@ -251,7 +228,6 @@ async function queueEmbeddingJob(request: Request): Promise<Response> {
     )
   }
 }
-
 // Queue bulk embedding job
 async function queueBulkEmbeddingJob(request: Request): Promise<Response> {
   try {
@@ -260,12 +236,10 @@ async function queueBulkEmbeddingJob(request: Request): Promise<Response> {
       correlationId?: string
       maxRetries?: number
     }
-
     // Validate payload
     if (!payload.entities || !Array.isArray(payload.entities) || payload.entities.length === 0) {
       return json({ error: 'entities array is required and cannot be empty' }, { status: 400 })
     }
-
     // Validate entities
     for (const entity of payload.entities) {
       if (!entity.entity_type || !entity.entity_id || !entity.text_content) {
@@ -275,15 +249,13 @@ async function queueBulkEmbeddingJob(request: Request): Promise<Response> {
         )
       }
     }
-
     const jobType = 'bulk_embedding_generation'
-
     // Queue bulk job
     const ok = await rabbitMQService.publish(
       'embeddings', // exchange name
       'legal_ai.embedding.bulk', // routing key - Use dedicated bulk queue
       {
-        type: jobType,
+        type: jobType
         payload,
         meta: {
           priority: payload.priority || 7,
@@ -292,11 +264,10 @@ async function queueBulkEmbeddingJob(request: Request): Promise<Response> {
         }
       }
     )
-
     return json(
       {
-        published: ok,
-        job_type: jobType,
+        published: ok
+        job_type: jobType
         queue: 'legal_ai.embedding.bulk',
         entity_count: payload.entities.length,
         batch_size: payload.batch_size || 10,
@@ -315,14 +286,11 @@ async function queueBulkEmbeddingJob(request: Request): Promise<Response> {
     )
   }
 }
-
 // Test worker with sample data
 async function testWorker(request: Request): Promise<Response> {
   try {
     const { test_type = 'basic' } = await request.json().catch(() => ({}))
-
     let testPayload: EmbeddingJobPayload
-
     switch (test_type) {
       case 'document':
         testPayload = {
@@ -333,7 +301,6 @@ async function testWorker(request: Request): Promise<Response> {
           embedding_type: 'content'
         }
         break
-
       case 'case':
         testPayload = {
           entity_type: 'case',
@@ -342,7 +309,6 @@ async function testWorker(request: Request): Promise<Response> {
             'Smith vs. Jones - A contract dispute case involving breach of agreement terms and damages.'
         }
         break
-
       default:
         testPayload = {
           entity_type: 'document',
@@ -351,23 +317,21 @@ async function testWorker(request: Request): Promise<Response> {
           embedding_type: 'content'
         }
     }
-
     // Queue test job
     const ok = await rabbitMQService.publish(
       'embeddings', // exchange name
       testPayload.entity_type === 'case' ? QUEUES.CASE_EMBEDDING: QUEUES.DOCUMENT_EMBEDDING, // routing key
       {
         type: `test_${testPayload.entity_type}_embedding`,
-        payload: testPayload,
+        payload: testPayload
         meta: { priority: 8, correlationId: `test-${Date.now()}`, maxRetries: 1 }
       }
     )
-
     return json(
       {
-        published: ok,
+        published: ok
         test_type,
-        test_payload: testPayload,
+        test_payload: testPayload
         message: 'Test embedding job queued successfully',
         note: 'This test job uses fake entity IDs and will not update database records',
         timestamp: new Date().toISOString()
@@ -384,14 +348,12 @@ async function testWorker(request: Request): Promise<Response> {
     )
   }
 }
-
 // Utility function to format uptime
 function formatUptime(uptimeMs: number): string {
   const seconds = Math.floor(uptimeMs / 1000)
   const minutes = Math.floor(seconds / 60)
   const hours = Math.floor(minutes / 60)
   const days = Math.floor(hours / 24)
-
   if (days > 0) {
     return `${days}d ${hours % 24}h ${minutes % 60}m`
   } else if (hours > 0) {

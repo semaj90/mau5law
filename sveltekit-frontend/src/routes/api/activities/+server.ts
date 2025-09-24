@@ -4,8 +4,6 @@ import { db } from "$lib/server/db/index"
 import { eq, sql, desc, or as orExpr, like } from "drizzle-orm"
 import type { RequestHandler } from './$types.js'
 import { URL } from "url"
-
-
 export const GET: RequestHandler = async ({ locals, url }) => {
   try {
     if (!locals.user) {
@@ -24,10 +22,8 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     const offset = parseInt(url.searchParams.get("offset") || "0")
     const sortBy = url.searchParams.get("sortBy") || "scheduledFor"
     const sortOrder = url.searchParams.get("sortOrder") || "asc"
-
     // Build filters
     const filters: any[] = []
-
     // Add case filter
     if (caseId) {
       filters.push(eq(caseActivities.caseId, caseId))
@@ -57,7 +53,6 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         ]),
       )
     }
-
     // Determine the column for sorting
     const orderColumn =
       sortBy === "title"
@@ -72,37 +67,29 @@ export const GET: RequestHandler = async ({ locals, url }) => {
                 : sortBy === "completedAt"
                   ? caseActivities.completedAt
                   : caseActivities.createdAt; // Default to createdAt
-
     // Base select query
     const baseQuery = db.select().from(caseActivities)
-
     // Build the main query
     let finalQuery = baseQuery
     if (filters.length > 0) {
       finalQuery = baseQuery.where(...filters)
     }
-
     const orderedQuery = finalQuery.orderBy(
       sortOrder === "asc" ? orderColumn : desc(orderColumn),
     )
-
     const activityResults = await orderedQuery.limit(limit).offset(offset)
-
     // Get total count for pagination
     const baseCountQuery = db
       .select({ count: sql<number>`count(*)` })
       .from(caseActivities)
-
     let finalCountQuery = baseCountQuery
     if (filters.length > 0) {
       finalCountQuery = baseCountQuery.where(...filters)
     }
-
     const totalCountResult = await finalCountQuery
     const totalCount = totalCountResult[0]?.count ?? 0
-
     return json({
-      activities: activityResults,
+      activities: activityResults
       totalCount,
       hasMore: offset + limit < totalCount,
       pagination: {
@@ -116,7 +103,6 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     return json({ error: "Failed to fetch activities" }, { status: 500 })
   }
 }
-
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.user) {
@@ -126,7 +112,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return json({ error: "Database not available" }, { status: 500 })
     }
     const data = await request.json()
-
     // Validate required fields
     if (!data.caseId || !data.title || !data.activityType) {
       return json(
@@ -140,8 +125,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       activityType: data.activityType,
       title: data.title.trim(),
       description: data.description?.trim() || null,
-      scheduledFor: data.scheduledFor ? new Date(data.scheduledFor) : null,
-      completedAt: data.completedAt ? new Date(data.completedAt) : null,
+      scheduledFor: data.scheduledFor ? new Date(data.scheduledFor) : null
+      completedAt: data.completedAt ? new Date(data.completedAt) : null
       status: data.status || "pending",
       priority: data.priority || "medium",
       assignedTo: data.assignedTo || null,
@@ -150,12 +135,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       metadata: data.metadata || {},
       createdBy: locals.user.id
     }
-
     const [newActivity] = await db
       .insert(caseActivities)
       .values(activityData)
       .returning()
-
     return json(newActivity, { status: 201 })
   } catch (error: any) {
     console.error("Error creating activity:", error)

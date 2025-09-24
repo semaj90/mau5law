@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
-https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     documentId: string | null ;
     caseId: string | null ;
@@ -22,9 +21,6 @@ https://svelte.dev/e/js_parse_error -->
     documentType,
     compact = false
   : unknown } = $props();
-
-
-
   import {
     aiSummaryMachine,
     type SummarySection,
@@ -43,14 +39,11 @@ https://svelte.dev/e/js_parse_error -->
   } from "lucide-svelte";
   import { onMount } from "svelte";
   import { fade, fly } from "svelte/transition";
-
              | "report"
      | "contract"
      | "case_law"
      | "general" = "evidence";
-
   const { state, send } = useMachine(aiSummaryMachine);
-
   // Reactive state helpers
   let isLoading = $derived($state.matches("loading") ||);
     $state.matches("generating") ||
@@ -62,16 +55,13 @@ https://svelte.dev/e/js_parse_error -->
   let currentSection = $derived($state.context.sections[$state.context.currentSection])
   let progress = $derived($state.context.progress)
   let error = $derived($state.context.error)
-
   // Voice synthesis
   let speechSynthesis: SpeechSynthesis | null = null;
   let currentUtterance: SpeechSynthesisUtterance | null = null;
-
   $effect(() => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      speechSynthesis = window.speechSynthesis;
+      speechSynthesis = window.speechSynthesi;
     }
-
     // Auto-load if content provided
     if (initialContent && documentType) {
       send({ type: "GENERATE_SUMMARY", content: initialContent, documentType });
@@ -79,7 +69,6 @@ https://svelte.dev/e/js_parse_error -->
       send({ type: "LOAD_DOCUMENT", documentId, caseId });
     }
   });
-
   function toggleReading() {
     if (isPlaying) {
       send({ type: "PAUSE_READING" });
@@ -93,14 +82,12 @@ https://svelte.dev/e/js_parse_error -->
       }
     }
   }
-
   function stopReading() {
     send({ type: "STOP_READING" });
     if (speechSynthesis) {
       speechSynthesis.cancel();
     }
   }
-
   function nextSection() {
     send({ type: "NEXT_SECTION" });
     if ($state.context.voiceEnabled && isPlaying) {
@@ -111,7 +98,6 @@ https://svelte.dev/e/js_parse_error -->
       );
     }
   }
-
   function previousSection() {
     send({ type: "PREVIOUS_SECTION" });
     if ($state.context.voiceEnabled && isPlaying) {
@@ -122,24 +108,19 @@ https://svelte.dev/e/js_parse_error -->
       );
     }
   }
-
   function jumpToSection(index: number) {
     send({ type: "JUMP_TO_SECTION", sectionIndex: index });
     if ($state.context.voiceEnabled && isPlaying) {
       setTimeout(() => speakSection($state.context.sections[index]), 100);
     }
   }
-
   function speakSection(section: SummarySection) {
     if (!speechSynthesis || !$state.context.voiceEnabled) return;
-
     speechSynthesis.cancel();
-
     currentUtterance = new SpeechSynthesisUtterance(section.content);
     currentUtterance.rate = 0.9;
     currentUtterance.pitch = 1.0;
     currentUtterance.volume = 0.8;
-
     currentUtterance.onend = () => {
       if ($state.context.currentSection < $state.context.sections.length - 1) {
         nextSection();
@@ -147,25 +128,20 @@ https://svelte.dev/e/js_parse_error -->
         stopReading();
       }
     };
-
     speechSynthesis.speak(currentUtterance);
   }
-
   function analyzeDocument() {
     send({ type: "ANALYZE_DOCUMENT" });
   }
-
   function synthesizeInsights() {
     send({ type: "SYNTHESIZE_INSIGHTS" });
   }
-
   function toggleVoice() {
     send({
-      type: "UPDATE_PREFERENCES",;
+      type: "UPDATE_PREFERENCES",
       preferences: { voiceEnabled: !$state.context.voiceEnabled },
     });
   }
-
   function getImportanceColor(importance: string) {
     switch (importance) {
       case "critical":
@@ -180,14 +156,12 @@ https://svelte.dev/e/js_parse_error -->
         return "text-gray-600 border-gray-200 bg-gray-50";
     }
   }
-
   function getAnalysisScoreColor(score: number) {
     if (score >= 0.9) return "text-green-600 bg-green-100";
     if (score >= 0.7) return "text-yellow-600 bg-yellow-100";
     return "text-red-600 bg-red-100";
   }
 </script>
-
 <div class="ai-summary-reader" class:compact>
   <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
     <!-- Header -->
@@ -208,19 +182,17 @@ https://svelte.dev/e/js_parse_error -->
           </p>
         </div>
       </div>
-
       <div class="flex items-center gap-2">
         <!-- Voice Toggle -->
         <button
           onclick={toggleVoice}
-          class="p-2 rounded-md hover:bg-gray-100 transition-colors";
+          class="p-2 rounded-md hover: bg-gray-100 transition-colors";
           class:text-blue-600={$state.context.voiceEnabled}
           class:text-gray-400={!$state.context.voiceEnabled}
           title={$state.context.voiceEnabled ? "Disable voice" : "Enable voice"}
         >
           <Settings class="w-4 h-4" />
         </button>
-
         <!-- Confidence Score -->
         {#if $state.context.confidence > 0}
           <div
@@ -231,7 +203,6 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       </div>
     </div>
-
     <!-- Content -->
     <div class="p-4">
       {#if isLoading}
@@ -284,7 +255,6 @@ https://svelte.dev/e/js_parse_error -->
               <p class="text-blue-800">{$state.context.summary}</p>
             </div>
           {/if}
-
           <!-- Key Insights -->
           {#if $state.context.keyInsights.length > 0}
             <div
@@ -302,7 +272,6 @@ https://svelte.dev/e/js_parse_error -->
               </ul>
             </div>
           {/if}
-
           <!-- Reading Controls -->
           <div
             class="flex items-center justify-between bg-gray-50 rounded-lg p-4"
@@ -321,7 +290,6 @@ https://svelte.dev/e/js_parse_error -->
                   {isReading ? "Resume" : "Start Reading"}
                 {/if}
               </button>
-
               <button
                 onclick={stopReading}
                 class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
@@ -329,7 +297,6 @@ https://svelte.dev/e/js_parse_error -->
               >
                 <Square class="w-4 h-4" />
               </button>
-
               <div class="flex items-center gap-1">
                 <button
                   onclick={previousSection}
@@ -338,7 +305,6 @@ https://svelte.dev/e/js_parse_error -->
                 >
                   <SkipBack class="w-4 h-4" />
                 </button>
-
                 <button
                   onclick={nextSection}
                   class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
@@ -349,7 +315,6 @@ https://svelte.dev/e/js_parse_error -->
                 </button>
               </div>
             </div>
-
             <div class="text-sm text-gray-600">
               Section {$state.context.currentSection + 1} of {$state.context
                 .sections.length}
@@ -358,7 +323,6 @@ https://svelte.dev/e/js_parse_error -->
               {/if}
             </div>
           </div>
-
           <!-- Progress Bar -->
           {#if isReading}
             <div class="bg-gray-200 rounded-full h-2" transition:fade>
@@ -368,13 +332,12 @@ https://svelte.dev/e/js_parse_error -->
               ></div>
             </div>
           {/if}
-
           <!-- Section Navigation -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {#each $state.context.sections as section, index}
               <button
                 onclick={() => jumpToSection(index)}
-                class="text-left p-3 border rounded-lg transition-all hover:shadow-md";
+                class="text-left p-3 border rounded-lg transition-all hover: shadow-md";
                 class:border-blue-500={index === $state.context.currentSection}
                 class:bg-blue-50={index === $state.context.currentSection}
                 class:shadow-sm={index === $state.context.currentSection}
@@ -403,7 +366,6 @@ https://svelte.dev/e/js_parse_error -->
               </button>
             {/each}
           </div>
-
           <!-- Current Section Content -->
           {#if currentSection}
             <div
@@ -423,13 +385,11 @@ https://svelte.dev/e/js_parse_error -->
                     currentSection.importance.slice(1)} Priority
                 </span>
               </div>
-
               <div class="prose prose-gray max-w-none">
                 <p class="text-gray-700 leading-relaxed">
                   {currentSection.content}
                 </p>
               </div>
-
               <!-- Entities -->
               {#if currentSection.entities.length > 0}
                 <div class="mt-6 pt-4 border-t border-gray-200">
@@ -472,7 +432,6 @@ https://svelte.dev/e/js_parse_error -->
               {/if}
             </div>
           {/if}
-
           <!-- Analysis Actions -->
           <div class="flex flex-wrap gap-3">
             <button
@@ -483,7 +442,6 @@ https://svelte.dev/e/js_parse_error -->
               <FileText class="w-4 h-4" />
               Analyze Document
             </button>
-
             <button
               onclick={synthesizeInsights}
               class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
@@ -493,7 +451,6 @@ https://svelte.dev/e/js_parse_error -->
               Synthesize Insights
             </button>
           </div>
-
           <!-- Analysis Results -->
           {#if $state.context.analysisResults.length > 0}
             <div class="space-y-4" transitionfly={{ y: 20, duration: 300 }}>
@@ -533,14 +490,12 @@ https://svelte.dev/e/js_parse_error -->
               {/each}
             </div>
           {/if}
-
           <!-- Synthesis Results -->
           {#if $state.context.synthesisData}
             <div class="space-y-6" transitionfly={{ y: 20, duration: 300 }}>
               <h4 class="text-lg font-semibold text-gray-900">
                 Synthesis & Strategic Analysis
               </h4>
-
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-4">
                   <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -556,7 +511,6 @@ https://svelte.dev/e/js_parse_error -->
                       {/each}
                     </ul>
                   </div>
-
                   <div
                     class="bg-green-50 border border-green-200 rounded-lg p-4"
                   >
@@ -575,7 +529,6 @@ https://svelte.dev/e/js_parse_error -->
                     </ul>
                   </div>
                 </div>
-
                 <div class="space-y-4">
                   <div
                     class="bg-yellow-50 border border-yellow-200 rounded-lg p-4"
@@ -612,7 +565,6 @@ https://svelte.dev/e/js_parse_error -->
                       {/if}
                     </div>
                   </div>
-
                   <div
                     class="bg-purple-50 border border-purple-200 rounded-lg p-4"
                   >
@@ -632,7 +584,6 @@ https://svelte.dev/e/js_parse_error -->
                   </div>
                 </div>
               </div>
-
               <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
                 <h5 class="font-medium text-gray-900 mb-3">Next Steps</h5>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -669,32 +620,26 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
-
 <style>
-  .ai-summary-reader {;
+  .ai-summary-reader {
     width: 100%;
     max-width: 72rem;
     margin-left: auto
     margin-right: auto;
   }
-
-  .ai-summary-reader.compact {;
+  .ai-summary-reader.compact {
     max-width: 32rem;
   }
-
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical
     overflow: hidden;
   }
-
-  .prose p {;
+  .prose p {
     margin-bottom: 1rem;
   }
-
-  .prose p:last-child {;
+  .prose p:last-child {
     margin-bottom: 0;
   }
 </style>
-

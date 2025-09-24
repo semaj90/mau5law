@@ -2,10 +2,8 @@
   Advanced Evidence Upload Component - Legal AI Platform
   Integrates with GPU processing, metadata extraction, and legal document analysis
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   const { maxFiles = 10, maxFileSize = 100 * 1024 * 1024, acceptedTypes = [
     'image/*',
     'application/pdf',
@@ -16,14 +14,12 @@
     'audio/mpeg',
     'audio/wav'
   ], enableGPUProcessing = true, enableAIAnalysis = true } = $props();
-
   import { goTensorService, generateTensorRequest, mockTensorData } from '$lib/services/go-tensor-service-client';
   import { fade, fly, scale } from 'svelte/transition';
-
   // Types
   interface EvidenceFile {
     id: string;
-    file: File;
+    file: Fil;
     status: 'pending' | 'uploading' | 'processing' | 'analyzing' | 'completed' | 'error';
     progress: number;
     metadata?: {
@@ -38,7 +34,6 @@
     error?: string;
     uploadUrl?: string;
   }
-
   interface ProcessingStats {
     totalFiles: number;
     completed: number;
@@ -46,43 +41,31 @@
     processing: number;
     averageTime: number;
   }
-
   // Props
-  
    // 100MB
-  
-  
-  
-
   // Event dispatcher
-  
-
   // State
   let dragActive = $state(false);
   let files: EvidenceFile[] = $state([]);
   let isProcessing = $state(false);
-  let processingStats: ProcessingStats = $state({
+  let processingStats: ProcessingStats = $state({,
     totalFiles: 0,
-    completed: 0,;
-    failed: 0,;
+    completed: 0,
+    failed: 0,
     processing: 0,
     averageTime: 0;
   });
-
   // Drag and drop handlers
   function handleDragEnter(e: DragEvent) {
     e.preventDefault();
     dragActive = true;
   }
-
   function handleDragLeave() {
     dragActive = false;
   }
-
   function handleDragOver(e: DragEvent) {
     e.preventDefault();
   }
-
   function handleDrop(e: DragEvent) {
     e.preventDefault();
     dragActive = false;
@@ -90,7 +73,6 @@
       addFiles(Array.from(e.dataTransfer.files));
     }
   }
-
   // File selection handler
   function handleFileSelect(e: Event) {
     const input = e.target as HTMLInputElement;
@@ -99,7 +81,6 @@
       input.value = ''; // Reset input
     }
   }
-
   // Add files to processing queue
   function addFiles(newFiles: File[]) {
     const validFiles = newFiles.filter(file => {
@@ -108,53 +89,46 @@
         ondispatch?.({ message: `Maximum ${maxFiles} files allowed` });
         return false;
       }
-
       // Check file size
       if (file.size > maxFileSize) {
-        ondispatch?.({ 
-          message: `File "${file.name}" exceeds ${formatFileSize(maxFileSize)} limit` 
+        ondispatch?.({
+          message: `File "${file.name}" exceeds ${formatFileSize(maxFileSize)} limit`
         });
         return false;
       }
-
       // Check file type
       const isValidType = acceptedTypes.some(type => {
         if (type.endsWith('/*')) {
           return file.type.startsWith(type.replace('/*', '/'));
         }
-        return file.type === type;
+        return file.type === typ;
       });
-
       if (!isValidType) {
-        ondispatch?.({ 
-          message: `File type "${file.type}" not supported for "${file.name}"` 
+        ondispatch?.({
+          message: `File type "${file.type}" not supported for "${file.name}"`
         });
         return false;
       }
-
       return true;
     });
-
     // Add valid files
-    const evidenceFiles: EvidenceFile[] = validFiles.map(file => ({
+    const evidenceFiles: EvidenceFile[] = validFiles.map(file => ({,
       id: `evidence_${Date.now()}_${Math.random().toString().substr(2, 9)}`,
       file,
       status: 'pending',
-      progress: 0,;
+      progress: 0,
       metadata: {
-        type: getFileType(file.type),;
+        type: getFileType(file.type),
         size: file.size,
-        mimeType: file.type;
+        mimeType: file.typ;
       }
     }));
-
     files = [...files, ...evidenceFiles];
     // Start processing automatically
     if (evidenceFiles.length > 0) {
       processFiles();
     }
   }
-
   // Determine file type
   function getFileType(mimeType: string): 'document' | 'image' | 'video' | 'audio' {
     if (mimeType.startsWith('image/')) return 'image';
@@ -162,7 +136,6 @@
     if (mimeType.startsWith('audio/')) return 'audio';
     return 'document';
   }
-
   // Process all pending files
   async function processFiles() {
     if (isProcessing) return;
@@ -172,10 +145,8 @@
       isProcessing = false;
       return;
     }
-
     processingStats.totalFiles = files.length;
     processingStats.processing = pendingFiles.length;
-
     // Process files concurrently (max 3 at a time)
     const processingPromises = [];
     const maxConcurrent = 3;
@@ -186,7 +157,6 @@
       // Wait for batch to complete before starting next batch
       await Promise.allSettled(batchPromises);
     }
-
     await Promise.allSettled(processingPromises);
     // Update final stats
     processingStats.completed = files.filter(f => f.status === 'completed').length;
@@ -195,7 +165,6 @@
     isProcessing = false;
     ondispatch?.({ files, stats: processingStats });
   }
-
   // Process individual file
   async function processFile(evidenceFile: EvidenceFile) {
     try {
@@ -226,8 +195,8 @@
       evidenceFile.status = 'completed';
       evidenceFile.progress = 100;
       const processingTime = Date.now() - startTime;
-      processingStats.averageTime = 
-        (processingStats.averageTime * processingStats.completed + processingTime) / 
+      processingStats.averageTime =
+        (processingStats.averageTime * processingStats.completed + processingTime) /
         (processingStats.completed + 1);
       files = [...files];
       ondispatch?.({ file: evidenceFile });
@@ -235,20 +204,19 @@
       evidenceFile.status = 'error';
       evidenceFile.error = error instanceof Error ? error.message: 'Processing failed';
       files = [...files];
-      ondispatch?.({ 
-        message: `Failed to process "${evidenceFile.file.name}": ${evidenceFile.error}`,;
+      ondispatch?.({
+        message: `Failed to process "${evidenceFile.file.name}": ${evidenceFile.error}`,
         file: evidenceFile ;
       });
     }
   }
-
   // Upload file to server
   async function uploadFile(evidenceFile: EvidenceFile): Promise<any> {
     const formData = new FormData();
     formData.append('file', evidenceFile.file);
     formData.append('metadata', JSON.stringify(evidenceFile.metadata));
     const response = await fetch('/api/evidence/upload', {
-      method: 'POST',;
+      method: 'POST',
       body: formData;
     });
     if (!response.ok) {
@@ -256,7 +224,6 @@
     }
     return await response.json();
   }
-
   // Extract metadata from file
   async function extractMetadata(evidenceFile: EvidenceFile): Promise<any> {
     // Simulate metadata extraction
@@ -283,41 +250,38 @@
     }
     return extractedMetadata;
   }
-
   // Perform AI analysis using tensor service
   async function performAIAnalysis(evidenceFile: EvidenceFile): Promise<any> {
     if (!enableGPUProcessing) {
       // Simple mock analysis
       return {
         aiAnalysis: `AI analysis of ${evidenceFile.file.name} completed`,
-        confidence: Math.random() * 0.3 + 0.7,;
+        confidence: Math.random() * 0.3 + 0.7,
         tags: [...(evidenceFile.metadata?.tags || []), 'ai-analyzed'];
       };
     }
-
     try {
       // Generate tensor data for analysis
       const tensorData = mockTensorData(768);
       const tensorRequest = generateTensorRequest(evidenceFile.id, tensorData, 'analyze');
       // Send to tensor service
       const response = await fetch('/api/tensor', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           operation: 'analyze',
-          documentId: evidenceFile.id,;
-          data: Array.from(tensorData),;
+          documentId: evidenceFile.id,
+          data: Array.from(tensorData),
           options: { timeout: 15000 }
         })
       });
-
       const result = await response.json();
       if (result.success && result.data.result) {
         return {
           aiAnalysis: `GPU-accelerated analysis completed with ${result.data.result.metadata?.confidence || 85}% confidence`,
-          confidence: result.data.result.metadata?.confidence || 0.85,;
+          confidence: result.data.result.metadata?.confidence || 0.85,
           tags: [...(evidenceFile.metadata?.tags || []), 'gpu-analyzed', 'ai-processed'],
-          processingTime: result.data.result.processingTime;
+          processingTime: result.data.result.processingTim;
         };
       }
       throw new Error('Analysis failed');
@@ -325,30 +289,27 @@
       // Fallback to mock analysis
       return {
         aiAnalysis: `Fallback analysis of ${evidenceFile.file.name} (tensor service unavailable)`,
-        confidence: Math.random() * 0.2 + 0.6,;
+        confidence: Math.random() * 0.2 + 0.6,
         tags: [...(evidenceFile.metadata?.tags || []), 'mock-analyzed'];
       };
     }
   }
-
   // Remove file
   function removeFile(id: string) {
     files = files.filter(f => f.id !== id);
   }
-
   // Clear all files
   function clearAll() {
     files = [];
     isProcessing = false;
     processingStats = {
       totalFiles: 0,
-      completed: 0,;
-      failed: 0,;
+      completed: 0,
+      failed: 0,
       processing: 0,
       averageTime: 0;
     };
   }
-
   // Utility functions
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
@@ -357,7 +318,6 @@
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-
   function getStatusColor(status: string): string {
     switch (status) {
       case 'completed': return '#10b981';
@@ -366,7 +326,6 @@
       default: return '#6b7280';
     }
   }
-
   function getStatusIcon(status: string): string {
     switch (status) {
       case 'completed': return '✅';
@@ -378,7 +337,6 @@
     }
   }
 </script>
-
 <div class="evidence-upload">
   <!-- Upload Zone -->
   <div
@@ -401,10 +359,8 @@
           <polyline points="10,9 9,9 8,9"/>
         </svg>
       </div>
-      
       <h3>📄 Upload Legal Evidence</h3>
       <p>Drag & drop files here or click to browse</p>
-      
       <div class="upload-info">
         <div class="info-item">
           <span class="info-label">Max Files:</span>
@@ -421,7 +377,6 @@
           </span>
         </div>
       </div>
-      
       <input
         id="file-input"
         type="file"
@@ -430,13 +385,11 @@
         onchange={handleFileSelect}
         style="display: none"
       />
-      
       <button class="browse-button" onclick={() => document.getElementById('file-input')?.click()}>
         📁 Browse Files
       </button>
     </div>
   </div>
-
   <!-- Processing Stats -->
   {#if files.length > 0}
     <div class="processing-stats" in:fade={{ duration: 300 }}>
@@ -448,7 +401,6 @@
           </button>
         {/if}
       </div>
-      
       <div class="stats-grid">
         <div class="stat-item">
           <div class="stat-value">{processingStats.totalFiles}</div>
@@ -475,12 +427,10 @@
       </div>
     </div>
   {/if}
-
   <!-- File List -->
   {#if files.length > 0}
     <div class="file-list" in:fade={{ duration: 300 }}>
       <h4>📂 Evidence Files ({files.length})</h4>
-      
       {#each files as file (file.id)}
         <div class="file-item" in:fly={{ x: -20, duration: 300 }} out:scale={{ duration: 200 }}>
           <div class="file-info">
@@ -499,19 +449,17 @@
                 ❌
               </button>
             </div>
-            
             {#if file.progress > 0 && file.status !== 'completed'}
               <div class="progress-bar">
-                <div 
-                  class="progress-fill" 
+                <div
+                  class="progress-fill"
                   style="width: {file.progress}%; background-color: {getStatusColor(file.status)}"
                 ></div>
               </div>
             {/if}
-            
             <div class="file-status">
               <span class="status-text" style="color: {getStatusColor(file.status)}">
-                {file.status === 'pending' ? 'Waiting' : 
+                {file.status === 'pending' ? 'Waiting' :
                  file.status === 'uploading' ? 'Uploading...' :
                  file.status === 'processing' ? 'Extracting metadata...' :
                  file.status === 'analyzing' ? 'AI Analysis in progress...' :
@@ -519,7 +467,6 @@
                  file.status === 'error' ? `Error: ${file.error}` : file.status}
               </span>
             </div>
-            
             {#if file.metadata?.tags && file.metadata.tags.length > 0}
               <div class="file-tags">
                 {#each file.metadata.tags as tag}
@@ -527,7 +474,6 @@
                 {/each}
               </div>
             {/if}
-            
             {#if file.metadata?.aiAnalysis}
               <div class="ai-analysis">
                 <strong>🧠 AI Analysis:</strong> {file.metadata.aiAnalysis}
@@ -539,14 +485,12 @@
     </div>
   {/if}
 </div>
-
 <style>
-  .evidence-upload {;
+  .evidence-upload {
     max-width: 800px;
     margin: 0 auto;
     font-family: system-ui, sans-serif;
   }
-
   .upload-zone {
     border: 3px dashed #d1d5db;
     border-radius: 12px;
@@ -557,43 +501,36 @@
     cursor: pointer;
     margin-bottom: 2rem;
   }
-
-  .upload-zone:hover, .upload-zone:focus {
+  .upload-zone:hover, .upload-zone: focus {
     border-color: #3b82f6;
     background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
     outline: none;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   }
-
   .upload-zone.drag-active {
     border-color: #10b981;
     background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
     transform: scale(1.02);
   }
-
   .upload-zone.has-files {
     padding: 2rem;
   }
-
   .upload-content h3 {
     margin: 0 0 0.5rem 0;
     color: #1f2937;
     font-size: 1.5rem;
   }
-
   .upload-content p {
     margin: 0 0 1.5rem 0;
     color: #6b7280;
     font-size: 1.1rem;
   }
-
   .upload-icon {
     width: 64px;
     height: 64px;
     margin: 0 auto 1rem;
     color: #6b7280;
   }
-
   .upload-info {
     display: flex;
     gap: 2rem;
@@ -601,30 +538,24 @@
     margin: 1.5rem 0;
     font-size: 0.9rem;
   }
-
   .info-item {
     text-align: center;
   }
-
   .info-label {
     display: block;
     color: #6b7280;
     margin-bottom: 0.25rem;
   }
-
   .info-value {
     font-weight: 600;
     color: #1f2937;
   }
-
   .info-value.enabled {
     color: #10b981;
   }
-
   .info-value.disabled {
     color: #ef4444;
   }
-
   .browse-button {
     background: #3b82f6;
     color: white;
@@ -639,12 +570,10 @@
     gap: 0.5rem;
     margin: 0 auto;
   }
-
   .browse-button:hover {
     background: #2563eb;
     transform: translateY(-1px);
   }
-
   .processing-stats {
     background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
     color: white;
@@ -652,19 +581,16 @@
     border-radius: 12px;
     margin-bottom: 2rem;
   }
-
   .stats-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1rem;
   }
-
   .stats-header h4 {
     margin: 0;
     color: white;
   }
-
   .clear-button {
     background: #ef4444;
     color: white;
@@ -674,54 +600,45 @@
     font-size: 0.9rem;
     cursor: pointer;
   }
-
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     gap: 1rem;
   }
-
   .stat-item {
     text-align: center;
     background: rgba(255, 255, 255, 0.1);
     padding: 1rem;
     border-radius: 8px;
   }
-
   .stat-item.completed {
     background: rgba(16, 185, 129, 0.2);
     border: 1px solid rgba(16, 185, 129, 0.3);
   }
-
   .stat-item.processing {
     background: rgba(59, 130, 246, 0.2);
     border: 1px solid rgba(59, 130, 246, 0.3);
   }
-
   .stat-item.failed {
     background: rgba(239, 68, 68, 0.2);
     border: 1px solid rgba(239, 68, 68, 0.3);
   }
-
   .stat-value {
     font-size: 2rem;
     font-weight: bold;
     color: #3b82f6;
   }
-
   .stat-label {
     font-size: 0.8rem;
     color: #94a3b8;
     margin-top: 0.25rem;
   }
-
   .file-list {
     background: white;
     border-radius: 12px;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
     overflow: hidden;
   }
-
   .file-list h4 {
     margin: 0;
     padding: 1rem 1.5rem;
@@ -729,54 +646,44 @@
     color: #1f2937;
     border-bottom: 1px solid #e5e7eb;
   }
-
   .file-item {
     border-bottom: 1px solid #e5e7eb;
     transition: all 0.2s ease;
   }
-
   .file-item:hover {
     background: #f9fafb;
   }
-
   .file-item:last-child {
     border-bottom: none;
   }
-
   .file-info {
     padding: 1rem 1.5rem;
   }
-
   .file-header {
     display: flex;
     align-items: flex-start;
     gap: 1rem;
     margin-bottom: 0.5rem;
   }
-
   .file-icon {
     font-size: 1.25rem;
     flex-shrink: 0;
     margin-top: 0.25rem;
   }
-
   .file-details {
     flex: 1;
     min-width: 0;
   }
-
   .file-name {
     font-weight: 600;
     color: #1f2937;
     word-break: break-word;
   }
-
   .file-meta {
     font-size: 0.9rem;
     color: #6b7280;
     margin-top: 0.25rem;
   }
-
   .remove-button {
     background: none;
     border: none;
@@ -785,11 +692,9 @@
     opacity: 0.7;
     transition: opacity 0.2s ease;
   }
-
   .remove-button:hover {
     opacity: 1;
   }
-
   .progress-bar {
     width: 100%;
     height: 8px;
@@ -798,28 +703,23 @@
     overflow: hidden;
     margin: 0.5rem 0;
   }
-
   .progress-fill {
     height: 100%;
     transition: width 0.3s ease;
   }
-
   .file-status {
     margin: 0.5rem 0;
     font-size: 0.9rem;
   }
-
   .status-text {
     font-weight: 500;
   }
-
   .file-tags {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
     margin-top: 0.75rem;
   }
-
   .tag {
     background: #e0e7ff;
     color: #3730a3;
@@ -828,7 +728,6 @@
     font-size: 0.75rem;
     font-weight: 500;
   }
-
   .ai-analysis {
     margin-top: 0.75rem;
     padding: 0.75rem;
@@ -838,31 +737,25 @@
     font-size: 0.9rem;
     color: #1e40af;
   }
-
   /* Responsive */
   @media (max-width: 768px) {
     .evidence-upload {
       padding: 1rem;
     }
-
     .upload-zone {
       padding: 2rem 1rem;
     }
-
     .upload-info {
       flex-direction: column;
       gap: 1rem;
     }
-
     .stats-grid {
       grid-template-columns: repeat(2, 1fr);
     }
-
     .file-header {
       flex-direction: column;
       gap: 0.5rem;
     }
-
     .file-tags {
       flex-direction: column;
     }

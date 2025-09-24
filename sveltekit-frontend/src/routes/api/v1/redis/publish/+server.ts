@@ -1,33 +1,27 @@
 import { getRedisService } from '$lib/server/redis/redis-service'
 import type { RequestHandler } from './$types.js'
-
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { channel, data } = await request.json()
-    
     if (!channel || !data) {
-      return new Response(JSON.stringify({ 
-        success: false, 
-        error: 'Missing channel or data' 
-      }), { 
+      return new Response(JSON.stringify({
+        success: false
+        error: 'Missing channel or data'
+      }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
       })
     }
-
     const redisService = getRedisService()
-    
     if (!redisService.isConnectedToRedis()) {
-      return new Response(JSON.stringify({ 
-        success: false, 
-        error: 'Redis not connected' 
-      }), { 
+      return new Response(JSON.stringify({
+        success: false
+        error: 'Redis not connected'
+      }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' }
       })
     }
-
     // Publish event based on channel type
     switch (channel) {
       case 'evidence_update':
@@ -57,21 +51,19 @@ export const POST: RequestHandler = async ({ request }) => {
         // Generic publish for custom channels
         await redisService.trackEvent(channel, data, data.userId)
     }
-
-    return new Response(JSON.stringify({ 
-      success: true, 
+    return new Response(JSON.stringify({
+      success: true
       message: 'Event published successfully',
       timestamp: new Date().toISOString()
     }), {
       headers: { 'Content-Type': 'application/json' }
     })
-
   } catch (error) {
     console.error('Redis publish error:', error)
-    return new Response(JSON.stringify({ 
-      success: false, 
-      error: error instanceof Error ? error.message: 'Unknown error' 
-    }), { 
+    return new Response(JSON.stringify({
+      success: false
+      error: error instanceof Error ? error.message: 'Unknown error'
+    }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
     })

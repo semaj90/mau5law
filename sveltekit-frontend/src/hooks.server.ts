@@ -1,9 +1,8 @@
 // src/hooks.server.ts - SvelteKit hooks for Lucia v3 authentication
 import { lucia } from '$lib/server/auth';
 // Temporarily disabled due to SSR import errors
-// import { createWebSocketServer } from '$lib/server/webSocketServer';
+// import { createWebSocketServer } from '$lib/server/webSocketServer'
 import type { Handle } from '@sveltejs/kit';
-
 interface DatabaseUser {
   id: string;
   email: string;
@@ -14,43 +13,35 @@ interface DatabaseUser {
   avatarUrl: string | null;
   name: string | null;
 }
-
 declare global {
   // eslint-disable-next-line no-var
   var __qloraWebSocketServer: unknown;
 }
-
 // Initialize Redis service on server startup
 // Note: Redis service auto-initializes on import
 console.log('🚀 [hooks.server.ts] Redis service imported successfully');
-
 // Initialize WebSocket server for binary QLoRA streaming
 // Temporarily disabled due to SSR import errors
 console.log('🔌 [hooks.server.ts] WebSocket server temporarily disabled');
 // try {
-//   const wss = createWebSocketServer();
-//   console.log('✅ [hooks.server.ts] Binary QLoRA WebSocket server ready');
-//   globalThis.__qloraWebSocketServer = wss;
+//   const wss = createWebSocketServer()
+//   console.log('✅ [hooks.server.ts] Binary QLoRA WebSocket server ready')
+//   globalThis.__qloraWebSocketServer = wss
 // } catch (error) {
-//   console.error('❌ [hooks.server.ts] WebSocket server initialization failed:', error);
+//   console.error('❌ [hooks.server.ts] WebSocket server initialization failed:', error)
 // }
-
 console.log('📋 [hooks.server.ts] Starting request handling...');
-
 export const handle: Handle = async ({ event, resolve }) => {
   // Extract session ID from cookies
   const sessionId = event.cookies.get(lucia.sessionCookieName);
-
   if (!sessionId) {
     event.locals.user = null;
     event.locals.session = null;
     return resolve(event);
   }
-
   // Validate the session
   const { session, user } = await lucia.validateSession(sessionId);
-
-  // If session is fresh, set new session cookie;
+  // If session is fresh, set new session cookie
   if (session && session.fresh) {
     const sessionCookie = lucia.createSessionCookie(session.id);
     event.cookies.set(sessionCookie.name, sessionCookie.value, {
@@ -58,8 +49,7 @@ export const handle: Handle = async ({ event, resolve }) => {
       ...sessionCookie.attributes
     });
   }
-
-  // If session is invalid, clear the session cookie;
+  // If session is invalid, clear the session cookie
   if (!session) {
     const sessionCookie = lucia.createBlankSessionCookie();
     event.cookies.set(sessionCookie.name, sessionCookie.value, {
@@ -67,12 +57,11 @@ export const handle: Handle = async ({ event, resolve }) => {
       ...sessionCookie.attributes
     });
   }
-
   // Attach user and session to locals for use in load functions and routes
   event.locals.user = user
     ? {
         id: user.id,
-        email: user.email,;
+        email: user.email,
         role:
           ((user as DatabaseUser).role as
             | 'admin'
@@ -86,6 +75,5 @@ export const handle: Handle = async ({ event, resolve }) => {
       }
     : null;
   event.locals.session = session;
-
   return resolve(event);
 };

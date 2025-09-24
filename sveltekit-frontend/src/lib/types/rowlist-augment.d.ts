@@ -1,6 +1,5 @@
 // Minimal, conservative augmentation to reduce pervasive RowList property errors.
 // This intentionally uses broad types to keep the fast-check pass noise low.
-
 declare global {
   /**
    * Represents a lightweight result wrapper returned by various DB helpers in this codebase.
@@ -14,5 +13,4 @@ declare global {
     [key: string]: any;
   }
 }
-
 export {};

@@ -1,89 +1,72 @@
 
 import type { RequestHandler } from './$types.js'
-
 // routes/api/ai-synthesizer/test/+server.ts
 // Integration test and demo endpoint for AI synthesis system
-
 import { aiAssistantSynthesizer } from "$lib/server/ai/ai-assistant-input-synthesizer"
 import { feedbackLoop } from "$lib/server/ai/feedback-loop"
 import { streamingService } from "$lib/server/ai/streaming-service"
 import { logger } from "$lib/server/logger"
-
 export const GET: RequestHandler = async () => {
   logger.info('[Test] Running AI Synthesizer integration test...')
-  
   const results = {
     timestamp: new Date(),
     tests: [],
-    health: Record<string, any>,
-    performance: Record<string, any>,
+    health: { [key: string]: any },
+    performance: { [key: string]: any },
     recommendations: []
   }
-
   try {
     // Test 1: Health Check
     const healthTest = await testHealthCheck()
     results.tests.push(healthTest)
     results.health = healthTest.result
-
     // Test 2: Basic Synthesis
     const synthesisTest = await testBasicSynthesis()
     results.tests.push(synthesisTest)
-
     // Test 3: Caching
     const cacheTest = await testCaching()
     results.tests.push(cacheTest)
-
     // Test 4: Streaming
     const streamTest = await testStreaming()
     results.tests.push(streamTest)
-
     // Test 5: Ollama Local LLM
     const ollamaTest = await testOllama()
     results.tests.push(ollamaTest)
-
     // Test 6: Feedback Loop
     const feedbackTest = await testFeedbackLoop()
     results.tests.push(feedbackTest)
-
     // Test 7: Monitoring
     const monitoringTest = await testMonitoring()
     results.tests.push(monitoringTest)
     results.performance = monitoringTest.result
-
     // Generate recommendations
     results.recommendations = generateRecommendations(results)
-
     return json({
-      success: true,
+      success: true
       ...results
     })
-
   } catch (error: any) {
     logger.error('[Test] Integration test failed:', error)
     return json({
-      success: false,
+      success: false
       error: error.message,
       ...results
     }, { status: 500 })
   }
 }
-
 async function testHealthCheck(): Promise<any> {
   const startTime = Date.now()
-  
   try {
     const health = await aiAssistantSynthesizer.healthCheck()
     const cacheHealth = await cachingLayer.getStats()
     const ollamaHealth = await ollamaLLM.healthCheck()
-    
     return {
       name: 'Health Check',
       status: 'passed',
       duration: Date.now() - startTime,
       result: {
-        synthesizer: health,
-        cache: cacheHealth,
+        synthesizer: health
+        cache: cacheHealth
         ollama: ollamaHealth
       }
     }
@@ -96,34 +79,29 @@ async function testHealthCheck(): Promise<any> {
     }
   }
 }
-
 async function testBasicSynthesis(): Promise<any> {
   const startTime = Date.now()
-  
   try {
     const testQuery = 'What are the key elements of a valid contract under common law?'
-    
     const result = await aiAssistantSynthesizer.synthesizeInput({
-      query: testQuery,
+      query: testQuery
       context: {
         userId: 'test_user',
         sessionId: 'test_session'
       },
       options: {
-        enableMMR: true,
-        enableCrossEncoder: true,
-        enableLegalBERT: true,
-        enableRAG: true,
+        enableMMR: true
+        enableCrossEncoder: true
+        enableLegalBERT: true
+        enableRAG: true
         maxSources: 5
       }
     })
-    
-    const passed = result && 
-                   (result as { processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any; metadata?: any }).processedQuery && 
+    const passed = result &&
+                   (result as { processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any; metadata?: any }).processedQuery &&
                    (result as { processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any; metadata?: any }).retrievedContext &&
                    (result as { processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any; metadata?: any }).enhancedPrompt &&
                    (result as { processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any; metadata?: any }).metadata
-    
     return {
       name: 'Basic Synthesis',
       status: passed ? 'passed' : 'failed',
@@ -144,33 +122,26 @@ async function testBasicSynthesis(): Promise<any> {
     }
   }
 }
-
 async function testCaching(): Promise<any> {
   const startTime = Date.now()
-  
   try {
     const testKey = 'test_key_' + Date.now()
     const testData = { test: 'data', timestamp: Date.now() }
-    
     // Test set
     await cachingLayer.set(testKey, testData, { ttl: 60 })
-    
     // Test get
     const retrieved = await cachingLayer.get(testKey)
-    
     // Test stats
     const stats = await cachingLayer.getStats()
-    
-    const passed = retrieved && 
+    const passed = retrieved &&
                    retrieved.test === testData.test &&
                    stats.hits >= 0
-    
     return {
       name: 'Caching Layer',
       status: passed ? 'passed' : 'failed',
       duration: Date.now() - startTime,
       result: {
-        cacheWorking: passed,
+        cacheWorking: passed
         hitRate: stats.hitRate,
         memoryUsage: stats.memoryUsage,
         redisConnected: stats.redisConnected
@@ -185,19 +156,16 @@ async function testCaching(): Promise<any> {
     }
   }
 }
-
 async function testStreaming(): Promise<any> {
   const startTime = Date.now()
-  
   try {
     let progressUpdates = 0
     let stagesCompleted = []
-    
     const result = await streamingService.synthesizeWithProgress({
       input: {
         query: 'Test streaming query',
         context: { userId: 'test' },
-        options: Record<string, any>
+        options: { [key: string]: any }
       },
       onProgress: (stage, progress) => {
         progressUpdates++)
@@ -206,9 +174,7 @@ async function testStreaming(): Promise<any> {
         stagesCompleted.push(stage)
       }
     })
-    
     const passed = progressUpdates > 0 && stagesCompleted.length > 0
-    
     return {
       name: 'Streaming Service',
       status: passed ? 'passed' : 'failed',
@@ -228,16 +194,12 @@ async function testStreaming(): Promise<any> {
     }
   }
 }
-
 async function testOllama(): Promise<any> {
   const startTime = Date.now()
-  
   try {
     const available = await ollamaLLM.checkAvailability()
-    
     let generateResult = null
     let embeddingResult = null
-    
     if (available) {
       // Test generation
       generateResult = await ollamaLLM.generate({
@@ -248,11 +210,9 @@ async function testOllama(): Promise<any> {
           num_predict: 50
         }
       })
-      
       // Test embeddings
       embeddingResult = await ollamaLLM.generateEmbeddings('test text')
     }
-    
     return {
       name: 'Ollama Local LLM',
       status: available ? 'passed' : 'warning',
@@ -273,10 +233,8 @@ async function testOllama(): Promise<any> {
     }
   }
 }
-
 async function testFeedbackLoop(): Promise<any> {
   const startTime = Date.now()
-  
   try {
     // Record test interaction
     await feedbackLoop.recordInteraction({
@@ -286,7 +244,6 @@ async function testFeedbackLoop(): Promise<any> {
       userId: 'test_user',
       timestamp: new Date()
     })
-    
     // Process test feedback
     await feedbackLoop.processFeedback({
       requestId: 'test_request_' + Date.now(),
@@ -294,13 +251,10 @@ async function testFeedbackLoop(): Promise<any> {
       rating: 4,
       feedback: 'Test feedback'
     })
-    
     // Get personalized recommendations
     const recommendations = await feedbackLoop.getPersonalizedRecommendations('test_user')
-    
     // Get stats
     const stats = feedbackLoop.getStats()
-    
     return {
       name: 'Feedback Loop',
       status: 'passed',
@@ -321,10 +275,8 @@ async function testFeedbackLoop(): Promise<any> {
     }
   }
 }
-
 async function testMonitoring(): Promise<any> {
   const startTime = Date.now()
-  
   try {
     // Track test request
     monitoringService.trackRequest({
@@ -333,7 +285,6 @@ async function testMonitoring(): Promise<any> {
       query: 'Test query',
       timestamp: new Date()
     })
-    
     // Track test metrics
     monitoringService.trackMetrics({
       requestId: 'test_' + Date.now(),
@@ -343,13 +294,10 @@ async function testMonitoring(): Promise<any> {
       strategies: ['rag', 'mmr'],
       qualityScore: 0.9
     })
-    
     // Get stats
     const stats = monitoringService.getStats()
-    
     // Export Prometheus metrics
     const prometheusMetrics = monitoringService.exportPrometheusMetrics()
-    
     return {
       name: 'Monitoring Service',
       status: 'passed',
@@ -371,10 +319,8 @@ async function testMonitoring(): Promise<any> {
     }
   }
 }
-
 function generateRecommendations(results) {
   const recommendations = []
-  
   // Check Ollama availability
   const ollamaTest = results.tests.find(t => t.name === 'Ollama Local LLM')
   if (ollamaTest && !ollamaTest.result?.available) {
@@ -385,7 +331,6 @@ function generateRecommendations(results) {
       action: 'Run: curl -fsSL https://ollama.ai/install.sh | sh && ollama serve'
     })
   }
-  
   // Check Redis connection
   const cacheTest = results.tests.find(t => t.name === 'Caching Layer')
   if (cacheTest && !cacheTest.result?.redisConnected) {
@@ -396,7 +341,6 @@ function generateRecommendations(results) {
       action: 'Install Redis and set REDIS_HOST environment variable'
     })
   }
-  
   // Check cache hit rate
   if (cacheTest && parseFloat(cacheTest.result?.hitRate) < 0.3) {
     recommendations.push({
@@ -406,7 +350,6 @@ function generateRecommendations(results) {
       action: 'Consider warming cache with frequently accessed data'
     })
   }
-  
   // Check performance metrics
   const monitoringTest = results.tests.find(t => t.name === 'Monitoring Service')
   if (monitoringTest?.result?.performance?.overall?.p95 > 5000) {
@@ -417,7 +360,6 @@ function generateRecommendations(results) {
       action: 'Optimize slow queries and consider adding more resources'
     })
   }
-  
   // Check synthesis quality
   const synthesisTest = results.tests.find(t => t.name === 'Basic Synthesis')
   if (synthesisTest?.result?.confidence < 0.7) {
@@ -428,21 +370,16 @@ function generateRecommendations(results) {
       action: 'Improve data quality and consider adding more training data'
     })
   }
-  
   return recommendations
 }
-
 // POST endpoint for manual testing with custom queries
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { query, options } = await request.json()
-    
     if (!query) {
       return json({ error: 'Query is required' }, { status: 400 })
     }
-    
     logger.info(`[Test] Running manual test with query: "${query}"`)
-    
     const result = await aiAssistantSynthesizer.synthesizeInput({
       query,
       context: {
@@ -450,15 +387,14 @@ export const POST: RequestHandler = async ({ request }) => {
         sessionId: 'test_session_' + Date.now()
       },
       options: {
-        enableMMR: true,
-        enableCrossEncoder: true,
-        enableLegalBERT: true,
-        enableRAG: true,
+        enableMMR: true
+        enableCrossEncoder: true
+        enableLegalBERT: true
+        enableRAG: true
         maxSources: 10,
         ...options
       }
     })
-    
     // Also test with Ollama if available
     let ollamaResult = null
     if (await ollamaLLM.checkAvailability()) {
@@ -468,22 +404,20 @@ export const POST: RequestHandler = async ({ request }) => {
         { format: 'json' }
       )
     }
-    
     return json({
-      success: true,
-      synthesis: result,
-      ollama: ollamaResult,
+      success: true
+      synthesis: result
+      ollama: ollamaResult
       stats: {
         cache: await cachingLayer.getStats(),
         monitoring: monitoringService.getStats(),
         feedback: feedbackLoop.getStats()
       }
     })
-    
   } catch (error: any) {
     logger.error('[Test] Manual test failed:', error)
     return json({
-      success: false,
+      success: false
       error: error.message
     }, { status: 500 })
   }

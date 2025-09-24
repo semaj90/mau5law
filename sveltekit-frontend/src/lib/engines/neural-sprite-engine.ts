@@ -7,20 +7,18 @@
  * with local LLM predicting next states for ultra-fast animations
  * Enhanced with Self-Organizing Maps (SOM) and multi-core worker orchestration
  */
-
 import Loki from "lokijs";
 import { writable, derived } from 'svelte/store';
 import { BrowserCacheManager } from './browser-cache-manager.js';
 import { ShaderCache } from './webgl-shader-cache.js';
 import { MatrixTransformLib } from './matrix-transform-lib.js';
-
-// Types for our "sprite sheet" system;
+// Types for our "sprite sheet" system
 export interface CanvasSprite {
   id: string;
   name: string; // e.g., 'idle', 'text_creation', 'object_move'
-  sequence: number; // Frame number in animation sequence
-  jsonState: string; // Serialized Fabric.js canvas state;
-  metadata: {;
+  sequence: number; // Frame number in animation sequence,
+  jsonState: string; // Serialized Fabric.js canvas state
+  metadata: {
     objects: number;
     complexity: number;
     duration?: number; // How long this frame should display
@@ -31,7 +29,6 @@ export interface CanvasSprite {
   usageCount: number;
   predictedNext?: string[]; // AI-predicted likely next states
 }
-
 export interface UserActivity {
   id: string;
   action: string;
@@ -40,18 +37,16 @@ export interface UserActivity {
   canvasState?: string; // Current canvas state when action occurred
   sequence: number; // Position in user's action sequence
 }
-
 export interface AnimationSequence {
   id: string;
   name: string;
-  frames: string[]; // Array of sprite IDs
+  frames: string[]; // Array of sprite IDs,
   loop: boolean;
   fps: number;
   triggers: string[];
   confidence: number; // AI confidence this sequence will be used
 }
-
-// Self-Organizing Map Node;
+// Self-Organizing Map Node
 export interface SOMNode {
   id: string;
   position: { x: number; y: number };
@@ -61,8 +56,7 @@ export interface SOMNode {
   learningRate: number;
   neighborhoodRadius: number;
 }
-
-// Multi-core Processing Task;
+// Multi-core Processing Task
 export interface ProcessingTask {
   id: string;
   type: 'sprite_analysis' | 'som_update' | 'prediction' | 'optimization';
@@ -73,7 +67,6 @@ export interface ProcessingTask {
   completionTime?: number;
   result?: unknown;
 }
-
 // Result payloads returned from workers (union of possible task outputs)
 export interface WorkerResult {
   spriteId?: string;
@@ -88,7 +81,6 @@ export interface WorkerResult {
   cacheRecommendations?: string[];
   processingTime?: number;
 }
-
 // Minimal local collection typing for Loki usage in this file
 type LocalCollection<T> = {
   find(query?: unknown): T[];
@@ -97,8 +89,7 @@ type LocalCollection<T> = {
   update(doc: T): void;
   count(): number;
 };
-
-// Performance Analytics;
+// Performance Analytics
 export interface PerformanceMetrics {
   frameRate: number;
   cacheHitRate: number;
@@ -109,7 +100,6 @@ export interface PerformanceMetrics {
   predictiveAccuracy: number;
   selfOrganizationEfficiency: number;
 }
-
 type CanvasLike = {
   getContext?: (contextId: string) => WebGL2RenderingContext | CanvasRenderingContext2D | null;
   toJSON?: () => unknown;
@@ -118,8 +108,7 @@ type CanvasLike = {
   loadFromJSON?: (json: string, callback: () => void) => void;
   renderAll?: () => void;
 };
-
-// Main Self-Organizing Neural Sprite Engine class;
+// Main Self-Organizing Neural Sprite Engine class
 export class NeuralSpriteEngine {
   private db: Loki = new Loki('neural-sprites.db');
   private sprites: LocalCollection<CanvasSprite>;
@@ -127,50 +116,43 @@ export class NeuralSpriteEngine {
   private sequences: LocalCollection<AnimationSequence>;
   private canvas: CanvasLike | null = null;
   private aiWorker?: Worker;
-
   // Self-Organizing Map components
   private somNodes: Map<string, SOMNode> = new Map();
   private somGridSize: { width: number; height: number } = {
-    width: 10,;
+    width: 10,
     height: 10,
   };
   private globalLearningRate = 0.1;
   private neighborhoodDecay = 0.95;
-
   // Multi-core processing system
   private workerPool: Worker[] = [];
   private taskQueue: ProcessingTask[] = [];
   private activeWorkers = 0;
   private completedTasks: Map<string, WorkerResult> = new Map();
   private maxWorkers: number;
-
   // Enhanced caching systems
   private shaderCache: ShaderCache;
   private browserCache: BrowserCacheManager;
   private matrixLib: MatrixTransformLib;
   private webglContext?: WebGL2RenderingContext;
-
   // Performance metrics (NES-inspired)
   private startTime: number = Date.now();
   private frameCount = 0;
   private cacheHits = 0;
   private cacheMisses = 0;
-
   // Stores for reactive Svelte integration
   public currentState = writable<string>('idle');
   public isAnimating = writable<boolean>(false);
   public cacheHitRate = writable<number>(1.0);
   public predictedStates = writable<string[]>([]);
-
   // Enhanced stores for self-organizing features
   public somVisualization = writable<{
     nodes: { x: number; y: number; activation: number; sprites: number }[];
     connections: unknown[];
   }>({
-    nodes: [],;
+    nodes: [],
     connections: [],
   });
-
   public multiCoreMetrics = writable({
     activeWorkers: 0,
     queueDepth: 0,
@@ -178,42 +160,36 @@ export class NeuralSpriteEngine {
     averageTaskTime: 0,
     cpuUtilization: 0,
   });
-
   public selfOrganizationStats = writable({
     convergenceRate: 0,
     adaptationSpeed: 0,
     clusterFormation: 0,
     neuralEfficiency: 0,
   });
-
   constructor(canvas: CanvasLike, maxWorkers?: number) {
     this.canvas = canvas;
     this.maxWorkers = maxWorkers || navigator.hardwareConcurrency || 4;
     this.startTime = Date.now();
-
     // Initialize shader cache with defaults - handle null context gracefully
     const context = (canvas?.getContext?.('webgl2') as WebGL2RenderingContext) || null;
     this.shaderCache = new ShaderCache(context as WebGL2RenderingContext | null, {
-      enableNVIDIAOptimizations: false,
+      enableNVIDIAOptimizations: false
       cacheSize: 50,
-      persistToDisk: false,
+      persistToDisk: false
     });
-
-    // Initialize browser cache with defaults;
+    // Initialize browser cache with defaults
     this.browserCache = new BrowserCacheManager({
       cachePrefix: 'neural-sprite-',
       maxCacheSize: 100 * 1024 * 1024,
-      enableCompression: true,
-      enableServiceWorkerIntegration: false,
+      enableCompression: true
+      enableServiceWorkerIntegration: false
     });
-
-    // Initialize matrix lib with defaults;
+    // Initialize matrix lib with defaults
     this.matrixLib = new MatrixTransformLib({
-      enableGPUAcceleration: false,
-      optimizeForCSS: true,
-      cacheTransforms: true,
+      enableGPUAcceleration: false
+      optimizeForCSS: true
+      cacheTransforms: true
     });
-
     this.initializeDatabase();
     this.initializeAIWorker();
     this.initializeSelfOrganizingMap();
@@ -221,77 +197,66 @@ export class NeuralSpriteEngine {
     this.setupPerformanceMonitoring();
     this.initializeEnhancedCaching();
   }
-
   private initializeDatabase(): void {
     this.db = new Loki('neural-sprite-cache.db', {
-      autoload: true,
-      autoloadCallback: this.databaseInitialize.bind(this),;
-      autosave: true,
+      autoload: true
+      autoloadCallback: this.databaseInitialize.bind(this),
+      autosave: true
       autosaveInterval: 4000,
     });
   }
-
   private databaseInitialize(): void {
     // Initialize collections if they don't exist
     this.sprites =
       this.db.getCollection<CanvasSprite>('sprites') ||
       this.db.addCollection<CanvasSprite>('sprites', { indices: ['name', 'sequence'] });
-
     this.activities =
       this.db.getCollection<UserActivity>('activities') ||
       this.db.addCollection<UserActivity>('activities', { indices: ['action', 'timestamp'] });
-
     this.sequences =
       this.db.getCollection<AnimationSequence>('sequences') ||
       this.db.addCollection<AnimationSequence>('sequences', { indices: ['name', 'confidence'] });
-
-    // Load default "idle" state if database is empty;
+    // Load default "idle" state if database is empty
     if (this.sprites.count() === 0) {
       this.createDefaultSprites();
     }
   }
-
   private initializeAIWorker(): void {
     if (typeof Worker !== 'undefined') {
       this.aiWorker = new Worker('/workers/neural-predictor.js');
       this.aiWorker.onmessage = this.handleAIWorkerMessage.bind(this);
     }
   }
-
   private setupPerformanceMonitoring(): void {
-    // Enhanced performance monitoring with self-organizing features;
+    // Enhanced performance monitoring with self-organizing features
     setInterval(() => {
       const hitRate = this.cacheHits / (this.cacheHits + this.cacheMisses);
       this.cacheHitRate.set(isNaN(hitRate) ? 1.0 : hitRate);
-
       // Update multi-core and SOM metrics
       this.updateMultiCoreMetrics();
       this.updateSOMVisualization();
       this.updateSelfOrganizationStats();
-
       // Reset counters every second (like NES frame counting)
       this.frameCount = 0;
     }, 1000);
   }
-
   private initializeEnhancedCaching(): void {
-    // Initialize WebGL2 context for shader caching (with error handling);
+    // Initialize WebGL2 context for shader caching (with error handling)
     try {
       const canvasElement = this.canvas.getElement();
       this.webglContext =
         (canvasElement?.getContext?.('webgl2', {
-          preserveDrawingBuffer: true,
+          preserveDrawingBuffer: true
           powerPreference: 'high-performance',
-          antialias: false,;
-          alpha: false,
+          antialias: false
+          alpha: false
         }) as WebGL2RenderingContext) || undefined;
-
-      // Update shader cache with actual context;
+      // Update shader cache with actual context
       if (this.webglContext) {
         this.shaderCache = new ShaderCache(this.webglContext, {
-          enableNVIDIAOptimizations: true,
+          enableNVIDIAOptimizations: true
           cacheSize: 50,
-          persistToDisk: true,
+          persistToDisk: true
         });
       }
     } catch (error) {
@@ -299,90 +264,73 @@ export class NeuralSpriteEngine {
       this.webglContext = undefined;
     }
   }
-
   /**
    * Initialize Self-Organizing Map for sprite clustering
    */ private initializeSelfOrganizingMap(): void {
     console.log('🧠 Initializing Self-Organizing Map...');
-
-    // Create SOM grid;
+    // Create SOM grid
     for (let y = 0; y < this.somGridSize.height; y++) {
       for (let x = 0; x < this.somGridSize.width; x++) {
         const nodeId = `som_${x}_${y}`;
         const node: SOMNode = {
-          id: nodeId,
-          position: { x, y },;
+          id: nodeId
+          position: { x, y },
           weights: new Float32Array(16), // 16-dimensional feature space
           activationHistory: [],
           connectedSprites: [],
           learningRate: this.globalLearningRate,
           neighborhoodRadius: Math.min(this.somGridSize.width, this.somGridSize.height) / 2,
         };
-
-        // Initialize weights randomly;
+        // Initialize weights randomly
         for (let i = 0; i < node.weights.length; i++) {
           node.weights[i] = Math.random() * 0.5 - 0.25;
         }
-
         this.somNodes.set(nodeId, node);
       }
     }
-
     console.log(`✅ SOM initialized with ${this.somNodes.size} nodes`);
   }
-
   /**
    * Initialize multi-core processing worker pool
    */ private initializeMultiCoreProcessing(): void {
     console.log(`🔧 Initializing ${this.maxWorkers} worker threads...`);
-
     // Create worker code for sprite processing
     const workerCode = `
       // Multi-core Sprite Processing Worker
       let isInitialized = false;
-
       function initializeWorker() {
         if (isInitialized) return;
-
         // Worker-specific initialization
         console.log('Worker initialized');
         isInitialized = true;
       }
-
       function processSprite(sprite) {
         // Extract features from sprite for SOM processing
         const features = new Float32Array(16);
-
         try {
           const state = JSON.parse(sprite.jsonState);
           const objects = state.objects || [];
-
           // Feature extraction
           features[0] = objects.length / 10; // Object count normalized
           features[1] = sprite.metadata.complexity / 100; // Complexity
           features[2] = sprite.usageCount / 10; // Usage frequency
           features[3] = Math.random(); // Mock feature
-
           // Document type encoding
           const docTypes = ['contract', 'case_law', 'evidence', 'statute', 'memo'];
           const typeIndex = docTypes.indexOf(sprite.documentType || 'contract');
           features[4] = typeIndex / docTypes.length;
-
-          // Fill remaining features with processed data;
+          // Fill remaining features with processed data
           for (let i = 5; i < 16; i++) {
             features[i] = Math.sin(i * sprite.metadata.complexity * 0.01);
           }
-
         } catch (error: any) {
-          // Fallback features;
+          // Fallback features
           for (let i = 0; i < 16; i++) {
             features[i] = Math.random() * 0.5;
           }
         }
-
         return features;
       }
-
       function updateSOMNode(node, inputVector, learningRate, neighborhoodRadius) {
         // Calculate distance from node
         let distance = 0;
@@ -391,24 +339,19 @@ export class NeuralSpriteEngine {
           distance += diff * diff;
         }
         distance = Math.sqrt(distance);
-
         // Calculate neighborhood influence
   const influence = Math.exp(-(distance * distance) / (2 * neighborhoodRadius * neighborhoodRadius));
-
         // Update weights
         const adjustedLearningRate = learningRate * influence;
         for (let i = 0; i < node.weights.length; i++) {
           node.weights[i] += adjustedLearningRate * (inputVector[i] - node.weights[i]);
         }
-
         return node;
       }
-
       function predictNextStates(sprite, recentActivities) {
         // Simple pattern-based prediction
         const predictions = [];
-
-        // Based on current sprite type and recent activities;
+        // Based on current sprite type and recent activities
         if (sprite.name.includes('idle') && recentActivities.length > 0) {
           predictions.push('text_creation', 'object_move');
         } else if (sprite.name.includes('text')) {
@@ -416,19 +359,15 @@ export class NeuralSpriteEngine {
         } else {
           predictions.push('idle');
         }
-
         return predictions;
       }
-
       self.onmessage = function(e) {
         const { id, type, data } = e.data;
         let result = null;
-
         try {
           initializeWorker();
-
           switch (type) {
-            case 'sprite_analysis':;
+            case 'sprite_analysis':
               result = {
                 spriteId: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite.id,
                 features: processSprite((data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite),
@@ -436,8 +375,7 @@ export class NeuralSpriteEngine {
                 timestamp: Date.now()
               };
               break;
-
-            case 'som_update':;
+            case 'som_update':
               result = {
                 nodeId: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).node.id,
                 updatedNode: updateSOMNode(
@@ -448,108 +386,87 @@ export class NeuralSpriteEngine {
                 )
               };
               break;
-
-            case 'prediction':;
+            case 'prediction':
               result = {
                 spriteId: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite.id,
                 predictedStates: predictNextStates((data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite, (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).recentActivities),
                 confidence: 0.7 + Math.random() * 0.2
               };
               break;
-
             case 'optimization':
-              // Optimize sprite loading order based on usage patterns;
+              // Optimize sprite loading order based on usage patterns
               result = {
                 optimizedOrder: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprites.sort((a, b) => b.usageCount - a.usageCount),
                 cacheRecommendations: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprites.slice(0, 10).map((s: any) => s.id)
               };
               break;
-
             default:
               throw new Error('Unknown task type: ' + type);
           }
-
           self.postMessage({ id, result, error: null });
-
         } catch (error: any) {
           self.postMessage({ id, result: null, error: error.message });
         }
       };
     `;
-
     const workerBlob = new Blob([workerCode], {
       type: 'application/javascript',
     });
     const workerUrl = URL.createObjectURL(workerBlob);
-
-    // Create worker pool;
+    // Create worker pool
     for (let i = 0; i < this.maxWorkers; i++) {
       const worker = new Worker(workerUrl);
-
       worker.onmessage = (e: MessageEvent<{ id: string; result: WorkerResult | null; error: string | null }>) => {
         const { id, result, error } = e.data;
-
         if (error) {
           console.error(`Worker task ${id} failed:`, error);
         } else {
           this.completedTasks.set(id, result as WorkerResult);
           this.handleWorkerResult(id, result as WorkerResult);
         }
-
         this.activeWorkers--;
         this.processNextTask(); // Process next queued task
       };
-
       this.workerPool.push(worker);
     }
-
     URL.revokeObjectURL(workerUrl);
     console.log(`✅ Worker pool initialized with ${this.workerPool.length} workers`);
   }
-
   /** Submit task to worker pool */
   private submitTask(task: ProcessingTask): void {
     task.startTime = Date.now();
     this.taskQueue.push(task);
     this.processNextTask();
   }
-
   /** Dispatch next task to an available worker */
   private processNextTask(): void {
     if (this.activeWorkers >= this.maxWorkers) return;
     if (this.workerPool.length === 0) return;
     const task = this.taskQueue.shift();
     if (!task) return;
-
     const worker = this.workerPool[this.activeWorkers % this.workerPool.length];
     this.activeWorkers++;
     worker.postMessage({ id: task.id, type: task.type, data: task.data });
   }
-
   /** Handle results returned from worker */
   private handleWorkerResult(taskId: string, result: WorkerResult): void {
     if (result.features && result.spriteId) {
       this.updateSpriteFeatures(result.spriteId, result.features);
     }
-
     if (result.nodeId && result.updatedNode) {
       this.somNodes.set(result.nodeId, result.updatedNode as unknown as SOMNode);
     }
-
     if (result.predictedStates && result.spriteId) {
       this.updatePredictionCache(result.spriteId, result.predictedStates);
     }
-
     if (result.optimizedOrder) {
       this.updateLoadingOptimizations(result.optimizedOrder, result.cacheRecommendations || []);
     }
-
     // Refresh metrics/visualization
     this.updateMultiCoreMetrics();
     this.updateSOMVisualization();
     this.updateSelfOrganizationStats();
   }
-
   /**
    * Update sprite features from worker analysis
    */ private updateSpriteFeatures(spriteId: string, features: Float32Array): void {
@@ -557,16 +474,14 @@ export class NeuralSpriteEngine {
     if (sprite) {
       sprite.embedding = Array.from(features);
       this.sprites.update(sprite);
-
       // Find best matching SOM node
       this.findBestMatchingSOMNode(spriteId, features);
     }
   }
-
   /**
    * Find best matching SOM node ID for sprite (helper method)
    */ private findBestSOMNodeForSprite(spriteId: string): string | null {
-    // Check if sprite already has an assigned SOM node;
+    // Check if sprite already has an assigned SOM node
     for (const node of this.somNodes.values()) {
       if (node.connectedSprites.includes(spriteId)) {
         return node.id;
@@ -574,14 +489,12 @@ export class NeuralSpriteEngine {
     }
     return null;
   }
-
   /**
    * Find best matching SOM node for sprite
    */
   private findBestMatchingSOMNode(spriteId: string, features: Float32Array): void {
     let bestNode: SOMNode | null = null;
     let bestDistance = Infinity;
-
     for (const node of this.somNodes.values()) {
       let distance = 0;
       for (let i = 0; i < features.length; i++) {
@@ -589,40 +502,35 @@ export class NeuralSpriteEngine {
         distance += diff * diff;
       }
       distance = Math.sqrt(distance);
-
       if (distance < bestDistance) {
         bestDistance = distance;
         bestNode = node;
       }
     }
-
     if (bestNode) {
-      // Add sprite to node's connected sprites;
+      // Add sprite to node's connected sprites
       if (!bestNode.connectedSprites.includes(spriteId)) {
         bestNode.connectedSprites.push(spriteId);
       }
-
       // Update node activation
       bestNode.activationHistory.push(1.0);
       if (bestNode.activationHistory.length > 100) {
         bestNode.activationHistory.shift();
       }
-
-      // Submit SOM update task;
+      // Submit SOM update task
       this.submitTask({
         id: `som_update_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         type: 'som_update',
         priority: 'medium',
-        data: {;
-          node: bestNode,
-          inputVector: features,
+        data: {
+          node: bestNode
+          inputVector: features
           learningRate: this.globalLearningRate,
           neighborhoodRadius: bestNode.neighborhoodRadius,
         },
       });
     }
   }
-
   /**
    * Update prediction cache
    */ private updatePredictionCache(spriteId: string, predictions: string[]): void {
@@ -632,7 +540,6 @@ export class NeuralSpriteEngine {
       this.sprites.update(sprite);
     }
   }
-
   /**
    * Update loading optimizations
    */
@@ -640,7 +547,6 @@ export class NeuralSpriteEngine {
     // Cache recommended sprites
     this.preCacheRecommendedStates(cacheRecommendations);
   }
-
   /**
    * Update multi-core metrics
    */ private updateMultiCoreMetrics(): void {
@@ -648,7 +554,6 @@ export class NeuralSpriteEngine {
     const completedTasksInLastSecond = Array.from(this.completedTasks.values()).filter(
       (r: WorkerResult) => Date.now() - (r.timestamp || 0) < 1000
     ).length;
-
     // Calculate average task time
     const recentTasks = Array.from(this.completedTasks.values()).slice(-10);
     const avgTaskTime =
@@ -656,26 +561,23 @@ export class NeuralSpriteEngine {
         ? recentTasks.reduce((sum: number, task: WorkerResult) => sum + (task.processingTime || 0), 0) /
           recentTasks.length
         : 0;
-
     this.multiCoreMetrics.set({
       activeWorkers: this.activeWorkers,
       queueDepth,
-      tasksPerSecond: completedTasksInLastSecond,
-      averageTaskTime: avgTaskTime,
+      tasksPerSecond: completedTasksInLastSecond
+      averageTaskTime: avgTaskTime
       cpuUtilization: (this.activeWorkers / this.maxWorkers) * 100,
     });
   }
-
   /**
    * Update SOM visualization data
    */ private updateSOMVisualization(): void {
     const nodes = Array.from(this.somNodes.values()).map(node => ({
       x: node.position.x,
       y: node.position.y,
-      activation: node.activationHistory.length > 0 ? node.activationHistory[node.activationHistory.length - 1] : 0,;
+      activation: node.activationHistory.length > 0 ? node.activationHistory[node.activationHistory.length - 1] : 0,
       sprites: node.connectedSprites.length,
     }));
-
     // Generate connections between nearby nodes
     const connections: Array<{ from: string; to: string; strength: number }> = [];
     for (const nodeA of this.somNodes.values()) {
@@ -684,12 +586,11 @@ export class NeuralSpriteEngine {
           const distance = Math.sqrt(
             Math.pow(nodeA.position.x - nodeB.position.x, 2) + Math.pow(nodeA.position.y - nodeB.position.y, 2)
           );
-
           if (distance <= 1.5) {
             // Only connect nearby nodes
             const strength = Math.max(0, 1 - distance / 1.5);
             connections.push({
-              from: nodeA.id,;
+              from: nodeA.id,
               to: nodeB.id,
               strength,
             });
@@ -697,15 +598,12 @@ export class NeuralSpriteEngine {
         }
       }
     }
-
     this.somVisualization.set({ nodes, connections });
   }
-
   /**
    * Calculate self-organization statistics
    */ private updateSelfOrganizationStats(): void {
     const nodes = Array.from(this.somNodes.values());
-
     // Calculate convergence rate
     let convergedNodes = 0;
     for (const node of nodes) {
@@ -716,18 +614,14 @@ export class NeuralSpriteEngine {
       }
     }
     const convergenceRate = (convergedNodes / nodes.length) * 100;
-
     // Calculate adaptation speed
     const adaptationSpeed = this.globalLearningRate * 100;
-
     // Calculate cluster formation
     const activeClusters = nodes.filter(node => node.connectedSprites.length > 0).length;
     const clusterFormation = (activeClusters / nodes.length) * 100;
-
     // Calculate neural efficiency
     const totalConnections = nodes.reduce((sum, node) => sum + node.connectedSprites.length, 0);
     const neuralEfficiency = Math.min(100, (totalConnections / this.sprites.count()) * 50);
-
     this.selfOrganizationStats.set({
       convergenceRate,
       adaptationSpeed,
@@ -735,7 +629,6 @@ export class NeuralSpriteEngine {
       neuralEfficiency,
     });
   }
-
   /**
    * Calculate variance for convergence analysis
    */ private calculateVariance(values: number[]): number {
@@ -743,18 +636,16 @@ export class NeuralSpriteEngine {
     const squaredDiffs = values.map(val => Math.pow(val - mean, 2));
     return squaredDiffs.reduce((sum, diff) => sum + diff, 0) / values.length;
   }
-
   // Core "sprite sheet" operations with SOM integration
   public async captureCurrentState(name: string, triggers: string[] = []): Promise<string> {
     const jsonState = JSON.stringify(this.canvas.toJSON());
     const complexity = this.calculateComplexity(jsonState);
-
     const sprite: CanvasSprite = {
       id: `sprite_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       name,
       sequence: this.getNextSequenceNumber(name),
       jsonState,
-      metadata: {;
+      metadata: {
         objects: this.canvas.getObjects().length,
         complexity,
         triggers,
@@ -762,75 +653,62 @@ export class NeuralSpriteEngine {
       createdAt: Date.now(),
       usageCount: 0,
     };
-
     this.sprites.insert(sprite);
-
-    // Submit sprite analysis task to worker pool for SOM processing;
+    // Submit sprite analysis task to worker pool for SOM processing
     this.submitTask({
       id: `sprite_analysis_${sprite.id}`,
       type: 'sprite_analysis',
-      priority: 'medium',;
+      priority: 'medium',
       data: { sprite },
     });
-
     // Submit prediction task for AI analysis
     const recentActivities = this.getRecentActivities(5);
     this.submitTask({
       id: `prediction_${sprite.id}`,
       type: 'prediction',
-      priority: 'low',;
+      priority: 'low',
       data: { sprite, recentActivities },
     });
-
-    // Send to AI worker for embedding generation (legacy support);
+    // Send to AI worker for embedding generation (legacy support)
     if (this.aiWorker) {
       this.aiWorker.postMessage({
         type: 'GENERATE_EMBEDDING',
         sprite,
       });
     }
-
     console.log(`📸 Captured sprite: ${name} (complexity: ${complexity}) with SOM analysis queued`);
     return sprite.id;
   }
-
-  // NES-style rapid state switching with enhanced caching and multi-core processing;
+  // NES-style rapid state switching with enhanced caching and multi-core processing
   public async loadSprite(spriteId: string): Promise<boolean> {
     const loadStartTime = Date.now();
-
     // 1. Try browser cache first (fastest)
     let sprite = await this.browserCache.getSprite(spriteId);
-
     if (!sprite) {
       // 2. Fallback to Loki.js database
       sprite = this.sprites.findOne({ id: spriteId });
-
       if (!sprite) {
         this.cacheMisses++;
         console.warn(`❌ Sprite not found: ${spriteId}`);
         return false;
       }
-
       // Cache in browser for next time
       await this.browserCache.cacheSprite(sprite);
     }
-
     this.cacheHits++;
     sprite.usageCount++;
     this.sprites.update(sprite);
-
-    // Submit optimization task to worker pool for usage pattern analysis;
+    // Submit optimization task to worker pool for usage pattern analysis
     this.submitTask({
       id: `optimization_${spriteId}`,
       type: 'optimization',
       priority: 'low',
-      data: {;
+      data: {
         sprites: this.sprites.find().slice(0, 20), // Top 20 sprites for analysis
-        currentSprite: sprite,
+        currentSprite: sprite
       },
     });
-
-    // 3. Enhanced loading with GPU acceleration and multi-core processing;
+    // 3. Enhanced loading with GPU acceleration and multi-core processing
     return new Promise(resolve => {
       try {
         // Pre-warm shader programs if needed (async optimization)
@@ -838,48 +716,41 @@ export class NeuralSpriteEngine {
         const precompilePromise: Promise<void> = shouldPrecompile
           ? this.shaderCache.precompileForSprite(sprite)
           : Promise.resolve();
-
         // Generate CSS transforms using lightweight matrix library
         const transforms = this.matrixLib.generateCSSTransforms(sprite.jsonState);
-
         // Wait for shader precompilation if needed, then proceed
         precompilePromise
           .then(() => {
-            // Apply transforms to canvas container for hardware acceleration;
+            // Apply transforms to canvas container for hardware acceleration
             if (transforms.css3d) {
               const canvasContainer = this.canvas.getElement().parentElement;
               if (canvasContainer) {
                 canvasContainer.style.transform = transforms.css3d;
                 canvasContainer.style.willChange = 'transform';
-
                 // Add self-organizing visual hints for neural feedback
                 canvasContainer.setAttribute('data-som-node', this.findBestSOMNodeForSprite(spriteId) || 'unassigned');
               }
             }
-
-            // Load the actual canvas state with error handling;
+            // Load the actual canvas state with error handling
             this.canvas.loadFromJSON(sprite.jsonState, () => {
               try {
-                // Apply GPU-accelerated rendering if available;
+                // Apply GPU-accelerated rendering if available
                 if (this.webglContext && transforms.webgl) {
                   this.shaderCache.applyTransforms({
                     matrix: transforms.webgl,
-                    opacity: 1.0,;
+                    opacity: 1.0,
                     blend: 'normal',
                   });
                 }
-
                 this.canvas.renderAll();
                 this.currentState.set(sprite.name);
                 this.frameCount++;
-
                 // Log successful load for performance tracking
                 const loadTime = Date.now() - loadStartTime;
                 console.log(
                   `✅ Loaded sprite: ${sprite.name} (${loadTime}ms, complexity: ${sprite.metadata.complexity})`
                 );
-
-                // Clean up transform hints for next frame;
+                // Clean up transform hints for next frame
                 setTimeout(() => {
                   const canvasContainer = this.canvas.getElement().parentElement;
                   if (canvasContainer) {
@@ -887,7 +758,6 @@ export class NeuralSpriteEngine {
                     canvasContainer.removeAttribute('data-som-node');
                   }
                 }, 50);
-
                 resolve(true);
               } catch (renderError: unknown) {
                 console.error(`❌ Render error for sprite ${spriteId}:`, renderError);
@@ -905,35 +775,29 @@ export class NeuralSpriteEngine {
       }
     });
   }
-
-  // Play animation sequence (like NES sprite animation) with SOM-aware optimization;
+  // Play animation sequence (like NES sprite animation) with SOM-aware optimization
   public async playAnimation(sequenceName: string): Promise<void> {
     const sequence = this.sequences.findOne({ name: sequenceName });
-
     if (!sequence) {
       console.warn(`Animation sequence '${sequenceName}' not found`);
       return;
     }
-
     console.log(`🎬 Starting animation: ${sequenceName} (${sequence.frames.length} frames, ${sequence.fps} FPS)`);
     this.isAnimating.set(true);
-
-    // Pre-analyze animation sequence for SOM optimization;
+    // Pre-analyze animation sequence for SOM optimization
     this.submitTask({
       id: `anim_optimization_${sequenceName}`,
       type: 'optimization',
       priority: 'high',
-      data: {;
+      data: {
         sprites: sequence.frames.map((frameId: string) => this.sprites.findOne({ id: frameId })).filter(Boolean),
         animationType: 'sequence',
         expectedFps: sequence.fps,
       },
     });
-
     let frameIndex = 0;
     const frameInterval = 1000 / sequence.fps; // Convert FPS to milliseconds
     const animationStartTime = Date.now();
-
     const playFrame = async (): Promise<void> => {
       if (frameIndex >= sequence.frames.length) {
         if (sequence.loop) {
@@ -946,23 +810,16 @@ export class NeuralSpriteEngine {
           return;
         }
       }
-
       const spriteId = sequence.frames[frameIndex];
       const frameStartTime = Date.now();
-
       const success = await this.loadSprite(spriteId);
-
       if (!success) {
         console.warn(`⚠️ Failed to load frame ${frameIndex} (${spriteId}) in animation ${sequenceName}`);
       }
-
       const frameTime = Date.now() - frameStartTime;
-
       // Adaptive frame timing based on load performance
       const adaptiveInterval = Math.max(frameInterval, frameTime * 1.2);
-
       frameIndex++;
-
       if (frameIndex < sequence.frames.length || sequence.loop) {
         setTimeout(playFrame, adaptiveInterval);
       } else {
@@ -971,32 +828,27 @@ export class NeuralSpriteEngine {
         console.log(`🎯 Animation finished: ${sequenceName} (${totalDuration}ms total)`);
       }
     };
-
     // Start animation with initial frame
     playFrame();
   }
-
   // AI-driven behavior learning with SOM integration
   public logUserActivity(action: string, context: Record<string, unknown> = {}): void {
     const currentCanvasState = this.getCurrentStateName();
-
     const activity: UserActivity = {
       id: `activity_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       action,
       context,
       timestamp: Date.now(),
-      canvasState: currentCanvasState,;
+      canvasState: currentCanvasState
       sequence: this.activities.count(),
     };
-
     this.activities.insert(activity);
-
     // Submit activity analysis to worker pool for pattern recognition
     const recentActivities = this.getRecentActivities(10);
     this.submitTask({
       id: `activity_analysis_${activity.id}`,
       type: 'prediction',
-      priority: 'medium',;
+      priority: 'medium',
       data: {
         activity,
         recentActivities,
@@ -1008,8 +860,7 @@ export class NeuralSpriteEngine {
         },
       },
     });
-
-    // Send to AI worker for pattern analysis (legacy support);
+    // Send to AI worker for pattern analysis (legacy support)
     if (this.aiWorker) {
       this.aiWorker.postMessage({
         type: 'ANALYZE_PATTERN',
@@ -1017,14 +868,11 @@ export class NeuralSpriteEngine {
         recentActivities,
       });
     }
-
     console.log(`👤 User activity logged: ${action} in state ${currentCanvasState} (sequence: ${activity.sequence})`);
   }
-
-  // AI worker message handling;
+  // AI worker message handling
   private handleAIWorkerMessage(event: MessageEvent): void {
     const { type, data } = event.data;
-
     switch (type) {
       case 'EMBEDDING_GENERATED':
         {
@@ -1032,22 +880,19 @@ export class NeuralSpriteEngine {
           this.updateSpriteEmbedding(d.spriteId, d.embedding);
         }
         break;
-
       case 'PATTERN_PREDICTION':
         this.handlePatternPrediction(data);
         break;
-
       case 'CACHE_RECOMMENDATION':
         {
           const d = data as { stateIds: string[] };
           this.preCacheRecommendedStates(d.stateIds || []);
         }
         break;
-
       case 'NEW_SEQUENCE_GENERATED':
         {
           const d = data as {
-            sequence: {;
+            sequence: {
               pattern: string;
               spriteIds: string[];
               loop?: boolean;
@@ -1061,8 +906,7 @@ export class NeuralSpriteEngine {
         break;
     }
   }
-
-  // Create new animation sequences based on AI learning;
+  // Create new animation sequences based on AI learning
   private registerAIGeneratedSequence(sequenceData: {
     pattern: string;
     spriteIds: string[];
@@ -1077,22 +921,19 @@ export class NeuralSpriteEngine {
       frames: sequenceData.spriteIds,
       loop: sequenceData.loop || false,
       fps: sequenceData.fps || 24,
-      triggers: sequenceData.triggers || [],;
+      triggers: sequenceData.triggers || [],
       confidence: sequenceData.confidence || 0.7,
     };
-
     this.sequences.insert(sequence);
   }
-
-  // Predictive caching based on AI analysis;
+  // Predictive caching based on AI analysis
   private preCacheRecommendedStates(stateIds: string[]): void {
     this.predictedStates.set(stateIds);
-
-    // Pre-warm these states in background;
+    // Pre-warm these states in background
     stateIds.forEach(stateId => {
       const sprite = this.sprites.findOne({ id: stateId });
       if (sprite) {
-        // Pre-parse JSON in background (like loading sprite data into VRAM);
+        // Pre-parse JSON in background (like loading sprite data into VRAM)
         try {
           JSON.parse(sprite.jsonState);
         } catch (e: unknown) {
@@ -1101,46 +942,38 @@ export class NeuralSpriteEngine {
       }
     });
   }
-
-  // Utility methods;
+  // Utility methods
   private calculateComplexity(jsonState: string): number {
     // Simple complexity calculation based on JSON size and object count
     const stateObj = JSON.parse(jsonState);
     const objects = stateObj.objects?.length || 0;
     const jsonSize = jsonState.length;
-
     return Math.floor(objects * 10 + jsonSize / 1000);
   }
-
   private calculateAverageComplexity(): number {
     const allSprites = this.sprites.find();
     if (allSprites.length === 0) return 0;
-
     const totalComplexity = allSprites.reduce(
       (sum: number, sprite: CanvasSprite) => sum + sprite.metadata.complexity,
       0
     );
     return Math.round((totalComplexity / allSprites.length) * 100) / 100; // Round to 2 decimal places
   }
-
   private getNextSequenceNumber(name: string): number {
     const existingSprites = this.sprites.find({ name });
     return existingSprites.length;
   }
-
   private getCurrentStateName(): string {
     let currentState: string;
     this.currentState.subscribe(state => (currentState = state))();
     return currentState!;
   }
-
   private getRecentActivities(count: number): UserActivity[] {
     return this.activities
       .find()
       .sort((a: UserActivity, b: UserActivity) => b.timestamp - a.timestamp)
       .slice(0, count);
   }
-
   private updateSpriteEmbedding(spriteId: string, embedding: number[]): void {
     const sprite = this.sprites.findOne({ id: spriteId });
     if (sprite) {
@@ -1148,12 +981,10 @@ export class NeuralSpriteEngine {
       this.sprites.update(sprite);
     }
   }
-
   private handlePatternPrediction(data: { predictedStates?: string[] }): void {
     // Update predicted next states based on AI analysis
     this.predictedStates.set(data.predictedStates || []);
   }
-
   private createDefaultSprites(): void {
     // Create basic "idle" sprite
     const idleState = JSON.stringify(this.canvas.toJSON());
@@ -1161,45 +992,39 @@ export class NeuralSpriteEngine {
       id: 'sprite_idle_default',
       name: 'idle',
       sequence: 0,
-      jsonState: idleState,
+      jsonState: idleState
       metadata: {
         objects: 0,
-        complexity: 1,;
+        complexity: 1,
         triggers: ['init', 'reset'],
       },
       createdAt: Date.now(),
       usageCount: 0,
     });
   }
-
-  // Public API for Svelte components;
+  // Public API for Svelte components
   public getAvailableStates(): string[] {
     return Array.from(new Set(this.sprites.find().map((sprite: CanvasSprite) => sprite.name)));
   }
-
   public getAnimationSequences(): AnimationSequence[] {
     return this.sequences.find();
   }
-
   public getCacheStats(): { hits: number; misses: number; hitRate: number } {
     const hitRate = this.cacheHits / (this.cacheHits + this.cacheMisses);
     return {
-      hits: this.cacheHits,;
+      hits: this.cacheHits,
       misses: this.cacheMisses,
-      hitRate: isNaN(hitRate) ? 1.0 : hitRate,
+      hitRate: isNaN(hitRate) ? 1.0 : hitRate
     };
   }
-
-  // Enhanced cleanup with multi-core system shutdown;
+  // Enhanced cleanup with multi-core system shutdown
   public destroy(): void {
     console.log('🛑 Shutting down Neural Sprite Engine...');
-
-    // Terminate AI worker;
+    // Terminate AI worker
     if (this.aiWorker) {
       this.aiWorker.terminate();
       console.log('✅ AI worker terminated');
     }
-
     // Terminate all workers in the pool
     console.log(`🔄 Terminating ${this.workerPool.length} worker threads...`);
     for (const worker of this.workerPool) {
@@ -1210,12 +1035,10 @@ export class NeuralSpriteEngine {
     this.taskQueue = [];
     this.completedTasks.clear();
     console.log('✅ Worker pool terminated');
-
     // Clear SOM nodes
     this.somNodes.clear();
     console.log('✅ SOM nodes cleared');
-
-    // Clear database;
+    // Clear database
     if (this.db) {
       // Loki doesn't have a close method, just clear collections
       const collections: Array<{ name: string }> =
@@ -1225,13 +1048,11 @@ export class NeuralSpriteEngine {
       });
       console.log('✅ Database collections cleared');
     }
-
     // Reset performance counters
     this.frameCount = 0;
     this.cacheHits = 0;
     this.cacheMisses = 0;
-
-    // Clean up WebGL context;
+    // Clean up WebGL context
     if (this.webglContext) {
       const loseContext = this.webglContext.getExtension('WEBGL_lose_context');
       if (loseContext) {
@@ -1239,17 +1060,14 @@ export class NeuralSpriteEngine {
       }
       console.log('✅ WebGL context cleaned up');
     }
-
     console.log('🎯 Neural Sprite Engine shutdown complete');
   }
 }
-
 // Factory function for Svelte integration
 export function createNeuralSpriteEngine(canvas: CanvasLike): NeuralSpriteEngine {
   return new NeuralSpriteEngine(canvas);
 }
-
-// Enhanced derived stores for performance monitoring with SOM integration;
+// Enhanced derived stores for performance monitoring with SOM integration
 export function createPerformanceStores(engine: NeuralSpriteEngine) {
   return {
     // Core engine stores
@@ -1257,12 +1075,10 @@ export function createPerformanceStores(engine: NeuralSpriteEngine) {
     isAnimating: engine.isAnimating,
     cacheHitRate: engine.cacheHitRate,
     predictedStates: engine.predictedStates,
-
     // Self-organizing features
     somVisualization: engine.somVisualization,
     multiCoreMetrics: engine.multiCoreMetrics,
     selfOrganizationStats: engine.selfOrganizationStats,
-
     // Derived performance metrics with SOM awareness
     performanceGrade: derived(
       [engine.cacheHitRate, engine.selfOrganizationStats],
@@ -1270,7 +1086,6 @@ export function createPerformanceStores(engine: NeuralSpriteEngine) {
         const baseScore = $hitRate;
         const somBonus = $somStats.neuralEfficiency / 1000; // Small bonus for neural efficiency
         const totalScore = baseScore + somBonus;
-
         if (totalScore >= 0.95) return "S+"; // Perfect with SOM optimization
         if (totalScore >= 0.9) return "S"; // Perfect
         if (totalScore >= 0.85) return "A"; // Excellent
@@ -1279,13 +1094,11 @@ export function createPerformanceStores(engine: NeuralSpriteEngine) {
         return "D"; // Needs optimization
       }
     ),
-
     isOptimized: derived(
       [engine.cacheHitRate, engine.multiCoreMetrics],
       ([$hitRate, $multiCore]) =>
         $hitRate >= 0.9 && $multiCore.cpuUtilization < 80
     ),
-
     systemHealth: derived(
       [engine.multiCoreMetrics, engine.selfOrganizationStats],
       ([$multiCore, $somStats]) => ({
@@ -1313,7 +1126,6 @@ export function createPerformanceStores(engine: NeuralSpriteEngine) {
             : "degraded"
       })
     ),
-
     adaptiveMetrics: derived(
       [
         engine.cacheHitRate,
@@ -1326,7 +1138,7 @@ export function createPerformanceStores(engine: NeuralSpriteEngine) {
             ($multiCore.tasksPerSecond / 10) * 0.3 +
             ($somStats.neuralEfficiency / 100) * 0.3) *
             100
-        ),;
+        ),
         adaptability: Math.round(
           ($somStats.adaptationSpeed * $somStats.clusterFormation) / 10
         ),

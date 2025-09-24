@@ -1,34 +1,29 @@
 // TensorRT inference service for SvelteKit
 import { spawn } from 'child_process';
 import { env } from '$env/dynamic/private';
-
 export interface LegalAIRequest {
   prompt: string;
   context?: string;
   max_tokens?: number;
   temperature?: number;
 }
-
 export interface LegalAIResponse {
   text: string;
   tokens: number;
   inference_time: number;
   model_used: string;
 }
-
 class TensorRTLegalAI {
   private pythonEnv: string;
   private enginePath: string;
   private awq4ModelPath: string;
   private tritonServerUrl: string;
-
   constructor() {
     this.pythonEnv = env.TENSORRT_PYTHON_ENV || '/home/james/trt_env_310/bin/python';
     this.enginePath = env.TENSORRT_ENGINE_PATH || '/home/james/gemma3_engine_flash';
     this.awq4ModelPath = env.AWQ4_MODEL_PATH || '/home/james/gemma3_awq4_working';
-    this.tritonServerUrl = env.TRITON_SERVER_URL || 'http://localhost:8000';
+    this.tritonServerUrl = env.TRITON_SERVER_URL || 'http://localhost:8000'
   }
-
   async infer(request: LegalAIRequest): Promise<LegalAIResponse> {
     // Try TensorRT first, fallback to PyTorch
     try {
@@ -38,37 +33,30 @@ class TensorRTLegalAI {
       return await this.pytorchInference(request);
     }
   }
-
   private async tensorrtInference(request: LegalAIRequest): Promise<LegalAIResponse> {
     const script = `
 import sys
 import os
 import time
 import json
-
 # Set CUDA environment
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-
 try:
     import tensorrt_llm
     from tensorrt_llm.runtime import ModelRunner
-
     def run_tensorrt_inference():
         engine_path = "${this.enginePath}"
         prompt = '''${request.prompt.replace(/'/g, "\\'")}'''
         context = '''${(request.context || '').replace(/'/g, "\\'")}'''
         max_tokens = ${request.max_tokens || 256}
         temperature = ${request.temperature || 0.3}
-
         # Format legal prompt
         formatted_prompt = f"Legal Analysis Request: {prompt}"
         if context:
             formatted_prompt += f"\\n\\nContext: {context}"
         formatted_prompt += "\\n\\nLegal Response:"
-
         # Load TensorRT engine
         model = ModelRunner.from_dir(engine_path)
-
         # Run inference
         start_time = time.time()
         outputs = model.generate(
@@ -81,20 +69,15 @@ try:
             streaming=False
         )
         inference_time = time.time() - start_time
-
         response_text = outputs[0][0] if outputs and outputs[0] else "No response generated"
-
         result = {
-            "text": response_text,
+            "text": response_text
             "tokens": len(response_text.split()),
-            "inference_time": inference_time,
+            "inference_time": inference_time
             "model_used": "TensorRT-LLM"
         }
-
         print("TENSORRT_RESULT:", json.dumps(result))
-
     run_tensorrt_inference()
-
 except ImportError as e:
     print("TENSORRT_ERROR: TensorRT-LLM not available:", str(e))
     sys.exit(1)
@@ -102,20 +85,16 @@ except Exception as e:
     print("TENSORRT_ERROR:", str(e))
     sys.exit(1)
 `;
-
     return new Promise((resolve, reject) => {
       const pythonProcess = spawn(this.pythonEnv, ['-c', script]);
       let output = '';
       let error = '';
-
       pythonProcess.stdout.on('data', (data) => {
         output += data.toString());
       });
-
       pythonProcess.stderr.on('data', (data) => {
         error += data.toString());
       });
-
       pythonProcess.on('close', (code) => {
         if (code === 0) {
           const match = output.match(/TENSORRT_RESULT: (.+)/);
@@ -133,7 +112,6 @@ except Exception as e:
           reject(new Error(`TensorRT inference failed: ${error}`));
         }
       });
-
       // Timeout after 30 seconds
       setTimeout(() => {
         pythonProcess.kill();
@@ -141,43 +119,33 @@ except Exception as e:
       }, 30000);
     });
   }
-
   private async pytorchInference(request: LegalAIRequest): Promise<LegalAIResponse> {
     const script = `
 import sys
 import time
 import json
 import os
-
 # Set CUDA environment
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-
 try:
     import torch
     from transformers import AutoTokenizer, AutoModelForCausalLM
-
     def run_awq4_inference():
         prompt = '''${request.prompt.replace(/'/g, "\\'")}'''
         context = '''${(request.context || '').replace(/'/g, "\\'")}'''
         max_tokens = ${request.max_tokens || 256}
         temperature = ${request.temperature || 0.3}
-
         # AWQ4 model path
         model_path = "${this.awq4ModelPath}"
-
         # Format legal prompt
         system_prompt = "You are a legal AI assistant specialized in analyzing contracts, regulations, and legal documents. Provide accurate, detailed analysis with relevant legal principles and potential risks."
-
         if context:
             formatted_prompt = f"{system_prompt}\\n\\nContext: {context}\\n\\nQuestion: {prompt}\\n\\nAnalysis:";
         else:
             formatted_prompt = f"{system_prompt}\\n\\nQuestion: {prompt}\\n\\nAnalysis:"
-
         print("🚀 Loading AWQ4 Gemma3 model for legal inference...")
-
         # Load tokenizer and model with optimizations
         tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True, use_fast=True)
-
         model = AutoModelForCausalLM.from_pretrained(
             model_path,
             torch_dtype=torch.float16,
@@ -187,16 +155,13 @@ try:
             low_cpu_mem_usage=True
         )
         model.eval()
-
         # Enable optimizations
         torch.backends.cuda.matmul.allow_tf32 = True
         torch.backends.cudnn.allow_tf32 = True
-
         # Tokenize input
         inputs = tokenizer(formatted_prompt, return_tensors="pt", truncation=True, max_length=2048)
         if torch.cuda.is_available():
             inputs = {k: v.cuda() for k, v in inputs.items()}
-
         # Run inference with optimizations
         start_time = time.time()
         with torch.no_grad():
@@ -213,29 +178,23 @@ try:
                     length_penalty=1.0
                 )
         inference_time = time.time() - start_time
-
         # Decode response
         input_length = inputs["input_ids"].shape[1]
         generated_tokens = outputs[0][input_length:]
         response_text = tokenizer.decode(generated_tokens, skip_special_tokens=True)
-
         # Memory tracking
         memory_used = 0
         if torch.cuda.is_available():
             memory_used = torch.cuda.max_memory_allocated() / 1024 / 1024  # MB
-
         result = {
-            "text": response_text,
+            "text": response_text
             "tokens": len(generated_tokens),
-            "inference_time": inference_time,
+            "inference_time": inference_time
             "model_used": "Gemma3-AWQ4-Triton",
             "memory_used_mb": memory_used
         }
-
         print("PYTORCH_RESULT:", json.dumps(result))
-
     run_awq4_inference()
-
 except ImportError as e:
     print(f"AWQ4_ERROR: Required packages not available: {e}")
     # Fallback to simple response
@@ -257,20 +216,16 @@ except Exception as e:
     }
     print("PYTORCH_RESULT:", json.dumps(result))
 `;
-
     return new Promise((resolve, reject) => {
       const pythonProcess = spawn('python3', ['-c', script]);
       let output = '';
       let error = '';
-
       pythonProcess.stdout.on('data', (data) => {
         output += data.toString());
       });
-
       pythonProcess.stderr.on('data', (data) => {
         error += data.toString());
       });
-
       pythonProcess.on('close', (code) => {
         const match = output.match(/PYTORCH_RESULT: (.+)/);
         if (match) {
@@ -283,14 +238,13 @@ except Exception as e:
         } else {
           // Emergency fallback
           resolve({
-            text: `Legal Analysis: ${request.prompt} - Professional legal guidance available. Recommend consultation with qualified legal counsel.`,;
+            text: `Legal Analysis: ${request.prompt} - Professional legal guidance available. Recommend consultation with qualified legal counsel.`,
             tokens: 15,
             inference_time: 0.05,
             model_used: 'Emergency-Fallback'
           });
         }
       });
-
       // Timeout after 60 seconds
       setTimeout(() => {
         pythonProcess.kill();
@@ -299,5 +253,4 @@ except Exception as e:
     });
   }
 }
-
 export const tensorrtService = new TensorRTLegalAI();

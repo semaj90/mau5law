@@ -1,7 +1,6 @@
 <!-- Modern Dark YoRHa Legal AI Platform -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import {
@@ -28,7 +27,6 @@
     Zap,
     Brain
   } from 'lucide-svelte';
-
   // Dashboard data
   let stats = $state({
     activeCases: 3,
@@ -36,7 +34,6 @@
     personsOfInterest: 8,
     recentActivity: 12
   });
-
   let activeCases = $state([
     {
       id: 1,
@@ -58,12 +55,11 @@
       id: 3,
       title: "FINANCIAL FRAUD ANALYSIS",
       items: 4,
-      timeAgo: "1 day ago",;
-      priority: "medium",;
+      timeAgo: "1 day ago",
+      priority: "medium",
       status: "pending";
     }
   ]);
-
   let systemStatus = $state([
     {
       message: "System backup completed successfully",
@@ -76,33 +72,27 @@
       type: "warning";
     },
     {
-      message: "New facial recognition matches found",;
-      time: "2 hours ago",;
+      message: "New facial recognition matches found",
+      time: "2 hours ago",
       type: "success";
     }
   ]);
-
   $effect(() => {
     console.log('YoRHa Legal AI Detective Interface initialized');
   });
-
   function handleNewCase() {
     goto('/cases/new');
   }
-
   function handleGlobalSearch() {
     goto('/search');
   }
-
   function handleViewAll() {
     goto('/cases');
   }
 </script>
-
 <svelte:head>
   <title>YoRHa Legal AI Detective Interface</title>
 </svelte:head>
-
 <div class="yorha-bg-primary min-h-screen">
   <!-- Quick Actions Header -->
   <div class="yorha-bg-secondary border-b border-gray-700 p-4">
@@ -130,7 +120,6 @@
       </div>
     </div>
   </div>
-
   <div class="flex">
     <!-- Sidebar -->
     <aside class="yorha-sidebar">
@@ -139,40 +128,33 @@
           <Database class="w-4 h-4" />
           <span>COMMAND CENTER</span>
         </div>
-
         <a href="/cases" class="yorha-nav-item">
           <Folder class="w-4 h-4" />
           <span>ACTIVE CASES</span>
           <ChevronRight class="w-4 h-4 ml-auto" />
         </a>
-
         <a href="/evidence" class="yorha-nav-item">
           <Eye class="w-4 h-4" />
           <span>EVIDENCE</span>
           <ChevronRight class="w-4 h-4 ml-auto" />
         </a>
-
         <a href="/persons" class="yorha-nav-item">
           <Users class="w-4 h-4" />
           <span>PERSONS OF INTEREST</span>
         </a>
-
         <a href="/analysis" class="yorha-nav-item">
           <BarChart3 class="w-4 h-4" />
           <span>ANALYSIS</span>
           <ChevronRight class="w-4 h-4 ml-auto" />
         </a>
-
         <a href="/search" class="yorha-nav-item">
           <Search class="w-4 h-4" />
           <span>GLOBAL SEARCH</span>
         </a>
-
         <a href="/terminal" class="yorha-nav-item">
           <Terminal class="w-4 h-4" />
           <span>TERMINAL</span>
         </a>
-
         <div class="pt-4 border-t border-gray-700 mt-4">
           <a href="/system" class="yorha-nav-item">
             <Settings class="w-4 h-4" />
@@ -180,7 +162,6 @@
           </a>
         </div>
       </nav>
-
       <!-- Status footer -->
       <div class="absolute bottom-4 left-4 right-4 max-w-52">
         <div class="yorha-nier-bits-nier-bits-nier-bits-card p-3">
@@ -193,7 +174,6 @@
         </div>
       </div>
     </aside>
-
     <!-- Main Content -->
     <main class="flex-1 p-6">
       <!-- Stats Cards -->
@@ -207,7 +187,6 @@
             <Folder class="w-8 h-8 yorha-text-muted" />
           </div>
         </div>
-
         <div class="yorha-nier-bits-nier-bits-nier-bits-card yorha-fade-in" style="animation-delay: 0.1s">
           <div class="flex items-center justify-between">
             <div>
@@ -217,7 +196,6 @@
             <Eye class="w-8 h-8 yorha-text-muted" />
           </div>
         </div>
-
         <div class="yorha-nier-bits-nier-bits-nier-bits-card yorha-fade-in" style="animation-delay: 0.2s">
           <div class="flex items-center justify-between">
             <div>
@@ -227,7 +205,6 @@
             <UserCheck class="w-8 h-8 yorha-text-muted" />
           </div>
         </div>
-
         <div class="yorha-nier-bits-nier-bits-nier-bits-card yorha-fade-in" style="animation-delay: 0.3s">
           <div class="flex items-center justify-between">
             <div>
@@ -238,7 +215,6 @@
           </div>
         </div>
       </div>
-
       <div class="yorha-grid yorha-grid-cols-3 gap-6">
         <!-- Active Cases -->
         <div class="col-span-2">
@@ -280,7 +256,6 @@
             </div>
           </div>
         </div>
-
         <!-- System Status & Quick Actions -->
         <div class="space-y-6">
           <!-- System Status -->
@@ -304,7 +279,6 @@
               {/each}
             </div>
           </div>
-
           <!-- Quick Actions -->
           <div class="yorha-nier-bits-nier-bits-nier-bits-card yorha-slide-in" style="animation-delay: 0.4s">
             <div class="yorha-nier-bits-yorha-panel-header">
@@ -325,7 +299,6 @@
               </button>
             </div>
           </div>
-
           <!-- AI Status -->
           <div class="yorha-nier-bits-nier-bits-nier-bits-card yorha-slide-in" style="animation-delay: 0.6s">
             <div class="yorha-nier-bits-yorha-panel-header">
@@ -360,13 +333,11 @@
     </main>
   </div>
 </div>
-
 <style>
   /* Additional component-specific styles */
-  .col-span-2 {;
+  .col-span-2 {
     grid-column: span 2;
   }
-
   .justify-start {
     justify-content: flex-start;
   }

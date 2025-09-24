@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import Button from '$lib/components/ui/enhanced-bits';
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import TooltipContent from "$lib/components/ui/TooltipContent.svelte";
@@ -16,13 +15,11 @@
     Filter,
   } from "lucide-svelte";
   import { onMount } from "svelte";
-
   // Export state
   let exportLoading = $state(false);
   let exportError: string | null = $state(null);
   let exportSuccess = $state(false);
   let availableCases: Case[] = $state([]);
-
   // Export configuration
   let format: "json" | "csv" | "xml" = $state("json");
   let includeEvidence = $state(true);
@@ -31,11 +28,9 @@
   let selectedCaseIds: string[] = $state([]);
   let dateFrom = $state("");
   let dateTo = $state("");
-
   $effect(() => {
     loadAvailableCases();
   });
-
   async function loadAvailableCases() {
     try {
       const response = await fetch("/api/cases");
@@ -50,7 +45,6 @@
     exportLoading = true;
     exportError = null;
     exportSuccess = false;
-
     try {
       const exportRequest = {
         format,
@@ -60,21 +54,19 @@
         dateRange:
           dateFrom || dateTo
             ? {
-                from: dateFrom || undefined,;
-                to: dateTo || undefined,;
+                from: dateFrom || undefined
+                to: dateTo || undefined
   }
-            : undefined,
-        caseIds: selectedCaseIds.length > 0 ? selectedCaseIds : undefined,
+            : undefined
+        caseIds: selectedCaseIds.length > 0 ? selectedCaseIds : undefined
       };
-
       const response = await fetch("/api/export", {
-        method: "POST",;
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
-        },;
-        body: JSON.stringify(exportRequest),;
+        },
+        body: JSON.stringify(exportRequest),
       });
-
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Export failed");
@@ -83,16 +75,14 @@
       const contentDisposition = response.headers.get("Content-Disposition");
       const filename =
         contentDisposition?.match(/filename="(.+)"/)?.[1] || `export.${format}`;
-
       // Download the file
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = filename;
+      a.download = filenam;
       a.click();
       URL.revokeObjectURL(url);
-
       exportSuccess = true;
       setTimeout(() => (exportSuccess = false), 3000);
     } catch (error) {
@@ -114,7 +104,6 @@
     selectedCaseIds = [];
   }
 </script>
-
 <svelte:head>
   <title>Data Export - Legal Analysis Platform</title>
   <meta
@@ -122,7 +111,6 @@
     content="Export legal cases, evidence, and analytics data"
   />
 </svelte:head>
-
 <div class="space-y-4">
   <!-- Header -->
   <header class="space-y-4">
@@ -138,7 +126,6 @@
       </div>
     </div>
   </header>
-
   <div class="space-y-4">
     <div class="space-y-4">
       <!-- Export Configuration -->
@@ -148,7 +135,6 @@
             <FileText class="space-y-4" />
             Export Configuration
           </h2>
-
           <!-- Format Selection -->
           <div class="space-y-4">
             <div class="space-y-4">
@@ -176,7 +162,6 @@
               {/each}
             </div>
           </div>
-
           <!-- Data Selection -->
           <div class="space-y-4">
             <div class="space-y-4">
@@ -209,7 +194,6 @@
               </label>
             </div>
           </div>
-
           <!-- Date Range -->
           <div class="space-y-4">
             <label
@@ -243,7 +227,6 @@
               </div>
             </div>
           </div>
-
           <!-- Case Selection -->
           <div class="space-y-4">
             <div class="space-y-4">
@@ -272,7 +255,6 @@ clearCaseSelection()}
 </Button>
               </div>
             </div>
-
             {#if availableCases.length > 0}
               <div
                 class="space-y-4"
@@ -300,7 +282,6 @@ clearCaseSelection()}
               <p class="space-y-4">No cases available</p>
             {/if}
           </div>
-
           <!-- Error/Success Messages -->
           {#if exportError}
             <div class="space-y-4">
@@ -315,7 +296,6 @@ clearCaseSelection()}
               </div>
             </div>
           {/if}
-
           {#if exportSuccess}
             <div
               class="space-y-4"
@@ -333,7 +313,6 @@ clearCaseSelection()}
               </div>
             </div>
           {/if}
-
           <!-- Export Button -->
           <Tooltip>
             <TooltipTrigger asChild>
@@ -359,7 +338,6 @@ exportData()}
           </Tooltip>
         </div>
       </div>
-
       <!-- Export Summary -->
       <div class="space-y-4">
         <div class="space-y-4">
@@ -367,13 +345,11 @@ exportData()}
             <Database class="space-y-4" />
             Export Summary
           </h3>
-
           <div class="space-y-4">
             <div class="space-y-4">
               <div class="space-y-4">Format</div>
               <div class="space-y-4">{format.toUpperCase()}</div>
             </div>
-
             <div class="space-y-4">
               <div class="space-y-4">Data Types</div>
               <div class="space-y-4">
@@ -397,7 +373,6 @@ exportData()}
                 {/if}
               </div>
             </div>
-
             {#if dateFrom || dateTo}
               <div class="space-y-4">
                 <div class="space-y-4">Date Range</div>
@@ -406,7 +381,6 @@ exportData()}
                 </div>
               </div>
             {/if}
-
             {#if selectedCaseIds.length > 0}
               <div class="space-y-4">
                 <div class="space-y-4">
@@ -420,7 +394,6 @@ exportData()}
               </div>
             {/if}
           </div>
-
           <!-- Export Instructions -->
           <div class="space-y-4">
             <h4 class="space-y-4">Export Instructions</h4>
@@ -436,4 +409,3 @@ exportData()}
     </div>
   </div>
 </div>
-

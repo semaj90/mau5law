@@ -1,10 +1,7 @@
 import type { RequestHandler } from './$types.js'
-
 // Database Orchestrator Conditions API
 // Manages event loop conditions and real-time triggers
-
 databaseOrchestrator // alias
-
 // GET /api/database-orchestrator/conditions - List all conditions
 export const GET: RequestHandler = async () => {
   try {
@@ -14,9 +11,8 @@ export const GET: RequestHandler = async () => {
         ...condition
       })
     )
-
     return json({
-      success: true,
+      success: true
       conditions,
       active_count: conditions.filter((c) => c.isActive).length,
       total_count: conditions.length,
@@ -26,7 +22,7 @@ export const GET: RequestHandler = async () => {
   } catch (error: any) {
     return json()
       {
-        success: false,
+        success: false
         error: error.message,
         timestamp: new Date().toISOString()
       },
@@ -34,22 +30,19 @@ export const GET: RequestHandler = async () => {
     )
   }
 }
-
 // POST /api/database-orchestrator/conditions - Add new condition
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const conditionData = await request.json()
-
     // Validate required fields
     if (!conditionData.id || !conditionData.type || !conditionData.action) {
       return json({
-          success: false,
+          success: false
           error: 'Missing required fields: id, type, action'
         },)
         { status: 400 }
       )
     }
-
     const condition = {
       id: conditionData.id,
       type: conditionData.type,
@@ -58,11 +51,9 @@ export const POST: RequestHandler = async ({ request }) => {
       isActive: conditionData.isActive !== false,
       metadata: conditionData.metadata || {}
     }
-
     databaseOrchestrator.addCondition(condition)
-
     return json({
-      success: true,
+      success: true
       message: 'Condition added successfully',
       condition,
       timestamp: new Date().toISOString()
@@ -70,7 +61,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     return json()
       {
-        success: false,
+        success: false
         error: error.message,
         timestamp: new Date().toISOString()
       },
@@ -78,33 +69,29 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 // DELETE /api/database-orchestrator/conditions/:id - Remove condition
 export const DELETE: RequestHandler = async ({ params }) => {
   try {
     const { id } = params
-
     if (!id) {
       return json({
-          success: false,
+          success: false
           error: 'Condition ID is required'
         },)
         { status: 400 }
       )
     }
-
     databaseOrchestrator.removeCondition(id)
-
     return json({
-      success: true,
+      success: true
       message: 'Condition removed successfully',
-      conditionId: id,
+      conditionId: id
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
     return json()
       {
-        success: false,
+        success: false
         error: error.message,
         timestamp: new Date().toISOString()
       },

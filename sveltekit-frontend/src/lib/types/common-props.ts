@@ -1,4 +1,4 @@
-// Common component properties for UI components;
+// Common component properties for UI components
 export interface CommonProps {
   class?: string;
   id?: string;
@@ -8,7 +8,6 @@ export interface CommonProps {
   role?: string;
   tabindex?: number;
 }
-
 export interface ButtonProps extends CommonProps {
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'legal' | 'evidence' | 'case';
   size?: 'default' | 'sm' | 'lg' | 'icon' | 'xs';
@@ -20,7 +19,6 @@ export interface ButtonProps extends CommonProps {
   target?: string;
   onclick?: (e: MouseEvent) => void;
 }
-
 export interface InputProps extends CommonProps {
   type?: string;
   value?: string | number;
@@ -31,7 +29,6 @@ export interface InputProps extends CommonProps {
   name?: string;
   autocomplete?: string;
 }
-
 export interface FormFieldProps extends CommonProps {
   label?: string;
   description?: string;

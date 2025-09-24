@@ -1,15 +1,12 @@
 <!-- YoRHa Terminal Navigation Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { page } from '$app/state';
-
   interface NavigationProps {
     brand?: string;
     version?: string;
     links?: Array;
   }
-
   let {
     brand = "YORHA LEGAL AI",
     version = "v4.0.0",
@@ -20,14 +17,11 @@
       { href: "/analytics", label: "ANALYTICS", icon: "📈" }
     ]
   }: NavigationProps = $props();
-
   let currentPath = $derived(page.url.pathname);
-
   function isActive(href: string): boolean {
     return currentPath === href || (href !== '/' && currentPath.startsWith(href));
   }
 </script>
-
 <nav class="yorha-nav">
   <div class="yorha-nav-container">
     <div class="yorha-brand">
@@ -37,11 +31,10 @@
         <span class="yorha-brand-version">{version}</span>
       </div>
     </div>
-    
     <div class="yorha-nav-links">
       {#each links as link}
-        <a 
-          href={link.href} 
+        <a
+          href={link.href}
           class="yorha-nav-link"
           class:active={isActive(link.href)}
           data-sveltekit-preload-data="hover"
@@ -56,7 +49,6 @@
         </a>
       {/each}
     </div>
-    
     <div class="yorha-nav-actions">
       <button class="yorha-toolbar-btn" title="System Settings">
         <span class="btn-icon">⚙</span>
@@ -73,35 +65,32 @@
     </div>
   </div>
 </nav>
-
 <style>
   /* @unocss-include */
-.yorha-nav {;
+.yorha-nav {
   background: var(--yorha-bg-secondary, #1a1a1a);
   border-bottom: 3px solid var(--yorha-secondary, #ffd700);
   position: sticky;
+y;
   top: 0;
   z-index: 1000;
-  box-shadow: 
+  box-shadow:
     0 3px 0 0 var(--yorha-secondary, #ffd700),
     0 6px 20px rgba(0, 0, 0, 0.8);
 }
-
 .yorha-nav-container {
   align-items: center;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-betwee;
   max-width: 1400px;
   margin: 0 auto;
   padding: 16px 24px;
 }
-
 .yorha-brand {
   display: flex;
   align-items: center;
   gap: 12px;
 }
-
 .yorha-brand-icon {
   display: flex;
   align-items: center;
@@ -114,13 +103,11 @@
   border: 2px solid var(--yorha-secondary, #ffd700);
   box-shadow: 0 0 0 2px var(--yorha-bg-secondary, #1a1a1a);
 }
-
 .yorha-brand-info {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
-
 .yorha-brand-text {
   color: var(--yorha-secondary, #ffd700);
   font-family: var(--yorha-font-secondary, 'Orbitron', monospace);
@@ -130,7 +117,6 @@
   text-transform: uppercase;
   line-height: 1;
 }
-
 .yorha-brand-version {
   color: var(--yorha-text-muted, #808080);
   font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
@@ -138,12 +124,10 @@
   letter-spacing: 1px;
   text-transform: uppercase;
 }
-
 .yorha-nav-links {
   display: flex;
   gap: 8px;
 }
-
 .yorha-nav-link {
   position: relative;
   display: flex;
@@ -161,26 +145,22 @@
   transition: all 0.2s ease;
   overflow: hidden;
 }
-
 .yorha-nav-link:hover {
   color: var(--yorha-secondary, #ffd700);
   border-color: var(--yorha-text-muted, #808080);
   background: var(--yorha-bg-tertiary, #2a2a2a);
 }
-
 .yorha-nav-link.active {
   color: var(--yorha-secondary, #ffd700);
   border-color: var(--yorha-secondary, #ffd700);
   background: var(--yorha-bg-tertiary, #2a2a2a);
-  box-shadow: 
+  box-shadow:
     inset 0 3px 0 var(--yorha-secondary, #ffd700),
     0 0 10px rgba(255, 215, 0, 0.2);
 }
-
 .nav-icon {
   font-size: 16px;
 }
-
 .active-bar {
   position: absolute;
   bottom: 0;
@@ -190,12 +170,10 @@
   background: var(--yorha-secondary, #ffd700);
   box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
 }
-
 .yorha-nav-actions {
   display: flex;
   gap: 8px;
 }
-
 .yorha-toolbar-btn {
   position: relative;
   display: flex;
@@ -212,19 +190,16 @@
   min-width: 60px;
   height: 60px;
 }
-
 .yorha-toolbar-btn:hover {
   background: var(--yorha-secondary, #ffd700);
   border-color: var(--yorha-secondary, #ffd700);
   color: var(--yorha-bg-primary, #0a0a0a);
   box-shadow: 0 0 0 1px var(--yorha-secondary, #ffd700);
 }
-
 .btn-icon {
   font-size: 18px;
   line-height: 1;
 }
-
 .btn-label {
   font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
   font-size: 8px;
@@ -233,35 +208,27 @@
   text-transform: uppercase;
   line-height: 1;
 }
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .yorha-nav-container {
     padding: 12px 16px;
   }
-  
   .yorha-brand-text {
     font-size: 16px;
   }
-  
   .yorha-nav-links {
     gap: 4px;
   }
-  
   .yorha-nav-link {
     padding: 8px 12px;
     font-size: 12px;
   }
-  
   .btn-label {
     display: none;
   }
-  
   .yorha-toolbar-btn {
     min-width: 48px;
     height: 48px;
   }
 }
 </style>
-
-

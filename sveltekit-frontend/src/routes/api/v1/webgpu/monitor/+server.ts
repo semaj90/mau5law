@@ -3,12 +3,10 @@ import { json } from '@sveltejs/kit'
 import { webgpuRedisOptimizer } from '$lib/server/webgpu-redis-optimizer.js'
 import { embeddingCache } from '$lib/server/embedding-cache-middleware.js'
 import { cache } from '$lib/server/cache/redis.js'
-
 /**
  * WebGPU Cache System Monitoring API
  * Real-time performance monitoring and analytics dashboard
  */
-
 interface SystemMetrics {
   timestamp: number
   webgpu: {
@@ -40,37 +38,31 @@ interface SystemMetrics {
     p95ResponseTime: number
   }
 }
-
 interface HealthStatus {
-  overall: 'healthy' | 'warning' | 'critical'
+  overall: 'healthy' | 'warning' | 'critical',
   components: {
-    webgpu: 'healthy' | 'degraded' | 'offline'
+    webgpu: 'healthy' | 'degraded' | 'offline',
     cache: 'healthy' | 'warning' | 'critical'
     workers: 'healthy' | 'overloaded' | 'offline'
   }
   alerts: Array<any>
 }
-
 // In-memory metrics storage for demo (in production, use proper time-series DB)
 let metricsHistory: SystemMetrics[] = []
 let alertHistory: HealthStatus['alerts'] = []
-
 // GET - Real-time system monitoring data
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const timeRange = url.searchParams.get('range') || '1h'
     const includeHistory = url.searchParams.get('history') === 'true'
-
     // Collect current metrics
     const currentMetrics = await collectSystemMetrics()
     const healthStatus = evaluateSystemHealth(currentMetrics)
-
     // Store in history
     metricsHistory.push(currentMetrics)
     if (metricsHistory.length > 1000) {
       metricsHistory = metricsHistory.slice(-1000); // Keep last 1000 entries
     }
-
     // Add new alerts
     healthStatus.alerts.forEach((alert) => {
       alertHistory.unshift(alert)
@@ -78,11 +70,10 @@ export const GET: RequestHandler = async ({ url }) => {
     if (alertHistory.length > 100) {
       alertHistory = alertHistory.slice(0, 100)
     }
-
     const response: any = {
-      success: true,
-      current: currentMetrics,
-      health: healthStatus,
+      success: true
+      current: currentMetrics
+      health: healthStatus
       summary: {
         uptime: process.uptime(),
         nodeVersion: process.version,
@@ -91,20 +82,18 @@ export const GET: RequestHandler = async ({ url }) => {
         cpuUsage: process.cpuUsage()
       }
     }
-
     if (includeHistory) {
       response.history = {
         metrics: getFilteredHistory(timeRange),
         alerts: alertHistory.slice(0, 20), // Last 20 alerts
       }
     }
-
     return json(response)
   } catch (error) {
     console.error('Monitoring API error:', error)
     return json()
       {
-        success: false,
+        success: false
         error: 'Failed to collect system metrics',
         details: error instanceof Error ? error.message: String(error)
       },
@@ -112,32 +101,26 @@ export const GET: RequestHandler = async ({ url }) => {
     )
   }
 }
-
 // POST - Update metrics or trigger actions
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action, data } = await request.json()
-
     switch (action) {
       case 'clear-cache':
         await clearSystemCache()
         return json({ success: true, message: 'Cache cleared successfully' })
-
       case 'restart-workers':
         await restartWorkerPools()
         return json({ success: true, message: 'Worker pools restarted' })
-
       case 'optimize-gpu':
         await optimizeGPUSettings()
         return json({ success: true, message: 'GPU settings optimized' })
-
       case 'export-metrics':
         const exportData = await exportMetricsData(data.timeRange || '24h')
         return json({ success: true, data: exportData })
-
       default:
-        return json({
-            success: false,
+        return json({,
+            success: false
             error: 'Invalid action',
             validActions: ['clear-cache', 'restart-workers', 'optimize-gpu', 'export-metrics']
           },)
@@ -147,7 +130,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     return json()
       {
-        success: false,
+        success: false
         error: 'Action execution failed',
         details: error instanceof Error ? error.message: String(error)
       },
@@ -155,7 +138,6 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 /**
  * Collect comprehensive system metrics
  */
@@ -165,7 +147,6 @@ async function collectSystemMetrics(): Promise<SystemMetrics> {
       webgpuRedisOptimizer.getOptimizationStats(),
       embeddingCache.getCacheStats()
     ])
-
     return {
       timestamp: Date.now(),
       webgpu: {
@@ -203,7 +184,7 @@ async function collectSystemMetrics(): Promise<SystemMetrics> {
     return {
       timestamp: Date.now(),
       webgpu: {
-        available: false,
+        available: false
         utilization: 0,
         memoryUsed: 0,
         memoryTotal: 12288,
@@ -233,13 +214,11 @@ async function collectSystemMetrics(): Promise<SystemMetrics> {
     }
   }
 }
-
 /**
  * Evaluate system health based on metrics
  */
 function evaluateSystemHealth(metrics: SystemMetrics): HealthStatus {
   const alerts: HealthStatus['alerts'] = []
-
   // Check WebGPU health
   let webgpuStatus: 'healthy' | 'degraded' | 'offline' = 'healthy'
   if (!metrics.webgpu.available) {
@@ -266,7 +245,6 @@ function evaluateSystemHealth(metrics: SystemMetrics): HealthStatus {
       timestamp: Date.now()
     })
   }
-
   // Check cache health
   let cacheStatus: 'healthy' | 'warning' | 'critical' = 'healthy'
   if (metrics.cache.hitRatio < 0.5) {
@@ -278,7 +256,6 @@ function evaluateSystemHealth(metrics: SystemMetrics): HealthStatus {
       timestamp: Date.now()
     })
   }
-
   if (metrics.cache.avgResponseTime > 100) {
     cacheStatus = 'warning'
     alerts.push({
@@ -288,7 +265,6 @@ function evaluateSystemHealth(metrics: SystemMetrics): HealthStatus {
       timestamp: Date.now()
     })
   }
-
   // Check worker health
   let workersStatus: 'healthy' | 'overloaded' | 'offline' = 'healthy'
   if (metrics.threading.activeWorkers === 0) {
@@ -308,7 +284,6 @@ function evaluateSystemHealth(metrics: SystemMetrics): HealthStatus {
       timestamp: Date.now()
     })
   }
-
   // Check performance metrics
   if (metrics.performance.errorRate > 0.1) {
     alerts.push({
@@ -318,36 +293,31 @@ function evaluateSystemHealth(metrics: SystemMetrics): HealthStatus {
       timestamp: Date.now()
     })
   }
-
   // Determine overall health
   let overall: 'healthy' | 'warning' | 'critical' = 'healthy'
   const criticalAlerts = alerts.filter((a) => a.severity === 'critical')
   const warningAlerts = alerts.filter((a) => a.severity === 'warning')
-
   if (criticalAlerts.length > 0) {
     overall = 'critical'
   } else if (warningAlerts.length > 2) {
     overall = 'warning'
   }
-
   return {
     overall,
     components: {
-      webgpu: webgpuStatus,
-      cache: cacheStatus,
+      webgpu: webgpuStatus
+      cache: cacheStatus
       workers: workersStatus
     },
     alerts
   }
 }
-
 /**
  * Get filtered metrics history based on time range
  */
 function getFilteredHistory(timeRange: string): SystemMetrics[] {
   const now = Date.now()
   let cutoffTime = now
-
   switch (timeRange) {
     case '1h':
       cutoffTime = now - 60 * 60 * 1000
@@ -361,10 +331,8 @@ function getFilteredHistory(timeRange: string): SystemMetrics[] {
     default:
       cutoffTime = now - 60 * 60 * 1000; // Default to 1 hour
   }
-
   return metricsHistory.filter(m => m.timestamp >= cutoffTime)
 }
-
 /**
  * Clear system cache
  */
@@ -377,7 +345,6 @@ async function clearSystemCache(): Promise<void> {
     throw error
   }
 }
-
 /**
  * Restart worker pools
  */
@@ -392,7 +359,6 @@ async function restartWorkerPools(): Promise<void> {
     throw error
   }
 }
-
 /**
  * Optimize GPU settings
  */
@@ -407,13 +373,11 @@ async function optimizeGPUSettings(): Promise<void> {
     throw error
   }
 }
-
 /**
  * Export metrics data for analysis
  */
 async function exportMetricsData(timeRange: string): Promise<any> {
   const filteredHistory = getFilteredHistory(timeRange)
-
   return {
     timeRange,
     dataPoints: filteredHistory.length,
@@ -436,22 +400,20 @@ async function exportMetricsData(timeRange: string): Promise<any> {
     data: filteredHistory
   }
 }
-
 // DELETE - Clear monitoring history
 export const DELETE: RequestHandler = async () => {
   try {
     metricsHistory = []
     alertHistory = []
-
     return json({
-      success: true,
+      success: true
       message: 'Monitoring history cleared',
       timestamp: Date.now()
     })
   } catch (error) {
     return json()
       {
-        success: false,
+        success: false
         error: 'Failed to clear monitoring history',
         details: error instanceof Error ? error.message: String(error)
       },

@@ -1,7 +1,6 @@
 <!-- Enhanced RAG Demo Component with Semantic Analysis -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import {
     semanticAnalyzer,
@@ -13,73 +12,54 @@
     type RAGQuery,
     type RAGResponse,
   } from '$lib/services/enhanced-rag-semantic-analyzer';
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-
   // Reactive state using runes
   let sampleLegalText = $state(`
   MEMORANDUM OF UNDERSTANDING
-
   This Memorandum of Understanding ("MOU"); is entered into on January 15, 2024, between TechCorp Inc., a Delaware corporation ("Company"), and John Smith, Esq., individually ("Consultant").
-
-  WHEREAS, Company desires to engage Consultant to provide legal advisory services regarding intellectual property matters and contract negotiations;
-
-  WHEREAS, Consultant agrees to provide such services pursuant to the terms and conditions set forth herein;
-
+  WHEREAS, Company desires to engage Consultant to provide legal advisory services regarding intellectual property matters and contract negotiation;
+  WHEREAS, Consultant agrees to provide such services pursuant to the terms and conditions set forth herei;
   NOW, THEREFORE, in consideration of the mutual covenants contained herein, the parties agree as follows:
-
   1. SERVICES. Consultant shall provide legal advisory services to Company, including but not limited to:
    a) Review and analysis of intellectual property portfolios
    b) Contract negotiation and drafting
    c) Legal research and compliance advisory
-
   2. COMPENSATION. Company shall pay Consultant $350 per hour for services rendered, payable within 30 days of receipt of invoice.
-
   3. CONFIDENTIALITY. Consultant acknowledges that during the course of engagement, Consultant may have access to confidential and proprietary information of Company.
-
   4. LIABILITY. Company's total liability under this MOU shall not exceed $50,000 in aggregate.
-
   5. BREACH. In the event of breach by either party, the non-breaching party may terminate this MOU upon written notice.
-
   This MOU shall be governed by Delaware law and shall remain in effect until December 31, 2024, unless terminated earlier in accordance with its terms.
-
   IN WITNESS WHEREOF, the parties have executed this MOU as of the date first written above.
     `);
-
   let queryText = $state('What are the liability limitations in this contract?');
   let isAnalyzing = $state(false);
   let analysisResult = $state<SemanticAnalysisResult | null>(null);
   let ragResponse = $state<RAGResponse | null>(null);
   let activeTab = $state<'analyze' | 'query'>('analyze');
-
   // Advanced search filters
   let useSemanticExpansion = $state(true);
   let confidenceThreshold = $state(0.7);
   let selectedEntityTypes = $state<string[]>(['LEGAL_CONCEPT', 'PERSON', 'ORGANIZATION', 'MONEY']);
-
   // Subscribe to stores
   $effect(() => {
-    isAnalyzing = $isAnalyzingStore;
-    analysisResult = $semanticAnalysisStore;
-    ragResponse = $ragResponseStore;
+    isAnalyzing = $isAnalyzingStor;
+    analysisResult = $semanticAnalysisStor;
+    ragResponse = $ragResponseStor;
   });
-
   /**
    * Analyze the sample legal document
    */
   async function analyzeDocument() {
     if (!sampleLegalText.trim()) return;
-
     isAnalyzingStore.set(true);
-
     try {
       const result = await semanticAnalyzer.analyzeDocument(sampleLegalText, `doc_${Date.now()}`);
-
       semanticAnalysisStore.set(result);
       console.log('Semantic Analysis Result:', result);
     } catch (error) {
@@ -89,34 +69,28 @@
       isAnalyzingStore.set(false);
     }
   }
-
   /**
    * Perform enhanced RAG query
    */
   async function performRAGQuery() {
     if (!queryText.trim()) return;
-
     isAnalyzingStore.set(true);
-
     try {
       const query: RAGQuery = {
-        query: queryText,;
+        query: queryText
         filters: {
-          entityTypes: selectedEntityTypes,
+          entityTypes: selectedEntityTypes
           confidenceThreshold,
-        },;
+        },
         semantic: {
-          useEmbeddings: true,
-          expandConcepts: useSemanticExpansion,
-          includeRelated: true,
+          useEmbeddings: true
+          expandConcepts: useSemanticExpansion
+          includeRelated: true
         },
       };
-
       ragQueryStore.set(query);
-
       const response = await semanticAnalyzer.enhancedQuery(query);
       ragResponseStore.set(response);
-
       console.log('RAG Query Response:', response);
     } catch (error) {
       console.error('RAG query failed:', error);
@@ -125,7 +99,6 @@
       isAnalyzingStore.set(false);
     }
   }
-
   /**
    * Format entity type for display
    */
@@ -134,7 +107,6 @@
       .split.map((word) => word.charAt.toUpperCase() + word.slice.toLowerCase())
       .join(' ');
   }
-
   /**
    * Get entity type color for UI
    */
@@ -150,12 +122,10 @@
     };
     return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   }
-
   $effect(() => {
     console.log('Enhanced RAG Demo loaded');
   });
 </script>
-
 <div class="enhanced-rag-demo p-6 max-w-6xl mx-auto space-y-6">
   <!-- Header -->
   <div class="header">
@@ -165,7 +135,6 @@
       documents
     </p>
   </div>
-
   <!-- Tab Navigation -->
   <div class="tabs flex border-b">
     <button
@@ -183,7 +152,6 @@
       Enhanced RAG Query
     </button>
   </div>
-
   <!-- Document Analysis Tab -->
   {#if activeTab === 'analyze'}
     <div class="analysis-tab space-y-6">
@@ -206,7 +174,6 @@
                 placeholder="Enter legal document text for analysis..."
                 disabled={isAnalyzing}></textarea>
             </div>
-
             <div class="flex justify-between items-center">
               <div class="text-sm text-gray-500">
                 {sampleLegalText.length} characters, ~{Math.ceil.length
@@ -217,12 +184,10 @@
                 disabled={isAnalyzing || !sampleLegalText.trim()}
                 class="px-6 bits-btn bits-btn">
 {isAnalyzing ? 'Analyzing...' : 'Analyze Document'}
-
             </div>
           </div>
         </div>
       </div>
-
       <!-- Analysis Results -->
       {#if analysisResult}
         <div class="analysis-results grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -256,7 +221,6 @@
               </div>
             </div>
           </div>
-
           <!-- Concepts -->
           <div class="nes-container">
             <div class="yorha-panel-header">
@@ -286,7 +250,6 @@
               </div>
             </div>
           </div>
-
           <!-- Metrics -->
           <div class="nes-container">
             <div class="yorha-panel-header">
@@ -323,7 +286,6 @@
               </div>
             </div>
           </div>
-
           <!-- Embeddings Preview -->
           <div class="nes-container">
             <div class="yorha-panel-header">
@@ -349,7 +311,6 @@
       {/if}
     </div>
   {/if}
-
   <!-- RAG Query Tab -->
   {#if activeTab === 'query'}
     <div class="query-tab space-y-6">
@@ -372,7 +333,6 @@
                 placeholder="Ask about legal concepts, entities, or document content..."
                 disabled={isAnalyzing} />
             </div>
-
             <!-- Query Options -->
             <div class="query-options grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
@@ -381,7 +341,6 @@
                   <span class="text-sm">Semantic Expansion</span>
                 </label>
               </div>
-
               <div>
                 <label for="confidence" class="block text-sm text-gray-600 mb-1">
                   Confidence Threshold: {confidenceThreshold}
@@ -395,10 +354,9 @@
                   bind:value={confidenceThreshold}
                   class="w-full" />
               </div>
-
               <div>
                 <label class="block text-sm text-gray-600 mb-1" for="entity-types">Entity Types</label><select id="entity-types"
-                  multiple;
+                  multipl;
                   bind:value={selectedEntityTypes}
                   class="w-full p-1 border border-gray-300 rounded text-sm">
                   <option value="LEGAL_CONCEPT">Legal Concepts</option>
@@ -409,19 +367,16 @@
                 </select>
               </div>
             </div>
-
             <div class="flex justify-end">
               <Button
                 onclick={performRAGQuery}
                 disabled={isAnalyzing || !queryText.trim()}
                 class="px-6 bits-btn bits-btn">
 {isAnalyzing ? 'Querying...' : 'Execute RAG Query'}
-
             </div>
           </div>
         </div>
       </div>
-
       <!-- Query Results -->
       {#if ragResponse}
         <div class="nes-container">
@@ -446,7 +401,6 @@
                   </div>
                 {/if}
               </div>
-
               <!-- Results -->
               <div class="results space-y-3">
                 {#each ragResponse.results as result}
@@ -458,7 +412,6 @@
                       </span>
                     </div>
                     <p class="text-sm text-gray-600 mb-3">{(result as { title?: any; relevanceScore?: any; excerpt?: any; entities?: any }).excerpt}</p>
-
                     {#if (result as { title?: any; relevanceScore?: any; excerpt?: any; entities?: any }).entities && (result as { title?: any; relevanceScore?: any; excerpt?: any; entities?: any }).entities.length > 0}
                       <div class="entities flex flex-wrap gap-1">
                         {#each (result as { title?: any; relevanceScore?: any; excerpt?: any; entities?: any }).entities.slice(0, 5) as entity}
@@ -473,7 +426,6 @@
                     {/if}
                   </div>
                 {/each}
-
                 {#if ragResponse.results.length === 0}
                   <div class="no-results p-4 text-center text-gray-500">
                     No results found. Try adjusting your query or lowering the confidence threshold.
@@ -487,7 +439,6 @@
     </div>
   {/if}
 </div>
-
 <style>
   .enhanced-rag-demo {
     font-family:
@@ -495,46 +446,36 @@
       -apple-system,
       sans-serif;
   }
-
   .tab {
     transition: all 0.2s ease;
   }
-
   .entity-item,
   .concept-item,
   .result-item {
     transition: all 0.2s ease;
   }
-
-  .entity-item:hover,
-  .concept-item:hover,
+  .entity-item: hover
+  .concept-item: hover
   .result-item:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
-
   .metric {
     text-align: center;
     padding: 1rem;
     border-radius: 0.5rem;
     background: #f9fafb;
   }
-
   .embedding-preview {
     max-width: 100%;
     overflow-x: auto;
     white-space: nowrap;
   }
-
   @media (max-width: 768px) {
     .query-options {
       grid-template-columns: 1fr;
     }
-
     .analysis-results {
       grid-template-columns: 1fr;
     }
   }
 </style>
-
-
-

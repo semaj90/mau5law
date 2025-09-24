@@ -1,26 +1,21 @@
 import { json } from "@sveltejs/kit"
 import type { RequestHandler } from './$types.js'
-
-
 // Context7 MCP Server endpoints
 const MCP_ENDPOINTS = {
   wrapper: 'http://localhost:4000', // mcp-context7-wrapper.js
   legal: 'http://localhost:4001', // mcp-legal-server.mjs
   extension: 'http://localhost:4002', // VS Code extension MCP
 }
-
 // GET /api/context7 - Get Context7 system status
 export const GET: RequestHandler = async () => {
   try {
     const healthChecks = []
-
     // Check all MCP servers
     for (const [name, endpoint] of Object.entries(MCP_ENDPOINTS)) {
       const startTime = Date.now()
       try {
         const controller = new AbortController()
         const timeout = setTimeout(() => controller.abort(), 3000); // Reduced timeout to 3s
-
         const response = await fetch(`${endpoint}/health`, {
           method: 'GET',
           signal: controller.signal,
@@ -29,23 +24,20 @@ export const GET: RequestHandler = async () => {
             'User-Agent': 'Context7-API/1.0'
           }
         })
-
         clearTimeout(timeout)
         const responseTime = Date.now() - startTime
-
         healthChecks.push({
-          service: name,
+          service: name
           endpoint,
           status: (response as { ok?: any; status?: any; text?: any; statusText?: any; json?: any }).ok ? 'healthy' : 'unhealthy',
           response_code: (response as { ok?: any; status?: any; text?: any; statusText?: any; json?: any }).status,
-          response_time: responseTime,
+          response_time: responseTime
           last_check: new Date().toISOString()
         })
       } catch (error: any) {
         const responseTime = Date.now() - startTime
         let errorType = 'unknown'
         let errorMessage = error?.message || 'Unknown error'
-
         if (error.name === 'AbortError') {
           errorType = 'timeout'
           errorMessage = 'Health check timeout after 3 seconds'
@@ -56,26 +48,23 @@ export const GET: RequestHandler = async () => {
           errorType = 'dns_error'
           errorMessage = 'Cannot resolve MCP server hostname'
         }
-
         healthChecks.push({
-          service: name,
+          service: name
           endpoint,
           status: 'error',
-          error_type: errorType,
-          error: errorMessage,
-          response_time: responseTime,
+          error_type: errorType
+          error: errorMessage
+          response_time: responseTime
           last_check: new Date().toISOString()
         })
       }
     }
-
     // Get orchestrator Context7 integration status
     const orchestratorStatus = databaseOrchestrator.getStatus()
-
     return json({
-      success: true,
+      success: true
       context7_status: {
-        mcp_servers: healthChecks,
+        mcp_servers: healthChecks
         healthy_count: healthChecks.filter((h) => h.status === 'healthy').length,
         total_count: healthChecks.length,
         // Provide a derived integration flag (placeholder until real integration flag added)
@@ -87,7 +76,7 @@ export const GET: RequestHandler = async () => {
   } catch (error: any) {
     return json()
       {
-        success: false,
+        success: false
         error: error.message,
         timestamp: new Date().toISOString()
       },
@@ -95,12 +84,10 @@ export const GET: RequestHandler = async () => {
     )
   }
 }
-
 // POST /api/context7 - Execute Context7 operations
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action, server, tool, data } = await request.json()
-
     switch (action) {
       case 'analyze_codebase':
         return await callMCPTool('wrapper', 'analyze_codebase', data)
@@ -117,7 +104,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'custom_tool':
         if (!server || !tool) {
           return json({
-              success: false,
+              success: false
               error: 'Server and tool parameters required for custom tool calls'
             },)
             { status: 400 }
@@ -127,8 +114,8 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'sync_with_orchestrator':
         return await syncWithOrchestrator(data)
       default:
-        return json({
-            success: false,
+        return json({,
+            success: false
             error: `Unknown action: ${action}`
           },)
           { status: 400 }
@@ -137,7 +124,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     return json()
       {
-        success: false,
+        success: false
         error: error.message,
         timestamp: new Date().toISOString()
       },
@@ -145,7 +132,6 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 // Helper function to call MCP tools
 async function callMCPTool(server: string, tool: string, data: any): Promise<any> {
   try {
@@ -153,10 +139,8 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
     if (!endpoint) {
       throw new Error(`Unknown MCP server: ${server}. Available servers: ${Object.keys(MCP_ENDPOINTS).join(', ')}`)
     }
-
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), 10000); // 10s timeout for tool calls
-
     const response = await fetch(`${endpoint}/tools/call`, {
       method: 'POST',
       headers: {
@@ -165,36 +149,31 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
         'User-Agent': 'Context7-API/1.0'
       },
       signal: controller.signal,
-      body: JSON.stringify({
-        name: tool,
+      body: JSON.stringify({,
+        name: tool
         arguments: data
       })
     })
-
     clearTimeout(timeout)
-
     if (!(response as { ok?: any; status?: any; text?: any; statusText?: any; json?: any }).ok) {
       const errorText = await (response as { ok?: any; status?: any; text?: any; statusText?: any; json?: any }).text().catch(() => 'Unknown error')
       throw new Error(`MCP tool call failed: ${(response as { ok?: any; status?: any; text?: any; statusText?: any; json?: any }).status} ${(response as { ok?: any; status?: any; text?: any; statusText?: any; json?: any }).statusText}. Response: ${errorText}`)
     }
-
     const result = await (response as { ok?: any; status?: any; text?: any; statusText?: any; json?: any }).json()
-
     // Save the result to database via orchestrator
     await databaseOrchestrator.saveToDatabase()
       {
-        mcp_server: server,
-        tool_name: tool,
-        input_data: data,
+        mcp_server: server
+        tool_name: tool
+        input_data: data
         result,
         timestamp: new Date(),
         status: 'completed'
       },
       'mcp_tool_calls'
     )
-
     return json({
-      success: true,
+      success: true
       server,
       tool,
       result,
@@ -204,26 +183,23 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
     // Log the error to database
     await databaseOrchestrator.saveToDatabase()
       {
-        mcp_server: server,
-        tool_name: tool,
-        input_data: data,
+        mcp_server: server
+        tool_name: tool
+        input_data: data
         error: error.message,
         timestamp: new Date(),
         status: 'failed'
       },
       'mcp_tool_calls'
     )
-
     throw error
   }
 }
-
 // Sync Context7 results with database orchestrator
 async function syncWithOrchestrator(data: any): Promise<any> {
   try {
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), 15000); // 15s timeout for sync operations
-
     // Get latest Context7 recommendations
     const recommendationResponse = await fetch(`${MCP_ENDPOINTS.wrapper}/tools/call`, {
       method: 'POST',
@@ -233,17 +209,14 @@ async function syncWithOrchestrator(data: any): Promise<any> {
         'User-Agent': 'Context7-API/1.0'
       },
       signal: controller.signal,
-      body: JSON.stringify({
+      body: JSON.stringify({,
         name: 'generate_recommendations',
         arguments: data
       })
     })
-
     clearTimeout(timeout)
-
     if (recommendationResponse.ok) {
       const recommendations = await recommendationResponse.json()
-
       // Process recommendations through orchestrator
       for (const rec of recommendations.result?.recommendations || []) {
         await databaseOrchestrator.saveToDatabase()
@@ -253,33 +226,30 @@ async function syncWithOrchestrator(data: any): Promise<any> {
             confidence: rec.confidence,
             error_pattern: rec.error,
             source: 'context7_mcp',
-            metadata: data,
+            metadata: data
             created_at: new Date()
           },
           'recommendations'
         )
-
         // Trigger orchestrator event
         databaseOrchestrator.emit('context7:recommendation_processed', {
-          recommendation: rec,
+          recommendation: rec
           source_data: data
         })
       }
     }
-
     const processedCount = Array.isArray((recommendationResponse as any)?.result?.recommendations)
       ? (recommendationResponse as any).result.recommendations.length: 0
-
     return json({
-      success: true,
+      success: true
       message: 'Context7 sync completed',
-      processed_recommendations: processedCount,
+      processed_recommendations: processedCount
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
     return json()
       {
-        success: false,
+        success: false
         error: error.message,
         timestamp: new Date().toISOString()
       },

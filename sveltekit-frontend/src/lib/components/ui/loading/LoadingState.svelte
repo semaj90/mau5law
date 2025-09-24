@@ -20,7 +20,6 @@
     fallback
   }: Props = $props();
 </script>
-
 <!-- Error State -->
 {#if error}
   <div class="flex flex-col items-center justify-center p-golden-xl text-center">
@@ -36,7 +35,6 @@
       {error}
     </p>
   </div>
-
 <!-- Loading State -->
 {:else if loading}
   <div class="space-y-golden-lg">
@@ -53,7 +51,6 @@
         </span>
       </div>
     </div>
-
     <!-- Skeleton Content -->
     {#if skeleton === 'dashboard'}
       <!-- Dashboard Skeleton -->
@@ -67,7 +64,6 @@
           </div>
         {/each}
       </div>
-
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-golden-xl">
         {#each Array(3) as _}
           <div class="bg-nier-bg-secondary border border-nier-border-muted rounded p-golden-lg animate-pulse">
@@ -82,7 +78,6 @@
           </div>
         {/each}
       </div>
-
     {:else if skeleton === 'list'}
       <!-- List Skeleton -->
       <div class="space-y-golden-sm">
@@ -99,7 +94,6 @@
           </div>
         {/each}
       </div>
-
     {:else if skeleton === 'table'}
       <!-- Table Skeleton -->
       <div class="bg-nier-bg-secondary border border-nier-border-muted rounded overflow-hidden">
@@ -120,7 +114,6 @@
           </div>
         {/each}
       </div>
-
     {:else if skeleton === 'card'}
       <!-- Card Skeleton -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-golden-lg">
@@ -141,12 +134,10 @@
           </div>
         {/each}
       </div>
-
     {:else if skeleton === 'custom' && fallback}
       {@render fallback()}
     {/if}
   </div>
-
 <!-- Empty State -->
 {:else if empty}
   <div class="flex flex-col items-center justify-center p-golden-xl text-center">
@@ -162,15 +153,13 @@
       {emptyMessage}
     </p>
   </div>
-
 <!-- Content State -->
 {:else}
   {@render children?.()}
 {/if}
-
 <style>
   .animation-delay-150 {
-    animation-delay: 150ms;
+    animation-delay: 150m;
   }
 /* Custom YoRHa pulse animation */ @keyframes yorha-pulse {
     0%, 100% {
@@ -180,7 +169,6 @@
       opacity: 0.3;
     }
   }
-
   .animate-pulse {
     animation: yorha-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }

@@ -3,7 +3,6 @@ import { json } from '@sveltejs/kit'
 import { cache } from '$lib/server/cache/redis'
 import { embedText } from '$lib/server/embedding-gateway'
 import { hashString32 } from '$lib/utils/chunk'
-
 export const POST: RequestHandler = async ({ request, fetch }) => {
   try {
     const payload = await request.json()
@@ -12,10 +11,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     const text = String(payload.payload?.text || '')
     const hash = hashString32(text)
     const cacheKey = `pipeline:chunk:${id}`
-
     // Save chunk compressed to redis (hot cache)
     await cache.setCompressed(cacheKey, payload, 60 * 60); // 1h TTL
-
     // Optionally compute embedding synchronously for small chunks (and also enqueue)
     try {
       const model =
@@ -30,7 +27,6 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       console.warn('embed failed (will enqueue):', err?.message || err)
       // TODO: enqueue job to background worker (RabbitMQ / Redis stream)
     }
-
     // Always enqueue for background durability/DB persistence. Prefer RabbitMQ when available.
     const job = { id, text, model: payload?.model || 'embeddinggemma-300m' }
     try {
@@ -50,7 +46,6 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         console.warn('Failed to enqueue job to Redis as fallback:', msg)
       }
     }
-
     return json({ ok: true, id }, { status: 202 })
   } catch (err: any) {
     return json({ ok: false, error: err.message || String(err) }, { status: 500 })

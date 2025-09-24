@@ -1,8 +1,7 @@
 
 // Service Worker for AI-Driven Predictive Prefetching
-// Integrates with our legal AI system for intelligent resource loading;
+// Integrates with our legal AI system for intelligent resource loading
 }
-
 export interface UserIntent {
   action:
     | "open_settings"
@@ -28,11 +27,10 @@ export interface UserIntent {
   userProfile: {
     role: "prosecutor" | "detective" | "admin" | "user";
     recentActions: string[];
-    preferences: Record<string, any>;
+    preferences: { [key: string]: any };
     workflowPatterns: string[];
   };
 }
-
 export interface PrefetchItem {
   type: "route" | "api" | "asset" | "ui-buffer" | "css";
   url: string;
@@ -42,16 +40,14 @@ export interface PrefetchItem {
   dependencies: string[];
   aiReasoning: string;
 }
-
 export interface LegalWorkflowPattern {
   name: string;
   sequence: string[];
-  triggerConditions: Record<string, any>;
+  triggerConditions: { [key: string]: any };
   successProbability: number;
   typicalAssets: string[];
   preloadTiming: "immediate" | "on-hover" | "predictive";
 }
-
 export interface PrefetchStrategy {
   routes: string[];
   assets: string[];
@@ -70,7 +66,6 @@ export interface PrefetchStrategy {
     intentThreshold?: number;
   };
 }
-
 export class PredictivePrefetcher {
   private cache: Cache | null = null;
   private intentHistory: UserIntent[] = [];
@@ -82,12 +77,10 @@ export class PredictivePrefetcher {
   private keyboardEvents: KeyboardEvent[] = [];
   private lastPrediction = Date.now();
   private startTime = Date.now();
-
   constructor() {
     this.initializeStrategies();
     this.initializeLegalWorkflowPatterns();
   }
-
   async initialize(): Promise<void> {
     try {
       this.cache = await caches.open("legal-ai-predictive-v1");
@@ -101,27 +94,25 @@ export class PredictivePrefetcher {
       console.error("Failed to initialize predictive prefetcher:", error);
     }
   }
-
   /**
    * Initialize local LLM model for intent prediction
    */;
   private async initializeIntentModel(): Promise<void> {
     try {
-      // Use Ollama for local LLM inference;
+      // Use Ollama for local LLM inference
       const modelResponse = await fetch("http://localhost:11434/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           model: "gemma3-legal:latest", // Lightweight model for fast inference
-          prompt: "Initialize legal workflow intent prediction model",;
+          prompt: "Initialize legal workflow intent prediction model",
           stream: false
         })
       });
-
       if (modelResponse.ok) {
         this.intentModel = {
-          initialized: true,
-          endpoint: "http://localhost:11434/api/generate",;
+          initialized: true
+          endpoint: "http://localhost:11434/api/generate",
           model: "gemma3-legal:latest"
         };
         console.log("🧠 Local LLM initialized for intent prediction");
@@ -136,18 +127,16 @@ export class PredictivePrefetcher {
       this.intentModel = { initialized: false, fallback: true };
     }
   }
-
   /**
    * Start monitoring user behavior for intent prediction
    */;
   private startBehaviorMonitoring(): void {
-    // Mouse movement tracking;
+    // Mouse movement tracking
     self.addEventListener("mousemove", (e: any) => {
       this.mouseEvents.push(e);
       if (this.mouseEvents.length > 50)
         this.mouseEvents = this.mouseEvents.slice(-50);
-
-      // Throttled prediction every 2 seconds;
+      // Throttled prediction every 2 seconds
       if (Date.now() - this.lastPrediction > 2000) {
         this.predictUserIntentEnhanced({
           mouseEvents: this.mouseEvents,
@@ -160,22 +149,19 @@ export class PredictivePrefetcher {
         this.lastPrediction = Date.now();
       }
     });
-
-    // Keyboard activity tracking;
+    // Keyboard activity tracking
     self.addEventListener("keydown", (e: any) => {
       this.keyboardEvents.push(e);
       if (this.keyboardEvents.length > 20)
         this.keyboardEvents = this.keyboardEvents.slice(-20);
     });
-
     console.log("👀 Enhanced user behavior monitoring started");
   }
-
   /**
    * Initialize prefetch strategies for legal AI workflows
    */;
   private initializeStrategies(): void {
-    // Evidence analysis workflow;
+    // Evidence analysis workflow
     this.prefetchStrategies.set("analyze_document", {
       routes: [
         "/api/ai/analyze",
@@ -190,12 +176,11 @@ export class PredictivePrefetcher {
       uiBuffers: ["analysis-panel", "document-viewer"],
       priority: "high",
       conditions: {
-        viewport: "desktop",;
+        viewport: "desktop",
         connection: "fast"
       }
     });
-
-    // Case management;
+    // Case management
     this.prefetchStrategies.set("create_case", {
       routes: [
         "/api/cases/templates",
@@ -204,11 +189,10 @@ export class PredictivePrefetcher {
       ],
       assets: ["/assets/css/forms.css", "/assets/js/case-validator.js"],
       uiBuffers: ["case-form", "precedent-search"],
-      priority: "medium",;
-      conditions: Record<string, any>
+      priority: "medium",
+      conditions: { [key: string]: any }
     });
-
-    // Evidence search;
+    // Evidence search
     this.prefetchStrategies.set("search_evidence", {
       routes: [
         "/api/search/semantic",
@@ -221,12 +205,11 @@ export class PredictivePrefetcher {
       ],
       uiBuffers: ["search-results", "filter-panel"],
       priority: "high",
-      conditions: {;
+      conditions: {
         connection: "fast"
       }
     });
-
-    // Settings and configuration;
+    // Settings and configuration
     this.prefetchStrategies.set("open_settings", {
       routes: [
         "/api/ui/buffers/settings",
@@ -235,15 +218,14 @@ export class PredictivePrefetcher {
       ],
       assets: ["/assets/css/settings.css"],
       uiBuffers: ["/api/ui/buffers/settings"],
-      priority: "low",;
-      conditions: Record<string, any>,
+      priority: "low",
+      conditions: { [key: string]: any },
       llmIntegration: {
-        useLocalLLM: true,
+        useLocalLLM: true
         intentThreshold: 0.7
       }
     });
-
-    // Evidence viewing (Phase 8 enhanced);
+    // Evidence viewing (Phase 8 enhanced)
     this.prefetchStrategies.set("view_evidence", {
       routes: [
         "/evidence/viewer",
@@ -258,17 +240,16 @@ export class PredictivePrefetcher {
         "/api/ui/buffers/evidence-viewer",
         "/api/ui/buffers/timeline"
       ],
-      priority: "critical",;
+      priority: "critical",
       conditions: {
         userRole: ["prosecutor", "detective"]
       },
       llmIntegration: {
-        useLocalLLM: true,
+        useLocalLLM: true
         intentThreshold: 0.8
       }
     });
-
-    // Document search (Phase 8 enhanced);
+    // Document search (Phase 8 enhanced)
     this.prefetchStrategies.set("search_documents", {
       routes: [
         "/api/documents/search",
@@ -284,16 +265,15 @@ export class PredictivePrefetcher {
         "/api/ui/buffers/filters"
       ],
       priority: "high",
-      conditions: {;
+      conditions: {
         connection: "fast"
       },
       llmIntegration: {
-        useLocalLLM: true,
+        useLocalLLM: true
         intentThreshold: 0.75
       }
     });
   }
-
   /**
    * Initialize legal workflow patterns for Phase 8
    */;
@@ -336,7 +316,7 @@ export class PredictivePrefetcher {
         sequence: ["/search", "/documents", "/documents/viewer", "/citations"],
         triggerConditions: {
           activity: "research",
-          keyboardIntensive: true,
+          keyboardIntensive: true
           mouseVelocity: "low"
         },
         successProbability: 0.82,
@@ -348,7 +328,7 @@ export class PredictivePrefetcher {
         preloadTiming: "immediate"
       },
       {
-        name: "AI Analysis Workflow",;
+        name: "AI Analysis Workflow",
         sequence: [
           "/upload",
           "/ai/analyze",
@@ -356,7 +336,7 @@ export class PredictivePrefetcher {
           "/ai/recommendations"
         ],
         triggerConditions: {
-          fileUpload: true,
+          fileUpload: true
           aiConfidence: "high",
           documentType: "legal"
         },
@@ -370,7 +350,6 @@ export class PredictivePrefetcher {
       }
     ];
   }
-
   /**
    * Predict user intent based on current context
    */
@@ -378,8 +357,7 @@ export class PredictivePrefetcher {
     context: UserIntent["context"],
   ): Promise<UserIntent | null> {
     const intentScores = new Map<string, number>();
-
-    // Analyze current page for intent signals;
+    // Analyze current page for intent signals
     if (context.currentPage.includes("/evidence")) {
       intentScores.set("search_evidence", 0.7);
       intentScores.set("analyze_document", 0.5);
@@ -387,8 +365,7 @@ export class PredictivePrefetcher {
       intentScores.set("create_case", 0.6);
       intentScores.set("search_evidence", 0.4);
     }
-
-    // Analyze focused element;
+    // Analyze focused element
     if (context.focusedElement) {
       if (context.focusedElement.includes("upload")) {
         intentScores.set(
@@ -404,42 +381,36 @@ export class PredictivePrefetcher {
         intentScores.set("open_settings", 0.8);
       }
     }
-
     // Analyze recent actions for patterns
     const recentAnalysis = this.analyzeRecentActions(context.recentActions);
     recentAnalysis.forEach((score, action) => {
       intentScores.set(action, (intentScores.get(action) || 0) + score);
     });
-
     // Find highest scoring intent
     let maxScore = 0;
     let predictedAction = "";
-
     intentScores.forEach((score, action) => {
       if (score > maxScore) {
         maxScore = score;
         predictedAction = action;
       }
     });
-
-    // Only return prediction if confidence is above threshold;
+    // Only return prediction if confidence is above threshold
     if (maxScore > 0.6) {
       return {
         action: predictedAction as UserIntent["action"],
-        confidence: maxScore,
+        confidence: maxScore
         context,
         userProfile: {
           role: "user",
-          recentActions: this.intentHistory.slice(-5).map((intent: any) => intent.action),;
-          preferences: Record<string, any>,
+          recentActions: this.intentHistory.slice(-5).map((intent: any) => intent.action),
+          preferences: { [key: string]: any },
           workflowPatterns: []
         }
       };
     }
-
     return null;
   }
-
   /**
    * Enhanced prediction with additional context
    */;
@@ -454,68 +425,56 @@ export class PredictivePrefetcher {
     };
     return await this.predictIntent(currentContext);
   }
-
   /**
    * Analyze recent actions for behavioral patterns
    */;
   private analyzeRecentActions(actions: string[]): Map<string, number> {
     const patterns = new Map<string, number>();
-
-    // Look for sequential patterns;
+    // Look for sequential patterns
     for (let i = 0; i < actions.length - 1; i++) {
       const current = actions[i];
       const next = actions[i + 1];
-
-      // Document upload → analysis pattern;
+      // Document upload → analysis pattern
       if (current === "file_upload" && next === "view_document") {
         patterns.set("analyze_document", 0.6);
       }
-
-      // Search → filter → sort pattern;
+      // Search → filter → sort pattern
       if (current === "search_input" && next === "apply_filter") {
         patterns.set("search_evidence", 0.5);
       }
-
-      // Case creation workflow;
+      // Case creation workflow
       if (current === "new_case_button" && next === "case_form") {
         patterns.set("create_case", 0.7);
       }
     }
-
     return patterns;
   }
-
   /**
    * Execute prefetch strategy based on predicted intent
    */;
   async executePrefetch(intent: UserIntent): Promise<void> {
     const strategy = this.prefetchStrategies.get(intent.action);
     if (!strategy) return;
-
-    // Check conditions before prefetching;
+    // Check conditions before prefetching
     if (!this.checkConditions(strategy.conditions)) {
       return;
     }
-
     try {
       // Prefetch routes
       const routePromises = strategy.routes.map((route) =>
         this.prefetchRoute(route),
       );
-
       // Prefetch assets
       const assetPromises = strategy.assets.map((asset) =>
         this.prefetchAsset(asset),
       );
-
-      // Execute based on priority;
+      // Execute based on priority
       if (strategy.priority === "high") {
         await Promise.all([...routePromises, ...assetPromises]);
       } else {
         // Lower priority - don't block
         Promise.all([...routePromises, ...assetPromises]).catch(console.warn);
       }
-
       console.log(
         `Prefetched resources for intent: ${intent.action} (confidence: ${intent.confidence})`,
       );
@@ -523,19 +482,17 @@ export class PredictivePrefetcher {
       console.warn("Prefetch failed:", error);
     }
   }
-
   /**
    * Check if conditions are met for prefetching
    */;
   private checkConditions(conditions: PrefetchStrategy["conditions"]): boolean {
-    // Check viewport;
+    // Check viewport
     if (conditions.viewport) {
       const isMobile = window.innerWidth < 768;
       if (conditions.viewport === "mobile" && !isMobile) return false;
       if (conditions.viewport === "desktop" && isMobile) return false;
     }
-
-    // Check connection speed;
+    // Check connection speed
     if (conditions.connection && "connection" in navigator) {
       const connection = (navigator as any).connection;
       if (
@@ -545,30 +502,25 @@ export class PredictivePrefetcher {
         return false;
       }
     }
-
-    // Check battery level;
+    // Check battery level
     if (conditions.battery && "getBattery" in navigator) {
       // Note: Battery API is deprecated, but included for completeness
       return true; // Skip battery check for now
     }
-
     return true;
   }
-
   /**
    * Prefetch API route
    */;
   private async prefetchRoute(route: string): Promise<void> {
     if (!this.cache) return;
-
     try {
       const response = await fetch(route, {
-        method: "GET",;
+        method: "GET",
         headers: {
           "X-Prefetch": "true"
         }
       });
-
       if (response.ok) {
         await this.cache.put(route, response.clone();
       }
@@ -576,13 +528,11 @@ export class PredictivePrefetcher {
       console.warn(`Failed to prefetch route ${route}:`, error);
     }
   }
-
   /**
    * Prefetch static asset
    */;
   private async prefetchAsset(asset: string): Promise<void> {
     if (!this.cache) return;
-
     try {
       const response = await fetch(asset);
       if (response.ok) {
@@ -592,44 +542,38 @@ export class PredictivePrefetcher {
       console.warn(`Failed to prefetch asset ${asset}:`, error);
     }
   }
-
   /**
    * Setup event listeners for intent detection
    */;
   private setupEventListeners(): void {
-    // Listen for user interactions;
+    // Listen for user interactions
     self.addEventListener("message", async (event: any) => {
       if (event.data.type === "USER_INTERACTION") {
         const intent = await this.predictIntent(event.data.context);
         if (intent) {
           await this.executePrefetch(intent);
           this.intentHistory.push(intent);
-
-          // Keep history manageable;
+          // Keep history manageable
           if (this.intentHistory.length > 10) {
             this.intentHistory.shift();
           }
         }
       }
     });
-
-    // Clean up old cache entries;
+    // Clean up old cache entries
     self.addEventListener("activate", () => {
       this.cleanupCache();
     });
   }
-
   /**
    * Cleanup old cache entries
    */;
   private async cleanupCache(): Promise<void> {
     if (!this.cache) return;
-
     try {
       const keys = await this.cache.keys();
       const now = Date.now();
       const maxAge = 24 * 60 * 60 * 1000; // 24 hours
-
       for (const request of keys) {
         const response = await this.cache.match(request);
         if (response) {
@@ -643,13 +587,11 @@ export class PredictivePrefetcher {
       console.warn("Cache cleanup failed:", error);
     }
   }
-
   /**
    * Get cached response for request
    */;
   async getCachedResponse(request: Request): Promise<Response | null> {
     if (!this.cache) return null;
-
     try {
       return await this.cache.match(request);
     } catch (error: any) {
@@ -658,19 +600,15 @@ export class PredictivePrefetcher {
     }
   }
 }
-
 // Initialize and export for service worker
 export const prefetcher = new PredictivePrefetcher();
-;
-// Service worker event handlers;
+// Service worker event handlers
 self.addEventListener("install", () => {
   (self as any).skipWaiting();
 });
-
 self.addEventListener("activate", () => {
   prefetcher.initialize();
 });
-
 self.addEventListener("fetch", async (event: any) => {
   // Check cache first for prefetched resources
   const cachedResponse = await prefetcher.getCachedResponse(event.request);
@@ -678,5 +616,4 @@ self.addEventListener("fetch", async (event: any) => {
     event.respondWith(cachedResponse);
   }
 });
-
 export default PredictivePrefetcher;

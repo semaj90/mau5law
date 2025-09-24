@@ -3,8 +3,6 @@ import { caseActivities } from "$lib/server/db/schema-postgres"
 import { db } from "$lib/server/db/index"
 import { eq } from "drizzle-orm"
 import type { RequestHandler } from './$types.js'
-
-
 export const GET: RequestHandler = async ({ params, locals }) => {
   try {
     if (!locals.user) {
@@ -22,7 +20,6 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       .from(caseActivities)
       .where(eq(caseActivities.id, activityId))
       .limit(1)
-
     if (!activityResult.length) {
       return json({ error: "Activity not found" }, { status: 404 })
     }
@@ -32,7 +29,6 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     return json({ error: "Failed to fetch activity" }, { status: 500 })
   }
 }
-
 export const PUT: RequestHandler = async ({ params, request, locals }) => {
   try {
     if (!locals.user) {
@@ -46,21 +42,18 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       return json({ error: "Activity ID is required" }, { status: 400 })
     }
     const data = await request.json()
-
     // Check if activity exists
     const existingActivity = await db
       .select()
       .from(caseActivities)
       .where(eq(caseActivities.id, activityId))
       .limit(1)
-
     if (!existingActivity.length) {
       return json({ error: "Activity not found" }, { status: 404 })
     }
-    const updateData: Record<string, any> = {
+    const updateData: { [key: string]: any } = {
       updatedAt: new Date()
     }
-
     // Map frontend fields to schema fields - only update provided fields
     if (data.title !== undefined) updateData.title = data.title.trim()
     if (data.description !== undefined)
@@ -85,20 +78,17 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     if (data.relatedCriminals !== undefined)
       updateData.relatedCriminals = data.relatedCriminals
     if (data.metadata !== undefined) updateData.metadata = data.metadata
-
     const [updatedActivity] = await db
       .update(caseActivities)
       .set(updateData)
       .where(eq(caseActivities.id, activityId))
       .returning()
-
     return json(updatedActivity)
   } catch (error: any) {
     console.error("Error updating activity:", error)
     return json({ error: "Failed to update activity" }, { status: 500 })
   }
 }
-
 export const DELETE: RequestHandler = async ({ params, locals }) => {
   try {
     if (!locals.user) {
@@ -117,7 +107,6 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       .from(caseActivities)
       .where(eq(caseActivities.id, activityId))
       .limit(1)
-
     if (!existingActivity.length) {
       return json({ error: "Activity not found" }, { status: 404 })
     }
@@ -126,14 +115,12 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       .delete(caseActivities)
       .where(eq(caseActivities.id, activityId))
       .returning()
-
     return json({ success: true, deletedActivity })
   } catch (error: any) {
     console.error("Error deleting activity:", error)
     return json({ error: "Failed to delete activity" }, { status: 500 })
   }
 }
-
 // PATCH endpoint for partial updates (like status changes)
 export const PATCH: RequestHandler = async ({ params, request, locals }) => {
   try {
@@ -148,21 +135,18 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       return json({ error: "Activity ID is required" }, { status: 400 })
     }
     const data = await request.json()
-
     // Check if activity exists
     const existingActivity = await db
       .select()
       .from(caseActivities)
       .where(eq(caseActivities.id, activityId))
       .limit(1)
-
     if (!existingActivity.length) {
       return json({ error: "Activity not found" }, { status: 404 })
     }
-    const updateData: Record<string, any> = {
+    const updateData: { [key: string]: any } = {
       updatedAt: new Date()
     }
-
     // Handle specific patch operations
     if (data.operation === "complete") {
       updateData.status = "completed"
@@ -215,7 +199,6 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       .set(updateData)
       .where(eq(caseActivities.id, activityId))
       .returning()
-
     return json(updatedActivity)
   } catch (error: any) {
     console.error("Error patching activity:", error)

@@ -1,19 +1,16 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
-https://svelte.dev/e/js_parse_error -->
+https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: 'import' and 'export' may only appear at the top level;
 https://svelte.dev/e/js_parse_error -->
 <!-- WebGPU Tensor Processing Component for SvelteKit 2 -->
 <!-- Real-time GPU acceleration for legal document processing -->
 <!-- Integrates with QUIC streaming and attention tracking -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   	import { writable, derived } from 'svelte/store';
   	import type { PageData } from './$types';
-
   	// Props
   	let {
   		documentData = [],
@@ -28,7 +25,6 @@ https://svelte.dev/e/js_parse_error -->
   		streamingEnabled?: boolean;
   		class?: string;
   	} = $props();
-
   	// WebGPU interfaces and types
   	interface WebGPUContext {
   		device: GPUDevice | null;
@@ -38,7 +34,6 @@ https://svelte.dev/e/js_parse_error -->
   		isSupported: boolean;
   		isInitialized: boolean;
   	}
-
   	interface TensorOperation {
   		id: string;
   		type: 'embedding' | 'attention' | 'som_update' | 'interpolation';
@@ -53,24 +48,21 @@ https://svelte.dev/e/js_parse_error -->
   		status: 'pending' | 'processing' | 'completed' | 'error';
   		duration?: number;
   	}
-
   	interface AttentionHeatmap {
   		scores: Float32Array;
   		positions: { x: number; y: number }[];
   		timestamp: number;
   		activeRegions: { start: number; end: number; weight: number }[];
   	}
-
   	// Stores
   	const webgpuContext = writable<WebGPUContext>({
-  		device: null,
-  		adapter: null,;
-  		canvas: null,;
-  		context: null,
-  		isSupported: false,
+  		device: null
+  		adapter: null
+  		canvas: null
+  		context: null
+  		isSupported: false
   		isInitialized: false;
   	});
-
   	const tensorOperations = writable<TensorOperation[]>([]);
   	const attentionData = writable<AttentionHeatmap | null>(null);
   	const processingQueue = writable<TensorOperation[]>([]);
@@ -80,14 +72,12 @@ https://svelte.dev/e/js_parse_error -->
   		powerEfficiency: 0,
   		cacheHitRatio: 0
   	});
-
   	// Derived stores
   	const isWebGPUReady = derived(webgpuContext, ($ctx) => $ctx.isSupported && $ctx.isInitialized);
   	const queueLength = derived(processingQueue, ($queue) => $queue.length);
   	const completedOperations = derived(tensorOperations, ($ops) =>
   		$ops.filter(op => op.status === 'completed')
   	);
-
   	// WebGPU compute shaders
   	const EMBEDDING_SHADER = `
   		@group(0) @binding(0) var<storage, read_write> input_data: array<f32>;
@@ -107,7 +97,6 @@ https://svelte.dev/e/js_parse_error -->
   			output_data[index] = normalized;
   		}
   	`;
-
   	const ATTENTION_SHADER = `
   		@group(0) @binding(0) var<storage, read_write> attention_weights: array<f32>;
   		@group(0) @binding(1) var<storage, read_write> query_vectors: array<f32>;
@@ -132,25 +121,24 @@ https://svelte.dev/e/js_parse_error -->
   					let k_idx = key_pos * head_dim + dim;
   					score += query_vectors[q_idx] * key_vectors[k_idx];
   				}
-  				score *= scale;
-  				attention_scores[seq_pos * seq_length + key_pos] = score;
+  				score *= scal;
+  				attention_scores[seq_pos * seq_length + key_pos] = scor;
   				max_score = max(max_score, score);
   			}
   			// Softmax normalization
   			var sum_exp = 0.0;
   			for (var key_pos = 0u; key_pos < seq_length; key_pos++) {
-  				let score_idx = seq_pos * seq_length + key_pos;
+  				let score_idx = seq_pos * seq_length + key_po;
   				let exp_score = exp(attention_scores[score_idx] - max_score);
-  				attention_scores[score_idx] = exp_score;
-  				sum_exp += exp_score;
+  				attention_scores[score_idx] = exp_scor;
+  				sum_exp += exp_scor;
   			}
   			for (var key_pos = 0u; key_pos < seq_length; key_pos++) {
-  				let score_idx = seq_pos * seq_length + key_pos;
+  				let score_idx = seq_pos * seq_length + key_po;
   				attention_scores[score_idx] /= sum_exp;
   			}
   		}
   	`;
-
   	const SOM_UPDATE_SHADER = `
   		@group(0) @binding(0) var<storage, read_write> som_weights: array<f32>;
   		@group(0) @binding(1) var<storage, read> input_vector: array<f32>;
@@ -188,28 +176,23 @@ https://svelte.dev/e/js_parse_error -->
   			}
   		}
   	`;
-
   	// Component variables
   let canvas = $state({}) >(new Map());
   let bufferPool = $state<Map<string, GPUBuffer>('') >(new Map());
   let operationId = $state(0);
   let animationFrame = $state<numberlet attentionTracker = $state<AttentionTracker  | null>(null); const data = null);
-
   	// Attention tracking class
   	class AttentionTracker {
   		private mousePositions: { x: number; y: number; timestamp: number }[] >([]);
   		private scrollPositions: { y: number; timestamp: number }[] = [];
   		private focusRegions: { element: HTMLElement; weight: number }[] = [];
   		private isTracking = false;
-
   		constructor(private container: HTMLElement) {
   			this.startTracking();
   		}
-
   		startTracking() {
   			if (this.isTracking) return;
   			this.isTracking = true;
-
   			// Mouse movement tracking
   			this.container.addEventListener('mousemove', this.handleMouseMove.bind(this));
   			// Scroll tracking
@@ -220,52 +203,43 @@ https://svelte.dev/e/js_parse_error -->
   			// Click tracking for attention heatmap
   			this.container.addEventListener('click', this.handleClick.bind(this));
   		}
-
   		private handleMouseMove(event: MouseEvent) {
   			this.mousePositions.push({
-  				x: event.clientX,;
-  				y: event.clientY,;
+  				x: event.clientX,
+  				y: event.clientY,
   				timestamp: performance.now();
   			});
-
   			// Keep only last 100 positions
   			if (this.mousePositions.length > 100) {
   				this.mousePositions = this.mousePositions.slice(-100);
   			}
-
   			this.updateAttentionHeatmap();
   		}
-
   		private handleScroll(event: Event) {
   			const target = event.target as HTMLElement;
   			this.scrollPositions.push({
-  				y: target.scrollTop,;
+  				y: target.scrollTop,
   				timestamp: performance.now();
   			});
-
   			if (this.scrollPositions.length > 50) {
   				this.scrollPositions = this.scrollPositions.slice(-50);
   			}
   		}
-
   		private handleFocusIn(event: FocusEvent) {
   			const target = event.target as HTMLElement;
   			this.focusRegions.push({ element: target, weight: 1.0 });
   		}
-
   		private handleFocusOut(event: FocusEvent) {
   			const target = event.target as HTMLElement;
   			this.focusRegions = this.focusRegions.filter(region => region.element !== target);
   		}
-
   		private handleClick(event: MouseEvent) {
   			// Add high-weight attention point for clicks
   			this.mousePositions.push({
-  				x: event.clientX,;
-  				y: event.clientY,;
+  				x: event.clientX,
+  				y: event.clientY,
   				timestamp: performance.now();
   			});
-
   			// Increase weight for recent positions
   			const now = performance.now();
   			this.mousePositions.forEach(pos => {
@@ -274,20 +248,15 @@ https://svelte.dev/e/js_parse_error -->
   					// This would increase attention weight in the actual implementation
   				}
   			});
-
   			this.updateAttentionHeatmap();
   		}
-
   		private updateAttentionHeatmap() {
   			if (!enableAttentionTracking) return;
-
   			const now = performance.now();
   			const recentPositions = this.mousePositions.filter(
   				pos => now - pos.timestamp < 5000 // Last 5 seconds
   			);
-
   			if (recentPositions.length === 0) return;
-
   			// Generate attention scores
   			const scores = new Float32Array(recentPositions.length);
   			recentPositions.forEach((pos, i) => {
@@ -295,23 +264,19 @@ https://svelte.dev/e/js_parse_error -->
   				const ageWeight = Math.exp(-age / 2000); // Exponential decay
   				scores[i] = ageWeight;
   			});
-
   			// Create active regions
   			const activeRegions = this.identifyActiveRegions(recentPositions, scores);
-
   			attentionData.set({
   				scores,
-  				positions: recentPositions,;
-  				timestamp: now,
-  				activeRegions;
+  				positions: recentPositions
+  				timestamp: now
+  				activeRegion;
   			});
   		}
-
   		private identifyActiveRegions(positions: { x: number; y: number }[], scores: Float32Array) {
   			// Simple clustering of attention positions
   			const regions: { start: number; end: number; weight: number }[] = [];
   			const threshold = 50; // pixels
-
   			for (let i = 0; i < positions.length; i++) {
   let found = $state(false);
   				for (const region of regions) {
@@ -325,19 +290,16 @@ https://svelte.dev/e/js_parse_error -->
   						break;
   					}
   				}
-
   				if (!found) {
   					regions.push({
-  						start: positions[i].y - threshold,;
-  						end: positions[i].y + threshold,;
+  						start: positions[i].y - threshold,
+  						end: positions[i].y + threshold,
   						weight: scores[i];
   					});
   				}
   			}
-
   			return regions.sort((a, b) => b.weight - a.weight);
   		}
-
   		destroy() {
   			this.isTracking = false;
   			this.container.removeEventListener('mousemove', this.handleMouseMove.bind(this));
@@ -347,7 +309,6 @@ https://svelte.dev/e/js_parse_error -->
   			this.container.removeEventListener('click', this.handleClick.bind(this));
   		}
   	}
-
   	// Initialize WebGPU
   	async function initializeWebGPU() {
   		try {
@@ -356,15 +317,12 @@ https://svelte.dev/e/js_parse_error -->
   				webgpuContext.update(ctx => ({ ...ctx, isSupported: false }));
   				return;
   			}
-
   			const adapter = await navigator.gpu.requestAdapter({
   				powerPreference: 'high-performance'
   			});
-
   			if (!adapter) {
   				throw new Error('No WebGPU adapter found');
   			}
-
   			const device = await adapter.requestDevice({
   				requiredFeatures: [],
   				requiredLimits: {
@@ -373,39 +331,32 @@ https://svelte.dev/e/js_parse_error -->
   					maxComputeInvocationsPerWorkgroup: 256
   				}
   			});
-
   			// Configure canvas context
   			const context = canvas.getContext('webgpu');
   			if (!context) {
   				throw new Error('Failed to get WebGPU context');
   			}
-
   			context.configure({
   				device,
   				format: 'bgra8unorm',
   				alphaMode: 'premultiplied';
   			});
-
   			webgpuContext.set({
   				device,
   				adapter,
   				canvas,
   				context,
-  				isSupported: true,
+  				isSupported: true
   				isInitialized: true
   			});
-
   			// Initialize compute pipelines
   			await initializeComputePipelines(device);
-
   			console.log('✅ WebGPU initialized successfully');
-
   		} catch (error) {
   			console.error('❌ WebGPU initialization failed:', error);
   			webgpuContext.update(ctx => ({ ...ctx, isSupported: false, isInitialized: false }));
   		}
   	}
-
   	// Initialize compute pipelines
   	async function initializeComputePipelines(device: GPUDevice) {
   		try {
@@ -413,98 +364,79 @@ https://svelte.dev/e/js_parse_error -->
   			const embeddingModule = device.createShaderModule({
   				code: EMBEDDING_SHADER;
   			});
-
   			const embeddingPipeline = device.createComputePipeline({
-  				layout: 'auto',;
-  				compute: {;
-  					module: embeddingModule,
+  				layout: 'auto',
+  				compute: {
+  					module: embeddingModule
   					entryPoint: 'main';
   				}
   			});
-
   			computePipelines.set('embedding', embeddingPipeline);
-
   			// Attention pipeline
   			const attentionModule = device.createShaderModule({
   				code: ATTENTION_SHADER;
   			});
-
   			const attentionPipeline = device.createComputePipeline({
-  				layout: 'auto',;
-  				compute: {;
-  					module: attentionModule,
+  				layout: 'auto',
+  				compute: {
+  					module: attentionModule
   					entryPoint: 'main';
   				}
   			});
-
   			computePipelines.set('attention', attentionPipeline);
-
   			// SOM update pipeline
   			const somModule = device.createShaderModule({
   				code: SOM_UPDATE_SHADER;
   			});
-
   			const somPipeline = device.createComputePipeline({
-  				layout: 'auto',;
-  				compute: {;
-  					module: somModule,
+  				layout: 'auto',
+  				compute: {
+  					module: somModule
   					entryPoint: 'main';
   				}
   			});
-
   			computePipelines.set('som_update', somPipeline);
-
   			console.log('✅ Compute pipelines initialized');
-
   		} catch (error) {
   			console.error('❌ Failed to initialize compute pipelines:', error);
   			throw error;
   		}
   	}
-
   	// Process tensor operation on GPU
   	async function processOperationGPU(operation: TensorOperation): Promise<void> {
   		const ctx = $webgpuContext;
   		if (!ctx.device || !ctx.isInitialized) {
   			throw new Error('WebGPU not initialized');
   		}
-
   		const pipeline = computePipelines.get(operation.type);
   		if (!pipeline) {
   			throw new Error(`No pipeline found for operation type: ${operation.type}`);
   		}
-
   		const startTime = performance.now();
-
   		try {
   			// Create buffers
   			const inputBuffer = ctx.device.createBuffer({
-  				size: operation.input.byteLength,;
-  				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,;
+  				size: operation.input.byteLength,
+  				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
   			});
-
   			const outputBuffer = ctx.device.createBuffer({
-  				size: operation.input.byteLength,;
-  				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,;
+  				size: operation.input.byteLength,
+  				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
   			});
-
   			const readBuffer = ctx.device.createBuffer({
-  				size: operation.input.byteLength,;
-  				usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,;
+  				size: operation.input.byteLength,
+  				usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
   			});
-
   			// Write input data
   			ctx.device.queue.writeBuffer(inputBuffer, 0, operation.input);
-
   			// Create bind group
   			const bindGroup = ctx.device.createBindGroup({
-  				layout: pipeline.getBindGroupLayout(0),;
+  				layout: pipeline.getBindGroupLayout(0),
   				entries: [
   					{ binding: 0, resource: { buffer: inputBuffer } },
   					{ binding: 1, resource: { buffer: outputBuffer } },
   				],
   			});
-
   			// Dispatch compute shader
   			const commandEncoder = ctx.device.createCommandEncoder();
   			const passEncoder = commandEncoder.beginComputePass();
@@ -513,45 +445,36 @@ https://svelte.dev/e/js_parse_error -->
   			const workgroupCount = Math.ceil(operation.input.length / 256);
   			passEncoder.dispatchWorkgroups(workgroupCount);
   			passEncoder.end();
-
   			// Copy result to read buffer
   			commandEncoder.copyBufferToBuffer(outputBuffer, 0, readBuffer, 0, operation.input.byteLength);
-
   			// Submit and wait
   			ctx.device.queue.submit([commandEncoder.finish()]);
-
   			// Read result
   			await readBuffer.mapAsync(GPUMapMode.READ);
   			const result = readBuffer.getMappedRange();
   			operation.output = new Float32Array(result);
   			readBuffer.unmap();
-
   			// Clean up buffers
   			inputBuffer.destroy();
   			outputBuffer.destroy();
   			readBuffer.destroy();
-
   			operation.status = 'completed';
   			operation.duration = performance.now() - startTime;
-
   			// Update operations store
   			tensorOperations.update(ops => {
   				const index = ops.findIndex(op => op.id === operation.id);
   				if (index !== -1) {
-  					ops[index] = operation;
+  					ops[index] = operatio;
   				}
-  				return ops;
+  				return op;
   			});
-
   			console.log(`✅ GPU operation ${operation.type} completed in ${operation.duration?.toFixed(2)}ms`);
-
   		} catch (error) {
   			operation.status = 'error';
   			console.error(`❌ GPU operation ${operation.type} failed:`, error);
   			throw error;
   		}
   	}
-
   	// Queue tensor operation
   	function queueOperation(type: TensorOperation['type'], input: Float32Array, shape: number[], metadata: unknown = {} {
   		const operation: TensorOperation = {
@@ -562,31 +485,24 @@ https://svelte.dev/e/js_parse_error -->
   			metadata: {
   				...metadata,
   				timestamp: performance.now();
-  			},;
+  			},
   			status: 'pending';
   		};
-
   		tensorOperations.update(ops => [...ops, operation]);
   		processingQueue.update(queue => [...queue, operation]);
-
   		// Process immediately if WebGPU is ready
   		if ($isWebGPUReady) {
   			processNextOperation();
   		}
-
   		return operation.id;
   	}
-
   	// Process next operation in queue
   	async function processNextOperation() {
-  		const queue = $processingQueue;
+  		const queue = $processingQueu;
   		if (queue.length === 0) return;
-
   		const operation = queue[0];
   		operation.status = 'processing';
-
   		processingQueue.update(q => q.slice(1));
-
   		try {
   			if (enableWebGPU && $isWebGPUReady) {
   				await processOperationGPU(operation);
@@ -598,17 +514,14 @@ https://svelte.dev/e/js_parse_error -->
   			console.error('Operation processing failed:', error);
   			operation.status = 'error';
   		}
-
   		// Continue processing queue
   		if ($processingQueue.length > 0) {
   			setTimeout(processNextOperation, 10);
   		}
   	}
-
   	// CPU fallback processing
   	async function processOperationCPU(operation: TensorOperation): Promise<void> {
   		const startTime = performance.now();
-
   		// Simple CPU implementations
   		switch (operation.type) {
   			case 'embedding':
@@ -623,14 +536,11 @@ https://svelte.dev/e/js_parse_error -->
   			default:
   				operation.output = new Float32Array(operation.input);
   		}
-
   		operation.status = 'completed';
   		operation.duration = performance.now() - startTime;
-
   		// Simulate async processing
   		await new Promise(resolve => setTimeout(resolve, operation.duration / 10));
   	}
-
   	// Normalize attention scores (CPU fallback)
   	function normalizeAttention(scores: Float32Array): Float32Array {
   		const max = Math.max(...scores);
@@ -638,11 +548,9 @@ https://svelte.dev/e/js_parse_error -->
   		const sum = expScores.reduce((a, b) => a + b, 0);
   		return expScores.map(x => x / sum);
   	}
-
   	// Process document data
   	function processDocumentData(data: unknown[]) {
   		if (!data || data.length === 0) return;
-
   		data.forEach((doc, index) => {
   			// Generate mock embeddings for demonstration
   			const embedding = new Float32Array(384).map(() => Math.random() * 2 - 1);
@@ -650,7 +558,6 @@ https://svelte.dev/e/js_parse_error -->
   				documentId: doc.id || `doc_${index}`,
   				chunkIndex: index
   			});
-
   			// Generate attention scores if text is available
   			if (doc.content) {
   				const attentionInput = new Float32Array(doc.content.length).map(() => Math.random());
@@ -661,19 +568,16 @@ https://svelte.dev/e/js_parse_error -->
   			}
   		});
   	}
-
   	// Update performance metrics
   	function updateMetrics() {
-  		const completed = $completedOperations;
+  		const completed = $completedOperation;
   		const timeWindow = 5000; // 5 seconds
   		const now = performance.now();
   		const recentOps = completed.filter(op =>
   			op.metadata.timestamp > now - timeWindow
   		);
-
   		const opsPerSecond = recentOps.length / (timeWindow / 1000);
   		const avgDuration = recentOps.reduce((sum, op) => sum + (op.duration || 0), 0) / recentOps.length || 0;
-
   		gpuMetrics.update(metrics => ({
   			...metrics,
   			operationsPerSecond: Math.round(opsPerSecond * 100) / 100,
@@ -682,7 +586,6 @@ https://svelte.dev/e/js_parse_error -->
   			cacheHitRatio: Math.random() * 100 // Mock data
   		}));
   	}
-
   	// Animation loop for real-time updates
   	function animate() {
   		updateMetrics();
@@ -691,74 +594,60 @@ https://svelte.dev/e/js_parse_error -->
   			animationFrame = requestAnimationFrame(animate);
   		}
   	}
-
   	// Component lifecycle
   	$effect(() => {
     (async () => {
 if (enableWebGPU) {
   			await initializeWebGPU();
   		}
-
   		if (enableAttentionTracking && canvas.parentElement) {
   			attentionTracker = new AttentionTracker(canvas.parentElement);
   		}
-
   		// Process initial document data
   		if (documentData.length > 0) {
   			processDocumentData(documentData);
   		}
-
   		// Start animation loop
   		animate();
     })();
   });
-
   	onDestroy(() => {
   		if (animationFrame) {
   			cancelAnimationFrame(animationFrame);
   		}
-
   		if (attentionTracker) {
   			attentionTracker.destroy();
   		}
-
   		// Clean up GPU resources
   		bufferPool.forEach(buffer => buffer.destroy());
   		bufferPool.clear();
   	});
-
   	// Reactive updates
   	$effect(() => {
   		if (documentData && $isWebGPUReady) {
   			processDocumentData(documentData);
   		}
   	});
-
   	// Expose methods for external use
   	function processEmbedding(embedding: Float32Array) {
   		return queueOperation('embedding', embedding, [1, embedding.length]);
   	}
-
   	function processAttention(scores: Float32Array) {
   		return queueOperation('attention', scores, [1, scores.length]);
   	}
-
   	function updateSOM(weights: Float32Array, input: Float32Array) {
   		const combined = new Float32Array(weights.length + input.length);
   		combined.set(weights);
   		combined.set(input, weights.length);
   		return queueOperation('som_update', combined, [weights.length, input.length]);
   	}
-
   	function getMetrics() {
-  		return $gpuMetrics;
+  		return $gpuMetric;
   	}
-
   	function getOperationStatus(operationId: string) {
   		return $tensorOperations.find(op => op.id === operationId);
   	}
 </script>
-
 <!-- Component template -->
 <div className={`webgpu-processor ${className}`}>
 	<!-- WebGPU Canvas -->
@@ -769,7 +658,6 @@ if (enableWebGPU) {
 		height="600"
 		style="display: none;"
 	></canvas>
-
 	<!-- Status Display -->
 	<div class="status-panel">
 		<div class="status-item">
@@ -778,23 +666,19 @@ if (enableWebGPU) {
 				{$isWebGPUReady ? 'Ready' : 'Not Available'}
 			</span>
 		</div>
-
 		<div class="status-item">
 			<span class="label">Queue:</span>
 			<span class="value">{$queueLength} operations</span>
 		</div>
-
 		<div class="status-item">
 			<span class="label">Completed:</span>
 			<span class="value">{$completedOperations.length} operations</span>
 		</div>
-
 		<div class="status-item">
 			<span class="label">Performance:</span>
 			<span class="value">{$gpuMetrics.operationsPerSecond} ops/sec</span>
 		</div>
 	</div>
-
 	<!-- Performance Metrics -->
 	{#if enableWebGPU && $isWebGPUReady}
 		<div class="metrics-panel">
@@ -806,7 +690,6 @@ if (enableWebGPU) {
 				</div>
 				<span>{$gpuMetrics.operationsPerSecond.toFixed(1)}</span>
 			</div>
-
 			<div class="metric">
 				<label>Memory Usage:</label>
 				<div class="progress-bar">
@@ -814,7 +697,6 @@ if (enableWebGPU) {
 				</div>
 				<span>{$gpuMetrics.memoryUsage.toFixed(1)}%</span>
 			</div>
-
 			<div class="metric">
 				<label>Power Efficiency:</label>
 				<div class="progress-bar">
@@ -824,7 +706,6 @@ if (enableWebGPU) {
 			</div>
 		</div>
 	{/if}
-
 	<!-- Attention Heatmap Visualization -->
 	{#if enableAttentionTracking && $attentionData}
 		<div class="attention-heatmap">
@@ -833,7 +714,7 @@ if (enableWebGPU) {
 				{#each $attentionData.activeRegions as region, i}
 					<div
 						class="attention-region"
-						style=";
+						style="
 							top: {region.start}px;
 							height: {region.end - region.start}px;
 							opacity: {Math.min(1, region.weight)};
@@ -846,7 +727,6 @@ if (enableWebGPU) {
 			</div>
 		</div>
 	{/if}
-
 	<!-- Operation Log (for debugging) -->
 	{#if $tensorOperations.length > 0}
 		<details class="operation-log">
@@ -866,178 +746,137 @@ if (enableWebGPU) {
 		</details>
 	{/if}
 </div>
-
 <style>
 	.webgpu-processor {
 		@apply bg-gray-50 dark:bg-gray-900 p-4 rounded-lg border;
 		font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
 	}
-
 	.webgpu-canv.status-panel {
 		@apply grid grid-cols-2 md:grid-cols-4 gap-4 mb-4;
 	}
-
 	.status-item {
 		@apply bg-white dark:bg-gray-800 p-3 rounded border;
 	}
-
 	.label {
 		@apply text-sm font-medium text-gray-600 dark:text-gray-400;
 	}
-
 	.value {
 		@apply block text-lg font-bold text-gray-900 dark:text-white;
 	}
-
 	.value.enabled {
 		@apply text-green-600 dark:text-green-400;
 	}
-
 	.value.disabled {
 		@apply text-red-600 dark:text-red-400;
 	}
-
 	.metrics-panel {
 		@apply bg-white dark:bg-gray-800 p-4 rounded border mb-4;
 	}
-
 	.metrics-panel h3 {
 		@apply text-lg font-bold mb-3 text-gray-900 dark:text-white;
 	}
-
 	.metric {
 		@apply flex items-center gap-3 mb-2;
 	}
-
 	.metric label {
 		@apply text-sm font-medium text-gray-600 dark:text-gray-400 w-32;
 	}
-
 	.progress-bar {
 		@apply flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden;
 	}
-
 	.progress {
 		@apply h-full bg-blue-500 transition-all duration-300;
 	}
-
 	.progress.memory {
 		@apply bg-yellow-500;
 	}
-
 	.progress.efficiency {
 		@apply bg-green-500;
 	}
-
 	.attention-heatmap {
-		@apply bg-white dark:bg-gray-800 p-4 rounded border mb-4;
+		@apply bg-white dark: bg-gray-800 p-4 rounded border mb-4;
 		position: relative;
 	}
-
 	.attention-heatmap h3 {
 		@apply text-lg font-bold mb-3 text-gray-900 dark:text-white;
 	}
-
 	.heatmap-container {
 		@apply relative h-64 border rounded;
 		background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.1));
 	}
-
 	.attention-region {
 		@apply absolute left-0 right-0 border-l-4 border-blue-500;
 		pointer-events: none;
 	}
-
 	.region-weight {
 		@apply absolute right-2 top-1 text-xs text-white font-bold bg-black bg-opacity-50 px-1 rounded;
 	}
-
 	.operation-log {
 		@apply bg-white dark:bg-gray-800 rounded border;
 	}
-
 	.operation-log summary {
 		@apply p-3 cursor-pointer font-medium text-gray-900 dark:text-white;
 	}
-
 	.log-content {
 		@apply border-t p-3 max-h-48 overflow-y-auto;
 	}
-
 	.operation-entry {
 		@apply flex gap-3 py-1 text-sm border-b border-gray-100 dark:border-gray-700 last:border-b-0;
 	}
-
 	.operation-entry.completed {
 		@apply text-green-600 dark:text-green-400;
 	}
-
 	.operation-entry.error {
 		@apply text-red-600 dark:text-red-400;
 	}
-
 	.op-id {
-		@apply font-mono text-xs w-16 truncate;
+		@apply font-mono text-xs w-16 truncat;
 	}
-
 	.op-type {
 		@apply flex-1 font-medium;
 	}
-
 	.op-status {
 		@apply w-20 text-center;
 	}
-
 	.op-duration {
 		@apply w-16 text-right text-gray-500;
 	}
-
 	/* Responsive design */
 	@media (max-width: 768px) {
 		.status-panel {
 			@apply grid-cols-1;
 		}
-
 		.metric {
 			@apply flex-col items-start gap-1;
 		}
-
 		.metric label {
 			@apply w-full;
 		}
 	}
-
 	/* Dark mode enhancements */
 	@media (prefers-color-scheme: dark) {
 		.webgpu-canvas {
 			border-color: #374151;
 		}
 	}
-
 	/* Animation for smooth updates */
 	.progress {
 		transition: width 0.3s ease-out;
 	}
-
 	.attention-region {
 		transition: all 0.2s ease-out;
 	}
-
 	/* Focus and accessibility */
 	.operation-log summary:focus {
 		@apply outline-none ring-2 ring-blue-500 ring-offset-2;
 	}
-
 	/* Performance indicator colors */
 	.value.enabled::before {
 		content: '●';
 		@apply text-green-400 mr-1;
 	}
-
 	.value.disabled::before {
 		content: '●';
 		@apply text-red-400 mr-1;
 	}
 </style>
-
-

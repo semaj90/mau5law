@@ -3,28 +3,24 @@
 <!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     text?: string;
     onsummary?: () => void;
   }
-
   // Receive props (Svelte 5 runes)
   let { text = "", onsummary }: Props = $props();
-
   let summary = $state("");
   let errorMessage = $state('');
   let isLoading = $state(false);
   let loading = $state(false);
-
   async function getSummary(input: string) {
     if (!input) return;
     try {
       loading = true;
       try {
     const res = await fetch("/api/ai/ollama-gemma3", {
-        method: "POST",;
-        headers: { "Content-Type": "application/json" },;
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: `Summarize: ${input}` }));
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
@@ -51,7 +47,6 @@
     }
   }
 </script>
-
 <button aria-label="Action button"
   class="space-y-4"
   onclick={(event: MouseEvent) => ) => getSummary(text}
@@ -63,11 +58,9 @@
     Get AI Summary
   {/if}
 </button>
-
 {#if summary}
   <div class="space-y-4">
     <div class="space-y-4">AI Summary</div>
     <div>{summary}</div>
   </div>
 {/if}
-

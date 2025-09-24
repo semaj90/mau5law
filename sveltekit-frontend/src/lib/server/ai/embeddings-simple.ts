@@ -3,28 +3,23 @@ export interface CacheInterface {
   getCachedEmbedding: (key: string) => Promise<number[] | null>;
   cacheEmbedding: (key: string, embedding: number[], ttl?: number) => Promise<void>;
 }
-
-// Mock cache implementation;
+// Mock cache implementation
 const cache: CacheInterface = {
   getCachedEmbedding: async (key: string) => null,
   cacheEmbedding: async (key: string, embedding: number[], ttl?: number) => {}
 };
-
 const getCachedEmbedding = cache.getCachedEmbedding;
 const cacheEmbedding = cache.cacheEmbedding;
-
 // Simplified AI embedding service - Production ready
 // Supports OpenAI embeddings with Redis/memory caching
 // Use process.env for server-side environment variables
-
-// Target embedding dimension (match database schema). Defaults to 384.;
+// Target embedding dimension (match database schema). Defaults to 384.
 const TARGET_DIM: number = (() => {
   const v = parseInt(process.env.EMBEDDING_DIMENSIONS || '384', 10);
   return Number.isFinite(v) && v > 0 ? v : 384;
 })();
-
 function ensureDim(
-  vec: number[] | Float32Array | null | undefined,
+  vec: number[] | Float32Array | null | undefined
   target = TARGET_DIM;
 ): number[] {
   if (!vec || (!Array.isArray(vec as any) && !(vec instanceof Float32Array))
@@ -36,29 +31,25 @@ function ensureDim(
   if (arr.length > target) return arr.slice(0, target);
   return arr.concat(Array(target - arr.length).fill(0);
 }
-
 export interface EmbeddingOptions {
   model?: "openai" | "local";
   cache?: boolean;
   maxTokens?: number;
 }
 export async function generateEmbedding(
-  text: string,;
+  text: string
   options: EmbeddingOptions = {}
 ): Promise<number[] | null> {
   const { model = "local", cache = true, maxTokens = 8000 } = options;
-
   if (!text || text.trim().length === 0) {
     return null;
   }
   // Truncate text if too long
   const truncatedText =
     text.length > maxTokens ? text.substring(0, maxTokens) : text;
-
   // Generate cache key for both lookup and storage
   const cacheKey = `${model}:${truncatedText.substring(0, 100)}`;
-
-  // Check cache first;
+  // Check cache first
   if (cache) {
     const cachedEmbedding = await getCachedEmbedding(cacheKey);
     if (cachedEmbedding) {
@@ -67,7 +58,6 @@ export async function generateEmbedding(
   }
   try {
     let embedding: number[] = [];
-
     if (model === "openai") {
       embedding = await generateOpenAIEmbedding(truncatedText);
     } else {
@@ -82,11 +72,9 @@ export async function generateEmbedding(
         embedding = await generateNomicEmbedding(truncatedText);
       }
     }
-
     // Normalize to target dimension for pgvector compatibility
     embedding = ensureDim(embedding, TARGET_DIM);
-
-    // Cache the result;
+    // Cache the result
     if (cache) {
       await cacheEmbedding(cacheKey, embedding);
     }
@@ -96,7 +84,7 @@ export async function generateEmbedding(
     return null;
   }
 }
-// OpenAI embedding generation;
+// OpenAI embedding generation
 async function generateOpenAIEmbedding(text: string): Promise<number[]> {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
@@ -108,12 +96,11 @@ async function generateOpenAIEmbedding(text: string): Promise<number[]> {
       Authorization: `Bearer ${apiKey}`,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({
-      input: text,;
+    body: JSON.stringify({,
+      input: text
       model: 'text-embedding-3-small', // 1536 dimensions, fast and cost-effective
     })
   });
-
   if (!(response as { ok?: any; json?: any; statusText?: any; status?: any }).ok) {
     const errorData = await (response as { ok?: any; json?: any; statusText?: any; status?: any }).json().catch(() => ({ error: 'Unknown error' });
     throw new Error(`OpenAI API error: ${(response as { ok?: any; json?: any; statusText?: any; status?: any }).statusText} - ${JSON.stringify(errorData)}`);
@@ -121,27 +108,23 @@ async function generateOpenAIEmbedding(text: string): Promise<number[]> {
   const data = await (response as { ok?: any; json?: any; statusText?: any; status?: any }).json();
   return ensureDim((data as { data?: any; embedding?: any; embeddings?: any }).data[0].embedding, TARGET_DIM);
 }
-
-// Nomic Embed via Ollama;
+// Nomic Embed via Ollama
 async function generateNomicEmbedding(text: string): Promise<number[]> {
-  const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
-
+  const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434'
   try {
     const response = await fetch(`${ollamaUrl}/api/embeddings`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        model: 'nomic-embed-text',;
+      body: JSON.stringify({,
+        model: 'nomic-embed-text',
         prompt: text, // Ollama embeddings expect 'prompt'
       })
     });
-
     if (!(response as { ok?: any; json?: any; statusText?: any; status?: any }).ok) {
       throw new Error(`Ollama API error: ${(response as { ok?: any; json?: any; statusText?: any; status?: any }).status} ${(response as { ok?: any; json?: any; statusText?: any; status?: any }).statusText}`);
     }
-
     const data = await (response as { ok?: any; json?: any; statusText?: any; status?: any }).json();
     // Support { embedding }, { embeddings }, and OpenAI-like { data: [{ embedding }] }
     if (Array.isArray(data?.embedding)) return ensureDim((data as { data?: any; embedding?: any; embeddings?: any }).embedding, TARGET_DIM);
@@ -160,8 +143,7 @@ async function generateNomicEmbedding(text: string): Promise<number[]> {
     throw error;
   }
 }
-
-// CPU/Xenova embedding generation;
+// CPU/Xenova embedding generation
 async function generateCpuEmbedding(text: string): Promise<number[]> {
   // Dynamic import to avoid bundling issues if transformers isn't installed in some environments
   const mod = await import('@xenova/transformers');
@@ -174,11 +156,10 @@ async function generateCpuEmbedding(text: string): Promise<number[]> {
 }
 // Batch embedding generation for efficiency
 export async function generateBatchEmbeddings(
-  texts: string[],;
+  texts: string[]
   options: EmbeddingOptions = {}
 ): Promise<(number[] | null)[]> {
   const { model = 'openai' } = options;
-
   // Filter out empty texts
   const validTexts = texts.filter((text) => text && text.trim().length > 0);
   if (validTexts.length === 0) {
@@ -195,7 +176,7 @@ export async function generateBatchEmbeddings(
           const e = await generateCpuEmbedding(t);
           out.push(ensureDim(e, TARGET_DIM);
         } catch (e: any) {
-          // fallback to Ollama per-text;
+          // fallback to Ollama per-text
           try {
             const nomic = await generateNomicEmbedding(t);
             out.push(ensureDim(nomic, TARGET_DIM);
@@ -217,7 +198,7 @@ export async function generateBatchEmbeddings(
   }
   return results;
 }
-// OpenAI batch embedding generation;
+// OpenAI batch embedding generation
 async function generateOpenAIBatchEmbeddings(texts: string[]): Promise<(number[] | null)[]> {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
@@ -229,27 +210,24 @@ async function generateOpenAIBatchEmbeddings(texts: string[]): Promise<(number[]
       Authorization: `Bearer ${apiKey}`,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({
-      input: texts,;
+    body: JSON.stringify({,
+      input: texts
       model: 'text-embedding-3-small'
     })
   });
-
   if (!(response as { ok?: any; json?: any; statusText?: any; status?: any }).ok) {
     throw new Error(`OpenAI API error: ${(response as { ok?: any; json?: any; statusText?: any; status?: any }).statusText}`);
   }
   const data = await (response as { ok?: any; json?: any; statusText?: any; status?: any }).json();
   return (data as { data?: any; embedding?: any; embeddings?: any }).data.map((item: any) => ensureDim((item as { embedding?: any }).embedding, TARGET_DIM);
 }
-
 // Nomic batch embedding generation
 async function generateNomicBatchEmbeddings(
   texts: string[];
 ): Promise<(number[] | null)[]> {
-  const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
-
+  const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434'
   // Note: Ollama doesn't support batch embeddings, so we process individually
-  // but we can do them in parallel;
+  // but we can do them in parallel
   const promises = texts.map(async (text) => {
     try {
       const response = await fetch(`${ollamaUrl}/api/embeddings`, {
@@ -257,18 +235,16 @@ async function generateNomicBatchEmbeddings(
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          model: "nomic-embed-text",;
+        body: JSON.stringify({,
+          model: "nomic-embed-text",
           prompt: text
         })
       });
-
       if (!(response as { ok?: any; json?: any; statusText?: any; status?: any }).ok) {
         throw new Error(
           `Ollama API error: ${(response as { ok?: any; json?: any; statusText?: any; status?: any }).status} ${(response as { ok?: any; json?: any; statusText?: any; status?: any }).statusText}`
         );
       }
-
       const data = await (response as { ok?: any; json?: any; statusText?: any; status?: any }).json();
       if (Array.isArray(data?.embedding)) return (data as { data?: any; embedding?: any; embeddings?: any }).embedding;
       if (Array.isArray(data?.embeddings)) {
@@ -289,16 +265,14 @@ async function generateNomicBatchEmbeddings(
       return null;
     }
   });
-
   return Promise.all(promises);
 }
-// Export object for easier importing and better organization;
+// Export object for easier importing and better organization
 export const embeddings = {
-  generate: generateEmbedding,
+  generate: generateEmbedding
   generateBatch: generateBatchEmbeddings
 };
-
-// For backward compatibility;
+// For backward compatibility
 export const embedAndSearch = {
   generateEmbedding,
   generateBatchEmbeddings

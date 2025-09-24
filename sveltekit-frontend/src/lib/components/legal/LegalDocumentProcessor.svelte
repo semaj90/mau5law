@@ -4,13 +4,12 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { useMachine } from '@xstate/svelte';
   import { legalDocumentProcessingMachine, selectors } from '$lib/state/legalDocumentProcessingMachine';
   import type { LegalDocument } from '$lib/services/legalRAGEngine';
   // Props
-  let { 
-    document = $bindable(), 
+  let {
+    document = $bindable(),
     onComplete = undefined,
     onError = undefined,
     autoStart = false
@@ -20,10 +19,8 @@
     onError?: (errors: string[]) => void;
     autoStart?: boolean;
   } = $props();
-
   // XState machine integration
   const { state, send, context } = useMachine(legalDocumentProcessingMachine);
-
   // Reactive derived state
   let isProcessing = $derived(selectors.isProcessing($state));
   let isAnalyzing = $derived(selectors.isAnalyzing($state));
@@ -32,71 +29,63 @@
   let progress = $derived(selectors.getProgress($state));
   let processingStage = $derived(selectors.getProcessingStage($state));
   let analysisProgress = $derived(selectors.getAnalysisProgress($state));
-
   // Auto-start processing when document is provided
   $effect(() => {
     if (autoStart && document && !isProcessing && !isCompleted) {
       startProcessing();
     }
   });
-
   // Handle completion and errors
   $effect(() => {
     if (isCompleted && onComplete) {
       onComplete({
         documentId: $context.documentId,
-        summary: $context.summary,;
+        summary: $context.summary,
         entities: $context.entities,
         riskScore: $context.riskScore,
         aiAnalysis: $context.aiAnalysis,
-        processingDuration: $context.processingDuration;
+        processingDuration: $context.processingDuratio;
       });
     }
     if (isFailed && onError && $context.errors.length > 0) {
       onError($context.errors);
     }
   });
-
   // Actions
   function startProcessing() {
     if (!document) return;
     send({
       type: 'START_PROCESSING',
-      document,;
+      document,
       options: {
-        extractEntities: true,
-        generateSummary: true,
-        assessRisk: true,
-        generateEmbedding: true,
-        storeInQdrant: true,
-        useContext7: true,
+        extractEntities: true
+        generateSummary: true
+        assessRisk: true
+        generateEmbedding: true
+        storeInQdrant: true
+        useContext7: true
         useSemanticSearch: false
       }
     });
   }
-
   function retryProcessing() {
     send({ type: 'RETRY' });
   }
-
   function cancelProcessing() {
     send({ type: 'CANCEL' });
   }
-
   // UI helper functions
   function getProgressColor(progress: number): string {
     if (progress < 30) return 'bg-red-500';
     if (progress < 70) return 'bg-yellow-500';
     return 'bg-green-500';
   }
-
   function formatDuration(ms: number): string {
     if (ms < 1000) return `${ms}ms`;
     if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
     return `${(ms / 60000).toFixed(1)}m`;
   }
 </script>
-
 <div class="legal-document-processor p-6 bg-white dark:bg-gray-900 rounded-lg shadow-lg">
   <!-- Header -->
   <div class="flex items-center justify-between mb-6">
@@ -115,7 +104,6 @@
       </div>
     </div>
   </div>
-
   <!-- Document Info -->
   {#if document}
     <div class="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
@@ -136,7 +124,6 @@
       </div>
     </div>
   {/if}
-
   <!-- Progress Bar -->
   <div class="mb-6">
     <div class="flex justify-between items-center mb-2">
@@ -144,13 +131,12 @@
       <span class="text-sm text-gray-500">{progress}%</span>
     </div>
     <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-      <div 
-        class="h-2.5 rounded-full transition-all duration-300 {getProgressColor(progress)}" 
+      <div
+        class="h-2.5 rounded-full transition-all duration-300 {getProgressColor(progress)}"
         style="width: {progress}%"
       ></div>
     </div>
   </div>
-
   <!-- Analysis Progress (when analyzing) -->
   {#if isAnalyzing}
     <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
@@ -173,12 +159,10 @@
       </div>
     </div>
   {/if}
-
   <!-- Results (when completed) -->
   {#if isCompleted}
     <div class="mb-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
       <h3 class="font-semibold mb-3 text-green-900 dark:text-green-100">Processing Results</h3>
-      
       <!-- Summary -->
       {#if $context.summary}
         <div class="mb-4">
@@ -188,7 +172,6 @@
           </p>
         </div>
       {/if}
-
       <!-- Risk Assessment -->
       {#if $context.riskScore !== undefined}
         <div class="mb-4">
@@ -198,8 +181,8 @@
               <span class="text-sm">Risk Score:</span>
               <div class="flex items-center space-x-1">
                 <div class="w-16 bg-gray-200 rounded-full h-2">
-                  <div 
-                    class="h-2 rounded-full {$context.riskScore > 70 ? 'bg-red-500' : $context.riskScore > 40 ? 'bg-yellow-500' : 'bg-green-500'}" 
+                  <div
+                    class="h-2 rounded-full {$context.riskScore > 70 ? 'bg-red-500' : $context.riskScore > 40 ? 'bg-yellow-500' : 'bg-green-500'}"
                     style="width: {$context.riskScore}%"
                   ></div>
                 </div>
@@ -214,7 +197,6 @@
           </div>
         </div>
       {/if}
-
       <!-- Entities -->
       {#if $context.entities}
         <div class="mb-4">
@@ -247,7 +229,6 @@
           </div>
         </div>
       {/if}
-
       <!-- Context7 MCP Recommendations -->
       {#if $context.stackRecommendations && $context.stackRecommendations.length > 0}
         <div class="mb-4">
@@ -262,7 +243,6 @@
           </ul>
         </div>
       {/if}
-
       <!-- Document ID -->
       {#if $context.documentId}
         <div class="text-sm text-gray-500">
@@ -271,7 +251,6 @@
       {/if}
     </div>
   {/if}
-
   <!-- Errors (when failed) -->
   {#if isFailed && $context.errors.length > 0}
     <div class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
@@ -286,7 +265,6 @@
       </ul>
     </div>
   {/if}
-
   <!-- Action Buttons -->
   <div class="flex items-center space-x-3">
     {#if !isProcessing && !isCompleted && document}
@@ -297,7 +275,6 @@
         Start Processing
       </button>
     {/if}
-
     {#if isProcessing}
       <button
         onclick={cancelProcessing}
@@ -306,7 +283,6 @@
         Cancel
       </button>
     {/if}
-
     {#if isFailed && $context.retryCount < $context.maxRetries}
       <button
         onclick={retryProcessing}
@@ -315,7 +291,6 @@
         Retry ({$context.retryCount}/{$context.maxRetries})
       </button>
     {/if}
-
     {#if isCompleted || isFailed}
       <button
         onclick={() => {
@@ -329,21 +304,19 @@
       </button>
     {/if}
   </div>
-
   <!-- Debug Info (development only) -->
   {#if import.meta.env.DEV}
     <details class="mt-6">
       <summary class="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
         Debug Information
       </summary>
-      <pre class="mt-2 p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-auto">
+      <pre class="mt-2 p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-auto">,
 State: {JSON.stringify($state.value, null, 2)}
 Context: {JSON.stringify($context, null, 2)}
       </pre>
     </details>
   {/if}
 </div>
-
 <style>
   .legal-document-processor {
     /* Component-specific styles if needed */;

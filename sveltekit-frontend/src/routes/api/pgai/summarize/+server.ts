@@ -1,7 +1,6 @@
 
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
 // Repaired minimal pgAI summarize endpoint. Full DB & pgai integration deferred for compile stability.
 export const POST: RequestHandler = async ({ request }) => {
     const { text, format = 'summary' } = await request.json().catch(() => ({}))
@@ -14,6 +13,5 @@ export const POST: RequestHandler = async ({ request }) => {
     const summary = primary.length > 50 ? primary : trimmed.slice(0, 200)
     return json({ success: true, summary, format, originalLength: text.length })
 }
-
 export const GET: RequestHandler = async () => json({ success: true, status: 'ok' })
 export const prerender = false

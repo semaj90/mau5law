@@ -1,12 +1,9 @@
 import { EventEmitter } from "events";
-
 /**
  * Redis-Compatible Self-Organizing Map Cache System
  * Advanced memory management with machine learning clustering
  */
-
-
-// === Neural Network Self-Organizing Map for Cache Intelligence ===;
+// === Neural Network Self-Organizing Map for Cache Intelligence ===
 export interface SOMNode {
   weights: Float64Array;
   activation: number;
@@ -14,7 +11,6 @@ export interface SOMNode {
   access_count: number;
   last_update: number;
 }
-
 export interface CacheEntry {
   key: string;
   value: any;
@@ -31,7 +27,6 @@ export interface CacheEntry {
     ai_relevance: number; // 0-1 score
   };
 }
-
 class SelfOrganizingMap {
   private nodes: SOMNode[][] = [];
   private width: number;
@@ -40,10 +35,9 @@ class SelfOrganizingMap {
   private neighborhood_radius: number;
   private feature_dimensions: number;
   private training_iterations: number;
-
   constructor(
-    width = 20, 
-    height = 20, 
+    width = 20,
+    height = 20,
     feature_dimensions = 8,
     initial_learning_rate = 0.1,
     initial_radius = 5;
@@ -54,14 +48,12 @@ class SelfOrganizingMap {
     this.learning_rate = initial_learning_rate;
     this.neighborhood_radius = initial_radius;
     this.training_iterations = 0;
-    
     this.initializeNodes();
   }
-
   private initializeNodes(): void {
     this.nodes = Array.from({ length: this.height }, () =>;
       Array.from({ length: this.width }, () => ({
-        weights: new Float64Array(this.feature_dimensions).map(() => Math.random()),;
+        weights: new Float64Array(this.feature_dimensions).map(() => Math.random()),
         activation: 0,
         cluster_id: Math.floor(Math.random() * 10),
         access_count: 0,
@@ -69,7 +61,6 @@ class SelfOrganizingMap {
       })
     );
   }
-
   private calculateDistance(weights1: Float64Array, weights2: Float64Array): number {
     let sum = 0;
     for (let i = 0; i < weights1.length; i++) {
@@ -77,12 +68,10 @@ class SelfOrganizingMap {
     }
     return Math.sqrt(sum);
   }
-
   private findBestMatchingUnit(input: Float64Array): { x: number; y: number; distance: number } {
     let bestX = 0;
     let bestY = 0;
     let minDistance = Infinity;
-
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
         const distance = this.calculateDistance(input, this.nodes[y][x].weights);
@@ -93,29 +82,23 @@ class SelfOrganizingMap {
         }
       }
     }
-
     return { x: bestX, y: bestY, distance: minDistance };
   }
-
   private updateWeights(input: Float64Array, bmu: { x: number; y: number }): void {
     const time_constant = this.training_iterations / 1000;
     const current_learning_rate = this.learning_rate * Math.exp(-time_constant);
     const current_radius = this.neighborhood_radius * Math.exp(-time_constant);
-
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
         const distance_to_bmu = Math.sqrt(
           Math.pow(x - bmu.x, 2) + Math.pow(y - bmu.y, 2)
         );
-
         if (distance_to_bmu <= current_radius) {
           const influence = Math.exp(-Math.pow(distance_to_bmu, 2) / (2 * Math.pow(current_radius, 2));
-          
           for (let i = 0; i < this.feature_dimensions; i++) {
-            this.nodes[y][x].weights[i] += 
+            this.nodes[y][x].weights[i] +=
               current_learning_rate * influence * (input[i] - this.nodes[y][x].weights[i]);
           }
-          
           this.nodes[y][x].activation = influence;
           this.nodes[y][x].access_count++;
           this.nodes[y][x].last_update = Date.now();
@@ -123,18 +106,14 @@ class SelfOrganizingMap {
       }
     }
   }
-
   train(input: Float64Array): { cluster: number; confidence: number } {
     const bmu = this.findBestMatchingUnit(input);
     this.updateWeights(input, bmu);
     this.training_iterations++;
-
     const cluster_id = bmu.y * this.width + bmu.x;
     const confidence = 1 / (1 + bmu.distance); // Convert distance to confidence
-
     return { cluster: cluster_id, confidence };
   }
-
   getClusterStats(): {
     total_clusters: number;
     active_clusters: number;
@@ -143,7 +122,6 @@ class SelfOrganizingMap {
   } {
     let active_count = 0;
     let total_activation = 0;
-
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
         const node = this.nodes[y][x];
@@ -151,17 +129,15 @@ class SelfOrganizingMap {
         total_activation += node.activation;
       }
     }
-
     return {
       total_clusters: this.width * this.height,
-      active_clusters: active_count,
+      active_clusters: active_count
       avg_activation: total_activation / (this.width * this.height),
       training_iterations: this.training_iterations
     };
   }
 }
-
-// === Advanced Redis-Compatible Cache with SOM Intelligence ===;
+// === Advanced Redis-Compatible Cache with SOM Intelligence ===
 export class RedisSOMapCache extends EventEmitter {
   private cache = new Map<string, CacheEntry>();
   private som: SelfOrganizingMap;
@@ -171,11 +147,10 @@ export class RedisSOMapCache extends EventEmitter {
   private stats = {
     hits: 0,
     misses: 0,
-    evictions: 0,;
+    evictions: 0,
     compressions: 0,
     total_operations: 0
   };
-
   constructor(options: {
     max_memory?: number; // In bytes
     som_width?: number;
@@ -183,7 +158,6 @@ export class RedisSOMapCache extends EventEmitter {
     compression_enabled?: boolean;
   } = {}) {
     super();
-    
     this.max_memory = options.max_memory || 512 * 1024 * 1024; // 512MB default
     this.compression_enabled = options.compression_enabled ?? true;
     this.som = new SelfOrganizingMap(
@@ -191,10 +165,8 @@ export class RedisSOMapCache extends EventEmitter {
       options.som_height || 15,
       8 // feature dimensions
     );
-
     this.startPeriodicOptimization();
   }
-
   private extractFeatures(key: string, value: any, metadata?: Partial<CacheEntry['metadata']>): Float64Array {
     const key_hash = this.hashString(key);
     const value_size = this.calculateSize(value);
@@ -204,7 +176,6 @@ export class RedisSOMapCache extends EventEmitter {
     const ai_relevance = metadata?.ai_relevance || 0;
     const compression_benefit = this.estimateCompressionBenefit(value);
     const key_similarity = this.calculateKeySimilarity(key);
-
     return new Float64Array([
       key_hash,
       Math.log(value_size + 1) / 10, // Normalized log size
@@ -216,7 +187,6 @@ export class RedisSOMapCache extends EventEmitter {
       key_similarity
     ]);
   }
-
   private hashString(str: string): number {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -225,14 +195,12 @@ export class RedisSOMapCache extends EventEmitter {
     }
     return Math.abs(hash) / 2147483647;
   }
-
   private calculateSize(value: any): number {
     if (typeof value === 'string') return value.length * 2;
     if (value instanceof Buffer) return value.length;
     if (typeof value === 'object') return JSON.stringify(value).length * 2;
     return 8;
   }
-
   private analyzeContentComplexity(value: any): number {
     if (typeof value === 'string') {
       const unique_chars = new Set(value).size;
@@ -245,12 +213,10 @@ export class RedisSOMapCache extends EventEmitter {
     }
     return 0.5;
   }
-
   private getAccessPatternScore(pattern: string): number {
     const patterns = { frequent: 1.0, burst: 0.8, linear: 0.6, random: 0.4 };
     return patterns[pattern as keyof typeof patterns] || 0.4;
   }
-
   private estimateCompressionBenefit(value: any): number {
     if (typeof value === 'string' && value.length > 100) {
       const repetition_ratio = this.calculateRepetitionRatio(value);
@@ -264,17 +230,14 @@ export class RedisSOMapCache extends EventEmitter {
     }
     return 0;
   }
-
   private calculateRepetitionRatio(str: string): number {
     const chunks = str.match(/.{1,4}/g) || [];
     const unique_chunks = new Set(chunks).size;
     return 1 - (unique_chunks / chunks.length);
   }
-
   private calculateKeySimilarity(key: string): number {
     const existing_keys = Array.from(this.cache.keys();
     if (existing_keys.length === 0) return 0;
-
     let max_similarity = 0;
     for (const existing_key of existing_keys.slice(-10)) { // Check last 10 keys
       const similarity = this.levenshteinSimilarity(key, existing_key);
@@ -282,20 +245,16 @@ export class RedisSOMapCache extends EventEmitter {
     }
     return max_similarity;
   }
-
   private levenshteinSimilarity(a: string, b: string): number {
     const matrix: number[][] = [];
     const len_a = a.length;
     const len_b = b.length;
-
     for (let i = 0; i <= len_b; i++) {
       matrix[i] = [i];
     }
-
     for (let j = 0; j <= len_a; j++) {
       matrix[0][j] = j;
     }
-
     for (let i = 1; i <= len_b; i++) {
       for (let j = 1; j <= len_a; j++) {
         const cost = a[j - 1] === b[i - 1] ? 0 : 1;
@@ -306,16 +265,13 @@ export class RedisSOMapCache extends EventEmitter {
         );
       }
     }
-
     const max_len = Math.max(len_a, len_b);
     return max_len === 0 ? 1 : 1 - (matrix[len_b][len_a] / max_len);
   }
-
   private compressValue(value: any): { compressed: any; ratio: number; type: string } {
     if (!this.compression_enabled) {
       return { compressed: value, ratio: 1, type: 'none' };
     }
-
     if (typeof value === 'string' && value.length > 100) {
       // Simple run-length encoding for demonstration
       const compressed = this.runLengthEncode(value);
@@ -323,7 +279,6 @@ export class RedisSOMapCache extends EventEmitter {
       this.stats.compressions++;
       return { compressed, ratio, type: 'rle' };
     }
-
     if (typeof value === 'object') {
       const json_str = JSON.stringify(value);
       if (json_str.length > 100) {
@@ -333,10 +288,8 @@ export class RedisSOMapCache extends EventEmitter {
         return { compressed: JSON.parse(this.runLengthDecode(compressed)), ratio, type: 'json-rle' };
       }
     }
-
     return { compressed: value, ratio: 1, type: 'none' };
   }
-
   private runLengthEncode(str: string): string {
     let result = '';
     let i = 0;
@@ -350,7 +303,6 @@ export class RedisSOMapCache extends EventEmitter {
     }
     return result;
   }
-
   private runLengthDecode(str: string): string {
     let result = '';
     let i = 0;
@@ -367,98 +319,83 @@ export class RedisSOMapCache extends EventEmitter {
     }
     return result;
   }
-
   private calculatePriorityScore(features: Float64Array, som_result: { cluster: number; confidence: number }): number {
     // Weighted combination of features and SOM results
     const feature_score = features[4] * 0.3 + features[5] * 0.4 + features[6] * 0.2 + som_result.confidence * 0.1;
     return Math.min(Math.max(feature_score, 0), 1);
   }
-
   // === Redis-Compatible API ===
   async set(
-    key: string, 
-    value: any, ;
+    key: string
+    value: any
     options: {
       ttl?: number;
       metadata?: Partial<CacheEntry['metadata']>;
     } = {}
   ): Promise<boolean> {
     this.stats.total_operations++;
-
     const features = this.extractFeatures(key, value, options.metadata);
     const som_result = this.som.train(features);
     const { compressed, ratio, type } = this.compressValue(value);
     const size = this.calculateSize(compressed);
     const priority_score = this.calculatePriorityScore(features, som_result);
-
-    // Memory pressure management;
+    // Memory pressure management
     if (this.current_memory + size > this.max_memory) {
       await this.intelligentEviction(size);
     }
-
     const entry: CacheEntry = {
       key,
-      value: compressed,
+      value: compressed
       ttl: options.ttl || 300000, // 5 minutes default
       created_at: Date.now(),
       access_count: 1,
       size,
       som_cluster: som_result.cluster,
-      priority_score,;
+      priority_score,
       metadata: {
         content_type: this.detectContentType(value),
-        compression_ratio: ratio,
+        compression_ratio: ratio
         access_pattern: options.metadata?.access_pattern || 'random',
         ai_relevance: options.metadata?.ai_relevance || 0,
         ...options.metadata
       }
     };
-
     this.cache.set(key, entry);
     this.current_memory += size;
-
     this.emit('set', { key, size, cluster: som_result.cluster, confidence: som_result.confidence });
     return true;
   }
-
   async get(key: string): Promise<any> {
     this.stats.total_operations++;
-    
     const entry = this.cache.get(key);
     if (!entry) {
       this.stats.misses++;
       this.emit('miss', key);
       return null;
     }
-
-    // TTL check;
+    // TTL check
     if (Date.now() - entry.created_at > entry.ttl) {
       this.delete(key);
       this.stats.misses++;
       this.emit('expire', key);
       return null;
     }
-
     // Update access patterns
     entry.access_count++;
     const features = this.extractFeatures(key, entry.value, entry.metadata);
     const som_result = this.som.train(features);
     entry.som_cluster = som_result.cluster;
     entry.priority_score = this.calculatePriorityScore(features, som_result);
-
     this.stats.hits++;
     this.emit('hit', { key, access_count: entry.access_count, cluster: som_result.cluster });
-
-    // Decompress if needed;
+    // Decompress if needed
     if (entry.metadata.compression_ratio && entry.metadata.compression_ratio > 1) {
       if (typeof entry.value === 'string') {
         return this.runLengthDecode(entry.value);
       }
     }
-
     return entry.value;
   }
-
   async delete(key: string): Promise<boolean> {
     const entry = this.cache.get(key);
     if (entry) {
@@ -469,7 +406,6 @@ export class RedisSOMapCache extends EventEmitter {
     }
     return false;
   }
-
   async exists(key: string): Promise<boolean> {
     const entry = this.cache.get(key);
     if (entry && Date.now() - entry.created_at <= entry.ttl) {
@@ -477,15 +413,12 @@ export class RedisSOMapCache extends EventEmitter {
     }
     return false;
   }
-
   async keys(pattern?: string): Promise<string[]> {
     const all_keys = Array.from(this.cache.keys();
     if (!pattern) return all_keys;
-    
     const regex = new RegExp(pattern.replace(/\*/g, '.*');
     return all_keys.filter((key: any) => regex.test(key);
   }
-
   async flushAll(): Promise<boolean> {
     const count = this.cache.size;
     this.cache.clear();
@@ -493,71 +426,56 @@ export class RedisSOMapCache extends EventEmitter {
     this.emit('flush', count);
     return true;
   }
-
   private async intelligentEviction(needed_space: number): Promise<void> {
     const entries = Array.from(this.cache.entries();
-    
     // Sort by priority score (lower = evict first)
     entries.sort(([, a], [, b]) => a.priority_score - b.priority_score);
-    
     let freed_space = 0;
     const evicted_keys: string[] = [];
-    
     for (const [key, entry] of entries) {
       if (freed_space >= needed_space) break;
-      
       this.cache.delete(key);
       this.current_memory -= entry.size;
       freed_space += entry.size;
       evicted_keys.push(key);
     }
-    
     this.stats.evictions += evicted_keys.length;
     this.emit('eviction', { keys: evicted_keys, freed_space });
   }
-
   private detectContentType(value: any): CacheEntry['metadata']['content_type'] {
     if (typeof value === 'string') return 'string';
     if (Buffer.isBuffer(value)) return 'buffer';
     if (typeof value === 'object') return 'object';
     return 'json';
   }
-
   private startPeriodicOptimization(): void {
     setInterval(() => {
       this.performOptimization();
     }, 60000); // Every minute
   }
-
   private performOptimization(): void {
     // Remove expired entries
     const now = Date.now();
     const expired_keys: string[] = [];
-    
     for (const [key, entry] of this.cache.entries()) {
       if (now - entry.created_at > entry.ttl) {
         expired_keys.push(key);
       }
     }
-    
     expired_keys.forEach((key: any) => this.delete(key);
-    
     // Retrain SOM with recent access patterns
     const recent_entries = Array.from(this.cache.values()
       .filter((entry: any) => entry.access_count > 1)
       .slice(-100); // Last 100 accessed items
-    
     for (const entry of recent_entries) {
       const features = this.extractFeatures(entry.key, entry.value, entry.metadata);
       this.som.train(features);
     }
-    
     this.emit('optimization', {
       expired_removed: expired_keys.length,
       som_retrained: recent_entries.length
     });
   }
-
   getStats() {
     return {
       ...this.stats,
@@ -571,69 +489,57 @@ export class RedisSOMapCache extends EventEmitter {
         hit_rate: this.stats.hits / (this.stats.hits + this.stats.misses) * 100
       },
       som: this.som.getClusterStats(),
-      compression: {;
+      compression: {
         enabled: this.compression_enabled,
         compressions_performed: this.stats.compressions
       }
     };
   }
-
-  // === Neural Network Analysis Methods ===;
+  // === Neural Network Analysis Methods ===
   async analyzeAccessPatterns(): Promise<{
     clusters: Array<any>;
     recommendations: string[];
   }> {
     const som_stats = this.som.getClusterStats();
     const entries_by_cluster = new Map<number, CacheEntry[]>();
-    
-    // Group entries by SOM cluster;
+    // Group entries by SOM cluster
     for (const entry of this.cache.values()) {
       if (!entries_by_cluster.has(entry.som_cluster)) {
         entries_by_cluster.set(entry.som_cluster, []);
       }
       entries_by_cluster.get(entry.som_cluster)!.push(entry);
     }
-    
     const clusters = Array.from(entries_by_cluster.entries()).map(([id, entries]) => ({
       id,
-      patterns: entries.map((e: any) => e.metadata.access_pattern),;
+      patterns: entries.map((e: any) => e.metadata.access_pattern),
       confidence: entries.reduce((sum, e) => sum + e.priority_score, 0) / entries.length
     });
-    
     const recommendations = this.generateRecommendations(clusters, som_stats);
-    
     return { clusters, recommendations };
   }
-
   private generateRecommendations(
-    clusters: Array<any>,
+    clusters: Array<any>
     som_stats: any;
   ): string[] {
     const recommendations: string[] = [];
-    
     if (som_stats.active_clusters < som_stats.total_clusters * 0.3) {
       recommendations.push('Consider reducing SOM size - many clusters are unused');
     }
-    
     const hit_rate = this.stats.hits / (this.stats.hits + this.stats.misses) * 100;
     if (hit_rate < 70) {
       recommendations.push('Hit rate is low - consider increasing cache size or TTL');
     }
-    
     if (this.current_memory > this.max_memory * 0.9) {
       recommendations.push('Memory usage is high - consider more aggressive eviction');
     }
-    
     const high_confidence_clusters = clusters.filter((c: any) => c.confidence > 0.8);
     if (high_confidence_clusters.length > 0) {
       recommendations.push(`${high_confidence_clusters.length} clusters show high confidence - good cache organization`);
     }
-    
     return recommendations;
   }
 }
-
-// === Factory and Helper Functions ===;
+// === Factory and Helper Functions ===
 export function createRedisSOMapCache(options?: {
   max_memory?: number;
   som_width?: number;
@@ -642,7 +548,6 @@ export function createRedisSOMapCache(options?: {
 }): RedisSOMapCache {
   return new RedisSOMapCache(options);
 }
-
 export function createDockerOptimizedCache(): RedisSOMapCache {
   return new RedisSOMapCache({
     max_memory: 256 * 1024 * 1024, // 256MB for Docker optimization
@@ -651,7 +556,6 @@ export function createDockerOptimizedCache(): RedisSOMapCache {
     compression_enabled: true
   });
 }
-
 export function create70GBDevCache(): RedisSOMapCache {
   return new RedisSOMapCache({
     max_memory: 2 * 1024 * 1024 * 1024, // 2GB for 70GB dev environment

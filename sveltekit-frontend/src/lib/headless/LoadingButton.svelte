@@ -1,8 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import type { HTMLButtonAttributes } from 'svelte/elements';
-  
   interface LoadingButtonProps extends Omit<HTMLButtonAttributes, 'type'> {
     loading?: boolean;
     disabled?: boolean;
@@ -15,7 +13,6 @@
     children?: import('svelte').Snippet;
     onclick?: (event: MouseEvent) => void;
   }
-  
   let {
     loading = false,
     disabled = false,
@@ -30,9 +27,7 @@
     onclick,
     ...rest;
   }: LoadingButtonProps = $props();
-
   let isDisabled = $derived(disabled || loading);
-  
   // Generate button classes based on variant and size
   let buttonClasses = $derived([
     'loading-button',
@@ -41,8 +36,7 @@
     isDisabled ? 'loading-button--disabled' : '',
     loading ? 'loading-button--loading' : '',
     className
-  ].filter(item => item.join)(' '));
-  
+  ].filter(Boolean).join(' '));
   function handleClick(event: MouseEvent) {
     if (isDisabled) {
       event.preventDefault();
@@ -51,7 +45,6 @@
     onclick?.(event);
   }
 </script>
-
 <button
   {type}
   class={buttonClasses}
@@ -65,24 +58,23 @@
     {#if loading}
       <span class="loading-button__spinner {spinnerClass}" aria-hidden="true">
         <svg viewBox="0 0 24 24" class="spinner-icon" fill="none">
-          <circle 
-            class="spinner-circle" 
-            cx="12" 
-            cy="12" 
-            r="10" 
-            stroke="currentColor" 
+          <circle
+            class="spinner-circle"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
             stroke-width="2"
             fill="none"
           />
-          <path 
-            class="spinner-path" 
-            fill="currentColor" 
+          <path
+            class="spinner-path"
+            fill="currentColor"
             d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4z"
           />
         </svg>
       </span>
     {/if}
-    
     <span class="loading-button__text {loading ? 'loading-button__text--loading' : ''}">
       {#if loading && loadingText}
         {loadingText}
@@ -94,7 +86,6 @@
     </span>
   </div>
 </button>
-
 <style>
   .loading-button {
     position: relative;
@@ -108,38 +99,31 @@
     cursor: pointer;
     user-select: none;
   }
-  
   .loading-button__content {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
   }
-  
   .loading-button__spinner {
     display: inline-flex;
     align-items: center;
     justify-content: center;
   }
-  
   .spinner-icon {
     width: 1rem;
     height: 1rem;
     animation: spin 1s linear infinite;
   }
-  
   .spinner-circle {
     opacity: 0.25;
   }
-  
   .spinner-path {
     opacity: 0.75;
   }
-  
   .loading-button__text {
     transition: opacity 0.2s ease-in-out;
   }
-  
   .loading-button__text--loading {
     opacity: 0.8;
   }
@@ -149,24 +133,20 @@
     font-size: 0.875rem;
     line-height: 1.25rem;
   }
-  
   .loading-button--sm .spinner-icon {
     width: 0.875rem;
     height: 0.875rem;
   }
-  
   .loading-button--md {
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
     line-height: 1.25rem;
   }
-  
   .loading-button--lg {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
     line-height: 1.5rem;
   }
-  
   .loading-button--lg .spinner-icon {
     width: 1.25rem;
     height: 1.25rem;
@@ -176,45 +156,36 @@
     background-color: rgb(59, 130, 246);
     color: white;
   }
-  
   .loading-button--primary:hover:not(.loading-button--disabled) {
     background-color: rgb(37, 99, 235);
   }
-  
   .loading-button--secondary {
     background-color: rgb(107, 114, 128);
     color: white;
   }
-  
   .loading-button--secondary:hover:not(.loading-button--disabled) {
     background-color: rgb(75, 85, 99);
   }
-  
   .loading-button--destructive {
     background-color: rgb(239, 68, 68);
     color: white;
   }
-  
   .loading-button--destructive:hover:not(.loading-button--disabled) {
     background-color: rgb(220, 38, 38);
   }
-  
   .loading-button--outline {
     background-color: transparent;
     border-color: rgb(209, 213, 219);
     color: rgb(55, 65, 81);
   }
-  
   .loading-button--outline:hover:not(.loading-button--disabled) {
     background-color: rgb(249, 250, 251);
     border-color: rgb(156, 163, 175);
   }
-  
   .loading-button--ghost {
     background-color: transparent;
     color: rgb(55, 65, 81);
   }
-  
   .loading-button--ghost:hover:not(.loading-button--disabled) {
     background-color: rgb(249, 250, 251);
   }
@@ -224,7 +195,6 @@
     cursor: not-allowed;
     pointer-events: none;
   }
-  
   .loading-button--loading {
     cursor: wait;
   }
@@ -246,7 +216,6 @@
   .loading-button--loading .loading-button__content {
     animation: loadingPulse 1.5s ease-in-out infinite;
   }
-  
   @keyframes loadingPulse {
     0%, 100% {
       opacity: 1;

@@ -1,10 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   interface Props {
     class?: string;
     children?: import('svelte').Snippet;
@@ -29,7 +27,6 @@ https://svelte.dev/e/js_parse_error -->
   function fmt(ts:number){ return new Date(ts).toLocaleTimeString(); }
   $effect(()=>{ load(); interval = setInterval(()=>{ if(autoRefresh) load(); }, 5000); return ()=> clearInterval(interval); });
 </script>
-
 <div class="alerts-panel p-3 border rounded bg-white dark:bg-neutral-900 text-sm space-y-3">
   <div class="flex items-center justify-between">
     <h3 class="font-semibold">Alerts</h3>
@@ -64,11 +61,9 @@ https://svelte.dev/e/js_parse_error -->
     </ul>
   {/if}
 </div>
-
 <style>
   .alerts-panel [data-severity="critical"] { border-color: #dc2626; }
   .alerts-panel [data-severity="warn"] { border-color: #d97706; }
   .alerts-panel [data-severity="info"] { border-color: #3b82f6; }
   .sustained-breach { background:#dc2626; color:#fff; }
 </style>
-

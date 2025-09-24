@@ -1,10 +1,7 @@
 import { json } from "@sveltejs/kit"
 import { db } from "$lib/server/db/index"
 import type { RequestHandler } from './$types.js'
-
-
 // Case Canvas API - Save and load canvas data
-
 // Import with fallback for different schema files
 let schema: any = {}
 try {
@@ -17,7 +14,6 @@ try {
   }
 }
 const { cases } = schema
-
 // GET - Get canvas data for a case
 export const GET: RequestHandler = async ({ params }) => {
   try {
@@ -42,7 +38,6 @@ export const GET: RequestHandler = async ({ params }) => {
       })
       .from(cases)
       .where(eq(cases.id, caseId)
-
     if (!caseData) {
       return json({ error: "Case not found" }, { status: 404 })
     }
@@ -55,7 +50,6 @@ export const GET: RequestHandler = async ({ params }) => {
     return json({ error: "Failed to fetch canvas data" }, { status: 500 })
   }
 }
-
 // POST - Save canvas data for a case
 export const POST: RequestHandler = async ({ request, params }) => {
   try {
@@ -64,7 +58,6 @@ export const POST: RequestHandler = async ({ request, params }) => {
       return json({ error: "Case ID is required" }, { status: 400 })
     }
     const { canvasData, positions } = await request.json()
-
     if (!canvasData) {
       return json({ error: "Canvas data is required" }, { status: 400 })
     }
@@ -72,7 +65,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
     if (!cases) {
       console.warn("Cases table not available, returning mock response")
       return json({
-        success: true,
+        success: true
         savedAt: new Date()
       })
     }
@@ -85,7 +78,6 @@ export const POST: RequestHandler = async ({ request, params }) => {
       })
       .where(eq(cases.id, caseId)
       .returning()
-
     if (!updatedCase) {
       return json({ error: "Case not found" }, { status: 404 })
     }
@@ -99,7 +91,6 @@ export const POST: RequestHandler = async ({ request, params }) => {
             // For now, we'll store positions in the canvas data itself
           }
         })
-
         await Promise.all(evidenceUpdatePromises)
       } catch (positionError) {
         console.warn("Failed to update evidence positions:", positionError)
@@ -107,7 +98,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
       }
     }
     return json({
-      success: true,
+      success: true
       savedAt: updatedCase.updatedAt
     })
   } catch (error: any) {

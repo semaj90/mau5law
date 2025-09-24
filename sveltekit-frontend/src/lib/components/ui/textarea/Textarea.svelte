@@ -1,8 +1,6 @@
 <script lang="ts">
   // Props are defined as $props() rune, no import needed
-
   import { cn } from "../../../utils";
-
   interface Props {
     value?: string;
     placeholder?: string;
@@ -40,7 +38,6 @@
     onblur = undefined;
   }: Props = $props();
 </script>
-
 <textarea
   bind:value
   {placeholder}
@@ -65,4 +62,3 @@
     className
   )}
 ></textarea>
-

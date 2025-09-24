@@ -1,41 +1,32 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   	import { useMachine } from '@xstate/svelte';
   	import { chatMachine } from '$lib/machines/chatMachine.js';
-
   	let chatContainer;
   let userInput = $state('');
-
   	const { snapshot, send } = useMachine(chatMachine, {
   		actors: {
   			streamChatActor: ({ input }) => (sendBack, receive) => {
   				const controller = new AbortController();
-
   				async function stream() {
   					try {
   						const response = await fetch('/api/chat', {
-  							method: 'POST',;
+  							method: 'POST',
   							headers: { 'Content-Type': 'application/json' },
-  							body: JSON.stringify({ messages: input.messages }),;
+  							body: JSON.stringify({ messages: input.messages }),
   							signal: controller.signal;
   						});
-
   						if (!response.ok || !response.body) {
   							throw new Error('Failed to get response stream.');
   						}
-
   						const reader = response.body.getReader();
   						const decoder = new TextDecoder();
-
   						while (true) {
   							const { done, value } = await reader.read();
   							if (done) break;
-
   							const chunk = decoder.decode(value, { stream: true });
   							const lines = chunk.split.filter(line => line.trim() !== '');
-
   							for (const line of lines) {
   								try {
   									const jsonResponse = JSON.parse(line);
@@ -55,23 +46,19 @@
   						}
   					}
   				}
-
   				stream();
-
   				return () => {
   					controller.abort();
   				};
   			}
   		}
   	});
-
   	function handleSubmit(event: SubmitEvent) {
   		event.preventDefault();
   		if (!userInput.trim()) return;
   		send({ type: 'SUBMIT', message: userInput });
   		userInput = '';
   	}
-
   	// Reactive statement to scroll down when messages change
   	$effect(() => {
   		if (snapshot.context.messages && typeof window !== 'undefined') {
@@ -84,7 +71,6 @@
   		}
   	});
 </script>
-
 <div class="flex flex-col h-[calc(100vh-4rem)] bg-gray-50 dark:bg-gray-900">
 	<div bind:this={chatContainer} class="flex-1 overflow-y-auto p-4 space-y-4">
 		{#each snapshot.context.messages as message, i (i)}
@@ -106,7 +92,6 @@
 			</div>
 		{/if}
 	</div>
-
 	<div class="p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
 		<form onsubmit={handleSubmit} class="flex items-center space-x-2">
 			<input
@@ -126,13 +111,13 @@
 		</form>
 	</div>
 </div>
-
 <style>
 	/* Styles from previous Chat.svelte component can be reused here */
 	.chat-message { display: flex; max-width: 80%; }
 	.chat-message.user { margin-left: auto; flex-direction: row-reverse; }
 	.chat-message.assistant { margin-right: auto; }
-	.message-bubble { padding: 0.75rem 1rem; border-radius: 1.25rem; word-wrap: break-word; position: relative; }
+	.message-bubble { padding: 0.75rem 1rem; border-radius: 1.25rem; word-wrap: break-word; position: relative;
+e; }
 	.user .message-bubble { background-color: #2563eb; color: white; border-bottom-right-radius: 0.25rem; }
 	.assistant .message-bubble { background-color: #e5e7eb; color: #111827; border-bottom-left-radius: 0.25rem; }
 	.dark .assistant .message-bubble { background-color: #374151; color: #f9fafb; }
@@ -141,6 +126,3 @@
 	.typing-indicator { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background-color: currentColor; animation: typing 1s infinite steps(4, end); margin-left: 8px; vertical-align: bottom; }
 	@keyframes typing { to { transform: translateY(-0.25rem); } }
 </style>
-
-
-

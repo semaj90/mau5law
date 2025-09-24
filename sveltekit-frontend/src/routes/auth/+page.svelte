@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -7,17 +7,14 @@ https://svelte.dev/e/js_parse_error -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { fade, slide } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
-
   // Authentication mode state
   let authMode = $state<'login' | 'register' >('login');
   let isLoading = $state(false);
   let error = $state('');
   let success = $state('');
-
   // Form data
   let formData = $state({
     email: '',
@@ -25,35 +22,30 @@ https://svelte.dev/e/js_parse_error -->
     confirmPassword: '',
     firstName: '',
     lastName: '',
-    role: 'prosecutor',;
-    department: '',;
+    role: 'prosecutor',
+    department: '',
     jurisdiction: '',
     badgeNumber: '',
-    agreeToTerms: false,
+    agreeToTerms: false
     agreeToPrivacy: false;
   });
-
   // Toggle between login and register
   function toggleAuthMode() {
     authMode = authMode === 'login' ? 'register' : 'login';
     error = '';
     success = '';
   }
-
   // Handle form submission
   async function handleSubmit(event: Event) {
     event.preventDefault();
     isLoading = true;
     error = '';
     success = '';
-
     try {
       const form = new FormData();
-
       // Add common fields
       form.append('email', formData.email);
       form.append('password', formData.password);
-
       // Add register-specific fields
       if (authMode === 'register') {
         form.append('confirmPassword', formData.confirmPassword);
@@ -66,14 +58,11 @@ https://svelte.dev/e/js_parse_error -->
   form.append('agreeToTerms', formData.agreeToTerms.toString());
   form.append('agreeToPrivacy', formData.agreeToPrivacy.toString());
       }
-
       const endpoint = authMode === 'login' ? '/auth/login' : '/auth/register';
-
       const response = await fetch(endpoint, {
-        method: 'POST',;
+        method: 'POST',
         body: form;
       });
-
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         success = authMode === 'login' ? 'Login successful! Redirecting...' : 'Registration successful! Redirecting...';
         // Redirect on success
@@ -90,10 +79,8 @@ https://svelte.dev/e/js_parse_error -->
       isLoading = false;
     }
   }
-
   // Validate form
   let isFormValid = $state(false);
-
   // Compute form validity reactively
   $effect(() => {
     if (authMode === 'login') {
@@ -111,12 +98,10 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 </script>
-
 <svelte:head>
   <title>{authMode === 'login' ? 'Login' : 'Register'} - Legal AI Platform</title>
   <meta name="description" content="Access the Legal AI Platform - Unified authentication experience" />
 </svelte:head>
-
 <div class="min-h-screen flex items-center justify-center bg-gray-900 px-4 py-8">
   <div class="w-full max-w-md">
     <div class="bg-gray-800 p-8 rounded-lg border border-gray-700 shadow-2xl">
@@ -129,7 +114,6 @@ https://svelte.dev/e/js_parse_error -->
           Advanced evidence processing with AI-powered analysis
         </p>
       </div>
-
       <!-- Auth Mode Toggle -->
       <div class="flex bg-gray-700 rounded-lg p-1 mb-6">
         <button
@@ -151,20 +135,17 @@ https://svelte.dev/e/js_parse_error -->
           📝 Register
         </button>
       </div>
-
       <!-- Error/Success Messages -->
       {#if error}
         <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-4" transition:slide>
           {error}
         </div>
       {/if}
-
       {#if success}
         <div class="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded mb-4" transition:slide>
           {success}
         </div>
       {/if}
-
       <!-- Auth Form -->
       <form onsubmit={handleSubmit} class="space-y-4">
         <!-- Common Fields -->
@@ -181,7 +162,6 @@ https://svelte.dev/e/js_parse_error -->
             placeholder="Enter your email"
           />
         </div>
-
         <!-- Register-specific: Name fields -->
         {#if authMode === 'register'}
           <div class="grid grid-cols-2 gap-3" transitislide={{ duration: 300, easing: cubicOut }}>
@@ -213,7 +193,6 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </div>
         {/if}
-
         <div>
           <label for="password" class="block text-sm font-medium text-gray-300 mb-2">
             Password
@@ -227,7 +206,6 @@ https://svelte.dev/e/js_parse_error -->
             placeholder="Enter your password"
           />
         </div>
-
         <!-- Register-specific: Confirm Password -->
         {#if authMode === 'register'}
           <div transitislide={{ duration: 300, easing: cubicOut }}>
@@ -246,7 +224,6 @@ https://svelte.dev/e/js_parse_error -->
               <p class="text-red-400 text-sm mt-1">Passwords do not match</p>
             {/if}
           </div>
-
           <!-- Professional Details -->
           <div class="space-y-3" transitislide={{ duration: 300, easing: cubicOut }}>
             <div>
@@ -265,7 +242,6 @@ https://svelte.dev/e/js_parse_error -->
                 <option value="admin">Administrator</option>
               </select>
             </div>
-
             <div>
               <label for="department" class="block text-sm font-medium text-gray-300 mb-2">
                 Department
@@ -279,7 +255,6 @@ https://svelte.dev/e/js_parse_error -->
                 placeholder="e.g., District Attorney's Office"
               />
             </div>
-
             <div>
               <label for="jurisdiction" class="block text-sm font-medium text-gray-300 mb-2">
                 Jurisdiction
@@ -293,7 +268,6 @@ https://svelte.dev/e/js_parse_error -->
                 placeholder="e.g., Los Angeles County"
               />
             </div>
-
             <div>
               <label for="badgeNumber" class="block text-sm font-medium text-gray-300 mb-2">
                 Badge Number <span class="text-gray-500">(Optional)</span>
@@ -307,7 +281,6 @@ https://svelte.dev/e/js_parse_error -->
               />
             </div>
           </div>
-
           <!-- Terms and Privacy -->
           <div class="space-y-3" transitislide={{ duration: 300, easing: cubicOut }}>
             <label class="flex items-start space-x-3 cursor-pointer">
@@ -321,7 +294,6 @@ https://svelte.dev/e/js_parse_error -->
                 I agree to the <a href="/legal/terms" class="text-yellow-400 hover:underline">Terms of Service</a>
               </span>
             </label>
-
             <label class="flex items-start space-x-3 cursor-pointer">
               <input
                 type="checkbox";
@@ -335,7 +307,6 @@ https://svelte.dev/e/js_parse_error -->
             </label>
           </div>
         {/if}
-
         <!-- Submit Button -->
         <button
           type="submit"
@@ -355,7 +326,6 @@ https://svelte.dev/e/js_parse_error -->
           {/if}
         </button>
       </form>
-
       <!-- Demo Notice -->
       {#if authMode === 'login'}
         <div class="mt-6 text-center">
@@ -364,7 +334,6 @@ https://svelte.dev/e/js_parse_error -->
           </p>
         </div>
       {/if}
-
       <!-- Alternative Action -->
       <div class="mt-6 text-center">
         <p class="text-gray-400 text-sm">
@@ -381,10 +350,9 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
-
 <style>
   /* Custom checkbox styling for better visibility */
-  input[type="checkbox"] {;
+  input[type="checkbox"] {
     accent-color: #eab308;
   }
 </style>

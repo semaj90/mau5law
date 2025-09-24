@@ -1,11 +1,8 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { URL } from "url"
-
-
 // Enhanced RAG Service Configuration
 const ENHANCED_RAG_URL = 'http://localhost:8094'
-
 // Enhanced service client for AI-powered suggestions
 class SuggestionsService {
   private async fetchWithFallback(url: string, options: RequestInit, fallbackPorts: number[] = []): Promise<Response> {
@@ -26,7 +23,6 @@ class SuggestionsService {
       throw error
     }
   }
-
   async generateContextualSuggestions(query: string, category: string, limit: number): Promise<any> {
     return this.fetchWithFallback(`${ENHANCED_RAG_URL}/api/suggestions`, {
       method: 'POST',
@@ -36,8 +32,8 @@ class SuggestionsService {
         category,
         limit,
         suggestionType: 'legal_search',
-        includeSemanticExpansions: true,
-        includeTrendingTerms: true,
+        includeSemanticExpansions: true
+        includeTrendingTerms: true
         legalContext: {
           jurisdiction: 'federal',
           practiceAreas: 'all',
@@ -46,32 +42,28 @@ class SuggestionsService {
       })
     }, [8095, 8096]).then(r => r.json()
   }
-
   async getTrendingSearches(timeWindow: string = '7d'): Promise<any> {
     return this.fetchWithFallback(`${ENHANCED_RAG_URL}/api/trending`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     }, [8095, 8096]).then(r => r.json()).catch(() => ({ trending: [] })
   }
-
   async getSmartCompletions(partialQuery: string, category: string, limit: number): Promise<any> {
     return this.fetchWithFallback(`${ENHANCED_RAG_URL}/api/completions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        partial: partialQuery,
+      body: JSON.stringify({,
+        partial: partialQuery
         category,
         limit,
         completionType: 'legal_smart',
-        includeDefinitions: true,
+        includeDefinitions: true
         includePracticeAreas: true
       })
     }, [8095, 8096]).then(r => r.json()
   }
 }
-
 const suggestionsService = new SuggestionsService()
-
 // Enhanced AI-powered search suggestions for legal platform
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -80,11 +72,8 @@ export const GET: RequestHandler = async ({ url }) => {
     const limit = parseInt(url.searchParams.get('limit') || '8')
     const includeDefinitions = url.searchParams.get('definitions') === 'true'
     const includeTrending = url.searchParams.get('trending') !== 'false'
-    
     console.log(`🔍 Enhanced Legal AI Suggestions: "${userQuery}" | Category: ${category}`)
-    
     const startTime = Date.now()
-    
     // Enhanced parallel suggestion generation
     const suggestionPromises = [
       // AI-powered contextual suggestions
@@ -93,28 +82,24 @@ export const GET: RequestHandler = async ({ url }) => {
           console.warn('Contextual suggestions failed:', error)
           return { suggestions: [] }
         }),
-      
       // Trending searches (if enabled)
-      includeTrending ? 
+      includeTrending ?
         suggestionsService.getTrendingSearches('7d')
           .catch(error => {
             console.warn('Trending searches failed:', error)
             return { trending: [] }
-          }) : 
+          }) :
         Promise.resolve({ trending: [] }),
-      
       // Smart completions if partial query
-      userQuery.length >= 2 ? 
+      userQuery.length >= 2 ?
         suggestionsService.getSmartCompletions(userQuery, category, Math.floor(limit / 2)
           .catch(error => {
             console.warn('Smart completions failed:', error)
             return { completions: [] }
-          }) : 
+          }) :
         Promise.resolve({ completions: [] })
     ]
-
     const [contextualResults, trendingResults, completionResults] = await Promise.all(suggestionPromises)
-
     // Process and merge results
     const suggestions = await processEnhancedSuggestions(
       contextualResults.suggestions || [],
@@ -123,33 +108,30 @@ export const GET: RequestHandler = async ({ url }) => {
       category,
       includeDefinitions
     )
-
     // Get trending topics
     const trending = await processTrendingSuggestions(
       trendingResults.trending || [],
       category
     )
-
     const processingTime = Date.now() - startTime
-
     // Enhanced response with legal AI platform optimization
     return json({
-      success: true,
+      success: true
       suggestions: suggestions.slice(0, limit),
       trending: trending.slice(0, 5),
       metadata: {
         category,
-        query: userQuery,
+        query: userQuery
         totalSuggestions: suggestions.length,
         processingTime,
-        aiEnhanced: true,
+        aiEnhanced: true
         includeDefinitions,
         timestamp: new Date().toISOString(),
         searchStrategy: userQuery ? 'contextual_completion' : 'discovery_trending',
         servicesUsed: {
-          enhancedRAG: true,
-          semanticExpansions: true,
-          trendingAnalysis: includeTrending,
+          enhancedRAG: true
+          semanticExpansions: true
+          trendingAnalysis: includeTrending
           smartCompletions: userQuery.length >= 2
         }
       },
@@ -161,71 +143,65 @@ export const GET: RequestHandler = async ({ url }) => {
         relatedConcepts: extractRelatedConcepts(suggestions)
       }
     })
-    
   } catch (error: any) {
     console.error('Enhanced Legal AI Suggestions error:', error)
-    
     // Fallback to basic suggestions if enhanced search fails
     const fallbackSuggestions = await getFallbackSuggestions(
       url.searchParams.get('q') || '',
       url.searchParams.get('category') || 'general',
       parseInt(url.searchParams.get('limit') || '8')
     )
-    
     return json({
       success: true, // Still return success with fallback
-      suggestions: fallbackSuggestions,
+      suggestions: fallbackSuggestions
       trending: [],
       metadata: {
         category: url.searchParams.get('category') || 'general',
         query: url.searchParams.get('q') || '',
         timestamp: new Date().toISOString(),
-        fallbackMode: true,
+        fallbackMode: true
         error: error instanceof Error ? error.message: 'Unknown error'
       }
     })
   }
 }
-
 // Enhanced utility functions for suggestion processing
 async function processEnhancedSuggestions(
-  contextualSuggestions: any[],
-  completions: any[],
-  query: string,
-  category: string,
+  contextualSuggestions: any[]
+  completions: any[]
+  query: string
+  category: string
   includeDefinitions: boolean
 ): Promise<any[]> {
   try {
     const allSuggestions = [
-      ...contextualSuggestions.map((s: any) => ({
+      ...contextualSuggestions.map((s: any) => ({,
         text: s.text || s.suggestion,
         category: s.category || category,
         score: s.relevanceScore || s.score || 0.8,
         trending: s.trending || false,
         description: s.description || s.explanation,
-        definition: includeDefinitions ? s.definition: undefined,
+        definition: includeDefinitions ? s.definition: undefined
         practiceArea: s.practiceArea,
         confidence: s.confidence || 0.7,
         source: 'contextual'
       })),
-      ...completions.map((c: any) => ({
+      ...completions.map((c: any) => ({,
         text: c.completion || c.text,
         category: c.category || category,
         score: c.completionScore || c.score || 0.6,
-        trending: false,
+        trending: false
         description: c.description,
-        definition: includeDefinitions ? c.definition : undefined,
+        definition: includeDefinitions ? c.definition : undefined
         practiceArea: c.practiceArea,
         confidence: c.confidence || 0.6,
         source: 'completion'
       })
     ]
-
     // Remove duplicates and sort by relevance
     const uniqueSuggestions = allSuggestions.filter((suggestion, index, self) =>
       index === self.findIndex(s => s.text.toLowerCase() === suggestion.text.toLowerCase()
     )
-
     return uniqueSuggestions
       .sort((a, b) => (b.score * b.confidence) - (a.score * a.confidence)
       .map(suggestion => ({
@@ -235,20 +211,18 @@ async function processEnhancedSuggestions(
         jurisdiction: determineJurisdiction(suggestion.text),
         urgencyLevel: determineUrgencyLevel(suggestion.text)
       })
-
   } catch (error: any) {
     console.warn('Error processing enhanced suggestions:', error)
     return []
   }
 }
-
 async function processTrendingSuggestions(trendingData: any[], category: string): Promise<any[]> {
   try {
-    return trendingData.map((trending: any) => ({
+    return trendingData.map((trending: any) => ({,
       text: trending.searchTerm || trending.text || trending,
       category: trending.category || category,
       score: trending.trendingScore || 0.9,
-      trending: true,
+      trending: true
       description: `Trending search in ${category} law`,
       searchCount: trending.searchCount || 0,
       trendingPeriod: trending.period || '7d',
@@ -259,36 +233,29 @@ async function processTrendingSuggestions(trendingData: any[], category: string)
     return []
   }
 }
-
 function calculateEnhancedRelevanceScore(query: string, suggestion: string, baseScore: number): number {
   if (!query || !suggestion) return baseScore
-  
   let enhancedScore = baseScore
   const queryLower = query.toLowerCase()
   const suggestionLower = suggestion.toLowerCase()
-  
   // Exact match bonus
   if (suggestionLower.includes(queryLower)) {
     enhancedScore += 0.3
   }
-  
   // Word match scoring
   const queryWords = queryLower.split(' ').filter(word => word.length > 2)
   const matchingWords = queryWords.filter(word => suggestionLower.includes(word)
   if (queryWords.length > 0) {
     enhancedScore += (matchingWords.length / queryWords.length) * 0.2
   }
-  
   // Legal term bonus
   const legalTerms = ['amendment', 'statute', 'case', 'evidence', 'court', 'law', 'rights', 'legal', 'criminal']
   const hasLegalTerms = legalTerms.some(term => suggestionLower.includes(term)
   if (hasLegalTerms) {
     enhancedScore += 0.1
   }
-  
   return Math.min(1.0, enhancedScore)
 }
-
 function extractPracticeAreas(input: string): string[] {
   const practiceAreaKeywords: Record<string, string[]> = {
     'criminal': ['criminal', 'felony', 'misdemeanor', 'arrest', 'prosecution', 'defendant', 'miranda'],
@@ -302,53 +269,40 @@ function extractPracticeAreas(input: string): string[] {
     'environmental': ['environmental', 'pollution', 'EPA', 'clean air', 'water rights'],
     'tax': ['tax', 'IRS', 'deduction', 'audit', 'revenue']
   }
-  
   const inputLower = input.toLowerCase()
   const matchedAreas: string[] = []
-  
   for (const [area, keywords] of Object.entries(practiceAreaKeywords)) {
     if (keywords.some(keyword => inputLower.includes(keyword))) {
       matchedAreas.push(area)
     }
   }
-  
   return matchedAreas.length > 0 ? matchedAreas : ['general']
 }
-
 function generateRecommendedFilters(suggestions: any[], category: string): string[] {
   const filters: string[] = []
-  
   // Extract common themes from suggestions
   const commonTerms = extractCommonTerms(suggestions.map(s => s.text)
-  
   if (commonTerms.includes('federal') || commonTerms.includes('constitutional')) {
     filters.push('federal_jurisdiction')
   }
-  
   if (commonTerms.includes('evidence') || commonTerms.includes('forensic')) {
     filters.push('evidence_based')
   }
-  
   if (commonTerms.includes('recent') || commonTerms.includes('2024') || commonTerms.includes('new')) {
     filters.push('recent_changes')
   }
-  
   // Category-specific filters
   if (category === 'cases') {
     filters.push('case_status', 'jurisdiction', 'court_level')
   } else if (category === 'evidence') {
     filters.push('evidence_type', 'chain_of_custody', 'admissibility')
   }
-  
   return filters.slice(0, 5)
 }
-
 function extractRelatedConcepts(suggestions: any[]): string[] {
   const concepts = new Set<string>()
-  
   suggestions.forEach(suggestion => {
     const text = suggestion.text.toLowerCase()
-    
     // Extract key legal concepts
     if (text.includes('constitutional')) concepts.add('Constitutional Law')
     if (text.includes('evidence')) concepts.add('Evidence Rules')
@@ -359,10 +313,8 @@ function extractRelatedConcepts(suggestions: any[]): string[] {
     if (text.includes('amendment')) concepts.add('Bill of Rights')
     if (text.includes('court')) concepts.add('Court Procedures')
   })
-  
   return Array.from(concepts).slice(0, 8)
 }
-
 function extractRelatedTerms(text: string, category: string): string[] {
   const relatedTermsMap: Record<string, string[]> = {
     'criminal': ['prosecution', 'defense', 'plea bargain', 'sentencing', 'appeal'],
@@ -372,10 +324,8 @@ function extractRelatedTerms(text: string, category: string): string[] {
     'cases': ['precedent', 'holding', 'dicta', 'jurisdiction', 'appeal'],
     'documents': ['filing', 'pleading', 'motion', 'brief', 'memorandum']
   }
-  
   const terms = relatedTermsMap[category] || []
   const textLower = text.toLowerCase()
-  
   // Add context-specific terms
   if (textLower.includes('search')) {
     terms.push('warrant', 'probable cause', 'reasonable suspicion')
@@ -383,53 +333,41 @@ function extractRelatedTerms(text: string, category: string): string[] {
   if (textLower.includes('rights')) {
     terms.push('miranda', 'counsel', 'self-incrimination')
   }
-  
   return terms.slice(0, 5)
 }
-
 function determineJurisdiction(text: string): string {
   const textLower = text.toLowerCase()
-  
   if (textLower.includes('federal') || textLower.includes('supreme court') || textLower.includes('constitutional')) {
     return 'federal'
   }
   if (textLower.includes('state') || textLower.includes('local')) {
     return 'state'
   }
-  
   return 'general'
 }
-
 function determineUrgencyLevel(text: string): 'low' | 'medium' | 'high' | 'critical' {
   const textLower = text.toLowerCase()
-  
   const highUrgencyTerms = ['emergency', 'urgent', 'immediate', 'crisis', 'critical']
   const mediumUrgencyTerms = ['deadline', 'hearing', 'court date', 'filing']
-  
   if (highUrgencyTerms.some(term => textLower.includes(term))) return 'critical'
   if (mediumUrgencyTerms.some(term => textLower.includes(term))) return 'high'
   if (textLower.includes('review') || textLower.includes('analysis')) return 'medium'
-  
   return 'low'
 }
-
 function extractCommonTerms(suggestions: string[]): string[] {
   const wordCount: Record<string, number> = {}
-  
   suggestions.forEach(suggestion => {
     const words = suggestion.toLowerCase().split(/\s+/).filter(word => word.length > 3)
     words.forEach(word => {
       wordCount[word] = (wordCount[word] || 0) + 1
     })
   })
-  
   return Object.entries(wordCount)
     .filter(([_, count]) => count > 1)
     .sort(([_, a], [__, b]) => b - a)
     .map(([word, _]) => word)
     .slice(0, 10)
 }
-
 // Fallback suggestions when enhanced search fails
 async function getFallbackSuggestions(query: string, category: string, limit: number): Promise<any[]> {
   const fallbackSuggestionsByCategory: Record<string, string[]> = {
@@ -468,14 +406,12 @@ async function getFallbackSuggestions(query: string, category: string, limit: nu
       'Witness statements'
     ]
   }
-  
   const suggestions = fallbackSuggestionsByCategory[category] || fallbackSuggestionsByCategory.general
-  
   return suggestions.slice(0, limit).map((suggestion, index) => ({
-    text: suggestion,
+    text: suggestion
     category,
     score: 0.5 - (index * 0.05),
-    trending: false,
+    trending: false
     description: `Fallback suggestion for ${category}`,
     source: 'fallback',
     confidence: 0.5

@@ -1,10 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  let { 
+  let {
     cognitiveHub,
     achievements,
-    consciousness 
+    consciousness
   }: {
     cognitiveHub: any;
     achievements: string[];
@@ -17,7 +16,7 @@
   const documentationSections = {
     strategy: {
       title: '🎯 Strategic Development Guide',
-      icon: '🎯',;
+      icon: '🎯',
       content: [
         {
           title: 'Cognitive Architecture Mastery',
@@ -78,7 +77,7 @@
     },
     features: {
       title: '🔥 Secret Features & Easter Eggs',
-      icon: '🔥',;
+      icon: '🔥',
       content: [
         {
           title: 'Konami Code Mastery',
@@ -155,7 +154,7 @@
     },
     roadmap: {
       title: '🚀 Development Roadmap',
-      icon: '🚀',;
+      icon: '🚀',
       content: [
         {
           phase: 'Phase 1: Foundation Enhancement',
@@ -215,7 +214,7 @@
     },
     dlc: {
       title: '🎁 DLC Content & Bonuses',
-      icon: '🎁',;
+      icon: '🎁',
       content: [
         {
           title: 'Quantum Justice Pack',
@@ -275,7 +274,7 @@
     },
     bestpractices: {
       title: '⚡ Best Practices & Tips',
-      icon: '⚡',;
+      icon: '⚡',
       content: [
         {
           category: 'Performance Optimization',
@@ -310,14 +309,14 @@
           ];
         },
         {
-          category: 'User Experience Design',;
+          category: 'User Experience Design',
           principles: [
             'Progressive complexity revelation',
             'Achievement-driven engagement',
             'Mystery and discovery elements',
             'Gamification of learning processes',
             'Collaborative consciousness evolution'
-          ],;
+          ],
           implementation: [
             'Visual feedback for all cognitive states',
             'Intuitive secret feature discovery',
@@ -338,14 +337,14 @@
       for (const item of section.content) {
         if (JSON.stringify(toLowerCase)().includes(query.toLowerCase())) {
           results.push({
-            section: key,
+            section: key
             sectionTitle: section.title,
             ...item;
           });
         }
       }
     }
-    filteredContent = results;
+    filteredContent = result;
   }
   function getProgressPercentage(level: string): number {
     switch (level) {
@@ -368,12 +367,11 @@
     return true;
   }
 </script>
-
 <div class="bg-[#F7F6F2] border border-[#D1CFC7] p-6">
   <div class="flex justify-between items-center mb-6">
     <h2 class="text-xl font-bold">📚 COGNITIVE DOCUMENTATION HUB</h2>
     <div class="flex items-center gap-2">
-      <input 
+      <input
         type="text"
         bind:value={searchQuery} oninput={() => filterContent(searchQuery)}
         placeholder="Search documentation..."
@@ -384,7 +382,6 @@
       </span>
     </div>
   </div>
-  
   <!-- Search Results -->
   {#if searchQuery && filteredContent.length > 0}
     <div class="mb-6 bg-[#EAE8E1] border border-[#D1CFC7] p-4">
@@ -406,7 +403,6 @@
       </div>
     </div>
   {/if}
-  
   <!-- Tab Navigation -->
   <div class="flex flex-wrap gap-2 mb-6">
     {#each Object.entries(documentationSections) as [key, section]}
@@ -418,7 +414,6 @@
       </button>
     {/each}
   </div>
-  
   <!-- Content Display -->
   <div class="space-y-6">
     {#each documentationSections[activeTab].content as item}
@@ -433,7 +428,6 @@
             ✅ UNLOCKED
           </div>
         {/if}
-        
         <div class="flex justify-between items-start mb-4">
           <div>
             <h3 class="text-lg font-bold mb-1">
@@ -451,14 +445,13 @@
               </p>
             {/if}
           </div>
-          
           {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).level}
             <div class="text-right">
               <div class="text-xs font-bold mb-1">
                 Level: {(item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).level.toUpperCase()}
               </div>
               <div class="w-24 bg-gray-200 rounded-full h-2">
-                <div 
+                <div
                   class="bg-blue-600 h-2 rounded-full transition-all duration-1000"
                   style="width: {getProgressPercentage((item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).level)}%"
                 ></div>
@@ -467,7 +460,6 @@
             </div>
           {/if}
         </div>
-        
         <!-- Content Sections -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).steps}
@@ -485,7 +477,6 @@
               </ol>
             </div>
           {/if}
-          
           {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).tips}
             <div>
               <h4 class="font-bold text-sm mb-2">💡 Pro Tips</h4>
@@ -499,7 +490,6 @@
               </ul>
             </div>
           {/if}
-          
           {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).effects}
             <div>
               <h4 class="font-bold text-sm mb-2">✨ Effects</h4>
@@ -513,7 +503,6 @@
               </ul>
             </div>
           {/if}
-          
           {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).objectives}
             <div>
               <h4 class="font-bold text-sm mb-2">🎯 Objectives</h4>
@@ -527,7 +516,6 @@
               </ul>
             </div>
           {/if}
-          
           {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).practices}
             <div>
               <h4 class="font-bold text-sm mb-2">⚡ Best Practices</h4>
@@ -541,7 +529,6 @@
               </ul>
             </div>
           {/if}
-          
           {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).warnings}
             <div>
               <h4 class="font-bold text-sm mb-2">⚠️ Warnings</h4>
@@ -556,7 +543,6 @@
             </div>
           {/if}
         </div>
-        
         <!-- Special Content -->
         {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).secretTechniques}
           <div class="mt-4 p-3 bg-purple-50 border border-purple-200 rounded">
@@ -568,7 +554,6 @@
             </ul>
           </div>
         {/if}
-        
         {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).advanced}
           <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded">
             <h4 class="font-bold text-sm mb-2 text-blue-800">🚀 Advanced Usage</h4>
@@ -579,7 +564,6 @@
             </ul>
           </div>
         {/if}
-        
         {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).ultimate}
           <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
             <h4 class="font-bold text-sm mb-2 text-yellow-800">👑 Ultimate Goals</h4>
@@ -593,7 +577,6 @@
       </div>
     {/each}
   </div>
-  
   <!-- Quick Stats -->
   <div class="mt-6 bg-[#3D3D3D] text-[#F7F6F2] p-4 rounded">
     <h3 class="font-bold mb-3">📊 Documentation Progress</h3>

@@ -4,8 +4,6 @@ import { and, eq } from 'drizzle-orm'
 import { randomUUID } from 'node:crypto'
 import type { RequestHandler } from './$types.js'
 import { URL } from "url"
-
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const {
@@ -17,7 +15,6 @@ export const POST: RequestHandler = async ({ request }) => {
       metadata,
       canvasElements
     } = await request.json()
-
     if (!caseId || !title || !content) {
       return json({
           error: "Case ID, title, and content are required"
@@ -31,7 +28,7 @@ export const POST: RequestHandler = async ({ request }) => {
       reportType: reportType || "case_notes",
       title,
       content,
-      richTextContent: richTextContent || null,
+      richTextContent: richTextContent || null
       metadata: {
         generatedAt: new Date().toISOString(),
         modelUsed: "gemma3-legal",
@@ -41,16 +38,14 @@ export const POST: RequestHandler = async ({ request }) => {
         riskFactors: metadata?.riskFactors || [],
         ...metadata
       },
-      canvasElements: canvasElements || [],
+      canvasElements: canvasElements || []
       createdAt: new Date(),
       updatedAt: new Date()
     }
-
     const [savedReport] = await db.insert(aiReports).values(reportData).returning()
-
     return json({
-      success: true,
-      report: savedReport,
+      success: true
+      report: savedReport
       message: "Report saved successfully"
     })
   } catch (error: any) {
@@ -63,28 +58,22 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const caseId = url.searchParams.get("caseId")
     const reportType = url.searchParams.get("reportType")
-
     if (!caseId) {
       return json({ error: "Case ID is required" }, { status: 400 })
     }
     let query = db.select().from(aiReports)
     const conditions = [eq(aiReports.caseId, caseId)]
-
     if (reportType) {
       conditions.push(eq(aiReports.reportType, reportType)
     }
-
     const finalQuery = conditions.length > 0
       ? query.where(and(...conditions)
       : query
-
     const reports = await finalQuery.orderBy(aiReports.createdAt)
-
     return json({
       reports
     })

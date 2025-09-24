@@ -1,28 +1,23 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     report: Report;
   }
   let {
     report
   }: Props = $props();
-
   import { onMount } from "svelte";
   import type { Report } from '$lib/data/types';
   // UI Components
   import * as ContextMenu from '$lib/components/ui/context-menu';
   // Icons
   import { Link, Sparkles } from "lucide-svelte";
-
   let nodeElement: HTMLDivElement;
   let isDragging = $state(false);
   let dragStartX = $state(0);
   let dragStartY = $state(0);
-
   // Add local position state for drag-and-drop
   let position = $state({ x: 100, y: 100 });
-
   function handleMouseDown(event: MouseEvent) {
     if (
       event.target === nodeElement ||
@@ -44,7 +39,6 @@
   }
   async function saveCitation(text: string) {
     if (!text.trim()) return;
-
     // Implementation for saving citation
     console.log("Saving citation:", text);
   }
@@ -55,7 +49,6 @@
   $effect(() => {
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
-
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
@@ -63,7 +56,6 @@
     };
   });
 </script>
-
 <ContextMenu.Root>
   <ContextMenu.Trigger>
     <div
@@ -104,8 +96,6 @@
     </ContextMenu.Item>
   </ContextMenu.Content>
 </ContextMenu.Root>
-
 <style>
   /* @unocss-include */
 </style>
-

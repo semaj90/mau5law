@@ -1,12 +1,10 @@
 import type { RequestHandler } from './$types.js'
 import { minioService } from '$lib/server/storage/minio-service'
-
 /**
  * MinIO File Management API
  * GET: List files in bucket with optional prefix filtering
  * DELETE: Delete specific files
  */
-
 export const GET: RequestHandler = async ({ url }) => {
   try {
     // Initialize MinIO service
@@ -19,20 +17,17 @@ export const GET: RequestHandler = async ({ url }) => {
         headers: { 'Content-Type': 'application/json' }
       })
     }
-
     // Extract query parameters
     const bucket = url.searchParams.get('bucket') || 'legal-documents'
     const prefix = url.searchParams.get('prefix') || undefined
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '100'), 1000)
-
     // List files in bucket
     const files = await minioService.listFiles(bucket, prefix, limit)
-
     return new Response(JSON.stringify({
-      success: true,
+      success: true
       bucket,
       prefix,
-      files: files.map(file => ({
+      files: files.map(file => ({,
         name: file.name,
         size: file.size,
         lastModified: file.lastModified,
@@ -45,7 +40,6 @@ export const GET: RequestHandler = async ({ url }) => {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     })
-
   } catch (error) {
     console.error('File listing error:', error)
     return new Response(JSON.stringify({
@@ -57,11 +51,9 @@ export const GET: RequestHandler = async ({ url }) => {
     })
   }
 }
-
 export const DELETE: RequestHandler = async ({ request }) => {
   try {
     const { bucket, fileName } = await request.json()
-
     if (!bucket || !fileName) {
       return new Response(JSON.stringify({
         error: 'Bucket and fileName are required'
@@ -70,7 +62,6 @@ export const DELETE: RequestHandler = async ({ request }) => {
         headers: { 'Content-Type': 'application/json' }
       })
     }
-
     // Initialize MinIO service
     const initialized = await minioService.initialize()
     if (!initialized) {
@@ -81,10 +72,8 @@ export const DELETE: RequestHandler = async ({ request }) => {
         headers: { 'Content-Type': 'application/json' }
       })
     }
-
     // Delete file
     const deleted = await minioService.deleteFile(bucket, fileName)
-
     if (!deleted) {
       return new Response(JSON.stringify({
         error: 'Failed to delete file'
@@ -93,16 +82,14 @@ export const DELETE: RequestHandler = async ({ request }) => {
         headers: { 'Content-Type': 'application/json' }
       })
     }
-
     return new Response(JSON.stringify({
-      success: true,
+      success: true
       message: `File ${fileName} deleted from ${bucket}`,
       timestamp: new Date().toISOString()
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     })
-
   } catch (error) {
     console.error('File deletion error:', error)
     return new Response(JSON.stringify({

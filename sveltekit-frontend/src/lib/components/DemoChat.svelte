@@ -4,17 +4,13 @@ Tests the demo RAG functionality with a working interface
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { demoQueryLLM, demoGenerateCaseSummary, type RAGDemoQuery, type RAGDemoResponse } from '$lib/rag/demo-rag';
-
   // Simple reactive state instead of stores
   let currentCase = $state({ id: '1', title: 'Demo Financial Fraud Case' });
   let currentEvidence = $state([]);
-
   let query = $state('');
   let isLoading = $state(false);
   let chatHistory = $state<any[]>([]);
-
   // Sample queries for testing
   const sampleQueries = [
     'Give me a summary of this case',
@@ -23,85 +19,72 @@ Tests the demo RAG functionality with a working interface
     'Analyze patterns in the evidence',
     'Who are the persons of interest?'
   ];
-
   async function sendQuery() {
     if (!query.trim() || isLoading) return;
-
     const userQuery = query.trim();
     query = '';
-
     // Add user message
     chatHistory.push({
-      type: 'user',;
-      content: userQuery,;
+      type: 'user',
+      content: userQuery
       timestamp: new Date();
     });
-
     isLoading = true;
-
     try {
-      let response: RAGDemoResponse;
-
+      let response: RAGDemoRespon;
       // Handle special case for summary
       if (userQuery.toLowerCase().includes('summary')) {
         const summaryText = await demoGenerateCaseSummary(currentCase?.id || '1');
         response = {
-          response: summaryText,
-          sources: [],;
+          response: summaryText
+          sources: [],
           confidence: 0.9,
-          tokensUsed: 250,;
+          tokensUsed: 250,
           reasoning: ['Generated comprehensive case summary from available evidence'];
         };
       } else {
         // Use RAG query for other questions
         const ragQuery: RAGDemoQuery = {
-          query: userQuery,
-          caseId: currentCase?.id || '1',;
-          evidence: currentEvidence,
-          maxTokens: 500,;
+          query: userQuery
+          caseId: currentCase?.id || '1',
+          evidence: currentEvidence
+          maxTokens: 500,
           temperature: 0.7;
         };
-
         response = await demoQueryLLM(ragQuery);
       }
-
       // Add AI response
       chatHistory.push({
         type: 'ai',
         content: response.response,
-        timestamp: new Date(),;
-        sources: response.sources,;
+        timestamp: new Date(),
+        sources: response.sources,
         reasoning: response.reasoning;
       });
-
     } catch (error) {
       console.error('Chat error:', error);
       chatHistory.push({
-        type: 'ai',;
-        content: 'Sorry, I encountered an error processing your request. Please try again.',;
+        type: 'ai',
+        content: 'Sorry, I encountered an error processing your request. Please try again.',
         timestamp: new Date();
       });
     } finally {
       isLoading = false;
     }
   }
-
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendQuery();
     }
   }
-
   function useSampleQuery(sampleQuery: string) {
     query = sampleQuery;
   }
-
   function clearChat() {
     chatHistory = [];
   }
 </script>
-
 <div class="demo-chat nes-container is-dark">
   <div class="chat-header">
     <h3 class="nes-text is-primary">🤖 Demo AI Chat</h3>
@@ -111,7 +94,6 @@ Tests the demo RAG functionality with a working interface
       </button>
     </div>
   </div>
-
   <!-- Sample Queries -->
   <div class="sample-queries">
     <p class="nes-text is-disabled">Try these sample queries:</p>
@@ -126,7 +108,6 @@ Tests the demo RAG functionality with a working interface
       {/each}
     </div>
   </div>
-
   <!-- Chat Messages -->
   <div class="chat-messages">
     {#each chatHistory as message (message.timestamp.getTime())}
@@ -139,7 +120,6 @@ Tests the demo RAG functionality with a working interface
             {message.timestamp.toLocaleTimeString()}
           </span>
         </div>
-
         <div class="message-content nes-container">
           {#if message.type === 'ai' && message.content.includes('# Case Summary')}
             <!-- Render markdown-like content for summaries -->
@@ -147,7 +127,6 @@ Tests the demo RAG functionality with a working interface
           {:else}
 {message.content}
           {/if}
-
           {#if message.sources && message.sources.length > 0}
             <div class="message-sources">
               <h6 class="nes-text is-success">📚 Sources:</h6>
@@ -168,7 +147,6 @@ Tests the demo RAG functionality with a working interface
               {/each}
             </div>
           {/if}
-
           {#if message.reasoning && message.reasoning.length > 0}
             <details class="reasoning-details">
               <summary class="nes-text is-disabled">🧠 AI Reasoning</summary>
@@ -182,7 +160,6 @@ Tests the demo RAG functionality with a working interface
         </div>
       </div>
     {/each}
-
     {#if isLoading}
       <div class="message message-ai">
         <div class="message-header">
@@ -199,7 +176,6 @@ Tests the demo RAG functionality with a working interface
         </div>
       </div>
     {/if}
-
     {#if chatHistory.length === 0}
       <div class="empty-chat">
         <p class="nes-text">Welcome to the Demo AI Chat!</p>
@@ -207,7 +183,6 @@ Tests the demo RAG functionality with a working interface
       </div>
     {/if}
   </div>
-
   <!-- Chat Input -->
   <div class="chat-input">
     <div class="nes-field">
@@ -229,48 +204,41 @@ Tests the demo RAG functionality with a working interface
     </button>
   </div>
 </div>
-
 <style>
-  .demo-chat {;
+  .demo-chat {
     display: flex;
     flex-direction: column;
     height: 100%;
     max-height: 80vh;
     padding: 1rem;
   }
-
   .chat-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
     border-bottom: 2px solid #495057;
   }
-
   .chat-header h3 {
     margin: 0;
   }
-
   .sample-queries {
     margin-bottom: 1rem;
     padding: 1rem;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 4px;
   }
-
   .query-buttons {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     margin-top: 0.5rem;
   }
-
   .query-buttons button {
     font-size: 0.8em;
     padding: 0.5rem 1rem;
   }
-
   .chat-messages {
     flex: 1;
     overflow-y: auto;
@@ -279,43 +247,35 @@ Tests the demo RAG functionality with a working interface
     flex-direction: column;
     gap: 1rem;
   }
-
   .message {
     display: flex;
     flex-direction: column;
   }
-
   .message-user {
     align-items: flex-end;
   }
-
   .message-ai {
     align-items: flex-start;
   }
-
   .message-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 0.5rem;
     font-size: 0.9em;
   }
-
   .message-content {
     max-width: 80%;
     padding: 1rem;
     word-wrap: break-word;
   }
-
   .message-user .message-content {
     background-color: #0066cc;
     margin-left: auto;
   }
-
   .message-ai .message-content {
     background-color: #1a1a1a;
   }
-
   .summary-title {
     color: #fff;
     font-size: 1.1em;
@@ -323,13 +283,11 @@ Tests the demo RAG functionality with a working interface
     border-bottom: 1px solid #495057;
     padding-bottom: 0.25rem;
   }
-
   .summary-section {
     color: #ccc;
     font-size: 1em;
     margin: 0.75rem 0 0.25rem 0;
   }
-
   .message-sources {
     margin-top: 1rem;
     padding: 0.75rem;
@@ -337,12 +295,10 @@ Tests the demo RAG functionality with a working interface
     border-radius: 4px;
     border-left: 3px solid #00ff00;
   }
-
   .message-sources h6 {
     margin: 0 0 0.5rem 0;
     font-size: 0.9em;
   }
-
   .source-item {
     display: flex;
     flex-direction: column;
@@ -352,98 +308,80 @@ Tests the demo RAG functionality with a working interface
     background: rgba(255, 255, 255, 0.05);
     border-radius: 4px;
   }
-
   .source-item:last-child {
     margin-bottom: 0;
   }
-
   .source-relevance {
     font-size: 0.8em;
     color: #00ff00;
     font-weight: bold;
   }
-
   .source-excerpt {
     font-size: 0.85em;
     margin: 0;
     font-style: italic;
   }
-
   .reasoning-details {
     margin-top: 1rem;
     padding: 0.5rem;
     background: rgba(255, 255, 0, 0.1);
     border-radius: 4px;
   }
-
   .reasoning-details summary {
     cursor: pointer;
     font-size: 0.9em;
     margin-bottom: 0.5rem;
   }
-
   .reasoning-list {
     margin: 0.5rem 0 0 1rem;
     padding: 0;
   }
-
   .reasoning-list li {
     margin-bottom: 0.25rem;
     font-size: 0.85em;
   }
-
   .loading-animation {
     display: flex;
     gap: 0.25rem;
     margin-bottom: 0.5rem;
   }
-
   .loading-animation span {
     animation: pulse 1.5s ease-in-out infinite;
     font-size: 1.2em;
     color: #00ff00;
   }
-
   .loading-animation span:nth-child(1) { animation-delay: 0s; }
   .loading-animation span:nth-child(2) { animation-delay: 0.3s; }
   .loading-animation span:nth-child(3) { animation-delay: 0.6s; }
-
   @keyframes pulse {
     0%, 100% { opacity: 0.4; }
     50% { opacity: 1; }
   }
-
   .empty-chat {
     text-align: center;
     padding: 3rem 2rem;
     opacity: 0.7;
   }
-
   .chat-input {
     display: flex;
     gap: 1rem;
     align-items: flex-end;
   }
-
   .chat-input .nes-field {
     flex: 1;
   }
-
   .chat-input textarea {
     resize: vertical;
     min-height: 60px;
   }
-
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .query-buttons {
       flex-direction: column;
     }
-
     .message-content {
       max-width: 95%;
     }
-
     .chat-input {
       flex-direction: column;
       align-items: stretch;

@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be uniqu;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import Button from '$lib/components/ui/enhanced-bits';
   import {
     errorHandler,
@@ -22,7 +21,6 @@ https://svelte.dev/e/attribute_duplicate -->
     X,
   } from "lucide-svelte";
   import { onMount } from "svelte";
-
   let { showInline = false, // Show as inline alert vs modal
     autoHide = true, // Auto-hide non-critical errors
     maxWidth = "max-w-lg" // Maximum width class
@@ -33,11 +31,9 @@ https://svelte.dev/e/attribute_duplicate -->
   let currentError = $state<UserFriendlyError | null >(null);
   let showDetails = $state(false);
   let retryInProgress = $state(false);
-
   $effect(() => {
     const unsubscribe = errorHandler.subscribe((error) => {
       currentError = error;
-
       // Auto-hide info level errors
       if (error && autoHide && error.severity === "info") {
         setTimeout(() => {
@@ -47,20 +43,16 @@ https://svelte.dev/e/attribute_duplicate -->
         }, 5000);
       }
     });
-
-    return unsubscribe;
+    return unsubscrib;
   });
-
   function clearError() {
     errorHandler.clear();
     currentError = null;
     showDetails = false;
     retryInProgress = false;
   }
-
   async function retryAction() {
     if (!currentError?.canRetry) return;
-
     retryInProgress = true;
     try {
       // The retry function should be attached to the error
@@ -68,9 +60,9 @@ https://svelte.dev/e/attribute_duplicate -->
       await new Promise((resolve) => setTimeout(resolve, 1000));
       clearError();
       notifications.add({
-        type: "success",;
-        title: "Retry Successful",;
-        message: "The operation completed successfully.",;
+        type: "success",
+        title: "Retry Successful",
+        message: "The operation completed successfully.",
       });
     } catch (error) {
       // If retry fails, show a new error
@@ -79,22 +71,19 @@ https://svelte.dev/e/attribute_duplicate -->
       retryInProgress = false;
     }
   }
-
   function copyErrorDetails() {
     if (!currentError) return;
-
     const errorText = `Error: ${currentError.title}
   Message: ${currentError.message}
   Suggestion: ${currentError.suggestion || "None"}
   Severity: ${currentError.severity}
   Timestamp: ${new Date().toISOString()}`;
-
     navigator.clipboard
       .writeText.then(() => {
         notifications.add({
-          type: "success",;
-          title: "Copied",;
-          message: "Error details copied to clipboard.",;
+          type: "success",
+          title: "Copied",
+          message: "Error details copied to clipboard.",
         });
       })
       .catch(() => {
@@ -105,28 +94,25 @@ https://svelte.dev/e/attribute_duplicate -->
         textarea.select();
         document.execCommand("copy");
         document.body.removeChild(textarea);
-
         notifications.add({
-          type: "success",;
-          title: "Copied",;
-          message: "Error details copied to clipboard.",;
+          type: "success",
+          title: "Copied",
+          message: "Error details copied to clipboard.",
         });
       });
   }
-
   function getIcon(severity: string) {
     switch (severity) {
       case "critical":
       case "error":
-        return AlertCircle;
+        return AlertCircl;
       case "warning":
-        return AlertTriangle;
+        return AlertTriangl;
       case "info":
       default:
         return Info;
     }
   }
-
   function getAlertClass(severity: string) {
     switch (severity) {
       case "critical":
@@ -140,7 +126,6 @@ https://svelte.dev/e/attribute_duplicate -->
         return "alert-info border-info/20 bg-info/5";
     }
   }
-
   function getButtonClass(severity: string) {
     switch (severity) {
       case "critical":
@@ -153,22 +138,18 @@ https://svelte.dev/e/attribute_duplicate -->
         return "btn-info";
     }
   }
-
   // Report error to support (placeholder)
   function reportError() {
     if (!currentError) return;
-
     // This would integrate with your error reporting service
     console.log("Reporting error:", currentError);
-
     notifications.add({
-      type: "success",;
-      title: "Error Reported",;
-      message: "Thank you for reporting this issue. Our team will investigate.",;
+      type: "success",
+      title: "Error Reported",
+      message: "Thank you for reporting this issue. Our team will investigate.",
     });
   }
 </script>
-
 {#if currentError}
   {#if showInline}
     <!-- Inline Alert -->
@@ -183,23 +164,20 @@ https://svelte.dev/e/attribute_duplicate -->
       {:else}
         <Info class="mx-auto px-4 max-w-7xl" />
       {/if}
-
       <div class="mx-auto px-4 max-w-7xl">
         <h3 class="mx-auto px-4 max-w-7xl">{currentError.title}</h3>
         <p class="mx-auto px-4 max-w-7xl">{currentError.message}</p>
-
         {#if currentError.suggestion}
           <p class="mx-auto px-4 max-w-7xl">
             <strong>Suggestion:</strong>
             {currentError.suggestion}
           </p>
         {/if}
-
         {#if showDetails && currentError.showDetails}
           <div class="mx-auto px-4 max-w-7xl">
             <div class="mx-auto px-4 max-w-7xl">
               <span>Technical Details</span>
-              <Button 
+              <Button
                 class="bits-btn"
                 variant="ghost"
                 size="sm"
@@ -217,7 +195,6 @@ copyErrorDetails()}
           </div>
         {/if}
       </div>
-
       <div class="mx-auto px-4 max-w-7xl">
         {#if currentError.canRetry}
           <Button
@@ -237,7 +214,6 @@ retryAction()}
             Retry
 </Button>
         {/if}
-
         {#if currentError.showDetails}
           <Button class="bits-btn"
             size="sm"
@@ -253,7 +229,6 @@ retryAction()}
             {/if}
 </Button>
         {/if}
-
         <Button class="bits-btn"
           size="sm"
           variant="ghost"
@@ -277,13 +252,11 @@ clearError()}
           {:else}
             <Info class="mx-auto px-4 max-w-7xl" />
           {/if}
-
           <div class="mx-auto px-4 max-w-7xl">
             <h3 class="mx-auto px-4 max-w-7xl">{currentError.title}</h3>
             <p class="mx-auto px-4 max-w-7xl">
               {currentError.message}
             </p>
-
             {#if currentError.suggestion}
               <div class="mx-auto px-4 max-w-7xl">
                 <p class="mx-auto px-4 max-w-7xl">
@@ -292,7 +265,6 @@ clearError()}
                 </p>
               </div>
             {/if}
-
             {#if showDetails && currentError.showDetails}
               <div class="mx-auto px-4 max-w-7xl">
                 <div class="mx-auto px-4 max-w-7xl">
@@ -318,7 +290,6 @@ copyErrorDetails()}
             {/if}
           </div>
         </div>
-
         <div class="mx-auto px-4 max-w-7xl">
           {#if currentError.severity === "critical" || currentError.severity === "error"}
             <Button class="bits-btn"
@@ -332,7 +303,6 @@ reportError()}
               Report Issue
 </Button>
           {/if}
-
           {#if currentError.showDetails}
             <Button class="bits-btn"
               variant="ghost"
@@ -350,7 +320,6 @@ reportError()}
               {/if}
 </Button>
           {/if}
-
           {#if currentError.canRetry}
             <Button
               class={`gap-2 ${getButtonClass(currentError.severity)}`}
@@ -367,7 +336,6 @@ retryAction()}
               {/if}
 </Button>
           {/if}
-
           <Button class="bits-btn"
             variant={currentError.canRetry ? "outline" : "default"}
             onclick={() =>
@@ -379,6 +347,4 @@ clearError()}
       </div>
     </div>
   {/if}
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

@@ -1,14 +1,12 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { legalAI } from '$lib/server/unified/legal-ai-service'
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const formData = await request.formData()
     const files = formData.getAll('files') as File[]
     const caseId = formData.get('caseId') as string
     const documentType = (formData.get('documentType') as 'evidence' | 'legal_document' | 'contract' | 'brief') || 'evidence'
-    
     // Parse metadata
     const metadataStr = formData.get('metadata') as string
     let metadata = {}
@@ -19,19 +17,15 @@ export const POST: RequestHandler = async ({ request }) => {
         console.warn('Invalid metadata JSON:', error)
       }
     }
-
     if (!files.length) {
       return json({ error: 'No files provided' }, { status: 400 })
     }
-
     const results = []
-
     for (const file of files) {
       try {
         const fileBuffer = Buffer.from(await file.arrayBuffer()
-        
         const upload = {
-          file: fileBuffer,
+          file: fileBuffer
           fileName: file.name,
           contentType: file.type,
           caseId,
@@ -42,10 +36,8 @@ export const POST: RequestHandler = async ({ request }) => {
             uploadedAt: new Date().toISOString()
           }
         }
-
         // Use unified service for complete pipeline
         const result = await legalAI.uploadDocument(upload)
-        
         results.push({
           id: (result as { id?: any; fileUrl?: any; embeddingId?: any; cached?: any }).id,
           fileName: file.name,
@@ -55,7 +47,6 @@ export const POST: RequestHandler = async ({ request }) => {
           size: file.size,
           type: file.type
         })
-
       } catch (fileError) {
         console.error(`Error processing file ${file.name}:`, fileError)
         results.push({
@@ -64,17 +55,15 @@ export const POST: RequestHandler = async ({ request }) => {
         })
       }
     }
-
     return json({
-      success: true,
+      success: true
       results,
       processed: results.filter(item => item.length),
       failed: results.filter(item => item.length)
     })
-
   } catch (error) {
     console.error('Unified upload error:', error)
-    return json({ 
+    return json({
         error: 'Upload failed',
         details: error instanceof Error ? error.message: 'Unknown error'
       }, )

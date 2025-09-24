@@ -1,11 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // Enhanced lightweight UploadZone with: validation, retry/backoff, cancel, telemetry, embedding + vector storage
   import { embeddingService } from '$lib/services/embedding-service';
   import { postgresqlVectorService as vectorService } from '$lib/services/postgresql-vector-service';
   import { telemetry } from '$lib/services/telemetry-service';
-
   interface Props {
     minimal?: boolean;
     onupload?: (summary?: UploadSummary) => void;
@@ -22,13 +20,11 @@
   let enableEmbedding: boolean = __props.enableEmbedding ?? true;
   let enableTelemetry: boolean = __props.enableTelemetry ?? true;
   let maxRetries: number = __props.maxRetries ?? 2;
-
   const MAX_BYTES = 100 * 1024 * 1024;
   const allowedMimePrefixes = ['image/', 'video/', 'audio/'];
   const allowedExact = ['application/pdf','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document','text/plain'];
   // Avoid referencing File in SSR environment (Node) where it's undefined
   const hasFileAPI = typeof File !== 'undefined';
-
   let isDragOver = $state(false);
   let isUploading = $state(false);
   let uploadProgress = $state(0); // aggregate across batch
@@ -37,7 +33,6 @@
   let fileInput: HTMLInputElement | null = null;
   let currentXhr: XMLHttpRequest | null = null;
   let canceled = $state(false);
-
   function validateFiles(files: FileList) {
     if (!hasFileAPI) return; // skip during SSR hydration stage
     const errs: string[] = [];
@@ -48,19 +43,16 @@
     }
     if (errs.length) throw new Error(errs.join('; '));
   }
-
   function isRetryable(message: string, status?: number) {
     if (status && (status >= 500 || status === 429)) return true;
     return /network|timeout|temporar|ECONNRESET|rate limit/i.test(message);
   }
-
   function handleDragOver(e: DragEvent) { e.preventDefault(); isDragOver = true; }
   function handleDragLeave(e: DragEvent) { e.preventDefault(); isDragOver = false; }
   function handleDrop(e: DragEvent) { e.preventDefault(); isDragOver = false; const files = e.dataTransfer?.files; if (files?.length) handleFileUpload(files); }
   function handleFileSelect(e: Event) { const target = e.target as HTMLInputElement; if (target.files?.length) handleFileUpload(target.files); }
   function openFileDialog() { fileInput?.click(); }
   function cancelUpload() { canceled = true; currentXhr?.abort(); statusMessage = 'Upload canceled'; if (enableTelemetry) telemetry.emit('upload_canceled', { component: 'UploadZone' }); }
-
   async function handleFileUpload(files: FileList) {
     lastError = null; canceled = false; statusMessage = '';
     try { validateFiles(files); } catch (err: any) { lastError = err.message; statusMessage = 'Validation failed'; return; }
@@ -70,7 +62,7 @@
       const file = files[i]; if (canceled) break;
       try {
         const { url, id, embeddingDims } = await uploadWithRetry(file, i, files.length);
-        summary.totalBytes += file.size;
+        summary.totalBytes += file.siz;
         summary.files.push({ name: file.name, size: file.size, url, id, embeddingDims });
       } catch (e: any) {
         lastError = e?.message || 'Upload failed';
@@ -80,7 +72,6 @@
     isUploading = false; currentXhr = null;
     if (!lastError && !canceled) { onupload?.(summary); statusMessage = 'All files uploaded'; }
   }
-
   function uploadWithRetry(file: File, index: number, total: number): Promise {
     return new Promise(async (resolve, reject) => {
       let attempt = 0;
@@ -97,7 +88,7 @@
               telemetry.emit('embedding_start', { file: file.name });
               const text = `Content from ${file.name}`; // placeholder extraction
               const embedding = await embeddingService.generateEmbedding(text, { preferRagService: false });
-              embeddingDims = embedding.dimensions;
+              embeddingDims = embedding.dimension;
               // store mapping
               try {
                 await vectorService.updateFileMapping.id || (result as { id?: any; url?: any }).url || file.name, {
@@ -129,7 +120,6 @@
       }
     });
   }
-
   function doSingleUpload(file: File, index: number, total: number): Promise {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
@@ -162,7 +152,6 @@
     });
   }
 </script>
-
 <input
   type="file"
   bind:this={fileInput}
@@ -174,7 +163,6 @@
 {#if lastError}
   <p class="text-red-500 text-sm mt-2" role="alert">{lastError}</p>
 {/if}
-
 {#if minimal}
   <button class="upload-zone px-3 py-2 border rounded text-sm" onclick={openFileDialog} title="Upload Evidence" aria-label="Upload Evidence" tabindex={0} disabled={isUploading}>
     {#if isUploading}
@@ -189,8 +177,8 @@
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
     ondrop={handleDrop}
-    role="button" 
-    aria-label="Upload Evidence Dropzone" 
+    role="button"
+    aria-label="Upload Evidence Dropzone"
     tabindex={0}
   onclick={openFileDialog}
   onkeydown={(e) => e.key === 'Enter' && openFileDialog()}
@@ -214,16 +202,12 @@
     {/if}
   </div>
 {/if}
-
 <div class="sr-only" aria-live="polite">{statusMessage}</div>
-
 <style>
   .upload-zone { cursor: pointer; }
   .upload-zone:hover { background-color: rgba(0,0,0,0.03); }
   .hidden { display: none; }
   button[disabled] { opacity: 0.6; cursor: not-allowed; }
 </style>
-
 <!-- Telemetry markers (kept minimal) -->
 <!-- Events emitted: upload_start, upload_complete, upload_error, upload_canceled, embedding_start, embedding_complete, embedding_error -->
-

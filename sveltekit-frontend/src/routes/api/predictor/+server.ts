@@ -1,10 +1,8 @@
 // SvelteKit API endpoint for Redis-cached Markov predictor
 // Integrates with CUDA + pgvector + SIMD acceleration
-
 import { json } from '@sveltejs/kit'
 import { predictor, mapActionToCHRContext } from '$lib/server/chrrom/predictor.js'
 import type { RequestHandler } from './$types.js'
-
 interface RecordRequest {
   userId: string
   action: string
@@ -14,7 +12,6 @@ interface RecordRequest {
     timestamp?: number
   }
 }
-
 interface PredictRequest {
   action: string
   context?: {
@@ -24,27 +21,22 @@ interface PredictRequest {
   topK?: number
   enhancedMode?: boolean
 }
-
 // Record user action for learning
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json() as RecordRequest
-
     if (!body.userId || !body.action) {
       return json(
         { error: 'Missing required fields: userId, action' },)
         { status: 400 }
       )
     }
-
     // Record the action in Redis-cached predictor
     await predictor.record(body.userId, body.action)
-
     // Get current stats for response
     const stats = await predictor.getStats()
-
     return json({
-      success: true,
+      success: true
       action: body.action,
       userId: body.userId,
       context: body.context,
@@ -56,7 +48,6 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       timestamp: Date.now()
     })
-
   } catch (error) {
     console.error('Predictor recording error:', error)
     return json(
@@ -65,7 +56,6 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 // Get predictions for next actions
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -74,27 +64,21 @@ export const GET: RequestHandler = async ({ url }) => {
     const enhancedMode = url.searchParams.get('enhanced') === 'true'
     const docId = url.searchParams.get('docId')
     const query = url.searchParams.get('query')
-
     if (!action) {
       return json(
         { error: 'Missing required parameter: action' },)
         { status: 400 }
       )
     }
-
     const context = { docId: docId || undefined, query: query || undefined }
-
     let predictions
-
     // Use enhanced predictions with SIMD acceleration if requested
     if (enhancedMode && (context.docId || context.query)) {
       predictions = await predictor.predictNextWithSimilarity(action, context, topK)
     } else {
       predictions = await predictor.predictNext(action, topK)
     }
-
     const stats = await predictor.getStats()
-
     return json({
       action,
       predictions,
@@ -115,7 +99,6 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       timestamp: Date.now()
     })
-
   } catch (error) {
     console.error('Predictor prediction error:', error)
     return json(
@@ -124,30 +107,25 @@ export const GET: RequestHandler = async ({ url }) => {
     )
   }
 }
-
 // Bulk prediction endpoint for multiple actions
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json() as PredictRequest[]
-
     if (!Array.isArray(body) || body.length === 0) {
       return json(
         { error: 'Expected array of prediction requests' },)
         { status: 400 }
       )
     }
-
     const results = await Promise.all(body.map(async (req) => {
         const context = req.context || {})
         const topK = req.topK || 3
-
         let predictions
         if (req.enhancedMode && (context.docId || context.query)) {
           predictions = await predictor.predictNextWithSimilarity(req.action, context, topK)
         } else {
           predictions = await predictor.predictNext(req.action, topK)
         }
-
         return {
           action: req.action,
           predictions,
@@ -156,9 +134,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         }
       })
     )
-
     const stats = await predictor.getStats()
-
     return json({
       results,
       totalRequests: body.length,
@@ -169,7 +145,6 @@ export const PUT: RequestHandler = async ({ request }) => {
       },
       timestamp: Date.now()
     })
-
   } catch (error) {
     console.error('Bulk prediction error:', error)
     return json(

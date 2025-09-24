@@ -1,7 +1,6 @@
 <!--
   GPU Cache Integration Demo Component
   Demonstrates the integrated GPU cache system with gaming UI progression
-  
   Features:
   - 8-bit → 16-bit → N64 3D → YoRHa UI progression with GPU cache visualization
   - NES memory bank status indicators
@@ -9,10 +8,8 @@
   - XState graph cache machine integration
   - Real-time performance metrics
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import { graphCacheMachine } from '../../../../machines/graph-cache-machine.js';
   import { createActor } from 'xstate';
@@ -20,23 +17,19 @@
   import SNES16BitButton from '../16bit/SNES16BitButton.svelte';
   import N643DButton from '../n64/N643DButton.svelte';
   import N64TextureFilteringCache from '../n64/N64TextureFilteringCache.svelte';
-
   interface Props {
     showProgressionDemo?: boolean;
     enableRealTimeMetrics?: boolean;
     debugMode?: boolean;
   }
-
   let {
     showProgressionDemo = true,
     enableRealTimeMetrics = true,
     debugMode = false
   }: Props = $props();
-
   // XState machine actor
   let cacheActor = $state<any >(null);
   let machineState = $state('idle');
-
   // Demo state
   let currentEra = $state<'8bit' | '16bit' | 'n64' | 'yorha'>('8bit');
   let cacheMetrics = $state({
@@ -46,7 +39,6 @@
     hitRate: 0,
     avgLatency: 0
   });
-
   // NES memory visualization
   let nesMemoryBanks = $state([
     { region: 'PRG_ROM', utilization: 75, status: 'active' },
@@ -56,18 +48,16 @@
     { region: 'SPRITE_MEMORY', utilization: 30, status: 'idle' },
     { region: 'PALETTE_MEMORY', utilization: 90, status: 'full' }
   ]);
-
   $effect(() => {
     // Initialize XState machine
     cacheActor = createActor(graphCacheMachine);
     cacheActor.subscribe((state: unknown) => {
-      machineState = state.value;
+      machineState = state.valu;
       if (state.context?.telemetry) {
         cacheMetrics = state.context.telemetry;
       }
     });
     cacheActor.start();
-
     // Simulate cache activity
     if (enableRealTimeMetrics) {
       const interval = setInterval(() => {
@@ -75,38 +65,33 @@
         cacheActor.send({ type: 'QUERY', query: `demo-query-${Date.now()}`, params: });
         // Simulate cache hits/misses
         if (Math.random() > 0.3) {
-          cacheActor.send({ 
-            type: 'CACHE_HIT', ;
-            result: { demo: true }, 
-            source: 'indexeddb_cache',;
+          cacheActor.send({
+            type: 'CACHE_HIT',
+            result: { demo: true },
+            source: 'indexeddb_cache',
             latency: Math.random() * 50 + 10;
           });
         } else {
           cacheActor.send({ type: 'CACHE_MISS', queryHash: `hash-${Date.now()}` });
         }
-
         // Update NES memory visualization
         nesMemoryBanks = nesMemoryBanks.map(bank => ({
           ...bank,
           utilization: Math.min(100, Math.max(10, bank.utilization + (Math.random() - 0.5) * 10));
         }));
       }, 2000);
-
       return () => clearInterval(interval);
     }
   });
-
   onDestroy(() => {
     cacheActor?.stop();
   });
-
   function progressEra() {
     const eras = ['8bit', '16bit', 'n64', 'yorha'] as const;
     const currentIndex = eras.indexOf(currentEra);
     currentEra = eras[(currentIndex + 1) % eras.length];
   }
 </script>
-
 <!-- GPU Cache Integration Demo Container -->
 <div class="gpu-cache-demo p-6 bg-gradient-to-br from-gray-900 to-black rounded-lg">
   <!-- Header with Cache Status -->
@@ -116,37 +101,35 @@
       <span class="cache-status-text">{machineState.toUpperCase()}</span>
     </div>
   </div>
-
   <!-- Gaming Era Progression Demo -->
   {#if showProgressionDemo}
     <div class="gaming-progression-container mb-8">
       <div class="era-selector mb-4">
-        <button 
+        <button
           class="era-button era-8bit {currentEra === '8bit' ? 'active' : ''}"
           onclick={progressEra}
         >
           8-Bit Era
         </button>
-        <button 
+        <button
           class="era-button era-16bit {currentEra === '16bit' ? 'active' : ''}"
           onclick={progressEra}
         >
           16-Bit Era
         </button>
-        <button 
+        <button
           class="era-button era-n64 {currentEra === 'n64' ? 'active' : ''}"
           onclick={progressEra}
         >
           N64 3D Era
         </button>
-        <button 
+        <button
           class="era-button era-yorha {currentEra === 'yorha' ? 'active' : ''}"
           onclick={progressEra}
         >
           YoRHa Era
         </button>
       </div>
-
       <div class="era-demo-area">
         {#if currentEra === '8bit'}
           <div class="nes-era-demo">
@@ -158,7 +141,7 @@
                   <div class="nes-memory-bank nes-{bank.region.toLowerCase()} nes-status-{bank.status}">
                     <div class="memory-bank-label">{bank.region}</div>
                     <div class="memory-bank-bar">
-                      <div 
+                      <div
                         class="memory-bank-fill"
                         style="width: {bank.utilization}%"
                       ></div>
@@ -205,7 +188,6 @@
       </div>
     </div>
   {/if}
-
   <!-- Real-time Performance Metrics -->
   {#if enableRealTimeMetrics}
     <div class="performance-metrics-container">
@@ -219,7 +201,7 @@
           <div class="metric-label">Cache Hit Rate</div>
           <div class="metric-value">{(cacheMetrics.hitRate * 100).toFixed(1)}%</div>
           <div class="metric-bar">
-            <div 
+            <div
               class="metric-bar-fill"
               style="width: {cacheMetrics.hitRate * 100}%"
             ></div>
@@ -236,7 +218,6 @@
       </div>
     </div>
   {/if}
-
   <!-- XState Machine Visualization -->
   <div class="xstate-visualization mt-6">
     <h4 class="text-sm font-mono text-gray-300 mb-2">Cache State Machine</h4>
@@ -249,7 +230,6 @@
     </div>
   </div>
 </div>
-
 <style>
   /* Component-specific styles that use the global GPU cache CSS */
   .gpu-cache-demo {
@@ -257,13 +237,11 @@
     background: var(--gpu-cache-bg-primary);
     border: 1px solid var(--gpu-cache-border-primary);
   }
-
   .era-selector {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: var(--gpu-spacing-md);
   }
-
   .era-button {
     padding: var(--gpu-spacing-sm) var(--gpu-spacing-md);
     border: 1px solid var(--gpu-cache-border-primary);
@@ -273,19 +251,16 @@
     border-radius: 4px;
     transition: all 0.3s ease;
   }
-
   .era-button.active {
     background: var(--gpu-cache-accent-primary);
     color: var(--gpu-cache-bg-primary);
     box-shadow: var(--gpu-glow-primary);
   }
-
   .nes-memory-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--gpu-spacing-sm);
   }
-
   .nes-memory-bank {
     padding: var(--gpu-spacing-xs);
     border: 1px solid var(--nes-memory-border);
@@ -293,7 +268,6 @@
     font-size: 0.75rem;
     font-family: monospace;
   }
-
   /* Use NES memory region colors from GPU cache CSS */
   .nes-memory-bank.nes-prg_rom { border-color: var(--nes-prg-rom-color); }
   .nes-memory-bank.nes-chr_rom { border-color: var(--nes-chr-rom-color); }
@@ -301,46 +275,39 @@
   .nes-memory-bank.nes-ppu_memory { border-color: var(--nes-ppu-memory-color); }
   .nes-memory-bank.nes-sprite_memory { border-color: var(--nes-sprite-memory-color); }
   .nes-memory-bank.nes-palette_memory { border-color: var(--nes-palette-memory-color); }
-
   .memory-bank-bar {
     height: 4px;
     background: var(--gpu-cache-bg-tertiary);
     margin: 2px 0;
     overflow: hidden;
   }
-
   .memory-bank-fill {
     height: 100%;
     background: var(--gpu-cache-accent-primary);
     transition: width 0.5s ease;
   }
-
   .metrics-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: var(--gpu-spacing-md);
   }
-
   .metric-card {
     background: var(--gpu-cache-bg-secondary);
     border: 1px solid var(--gpu-cache-border-secondary);
     padding: var(--gpu-spacing-md);
     border-radius: 6px;
   }
-
   .metric-label {
     color: var(--gpu-cache-text-secondary);
     font-size: 0.875rem;
     margin-bottom: var(--gpu-spacing-xs);
   }
-
   .metric-value {
     color: var(--gpu-cache-text-primary);
     font-size: 1.25rem;
     font-weight: bold;
     font-family: monospace;
   }
-
   .metric-bar {
     height: 4px;
     background: var(--gpu-cache-bg-tertiary);
@@ -348,19 +315,16 @@
     overflow: hidden;
     border-radius: 2px;
   }
-
   .metric-bar-fill {
     height: 100%;
     background: linear-gradient(90deg, var(--gpu-cache-accent-secondary), var(--gpu-cache-accent-primary));
     transition: width 0.5s ease;
   }
-
   .state-machine-diagram {
     display: flex;
     gap: var(--gpu-spacing-sm);
     flex-wrap: wrap;
   }
-
   .state-node {
     padding: var(--gpu-spacing-xs) var(--gpu-spacing-sm);
     background: var(--gpu-cache-bg-tertiary);
@@ -371,19 +335,16 @@
     color: var(--gpu-cache-text-secondary);
     transition: all 0.3s ease;
   }
-
   .state-node.active {
     background: var(--gpu-cache-accent-primary);
     color: var(--gpu-cache-bg-primary);
     box-shadow: var(--gpu-glow-primary);
     animation: pulse 1s ease-in-out infinite alternate;
   }
-
   @keyframes pulse {
     from { opacity: 0.8; }
     to { opacity: 1; }
   }
-
   /* Cache status indicator using global classes */
   .cache-status-indicator {
     padding: var(--gpu-spacing-xs) var(--gpu-spacing-sm);
@@ -393,21 +354,17 @@
     font-weight: bold;
     text-transform: uppercase;
   }
-
   .cache-status-indicator.idle {
     background: var(--gpu-cache-state-idle);
   }
-
   .cache-status-indicator.querying {
     background: var(--gpu-cache-state-querying);
     animation: var(--gpu-cache-animation-processing);
   }
-
   .cache-status-indicator.backgroundRefreshing {
     background: var(--gpu-cache-state-refreshing);
     animation: var(--gpu-cache-animation-refreshing);
   }
-
   /* YoRHa quantum interface */
   .yorha-quantum-interface {
     position: relative;
@@ -416,12 +373,10 @@
     align-items: center;
     min-height: 200px;
   }
-
   .quantum-effect-container {
     position: relative;
     z-index: 2;
   }
-
   .yorha-quantum-button {
     background: linear-gradient(45deg, var(--yorha-quantum-primary), var(--yorha-quantum-secondary));
     border: 2px solid var(--yorha-quantum-accent);
@@ -435,12 +390,10 @@
     position: relative;
     overflow: hidden;
   }
-
-  .yorha-quantum-button:hover {
+  .yorha-quantum-button: hover {
     box-shadow: var(--gpu-glow-primary);
     transform: scale(1.05);
   }
-
   .quantum-particles {
     position: absolute;
     top: 0;
@@ -451,7 +404,6 @@
                 radial-gradient(circle at 80% 70%, rgba(255, 0, 255, 0.1) 0%, transparent 50%);
     animation: float 4s ease-in-out infinite alternate;
   }
-
   @keyframes float {
     from { transform: translateY(-5px) rotate(0deg); }
     to { transform: translateY(5px) rotate(360deg); }

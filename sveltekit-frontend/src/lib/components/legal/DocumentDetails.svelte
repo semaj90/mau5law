@@ -1,16 +1,15 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { legalDB } from '$lib/db/client-db.js';
   import type { DocumentCache, VectorSearchCache } from '$lib/db/client-db.js';
-  let { documentId = $bindable()  }: { documentId = $bindable() : unknown } = $props(); // string;
-  let { isVisible = $bindable()  }: { isVisible = $bindable() : unknown } = $props(); // false;
-  let { onClose = $bindable()  }: { onClose = $bindable() : unknown } = $props(); // () => void = () => ;
+  let { documentId = $bindable()  }: { documentId = $bindable() : unknown } = $props(); // string
+  let { isVisible = $bindable()  }: { isVisible = $bindable() : unknown } = $props(); // false
+  let { onClose = $bindable()  }: { onClose = $bindable() : unknown } = $props(); // () => void = () =>
   // Reactive state management
   const documentData = writable<any>(null);
   const isLoading = writable<boolean>(false);
@@ -76,16 +75,16 @@ https://svelte.dev/e/js_parse_error -->
       throw new Error(`Server error: ${response.status} ${response.statusText}`);
     }
     const data = await response.json();
-    serverFetchTime = performance.now() - serverStartTime;
+    serverFetchTime = performance.now() - serverStartTim;
     console.log(`🚀 Server fetch completed in ${serverFetchTime.toFixed(2)}ms`);
     console.log(`📊 Server processing: ${data.enhanced_metadata?.server_processing?.total_server_time}`);
     // IMPORTANT: Cache the fetched data for next time!
     const cacheEntry: DocumentCache = {
       id: Date.now(), // Auto-increment ID for IndexedDB
-      documentId: docId,
+      documentId: docId
       title: data.document.title,
       content: data.document.content,
-      documentType: data.document.document_type,;
+      documentType: data.document.document_type,
       metadata: {
         ...data.document.metadata,
         related_documents: data.related_documents,
@@ -93,7 +92,7 @@ https://svelte.dev/e/js_parse_error -->
         case_associations: data.case_associations,
         gpu_analysis: data.gpu_analysis,
         enhanced_metadata: data.enhanced_metadata
-      },;
+      },
       hash: data.document.content_hash || `hash_${Date.now()}`,
       lastAccessed: new Date(),
       cacheSize: JSON.stringify(length)
@@ -116,8 +115,8 @@ https://svelte.dev/e/js_parse_error -->
     const doc = data.document || data;
     const metadata = data.metadata || ;
     documentData.set({
-      id: doc.id || doc.documentId,;
-      title: doc.title,;
+      id: doc.id || doc.documentId,
+      title: doc.title,
       content: doc.content,
       document_type: doc.document_type || doc.documentType,
       file_path: doc.file_path,
@@ -156,12 +155,10 @@ https://svelte.dev/e/js_parse_error -->
     return `${(ms / 1000).toFixed(2)}s`;
   }
 </script>
-
 <!-- Document Details Modal -->
 {#if isVisible}
   <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
     <div class="bg-white rounded-lg shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden">
-      
       <!-- Header -->
       <div class="bg-blue-600 text-white px-6 py-4 flex justify-between items-center">
         <div>
@@ -170,7 +167,7 @@ https://svelte.dev/e/js_parse_error -->
             {#if $loadingSource === 'cache'}
               📦 Loading from cache... ({formatDuration(cacheHitTime)})
             {:else if $loadingSource === 'server'}
-              🌐 Fetching from server... 
+              🌐 Fetching from server...
             {:else if $documentData}
               📄 {$documentData.title || `Document ${documentId}`}
             {:else}
@@ -178,7 +175,7 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </p>
         </div>
-        <button 
+        <button
           onclick={onClose}
           class="text-white hover:text-blue-200 text-2xl font-bold"
           aria-label="Close"
@@ -186,7 +183,6 @@ https://svelte.dev/e/js_parse_error -->
           ×
         </button>
       </div>
-      
       <!-- Loading State -->
       {#if $isLoading}
         <div class="p-8 text-center">
@@ -202,13 +198,12 @@ https://svelte.dev/e/js_parse_error -->
           </p>
         </div>
       {/if}
-      
       <!-- Error State -->
       {#if $errorMessage}
         <div class="p-8 text-center">
           <div class="text-red-600 text-xl mb-4">❌ Error</div>
           <p class="text-red-700 mb-4">{$errorMessage}</p>
-          <button 
+          <button
             onclick={() => loadDocumentDetails(documentId, true)}
             class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
           >
@@ -216,47 +211,43 @@ https://svelte.dev/e/js_parse_error -->
           </button>
         </div>
       {/if}
-      
       <!-- Document Content -->
       {#if $documentData && !$isLoading}
         <div class="overflow-y-auto max-h-[calc(90vh-120px)]">
-          
           <!-- Performance Metrics Bar -->
           <div class="bg-gray-100 px-6 py-3 border-b grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             <div>
-              <span class="font-semibold text-green-600">Cache Hit:</span> 
+              <span class="font-semibold text-green-600">Cache Hit:</span>
               {cacheHitTime ? formatDuration(cacheHitTime) : 'No cache'}
             </div>
             <div>
-              <span class="font-semibold text-blue-600">Server Fetch:</span> 
+              <span class="font-semibold text-blue-600">Server Fetch:</span>
               {serverFetchTime ? formatDuration(serverFetchTime) : 'Not fetched'}
             </div>
             <div>
-              <span class="font-semibold text-purple-600">Related Docs:</span> 
+              <span class="font-semibold text-purple-600">Related Docs:</span>
               {$relatedDocuments.length}
             </div>
             <div>
-              <span class="font-semibold text-orange-600">Graph Links:</span> 
+              <span class="font-semibold text-orange-600">Graph Links:</span>
               {$graphConnections.length}
             </div>
           </div>
-          
           <!-- Main Content Grid -->
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
-            
             <!-- Document Content -->
             <div class="lg:col-span-2">
               <div class="bg-white rounded-lg border border-gray-200 p-6">
                 <div class="flex justify-between items-start mb-4">
                   <h3 class="text-xl font-semibold text-gray-800">Document Content</h3>
                   <div class="flex gap-2">
-                    <button 
+                    <button
                       onclick={() => loadDocumentDetails(documentId, true)}
                       class="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded"
                     >
                       🔄 Refresh
                     </button>
-                    <button 
+                    <button
                       onclick={toggleGPUAnalysis}
                       class="text-sm {showGPUAnalysis ? 'bg-purple-100 text-purple-700' : 'bg-gray-100'} hover:bg-purple-200 px-3 py-1 rounded"
                     >
@@ -264,20 +255,17 @@ https://svelte.dev/e/js_parse_error -->
                     </button>
                   </div>
                 </div>
-                
                 <div class="space-y-4">
                   <div>
                     <span class="font-medium text-gray-700">Title:</span>
                     <p class="text-gray-900">{$documentData.title}</p>
                   </div>
-                  
                   <div>
                     <span class="font-medium text-gray-700">Type:</span>
                     <span class="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm ml-2">
                       {$documentData.document_type || 'Unknown'}
                     </span>
                   </div>
-                  
                   <div>
                     <span class="font-medium text-gray-700">Content:</span>
                     <div class="mt-2 p-4 bg-gray-50 rounded-lg max-h-96 overflow-y-auto">
@@ -288,7 +276,6 @@ https://svelte.dev/e/js_parse_error -->
                   </div>
                 </div>
               </div>
-              
               <!-- GPU Analysis Results -->
               {#if $gpuAnalysis}
                 <div class="bg-purple-50 rounded-lg border border-purple-200 p-6 mt-6">
@@ -299,8 +286,8 @@ https://svelte.dev/e/js_parse_error -->
                     <div>
                       <span class="font-medium text-purple-700">Confidence:</span>
                       <div class="w-full bg-purple-200 rounded-full h-2 mt-1">
-                        <div 
-                          class="bg-purple-600 h-2 rounded-full" 
+                        <div
+                          class="bg-purple-600 h-2 rounded-full"
                           style="width: {($gpuAnalysis.confidence * 100).toFixed(1)}%"
                         ></div>
                       </div>
@@ -311,7 +298,6 @@ https://svelte.dev/e/js_parse_error -->
                       <p class="text-purple-800">{formatDuration($gpuAnalysis.processingTime)}</p>
                     </div>
                   </div>
-                  
                   {#if $gpuAnalysis.legalAnalysis}
                     <div class="mt-4">
                       <h4 class="font-medium text-purple-700 mb-2">Legal Analysis:</h4>
@@ -325,10 +311,8 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
               {/if}
             </div>
-            
             <!-- Sidebar: Related Information -->
             <div class="space-y-6">
-              
               <!-- Related Documents -->
               {#if $relatedDocuments.length > 0}
                 <div class="bg-white rounded-lg border border-gray-200 p-4">
@@ -352,7 +336,6 @@ https://svelte.dev/e/js_parse_error -->
                   </div>
                 </div>
               {/if}
-              
               <!-- Graph Connections -->
               {#if $graphConnections.length > 0}
                 <div class="bg-white rounded-lg border border-gray-200 p-4">
@@ -377,7 +360,6 @@ https://svelte.dev/e/js_parse_error -->
                   </div>
                 </div>
               {/if}
-              
               <!-- Case Associations -->
               {#if $caseAssociations.length > 0}
                 <div class="bg-white rounded-lg border border-gray-200 p-4">
@@ -401,7 +383,6 @@ https://svelte.dev/e/js_parse_error -->
                   </div>
                 </div>
               {/if}
-              
               <!-- Processing Metrics -->
               {#if $processingMetrics}
                 <div class="bg-white rounded-lg border border-gray-200 p-4">
@@ -441,18 +422,15 @@ https://svelte.dev/e/js_parse_error -->
                   </div>
                 </div>
               {/if}
-              
             </div>
           </div>
-          
         </div>
       {/if}
     </div>
   </div>
 {/if}
-
 <style>
-  .line-clamp-2 {;
+  .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;

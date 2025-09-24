@@ -1,18 +1,15 @@
 // Legal AI Orchestrator Health Check API
 // Nintendo-Style Service Health Monitoring
-
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
 interface ServiceHealth {
   service: string
   status: 'healthy' | 'degraded' | 'down'
   response_time_ms?: number
   details?: string
 }
-
 interface HealthResponse {
-  overall_status: 'healthy' | 'degraded' | 'critical'
+  overall_status: 'healthy' | 'degraded' | 'critical',
   services: ServiceHealth[]
   nintendo_memory_banks: {
     L1_GPU_VRAM: { used_mb: number; total_mb: number; utilization: number }
@@ -21,34 +18,28 @@ interface HealthResponse {
   }
   timestamp: string
 }
-
 async function checkServiceHealth(url: string, timeout = 5000): Promise<any> {
   const startTime = Date.now()
-  
   try {
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), timeout)
-    
     const response = await fetch(url, {
       method: 'GET',
       signal: controller.signal
     })
-    
     clearTimeout(timeoutId)
     const responseTime = Date.now() - startTime
-    
     return {
       healthy: response.ok,
       responseTime
     }
   } catch (error) {
     return {
-      healthy: false,
+      healthy: false
       responseTime: Date.now() - startTime
     }
   }
 }
-
 async function checkRedisHealth(): Promise<ServiceHealth> {
   try {
     // Try to connect to Redis using a simple ping
@@ -57,11 +48,10 @@ async function checkRedisHealth(): Promise<ServiceHealth> {
       method: 'GET',
       timeout: 3000
     }).catch(() => null)
-    
     return {
       service: 'Redis Cache (L3)',
       status: response?.ok ? 'healthy' : 'down',
-      response_time_ms: response ? 50 : undefined,
+      response_time_ms: response ? 50 : undefined
       details: response?.ok ? 'Nintendo L3 memory bank operational' : 'Redis connection failed'
     }
   } catch {
@@ -72,7 +62,6 @@ async function checkRedisHealth(): Promise<ServiceHealth> {
     }
   }
 }
-
 async function getMemoryBankStatus() {
   // Simulate memory bank readings - in production, you'd get actual metrics
   return {
@@ -93,7 +82,6 @@ async function getMemoryBankStatus() {
     }
   }
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const services = [
@@ -118,23 +106,20 @@ export const GET: RequestHandler = async ({ url }) => {
         key: 'postgres'
       }
     ]
-
     // Check all HTTP services in parallel
     const serviceChecks = await Promise.all(services.slice(0, 3).map(async (service) => {
         const { healthy, responseTime } = await checkServiceHealth(service.url))
         return {
           service: service.name,
           status: healthy ? 'healthy' : 'down',
-          response_time_ms: responseTime,
+          response_time_ms: responseTime
           details: healthy ? 'Service operational' : 'Service unreachable'
         } as ServiceHealth
       })
     )
-
     // Check Redis separately
     const redisHealth = await checkRedisHealth()
     serviceChecks.push(redisHealth)
-
     // Check PostgreSQL (simplified - in production use proper connection check)
     serviceChecks.push({
       service: 'PostgreSQL + pgvector',
@@ -142,19 +127,15 @@ export const GET: RequestHandler = async ({ url }) => {
       response_time_ms: 25,
       details: 'Database operational'
     })
-
     // Get memory bank status
     const memoryBanks = await getMemoryBankStatus()
-    
     // Calculate utilizations
     memoryBanks.L1_GPU_VRAM.utilization = Math.round((memoryBanks.L1_GPU_VRAM.used_mb / memoryBanks.L1_GPU_VRAM.total_mb) * 100)
     memoryBanks.L2_SYSTEM_RAM.utilization = Math.round((memoryBanks.L2_SYSTEM_RAM.used_mb / memoryBanks.L2_SYSTEM_RAM.total_mb) * 100)
     memoryBanks.L3_REDIS_CACHE.utilization = Math.round((memoryBanks.L3_REDIS_CACHE.used_mb / memoryBanks.L3_REDIS_CACHE.total_mb) * 100)
-
     // Determine overall status
     const healthyServices = serviceChecks.filter(item => item.length)
     const totalServices = serviceChecks.length
-    
     let overallStatus: 'healthy' | 'degraded' | 'critical'
     if (healthyServices === totalServices) {
       overallStatus = 'healthy'
@@ -163,23 +144,20 @@ export const GET: RequestHandler = async ({ url }) => {
     } else {
       overallStatus = 'critical'
     }
-
     const healthResponse: HealthResponse = {
-      overall_status: overallStatus,
-      services: serviceChecks,
-      nintendo_memory_banks: memoryBanks,
+      overall_status: overallStatus
+      services: serviceChecks
+      nintendo_memory_banks: memoryBanks
       timestamp: new Date().toISOString()
     }
-
     return json(healthResponse, {
       status: overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503
     })
-
   } catch (error) {
     return json({
       overall_status: 'critical',
       services: [],
-      nintendo_memory_banks: Record<string, any>,
+      nintendo_memory_banks: { [key: string]: any },
       timestamp: new Date().toISOString(),
       error: 'Health check system failure'
     }, { status: 500 })

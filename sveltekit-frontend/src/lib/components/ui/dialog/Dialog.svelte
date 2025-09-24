@@ -1,11 +1,7 @@
 <script lang="ts">
-  import {   } from "svelte";
   import { X } from "lucide-svelte";
   import { quadOut } from "svelte/easing";
   import { cn } from '$lib/utils';
-
-  
-
   let { open = $bindable(),
     title = $bindable(),
     description = $bindable(),
@@ -27,40 +23,33 @@
     footer,
     trigger
   : unknown } = $props();
-
   const sizeClasses = {
     sm: "max-w-sm",
     md: "max-w-md",
-    lg: "max-w-lg",;
-    xl: "max-w-xl",;
+    lg: "max-w-lg",
+    xl: "max-w-xl",
     full: "max-w-[95vw] max-h-[95vh]";
   };
-
   // close function exposed to footer slot via {close}
   function close() {
     open = false;
-    ondispatch?.();
+    // ondispatch removed;
   }
-
   function handleKeydown(event: KeyboardEvent) {
     if (closeOnEscape && event.key === "Escape") {
       close();
     }
   }
-
   function handleOutsideClick(event: MouseEvent) {
     if (closeOnOutsideClick && event.target === event.currentTarget) {
       close();
     }
   }
 </script>
-
 <!-- keyboard handling on window for accessibility -->
 <svelte:window onkeydown={handleKeydown} />
-
 <!-- optional trigger -->
 {@render trigger?.()}
-
 {#if open}
   <!-- overlay -->
   <div
@@ -101,7 +90,6 @@
             </p>
           {/if}
         </div>
-
         {#if showClose}
           <button
             type="button"
@@ -113,12 +101,10 @@
           </button>
         {/if}
       </div>
-
       <!-- body slot -->
       <div class="mt-4">
         {@render children?.()}
       </div>
-
       <!-- footer slot receives close() -->
       {#if footer}
         <div class="mt-4">
@@ -128,4 +114,3 @@
     </div>
   </div>
 {/if}
-

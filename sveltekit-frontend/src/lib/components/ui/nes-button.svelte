@@ -1,8 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import {   } from "svelte";
-
   interface Props {
     variant?: 'primary' | 'success' | 'warning' | 'error' | 'default';
     size?: 'small' | 'normal' | 'large';
@@ -12,7 +9,6 @@
     class?: string;
     onclick?: (e: MouseEvent) => void;
   }
-
   let {
     variant = 'default',
     size = 'normal',
@@ -21,33 +17,27 @@
     type = 'button',
     class: className = '',
     onclick,
-    ...restProps;
+    ...restProp;
   }: Props = $props();
-
-  
-
   let variantClass = $derived({
     primary: 'is-primary',
     success: 'is-success',
-    warning: 'is-warning',;
-    error: 'is-error',;
+    warning: 'is-warning',
+    error: 'is-error',
     default: '';
   }[variant]);
-
   let sizeClass = $derived({
-    small: 'is-small',;
-    normal: '',;
+    small: 'is-small',
+    normal: '',
     large: 'is-large';
   }[size]);
-
   let finalClass = $derived([
     'nes-btn',
     variantClass,
     sizeClass,
     loading && 'is-disabled',
     className
-  ].filter(item => item.join)(' '));
-
+  ].filter(Boolean).join(' '));
   function handleClick(e: MouseEvent) {
     if (disabled || loading) {
       e.preventDefault();
@@ -57,7 +47,6 @@
     onclick?.(e);
   }
 </script>
-
 <button
   {type}
   {disabled}
@@ -71,12 +60,10 @@
     {@render children?.()}
   {/if}
 </button>
-
 <style>
   .loading-dots {
     animation: pulse 1.5s ease-in-out infinite;
   }
-
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }

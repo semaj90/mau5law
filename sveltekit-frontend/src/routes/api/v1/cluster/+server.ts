@@ -1,14 +1,11 @@
 import type { RequestHandler } from './$types.js'
-
 /*
  * Cluster API Endpoint - Service Orchestration & Health
  * Routes to: cluster-http.exe: 8213, modular-cluster-service-production.exe:8215
  */
-
 import { productionServiceClient } from '$lib/services/productionServiceClient'
 import http from "http"
 import { URL } from "url"
-
 // GET handler multiplexes sub-endpoints based on trailing path segment (health|services|metrics|root)
 export const GET: RequestHandler = async ({ url }) => {
     const endpoint = url.pathname.split('/').pop()
@@ -28,7 +25,6 @@ export const GET: RequestHandler = async ({ url }) => {
         return error(500, `Cluster service unavailable: ${err instanceof Error ? err.message: 'Unknown error'}`)
     }
 }
-
 // POST handler processes cluster management actions
 export const POST: RequestHandler = async ({ request }) => {
     try {
@@ -49,7 +45,6 @@ export const POST: RequestHandler = async ({ request }) => {
         return error(500, `Cluster action failed: ${err instanceof Error ? err.message: 'Unknown error'}`)
     }
 }
-
 async function handleHealthCheck(): Promise<any> {
     const health = await productionServiceClient.checkAllServicesHealth()
     const metrics = await productionServiceClient.getPerformanceMetrics()
@@ -60,16 +55,15 @@ async function handleHealthCheck(): Promise<any> {
         cluster: {
             status: healthPercentage > 80 ? 'healthy' : healthPercentage > 50 ? 'degraded' : 'critical',
             health_percentage: Math.round(healthPercentage),
-            total_services: totalServices,
-            healthy_services: healthyServices,
+            total_services: totalServices
+            healthy_services: healthyServices
             unhealthy_services: totalServices - healthyServices
         },
-        services: health,
-        performance: metrics,
+        services: health
+        performance: metrics
         timestamp: new Date().toISOString()
     })
 }
-
 async function handleServicesStatus(): Promise<any> {
     const health = await productionServiceClient.checkAllServicesHealth()
     const serviceDetails = {
@@ -87,7 +81,7 @@ async function handleServicesStatus(): Promise<any> {
         }
     }
     return json({
-        services: serviceDetails,
+        services: serviceDetails
         summary: {
             total: Object.keys(health).length,
             running: Object.values(health).filter(item => item.length),
@@ -96,13 +90,12 @@ async function handleServicesStatus(): Promise<any> {
         timestamp: new Date().toISOString()
     })
 }
-
 async function handleMetrics(): Promise<any> {
     const performance = await productionServiceClient.getPerformanceMetrics()
     const health = await productionServiceClient.checkAllServicesHealth()
     return json({
         performance: {
-            tiers: performance,
+            tiers: performance
             overall: {
                 avg_latency: performance.reduce((sum, p) => sum + p.avgLatency, 0) / performance.length,
                 avg_success_rate: performance.reduce((sum, p) => sum + p.successRate, 0) / performance.length,
@@ -123,7 +116,6 @@ async function handleMetrics(): Promise<any> {
         timestamp: new Date().toISOString()
     })
 }
-
 async function handleClusterOverview(): Promise<any> {
     const health = await productionServiceClient.checkAllServicesHealth()
     return json({
@@ -148,15 +140,12 @@ async function handleClusterOverview(): Promise<any> {
         timestamp: new Date().toISOString()
     })
 }
-
 async function handleServiceRestart(serviceName: string): Promise<any> {
     return json({ success: true, message: `Service ${serviceName} restart initiated`, timestamp: new Date().toISOString() })
 }
-
 async function handleServiceScaling(serviceName: string, instances: number): Promise<any> {
     return json({ success: true, message: `Service ${serviceName} scaled to ${instances} instances`, timestamp: new Date().toISOString() })
 }
-
 async function handleServiceDeployment(serviceConfig: any): Promise<any> {
     return json({ success: true, message: 'Service deployment initiated', config: serviceConfig, timestamp: new Date().toISOString() })
 }

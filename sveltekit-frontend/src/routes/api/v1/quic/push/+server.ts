@@ -11,10 +11,8 @@ import {
   getSustainedP99Info
 } from '$lib/services/alert-center'
 import type { RequestHandler } from './$types.js'
-
 // Simple in-memory rate limit: 60 requests per minute per IP
 const hits: Record<string, number[]> = {}
-
 const MAX_LAT_SAMPLES = 200; // guard
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   try {
@@ -71,7 +69,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   }
     const sustained = getSustainedP99Info()
     return new Response(JSON.stringify({
-        ok: true,
+        ok: true
         alerts,
         routedCount: routed.length,
         p99: quic.p99,

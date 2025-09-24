@@ -3,7 +3,6 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <!--
   Legal Document Graph Viewer - WebGPU Visualization Component
-  
   Advanced 3D graph visualization for legal document networks:
   - Real-time WebGPU rendering with dimensional tensor stores
   - Interactive exploration of legal relationships
@@ -11,33 +10,27 @@ https://svelte.dev/e/js_parse_error -->
   - Level-of-Detail (LOD) streaming for performance
   - Cache-first document details with server-side fallback
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { WebGPULegalDocumentGraph } from '$lib/webgpu/legal-document-graph';
   import { DimensionalTensorStore } from '$lib/webgpu/dimensional-tensor-store';
   import { legalDB, type GraphVisualizationData } from '$lib/db/client-db';
   import DocumentDetails from '$lib/components/legal/DocumentDetails.svelte';
-
   // ============================================================================
   // COMPONENT PROPS
   // ============================================================================
-
-  let { graphId = $bindable()  }: { graphId = $bindable() : unknown } = $props(); // string = 'legal-network-main';
-  let { width = $bindable()  }: { width = $bindable() : unknown } = $props(); // number = 800;
-  let { height = $bindable()  }: { height = $bindable() : unknown } = $props(); // number = 600;
-  let { enablePhysics = $bindable()  }: { enablePhysics = $bindable() : unknown } = $props(); // boolean = true;
-  let { enableStreaming = $bindable()  }: { enableStreaming = $bindable() : unknown } = $props(); // boolean = true;
-  let { maxNodes = $bindable()  }: { maxNodes = $bindable() : unknown } = $props(); // number = 10000;
-  let { class = $bindable()  }: { class = $bindable() : unknown } = $props(); // string = '';
-
+  let { graphId = $bindable()  }: { graphId = $bindable() : unknown } = $props(); // string = 'legal-network-main'
+  let { width = $bindable()  }: { width = $bindable() : unknown } = $props(); // number = 800
+  let { height = $bindable()  }: { height = $bindable() : unknown } = $props(); // number = 600
+  let { enablePhysics = $bindable()  }: { enablePhysics = $bindable() : unknown } = $props(); // boolean = true
+  let { enableStreaming = $bindable()  }: { enableStreaming = $bindable() : unknown } = $props(); // boolean = true
+  let { maxNodes = $bindable()  }: { maxNodes = $bindable() : unknown } = $props(); // number = 10000
+  let { class = $bindable()  }: { class = $bindable() : unknown } = $props(); // string = ''
   // ============================================================================
   // REACTIVE STORES
   // ============================================================================
-
   const isInitialized = writable(false);
   const isLoading = writable(false);
   const error = writable<string | null>(null);
@@ -48,31 +41,27 @@ https://svelte.dev/e/js_parse_error -->
     edgeCount: 0,
     gpuMemoryUsage: 0;
   });
-
   const renderState = writable({
-    selectedNode: null as string | null,
+    selectedNode: null as string | null
     highlightedNodes: new Set<string>(),
     filterType: 'all' as 'all' | 'document' | 'case' | 'entity' | 'precedent',
     cameraPosition: [0, 0, 10] as [number, number, number],
     zoom: 1.0,
     autoRotate: false;
   });
-
   // Document details interaction state
   const documentDetailsState = writable({
-    isVisible: false,
-    selectedDocumentId: null as string | null,
+    isVisible: false
+    selectedDocumentId: null as string | null
     nodeInteractionTime: 0,
     cacheHitRate: 0
   });
-
   // Derived stores
   const canInteract = derived(
     [isInitialized, isLoading, error],
-    ([$isInitialized, $isLoading, $error]) => 
+    ([$isInitialized, $isLoading, $error]) =>
       $isInitialized && !$isLoading && !$error
   );
-
   // ============================================================================
   // WEBGPU & CANVAS MANAGEMENT
   // ============================================================================
@@ -80,11 +69,9 @@ https://svelte.dev/e/js_parse_error -->
   let tensorStore = $state<DimensionalTensorStore | null >(null);
   let animationFrame = $state<number | null >(null);
   let resizeObserver = $state<ResizeObserver | null >(null);
-
   // ============================================================================
   // INITIALIZATION
   // ============================================================================
-
   $effect(() => {
     (async () => {
 try {
@@ -99,11 +86,9 @@ try {
     }
     })();
   });
-
   onDestroy(() => {
     cleanup();
   });
-
   /**
    * Initialize WebGPU graph engine and tensor store
    */
@@ -111,36 +96,31 @@ try {
     if (!canvas) {
       throw new Error('Canvas element not found');
     }
-
     // Resize canvas to match container
     canvas.width = width;
     canvas.height = height;
-
     // Check WebGPU support
     if (!navigator.gpu) {
       throw new Error('WebGPU not supported. Please use Chrome Canary or Firefox Nightly.');
     }
-
     // Initialize graph engine
     graphEngine = new WebGPULegalDocumentGraph(canvas, {
       maxNodes,
       maxEdges: maxNodes * 5,
-      canvasWidth: width,
-      canvasHeight: height,
+      canvasWidth: width
+      canvasHeight: height
       enablePhysics,
       renderDistance: 1000,
       lodLevels: 4
     });
-
     await graphEngine.initialize();
-
     // Initialize tensor store for advanced memory management
     const adapter = await navigator.gpu.requestAdapter();
     if (!adapter) throw new Error('No WebGPU adapter found');
     const device = await adapter.requestDevice();
     tensorStore = new DimensionalTensorStore(device, {
-      documents: maxNodes,;
-      chunks: 100,;
+      documents: maxNodes
+      chunks: 100,
       representations: 8,
       maxLOD: 4;
     }, {
@@ -149,10 +129,8 @@ try {
       preloadRadius: 50,
       evictionStrategy: 'hybrid'
     });
-
     console.log('[Graph Viewer] WebGPU initialized successfully');
   }
-
   /**
    * Load graph data from IndexedDB
    */
@@ -164,9 +142,8 @@ try {
       // Update performance stats
       if (graphEngine) {
         const stats = graphEngine.getPerformanceStats();
-        $performanceStats = stats;
+        $performanceStats = stat;
       }
-
       console.log(`[Graph Viewer] Loaded graph ${graphId}`);
     } catch (err) {
       console.error('[Graph Viewer] Failed to load graph data:', err);
@@ -175,24 +152,20 @@ try {
       $isLoading = false;
     }
   }
-
   /**
    * Start the render loop
    */
   function startRenderLoop(): void {
     if (!graphEngine) return;
-
     const updatePerformance = () => {
       if (graphEngine) {
         $performanceStats = graphEngine.getPerformanceStats();
       }
     };
-
     // Update performance stats every second
     const perfInterval = setInterval(updatePerformance, 1000);
     // Start WebGPU render loop
     graphEngine.startRenderLoop();
-
     // Cleanup function
     const cleanup = () => {
       clearInterval(perfInterval);
@@ -200,11 +173,9 @@ try {
         cancelAnimationFrame(animationFrame);
       }
     };
-
     // Store cleanup reference
     onDestroy(cleanup);
   }
-
   /**
    * Setup event listeners for interaction
    */
@@ -212,17 +183,14 @@ try {
     if (!canvas) return;
   let isDragging = $state(false);
   let lastMousePos = $state({ x: 0, y: 0 });
-
     // Mouse events
     canvas.addEventListener('mousedown', (e) => {
       isDragging = true;
       lastMousePos = { x: e.clientX, y: e.clientY };
       canvas.style.cursor = 'grabbing';
     });
-
     canvas.addEventListener('mousemove', (e) => {
       if (!isDragging) return;
-
       const deltaX = e.clientX - lastMousePos.x;
       const deltaY = e.clientY - lastMousePos.y;
       // Update camera position
@@ -234,10 +202,8 @@ try {
           state.cameraPosition[2]
         ]
       }));
-
       lastMousePos = { x: e.clientX, y: e.clientY };
     });
-
     canvas.addEventListener('mouseup', (e) => {
       if (isDragging) {
         isDragging = false;
@@ -247,7 +213,6 @@ try {
         handleNodeClick(e);
       }
     });
-
     // Wheel events for zoom
     canvas.addEventListener('wheel', (e) => {
       e.preventDefault();
@@ -258,14 +223,12 @@ try {
         zoom: Math.max(0.1, Math.min(10, state.zoom * delta));
       }));
     });
-
     // Touch events for mobile
   let touchStart = $state({ x: 0, y: 0 });
     canvas.addEventListener('touchstart', (e) => {
       const touch = e.touches[0];
       touchStart = { x: touch.clientX, y: touch.clientY };
     });
-
     canvas.addEventListener('touchmove', (e) => {
       e.preventDefault();
       const touch = e.touches[0];
@@ -279,10 +242,8 @@ try {
           state.cameraPosition[2]
         ]
       }));
-
       touchStart = { x: touch.clientX, y: touch.clientY };
     });
-
     // Resize observer
     resizeObserver = new ResizeObserver(entries => {
       for (const entry of entries) {
@@ -296,21 +257,17 @@ try {
         }
       }
     });
-
     resizeObserver.observe(canvas.parentElement || canvas);
   }
-
   // ============================================================================
   // NODE INTERACTION HANDLERS
   // ============================================================================
-
   /**
    * Handle node clicks - The Hybrid Cache-First Strategy Implementation
    * This is the core of our "Fast Path / Slow Path" architecture
    */
   async function handleNodeClick(event: MouseEvent): Promise<void> {
     if (!graphEngine || !$canInteract) return;
-
     const clickStartTime = performance.now();
     // 1. Convert mouse coordinates to WebGL/WebGPU coordinates
     const rect = canvas.getBoundingClientRect();
@@ -323,28 +280,24 @@ try {
       // Update visual selection immediately
       renderState.update(state => ({
         ...state,
-        selectedNode: clickedNodeId,
+        selectedNode: clickedNodeId
         highlightedNodes: new Set([clickedNodeId])
       }));
-
       // Track interaction timing
-      const interactionTime = performance.now() - clickStartTime;
+      const interactionTime = performance.now() - clickStartTim;
       documentDetailsState.update(state => ({
         ...state,
-        selectedDocumentId: clickedNodeId,
-        isVisible: true,
+        selectedDocumentId: clickedNodeId
+        isVisible: true
         nodeInteractionTime: interactionTime
       }));
-
       // Visual feedback - highlight the node
       if (graphEngine) {
         await graphEngine.highlightNodes([clickedNodeId]);
       }
-
       console.log(`⚡ Node selection completed in ${interactionTime.toFixed(2)}ms`);
     }
   }
-
   /**
    * Find node at specific screen coordinates
    * In production, this would use proper WebGPU ray casting
@@ -357,7 +310,7 @@ try {
     // For demonstration, simulate finding a document node
     const simulatedNodes = [
       'doc-uuid-12345',
-      'doc-uuid-67890', 
+      'doc-uuid-67890',
       'case-uuid-11111',
       'precedent-uuid-22222',
       'statute-uuid-33333'
@@ -371,14 +324,12 @@ try {
     }
     return null;
   }
-
   /**
    * Handle related document visualization updates
    * Called when document details are loaded to update the graph
    */
   async function updateGraphWithRelations(documentId: string, relatedDocs: unknown[]): Promise<void> {
     if (!graphEngine) return;
-
     try {
       // Extract related document IDs
       const relatedIds = relatedDocs.map.filter(id => id !== documentId);
@@ -388,7 +339,6 @@ try {
         ...state,
         highlightedNodes: allHighlighted
       }));
-
       // Update WebGPU visualization with new highlights
       await graphEngine.highlightNodes(Array.from(allHighlighted));
       // Animate camera to focus on the cluster
@@ -398,7 +348,6 @@ try {
       console.warn('Failed to update graph with relations:', error);
     }
   }
-
   /**
    * Animate camera to focus on a cluster of nodes
    */
@@ -410,38 +359,33 @@ try {
     // Simplified animation
     renderState.update(state => ({
       ...state,
-      cameraPosition: [0, 0, 8], // Move closer;
-      zoom: 1.2 // Slight zoom in;
+      cameraPosition: [0, 0, 8], // Move closer
+      zoom: 1.2 // Slight zoom i
     }));
   }
-
   /**
    * Close document details modal
    */
   function closeDocumentDetails(): void {
     documentDetailsState.update(state => ({
       ...state,
-      isVisible: false,
+      isVisible: false
       selectedDocumentId: null
     }));
-
     // Clear node selection
     renderState.update(state => ({
       ...state,
-      selectedNode: null,
+      selectedNode: null
       highlightedNodes: new Set()
     }));
-
     // Clear visual highlights
     if (graphEngine) {
       graphEngine.clearHighlights();
     }
   }
-
   // ============================================================================
   // PUBLIC METHODS
   // ============================================================================
-
   /**
    * Reset camera to default position
    */
@@ -452,18 +396,16 @@ try {
       zoom: 1.0;
     }));
   }
-
   /**
    * Focus on a specific node
    */
   export function focusOnNode(nodeId: string): void {
     renderState.update(state => ({
       ...state,
-      selectedNode: nodeId,
+      selectedNode: nodeId
       highlightedNodes: new Set([nodeId])
     }));
   }
-
   /**
    * Update graph filter
    */
@@ -473,7 +415,6 @@ try {
       filterType
     }));
   }
-
   /**
    * Export current graph view as image
    */
@@ -485,17 +426,15 @@ try {
       }, 'image/png');
     });
   }
-
   /**
    * Toggle physics simulation
    */
   export function togglePhysics(): void {
-    enablePhysics = !enablePhysics;
+    enablePhysics = !enablePhysic;
     if (graphEngine) {
-      graphEngine.config.enablePhysics = enablePhysics;
+      graphEngine.config.enablePhysics = enablePhysic;
     }
   }
-
   /**
    * Save current graph state to database
    */
@@ -507,33 +446,30 @@ try {
         graphId,
         graphType: 'legal-entities',
         nodes: [], // Would get from engine
-        edges: [], // Would get from engine;
+        edges: [], // Would get from engi
         layout: {
           algorithm: 'force-directed',
           parameters: ,
           dimensions: 3;
         },
         cameraPosition: {
-          x: $renderState.cameraPosition[0],;
-          y: $renderState.cameraPosition[1],;
+          x: $renderState.cameraPosition[0],
+          y: $renderState.cameraPosition[1],
           z: $renderState.cameraPosition[2];
         },
         createdAt: new Date(),
         lastAccessed: new Date(),
         computationTime: 0
       };
-
       await legalDB.graphVisualizationData.put(graphData);
       console.log('[Graph Viewer] Graph state saved to database');
     } catch (err) {
       console.error('[Graph Viewer] Failed to save graph state:', err);
     }
   }
-
   // ============================================================================
   // CLEANUP
   // ============================================================================
-
   function cleanup(): void {
     if (animationFrame) {
       cancelAnimationFrame(animationFrame);
@@ -548,22 +484,18 @@ try {
       tensorStore.dispose();
     }
   }
-
   // ============================================================================
   // REACTIVE UPDATES
   // ============================================================================
-
   // Update graph engine when render state changes
   // TODO: Convert to $derived: if (graphEngine && $canInteract) {
     // Apply render state changes to engine
     // This would need implementation in the engine
   }
 </script>
-
 <!-- ============================================================================ -->
 <!-- COMPONENT TEMPLATE -->
 <!-- ============================================================================ -->
-
 <div class="legal-graph-viewer {className}" style="width: {width}px height: {height}px;">
   <!-- Loading State -->
   {#if $isLoading}
@@ -572,7 +504,6 @@ try {
       <p>Loading legal document network...</p>
     </div>
   {/if}
-
   <!-- Error State -->
   {#if $error}
     <div class="error-overlay">
@@ -582,16 +513,14 @@ try {
       <button onclick={() => window.location.reload()}>Reload Page</button>
     </div>
   {/if}
-
   <!-- WebGPU Canvas -->
-  <canvas 
+  <canvas
     bind:this={canvas as any}
     class="graph-canvas"
     class:interactive={$canInteract}
-    {width} 
+    {width}
     {height}
   ></canvas>
-
   <!-- Performance HUD -->
   {#if $isInitialized && !$error}
     <div class="performance-hud">
@@ -613,24 +542,20 @@ try {
       </div>
     </div>
   {/if}
-
   <!-- Controls Panel -->
   {#if $canInteract}
     <div class="controls-panel">
       <button onclick={resetCamera} title="Reset Camera">
         🎯
       </button>
-      
       <button onclick={togglePhysics} title="Toggle Physics" class:active={enablePhysics}>
         ⚡
       </button>
-      
-      <button onclick={() => $renderState.autoRotate = !$renderState.autoRotate} 
+      <button onclick={() => $renderState.autoRotate = !$renderState.autoRotate}
               title="Auto Rotate" ;
               class:active={$renderState.autoRotate}>
         🔄
       </button>
-      
       <select bind:value={$renderState.filterType} title="Filter Nodes">
         <option value="all">All Nodes</option>
         <option value="document">Documents</option>
@@ -638,11 +563,9 @@ try {
         <option value="entity">Entities</option>
         <option value="precedent">Precedents</option>
       </select>
-
       <button onclick={saveGraphState} title="Save State">
         💾
       </button>
-
       <button onclick={async () => {
         const blob = await exportImage();
         if (blob) {
@@ -658,7 +581,6 @@ try {
       </button>
     </div>
   {/if}
-
   <!-- Selected Node Info -->
   {#if $renderState.selectedNode}
     <div class="node-info-panel">
@@ -668,11 +590,9 @@ try {
     </div>
   {/if}
 </div>
-
 <!-- ============================================================================ -->
 <!-- DOCUMENT DETAILS MODAL - CACHE-FIRST INTEGRATION                            -->
 <!-- ============================================================================ -->
-
 <!-- Document Details Modal with Cache-First Strategy -->
 <DocumentDetails
   documentId={$documentDetailsState.selectedDocumentId || ''}
@@ -685,11 +605,9 @@ try {
     }
   }}
 />
-
 <!-- ============================================================================ -->
 <!-- COMPONENT STYLES -->
 <!-- ============================================================================ -->
-
 <style>
   .legal-graph-viewer {
     position: relative;
@@ -698,11 +616,9 @@ try {
     overflow: hidden;
     background: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 100%);
   }
-
   .graph-canv.graph-canvas.interactive:active {
     cursor: grabbing;
   }
-
   .loading-overlay,
   .error-overlay {
     position: absolute;
@@ -718,7 +634,6 @@ try {
     color: white;
     z-index: 10;
   }
-
   .loading-spinner {
     width: 40px;
     height: 40px;
@@ -728,26 +643,21 @@ try {
     animation: spin 1s linear infinite;
     margin-bottom: 16px;
   }
-
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-
   .error-overlay {
     text-align: center;
   }
-
   .error-icon {
     font-size: 48px;
     margin-bottom: 16px;
   }
-
   .error-overlay h3 {
     margin: 0 0 8px 0;
     color: #ef4444;
   }
-
   .error-overlay button {
     margin-top: 16px;
     padding: 8px 16px;
@@ -757,11 +667,9 @@ try {
     border-radius: 4px;
     cursor: pointer;
   }
-
-  .error-overlay button:hover {;
+  .error-overlay button:hover {
     background: #2563eb;
   }
-
   .performance-hud {
     position: absolute;
     top: 12px;
@@ -774,27 +682,22 @@ try {
     font-family: 'Courier New', monospace;
     z-index: 5;
   }
-
   .stat {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     min-width: 80px;
     margin-bottom: 2px;
   }
-
   .stat:last-child {
     margin-bottom: 0;
   }
-
   .label {
     opacity: 0.8;
   }
-
   .value {
     font-weight: bold;
     color: #60a5fa;
   }
-
   .controls-panel {
     position: absolute;
     top: 12px;
@@ -804,7 +707,6 @@ try {
     flex-wrap: wrap;
     z-index: 5;
   }
-
   .controls-panel button,
   .controls-panel select {
     padding: 6px 10px;
@@ -814,20 +716,17 @@ try {
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
-    transition: all 0.2s;
+    transition: all 0.2;
   }
-
-  .controls-panel button:hover,
-  .controls-panel select:hover {;
+  .controls-panel button: hover
+  .controls-panel select:hover {
     background: rgba(0, 0, 0, 0.9);
     border-color: rgba(255, 255, 255, 0.4);
   }
-
   .controls-panel button.active {
     background: rgba(96, 165, 250, 0.3);
     border-color: #60a5fa;
   }
-
   .node-info-panel {
     position: absolute;
     bottom: 12px;
@@ -840,29 +739,24 @@ try {
     max-width: 300px;
     z-index: 5;
   }
-
   .node-info-panel h4 {
     margin: 0 0 8px 0;
     color: #60a5fa;
     font-size: 14px;
   }
-
   .node-info-panel p {
     margin: 4px 0;
     font-size: 12px;
   }
-
   /* Responsive design */
   @media (max-width: 768px) {
     .performance-hud {
       font-size: 10px;
     }
-    
     .controls-panel {
       flex-direction: column;
       align-items: flex-end;
     }
-    
     .controls-panel button,
     .controls-panel select {
       padding: 4px 8px;

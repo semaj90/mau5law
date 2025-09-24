@@ -1,26 +1,23 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
   import HeadlessDialog from '$lib/headless/HeadlessDialog.svelte';
   import LoadingButton from '$lib/headless/LoadingButton.svelte';
   import FormField from '$lib/headless/FormField.svelte';
-  
   // Icons
-  import { 
-    Search, BookOpen, Scale, FileText, Brain, Zap, 
-    Filter, SortAsc, Eye, ExternalLink, Download, 
+  import {
+    Search, BookOpen, Scale, FileText, Brain, Zap,
+    Filter, SortAsc, Eye, ExternalLink, Download,
     Star, Bookmark, Clock, AlertCircle, CheckCircle,
     Library, Gavel, Users, Calendar, MapPin, Link
   } from 'lucide-svelte';
-
   // Svelte 5 runes
   let searchQuery = $state('');
   let searchResults = $state([]);
   let isSearching = $state(false);
   let selectedFilters = $state({
-    jurisdiction: '',;
+    jurisdiction: '',
     court: '',
     documentType: '',
     dateRange: '',
@@ -33,26 +30,23 @@
   let showCitationDialog = $state(false);
   let selectedDocument = $state(null);
   let researchSession = $state({
-    id: null,
-    startTime: new Date(),;
-    queries: [],;
+    id: null
+    startTime: new Date(),
+    queries: [],
     findings: [];
   });
-
   // Advanced search options
   let advancedSearch = $state(false);
   let searchMode = $state('semantic'); // semantic, boolean, phrase
   let aiSuggestions = $state([]);
   let relatedTopics = $state([]);
-  
   // Filter options from database
   let filterOptions = $state({
-    jurisdictions: ['Federal', 'State', 'Local', 'International'],;
+    jurisdictions: ['Federal', 'State', 'Local', 'International'],
     courts: ['Supreme Court', 'Court of Appeals', 'District Court', 'Bankruptcy Court'],
     documentTypes: ['case', 'statute', 'regulation', 'brief', 'opinion'],
     precedentialValues: ['High', 'Medium', 'Low', 'Informational'];
   });
-
   $effect(() => {
     (async () => {
 await initializeResearchSession();
@@ -60,48 +54,40 @@ await initializeResearchSession();
     await loadAISuggestions();
     })();
   });
-
   async function initializeResearchSession() {
     researchSession.id = `research_${Date.now()}`;
     console.log('🔍 Legal Research Session Started:', researchSession.id);
   }
-
   async function performSearch() {
     if (!searchQuery.trim()) return;
-    
     isSearching = true;
     researchSession.queries.push({
-      query: searchQuery,;
+      query: searchQuery
       filters: { ...selectedFilters },
-      timestamp: new Date(),;
-      mode: searchMode;
+      timestamp: new Date(),
+      mode: searchMod;
     });
-
     try {
       const searchPayload = {
-        query: searchQuery,
-        mode: searchMode,
-        filters: selectedFilters,
-        sort: sortBy,;
-        page: currentPage,;
+        query: searchQuery
+        mode: searchMode
+        filters: selectedFilters
+        sort: sortBy
+        page: currentPage
         limit: 20;
       };
-
       // Store search pattern in CHR-ROM for fast retrieval
       await nesGPUBridge.storeCHRROMPattern(`search_${Date.now()}`, {/* JSX syntax converted to Svelte */});
-
       const response = await fetch('/api/legal/research/search', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(searchPayload);
       });
-
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown }).json();
         searchResults = (data as { results?: unknown; total?: unknown; relatedTopics?: unknown; citations?: unknown }).results || [];
         totalResults = (data as { results?: unknown; total?: unknown; relatedTopics?: unknown; citations?: unknown }).total || 0;
         relatedTopics = (data as { results?: unknown; total?: unknown; relatedTopics?: unknown; citations?: unknown }).relatedTopics || [];
-        
         // Generate AI suggestions based on results
         await generateAISuggestions((data as { results?: unknown; total?: unknown; relatedTopics?: unknown; citations?: unknown }).results.slice(0, 5));
       } else {
@@ -117,7 +103,6 @@ await initializeResearchSession();
       isSearching = false;
     }
   }
-
   function generateMockResults(query) {
     return [
       {
@@ -134,11 +119,11 @@ await initializeResearchSession();
         keyTopics: ['Contract Law', 'Commercial Disputes', 'Interpretation'],
         relevanceScore: 0.94,
         citedBy: 47,
-        isBookmarked: false,
+        isBookmarked: false
         url: '/legal/documents/smith-v-johnson-2019';
       },
       {
-        id: '2', 
+        id: '2',
         title: 'Federal Rules of Civil Procedure § 26(b)(1)',
         citation: 'Fed. R. Civ. P. 26(b)(1)',
         fullCitation: 'Federal Rules of Civil Procedure Rule 26(b)(1) (2020)',
@@ -151,7 +136,7 @@ await initializeResearchSession();
         keyTopics: ['Discovery', 'Civil Procedure', 'Proportionality'],
         relevanceScore: 0.89,
         citedBy: 234,
-        isBookmarked: true,
+        isBookmarked: true
         url: '/legal/documents/frcp-26-b-1';
       },
       {
@@ -163,22 +148,20 @@ await initializeResearchSession();
         jurisdiction: 'Federal',
         dateDecided: '2023-01-01',
         documentType: 'brief',
-        precedentialValue: 'Medium',;
+        precedentialValue: 'Medium',
         summary: 'Comprehensive template and analysis for drafting effective summary judgment motions...',
         keyTopics: ['Summary Judgment', 'Motion Practice', 'Legal Writing'],
         relevanceScore: 0.82,
         citedBy: 12,
-        isBookmarked: false,;
+        isBookmarked: false
         url: '/legal/documents/summary-judgment-template';
       }
     ];
   }
-
   async function generateAISuggestions(results) {
     // Extract key terms and generate related search suggestions
     const topics = results.flatMap(r => r.keyTopics || []);
     const uniqueTopics = [...new Set(topics)];
-    
     aiSuggestions = [
       `Related cases on ${uniqueTopics[0] || 'similar topics'}`,
       `Recent developments in ${uniqueTopics[1] || 'this area'}`,
@@ -186,7 +169,6 @@ await initializeResearchSession();
       `Practical applications and precedent analysis`
     ];
   }
-
   async function loadSavedCitations() {
     try {
       const response = await fetch('/api/legal/research/citations/saved');
@@ -203,7 +185,6 @@ await initializeResearchSession();
       ];
     }
   }
-
   async function loadAISuggestions() {
     aiSuggestions = [
       'Recent Supreme Court decisions on constitutional law',
@@ -212,27 +193,25 @@ await initializeResearchSession();
       'Evidence standards in federal court'
     ];
   }
-
   async function saveCitation(document) {
     try {
       const response = await fetch('/api/legal/research/citations/save', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           documentId: document.id,
-          citation: document.citation,;
-          title: document.title,;
+          citation: document.citation,
+          title: document.title,
           notes: '';
         })
       });
-
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         document.isBookmarked = true;
         savedCitations = [
-          { 
-            id: document.id, ;
-            title: document.title, ;
-            citation: document.citation, 
+          {
+            id: document.id,
+            title: document.title,
+            citation: document.citation,
             savedAt: new Date() ;
           },
           ...savedCitations
@@ -244,37 +223,32 @@ await initializeResearchSession();
       document.isBookmarked = true;
     }
   }
-
   function openCitationDialog(document) {
     selectedDocument = document;
     showCitationDialog = true;
   }
-
   function clearFilters() {
     selectedFilters = {
-      jurisdiction: '',;
+      jurisdiction: '',
       court: '',
       documentType: '',
       dateRange: '',
       precedentialValue: '';
     };
   }
-
   function formatDate(dateString) {
     return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',;
-      month: 'short',;
+      year: 'numeric',
+      month: 'short',
       day: 'numeric';
     });
   }
-
   function getRelevanceColor(score) {
     if (score >= 0.9) return 'text-green-600 bg-green-100';
     if (score >= 0.8) return 'text-blue-600 bg-blue-100';
     if (score >= 0.7) return 'text-yellow-600 bg-yellow-100';
     return 'text-gray-600 bg-gray-100';
   }
-
   function getPrecedentialColor(value) {
     switch (value) {
       case 'High': return 'text-red-600 bg-red-100';
@@ -284,12 +258,10 @@ await initializeResearchSession();
     }
   }
 </script>
-
 <svelte:head>
   <title>Legal Research - Citation & Precedent Analysis</title>
   <meta name="description" content="Comprehensive legal research platform with AI-powered citation analysis and precedent matching" />
 </svelte:head>
-
 <div class="min-h-screen bg-gray-50">
   <!-- Header -->
   <div class="bg-white border-b border-gray-200">
@@ -306,7 +278,6 @@ await initializeResearchSession();
             <span>{researchSession.queries.length} queries</span>
           </div>
         </div>
-        
         <div class="flex items-center space-x-3">
           <button
             onclick={() => advancedSearch = !advancedSearch}
@@ -315,7 +286,6 @@ await initializeResearchSession();
             <Filter class="h-4 w-4 mr-2" />
             Advanced
           </button>
-          
           <div class="text-sm text-gray-500">
             {totalResults.toLocaleString()} results
           </div>
@@ -323,7 +293,6 @@ await initializeResearchSession();
       </div>
     </div>
   </div>
-
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="lg:grid lg:grid-cols-12 lg:gap-8">
       <!-- Search Panel -->
@@ -358,7 +327,6 @@ await initializeResearchSession();
                 </LoadingButton>
               </div>
             </div>
-
             <!-- Search Mode Toggle -->
             <div class="flex items-center space-x-4">
               <span class="text-sm font-medium text-gray-700">Search Mode:</span>
@@ -377,7 +345,6 @@ await initializeResearchSession();
                 </button>
               {/each}
             </div>
-
             <!-- Advanced Filters -->
             {#if advancedSearch}
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
@@ -389,7 +356,6 @@ await initializeResearchSession();
                     {/each}
                   </select>
                 </div>
-                
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1" for="court">Court</label><select id="court" bind:value={selectedFilters.court} class="w-full rounded-md border-gray-300 text-sm">
                     <option value="">All Courts</option>
@@ -398,7 +364,6 @@ await initializeResearchSession();
                     {/each}
                   </select>
                 </div>
-                
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1" for="document-type">Document Type</label><select id="document-type" bind:value={selectedFilters.documentType} class="w-full rounded-md border-gray-300 text-sm">
                     <option value="">All Types</option>
@@ -407,7 +372,6 @@ await initializeResearchSession();
                     {/each}
                   </select>
                 </div>
-                
                 <div class="md:col-span-2">
                   <label class="block text-sm font-medium text-gray-700 mb-1" for="precedential-value">Precedential Value</label><select id="precedential-value" bind:value={selectedFilters.precedentialValue} class="w-full rounded-md border-gray-300 text-sm">
                     <option value="">All Values</option>
@@ -416,7 +380,6 @@ await initializeResearchSession();
                     {/each}
                   </select>
                 </div>
-                
                 <div class="flex items-end">
                   <button
                     onclick={clearFilters}
@@ -429,7 +392,6 @@ await initializeResearchSession();
             {/if}
           </div>
         </div>
-
         <!-- AI Suggestions -->
         {#if aiSuggestions.length > 0}
           <div class="bg-blue-50 rounded-lg p-4 mb-6">
@@ -449,7 +411,6 @@ await initializeResearchSession();
             </div>
           </div>
         {/if}
-
         <!-- Search Results -->
         <div class="space-y-4">
           {#if searchResults.length > 0}
@@ -464,12 +425,10 @@ await initializeResearchSession();
                   <option value="court">Court</option>
                 </select>
               </div>
-              
               <div class="text-sm text-gray-500">
                 Showing {((currentPage - 1) * 20) + 1}-{Math.min(currentPage * 20, totalResults)} of {totalResults.toLocaleString()}
               </div>
             </div>
-
             <!-- Results List -->
             {#each searchResults as result}
               <div class="bg-white rounded-lg shadow border border-gray-200 p-6 hover:shadow-md transition-shadow">
@@ -480,47 +439,39 @@ await initializeResearchSession();
                     </h3>
                     <p class="text-sm text-gray-600 font-mono">{(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).citation}</p>
                   </div>
-                  
                   <div class="flex items-center space-x-2 ml-4">
                     <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getRelevanceColor((result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).relevanceScore)}">
                       {Math.round.relevanceScore * 100)}% match
                     </span>
-                    
                     <button
                       onclick={() => saveCitation(result)}
-                      class="p-1 text-gray-400 hover:text-yellow-500 transition-colors";
+                      class="p-1 text-gray-400 hover: text-yellow-500 transition-colors";
                       class:text-yellow-500={(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).isBookmarked}
                     >
                       <Bookmark class="h-4 w-4" />
                     </button>
                   </div>
                 </div>
-
                 <p class="text-gray-700 text-sm mb-3 line-clamp-2">{(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).summary}</p>
-
                 <div class="flex items-center justify-between text-sm">
                   <div class="flex items-center space-x-4">
                     <div class="flex items-center text-gray-500">
                       <Gavel class="h-4 w-4 mr-1" />
                       {(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).court}
                     </div>
-                    
                     <div class="flex items-center text-gray-500">
                       <Calendar class="h-4 w-4 mr-1" />
                       {formatDate((result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).dateDecided)}
                     </div>
-                    
                     <div class="flex items-center text-gray-500">
                       <Link class="h-4 w-4 mr-1" />
                       {(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).citedBy} citations
                     </div>
                   </div>
-
                   <div class="flex items-center space-x-2">
                     <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getPrecedentialColor((result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).precedentialValue)}">
                       {(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).precedentialValue} Precedent
                     </span>
-                    
                     <button
                       onclick={() => openCitationDialog(result)}
                       class="inline-flex items-center px-2 py-1 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50"
@@ -530,7 +481,6 @@ await initializeResearchSession();
                     </button>
                   </div>
                 </div>
-
                 <!-- Key Topics -->
                 {#if (result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).keyTopics?.length > 0}
                   <div class="mt-3 pt-3 border-t border-gray-100">
@@ -545,7 +495,6 @@ await initializeResearchSession();
                 {/if}
               </div>
             {/each}
-
             <!-- Pagination -->
             {#if totalResults > 20}
               <div class="flex items-center justify-center space-x-2 mt-8">
@@ -556,11 +505,9 @@ await initializeResearchSession();
                 >
                   Previous
                 </button>
-                
                 <span class="px-3 py-2 text-sm text-gray-700">
                   Page {currentPage} of {Math.ceil(totalResults / 20)}
                 </span>
-                
                 <button
                   onclick={() => { currentPage = currentPage + 1; performSearch(); }}
                   disabled={currentPage >= Math.ceil(totalResults / 20)}
@@ -579,7 +526,6 @@ await initializeResearchSession();
           {/if}
         </div>
       </div>
-
       <!-- Sidebar -->
       <div class="lg:col-span-4 space-y-6">
         <!-- Saved Citations -->
@@ -591,7 +537,6 @@ await initializeResearchSession();
             </h3>
             <span class="text-sm text-gray-500">{savedCitations.length}</span>
           </div>
-          
           <div class="space-y-3 max-h-64 overflow-y-auto">
             {#each savedCitations.slice(0, 10) as citation}
               <div class="border-l-2 border-yellow-400 pl-3 py-2">
@@ -602,7 +547,6 @@ await initializeResearchSession();
                 </p>
               </div>
             {/each}
-            
             {#if savedCitations.length === 0}
               <p class="text-sm text-gray-500 text-center py-4">
                 No saved citations yet
@@ -610,31 +554,26 @@ await initializeResearchSession();
             {/if}
           </div>
         </div>
-
         <!-- Research Session -->
         <div class="bg-white rounded-lg shadow p-6">
           <h3 class="text-lg font-medium text-gray-900 flex items-center mb-4">
             <Clock class="h-5 w-5 text-blue-500 mr-2" />
             Research Session
           </h3>
-          
           <div class="space-y-3">
             <div class="flex justify-between text-sm">
               <span class="text-gray-600">Started:</span>
               <span class="font-medium">{formatDate(researchSession.startTime)}</span>
             </div>
-            
             <div class="flex justify-between text-sm">
               <span class="text-gray-600">Queries:</span>
               <span class="font-medium">{researchSession.queries.length}</span>
             </div>
-            
             <div class="flex justify-between text-sm">
               <span class="text-gray-600">Findings:</span>
               <span class="font-medium">{savedCitations.length}</span>
             </div>
           </div>
-
           <!-- Recent Queries -->
           {#if researchSession.queries.length > 0}
             <div class="mt-4 pt-4 border-t border-gray-200">
@@ -652,7 +591,6 @@ await initializeResearchSession();
             </div>
           {/if}
         </div>
-
         <!-- Related Topics -->
         {#if relatedTopics.length > 0}
           <div class="bg-white rounded-lg shadow p-6">
@@ -673,7 +611,6 @@ await initializeResearchSession();
     </div>
   </div>
 </div>
-
 <!-- Citation Detail Dialog -->
 <HeadlessDialog bind:open={showCitationDialog}>
   {#if selectedDocument}
@@ -683,7 +620,6 @@ await initializeResearchSession();
           <h2 class="text-lg font-semibold text-gray-900">{selectedDocument.title}</h2>
           <p class="text-sm text-gray-600 font-mono">{selectedDocument.fullCitation}</p>
         </div>
-        
         <div class="p-6 space-y-4">
           <div class="grid grid-cols-2 gap-4 text-sm">
             <div>
@@ -703,12 +639,10 @@ await initializeResearchSession();
               <span class="text-gray-600">{selectedDocument.citedBy} cases</span>
             </div>
           </div>
-
           <div>
             <h4 class="font-medium text-gray-700 mb-2">Summary</h4>
             <p class="text-gray-600 text-sm">{selectedDocument.summary}</p>
           </div>
-
           {#if selectedDocument.keyTopics?.length > 0}
             <div>
               <h4 class="font-medium text-gray-700 mb-2">Key Topics</h4>
@@ -722,7 +656,6 @@ await initializeResearchSession();
             </div>
           {/if}
         </div>
-        
         <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
           <button
             onclick={() => showCitationDialog = false}
@@ -730,7 +663,6 @@ await initializeResearchSession();
           >
             Close
           </button>
-          
           <button
             onclick={() => { saveCitation(selectedDocument); showCitationDialog = false; }}
             class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700"
@@ -738,7 +670,6 @@ await initializeResearchSession();
             <Bookmark class="h-4 w-4 mr-1 inline" />
             Save Citation
           </button>
-          
           <a
             href={selectedDocument.url}
             class="px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 inline-flex items-center"

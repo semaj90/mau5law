@@ -2,15 +2,12 @@
  * Configuration Sync API Endpoint
  * Tests and validates all system connections and configurations
  */
-
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
 // Import connection modules
 let postgresConnection: any = null
 let redisConnection: any = null
 let minioService: any = null
-
 try {
   // Dynamic imports to handle server-only modules
   const pgModule = await import('$lib/server/db/connection.js')
@@ -18,18 +15,15 @@ try {
 } catch (error) {
   console.warn('PostgreSQL module not available:', error)
 }
-
 try {
   const minioModule = await import('$lib/server/storage/minio-service.js')
   minioService = minioModule.MinIOService.getInstance()
 } catch (error) {
   console.warn('MinIO module not available:', error)
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   const startTime = performance.now()
-  const testResults: Record<string, any> = {}
-
+  const testResults: { [key: string]: any } = {}
   // Test PostgreSQL Connection
   try {
     if (postgresConnection) {
@@ -37,18 +31,16 @@ export const GET: RequestHandler = async ({ url }) => {
         status: 'testing',
         message: 'Connecting to PostgreSQL...'
       }
-
       const dbConnected = await postgresConnection.initializeDatabase()
       if (dbConnected) {
         // Test a simple query
         const result = await postgresConnection.sql`
-          SELECT 
+          SELECT
             version() as pg_version,
             current_database() as database_name,
             current_user as connected_user,
             EXISTS(SELECT 1 FROM pg_extension WHERE extname = 'vector') as pgvector_installed
         `
-        
         testResults.postgresql = {
           status: 'connected',
           message: 'PostgreSQL connection successful',
@@ -78,19 +70,16 @@ export const GET: RequestHandler = async ({ url }) => {
       message: `PostgreSQL error: ${error}`
     }
   }
-
   // Test Redis Connection (using native test)
   try {
     testResults.redis = {
       status: 'testing',
       message: 'Testing Redis connection...'
     }
-
     // Try to connect to Redis using native fetch to test endpoint
     const redisTestResponse = await fetch('http://localhost:6379', {
       method: 'GET'
     }).catch(() => null)
-
     // Redis doesn't respond to HTTP, so any response or connection attempt indicates it's running
     testResults.redis = {
       status: 'available',
@@ -107,7 +96,6 @@ export const GET: RequestHandler = async ({ url }) => {
       details: { error: String(error) }
     }
   }
-
   // Test MinIO Connection
   try {
     if (minioService) {
@@ -115,7 +103,6 @@ export const GET: RequestHandler = async ({ url }) => {
         status: 'testing',
         message: 'Testing MinIO connection...'
       }
-
       // Try to list buckets to test connection
       try {
         const buckets = await minioService.client?.listBuckets?.()
@@ -151,7 +138,6 @@ export const GET: RequestHandler = async ({ url }) => {
       message: `MinIO initialization error: ${error}`
     }
   }
-
   // Test Environment Variables
   testResults.environment = {
     status: 'info',
@@ -170,29 +156,25 @@ export const GET: RequestHandler = async ({ url }) => {
       database_name: import.meta.env.POSTGRES_DB || 'legal_ai_db'
     }
   }
-
   const endTime = performance.now()
   const responseTime = Math.round(endTime - startTime)
-
   // Calculate overall health
   const services = ['postgresql', 'redis', 'minio']
-  const healthyServices = services.filter(service => 
-    testResults[service]?.status === 'connected' || 
+  const healthyServices = services.filter(service =>
+    testResults[service]?.status === 'connected' ||
     testResults[service]?.status === 'available'
   )
-
   const overallStatus = {
     healthy: healthyServices.length,
     total: services.length,
-    status: healthyServices.length === services.length ? 'all_healthy' : 
+    status: healthyServices.length === services.length ? 'all_healthy' :
             healthyServices.length >= services.length / 2 ? 'mostly_healthy' : 'unhealthy',
     responseTime
   }
-
   return json({
     timestamp: new Date().toISOString(),
-    overall: overallStatus,
-    services: testResults,
+    overall: overallStatus
+    services: testResults
     recommendations: generateRecommendations(testResults)
   }, {
     headers: {
@@ -202,34 +184,26 @@ export const GET: RequestHandler = async ({ url }) => {
     }
   })
 }
-
-function generateRecommendations(testResults: Record<string, any>): string[] {
+function generateRecommendations(testResults: { [key: string]: any }): string[] {
   const recommendations: string[] = []
-
   if (testResults.postgresql?.status !== 'connected') {
     recommendations.push('Fix PostgreSQL connection - check credentials and database server status')
   }
-
   if (testResults.minio?.status !== 'connected') {
     recommendations.push('Start MinIO server or fix MinIO connection configuration')
   }
-
   if (testResults.redis?.status === 'unknown') {
     recommendations.push('Verify Redis server is running on localhost:6379')
   }
-
   const envVars = testResults.environment?.variables || {}
   const missingVars = Object.entries(envVars)
     .filter(([key, value]) => value === '❌ Missing')
     .map(([key]) => key)
-
   if (missingVars.length > 0) {
     recommendations.push(`Set missing environment variables: ${missingVars.join(', ')}`)
   }
-
   if (recommendations.length === 0) {
     recommendations.push('All systems are properly configured! 🎉')
   }
-
   return recommendations
 }

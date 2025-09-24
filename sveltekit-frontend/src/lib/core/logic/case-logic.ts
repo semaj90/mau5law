@@ -2,7 +2,6 @@
  * Pure business logic for case management
  * No UI dependencies here — usable by DOM or Canvas renderers
  */
-
 export type CaseFile = {
   id: string;
   title: string;
@@ -11,7 +10,6 @@ export type CaseFile = {
   attachments?: number;
   lastUpdated?: string;
 };
-
 export const CaseLogic = {
   calculateRiskScore(caseFile: CaseFile) {
     // Simple deterministic risk score for demo purposes
@@ -22,7 +20,6 @@ export const CaseLogic = {
     if ((caseFile.title || '').length > 40) score = Math.min(100, score + 5);
     return score;
   },
-
   getDisplayStatus(caseFile: CaseFile) {
     const score = CaseLogic.calculateRiskScore(caseFile);
     if (score >= 80) return 'Critical';

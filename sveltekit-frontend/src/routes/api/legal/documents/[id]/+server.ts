@@ -1,10 +1,7 @@
 import { db } from "$lib/server/db/index"
 import type { RequestHandler } from './$types.js'
-
-
 // Individual Legal Document API - SvelteKit Server Endpoint
 import { json } from "@sveltejs/kit"
-
 // Import with fallback for different schema files
 let schema: any = {}
 try {
@@ -17,7 +14,6 @@ try {
   }
 }
 const { legalDocuments } = schema
-
 // GET - Get specific legal document
 export const GET: RequestHandler = async ({ params }) => {
   try {
@@ -29,7 +25,7 @@ export const GET: RequestHandler = async ({ params }) => {
     if (!legalDocuments) {
       console.warn("Legal documents table not available, returning mock data")
       return json({
-        id: documentId,
+        id: documentId
         title: "Sample Legal Document",
         content: "This is sample content for the legal document...",
         documentType: "brief",
@@ -44,7 +40,6 @@ export const GET: RequestHandler = async ({ params }) => {
       .select()
       .from(legalDocuments)
       .where(eq(legalDocuments.id, documentId)
-
     if (!document) {
       return json({ error: "Document not found" }, { status: 404 })
     }
@@ -53,14 +48,12 @@ export const GET: RequestHandler = async ({ params }) => {
       ...document,
       wordCount: document.content ? document.content.split(/\s+/).length: 0
     }
-
     return json(documentWithWordCount)
   } catch (error: any) {
     console.error("Error fetching legal document:", error)
     return json({ error: "Failed to fetch legal document" }, { status: 500 })
   }
 }
-
 // PUT - Update specific legal document
 export const PUT: RequestHandler = async ({ request, params }) => {
   try {
@@ -69,14 +62,13 @@ export const PUT: RequestHandler = async ({ request, params }) => {
       return json({ error: "Document ID is required" }, { status: 400 })
     }
     const data = await request.json()
-
     // Handle case where schema is not available
     if (!legalDocuments) {
       console.warn(
         "Legal documents table not available, returning mock response",
       )
       return json({
-        id: documentId,
+        id: documentId
         ...data,
         updatedAt: new Date(),
         wordCount: data.content ? data.content.split(/\s+/).length: 0
@@ -87,7 +79,6 @@ export const PUT: RequestHandler = async ({ request, params }) => {
       ...data,
       updatedAt: new Date()
     }
-
     if (data.content) {
       updateData.wordCount = data.content.split(/\s+/).length
     }
@@ -97,7 +88,6 @@ export const PUT: RequestHandler = async ({ request, params }) => {
       .set(updateData)
       .where(eq(legalDocuments.id, documentId)
       .returning()
-
     if (!updatedDocument) {
       return json({ error: "Document not found" }, { status: 404 })
     }
@@ -107,7 +97,6 @@ export const PUT: RequestHandler = async ({ request, params }) => {
     return json({ error: "Failed to update legal document" }, { status: 500 })
   }
 }
-
 // DELETE - Delete specific legal document
 export const DELETE: RequestHandler = async ({ params }) => {
   try {
@@ -127,9 +116,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
       .delete(legalDocuments)
       .where(eq(legalDocuments.id, documentId)
       .returning()
-    
     const deletedDocument = Array.isArray(deleteResult) ? deleteResult[0] : deleteResult
-
     if (!deletedDocument) {
       return json({ error: "Document not found" }, { status: 404 })
     }

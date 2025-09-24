@@ -1,11 +1,8 @@
 // Svelte 5 TypeScript Patterns - Progressive Type Replacement
 // Replaces generic 'any' shims with proper Svelte 5 type definitions
-
 import type { Component, Snippet } from 'svelte';
 import type { HTMLButtonAttributes, HTMLInputAttributes } from 'svelte/elements';
-
 // === COMPONENT PROPS PATTERNS ===
-
 // Enhanced Button Component Props (replaces generic Button any type)
 export interface EnhancedButtonProps extends HTMLButtonAttributes {
   variant?: 'default' | 'legal' | 'evidence' | 'case' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
@@ -15,7 +12,6 @@ export interface EnhancedButtonProps extends HTMLButtonAttributes {
   children?: Snippet;
   onclick?: (event: MouseEvent) => void;
 }
-
 // Enhanced Input Component Props (replaces generic Input any type)
 export interface EnhancedInputProps extends HTMLInputAttributes {
   variant?: 'default' | 'legal' | 'search' | 'error';
@@ -28,7 +24,6 @@ export interface EnhancedInputProps extends HTMLInputAttributes {
   onfocus?: (event: FocusEvent) => void;
   onblur?: (event: FocusEvent) => void;
 }
-
 // Form Component Props (replaces generic Form any type)
 export interface FormProps {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -39,9 +34,7 @@ export interface FormProps {
   onsubmit?: (event: SubmitEvent) => void | Promise<void>;
   children?: Snippet;
 }
-
 // === REACTIVE STATE PATTERNS ===
-
 // User State Interface (replaces generic user any type)
 export interface UserState {
   id: string;
@@ -54,7 +47,6 @@ export interface UserState {
     specializations: string[];
   };
 }
-
 // Case Management State (replaces generic Case any type)
 export interface CaseState {
   id: string;
@@ -67,7 +59,6 @@ export interface CaseState {
   updatedAt: Date;
   metadata?: Record<string, unknown>;
 }
-
 // Evidence State (replaces generic Evidence any type)
 export interface EvidenceState {
   id: string;
@@ -85,9 +76,7 @@ export interface EvidenceState {
     tags: string[];
   };
 }
-
 // === AI SERVICE TYPES ===
-
 // AI Task Interface (replaces generic AITask any type)
 export interface AITask {
   id: string;
@@ -109,7 +98,6 @@ export interface AITask {
   startedAt?: Date;
   completedAt?: Date;
 }
-
 // AI Response Interface (replaces generic AIResponse any type)
 export interface AIResponse<T = unknown> {
   success: boolean;
@@ -129,7 +117,6 @@ export interface AIResponse<T = unknown> {
     };
   };
 }
-
 // Worker Status Interface (replaces generic WorkerStatus any type)
 export interface WorkerStatus {
   id: string;
@@ -143,9 +130,7 @@ export interface WorkerStatus {
   };
   lastActivity: Date;
 }
-
 // === API REQUEST/RESPONSE TYPES ===
-
 // Case API Types (replaces generic CaseCreateRequest, etc.)
 export interface CaseCreateRequest {
   title: string;
@@ -154,11 +139,9 @@ export interface CaseCreateRequest {
   assignedTo?: string;
   metadata?: Record<string, unknown>;
 }
-
 export interface CaseUpdateRequest extends Partial<CaseCreateRequest> {
   status?: 'draft' | 'active' | 'pending' | 'closed';
 }
-
 export interface CaseSearchRequest {
   query?: string;
   status?: CaseState['status'][];
@@ -171,7 +154,6 @@ export interface CaseSearchRequest {
   limit?: number;
   offset?: number;
 }
-
 export interface CaseSearchResponse {
   cases: CaseState[];
   total: number;
@@ -181,7 +163,6 @@ export interface CaseSearchResponse {
     offset: number;
   };
 }
-
 // Evidence API Types
 export interface EvidenceCreateRequest {
   caseId: string;
@@ -191,7 +172,6 @@ export interface EvidenceCreateRequest {
   file?: File;
   metadata?: Record<string, unknown>;
 }
-
 export interface EvidenceSearchRequest {
   caseId?: string;
   query?: string;
@@ -203,9 +183,7 @@ export interface EvidenceSearchRequest {
   limit?: number;
   offset?: number;
 }
-
 // === FORM TYPES ===
-
 // Form Submission Result (replaces generic FormSubmissionResult)
 export interface FormSubmissionResult<T = Record<string, unknown>> {
   success: boolean;
@@ -214,7 +192,6 @@ export interface FormSubmissionResult<T = Record<string, unknown>> {
   message?: string;
   redirectTo?: string;
 }
-
 // Bulk Operation Response
 export interface BulkOperationResponse {
   processed: number;
@@ -222,9 +199,7 @@ export interface BulkOperationResponse {
   failed: number;
   errors?: Array<unknown>;
 }
-
 // === DATABASE TYPES ===
-
 // Vector Search Result (replaces generic VectorSearchResult any type)
 export interface VectorSearchResult {
   id: string;
@@ -236,7 +211,6 @@ export interface VectorSearchResult {
   documentId?: string;
   chunkIndex?: number;
 }
-
 // Vector Search Options
 export interface VectorSearchOptions {
   limit?: number;
@@ -245,15 +219,11 @@ export interface VectorSearchOptions {
   includeMetadata?: boolean;
   filter?: Record<string, unknown>;
 }
-
 // === COMPONENT COMPOSITION TYPES ===
-
 // Generic Component with Props
 export type EnhancedComponent<TProps = Record<string, never>> = Component<TProps>;
-
 // Component Props Utility
 export type ExtractProps<TComponent> = TComponent extends Component<infer TProps> ? TProps : never;
-
 // Event Handler Types
 export interface ComponentEventHandlers {
   onClick?: (event: MouseEvent) => void;
@@ -263,12 +233,9 @@ export interface ComponentEventHandlers {
   onBlur?: (event: FocusEvent) => void;
   onChange?: (value: unknown) => void;
 }
-
 // Snippet with Parameters
 export type ParameterizedSnippet<TParams extends readonly unknown[]> = Snippet<TParams>;
-
 // === STATE MANAGEMENT ===
-
 // Shared State Pattern for Svelte 5
 export interface SharedState<T> {
   value: T;
@@ -276,7 +243,6 @@ export interface SharedState<T> {
   update: (updater: (value: T) => T) => void;
   set: (value: T) => void;
 }
-
 // Store State Types
 export interface StoreState {
   auth: UserState;
@@ -298,5 +264,4 @@ export interface StoreState {
     uploadProgress: Record<string, number>;
   };
 }
-
 // (Removed invalid default export of types; types should be imported individually)

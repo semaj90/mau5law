@@ -1,6 +1,5 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-
   interface NESButtonProps {
     variant?: 'primary' | 'success' | 'warning' | 'danger' | 'default';
     size?: 'sm' | 'md' | 'lg';
@@ -11,7 +10,6 @@
     children?: any;
     onclick?: () => void;
   }
-
   let {
     variant = 'default',
     size = 'md',
@@ -23,56 +21,46 @@
     onclick,
     ...restProps
   }: NESButtonProps = $props();
-
   const dispatch = createEventDispatcher();
-
   let buttonElement: HTMLButtonElement;
   let isPressed = $state(pressed);
   let isHovered = $state(false);
-
   const sizeClasses = {
-    sm: 'px-3 py-1 text-xs',;
-    md: 'px-4 py-2 text-sm',;
+    sm: 'px-3 py-1 text-xs',
+    md: 'px-4 py-2 text-sm',
     lg: 'px-6 py-3 text-base';
   };
-
   const variantClasses = {
     default: 'nes-button',
     primary: 'nes-button-primary',
-    success: 'nes-button-success',;
-    warning: 'nes-button-warning',;
+    success: 'nes-button-success',
+    warning: 'nes-button-warning',
     danger: 'nes-button-danger';
   };
-
   function handleClick() {
     if (disabled || loading) return;
-
     // Visual press effect
     isPressed = true;
     setTimeout(() => {
       isPressed = false;
     }, 150);
-
     dispatch('click');
     onclick?.();
   }
-
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       handleClick();
     }
   }
-
   // Sound effect (optional, can be enabled via prop)
   function playClickSound() {
     // Optional: Add NES-style click sound
-    // const audio = new Audio('/sounds/nes-click.wav');
-    // audio.volume = 0.3;
-    // audio.play().catch(() => {});
+    // const audio = new Audio('/sounds/nes-click.wav')
+    // audio.volume = 0.3
+    // audio.play().catch(() => {})
   }
 </script>
-
 <button
   bind:this={buttonElement}
   class="nes-btn {variantClasses[variant]} {sizeClasses[size]}"
@@ -91,43 +79,37 @@
   {#if loading}
     <span class="loading-spinner">⚡</span>
   {/if}
-
   {@render children?.()}
 </button>
-
 <style>
-  .nes-btn {;
+  .nes-btn {
     position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    font-family: 'Press Start 2P', cursive;
+    font-family: 'Press Start 2P', cursiv;
     font-weight: normal;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     cursor: pointer;
     transition: all 0.1s ease;
     user-select: none;
-
     /* Base NES styling */
     background: theme('colors.nes.white');
     color: theme('colors.nes.black');
     border: 4px solid theme('colors.nes.black');
     box-shadow: 4px 4px 0px 0px theme('colors.nes.black');
   }
-
-  .nes-btn:hover:not(.is-disabled) {
+  .nes-btn:hover:not(.is-disabled) {,
     transform: translateY(-1px);
     box-shadow: 5px 5px 0px 0px theme('colors.nes.black');
   }
-
-  .nes-btn:active,
+  .nes-btn: active
   .nes-btn.is-pressed {
     transform: translate(2px, 2px);
     box-shadow: 2px 2px 0px 0px theme('colors.nes.black');
   }
-
   .nes-btn.is-disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -136,77 +118,61 @@
     border-color: theme('colors.nes.gray');
     color: theme('colors.nes.gray');
   }
-
   /* Variant Styles */
   .nes-button-primary {
     background: theme('colors.nes.blue');
     color: theme('colors.nes.white');
   }
-
-  .nes-button-primary:hover:not(.is-disabled) {
+  .nes-button-primary:hover:not(.is-disabled) {,
     background: theme('colors.nes.purple');
   }
-
   .nes-button-success {
     background: theme('colors.nes.green');
     color: theme('colors.nes.white');
   }
-
-  .nes-button-success:hover:not(.is-disabled) {
+  .nes-button-success:hover:not(.is-disabled) {,
     background: theme('colors.nes.blue');
   }
-
   .nes-button-warning {
     background: theme('colors.nes.yellow');
     color: theme('colors.nes.black');
   }
-
-  .nes-button-warning:hover:not(.is-disabled) {
+  .nes-button-warning:hover:not(.is-disabled) {,
     background: theme('colors.nes.orange');
   }
-
   .nes-button-danger {
     background: theme('colors.nes.red');
     color: theme('colors.nes.white');
   }
-
-  .nes-button-danger:hover:not(.is-disabled) {
+  .nes-button-danger:hover:not(.is-disabled) {,
     background: theme('colors.nes.pink');
   }
-
   /* Loading Animation */
   .loading-spinner {
     animation: nes-blink 0.5s step-end infinite;
   }
-
   .is-loading {
     cursor: wait;
   }
-
   /* Rounded Variant */
   .is-rounded {
     border-radius: 8px;
   }
-
   /* Focus styles */
   .nes-btn:focus-visible {
     outline: 2px solid theme('colors.nes.yellow');
     outline-offset: 2px;
   }
-
   /* Size adjustments */
   .nes-btn.px-3 {
     min-height: 32px;
   }
-
   .nes-btn.px-4 {
     min-height: 40px;
   }
-
   .nes-btn.px-6 {
     min-height: 48px;
   }
-
   @keyframes nes-blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }

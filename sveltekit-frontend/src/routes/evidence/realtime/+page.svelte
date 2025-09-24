@@ -1,7 +1,6 @@
 <!-- Real-time Evidence Management Demo Page -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import MonacoEditor from "$lib/components/MonacoEditor.svelte";
   import RealTimeEvidenceGrid from "$lib/components/RealTimeEvidenceGrid.svelte";
   import Button from '$lib/components/ui/enhanced-bits';
@@ -18,17 +17,14 @@
     WifiOff,
   } from "lucide-svelte";
   import { onMount } from "svelte";
-
   // Demo state
   let selectedCaseId: string | undefined = $state(undefined);
   let searchQuery = $state("");
   let selectedTypes: string[] = $state([]);
   let showAdvancedFilters = $state(false);
   let demoMode = $state(false);
-
   // Store values - Access individual store properties correctly
-  const { isConnected, evidence, isLoading, error } = evidenceStore;
-
+  const { isConnected, evidence, isLoading, error } = evidenceStor;
   // Analytics data
   let stats = $state({ total: 0, byType: , byCase: , recentCount: 0 });
   let syncStatus: {
@@ -37,27 +33,23 @@
     total: number;
     inProgress: boolean;
   } = $state({
-    pending: 0,;
-    failed: 0,;
+    pending: 0,
+    failed: 0,
     total: 0,
-    inProgress: false,;
+    inProgress: false
   });
-
   $effect(() => {
     // Update stats when evidence changes
     const unsubscribe = evidenceStore.evidence.subscribe(() => {
       updateStats();
     });
-
     // Monitor sync status
     const syncInterval = setInterval(updateSyncStatus, 2000);
-
     return () => {
       unsubscribe();
       clearInterval(syncInterval);
     };
   });
-
   function updateStats() {
     if (lokiEvidenceService.isReady()) {
       stats = lokiEvidenceService.getEvidenceStats();
@@ -66,15 +58,14 @@
     if (lokiEvidenceService.isReady()) {
       const status = lokiEvidenceService.getSyncStatus();
       syncStatus = {
-        pending: status.pending,;
-        failed: status.failed,;
+        pending: status.pending,
+        failed: status.failed,
         total: status.total,
-        inProgress: status.inProgress ?? false,;
+        inProgress: status.inProgress ?? false,
       };
   }}
   async function startDemoMode() {
     demoMode = true;
-
     // Create some demo evidence
     const demoEvidence = [
       {
@@ -83,7 +74,7 @@
           "Camera footage from the main entrance showing suspect entering at 9:15 PM",
         type: "video",
         caseId: "case-001",
-        tags: ["surveillance", "timestamp", "entrance"],;
+        tags: ["surveillance", "timestamp", "entrance"],
         classification: {
           category: "visual",
           relevance: 0.95,
@@ -96,7 +87,7 @@
           "First-hand account of the incident from witness who was present at the scene",
         type: "testimony",
         caseId: "case-001",
-        tags: ["witness", "firsthand", "scene"],;
+        tags: ["witness", "firsthand", "scene"],
         classification: {
           category: "testimony",
           relevance: 0.82,
@@ -109,7 +100,7 @@
           "Forensic analysis of fingerprints found on the door handle",
         type: "document",
         caseId: "case-001",
-        tags: ["forensics", "fingerprints", "physical"],;
+        tags: ["forensics", "fingerprints", "physical"],
         classification: {
           category: "forensic",
           relevance: 0.78,
@@ -122,15 +113,14 @@
           "Call logs and text messages from suspect's phone for the relevant time period",
         type: "digital",
         caseId: "case-001",
-        tags: ["communications", "timeline", "digital"],;
+        tags: ["communications", "timeline", "digital"],
         classification: {
-          category: "digital",;
-          relevance: 0.65,;
+          category: "digital",
+          relevance: 0.65,
           confidence: 0.85,
         },
       },
     ];
-
     // Add demo evidence with delays to simulate real-time updates
     for (let i = 0; i < demoEvidence.length; i++) {
       setTimeout(async () => {
@@ -168,11 +158,9 @@
     return `${entries.length} types`;
   }
 </script>
-
 <svelte:head>
   <title>Real-time Evidence Management - Demo</title>
 </svelte:head>
-
 <div class="space-y-4">
   <!-- Header -->
   <header class="space-y-4">
@@ -192,26 +180,21 @@
             {/if}
           </div>
         </div>
-
         <div class="space-y-4">
           {#if !demoMode}
             <Button class="bits-btn" onclick={() =>
 startDemoMode()}>
               <Activity class="space-y-4" />
               Start Demo
-
           {/if}
-
           <Button class="bits-btn" variant="ghost" onclick={() =>
 clearAllEvidence()}>
             <Database class="space-y-4" />
             Clear All
-
         </div>
       </div>
     </div>
   </header>
-
   <!-- Stats Dashboard -->
   <div class="space-y-4">
     <div class="space-y-4">
@@ -227,7 +210,6 @@ clearAllEvidence()}>
           </div>
         </div>
       </div>
-
       <!-- Connection Status -->
       <div class="space-y-4">
         <div class="space-y-4">
@@ -246,7 +228,6 @@ clearAllEvidence()}>
           </div>
         </div>
       </div>
-
       <!-- Sync Status -->
       <div class="space-y-4">
         <div class="space-y-4">
@@ -270,7 +251,6 @@ clearAllEvidence()}>
           </div>
         </div>
       </div>
-
       <!-- Recent Evidence -->
       <div class="space-y-4">
         <div class="space-y-4">
@@ -286,7 +266,6 @@ clearAllEvidence()}>
         </div>
       </div>
     </div>
-
     <!-- Evidence Type Breakdown -->
     {#if Object.keys(errors).length > 0}
       <div class="space-y-4">
@@ -301,7 +280,6 @@ clearAllEvidence()}>
         </div>
       </div>
     {/if}
-
     <!-- Case Filter -->
     <div class="space-y-4">
       <div class="space-y-4">
@@ -322,7 +300,6 @@ clearAllEvidence()}>
             {/each}
           </select>
         </div>
-
         <div class="space-y-4">
           <label class="space-y-4">
             <input
@@ -335,7 +312,6 @@ clearAllEvidence()}>
         </div>
       </div>
     </div>
-
     <!-- Advanced Filters -->
     {#if showAdvancedFilters}
       <div class="space-y-4">
@@ -355,7 +331,6 @@ clearAllEvidence()}>
               class="space-y-4"
             />
           </div>
-
           <!-- Type Filter -->
           <div>
             <label
@@ -365,7 +340,7 @@ clearAllEvidence()}>
             >
             <select
               id="evidence-types"
-              multiple;
+              multipl;
               bind:value={selectedTypes}
               class="space-y-4"
               size="3"
@@ -379,7 +354,6 @@ clearAllEvidence()}>
               <option value="physical">Physical</option>
             </select>
           </div>
-
           <!-- Quick Actions -->
           <div>
             <h4 class="space-y-4">
@@ -394,7 +368,6 @@ clearAllEvidence()}>
 (selectedTypes = ["video", "image"])}
               >
                 Visual Evidence
-
               <Button
                 size="sm"
                 variant="ghost"
@@ -403,7 +376,6 @@ clearAllEvidence()}>
 (selectedTypes = ["testimony", "document"])}
               >
                 Testimonial
-
               <Button
                 size="sm"
                 variant="ghost"
@@ -415,13 +387,11 @@ clearAllEvidence()}>
                 }}
               >
                 Clear Filters
-
             </div>
           </div>
         </div>
       </div>
     {/if}
-
     <!-- Error Display -->
     {#if error}
       <div class="space-y-4">
@@ -448,7 +418,6 @@ clearAllEvidence()}>
         </div>
       </div>
     {/if}
-
     <!-- Demo Mode Banner -->
     {#if demoMode}
       <div class="space-y-4">
@@ -464,7 +433,6 @@ clearAllEvidence()}>
         </div>
       </div>
     {/if}
-
     <!-- Main Evidence Grid -->
     <div class="space-y-4">
       <RealTimeEvidenceGrid
@@ -474,7 +442,6 @@ clearAllEvidence()}>
         {showAdvancedFilters}
       />
     </div>
-
     <!-- Monaco Editor Demo -->
     <div class="space-y-4">
       <h3 class="space-y-4">Monaco Editor Demo</h3>
@@ -484,7 +451,6 @@ clearAllEvidence()}>
         TypeScript, and more.
       </p>
     </div>
-
     <!-- Tiptap Rich Text Editor Demo -->
     <div class="space-y-4">
       <h3 class="space-y-4">
@@ -500,7 +466,6 @@ clearAllEvidence()}>
         Supports headings, lists, images, markdown export, and more.
       </p>
     </div>
-
     <!-- System Information -->
     <div class="space-y-4">
       <h3 class="space-y-4">System Information</h3>
@@ -518,7 +483,6 @@ clearAllEvidence()}>
             <li>✅ Undo/Redo functionality</li>
           </ul>
         </div>
-
         <div>
           <h4 class="space-y-4">
             Technical Stack
@@ -536,11 +500,9 @@ clearAllEvidence()}>
     </div>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   :global(body) {
     background-color: #f9fafb;
 }
 </style>
-

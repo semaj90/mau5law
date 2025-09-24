@@ -1,10 +1,9 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
 interface DetectiveCase {
   id: string
   title: string
-  status: 'ACTIVE' | 'PENDING' | 'CLOSED' | 'COLD'
+  status: 'ACTIVE' | 'PENDING' | 'CLOSED' | 'COLD',
   priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'
   suspects: Suspect[]
   timeline: TimelineEvent[]
@@ -14,7 +13,6 @@ interface DetectiveCase {
   openedDate: string
   lastUpdated: string
 }
-
 interface Suspect {
   id: string
   name: string
@@ -22,7 +20,7 @@ interface Suspect {
   opportunityScore: number
   meansScore: number
   motiveScore: number
-  overallThreatLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'
+  overallThreatLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL',
   psychologicalMarkers: string[]
   behaviorAnalysis: {
     aggression: number
@@ -42,53 +40,46 @@ interface Suspect {
     violentOffenses: boolean
   }
 }
-
 interface TimelineEvent {
   timestamp: string
   event: string
-  significance: 'LOW' | 'MEDIUM' | 'HIGH'
+  significance: 'LOW' | 'MEDIUM' | 'HIGH',
   evidenceIds: string[]
   correlationScore: number
   location?: string
   witnesses?: string[]
 }
-
 interface Evidence {
   id: string
   type: 'DIGITAL' | 'PHYSICAL' | 'WITNESS' | 'FINANCIAL' | 'FORENSIC' | 'DOCUMENTARY'
   description: string
   relevance: 'LOW' | 'MEDIUM' | 'HIGH'
-  integrity: 'INTACT' | 'COMPROMISED' | 'PARTIAL'
+  integrity: 'INTACT' | 'COMPROMISED' | 'PARTIAL',
   collectedDate: string
   collectedBy: string
   chainOfCustody: string[]
   analysisStatus: 'PENDING' | 'IN_PROGRESS' | 'COMPLETE'
   findings?: string
 }
-
 export const GET: RequestHandler = async ({ params }) => {
   try {
     const caseId = params.caseId
-    
     if (!caseId) {
       return json(
         { success: false, error: 'Case ID required' },)
         { status: 400 }
       )
     }
-
     // In production, this would query the database
     const caseData = await getDetectiveCaseData(caseId)
-    
     if (!caseData) {
       return json(
         { success: false, error: 'Case not found' },)
         { status: 404 }
       )
     }
-
     return json({
-      success: true,
+      success: true
       case: caseData.case,
       suspects: caseData.suspects,
       timeline: caseData.timeline,
@@ -100,7 +91,6 @@ export const GET: RequestHandler = async ({ params }) => {
         riskLevel: calculateOverallRiskLevel(caseData.suspects)
       }
     })
-
   } catch (error) {
     console.error('Detective case API error:', error)
     return json(
@@ -109,28 +99,23 @@ export const GET: RequestHandler = async ({ params }) => {
     )
   }
 }
-
 export const POST: RequestHandler = async ({ params, request }) => {
   try {
     const caseId = params.caseId
     const updates = await request.json()
-
     if (!caseId) {
       return json(
         { success: false, error: 'Case ID required' },)
         { status: 400 }
       )
     }
-
     // In production, this would update the database
     const updatedCase = await updateDetectiveCase(caseId, updates)
-
     return json({
-      success: true,
-      case: updatedCase,
+      success: true
+      case: updatedCase
       message: 'Case updated successfully'
     })
-
   } catch (error) {
     console.error('Detective case update error:', error)
     return json(
@@ -139,16 +124,13 @@ export const POST: RequestHandler = async ({ params, request }) => {
     )
   }
 }
-
 async function getDetectiveCaseData(caseId: string): Promise<any> {
-  
   // Mock implementation - in production, query database
   if (!caseId.startsWith('CASE-')) {
     return null
   }
-
   const mockCase: DetectiveCase = {
-    id: caseId,
+    id: caseId
     title: `Criminal Investigation - Case ${caseId}`,
     status: 'ACTIVE',
     priority: 'HIGH',
@@ -160,7 +142,6 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
     openedDate: '2024-01-15T09:00:00Z',
     lastUpdated: new Date().toISOString()
   }
-
   const mockSuspects: Suspect[] = [
     {
       id: 'SUSPECT-001',
@@ -196,7 +177,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       }
     },
     {
-      id: 'SUSPECT-002', 
+      id: 'SUSPECT-002',
       name: 'Maria L. Rodriguez',
       relationship: 'Former Employee',
       opportunityScore: 67,
@@ -226,7 +207,6 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       }
     }
   ]
-
   const mockTimeline: TimelineEvent[] = [
     {
       timestamp: '2024-01-15T10:30:00Z',
@@ -238,7 +218,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       witnesses: ['IT Administrator - Email server logs']
     },
     {
-      timestamp: '2024-01-18T14:15:00Z', 
+      timestamp: '2024-01-18T14:15:00Z',
       event: 'Suspect observed conducting surveillance of victim\'s workplace',
       significance: 'HIGH',
       evidenceIds: ['E003', 'E008'],
@@ -282,7 +262,6 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       witnesses: ['Store Clerk Peterson']
     }
   ]
-
   const mockEvidence: Evidence[] = [
     {
       id: 'E001',
@@ -393,46 +372,36 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       findings: 'Credit card records and store surveillance confirm suspect purchased unusual combination of items consistent with restraint and confinement preparations.'
     }
   ]
-
   return {
-    case: mockCase,
-    suspects: mockSuspects,
-    timeline: mockTimeline,
+    case: mockCase
+    suspects: mockSuspects
+    timeline: mockTimeline
     evidence: mockEvidence
   }
 }
-
 async function updateDetectiveCase(caseId: string, updates: any): Promise<DetectiveCase | null> {
   // Mock implementation - in production, update database
   const existing = await getDetectiveCaseData(caseId)
   if (!existing) return null
-
   return {
     ...existing.case,
     ...updates,
     lastUpdated: new Date().toISOString()
   }
 }
-
 function calculateTimelineSpan(timeline: TimelineEvent[]): string {
   if (timeline.length === 0) return 'No events'
-  
   const dates = timeline.map(event => new Date(event.timestamp)
   const earliest = new Date(Math.min(...dates.map(d => d.getTime()))
   const latest = new Date(Math.max(...dates.map(d => d.getTime()))
-  
   const diffMs = latest.getTime() - earliest.getTime()
   const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24)
-  
   return `${diffDays} days`
 }
-
 function calculateOverallRiskLevel(suspects: Suspect[]): string {
   if (suspects.length === 0) return 'UNKNOWN'
-  
   const highRiskCount = suspects.filter(item => item.length)
   const totalSuspects = suspects.length
-  
   if (highRiskCount / totalSuspects >= 0.5) return 'HIGH'
   if (highRiskCount > 0) return 'MEDIUM'
   return 'LOW'

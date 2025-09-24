@@ -3,18 +3,15 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from './schema-postgres.js';
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
-
 // Environment configuration
 const isDevelopment = process.env.NODE_ENV === "development";
-
 /**
  * 🔐 Runtime App Connection (legal_admin - limited privileges)
  * Use this for all normal app operations: queries, inserts, updates
  */
 const appConnectionString =
   process.env.DATABASE_URL ||
-  "postgresql://legal_admin:123456@localhost:5433/legal_ai_db";
-
+  "postgresql://legal_admin:123456@localhost:5433/legal_ai_db"
 /**
  * 👑 Admin Connection (postgres - superuser)
  * Use this only for migrations, extensions, and administrative tasks
@@ -22,43 +19,38 @@ const appConnectionString =
 const adminConnectionString =
   process.env.ADMIN_DATABASE_URL ||
   process.env.MIGRATION_DATABASE_URL ||
-  "postgresql://legal_admin:123456@localhost:5433/legal_ai_db";
-
+  "postgresql://legal_admin:123456@localhost:5433/legal_ai_db"
 // App connection pool (for normal operations)
 export const appPool = isDevelopment;
   ? new Pool({
-      connectionString: appConnectionString,
+      connectionString: appConnectionString
       max: 5, // Smaller pool for development
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 10000
     });
   : new Pool({
-      connectionString: appConnectionString,
+      connectionString: appConnectionString
       max: 20,
       idleTimeoutMillis: 60000,
       connectionTimeoutMillis: 5000
     });
-
-// Admin connection pool (for migrations/extensions);
+// Admin connection pool (for migrations/extensions)
 export const adminPool = new Pool({
-  connectionString: adminConnectionString,
+  connectionString: adminConnectionString
   max: 2, // Small pool since admin operations are infrequent
   idleTimeoutMillis: 10000,
   connectionTimeoutMillis: 5000
 });
-
 // Drizzle instances
 export const db: NodePgDatabase<typeof schema> = drizzle(appPool, { schema });
 export const adminDb: NodePgDatabase<typeof schema> = drizzle(adminPool, { schema });
-
-// Connection info for logging;
+// Connection info for logging
 export const connectionInfo = {
   app: appConnectionString.replace(/:([^:@]*@)/, ':***@'), // Hide password
-  admin: adminConnectionString.replace(/:([^:@]*@)/, ':***@'), // Hide password;
+  admin: adminConnectionString.replace(/:([^:@]*@)/, ':***@'), // Hide password
   environment: isDevelopment ? 'development' : 'production'
 };
-
-// Utility functions;
+// Utility functions
 export async function testAppConnection(): Promise<boolean> {
   try {
     const client = await appPool.connect();
@@ -70,7 +62,6 @@ export async function testAppConnection(): Promise<boolean> {
     return false;
   }
 }
-
 export async function testAdminConnection(): Promise<boolean> {
   try {
     const client = await adminPool.connect();
@@ -82,16 +73,13 @@ export async function testAdminConnection(): Promise<boolean> {
     return false;
   }
 }
-
 export async function ensureExtensions(): Promise<void> {
   try {
     const client = await adminPool.connect();
-    
     // Enable required extensions with superuser privileges
     await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
     await client.query('CREATE EXTENSION IF NOT EXISTS "pgcrypto"');
     await client.query('CREATE EXTENSION IF NOT EXISTS "vector"');
-    
     console.log('✅ PostgreSQL extensions ensured');
     client.release();
   } catch (error) {
@@ -99,13 +87,11 @@ export async function ensureExtensions(): Promise<void> {
     throw error;
   }
 }
-
-// Graceful shutdown;
+// Graceful shutdown
 process.on('SIGTERM', async () => {
   console.log('Closing database pools...');
   await Promise.all([appPool.end(), adminPool.end()]);
 });
-
 process.on('SIGINT', async () => {
   console.log('Closing database pools...');
   await Promise.all([appPool.end(), adminPool.end()]);

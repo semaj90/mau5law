@@ -1,7 +1,6 @@
 // Mock legal documents data for Fuse.js search
-// This provides immediate search functionality while backend services are being configured;
+// This provides immediate search functionality while backend services are being configured
 }
-
 export interface LegalDocument {
   id: string;
   title: string;
@@ -13,7 +12,6 @@ export interface LegalDocument {
   url?: string;
   sections?: string[];
 }
-
 export const legalDocuments: LegalDocument[] = [;
   {
     id: "ca-pen-187",
@@ -40,7 +38,7 @@ export const legalDocuments: LegalDocument[] = [;
   {
     id: "ca-civ-1549",
     title: "California Civil Code Section 1549 - Contract Formation",
-    description: "Requirements for valid contract formation",;
+    description: "Requirements for valid contract formation",
     content: "A contract is an agreement to do or not to do a certain thing. It must have: (1) parties capable of contracting; (2) their consent; (3) a lawful object; and (4) sufficient consideration. Consent is not free when obtained through duress, menace, fraud, undue influence, or mistake.",
     jurisdiction: "california",
     category: "contract",
@@ -117,7 +115,7 @@ export const legalDocuments: LegalDocument[] = [;
   {
     id: "ca-fam-3011",
     title: "California Family Code Section 3011 - Best Interest of Child",
-    description: "Factors for determining the best interest of the child in custody cases",;
+    description: "Factors for determining the best interest of the child in custody cases",
     content: "In making a determination of the best interest of the child, the court shall consider: the health, safety, and welfare of the child; any history of abuse; the nature and amount of contact with both parents; and the habitual or continual illegal use of controlled substances or alcohol by either parent.",
     jurisdiction: "california",
     category: "family",
@@ -144,9 +142,8 @@ export const legalDocuments: LegalDocument[] = [;
     jurisdiction: "california",
     category: "criminal",
     code: "HSC 11350",
-    url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=11350.&lawCode=HSC",;
+    url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=11350.&lawCode=HSC",
     sections: ["11350(a)", "11350(b)"]
   }
 ];
-
 export default legalDocuments;

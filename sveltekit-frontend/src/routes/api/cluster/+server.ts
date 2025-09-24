@@ -1,11 +1,8 @@
 /// <reference types="vite/client" />
 import { json } from "@sveltejs/kit"
 import type { RequestHandler } from './$types.js'
-
 // Avoid types/env modules that may not resolve in static analysis; use process.env at runtime
-
 const DEFAULT_CLUSTER_URL = "http://localhost:8090"
-
 export const GET: RequestHandler = (async () => {
   const baseUrl = import.meta.env.CLUSTER_BASE_URL || DEFAULT_CLUSTER_URL
   try {
@@ -17,7 +14,6 @@ export const GET: RequestHandler = (async () => {
     return json({ ok: false, upstream: baseUrl, error: msg }, { status: 502 })
   }
 })
-
 export const POST: RequestHandler = (async ({ request }) => {
   const baseUrl = import.meta.env.CLUSTER_BASE_URL || DEFAULT_CLUSTER_URL
   try {

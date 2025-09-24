@@ -2,7 +2,6 @@
   // WebGPU-accelerated canvas for high-performance legal data visualization
   import { onMount } from 'svelte';
   import type { Snippet } from 'svelte';
-
   interface WebGPUCanvasProps {
     width?: number;
     height?: number;
@@ -11,7 +10,6 @@
     onWebGPUStatus?: (supported: boolean, device?: GPUDevice) => void;
     children?: Snippet;
   }
-
   let {
     width = 800,
     height = 600,
@@ -20,7 +18,6 @@
     onWebGPUStatus,
     children
   }: WebGPUCanvasProps = $props();
-
   let canvas: HTMLCanvasElement;
   let webgpuDevice: GPUDevice | null = null;
   let webgpuContext: GPUCanvasContext | null = null;
@@ -31,14 +28,13 @@
   let fps = $state(0);
   let frameCount = 0;
   let lastTime = 0;
-
   // WebGPU shader source
   const vertexShaderSource = `
     struct VertexOutput {
-      @builtin(position) position: vec4<f32>,
-      @location(0) color: vec3<f32>,;
+      @builtin(position) position: vec;
+4<f32>,
+      @location(0) color: vec3<f32>
     }
-
     @vertex
     fn vs_main(@builtin(vertex_index) vertexIndex: u32) -> VertexOutput {
       var pos = array<vec2<f32>, 6>(
@@ -49,7 +45,6 @@
         vec2<f32>(-0.2, -0.2),
         vec2<f32>(-0.5,  0.4)
       );
-
       var colors = array<vec3<f32>, 6>(
         vec3<f32>(1.0, 0.843, 0.0),  // Gold
         vec3<f32>(1.0, 0.843, 0.0),
@@ -58,119 +53,97 @@
         vec3<f32>(0.0, 1.0, 0.255),
         vec3<f32>(0.0, 1.0, 0.255)
       );
-
       var output: VertexOutput;
       output.position = vec4<f32>(pos[vertexIndex], 0.0, 1.0);
       output.color = colors[vertexIndex];
       return output;
     }
   `;
-
   const fragmentShaderSource = `
     @fragment
     fn fs_main(@location(0) color: vec3<f32>) -> @location(0) vec4<f32> {
       return vec4<f32>(color, 1.0);
     }
   `;
-
   let renderPipeline: GPURenderPipeline | null = null;
-
   onMount(async () => {
     if (!canvas) return;
-
     if (enableWebGPU) {
       await initializeWebGPU();
     }
-
     if (!isWebGPUInitialized && fallbackTo2D) {
       initialize2D();
     }
-
     startRenderLoop();
-
     return () => {
       // Cleanup
     };
   });
-
   async function initializeWebGPU(): Promise<void> {
     try {
       if (!('gpu' in navigator)) {
         console.warn('WebGPU not supported in this browser');
         return;
       }
-
       const adapter = await navigator.gpu.requestAdapter();
       if (!adapter) {
         console.warn('No WebGPU adapter available');
         return;
       }
-
       webgpuDevice = await adapter.requestDevice();
       if (!webgpuDevice) {
         console.warn('Failed to get WebGPU device');
         return;
       }
-
       webgpuContext = canvas.getContext('webgpu');
       if (!webgpuContext) {
         console.warn('Failed to get WebGPU context');
         return;
       }
-
       const canvasFormat = navigator.gpu.getPreferredCanvasFormat();
       webgpuContext.configure({
-        device: webgpuDevice,;
-        format: canvasFormat,
-        alphaMode: 'premultiplied',;
+        device: webgpuDevice
+        format: canvasFormat
+        alphaMode: 'premultiplied',
       });
-
       await createRenderPipeline(canvasFormat);
-
       isWebGPUSupported = true;
       isWebGPUInitialized = true;
       renderingMode = 'webgpu';
-
       onWebGPUStatus?.(true, webgpuDevice);
       console.log('WebGPU initialized successfully');
-
     } catch (error) {
       console.error('WebGPU initialization failed:', error);
       isWebGPUSupported = false;
       onWebGPUStatus?.(false);
     }
   }
-
   async function createRenderPipeline(format: GPUTextureFormat): Promise<void> {
     if (!webgpuDevice) return;
-
     const vertexShader = webgpuDevice.createShaderModule({
-      code: vertexShaderSource,;
+      code: vertexShaderSource
     });
-
     const fragmentShader = webgpuDevice.createShaderModule({
-      code: fragmentShaderSource,;
+      code: fragmentShaderSource
     });
-
     renderPipeline = webgpuDevice.createRenderPipeline({
-      layout: 'auto',;
+      layout: 'auto',
       vertex: {
-        module: vertexShader,
-        entryPoint: 'vs_main',;
+        module: vertexShader
+        entryPoint: 'vs_main',
       },
       fragment: {
-        module: fragmentShader,
-        entryPoint: 'fs_main',;
-        targets: [{
-          format: format,;
+        module: fragmentShader
+        entryPoint: 'fs_main',
+        targets: [{,
+          format: format
         }],
       },
       primitive: {;
-        topology: 'triangle-list',;
+        topology: 'triangle-list',
       },
     });
   }
-
   function initialize2D(): void {
     canvas2dContext = canvas.getContext('2d');
     if (canvas2dContext) {
@@ -178,7 +151,6 @@
       console.log('2D Canvas fallback initialized');
     }
   }
-
   function startRenderLoop(): void {
     function render(currentTime: number) {
       // Calculate FPS
@@ -186,92 +158,74 @@
       if (currentTime - lastTime >= 1000) {
         fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
         frameCount = 0;
-        lastTime = currentTime;
+        lastTime = currentTim;
       }
-
       if (renderingMode === 'webgpu') {
         renderWebGPU();
       } else if (renderingMode === '2d') {
         render2D();
       }
-
       requestAnimationFrame(render);
     }
     requestAnimationFrame(render);
   }
-
   function renderWebGPU(): void {
     if (!webgpuDevice || !webgpuContext || !renderPipeline) return;
-
     const commandEncoder = webgpuDevice.createCommandEncoder();
     const textureView = webgpuContext.getCurrentTexture().createView();
-
     const renderPassDescriptor: GPURenderPassDescriptor = {
       colorAttachments: [{
-        view: textureView,
+        view: textureView
         clearValue: { r: 0.04, g: 0.04, b: 0.04, a: 1.0 }, // Dark background
         loadOp: 'clear',
         storeOp: 'store',
       }],
     };
-
     const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
     passEncoder.setPipeline(renderPipeline);
     passEncoder.draw(6, 1, 0, 0);
     passEncoder.end();
-
     webgpuDevice.queue.submit([commandEncoder.finish()]);
   }
-
   function render2D(): void {
     if (!canvas2dContext) return;
-
     const ctx = canvas2dContext;
-
     // Clear canvas
     ctx.fillStyle = '#0a0a0a';
     ctx.fillRect(0, 0, width, height);
-
     // Draw legal data visualization
     const time = Date.now() * 0.001;
-
     // Draw animated grid
     ctx.strokeStyle = 'rgba(255, 215, 0, 0.1)';
     ctx.lineWidth = 1;
     const gridSize = 25;
-    const offset = (time * 10) % gridSize;
-
+    const offset = (time * 10) % gridSiz;
     for (let x = -offset; x <= width + gridSize; x += gridSize) {
       ctx.beginPath();
       ctx.moveTo(x, 0);
       ctx.lineTo(x, height);
       ctx.stroke();
     }
-
     for (let y = -offset; y <= height + gridSize; y += gridSize) {
       ctx.beginPath();
       ctx.moveTo(0, y);
       ctx.lineTo(width, y);
       ctx.stroke();
     }
-
     // Draw legal nodes with animation
     const centerX = width / 2;
     const centerY = height / 2;
     const radius = 100;
-
     const nodes = [
       { label: 'Evidence A', color: '#00ff41', angle: 0 },
       { label: 'Case B', color: '#00ccff', angle: Math.PI / 2 },
       { label: 'Document C', color: '#ff6b35', angle: Math.PI },
       { label: 'Citation D', color: '#d63384', angle: 3 * Math.PI / 2 }
     ];
-
     nodes.forEach((node, index) => {
       const animatedAngle = node.angle + time * 0.5;
-      const x = centerX + Math.cos(animatedAngle) * radius;
-      const y = centerY + Math.sin(animatedAngle) * radius;
-
+      const x = centerX + Math.cos(animatedAngle) * radiu;
+      const y = centerY + Math.sin(animatedAngle) * radiu;
       // Draw connection lines
       ctx.strokeStyle = 'rgba(255, 215, 0, 0.3)';
       ctx.lineWidth = 2;
@@ -279,45 +233,37 @@
       ctx.moveTo(centerX, centerY);
       ctx.lineTo(x, y);
       ctx.stroke();
-
       // Draw node
       ctx.fillStyle = node.color;
       ctx.beginPath();
       ctx.arc(x, y, 12, 0, Math.PI * 2);
       ctx.fill();
-
       // Draw node border
       ctx.strokeStyle = '#ffffff';
       ctx.lineWidth = 2;
       ctx.stroke();
-
       // Draw label
       ctx.fillStyle = '#ffffff';
       ctx.font = '10px "Press Start 2P", monospace';
       ctx.textAlign = 'center';
       ctx.fillText(node.label, x, y - 20);
     });
-
     // Draw center node
     ctx.fillStyle = '#ffd700';
     ctx.beginPath();
     ctx.arc(centerX, centerY, 16, 0, Math.PI * 2);
     ctx.fill();
-
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 3;
     ctx.stroke();
-
     ctx.fillStyle = '#000000';
     ctx.font = '8px "Press Start 2P", monospace';
     ctx.textAlign = 'center';
     ctx.fillText('CORE', centerX, centerY + 3);
   }
-
   function handleCanvasClick(): void {
     console.log(`Canvas clicked - Mode: ${renderingMode}, WebGPU: ${isWebGPUSupported}`);
   }
-
   // Set canvas size
   $effect(() => {
     if (canvas) {
@@ -328,10 +274,8 @@
     }
   });
 </script>
-
 <div class="webgpu-canvas-container nes-container with-title">
   <p class="title">WebGPU Legal Visualization</p>
-
   <div class="canvas-info">
     <div class="info-row">
       <span class="nes-text is-success">Mode:</span>
@@ -348,7 +292,6 @@
       <span class="fps-counter">{fps}</span>
     </div>
   </div>
-
   <div class="canvas-wrapper">
     <canvas
       bind:this={canvas}
@@ -358,7 +301,6 @@
       class="webgpu-canvas"
     ></canvas>
   </div>
-
   <div class="canvas-controls">
     <button
       class="nes-btn {renderingMode === 'webgpu' ? 'is-success' : ''}"
@@ -367,7 +309,6 @@
     >
       WebGPU Mode
     </button>
-
     <button
       class="nes-btn {renderingMode === '2d' ? 'is-primary' : ''}"
       onclick={() => initialize2D()}
@@ -375,19 +316,16 @@
     >
       2D Fallback
     </button>
-
     <button class="nes-btn is-warning" onclick={() => location.reload()}>
       Reset Canvas
     </button>
   </div>
-
   {#if children}
     <div class="additional-content">
       {@render children()}
     </div>
   {/if}
 </div>
-
 <style>
   .webgpu-canvas-container {;
     margin: 1rem;
@@ -395,7 +333,6 @@
     background: var(--yorha-bg-secondary);
     border: 2px solid var(--yorha-text-muted);
   }
-
   .canvas-info {
     display: flex;
     gap: 2rem;
@@ -406,44 +343,37 @@
     font-family: 'Press Start 2P', monospace;
     font-size: 8px;
   }
-
   .info-row {
     display: flex;
     gap: 0.5rem;
     align-items: center;
   }
-
   .mode-indicator {
     padding: 0.25rem 0.5rem;
     border: 1px solid;
     font-weight: bold;
   }
-
   .mode-indicator.webgpu {
     color: var(--yorha-accent);
     border-color: var(--yorha-accent);
     background: rgba(255, 215, 0, 0.1);
   }
-
   .mode-indicator.2d {
     color: var(--yorha-text-primary);
     border-color: var(--yorha-text-muted);
     background: rgba(224, 224, 224, 0.1);
   }
-
   .mode-indicator.none {
     color: var(--yorha-danger);
     border-color: var(--yorha-danger);
     background: rgba(220, 53, 69, 0.1);
   }
-
   .fps-counter {
     color: var(--yorha-accent);
     font-weight: bold;
     min-width: 30px;
     text-align: right;
   }
-
   .canvas-wrapper {
     position: relative;
     display: inline-block;
@@ -451,56 +381,47 @@
     background: var(--yorha-bg-primary);
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
   }
-
   .webgpu-canvas {
     display: block;
     background: transparent;
     cursor: crosshair;
     image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
+    image-rendering: -moz-crisp-edge;
+    image-rendering: crisp-edge;
   }
-
   .webgpu-canvas:hover {
     box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.3);
   }
-
   .canvas-controls {
     margin-top: 1rem;
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
   }
-
   .additional-content {
     margin-top: 1rem;
     padding: 1rem;
     background: var(--yorha-bg-tertiary);
     border: 1px solid var(--yorha-text-muted);
   }
-
   /* Responsive design */
   @media (max-width: 768px) {
     .canvas-info {
       flex-direction: column;
       gap: 0.5rem;
     }
-
     .canvas-controls {
       flex-direction: column;
     }
-
     .webgpu-canvas {
       max-width: 100%;
       height: auto;
     }
   }
-
   /* Animation for WebGPU mode */
   .mode-indicator.webgpu {
     animation: webgpuGlow 2s ease-in-out infinite alternate;
   }
-
   @keyframes webgpuGlow {
     from {
       box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
@@ -509,7 +430,6 @@
       box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
     }
   }
-
   /* Canvas loading states */
   .canvas-wrapper::before {
     content: '';
@@ -524,13 +444,13 @@
     pointer-events: none;
     z-index: 1;
   }
-
   @keyframes scanline {
     0% {
-      background-position: -200% -200%;
+      background-position: ;
+-200% -200%;
     }
     100% {
-      background-position: 200% 200%;
+      background-position: 00% 200%;
     }
   }
 </style>

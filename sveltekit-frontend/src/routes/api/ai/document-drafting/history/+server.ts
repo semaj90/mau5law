@@ -1,40 +1,35 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: document-drafting\history
  * Category: minimal
  * Memory Bank: SAVE_RAM
  * Priority: 120
  * Redis Type: documentProcessing
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: minimal
  * - Memory Bank: SAVE_RAM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 /**
  * Document History API
  * GET /api/ai/document-drafting/history - Get user's document history
  */
-
 import { json } from '@sveltejs/kit'
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 import type { RequestHandler } from './$types.js'
-
 const originalGETHandler: RequestHandler = async ({ url, locals }) => {
   try {
     // In production, this would query the database for the user's document history
     // For now, return mock data that demonstrates the functionality
-    
     const limit = parseInt(url.searchParams.get('limit') || '20')
     const offset = parseInt(url.searchParams.get('offset') || '0')
     const status = url.searchParams.get('status'); // 'draft', 'review', 'finalized'
     const type = url.searchParams.get('type'); // document type filter
-
     // Mock document history data
     const mockHistory = [
       {
@@ -163,21 +158,16 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
         collaborators: ['attorney_007', 'paralegal_008']
       }
     ]
-
     // Apply filters
     let filteredHistory = mockHistory
-    
     if (status) {
       filteredHistory = filteredHistory.filter(doc => doc.status === status)
     }
-    
     if (type) {
       filteredHistory = filteredHistory.filter(doc => doc.type === type)
     }
-
     // Apply pagination
     const paginatedHistory = filteredHistory.slice(offset, offset + limit)
-
     // Calculate statistics
     const stats = {
       total: filteredHistory.length,
@@ -193,10 +183,9 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
       avgCompletionScore: filteredHistory.reduce((sum, d) => sum + d.metadata.completionScore, 0) / filteredHistory.length,
       totalWordCount: filteredHistory.reduce((sum, d) => sum + d.metadata.wordCount, 0)
     }
-
     return json({
-      success: true,
-      history: paginatedHistory,
+      success: true
+      history: paginatedHistory
       pagination: {
         limit,
         offset,
@@ -209,7 +198,6 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
         timestamp: new Date().toISOString()
       }
     })
-
   } catch (error) {
     console.error('Error fetching document history:', error)
     return json(
@@ -218,5 +206,4 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
     )
   }
 }
-
 export const GET = redisOptimized.documentProcessing(originalGETHandler)

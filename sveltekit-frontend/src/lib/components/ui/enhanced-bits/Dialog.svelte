@@ -1,12 +1,10 @@
 <!-- SSR-optimized Dialog component for Legal AI Platform -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import type { Snippet } from 'svelte';
-  // import { Dialog as BitsDialog } from 'bits-ui';
+  // import { Dialog as BitsDialog } from 'bits-ui'
   import { fade, fly } from 'svelte/transition';
   import { cn } from '$lib/utils/cn';
-
   interface DialogProps {
     /** Whether the dialog is open */
     open?: boolean;
@@ -31,7 +29,6 @@
     /** Content snippet for dialog content */
     content?: import('svelte').Snippet;
   }
-
   let { open = $bindable(false),
     onOpenChange,
     size = 'md',
@@ -44,7 +41,6 @@
     children,
     content
    }: DialogProps = $props();
-
   // Reactive size classes using $derived
   let sizeClasses = $derived({
     'max-w-md': size === 'sm',
@@ -59,7 +55,6 @@
     'max-w-4xl': size === 'xl',
     'max-w-[95vw] max-h-[95vh]': size === 'full'
   } : 'max-w-lg');
-
   // Reactive content classes using $derived
   let dialogContentClasses = $derived(cn(
     'bits-dialog-content',
@@ -69,36 +64,32 @@
       'max-w-2xl': size === 'lg',
       'max-w-4xl': size === 'xl',
       'max-w-[95vw] max-h-[95vh]': size === 'full',
-      'nier-bits-dialog': legal,
-      'yorha-panel border-2 border-nier-border-primary': evidenceAnalysis,
-      'yorha-card-elevated shadow-2xl': caseManagement,
+      'nier-bits-dialog': legal
+      'yorha-panel border-2 border-nier-border-primary': evidenceAnalysis
+      'yorha-card-elevated shadow-2xl': caseManagement
       'font-gothic': legal
     },
     contentClass
   );
-
   // Reactive overlay classes using $derived
   let overlayClasses = $derived(cn(
     'bits-dialog-overlay',
     {
-      'backdrop-blur-md': legal,
+      'backdrop-blur-md': legal
       'bg-nier-overlay': evidenceAnalysis || caseManagement
     },
     overlayClass
   ));
-
   // Handle open change
   function handleOpenChange(newOpen: boolean) {
-    open = newOpen;
+    open = newOpe;
     onOpenChange?.(newOpen);
   }
-
   // Handle close dialog
   function handleClose() {
     handleOpenChange(false);
   }
 </script>
-
 <!-- SSR-safe Dialog rendering with proper hydration -->
 {#if open}
   <div class="dialog-overlay" onclick={handleClose} role="presentation">
@@ -107,7 +98,6 @@
     </div>
   </div>
 {/if}
-
 <!-- Portal rendering for dialog content with SSR compatibility -->
 <!-- <BitsDialog.Portal>
     <BitsDialog.Overlay
@@ -125,33 +115,27 @@
     <!-- </BitsDialog.Content>
   </BitsDialog.Portal>
 </BitsDialog.Root> -->
-
-
 <!-- Export sub-components for easy use -->
 <!-- <script lang="ts" module>
   export { BitsDialog as Dialog };
-
   // Re-export commonly used sub-components
   export const DialogTrigger = BitsDialog.Trigger;
   export const DialogPortal = BitsDialog.Portal;
   export const DialogOverlay = BitsDialog.Overlay;
   export const DialogContent = BitsDialog.Content;
-  export const DialogTitle = BitsDialog.Title;
-  export const DialogDescription = BitsDialog.Description;
-  export const DialogClose = BitsDialog.Close;
+  export const DialogTitle = BitsDialog.Titl;
+  export const DialogDescription = BitsDialog.Descriptio;
+  export const DialogClose = BitsDialog.Clo;
   // Create custom header and footer components since they don't exist in newer Bits UI
   export const DialogHeader = 'div';
   export const DialogFooter = 'div';
 </script> -->
-
 <style>/* @unocss-include */ /* Enhanced dialog animations for legal AI context */ :global(.bits-dialog-overlay) {
     animation: overlay-show 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
-
   :global(.bits-dialog-content) {
     animation: content-show 300ms cubic-bezier(0.16, 1, 0.3, 1);
   }
-
   @keyframes overlay-show {
     from {
       opacity: 0;
@@ -160,7 +144,6 @@
       opacity: 1;
     }
   }
-
   @keyframes content-show {
     from {
       opacity: 0;
@@ -175,8 +158,7 @@
 background: linear-gradient( 135deg, var(--color-nier-bg-primary) 0%, var(--color-nier-bg-secondary) 100% );
     border: 2px solid var(--color-nier-border-primary);
   }
-
-  :global(.nier-bits-dialog::before) {
+  :global($1) {
     content: '';
     position: absolute;
     top: 0;
@@ -188,7 +170,7 @@ background: linear-gradient( 90deg, var(--color-nier-accent-warm), var(--color-n
 /* Evidence analysis specific styling */ :global([data-evidence-analysis] .bits-dialog-content) {
 background-image: linear-gradient(45deg, transparent 25%, rgba(0,0,0,0.02) 25%), linear-gradient(-45deg, transparent 25%, rgba(0,0,0,0.02) 25%), linear-gradient(45deg, rgba(0,0,0,0.02) 75%, transparent 75%), linear-gradient(-45deg, rgba(0,0,0,0.02) 75%, transparent 75%);
     background-size: 20px 20px;
-    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    background-position:  0, 0 10px, 10px -10px, -10px 0px;
   }
 /* Case management specific styling */ :global([data-case-management] .bits-dialog-content) {
 box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -197,43 +179,38 @@ box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 
   :global([data-ssr-dialog-overlay]) {
     /* Ensure overlay renders properly during SSR */
     position: fixed;
+d;
     inset: 0;
     z-index: 50;
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
-
     /* Prevent layout shift during hydration */
-    contain: layout style;
+    contain: layout styl;
     will-change: opacity;
   }
-
   :global([data-ssr-dialog-content]) {
     /* Optimize dialog content for SSR */
     position: fixed;
+d;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     z-index: 51;
-
     /* Ensure consistent sizing across different screen sizes */
     width: 90vw;
     max-width: 512px;
     max-height: 85vh;
-
     /* Background and styling */
     background: white;
     border-radius: 0.5rem;
     border: 1px solid #e5e7eb;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-
     /* Prevent content overflow */
     overflow-y: auto;
     padding: 1.5rem;
-
     /* Focus management */
     outline: none;
   }
-
   /* Responsive adjustments for dialog content */
   @media (max-width: 640px) {
     :global([data-ssr-dialog-content]) {
@@ -243,8 +220,7 @@ box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 
       border-radius: 0.25rem;
     }
   }
-
-/* Enhanced focus and accessibility */ :global(.bits-dialog-content:focus) {
+/* Enhanced focus and accessibility */ :global($1) {
     outline: 2px solid var(--color-nier-border-primary);
     outline-offset: 2px;
   }

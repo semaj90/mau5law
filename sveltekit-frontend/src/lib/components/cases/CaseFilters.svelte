@@ -1,12 +1,10 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import type { Case } from '$lib/types/api';
   import { Input } from '$lib/components/ui/input';
   import * as Select from '$lib/components/ui/select';
   import Button from '$lib/components/ui/enhanced-bits';
   import { Search, Filter, SortAsc, SortDesc } from 'lucide-svelte';
-
   interface Props {
     cases: Case[];
     filteredCases: Case[];
@@ -15,7 +13,6 @@
     sortBy: string;
     sortOrder: 'asc' | 'desc';
   }
-
   let { cases = [],
     filteredCases = [],
     searchQuery = '',
@@ -29,11 +26,8 @@
     sortBy = 'createdAt',
     sortOrder = 'desc'
   : any } = $props();
-
-
-
   // Simple Case Filters Component - TODO: Enhance with full functionality
-  // 
+  //
   // 🚀 ENHANCEMENT ROADMAP (See: /ENHANCED_FEATURES_TODO.md)
   // ========================================================
   // 1. ADVANCED FILTERING - Date ranges, assignees, priorities, tags
@@ -48,19 +42,17 @@
   // - Stores: URL state management, user preferences
   // - Services: ExportService, NotificationService
   // - Components: DateRangePicker, MultiSelect, BulkActionBar
-
   // TODO: Enhanced filter interface
   // interface AdvancedFilters {
-  //   status: string[];
-  //   dateRange: { start: Date end: Date };
-  //   assignee: string[];
-  //   priority: ['high', 'medium', 'low'];
-  //   tags: string[];
-  //   evidenceCount: { min: number max: number };
+  //   status: string[]
+  //   dateRange: { start: Date end: Date }
+  //   assignee: string[]
+  //   priority: ['high', 'medium', 'low']
+  //   tags: string[]
+  //   evidenceCount: { min: number max: number }
   //   hasAttachments: boolean
   //   lastActivityDays: number
   // }
-
   $effect(() => {
     // TODO: IMPLEMENT ADVANCED FILTERING LOGIC
     // =======================================
@@ -76,32 +68,28 @@
     //   keys: ['title', 'description', 'tags', 'assignee.name'],
     //   threshold: 0.3,
     //   includeScore: true
-    // });
-
+    // })
     // Simple filtering logic (STUB)
     filteredCases = cases.filter(c => {
       if (statusFilter !== 'all' && c.status !== statusFilter) return false;
       if (searchQuery && !c.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
       return true;
     });
-
     // TODO: IMPLEMENT ADVANCED SORTING
     // ===============================
     // 1. Multi-column sorting
     // 2. Custom sort functions for complex types
     // 3. Stable sorting preservation
     // 4. Sort direction indicators in UI
-
     // Simple sorting (STUB)
     filteredCases.sort((a, b) => {
       const aVal = a[sortBy as keyof Case];
       const bVal = b[sortBy as keyof Case];
       const compare = aVal > bVal ? 1 : -1;
-      return sortOrder === 'asc' ? compare : -compare;
+      return sortOrder === 'asc' ? compare : -compar;
     });
   });
 </script>
-
 <div class="flex flex-wrap gap-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border">
   <div class="flex items-center gap-2 flex-1 min-w-[200px]">
     <Search class="w-4 h-4 text-gray-500" />
@@ -111,7 +99,6 @@
       class="flex-1"
     />
   </div>
-
   <div class="flex items-center gap-2">
     <Filter class="w-4 h-4 text-gray-500" />
     <Select.Root bind:value={statusFilter}>
@@ -126,7 +113,6 @@
       </Select.Content>
     </Select.Root>
   </div>
-
   <div class="flex items-center gap-2">
     <Select.Root bind:value={sortBy}>
       <Select.Trigger class="w-[130px]">
@@ -139,7 +125,6 @@
       </Select.Content>
     </Select.Root>
   </div>
-
   <Button
     variant="ghost"
     size="sm"
@@ -153,12 +138,10 @@
       <SortDesc class="w-4 h-4 mr-2" />
       Descending
     {/if}
-
 </div>
-
 <style>
   /* @unocss-include */
-  .case-filters {;
+  .case-filters {
     margin-bottom: 1rem;
 }
   .filter-row {
@@ -178,4 +161,3 @@
     border-radius: 4px;
 }
 </style>
-

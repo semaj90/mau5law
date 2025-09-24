@@ -4,7 +4,6 @@
 <!-- Ask AI Component with Vector Search Integration -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { debounce } from '$lib/utils/debounce';
   interface Props {
     caseId: string | undefined ;
@@ -24,7 +23,6 @@
     enableVoiceInput = false,
     enableVoiceOutput = false
   }: Props = $props();
-
   import { browser } from "$app/environment";
   import {
     AlertCircle,
@@ -34,12 +32,10 @@
     MessageCircle,
     Search,
   } from "lucide-svelte/icons";
-  import {  , onMount  } from "svelte";
+  import { onMount  } from "svelte";
   import { speakWithCoqui, loadCoquiTTS } from '$lib/services/coquiTTS';
   import type { Case } from '$lib/types';
-
               // Add this prop for voice output
-
   interface AIResponse {
     answer: string;
     references: Array;
@@ -55,7 +51,7 @@
     timestamp: number;
     references?: AIResponse["references"];
     confidence?: number;
-    metadata?: Record<string, any>;
+    metadata?: { [key: string]: any };
   }
   // Component state
   let query = $state("");
@@ -65,7 +61,6 @@
   let conversation = $state<ConversationMessage[] >([]);
   let textareaRef: HTMLTextAreaElement;
   let messagesContainer: HTMLDivElement;
-
   // Advanced options: These settings allow power users to customize the AI's behavior.
   // - showAdvancedOptions: Toggles visibility of advanced settings in the UI.
   // - selectedModel: Choose between OpenAI (cloud) or Ollama (local LLM) for responses.
@@ -77,7 +72,6 @@
   let searchThreshold = $state(0.7);
   let maxResults = $state(10);
   let temperature = $state(0.7);
-
   // Voice input state
   let isListening = $state(false);
   // Fix SpeechRecognition type for browser
@@ -85,9 +79,6 @@
   let ttsLoading = $state(false);
   // Reusable AudioContext for TTS playback
   let audioContext = $state<AudioContext | null >(null);
-
-
-
   // Simple localStorage wrapper for conversation storage
   const getLocalStorageService = () => ({
     async getSetting(key: string): Promise<any> {
@@ -105,11 +96,9 @@
         localStorage.setItem(key, JSON.stringify(value));
       } catch (error) {
         console.warn("Storage failed:", error);
-  
-    errorMessage = error instanceof Error ? error.message: 'An error occurred';}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred'}
     },
   });
-
   // Simple user activity tracking
   async function trackUserActivity(activity: any): Promise<void> {
     if (!browser) return;
@@ -118,8 +107,7 @@
       // In a real app, this would send to analytics
     } catch (error) {
       console.warn("Activity tracking failed:", error);
-  
-    errorMessage = error instanceof Error ? error.message: 'An error occurred';}}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred'}}
   $effect(() => {
     // Initialize speech recognition if supported and enabled
     if (enableVoiceInput && "webkitSpeechRecognition" in window) {
@@ -127,17 +115,14 @@
       recognition.continuous = false;
       recognition.interimResults = false;
       recognition.lang = "en-US";
-
       recognition.onresult = (event: any) => {
         const transcript = event.results[0][0].transcript;
         query = transcript;
         textareaRef?.focus();
       };
-
       recognition.onerror = () => {
         isListening = false;
       };
-
       recognition.onend = () => {
         isListening = false;
       };
@@ -145,7 +130,6 @@
     // Load conversation history from IndexedDB
     loadConversationHistory();
   });
-
   async function loadConversationHistory() {
     try {
       const contextKey = caseId ? `case_${caseId}` : "general";
@@ -153,14 +137,12 @@
       const history = await localStorageService.getSetting(
         `ai_conversation_${contextKey}`
       );
-
       if (history && Array.isArray(history)) {
         conversation = history.slice(-10); // Load last 10 messages
   }
     } catch (error) {
       console.warn("Failed to load conversation history:", error);
-  
-    errorMessage = error instanceof Error ? error.message: 'An error occurred';}}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred'}}
   async function saveConversationHistory() {
     try {
       const contextKey = caseId ? `case_${caseId}` : "general";
@@ -171,16 +153,14 @@
       );
     } catch (error) {
       console.warn("Failed to save conversation history:", error);
-  
-    errorMessage = error instanceof Error ? error.message: 'An error occurred';}}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred'}}
   async function askAI() {
     if (!query.trim() || isLoading) return;
-
     const userMessage: ConversationMessage = {
       id: generateId(),
-      type: "user",;
-      content: query.trim(),;
-      timestamp: Date.now(),;
+      type: "user",
+      content: query.trim(),
+      timestamp: Date.now(),
     };
     conversation = [...conversation, userMessage];
     const currentQuery = query;
@@ -189,13 +169,13 @@
     error = "";
     let aiMessageId = generateId();
   let aiMessage = $state<ConversationMessage >({
-      id: aiMessageId,
+      id: aiMessageId
       type: "ai",
       content: "",
       timestamp: Date.now(),
-      references: [],;
-      confidence: undefined,;
-      metadata: ,;
+      references: [],
+      confidence: undefined
+      metadata: ,
     });
     conversation = [...conversation, aiMessage];
     // Auto-resize textarea
@@ -208,18 +188,18 @@
       });
       // Prepare request
       const requestBody = {
-        question: currentQuery,;
+        question: currentQuery
         context: {
           caseId,
           evidenceIds,
           maxResults,
           searchThreshold,
         },
-        options: {;
-          model: selectedModel,
+        options: {
+          model: selectedModel
           temperature,
           maxTokens: 1000,
-          includeReferences: showReferences,;
+          includeReferences: showReferences
         },
       };
       // Use streaming endpoint for Ollama/Gemma3
@@ -227,10 +207,10 @@
       const controller = new AbortController();
       try {
     const response = await fetch(endpoint, {
-        method: "POST",;
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
-        },;
+        },
         body: JSON.stringify(requestBody));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -239,7 +219,7 @@
     console.error('API call failed:', error);
     throw error;
   },
-        signal: controller.signal,;
+        signal: controller.signal,
       });
       if (!response.ok) {
         const errorData = await response.json.catch(() => ( ));
@@ -252,7 +232,7 @@
   let done = $state(false);
   let buffer = $state("");
         // In the streaming loop:
-  let meta = $state<Record<string, any>('') >( );
+  let meta = $state<{ [key: string]: any }('') >( );
         while (!done) {
           const { value, done: doneReading } = await reader.read();
           done = doneReading;
@@ -262,17 +242,17 @@
             let lines = buffer.split("\n");
             buffer = lines.pop() ?? "";
             for (const line of lines) {
-              if (!line.trim()) continue;
+              if (!line.trim()) continu;
               try {
                 const chunk = JSON.parse(line);
                 if (chunk.answer !== undefined) {
                   aiMessage.content += chunk.answer;
                 }
-                if (chunk.confidence !== undefined) aiMessage.confidence = chunk.confidence;
-                if (chunk.references !== undefined) aiMessage.references = chunk.references;
+                if (chunk.confidence !== undefined) aiMessage.confidence = chunk.confidenc;
+                if (chunk.references !== undefined) aiMessage.references = chunk.reference;
                 if (chunk.model !== undefined) meta.model = chunk.model;
-                if (chunk.processingTime !== undefined) meta.processingTime = chunk.processingTime;
-                if (chunk.searchResults !== undefined) meta.searchResults = chunk.searchResults;
+                if (chunk.processingTime !== undefined) meta.processingTime = chunk.processingTim;
+                if (chunk.searchResults !== undefined) meta.searchResults = chunk.searchResult;
                 aiMessage.metadata = meta;
                 // Update conversation in-place
                 conversation = conversation.map((m) => m.id === aiMessageId ? { ...aiMessage } : m);
@@ -287,11 +267,11 @@
         await saveConversationHistory();
         ondispatch?.({
           answer: aiMessage.content,
-          references: aiMessage.references || [],;
+          references: aiMessage.references || [],
           confidence: aiMessage.confidence ?? 0,
-          searchResults: meta.searchResults ?? 0,;
+          searchResults: meta.searchResults ?? 0,
           model: meta.model ?? "ollama",
-          processingTime: meta.processingTime ?? 0,;
+          processingTime: meta.processingTime ?? 0,
         });
       } else {
         // Non-streaming (OpenAI or fallback)
@@ -304,16 +284,16 @@
       }
     })();
         aiMessage = {
-          id: aiMessageId,
+          id: aiMessageId
           type: "ai",
           content: aiResponse.answer,
           timestamp: Date.now(),
           references: aiResponse.references,
-          confidence: aiResponse.confidence,;
-          metadata: {;
+          confidence: aiResponse.confidence,
+          metadata: {
             model: aiResponse.model,
             processingTime: aiResponse.processingTime,
-            searchResults: aiResponse.searchResults,;
+            searchResults: aiResponse.searchResults,
           },
         };
         conversation = conversation.map((m) => m.id === aiMessageId ? aiMessage : m);
@@ -340,7 +320,7 @@
       return;
     }
     if (!recognition) {
-      const SpeechRecognitionClass = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const SpeechRecognitionClass = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognitio;
       recognition = new SpeechRecognitionClass();
       recognition.continuous = false;
       recognition.interimResults = false;
@@ -411,8 +391,8 @@
     reference: NonNullable<ConversationMessage["references"]>[0]
   ) {
     ondispatch?.({
-      id: reference.id,;
-      type: reference.type,;
+      id: reference.id,
+      type: reference.type,
     });
   }
   function clearConversation() {
@@ -429,11 +409,10 @@
   }
   return Math.random.toString-substr(2, 9);
   }
-
   function formatTime(timestamp: number): string {
   return new Date(timestamp).toLocaleTimeString([], {
-    hour: "2-digit",;
-    minute: "2-digit",;
+    hour: "2-digit",
+    minute: "2-digit",
   });
   }
   function getConfidenceColor(confidence: number): string {
@@ -446,10 +425,9 @@
     if (!confidence || typeof confidence !== 'string') {
       throw new Error('Invalid confidence parameter');
     }
-
-    if (confidence >= 0.8) return CheckCircle;
-    if (confidence >= 0.6) return AlertCircle;
-    return AlertCircle;
+    if (confidence >= 0.8) return CheckCircl;
+    if (confidence >= 0.6) return AlertCircl;
+    return AlertCircl;
   }
   // Auto-resize textarea
   function autoResize(event: Event) {
@@ -458,7 +436,6 @@
     target.style.height = target.scrollHeight + "px";
   }
 </script>
-
 <div class="space-y-4">
   <!-- Header -->
   <div>
@@ -470,7 +447,6 @@
           <span>• Case Context</span>
         {/if}
       </div>
-
       <div>
         <button aria-label="Action button"
           type="button"
@@ -478,7 +454,6 @@
         >
           Advanced
         </button>
-
         {#if conversation.length > 0}
           <button aria-label="Action button"
             type="button"
@@ -489,7 +464,6 @@
         {/if}
       </div>
     </div>
-
     <!-- Advanced Options -->
     {#if showAdvancedOptions}
       <div>
@@ -506,7 +480,6 @@
               <option value="ollama">Local LLM (Gemma)</option>
             </select>
           </div>
-
           <div>
             <label for="field-2">
               Search Threshold
@@ -522,7 +495,6 @@
             <span>{searchThreshold}</span>
           </div>
         </div>
-
         <div>
           <div>
             <label for="field-3">
@@ -536,7 +508,6 @@
               id="field-3"
             />
           </div>
-
           <div>
             <label for="field-4">
               Temperature
@@ -555,7 +526,6 @@
       </div>
     {/if}
   </div>
-
   <!-- Conversation -->
   <div;
     bind:this={messagesContainer}
@@ -582,7 +552,6 @@
               <Brain />
             </div>
           {/if}
-
           <div>
             <span>
               {message.type === "user" ? "You" : "AI Assistant"}
@@ -597,7 +566,6 @@
               {/if}
             </span>
           </div>
-
           <div>
             <p>{message.content}
               {#if message.type === "ai" && isLoading && conversation[conversation.length-1]?.id === message.id}
@@ -620,7 +588,6 @@
               </button>
             {/if}
           </div>
-
           <!-- References -->
           {#if message.references && message.references.length > 0 && showReferences}
             <div>
@@ -639,7 +606,6 @@
               </div>
             </div>
           {/if}
-
           <!-- Metadata -->
           {#if message.metadata}
             <div>
@@ -658,7 +624,6 @@
       {/each}
     {/if}
   </div>
-
   <!-- Input Area -->
   <div>
     {#if error}
@@ -669,7 +634,6 @@
         </div>
       </div>
     {/if}
-
     <div>
       <div>
         <textarea
@@ -693,7 +657,6 @@
           </button>
         {/if}
       </div>
-
       <button aria-label="Action button"
         type="button"
         onclick={(event: MouseEvent) => ) => askAI(}
@@ -709,7 +672,6 @@
         {/if}
       </button>
     </div>
-
     <div>
           <button
             type="button"
@@ -725,7 +687,7 @@
 </div>
 <style>
   /* @unocss-include */
-  .ai-chat-component {;
+  .ai-chat-component {
     font-family:
       system-ui,
       -apple-system,
@@ -757,7 +719,7 @@
   :global(.prose p) {
     margin-bottom: 0.5rem;
 }
-  :global(.prose p:last-child) {;
+  :global(.prose p:last-child) {
     margin-bottom: 0;
 }
   /* UnoCSS will handle the utility classes, this is for custom animations */
@@ -779,4 +741,3 @@
     50% { opacity: 0; }
   }
 </style>
-

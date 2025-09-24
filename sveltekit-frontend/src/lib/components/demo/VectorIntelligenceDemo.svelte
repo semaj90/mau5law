@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import type { SearchResults } from "$lib/types/global";
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits';
@@ -16,31 +15,26 @@
   } from '$lib/components/ui/enhanced-bits';
   import { Loader2, Search, Brain, Zap, Database } from 'lucide-svelte';
   import { context7Service, type VectorIntelligence } from '$lib/services/context7Service';
-
   // Reactive state from Context7 service
-  const { vectorResults, isAnalyzing } = context7Service;
+  const { vectorResults, isAnalyzing } = context7Servic;
   let searchQuery = $state('');
   let selectedFilters = $state<string[] >([]);
   let searchResults = $state<VectorIntelligence | null >(null);
   let searchHistory = $state<string[] >([]);
-
   // Demo data and filters
   const availableFilters = [
     'contracts', 'evidence', 'case-law', 'regulations',
     'high-similarity', 'recent', 'archived'
   ];
-
   const sampleQueries = [
     'liability clauses in employment contracts',
     'digital evidence chain of custody',
     'precedent cases for intellectual property',
     'regulatory compliance for financial services'
   ];
-
   $effect(() => {
     (async () => {
 await context7Service.initialize();
-
     // Load search history from localStorage
     const saved = localStorage.getItem('vector-search-history');
     if (saved) {
@@ -48,27 +42,22 @@ await context7Service.initialize();
     }
     })();
   });
-
   // Subscribe to vector results from service
   $effect(() => {
-    searchResults = $vectorResults;
+    searchResults = $vectorResult;
   });
-
   async function performSearch() {
     if (!searchQuery.trim()) return;
-
     await context7Service.vectorSearch(searchQuery, {
-      filters: selectedFilters,;
+      filters: selectedFilters
       limit: 10;
     });
-
     // Add to search history
     if (!searchHistory.includes(searchQuery)) {
       searchHistory = [searchQuery, ...searchHistory.slice(0, 9)]; // Keep last 10
       localStorage.setItem('vector-search-history', JSON.stringify(searchHistory));
     }
   }
-
   function toggleFilter(filter: string) {
     if (selectedFilters.includes(filter)) {
       selectedFilters = selectedFilters.filter(f => f !== filter);
@@ -76,32 +65,26 @@ await context7Service.initialize();
       selectedFilters = [...selectedFilters, filter];
     }
   }
-
   function useSampleQuery(query: string) {
     searchQuery = query;
     performSearch();
   }
-
   function useHistoryQuery(query: string) {
     searchQuery = query;
   }
-
   function clearHistory() {
     searchHistory = [];
     localStorage.removeItem('vector-search-history');
   }
-
   function getSimilarityColor(similarity: number): string {
     if (similarity >= 0.9) return 'bg-green-500';
     if (similarity >= 0.7) return 'bg-yellow-500';
     return 'bg-red-500';
   }
-
   function formatSimilarity(similarity: number): string {
     return `${(similarity * 100).toFixed(1)}%`;
   }
 </script>
-
 <div class="container mx-auto p-6 max-w-6xl">
   <!-- Header -->
   <div class="mb-8">
@@ -114,7 +97,6 @@ await context7Service.initialize();
       Demonstrate semantic search, document similarity, and AI-powered legal research capabilities
     </p>
   </div>
-
   <!-- Search Interface -->
   <div class="mb-6 nes-container">
     <div class="yorha-panel-header">
@@ -149,7 +131,6 @@ await context7Service.initialize();
           {/if}
 </Button>
       </div>
-
       <!-- Filters -->
       <div class="space-y-2">
         <label class="text-sm font-medium">Filters:</label>
@@ -165,7 +146,6 @@ await context7Service.initialize();
           {/each}
         </div>
       </div>
-
       <!-- Sample Queries -->
       <div class="space-y-2">
         <label class="text-sm font-medium">Sample Queries:</label>
@@ -185,7 +165,6 @@ useSampleQuery(query)}
       </div>
     </div>
   </div>
-
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Search Results -->
     <div class="lg:col-span-2">
@@ -231,7 +210,6 @@ useSampleQuery(query)}
                       </div>
                     </div>
                   </div>
-
                   <!-- Metadata -->
                   <div class="flex flex-wrap gap-2 mt-3">
                     {#each Object.entries.metadata) as [key, value]}
@@ -257,7 +235,6 @@ useSampleQuery(query)}
         </div>
       </div>
     </div>
-
     <!-- Sidebar -->
     <div class="space-y-6">
       <!-- AI Suggestions -->
@@ -280,7 +257,6 @@ useSampleQuery(query)}
           </div>
         </div>
       {/if}
-
       <!-- Search History -->
       {#if searchHistory.length > 0}
         <div class="nes-container">
@@ -306,7 +282,6 @@ Clear
           </div>
         </div>
       {/if}
-
       <!-- System Stats -->
       <div class="nes-container">
         <div class="yorha-panel-header">
@@ -336,15 +311,11 @@ Clear
     </div>
   </div>
 </div>
-
 <style>
-  .line-clamp-3 {;
+  .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 </style>
-
-
-

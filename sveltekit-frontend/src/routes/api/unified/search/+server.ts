@@ -1,7 +1,6 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { legalAI } from '$lib/server/unified/legal-ai-service'
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json()
@@ -14,11 +13,9 @@ export const POST: RequestHandler = async ({ request }) => {
       useRecommendations = true,
       cacheResults = true
     } = body
-
     if (!query || query.trim().length === 0) {
       return json({ error: 'Query is required' }, { status: 400 })
     }
-
     // Use unified search across all systems
     const searchResults = await legalAI.searchDocuments({
       query: query.trim(),
@@ -29,9 +26,8 @@ export const POST: RequestHandler = async ({ request }) => {
       useRecommendations,
       cacheResults
     })
-
     return json({
-      success: true,
+      success: true
       query,
       ...searchResults,
       meta: {
@@ -39,14 +35,13 @@ export const POST: RequestHandler = async ({ request }) => {
         type,
         limit,
         threshold,
-        caseId: caseId || null,
+        caseId: caseId || null
         timestamp: new Date().toISOString()
       }
     })
-
   } catch (error) {
     console.error('Unified search error:', error)
-    return json({ 
+    return json({
         error: 'Search failed',
         details: error instanceof Error ? error.message: 'Unknown error'
       }, )

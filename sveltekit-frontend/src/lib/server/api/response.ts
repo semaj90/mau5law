@@ -1,13 +1,11 @@
 // Standardized API Response Handlers for SvelteKit 2
 // Production-ready response patterns with comprehensive error handling
-
 import { json, type RequestEvent } from '@sveltejs/kit';
 import { z } from 'zod';
 import type { ApiResponse, ApiError } from '../../types/api.js';
 import type { APIResponse as UnifiedAPIResponse } from '$lib/types';
 import path from 'path';
 import { URL } from 'url';
-
 // Standard response interface
 export interface StandardApiResponse<T = any> {
   success: boolean;
@@ -27,19 +25,17 @@ export interface StandardApiResponse<T = any> {
     };
   };
 }
-
-// Enhanced error class for API errors;
+// Enhanced error class for API errors
 export class ApiErrorClass extends Error {
   public readonly code: string;
   public readonly statusCode: number;
-  public readonly details?: Record<string, any>;
+  public readonly details?: { [key: string]: any };
   public readonly timestamp: Date;
-
   constructor(
-    message: string,;
+    message: string
     code: string = 'UNKNOWN_ERROR',
     statusCode: number = 500,
-    details?: Record<string, any>;
+    details?: { [key: string]: any };
   ) {
     super(message);
     this.name = 'ApiError';
@@ -49,63 +45,58 @@ export class ApiErrorClass extends Error {
     this.timestamp = new Date();
   }
 }
-
 // Success response builder
 export function apiSuccess<T>(
-  data: T,
+  data: T
   requestId: string = generateRequestId(),
   processingTime: number = 0,
   pagination?: StandardApiResponse<T>['meta']['pagination'];
 ): Response {
   const response: StandardApiResponse<T> = {
-    success: true,
+    success: true
     data,
     meta: {
       timestamp: new Date().toISOString(),
       requestId,
-      processingTime,;
+      processingTime,
       version: '2.0',
       ...(pagination && { pagination })
     }
   };
-
   return json(response);
 }
-
 // Error response builder
 export function apiError(
-  error: ApiErrorClass | Error | string,
+  error: ApiErrorClass | Error | string
   requestId: string = generateRequestId(),
   processingTime: number = 0;
 ): Response {
   let apiErrorData: ApiError;
   let statusCode = 500;
-
   if (error instanceof ApiErrorClass) {
     apiErrorData = {
       code: error.code,
       message: error.message,
-      details: error.details,;
+      details: error.details,
       timestamp: error.timestamp
     };
     statusCode = error.statusCode;
   } else if (error instanceof Error) {
     apiErrorData = {
       code: 'INTERNAL_ERROR',
-      message: error.message,;
+      message: error.message,
       timestamp: new Date()
     };
   } else {
     apiErrorData = {
       code: 'UNKNOWN_ERROR',
-      message: typeof error === 'string' ? error : 'Unknown error occurred',;
+      message: typeof error === 'string' ? error : 'Unknown error occurred',
       timestamp: new Date()
     };
   }
-
   // Add fallback data for legal API endpoints
   const response: StandardApiResponse<any> = {
-    success: false,
+    success: false
     error: {
       ...apiErrorData,
       message: 'failure default to mock'
@@ -114,15 +105,13 @@ export function apiError(
     meta: {
       timestamp: new Date().toISOString(),
       requestId,
-      processingTime,;
+      processingTime,
       version: '2.0',
       mockData: true
     }
   };
-
   return json(response, { status: statusCode });
 }
-
 // Validation error response
 export function validationError(
   validationResult: z.ZodError,
@@ -136,40 +125,35 @@ export function validationError(
     },
     {} as Record<string, string>
   );
-
   const apiErr = new ApiErrorClass('Validation failed', 'VALIDATION_ERROR', 400, {
     fields: details
   });
-
   return apiError(apiErr, requestId, processingTime);
 }
-
 // --- Unified Builders (Lightweight wrappers aligned with new shared types) ---
 export function buildSuccessResponse<T>(
-  data: T,;
+  data: T
   metadata: { processingTimeMs: number; requestId: string }
 ): UnifiedAPIResponse {
   return {
-    success: true,
-    data,;
+    success: true
+    data,
     metadata: { ...metadata, timestamp: new Date().toISOString() }
   };
 }
-
 export function buildErrorResponse(
-  code: string,
-  message: string,;
+  code: string
+  message: string
   metadata: { processingTimeMs: number; requestId: string }
 ): UnifiedAPIResponse {
   return {
-    success: false,
-    error: { code, message },;
+    success: false
+    error: { code, message },
     metadata: { ...metadata, timestamp: new Date().toISOString() }
   } as UnifiedAPIResponse;
 }
-
 export function buildFormSubmissionResult<T>(
-  result: any,;
+  result: any
   metadata: { processingTimeMs: number; requestId: string }
 ): any {
   return {
@@ -177,20 +161,17 @@ export function buildFormSubmissionResult<T>(
     metadata: { ...metadata, timestamp: new Date().toISOString() }
   };
 }
-
-// Request ID generator;
+// Request ID generator
 function generateRequestId(): string {
   return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
-
 // Generate mock fallback data based on error context
 function generateMockFallbackData(errorCode: string): any {
   const baseData = {
-    mockData: true,
+    mockData: true
     fallbackReason: 'Service temporarily unavailable',
     timestamp: new Date().toISOString()
   };
-
   // Context-aware mock data generation
   switch (errorCode) {
     case 'DATABASE_ERROR':
@@ -216,19 +197,18 @@ function generateMockFallbackData(errorCode: string): any {
             title: 'Mock Evidence Document',
             description: 'Mock evidence provided during service fallback',
             evidenceType: 'document',
-            analyzed: false,
+            analyzed: false
             dateCreated: new Date().toISOString()
           }
         ],
         pagination: {
           page: 1,
-          limit: 50,;
+          limit: 50,
           total: 1,
-          hasNext: false,
+          hasNext: false
           hasPrev: false
         }
       };
-
     case 'NOT_FOUND':
       return {
         ...baseData,
@@ -236,87 +216,70 @@ function generateMockFallbackData(errorCode: string): any {
           {
             id: 'mock-suggestion-1',
             title: 'Similar Legal Case',
-            description: 'Mock suggestion for similar case',;
+            description: 'Mock suggestion for similar case',
             relevance: 0.75
           }
         ]
       };
-
     case 'UNAUTHORIZED':
     case 'FORBIDDEN':
       return {
         ...baseData,
-        demoMode: true,
+        demoMode: true
         availableFeatures: ['case-viewing', 'evidence-browsing'],
         restrictedFeatures: ['case-creation', 'evidence-upload', 'ai-analysis']
       };
-
     default:
       return baseData;
   }
 }
-
 // API wrapper function for consistent error handling
 export async function withApiHandler<T>(
-  handler: (event: RequestEvent) => Promise<T>,;
+  handler: (event: RequestEvent) => Promise<T>,
   event: RequestEvent;
 ): Promise<Response> {
   const startTime = Date.now();
   const requestId = generateRequestId();
-
   // Add request ID to locals for tracking
   (event.locals as any).requestId = requestId;
-
   try {
     const result = await handler(event);
     const processingTime = Date.now() - startTime;
-
-    // If the handler returned a Response, return it as-is;
+    // If the handler returned a Response, return it as-is
     if (result instanceof Response) {
       return result;
     }
-
     // Otherwise wrap the result in a standard success response
     return apiSuccess(result, requestId, processingTime);
   } catch (error: any) {
     const processingTime = Date.now() - startTime;
-
-    // Log error for monitoring;
+    // Log error for monitoring
     console.error(`API Error [${requestId}]:`, {
-      error: error instanceof Error ? error.message: error,
-      stack: error instanceof Error ? error.stack : undefined,
-      url: event.url.pathname,;
+      error: error instanceof Error ? error.message: error
+      stack: error instanceof Error ? error.stack : undefined
+      url: event.url.pathname,
       method: event.request.method,
       processingTime
     });
-
     return apiError(error as Error, requestId, processingTime);
   }
 }
-
-// Common API errors;
+// Common API errors
 export const CommonErrors = {
   NotFound: (resource: string) =>
     new ApiErrorClass(`${resource} not found`, 'NOT_FOUND', 404),
-
   Unauthorized: (message = 'Unauthorized access') =>
     new ApiErrorClass(message, 'UNAUTHORIZED', 401),
-
   Forbidden: (message = 'Access forbidden') =>
     new ApiErrorClass(message, 'FORBIDDEN', 403),
-
-  BadRequest: (message: string, details?: Record<string, any>) =>
+  BadRequest: (message: string, details?: { [key: string]: any }) =>
     new ApiErrorClass(message, 'BAD_REQUEST', 400, details),
-
   InternalError: (message = 'Internal server error') =>
     new ApiErrorClass(message, 'INTERNAL_ERROR', 500),
-
   ServiceUnavailable: (service: string) =>
     new ApiErrorClass(`${service} is currently unavailable`, 'SERVICE_UNAVAILABLE', 503),
-
   RateLimited: (message = 'Rate limit exceeded') =>
     new ApiErrorClass(message, 'RATE_LIMITED', 429),
-
   DatabaseError: (operation: string, details?: any) =>
     new ApiErrorClass(
       `Database operation failed: ${operation}`,
@@ -324,7 +287,6 @@ export const CommonErrors = {
       500,
       details
     ),
-
   ValidationFailed: (field: string, reason: string) =>
     new ApiErrorClass(
       `Validation failed for field '${field}': ${reason}`,
@@ -333,10 +295,9 @@ export const CommonErrors = {
       { field, reason }
     )
 } as const;
-
 // Type-safe request body parser with validation
 export async function parseRequestBody<T>(
-  request: Request,;
+  request: Request
   schema: z.ZodSchema<T>;
 ): Promise<T> {
   try {
@@ -349,13 +310,11 @@ export async function parseRequestBody<T>(
     throw new ApiErrorClass('Invalid JSON in request body', 'INVALID_JSON', 400);
   }
 }
-
-// Pagination helper;
+// Pagination helper
 export function createPagination(page: number, limit: number, total: number) {
   const offset = (page - 1) * limit;
   const hasNext = offset + limit < total;
   const hasPrev = page > 1;
-
   return {
     page,
     limit,

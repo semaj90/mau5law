@@ -2,21 +2,18 @@
  * Binary WebSocket Server for Real-time QLoRA Streaming
  * Implements binary transport with compression for optimal performance
  */
-
 import { WebSocketServer, type WebSocket } from 'ws';
 import type { IncomingMessage } from 'http';
 import * as pako from 'pako';
 import { UnifiedCacheEnhancedOrchestrator } from '$lib/ai/unified-cache-enhanced-orchestrator';
 import { QLoRABinaryCodec, type QLoRAProtobufTopologyResponse } from '$lib/types/qlora-protobuf';
 }
-
 export interface StreamingQLoRARequest {
   query: string;
   topologyType?: 'legal' | 'general' | 'technical';
   accuracyTarget?: number;
   streamBinary?: boolean;
 }
-
 export interface StreamingResponse {
   type: 'status' | 'token' | 'binary' | 'end' | 'error';
   message?: string;
@@ -24,9 +21,7 @@ export interface StreamingResponse {
   data?: Buffer;
   metadata?: any;
 }
-
 let orchestrator: UnifiedCacheEnhancedOrchestrator | null = null;
-
 async function getOrchestrator(): Promise<UnifiedCacheEnhancedOrchestrator> {
   if (!orchestrator) {
     orchestrator = new UnifiedCacheEnhancedOrchestrator();
@@ -35,7 +30,6 @@ async function getOrchestrator(): Promise<UnifiedCacheEnhancedOrchestrator> {
   }
   return orchestrator;
 }
-
 /**
  * Stream QLoRA processing with binary compression
  */
@@ -43,14 +37,10 @@ async function* streamQLoRAResponse(
   request: StreamingQLoRARequest;
 ): AsyncGenerator<StreamingResponse> {
   const { query, topologyType = 'general', accuracyTarget = 90, streamBinary = true } = request;
-
   try {
     yield { type: 'status', message: 'Initializing QLoRA predictor...' };
-
     const orch = await getOrchestrator();
-
     yield { type: 'status', message: 'Generating topology prediction...' };
-
     // Process with unified intelligence
     const startTime = Date.now();
     const result = await orch.processWithUnifiedIntelligence({
@@ -66,7 +56,7 @@ async function* streamQLoRAResponse(
         qualityLevel: 'production'
       },
       context: {
-        userSession: { userId: 'websocket_user', sessionId: 'ws_session', preferences: Record<string, any> } as any,
+        userSession: { userId: 'websocket_user', sessionId: 'ws_session', preferences: { [key: string]: any } } as any,
         documentContext: {
           id: 'websocket_doc',
           type:
@@ -80,13 +70,13 @@ async function* streamQLoRAResponse(
           confidenceLevel: 0.85,
           riskLevel: 'medium',
           lastAccessed: Date.now(),
-          compressed: false,
+          compressed: false
           metadata: {
             caseId: 'websocket_session',
             aiGenerated: true
           }
         },
-        renderingNeeded: streamBinary,
+        renderingNeeded: streamBinary
         realTimeRequired: true
       },
       metadata: {
@@ -94,33 +84,29 @@ async function* streamQLoRAResponse(
         clientCapabilities: { webgpu: true, streaming: true }
       },
       cachePreferences: {
-        enableMultiTierCache: true,
-        enableWebGPUCache: true,
-        enableSummarizeCache: true,
-        enableRabbitMQCache: false,
+        enableMultiTierCache: true
+        enableWebGPUCache: true
+        enableSummarizeCache: true
+        enableRabbitMQCache: false
         cacheStrategy: 'adaptive',
         maxLatencyMs: 5000,
         minAccuracyThreshold: accuracyTarget * 0.9
-      },;
+      },
       optimization: {
         predictiveAccuracy: 0.75,
-        targetAccuracy: accuracyTarget,
+        targetAccuracy: accuracyTarget
         learningRate: 0.05,
-        useReinforcementLearning: true,
-        useWebGPUAcceleration: true,
+        useReinforcementLearning: true
+        useWebGPUAcceleration: true
         useAsyncOrchestration: true
       }
     });
-
     const processingTime = Date.now() - startTime;
-
     yield { type: 'status', message: 'Fetching system metrics...' };
-
     // Get system metrics
     const metrics = await orch.getSystemMetrics();
     const cacheStats = await orch.getCacheStatistics();
-
-    // Construct full response;
+    // Construct full response
     const qloraResponse: QLoRAProtobufTopologyResponse = {
       prediction: {
         type: (result as any).prediction?.type || 'legal_document',
@@ -153,27 +139,23 @@ async function* streamQLoRAResponse(
       binaryMetadata: {
         compressionRatio: 1,
         originalSize: 0,
-        compressedSize: 0,;
+        compressedSize: 0,
         encoding: 'gzip'
       }
     };
-
     if (streamBinary) {
       yield { type: 'status', message: 'Compressing binary response...' };
-
       // Encode to binary with compression
       const binaryData = QLoRABinaryCodec.encode(qloraResponse);
       const compressionStats = QLoRABinaryCodec.getCompressionStats(qloraResponse, binaryData);
-
-      // Update metadata;
+      // Update metadata
       qloraResponse.binaryMetadata = {
         ...compressionStats,
         encoding: 'gzip'
       };
-
       yield {
         type: 'binary',
-        data: binaryData,;
+        data: binaryData
         metadata: {
           compressionRatio: compressionStats.compressionRatio,
           originalSize: compressionStats.originalSize,
@@ -185,49 +167,42 @@ async function* streamQLoRAResponse(
     } else {
       // Stream as JSON tokens for demonstration
       const responseText = `QLoRA Prediction: ${(result as any).accuracy}% accuracy, ${(result as { cacheMetrics?: any }).cacheMetrics.totalCacheHitRate > 0 ? 'cache hit' : 'cache miss'}, ${processingTime}ms processing time. Topology: ${qloraResponse.topology.structure} structure with ${qloraResponse.prediction.topology.nodes} nodes.`;
-
       const tokens = responseText.split(' ');
-
       for (const token of tokens) {
         await new Promise((resolve) => setTimeout(resolve, 50); // Simulate streaming
         yield { type: 'token', value: token + ' ' };
       }
     }
-
     yield {
       type: 'end',
-      message: 'QLoRA processing complete',;
+      message: 'QLoRA processing complete',
       metadata: { accuracy: (result as any).accuracy, processingTime }
     };
   } catch (error: any) {
     console.error('[WebSocket] QLoRA streaming error:', error);
     yield {
-      type: 'error',;
+      type: 'error',
       message: `QLoRA processing failed: ${(error as any)?.message || 'Unknown error'}`
     };
   }
 }
-
 export function createWebSocketServer() {
   console.log('🚀 Creating Binary QLoRA WebSocket server...');
   const wss = new WebSocketServer({ noServer: true });
-
   wss.on('connection', (ws: WebSocket, request: IncomingMessage) => {
     console.log('🔌 WebSocket client connected');
     const clientIP = request.socket.remoteAddress;
     console.log(`[WebSocket] Client ${clientIP} connected`);
-
     ws.on('message', async (message: Buffer) => {
       try {
         const requestData: StreamingQLoRARequest = JSON.parse(message.toString());
         console.log(`[WebSocket] Received request:`, requestData.query.substring(0, 50) + '...');
-
-        // Stream QLoRA response;
+        // Stream QLoRA response
         for await (const event of streamQLoRAResponse(requestData)) {
           if (event.type === 'binary') {
-            // Send binary data directly;
+            // Send binary data directly
             ws.send(JSON.stringify({
-                type: 'binary_metadata',;
+                type: 'binary_metadata',
                 metadata: event.metadata
               })
             );
@@ -240,28 +215,24 @@ export function createWebSocketServer() {
       } catch (error: any) {
         console.error('[WebSocket] Message processing error:', error);
         ws.send(JSON.stringify({
-            type: 'error',;
+            type: 'error',
             message: 'Failed to process request: ' + error.message
           })
         );
       }
     });
-
     ws.on('close', () => {
       console.log(`[WebSocket] Client ${clientIP} disconnected`);
     });
-
     ws.on('error', (error) => {
       console.error(`[WebSocket] Client ${clientIP} error:`, error);
     });
-
-    // Send welcome message;
+    // Send welcome message
     ws.send(JSON.stringify({
-        type: 'status',;
+        type: 'status',
         message: 'Connected to Binary QLoRA WebSocket server'
       })
     );
   });
-
   return wss;
 }

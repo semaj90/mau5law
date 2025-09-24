@@ -23,13 +23,11 @@ export type ProgressMsg =;
       error: { message: string; code?: string; meta?: unknown };
     };
 }
-
 export interface EvidenceProcessRequest {
   evidenceId: string;
   steps?: string[];
   userId?: string;
 }
-
 export interface EvidenceProcessSession {
   id: string;
   evidence_id: string;
@@ -41,20 +39,17 @@ export interface EvidenceProcessSession {
   finished_at?: Date;
   error?: string;
 }
-
 export interface OcrResult {
   text: string;
   confidence: number;
   metadata?: unknown;
 }
-
 export interface EmbeddingResult {
   model: string;
   dim: number;
   vector: number[];
   metadata?: unknown;
 }
-
 export interface RagResult {
   summary: string;
   snippets: string[];

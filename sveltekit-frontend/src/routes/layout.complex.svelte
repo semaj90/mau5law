@@ -1,17 +1,13 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import '../app.css';
   import '../lib/styles/modern-yorha-theme.css';
   import { onMount, setContext } from 'svelte';
   import Navigation from '$lib/components/Navigation.svelte';
-
   const { children } = $props();
-
   // Simplified state management for compatibility
   let theme = $state<'dark' | 'light' >('dark');
   let sidebarOpen = $state(false);
-
   // App context for global state
   setContext('app', {
   get theme() { return theme; },
@@ -21,27 +17,21 @@
   toggleSidebar: () => { sidebarOpen = !sidebarOpen; },
   toggleTheme: () => { theme = theme === 'dark' ? 'light' : 'dark'; }
   });
-
   $effect(() => {
   // Modern YoRHa UI initialization
   console.log('Modern Dark YoRHa Legal AI Interface initialized');
-
   // Set theme on document
   document.documentElement.setAttribute('data-theme', theme);
   });
-
   // Reactive theme updates - temporarily simplified
   // $effect(() => {
-  //   document.documentElement.setAttribute('data-theme', theme);
-  // });
+  //   document.documentElement.setAttribute('data-theme', theme)
+  // })
 </script>
-
 <div class="app-layout golden-grid-holy-grail yorha-bg-primary">
   <header class="app-header" style="grid-area: header;">
     <Navigation bind:sidebarOpen={sidebarOpen} />
   </header>
-
-
   <aside
     class="app-sidebar transition-transform duration-300";
     class:sidebar-hidden={!sidebarOpen}
@@ -57,13 +47,11 @@
       </div>
     </nav>
   </aside>
-
   <main class="app-main" style="grid-area: main;">
     <div class="container p-golden-xl">
   {@render children?.()}
     </div>
   </main>
-
   <footer class="app-footer" style="grid-area: footer;">
     <div class="container p-golden-md golden-flex-between">
       <span class="yorha-text-muted">Legal AI Platform © 2024</span>
@@ -74,40 +62,33 @@
     </div>
   </footer>
 </div>
-
 <style>
   .app-layout {
     min-height: 100vh;
   }
-
   .app-header {
     background: var(--yorha-bg-secondary);
     border-bottom: 1px solid var(--yorha-border-primary);
     box-shadow: var(--yorha-shadow-sm);
   }
-
   .app-sidebar {
     background: var(--yorha-bg-secondary);
     border-right: 1px solid var(--yorha-border-primary);
     overflow-y: auto;
   }
-
   .app-main {
     background: var(--yorha-bg-primary);
     overflow-y: auto;
     position: relative;
   }
-
   .app-footer {
     background: var(--yorha-bg-tertiary);
     border-top: 1px solid var(--yorha-border-primary);
     font-size: var(--text-sm);
   }
-
   .sidebar-nav {
     height: 100%;
   }
-
   @media (max-width: 768px) {
     .app-layout {
 grid-template-areas:
@@ -116,7 +97,6 @@ grid-template-areas:
         "footer";
       grid-template-columns: 1fr;
     }
-
     .app-sidebar {
       position: fixed;
       top: 0;
@@ -126,11 +106,9 @@ grid-template-areas:
       z-index: 50;
       transform: translateX(-100%);
     }
-
-    .app-sidebar:not(.sidebar-hidden) {
+    .app-sidebar:not(.sidebar-hidden) {,
       transform: translateX(0);
     }
-
     .app-main {
       padding-top: 0;
     }

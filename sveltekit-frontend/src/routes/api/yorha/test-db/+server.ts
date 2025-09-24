@@ -3,34 +3,28 @@ import { json } from "@sveltejs/kit"
 import type { RequestHandler } from './$types.js'
 // Use the canonical DB barrel: provides db, sql, and table exports
 import { db, sql, legalDocuments } from "$lib/server/db"
-
-
 // YoRHa Database Test API
 // Tests JSON/JSONB data flow and database connectivity
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action = "test-connection" } = await request.json()
-
   // Loosely type results to avoid noisy structural typing errors
   const results: any = {
       timestamp: new Date(),
       action,
-      results: Record<string, any>,
-      success: true,
+      results: { [key: string]: any },
+      success: true
       service: "yorha-db-test"
     }
-
     switch (action) {
       case "test-connection":
         // Test basic database connectivity
         const connectionTest = await db.execute(sql`SELECT version(), current_database(), current_user`)
         results.results.connection = {
-          database: connectionTest[0],
+          database: connectionTest[0]
           status: "connected"
         }
         break
-
       case "test-pgvector":
         // Test pgvector extension
         try {
@@ -43,13 +37,12 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         } catch (error: any) {
           results.results.pgvector = {
-            installed: false,
+            installed: false
             error: error.message,
             status: "error"
           }
         }
         break
-
       case "test-json":
         // Test JSONB functionality
         const testDoc = {
@@ -59,13 +52,12 @@ export const POST: RequestHandler = async ({ request }) => {
           keywords: ["yorha", "test", "integration", "legal-ai"],
           topics: ["system-testing", "database-integration"],
           metadata: {
-            testRun: true,
+            testRun: true
             timestamp: new Date(),
             version: "4.0.0",
             system: "yorha-legal-ai"
           }
         }
-
         const insertResult = await db.insert(legalDocuments).values({
           title: testDoc.title,
           content: testDoc.content,
@@ -77,7 +69,6 @@ export const POST: RequestHandler = async ({ request }) => {
           created_at: new Date(),
           updated_at: new Date()
         }).returning()
-
         // Test JSON query
         const jsonTest = await db.execute(sql`
           SELECT
@@ -91,20 +82,17 @@ export const POST: RequestHandler = async ({ request }) => {
           FROM legal_documents
           WHERE id = ${insertResult[0].id}
         `)
-
         results.results.json = {
-          inserted: insertResult[0],
-          jsonQuery: jsonTest[0],
+          inserted: insertResult[0]
+          jsonQuery: jsonTest[0]
           status: "success"
         }
         break
-
       case "test-vector":
         // Test vector operations (if available)
         try {
           // Create a test vector
           const testVector = Array.from({ length: 768 }, () => Math.random())
-
           const vectorInsert = await db.insert(legalDocuments).values({
             title: "Vector Test Document",
             content: "This document tests vector embedding functionality",
@@ -115,7 +103,6 @@ export const POST: RequestHandler = async ({ request }) => {
             created_at: new Date(),
             updated_at: new Date()
           }).returning()
-
           // Test vector similarity (cosine similarity)
           const similarityTest = await db.execute(sql`
             SELECT
@@ -127,10 +114,9 @@ export const POST: RequestHandler = async ({ request }) => {
             ORDER BY similarity DESC
             LIMIT 3
           `)
-
           results.results.vector = {
-            inserted: vectorInsert[0],
-            similarities: similarityTest,
+            inserted: vectorInsert[0]
+            similarities: similarityTest
             vectorLength: testVector.length,
             status: "success"
           }
@@ -141,15 +127,12 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         }
         break
-
       case "test-full-stack":
         // Comprehensive test of all functionality
   const fullStackResults: any = {}
-
         // 1. Connection test
         const conn = await db.execute(sql`SELECT 'connection_ok' as status`)
         fullStackResults.connection = conn[0]
-
         // 2. JSON operations
         const jsonDoc = await db.insert(legalDocuments).values({
           title: "Full Stack Test Document",
@@ -165,7 +148,6 @@ export const POST: RequestHandler = async ({ request }) => {
           created_at: new Date(),
           updated_at: new Date()
         }).returning()
-
         // 3. Complex JSON query
         const complexQuery = await db.execute(sql`
           SELECT
@@ -176,7 +158,6 @@ export const POST: RequestHandler = async ({ request }) => {
             MAX(created_at) as latest_doc
           FROM legal_documents
         `)
-
         // 4. Search functionality test
         const searchTest = await db.execute(sql`
           SELECT id, title, document_type
@@ -188,26 +169,21 @@ export const POST: RequestHandler = async ({ request }) => {
           ORDER BY created_at DESC
           LIMIT 5
         `)
-
         fullStackResults.json = {
-          document: jsonDoc[0],
-          analytics: complexQuery[0],
+          document: jsonDoc[0]
+          analytics: complexQuery[0]
           search: searchTest
         }
-
         // 5. Performance test
         const perfStart = Date.now()
         await db.execute(sql`SELECT COUNT(*) FROM legal_documents`)
         const perfEnd = Date.now()
-
         fullStackResults.performance = {
           queryTime: perfEnd - perfStart,
           status: perfEnd - perfStart < 100 ? "excellent" : "acceptable"
         }
-
         results.results.fullStack = fullStackResults
         break
-
       case "cleanup":
         // Clean up test data
         const cleanupResult = await db.execute(sql`
@@ -216,7 +192,6 @@ export const POST: RequestHandler = async ({ request }) => {
           OR document_type = 'test'
           OR document_type = 'integration-test'
         `)
-
         results.results.cleanup = {
           deletedRows:
             (cleanupResult as any)?.rowCount ??
@@ -224,19 +199,16 @@ export const POST: RequestHandler = async ({ request }) => {
           status: 'completed'
         }
         break
-
       default:
         results.success = false
         results.error = `Unknown action: ${action}`
     }
-
     return json(results)
-
   } catch (error: any) {
     console.error("YoRHa DB test error:", error)
     return json()
       {
-        success: false,
+        success: false
         error: error.message || "Database test failed",
         timestamp: new Date(),
         service: "yorha-db-test"
@@ -245,7 +217,6 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 export const GET: RequestHandler = async () => {
   try {
     // Quick health check
@@ -257,18 +228,16 @@ export const GET: RequestHandler = async () => {
         current_user as user,
         NOW() as timestamp
     `)
-
     const tableCheck = await db.execute(sql`
       SELECT
         COUNT(*) as document_count
       FROM legal_documents
     `)
-
     return json({
-      success: true,
+      success: true
       status: "healthy",
-      database: healthCheck[0],
-      statistics: tableCheck[0],
+      database: healthCheck[0]
+      statistics: tableCheck[0]
       availableTests: [
         "test-connection",
         "test-pgvector",
@@ -279,10 +248,9 @@ export const GET: RequestHandler = async () => {
       ],
       service: "yorha-db-test"
     })
-
   } catch (error: any) {
     return json({
-        success: false,
+        success: false
         error: error.message || "Health check failed",
         service: "yorha-db-test"
       },)

@@ -1,10 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Legal Document Editor with UnoCSS + bits-ui -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import {
     createDialog,
     createDropdownMenu,
@@ -26,18 +25,16 @@ https://svelte.dev/e/js_parse_error -->
     /* Share moved to bits-ui */
     X,
   } from "lucide-svelte";
-  import {  , onMount  } from "svelte";
+  import { onMount  } from "svelte";
   import { quintOut } from "svelte/easing";
   import { fade } from "svelte/transition";
-
   // Props
-  let { caseId = $bindable()  }: { caseId = $bindable() : any } = $props(); // string | undefined = undefined;
-  let { documentId = $bindable()  }: { documentId = $bindable() : any } = $props(); // string | undefined = undefined;
+  let { caseId = $bindable()  }: { caseId = $bindable() : any } = $props(); // string | undefined = undefined
+  let { documentId = $bindable()  }: { documentId = $bindable() : any } = $props(); // string | undefined = undefined
   let { documentType = $bindable()  }: { documentType = $bindable() : any } = $props(); // "brief" | "contract" | "motion" | "evidence" =
     "brief";
-  let { title = $bindable()  }: { title = $bindable() : any } = $props(); // "Legal Document";
-  let { readonly = $bindable()  }: { readonly = $bindable() : any } = $props(); // false;
-
+  let { title = $bindable()  }: { title = $bindable() : any } = $props(); // "Legal Document"
+  let { readonly = $bindable()  }: { readonly = $bindable() : any } = $props(); // false
   // Component state
   let content = $state("");
   let query = $state("");
@@ -47,14 +44,12 @@ https://svelte.dev/e/js_parse_error -->
   let loadingDocument = $state(false);
   let documentLoadError = $state("");
   let citations = $state<Array() >([]);
-
   // Auto-save state
   let autoSaveTimer = $state<ReturnType<typeof setTimeout>(null) | null >(null);
   let lastSaved = $state("");
   let isSaving = $state(false);
   let saveError = $state("");
   let hasUnsavedChanges = $state(false);
-
   // Document type definitions
   interface DocumentData {
     id: string;
@@ -66,45 +61,33 @@ https://svelte.dev/e/js_parse_error -->
     updatedAt: string;
     citations?: Array;
   }
-  
-
   // Melt UI Dialog for AI Assistant
   // Melt UI component creation removed - replace with bits-ui declarative components
-
   // Melt UI Dropdown for Document Actions
   // Melt UI component creation removed - replace with bits-ui declarative components
-
   // Melt UI Tooltip for help
   // Melt UI component creation removed - replace with bits-ui declarative components
-
   async function handleAIRequest() {
     if (!query.trim()) return;
-
     isProcessingAI = true;
     error = "";
-
     try {
       const response = await fetch("/api/ai/ask", {
-        method: "POST",;
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          question: query,;
-          context: { content, documentType, caseId },;
+        body: JSON.stringify({,
+          question: query
+          context: { content, documentType, caseId },
           options: { includeReferences: true },
         }),
       });
-
       if (!(response as { ok?: any; json?: any; statusText?: any }).ok) throw new Error("AI request failed");
-
       const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
-
       // Insert AI response into document
       const aiSuggestion = `\n\n<!-- AI Suggestion -->\n${(result as { answer?: any; success?: any; error?: any }).answer}\n`;
-      content += aiSuggestion;
-
+      content += aiSuggestio;
       query = "";
       $aiOpen = false;
-
       ondispatch?.({ query, context: content });
     } catch (err) {
       error = err instanceof Error ? err.message: "AI request failed";
@@ -123,9 +106,7 @@ https://svelte.dev/e/js_parse_error -->
   // Enhanced auto-save function with debouncing
   function scheduleAutoSave() {
     if (!documentId || readonly) return;
-
     hasUnsavedChanges = true;
-
     // Clear existing timer
     if (autoSaveTimer) {
       clearTimeout(autoSaveTimer);
@@ -138,26 +119,22 @@ https://svelte.dev/e/js_parse_error -->
   // Function to auto-save document
   async function autoSaveDocument() {
     if (!documentId || readonly || isSaving) return;
-
     isSaving = true;
     saveError = "";
-
     try {
       const response = await fetch(`/api/documents/${documentId}/auto-save`, {
-        method: "POST",;
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
-        },;
+        },
         body: JSON.stringify(length),
-          isDirty: hasUnsavedChanges,;
+          isDirty: hasUnsavedChanges
         }),
       });
-
       if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
         throw new Error("Failed to auto-save document");
   }
       const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
-
       if ((result as { answer?: any; success?: any; error?: any }).success) {
         lastSaved = new Date().toLocaleTimeString();
         hasUnsavedChanges = false;
@@ -174,26 +151,22 @@ https://svelte.dev/e/js_parse_error -->
   // Function to manually save document
   async function manualSaveDocument() {
     if (!documentId || readonly || isSaving) return;
-
     isSaving = true;
     saveError = "";
-
     try {
       const response = await fetch(`/api/documents/${documentId}`, {
-        method: "PUT",;
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(length),;
-          status: "draft",;
+        body: JSON.stringify(length),
+          status: "draft",
         }),
       });
-
       if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
         throw new Error("Failed to save document");
   }
       const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
-
       if ((result as { answer?: any; success?: any; error?: any }).success) {
         lastSaved = new Date().toLocaleTimeString();
         hasUnsavedChanges = false;
@@ -220,9 +193,9 @@ https://svelte.dev/e/js_parse_error -->
       case "brief":
         return FileText;
       case "contract":
-        return BookOpen;
+        return BookOpe;
       case "motion":
-        return Scale;
+        return Scal;
       case "evidence":
         return Search;
       default:
@@ -240,47 +213,39 @@ https://svelte.dev/e/js_parse_error -->
   }
     };
   });
-
   // Reactive statement to trigger auto-save when content changes
   // TODO: Convert to $derived: if (content && documentId && !loadingDocument) {
     scheduleAutoSave()
   }
   // Reactive statement to update save status
   let saveStatus = $derived(getSaveStatus());
-
   // Function to load document from API
   async function loadDocument() {
     if (!documentId) return;
-
     loadingDocument = true;
     documentLoadError = "";
-
     try {
       const response = await fetch(`/api/documents/${documentId}`, {
-        method: "GET",;
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
-
       if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
         throw new Error(`Failed to load document: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
   }
       const documentData: DocumentData = await (response as { ok?: any; json?: any; statusText?: any }).json();
-
       // Update component state with loaded data
       content = documentData.content || "";
       title = documentData.title || "Legal Document";
       documentType = documentData.type || "brief";
-
       // Load citations if available
       if (documentData.citations) {
-        citations = documentData.citations;
+        citations = documentData.citation;
   }
       // Set initial save status
       lastSaved = new Date(documentData.updatedAt).toLocaleTimeString();
       hasUnsavedChanges = false;
-
       console.log("Document loaded successfully:", documentData.title);
     } catch (err) {
       documentLoadError =
@@ -291,13 +256,13 @@ https://svelte.dev/e/js_parse_error -->
   }}
   // Custom animation function for dialog
   function flyAndScale(
-    node: Element,;
+    node: Element
     params: { duration?: number; y?: number; start?: number } = ) {
     const style = getComputedStyle(node);
     const transform = style.transform === "none" ? "" : style.transform;
     const opacity = +style.opacity;
     const scaleConversion = (
-      valueA: number,
+      valueA: number
       scaleA: [number, number],
       scaleB: [number, number]
     ) => {
@@ -316,21 +281,20 @@ https://svelte.dev/e/js_parse_error -->
       }, "");
     };
     return {
-      duration: params.duration ?? 150,;
-      delay: 0,;
+      duration: params.duration ?? 150,
+      delay: 0,
       css: (t: number) => {
         const y = scaleConversion(t, [0, 1], [params.y ?? 0, 0]);
         const scale = scaleConversion(t, [0, 1], [params.start ?? 0.95, 1]);
         return styleToString({
-          transform: `${transform} translate3d(0, ${y}px, 0) scale(${scale})`,;
-          opacity: t * opacity,;
+          transform: `${transform} translate3d(0, ${y}px, 0) scale(${scale})`,
+          opacity: t * opacity,
         });
       },
-      easing: quintOut,;
+      easing: quintOut
     };
   }
 </script>
-
 <!-- Main Document Editor Container -->
 <div class="container mx-auto px-4">
   <!-- Header with semantic styling -->
@@ -357,26 +321,21 @@ https://svelte.dev/e/js_parse_error -->
             </p>
           </div>
         </div>
-
         <!-- Document Actions Dropdown -->
         <div class="container mx-auto px-4">
           <button
-            
             class="container mx-auto px-4"
             aria-label="Help"
           >
             <AlertCircle class="container mx-auto px-4" />
           </button>
-
           <button
-            
             class="container mx-auto px-4"
           >
             <Settings class="container mx-auto px-4" />
             <span>Actions</span>
             <ChevronDown class="container mx-auto px-4" />
           </button>
-
           <button
             onclick={() => manualSaveDocument()}
             class="container mx-auto px-4"
@@ -394,7 +353,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   </header>
-
   <!-- Main Content Area with Grid -->
   <main class="container mx-auto px-4">
     <div class="container mx-auto px-4">
@@ -421,20 +379,17 @@ https://svelte.dev/e/js_parse_error -->
                     📚
                   </button>
                   <button
-                    
                     class="container mx-auto px-4"
                     title="AI Assistant"
                   >
                     <Brain class="container mx-auto px-4" />
                   </button>
                 </div>
-
                 <div class="container mx-auto px-4">
                   {content.length} characters
                 </div>
               </div>
             </div>
-
             <!-- Text Editor Area -->
             <div class="container mx-auto px-4">
               {#if loadingDocument}
@@ -478,7 +433,6 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </div>
         </div>
-
         <!-- Sidebar (1/3 width) -->
         <div class="container mx-auto px-4">
           <!-- Citations Panel -->
@@ -508,7 +462,6 @@ https://svelte.dev/e/js_parse_error -->
                   {/each}
                 </div>
               {/if}
-
               <button
                 class="container mx-auto px-4"
                 onclick={() =>
@@ -516,14 +469,13 @@ https://svelte.dev/e/js_parse_error -->
                     id: Math.random.toString(),
                     text: "Sample Citation",
                     source: "Smith v. Jones, 123 F.3d 456 (2023)",
-                    type: "case",;
+                    type: "case",
                   })}
               >
                 Add Citation
               </button>
             </div>
           </div>
-
           <!-- Document Info -->
           <div class="container mx-auto px-4">
             <div class="container mx-auto px-4">
@@ -562,23 +514,19 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </main>
 </div>
-
 <!-- AI Assistant Dialog -->
 {#if $aiOpen}
   <div >
     <div
-      
       class="container mx-auto px-4"
       transitifade={{ duration: 150 }}
     ></div>
     <div
       class="container mx-auto px-4"
       transitiflyAndScale={{ duration: 150, y: 8, start: 0.96 }}
-      
     >
       <div class="container mx-auto px-4">
         <h2
-          
           class="container mx-auto px-4"
         >
           <Brain class="container mx-auto px-4" />
@@ -588,13 +536,11 @@ https://svelte.dev/e/js_parse_error -->
           Ask for help with legal research, drafting, or analysis
         </p>
         <button
-          
           class="container mx-auto px-4"
         >
           <X class="container mx-auto px-4" />
         </button>
       </div>
-
       <div class="container mx-auto px-4">
         {#if error}
           <div class="container mx-auto px-4">
@@ -604,7 +550,6 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </div>
         {/if}
-
         <div class="container mx-auto px-4">
           <div>
             <label
@@ -621,10 +566,8 @@ https://svelte.dev/e/js_parse_error -->
               disabled={isProcessingAI}
             ></textarea>
           </div>
-
           <div class="container mx-auto px-4">
             <button
-              
               class="container mx-auto px-4"
               disabled={isProcessingAI}
             >
@@ -649,22 +592,18 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 {/if}
-
 <!-- Actions Dropdown Menu -->
 {#if $actionsOpen}
   <div
-    
     class="container mx-auto px-4"
   >
     <button
-      
       class="container mx-auto px-4"
     >
       <Eye class="container mx-auto px-4" />
       Preview
     </button>
     <button
-      
       class="container mx-auto px-4"
     >
       <Share2 class="container mx-auto px-4" />
@@ -672,7 +611,6 @@ https://svelte.dev/e/js_parse_error -->
     </button>
     <div class="container mx-auto px-4"></div>
     <button
-      
       class="container mx-auto px-4"
     >
       <X class="container mx-auto px-4" />
@@ -680,26 +618,23 @@ https://svelte.dev/e/js_parse_error -->
     </button>
   </div>
 {/if}
-
 <!-- Help Tooltip -->
 {#if $helpOpen}
   <div
-    
     class="container mx-auto px-4"
   >
     Use the AI assistant for legal research and drafting help. Click the
     citation button to add references.
   </div>
 {/if}
-
 <style>
   /* @unocss-include */
-  .toolbar-btn {;
+  .toolbar-btn {
     padding: 0.5rem 0.5rem;
     font-size: 0.875rem;
     border: 1px solid #d1d5db;
     border-radius: 0.25rem;
-    transition: background-color 0.2s;
+    transition: background-color 0.2;
 }
   .toolbar-btn:hover {
     background-color: #f9fafb;
@@ -714,8 +649,6 @@ https://svelte.dev/e/js_parse_error -->
     color: #1d4ed8;
 }
   .ai-button:hover {
-    background-color: #dbeafe;
+    background-color: #dbeaf;
 }
 </style>
-
-

@@ -1,13 +1,10 @@
 <script lang="ts">
   import type { Props } from "$lib/types/global";
-
   let {
     evidence = null,
     data = null
   }: Props = $props();
-
   import { invalidateAll } from "$app/navigation";
-  import {   } from "svelte";
   import { superForm } from "sveltekit-superforms";
   // Corrected UI component import paths
   import Textarea from "$lib/components/ui/Textarea.svelte";
@@ -18,52 +15,41 @@
   import { Label } from "$lib/components/ui/label";
   import type { Evidence } from "$lib/types/api";
   import * as Select from 'bits-ui';
-
   // Bindable props already defined above; redundant redeclarations removed
-
-  
-
   // Melt UI builder for the Select component with proper typing
   // Melt UI component creation removed - replace with bits-ui declarative components
-
   const { form, enhance, errors, submitting } = superForm(
     evidence || data.form,
     {
       onUpdated: async ({ form }) => {
         if (form.valid) {
           await invalidateAll();
-          ondispatch?.();
+          // ondispatch removed;
   }
       },
   }
   );
 </script>
-
 <form method="POST" use:enhance class="space-y-4">
   {#if evidence}
     <input type="hidden" name="id" bind:value={$form.id} />
   {/if}
-
   {#if data?.form?.message}
     <div class="space-y-4">{data.form.message}</div>
   {/if}
-
   <div>
     <Label for_="title">Title</Label>
     <Input id="title" name="title" bind:value={$form.title} required />
     {#if $errors.title}<span class="space-y-4">{$errors.title}</span
       >{/if}
   </div>
-
   <div>
     <Label for_="description">Description</Label>
     <Textarea id="description" name="description" bind:value={$form.description}></Textarea>
   </div>
-
   <div>
     <Label>Type</Label>
     <button
-      
       aria-label="Select evidence type"
       class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
     >
@@ -82,7 +68,6 @@
     {#if $errors.type}<span class="space-y-4">{$errors.type}</span
       >{/if}
   </div>
-
   <div>
     <Label for_="url">URL</Label>
     <Input
@@ -93,17 +78,15 @@
     />
     {#if $errors.url}<span class="space-y-4">{$errors.url}</span>{/if}
   </div>
-
   <div>
     <Label for_="tags">Tags (comma-separated)</Label>
     <Input id="tags" name="tags" bind:value={$form.tags} placeholder="tag1, tag2, tag3" />
     {#if $errors.tags}<span class="space-y-4">{$errors.tags}</span
       >{/if}
   </div>
-
   <div class="space-y-4">
     <Button class="bits-btn" type="button" variant="ghost" onclick={() =>
-ondispatch?.()}
+// ondispatch removed}
       >Cancel</Button
     >
     <Button class="bits-btn" type="submit" disabled={$submitting}>
@@ -112,13 +95,11 @@ ondispatch?.()}
       {:else}
         {evidence ? "Save Changes" : "Create Evidence"}
       {/if}
-
   </div>
 </form>
-
 <style>
   /* @unocss-include */
-  form {;
+  form {
     max-width: 500px;
     margin: 0 auto;
 }
@@ -132,7 +113,7 @@ ondispatch?.()}
     cursor: pointer;
     font-size: 1rem;
     min-width: 160px;
-    transition: box-shadow 0.2s;
+    transition: box-shadow 0.2;
 }
   .select-trigger:focus {
     outline: none;
@@ -152,11 +133,9 @@ ondispatch?.()}
   .select-menu > div {
     padding: 0.5rem 1rem;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2;
 }
-  .select-menu > div:hover {;
+  .select-menu > div:hover {
     background: #f3f4f6;
 }
 </style>
-
-

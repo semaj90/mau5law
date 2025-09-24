@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import { useWebGPUCapability } from '$lib/services/webgpu-capability-service';
   let { gpuOrchestrator,
@@ -61,8 +60,8 @@
       }
       const presentationFormat = navigator.gpu!.getPreferredCanvasFormat();
       context.configure({
-        device: gpu,;
-        format: presentationFormat,;
+        device: gpu
+        format: presentationFormat
       });
       isInitialized = true;
       console.log(`🎮 WebGPU visualization initialized successfully (${capabilities.supportLevel} support)`);
@@ -107,8 +106,8 @@
           id: nodeId++,
           x: (layer + 1) * (width / (layers.length + 1)),
           y: (node + 1) * (height / (layers[layer] + 1)),
-          layer,;
-          activation: Math.random(),;
+          layer,
+          activation: Math.random(),
           size: 4 + Math.random() * 8,
           pulsePhase: Math.random() * Math.PI * 2;
         });
@@ -122,9 +121,9 @@
         for (const next of nextLayer) {
           if (Math.random() > 0.3) { // 70% connection probability
             connections.push({
-              from: current,
-              to: next,;
-              weight: Math.random(),;
+              from: current
+              to: next
+              weight: Math.random(),
               active: Math.random() > 0.5;
             });
           }
@@ -142,8 +141,8 @@
         vy: (Math.random() - 0.5) * 2,
         phase: Math.random() * Math.PI * 2,
         frequency: 0.02 + Math.random() * 0.05,
-        amplitude: 5 + Math.random() * 15,;
-        quantum: Math.random(),;
+        amplitude: 5 + Math.random() * 15,
+        quantum: Math.random(),
         entangled: Math.random() > 0.8;
       });
     }
@@ -164,8 +163,8 @@
           y: centerY + Math.sin(angle) * distance,
           cluster,
           awareness: Math.random(),
-          growth: Math.random() * 0.02,;
-          connections: Math.floor(Math.random() * 5),;
+          growth: Math.random() * 0.02,
+          connections: Math.floor(Math.random() * 5),
           luminosity: Math.random();
         });
       }
@@ -178,8 +177,8 @@
         x: Math.random() * width,
         y: -Math.random() * height,
         speed: 1 + Math.random() * 3,
-        characters: generateMatrixString(20),;
-        opacity: 0.5 + Math.random() * 0.5,;
+        characters: generateMatrixString(20),
+        opacity: 0.5 + Math.random() * 0.5,
         width: 12 + Math.random() * 8;
       });
     }
@@ -201,7 +200,7 @@
         if (frameCount % 60 === 0) {
           fps = Math.round(1000 / (currentTime - lastTime));
         }
-        lastTime = currentTime;
+        lastTime = currentTim;
       }
       animationFrame = requestAnimationFrame(animate);
     }
@@ -232,7 +231,7 @@
     // Update connection activities
     for (const connection of connections) {
       if (Math.random() > 0.95) {
-        connection.active = !connection.active;
+        connection.active = !connection.activ;
       }
     }
   }
@@ -289,7 +288,7 @@
     const renderPassDescriptor: GPURenderPassDescriptor = {
       colorAttachments: [
         {
-          view: textureView,
+          view: textureView
           clearValue: { r: 0.1, g: 0.1, b: 0.1, a: 1.0 },
           loadOp: 'clear',
           storeOp: 'store',
@@ -334,7 +333,7 @@
     }
     // Render neurons
     for (const neuron of neurons) {
-      const intensity = neuron.activation;
+      const intensity = neuron.activatio;
       const radius = neuron.size + intensity * 4;
       ctx.fillStyle = `rgba(255, ${Math.floor(intensity * 255)}, 100, 0.8)`;
       ctx.beginPath();
@@ -414,13 +413,12 @@
     generateVisualizationData();
   }
 </script>
-
 <div class="bg-[#0a0a0a] border border-[#333] rounded p-4 relative">
   <div class="flex justify-between items-center mb-4">
     <h3 class="text-lg font-bold text-white">🎮 WebGPU Visualization</h3>
     <div class="flex items-center gap-4 text-sm">
       <span class="text-gray-400">FPS: {fps}</span>
-      <button 
+      <button
         class="bg-blue-600/20 border border-blue-600/50 text-blue-300 hover:bg-blue-600/30 px-3 py-1 rounded text-xs"
         onclick={switchMode}
       >
@@ -428,19 +426,16 @@
       </button>
     </div>
   </div>
-  
   <div class="relative">
-    <canvas 
+    <canvas
       bind:this={canvas as any}
       {width}
       {height}
       class="border border-gray-600 rounded bg-black"
     ></canvas>
-    
     <div class="absolute top-2 left-2 text-xs text-gray-400 bg-black/50 px-2 py-1 rounded">
       Mode: {visualizationMode.replace.toUpperCase()}
     </div>
-    
     {#if !isInitialized}
       <div class="absolute inset-0 flex items-center justify-center bg-black/80">
         <div class="text-white text-center">
@@ -450,7 +445,6 @@
       </div>
     {/if}
   </div>
-  
   <div class="mt-2 text-xs text-gray-400">
     {#if visualizationMode === 'neural-network'}
       Neural network with {neurons.length} nodes and {connections.length} connections
@@ -461,7 +455,6 @@
     {:else if visualizationMode === 'matrix-flow'}
       Matrix data streams with {matrixStreams.length} active channels
     {/if}
-    
     <!-- WebGPU capability status -->
     {#if webgpuCapability.getCapabilities()}
       <div class="mt-1 flex items-center gap-2">

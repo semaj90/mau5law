@@ -1,20 +1,16 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import { onMount } from 'svelte';
   import { speak } from "./speak";
-
   let isSupported = $state(false);
   let isListening = $state(false);
   let finalTranscript = $state('');
   let interimTranscript = $state('');
   let currentTranscript = $state('');
   let recognition: unknown = $state();
-
   $effect(() => {
     // Initialize speech recognition
-    const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+    const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognitio;
     if (SpeechRecognition) {
       isSupported = true;
       recognition = new SpeechRecognition();
@@ -64,7 +60,6 @@
     }
   });
 </script>
-
 {#if isSupported}
   <div>
     {#if isListening}
@@ -92,11 +87,7 @@
 {:else}
   <p>Speech recognition is not supported in this browser.</p>
 {/if}
-
 <style>
   /* @unocss-include */
   /* Add your styles here */
 </style>
-
-
-

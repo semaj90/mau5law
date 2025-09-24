@@ -3,20 +3,15 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import { onMount } from 'svelte';
   import { createSOMRAGSystem, type SOMConfig } from '$lib/ai/som-rag-system';
   import { createEnhancedIngestionPipeline, type IngestionStats } from '$lib/ai/enhanced-ingestion-pipeline';
-
   interface Props {
     class?: string;
     width?: number;
     height?: number;
   }
-
   let { class = '', width = 800, height = 600 }: Props = $props();
-
   // SOM system components
   let somRAG: any;
   let ingestionPipeline: any;
@@ -28,17 +23,17 @@ https://svelte.dev/e/js_parse_error -->
   let visualizationData = $state<unknown[]>([]);
   let stats = $state<IngestionStats & { queue_size: number; is_processing: booleansom_visualization: any }  | null>(null); const data = {
     total_processed: 0,
-    successful: 0,;
+    successful: 0,
     failed: 0,
     avg_processing_time: 0,
     cluster_distribution: ,
     evidence_type_distribution: ,
     queue_size: 0,
-    is_processing: false,
+    is_processing: false
     som_visualization: [];
   });
   // Configuration
-  let somConfig: SOMConfig = $state({
+  let somConfig: SOMConfig = $state({,
     mapWidth: 20,
     mapHeight: 20,
     dimensions: 384,
@@ -51,7 +46,7 @@ https://svelte.dev/e/js_parse_error -->
   const sampleDocuments = [
     {
       id: 'doc-1',
-      content: 'Forensic DNA analysis shows conclusive match with suspect blood sample found at crime scene.',;
+      content: 'Forensic DNA analysis shows conclusive match with suspect blood sample found at crime scene.',
       metadata: {
         filename: 'forensic-dna-report.pdf',
         evidence_type: 'forensic' as const,
@@ -62,8 +57,8 @@ https://svelte.dev/e/js_parse_error -->
       }
     },
     {
-      id: 'doc-2', 
-      content: 'Witness testimony confirms defendant was present at location during incident timeframe.',;
+      id: 'doc-2',
+      content: 'Witness testimony confirms defendant was present at location during incident timeframe.',
       metadata: {
         filename: 'witness-statement-001.doc',
         evidence_type: 'testimony' as const,
@@ -75,7 +70,7 @@ https://svelte.dev/e/js_parse_error -->
     },
     {
       id: 'doc-3',
-      content: 'Digital forensics recovered deleted emails containing evidence of fraudulent activity.',;
+      content: 'Digital forensics recovered deleted emails containing evidence of fraudulent activity.',
       metadata: {
         filename: 'email-recovery-log.txt',
         evidence_type: 'digital' as const,
@@ -87,8 +82,8 @@ https://svelte.dev/e/js_parse_error -->
     },
     {
       id: 'doc-4',
-      content: 'Physical evidence bag containing weapon used in assault, properly chain of custody maintained.',;
-      metadata: {;
+      content: 'Physical evidence bag containing weapon used in assault, properly chain of custody maintained.',
+      metadata: {
         filename: 'evidence-bag-047.pdf',
         evidence_type: 'physical' as const,
         legal_category: 'physical-evidence',
@@ -98,7 +93,6 @@ https://svelte.dev/e/js_parse_error -->
       }
     }
   ];
-
   $effect(() => {
     (async () => {
 await initializeSOMSystem();
@@ -106,7 +100,6 @@ await initializeSOMSystem();
     startVisualizationLoop();
     })();
   });
-
   async function initializeSOMSystem(): Promise<void> {
     try {
       console.log('🚀 Initializing SOM RAG System...');
@@ -119,7 +112,6 @@ await initializeSOMSystem();
       console.error('❌ Failed to initialize SOM system:', error);
     }
   }
-
   function setupCanvas(): void {
     if (!canvas) return;
     const context = canvas.getContext('2d');
@@ -131,7 +123,6 @@ await initializeSOMSystem();
     ctx.fillStyle = '#1a1a1a';
     ctx.fillRect(0, 0, width, height);
   }
-
   async function trainWithSampleData(): Promise<void> {
     if (!isInitialized || isTraining) return;
     isTraining = true;
@@ -150,7 +141,6 @@ await initializeSOMSystem();
       isTraining = false;
     }
   }
-
   function startVisualizationLoop(): void {
     function animate() {
       if (canvas && ctx && visualizationData.length > 0) {
@@ -160,7 +150,6 @@ await initializeSOMSystem();
     }
     requestAnimationFrame(animate);
   }
-
   function drawSOMVisualization(): void {
     // Clear canvas
     ctx.fillStyle = '#0a0a0a';
@@ -212,7 +201,6 @@ await initializeSOMSystem();
     // Draw legend
     drawLegend();
   }
-
   function drawClusterBoundaries(): void {
     const cellWidth = width / somConfig.mapWidth;
     const cellHeight = height / somConfig.mapHeight;
@@ -243,7 +231,6 @@ await initializeSOMSystem();
     });
     ctx.globalAlpha = 1.0;
   }
-
   function drawLegend(): void {
     const legendX = width - 180;
     const legendY = 20;
@@ -278,19 +265,17 @@ await initializeSOMSystem();
     ctx.fillText(`Clusters: ${somConfig.clusterCount}`, legendX, legendY + 125);
     ctx.fillText(`Map: ${somConfig.mapWidth}x${somConfig.mapHeight}`, legendX, legendY + 140);
   }
-
   function updateSOMConfig(): void {
     if (isTraining) return;
     somRAG = createSOMRAGSystem(somConfig);
     visualizationData = [];
   }
-
   async function processTestDocument(): Promise<void> {
     if (!isInitialized || isTraining) return;
     const testDoc = {
       id: `test-${Date.now()}`,
-      content: 'Test forensic analysis report with high confidence DNA match and chain of custody documentation.',;
-      metadata: {;
+      content: 'Test forensic analysis report with high confidence DNA match and chain of custody documentation.',
+      metadata: {
         filename: 'test-document.pdf',
         evidence_type: 'forensic' as const,
         legal_category: 'forensic-analysis',
@@ -304,13 +289,12 @@ await initializeSOMSystem();
       // Update stats
       setTimeout(() => {
         stats = ingestionPipeline.getStats();
-        visualizationData = stats.som_visualization;
+        visualizationData = stats.som_visualizatio;
       }, 1000);
     } catch (error) {
       console.error('Failed to process test document:', error);
     }
   }
-
   function exportSOMData(): void {
     if (!somRAG) return;
     const exportData = somRAG.exportRapidJSON();
@@ -323,7 +307,6 @@ await initializeSOMSystem();
     URL.revokeObjectURL(url);
   }
 </script>
-
 <div class="som-visualization {className}">
   <!-- Header -->
   <div class="header yorha-panel p-4 mb-4">
@@ -334,77 +317,70 @@ await initializeSOMSystem();
       Dimensionality reduction and clustering for legal document embeddings
     </p>
   </div>
-
   <!-- Controls -->
   <div class="controls grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
     <!-- SOM Configuration -->
     <div class="config-panel yorha-panel p-4">
       <h3 class="text-lg font-semibold text-yellow-400 mb-3">SOM Configuration</h3>
-      
       <div class="space-y-3">
         <div>
           <label class="block text-sm text-gray-300 mb-1">Map Size</label>
           <div class="flex gap-2">
             <input ;
               bind:value={somConfig.mapWidth} onchange={updateSOMConfig}
-              type="number" 
-              min="5" 
-              max="50" 
+              type="number"
+              min="5"
+              max="50"
               class="w-20 px-2 py-1 bg-gray-800 border border-gray-600 rounded text-sm"
               disabled={isTraining}
             />
             <span class="text-gray-400 text-sm">×</span>
-            <input 
+            <input
               bind:value={somConfig.mapHeight} onchange={updateSOMConfig}
-              type="number" 
-              min="5" 
-              max="50" 
+              type="number"
+              min="5"
+              max="50"
               class="w-20 px-2 py-1 bg-gray-800 border border-gray-600 rounded text-sm"
               disabled={isTraining}
             />
           </div>
         </div>
-        
         <div>
-          <label class="block text-sm text-gray-300 mb-1" for="learning-rate">Learning Rate</label><input id="learning-rate" 
+          <label class="block text-sm text-gray-300 mb-1" for="learning-rate">Learning Rate</label><input id="learning-rate"
             bind:value={somConfig.learningRate}
-            type="number" 
-            step="0.01" 
-            min="0.01" 
-            max="1.0" 
+            type="number"
+            step="0.01"
+            min="0.01"
+            max="1.0"
             class="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-sm"
             disabled={isTraining}
           />
         </div>
-        
         <div>
-          <label class="block text-sm text-gray-300 mb-1" for="clusters">Clusters</label><input id="clusters" 
+          <label class="block text-sm text-gray-300 mb-1" for="clusters">Clusters</label><input id="clusters"
             bind:value={somConfig.clusterCount} onchange={updateSOMConfig}
-            type="number" 
-            min="2" 
-            max="16" 
+            type="number"
+            min="2"
+            max="16"
             class="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-sm"
             disabled={isTraining}
           />
         </div>
-        
         <div>
-          <label class="block text-sm text-gray-300 mb-1" for="epochs">Epochs</label><input id="epochs" 
+          <label class="block text-sm text-gray-300 mb-1" for="epochs">Epochs</label><input id="epochs"
             bind:value={somConfig.maxEpochs}
-            type="number" 
-            min="100" 
-            max="2000" 
+            type="number"
+            min="100"
+            max="2000"
             class="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-sm"
             disabled={isTraining}
           />
         </div>
       </div>
     </div>
-
     <!-- Statistics -->
     <div class="stats-panel yorha-panel p-4">
       <h3 class="text-lg font-semibold text-yellow-400 mb-3">Processing Stats</h3>
-      
       <div class="space-y-2 text-sm">
         <div class="flex justify-between">
           <span class="text-gray-300">Total Processed:</span>
@@ -433,7 +409,6 @@ await initializeSOMSystem();
           </span>
         </div>
       </div>
-      
       {#if Object.keys(errors).length > 0}
         <div class="mt-4">
           <h4 class="text-sm font-medium text-gray-300 mb-2">Evidence Types</h4>
@@ -446,36 +421,31 @@ await initializeSOMSystem();
         </div>
       {/if}
     </div>
-
     <!-- Actions -->
     <div class="actions-panel yorha-panel p-4">
       <h3 class="text-lg font-semibold text-yellow-400 mb-3">Actions</h3>
-      
       <div class="space-y-3">
-        <button 
+        <button
           onclick={trainWithSampleData}
           disabled={!isInitialized || isTraining}
           class="w-full yorha-button px-4 py-2 bg-blue-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isTraining ? 'Training...' : 'Train with Sample Data'}
         </button>
-        
-        <button 
+        <button
           onclick={processTestDocument}
           disabled={!isInitialized || isTraining}
           class="w-full yorha-button px-4 py-2 bg-green-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Process Test Document
         </button>
-        
-        <button 
+        <button
           onclick={exportSOMData}
           disabled={!isInitialized}
           class="w-full yorha-button px-4 py-2 bg-purple-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Export SOM Data
         </button>
-        
         <div class="system-status text-xs">
           <div class="flex items-center gap-2">
             <div class="w-2 h-2 rounded-full bg-{isInitialized ? 'green' : 'red'}-400"></div>
@@ -487,7 +457,6 @@ await initializeSOMSystem();
       </div>
     </div>
   </div>
-
   <!-- Visualization Canvas -->
   <div class="visualization-container yorha-panel p-4">
     <div class="flex justify-between items-center mb-4">
@@ -496,7 +465,6 @@ await initializeSOMSystem();
         {visualizationData.length} nodes • {somConfig.clusterCount} clusters
       </div>
     </div>
-    
     <div class="canvas-wrapper relative bg-black border border-gray-700 rounded">
       <canvas ;
         bind:this={canvas as any}
@@ -504,7 +472,6 @@ await initializeSOMSystem();
         {height}
         class="w-full h-auto"
       ></canvas>
-      
       {#if !isInitialized}
         <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70">
           <div class="text-center">
@@ -513,7 +480,6 @@ await initializeSOMSystem();
           </div>
         </div>
       {/if}
-      
       {#if isTraining}
         <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70">
           <div class="text-center">
@@ -523,41 +489,34 @@ await initializeSOMSystem();
         </div>
       {/if}
     </div>
-    
     <div class="info-panel mt-4 text-xs text-gray-400">
       <p>
-        <strong>Legend:</strong> Colors represent different clusters. 
-        Numbers show document count per node. 
+        <strong>Legend:</strong> Colors represent different clusters.
+        Numbers show document count per node.
         Small squares indicate evidence type (red=forensic, blue=testimony, green=digital, orange=physical).
       </p>
     </div>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   .som-visualization {
     @apply max-w-6xl mx-auto p-6;
   }
-
   .loading-spinner {
-    @apply w-6 h-6 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin;
+    @apply w-6 h-6 border-2 border-yellow-400 border-t-transparent rounded-full animate-spi;
   }
-
   .canvas-wrapper canvas {
     display: block;
     image-rendering: pixelated;
   }
-
   .system-status {
     padding-top: 12px;
     border-top: 1px solid #374151;
   }
-
   input[type="number"] {
     appearance: textfield;
   }
-
   input[type="number"]::-webkit-outer-spin-button,
   input[type="number"]::-webkit-inner-spin-button {
     appearance: none;

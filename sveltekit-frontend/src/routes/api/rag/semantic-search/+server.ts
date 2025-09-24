@@ -1,6 +1,5 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
 interface SemanticSearchRequest {
 	query: string
 	limit?: number
@@ -15,7 +14,6 @@ interface SemanticSearchRequest {
 		}
 	}
 }
-
 interface EmbeddingResponse {
 	embedding: number[]
 	model: string
@@ -23,7 +21,6 @@ interface EmbeddingResponse {
 	dimensions: number
 	processingTime: number
 }
-
 interface VectorSearchResult {
 	id: string
 	title: string
@@ -32,7 +29,6 @@ interface VectorSearchResult {
 	metadata: any
 	content?: string
 }
-
 interface SemanticSearchResponse {
 	success: boolean
 	query: string
@@ -47,43 +43,34 @@ interface SemanticSearchResponse {
 		average_relevance: number
 	}
 }
-
 export const POST: RequestHandler = async ({ request, fetch }) => {
 	const startTime = Date.now()
-
 	try {
 		const body: SemanticSearchRequest = await request.json()
-
 		if (!body.query) {
 			return json({
-				success: false,
+				success: false
 				error: 'Query is required'
 			}, { status: 400 })
 		}
-
 		// Step 1: Generate embedding for the query
 		const embeddingStart = Date.now()
-
 		const embeddingResponse = await fetch('/api/embeddings/gemma?action=generate', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({
+			body: JSON.stringify({,
 				text: body.query
 			})
 		})
-
 		if (!embeddingResponse.ok) {
 			throw new Error(`Embedding generation failed: ${embeddingResponse.status}`)
 		}
-
 		const embeddingData: EmbeddingResponse = await embeddingResponse.json()
 		const embeddingTime = Date.now() - embeddingStart
-
 		// Step 2: Perform vector search
 		const searchStart = Date.now()
-
 		const searchPayload = {
 			queryEmbedding: embeddingData.embedding,
 			options: {
@@ -91,7 +78,6 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 				threshold: body.threshold || 1.0 // Cosine distance threshold
 			}
 		}
-
 		const vectorResponse = await fetch('/api/pgvector/test?action=search', {
 			method: 'POST',
 			headers: {
@@ -99,32 +85,25 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 			},
 			body: JSON.stringify(searchPayload)
 		})
-
 		if (!vectorResponse.ok) {
 			throw new Error(`Vector search failed: ${vectorResponse.status}`)
 		}
-
 		const vectorData = await vectorResponse.json()
 		const searchTime = Date.now() - searchStart
 		const totalTime = Date.now() - startTime
-
 		// Step 3: Apply additional filters if provided
 		let results = vectorData.results || []
-
 		if (body.filters) {
 			results = results.filter((result: VectorSearchResult) => {
 				const metadata = (result as { metadata?: any; distance?: any }).metadata || {}
-
 				// Filter by category
 				if (body.filters?.category && metadata.category !== body.filters.category) {
 					return false
 				}
-
 				// Filter by jurisdiction
 				if (body.filters?.jurisdiction && metadata.jurisdiction !== body.filters.jurisdiction) {
 					return false
 				}
-
 				// Filter by parties
 				if (body.filters?.parties && Array.isArray(metadata.parties)) {
 					const hasMatchingParty = body.filters.parties.some(party =>
@@ -132,7 +111,6 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 					)
 					if (!hasMatchingParty) return false
 				}
-
 				// Filter by date range
 				if (body.filters?.dateRange) {
 					const effectiveDate = metadata.effectiveDate
@@ -145,11 +123,9 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 						}
 					}
 				}
-
 				return true
 			})
 		}
-
 		// Step 4: Calculate semantic scores
 		const distances = results.map((r: VectorSearchResult) => r.distance)
 		const semanticScores = distances.length > 0 ? {
@@ -157,7 +133,6 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 			lowest_relevance: Math.max(...distances),
 			average_relevance: distances.reduce((a, b) => a + b, 0) / distances.length
 		} : undefined
-
 		// Step 5: Enhanced result formatting
 		const enhancedResults = results.map((result: VectorSearchResult) => ({
       ...result,
@@ -174,25 +149,21 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         query: body.query
       }
     })
-
 		const response: SemanticSearchResponse = {
-			success: true,
+			success: true
 			query: body.query,
-			results: enhancedResults,
-			embedding_time: embeddingTime,
-			search_time: searchTime,
-			total_time: totalTime,
+			results: enhancedResults
+			embedding_time: embeddingTime
+			search_time: searchTime
+			total_time: totalTime
 			total_results: enhancedResults.length,
 			semantic_scores: semanticScores
 		}
-
 		return json(response)
-
 	} catch (error) {
 		console.error('Semantic search error:', error)
-
 		return json({
-			success: false,
+			success: false
 			error: error instanceof Error ? error.message: 'Unknown error',
 			total_time: Date.now() - startTime
 		}, { status: 500 })

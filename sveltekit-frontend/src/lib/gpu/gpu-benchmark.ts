@@ -1,7 +1,6 @@
 import { gpuVectorProcessor } from './gpu-vector-processor.js';
 import { telemetryBus } from '../telemetry/telemetry-bus.js';
 }
-
 export interface EmbeddingBenchmarkOptions {
   runs?: number;            // number of repetitions per mode
   size?: number;            // floats per segment (dimension); if omitted use current embedding dimension
@@ -10,11 +9,10 @@ export interface EmbeddingBenchmarkOptions {
   warmup?: number;          // warmup runs not timed
   label?: string;           // optional label
 }
-
 export interface EmbeddingBenchmarkResultEntry {
   mode: 'gpu' | 'cpu';
   runs: number;
-  samples: number;         // segments * dimension
+  samples: number;         // segments * dimension,
   meanMs: number;
   p95Ms: number;
   bestMs: number;
@@ -24,7 +22,6 @@ export interface EmbeddingBenchmarkResultEntry {
   backend: string;
   statsUsed: boolean;      // whether GPU stats were applied (for gpu mode)
 }
-
 export interface EmbeddingBenchmarkSummary {
   label: string;
   dimension: number;
@@ -32,7 +29,6 @@ export interface EmbeddingBenchmarkSummary {
   entries: EmbeddingBenchmarkResultEntry[];
   timestamp: number;
 }
-
 function downloadText(filename: string, text: string) {
   if (typeof window === 'undefined') return;
   const blob = new Blob([text], { type: 'text/csv' });
@@ -45,7 +41,6 @@ function downloadText(filename: string, text: string) {
   a.remove();
   URL.revokeObjectURL(url);
 }
-
 export function downloadBenchmarkCSV(summary: EmbeddingBenchmarkSummary) {
   const rows: string[] = [];
   rows.push(
@@ -59,14 +54,12 @@ export function downloadBenchmarkCSV(summary: EmbeddingBenchmarkSummary) {
   const csv = rows.join('\n');
   downloadText(`${summary.label}-${Date.now()}.csv`, csv);
 }
-
 function percentile(arr: number[], p: number) {
   if (!arr.length) return 0;
   const sorted = [...arr].sort((a, b) => a - b);
   const idx = Math.min(sorted.length - 1, Math.floor((p / 100) * sorted.length);
   return sorted[idx];
 }
-
 export async function runEmbeddingBenchmark(
   opts: EmbeddingBenchmarkOptions = {}
 ): Promise<EmbeddingBenchmarkSummary> {
@@ -77,31 +70,25 @@ export async function runEmbeddingBenchmark(
   // Determine dimension from processor
   const dim = (gpuVectorProcessor as any).getCurrentEmbeddingDimension?.() || opts.size || 384;
   const label = opts.label || 'embedding-benchmark';
-
-  // Synthetic input: segments * dim random-ish floats in [-0.5,0.5];
+  // Synthetic input: segments * dim random-ish floats in [-0.5,0.5]
   function makeBatch() {
     const data = new Float32Array(segments * dim);
     for (let i = 0; i < data.length; i++)
       data[i] = (Math.sin(i * 0.1327) + Math.cos(i * 0.017)) * 0.25;
     return data;
   }
-
   const entries: EmbeddingBenchmarkResultEntry[] = [];
-
   for (const mode of modes) {
     const durations: number[] = [];
     let backend = 'cpu';
     let statsUsed = false;
-
     // Configure forced reduction / path flags
     const originalReductionMode = (globalThis as any).__FORCE_REDUCTION_MODE__;
-
     if (mode === 'gpu') {
       (globalThis as any).__FORCE_REDUCTION_MODE__ = 'gpu';
     } else if (mode === 'cpu') {
       (globalThis as any).__FORCE_REDUCTION_MODE__ = 'cpu';
     }
-
     // Capture approximate memory usage before/after the timed runs
     const beforeMem = (performance as any).memory;
       ? {
@@ -129,20 +116,18 @@ export async function runEmbeddingBenchmark(
           usedJSHeapSize: (performance as any).memory.usedJSHeapSize
         }
       : null;
-
     // Restore reduction mode
     (globalThis as any).__FORCE_REDUCTION_MODE__ = originalReductionMode;
-
     const mean = durations.reduce((s, v) => s + v, 0) / durations.length || 0;
     const entry: EmbeddingBenchmarkResultEntry = {
       mode,
       runs,
       samples: segments * dim,
-      meanMs: mean,
+      meanMs: mean
       p95Ms: percentile(durations, 95),
       bestMs: Math.min(...durations),
-      worstMs: Math.max(...durations),;
-      dimension: dim,
+      worstMs: Math.max(...durations),
+      dimension: dim
       segments,
       backend,
       statsUsed
@@ -155,15 +140,13 @@ export async function runEmbeddingBenchmark(
         ? { usedDelta: afterMem.usedJSHeapSize - beforeMem.usedJSHeapSize }
         : null;
     entries.push(entry);
-
     telemetryBus.publish({ type: 'gpu.benchmark.result' as any, meta: { label, ...entry } });
   }
-
   const summary: EmbeddingBenchmarkSummary = {
     label,
-    dimension: dim,
+    dimension: dim
     segments,
-    entries,;
+    entries,
     timestamp: Date.now()
   };
   telemetryBus.publish({ type: 'gpu.benchmark.summary' as any, meta: summary as any });
@@ -171,8 +154,7 @@ export async function runEmbeddingBenchmark(
   (globalThis as any).__LAST_GPU_BENCHMARK__ = summary;
   return summary;
 }
-
-// Attach helper to window in browser context automatically;
+// Attach helper to window in browser context automatically
 if (typeof window !== 'undefined') {
   (window as any).runEmbeddingBenchmark = runEmbeddingBenchmark;
   (window as any).downloadBenchmarkCSV = downloadBenchmarkCSV;

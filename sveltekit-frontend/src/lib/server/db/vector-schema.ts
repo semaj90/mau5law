@@ -1,5 +1,5 @@
 // @ts-nocheck
-// Extension to unified-schema.ts for vector search capabilities;
+// Extension to unified-schema.ts for vector search capabilities
 import {
   pgTable,
   index,
@@ -12,7 +12,6 @@ import {
 } from "drizzle-orm/pg-core";
 import { vector } from "pgvector/drizzle-orm";
 import { relations } from "drizzle-orm";
-
 // Document embeddings for semantic search
 export const documentEmbeddings = pgTable(
   "document_embeddings",);
@@ -31,7 +30,7 @@ export const documentEmbeddings = pgTable(
     documentType: text("document_type").notNull(), // 'case', 'evidence', 'note', 'report'
     chunkIndex: integer("chunk_index").notNull().default(0),
     chunkText: text("chunk_text").notNull(),
-    embedding: vector("embedding", { dimensions: 384 }), // For nomic-embed-text (optimized);
+    embedding: vector("embedding", { dimensions: 384 }), // For nomic-embed-text (optimized)
     metadata: jsonb("metadata")
       .$type()
       .default({}),
@@ -50,7 +49,6 @@ export const documentEmbeddings = pgTable(
     createdAtIdx: index("idx_created_at").on(table.createdAt)
   }),
 );
-
 // Search queries and their embeddings for caching
 export const searchQueries = pgTable(
   "search_queries",);
@@ -69,7 +67,7 @@ export const searchQueries = pgTable(
     queryText: text("query_text").notNull(),
     queryEmbedding: vector("query_embedding", { dimensions: 384 }),
     searchType: text("search_type").notNull().default("semantic"), // 'semantic', 'keyword', 'hybrid'
-    resultsCount: integer("results_count").default(0),;
+    resultsCount: integer("results_count").default(0),
     results: jsonb("results")
       .$type;
         totalFound: number;
@@ -84,7 +82,6 @@ export const searchQueries = pgTable(
     createdAtIdx: index("idx_search_created").on(table.createdAt)
   }),
 );
-
 // AI model configurations
 export const aiModels = pgTable(
   "ai_models",);
@@ -103,7 +100,7 @@ export const aiModels = pgTable(
     provider: text("provider").notNull(), // 'ollama', 'openai', 'anthropic'
     modelType: text("model_type").notNull(), // 'embedding', 'chat', 'completion'
     embeddingDimensions: integer("embedding_dimensions"),
-    contextLength: integer("context_length"),;
+    contextLength: integer("context_length"),
     config: jsonb("config")
       .$type()
       .default({}),
@@ -119,7 +116,6 @@ export const aiModels = pgTable(
     )
   }),
 );
-
 // Relations for vector tables
 export const documentEmbeddingsRelations = relations(
   documentEmbeddings,
@@ -127,11 +123,9 @@ export const documentEmbeddingsRelations = relations(
     // Relations to main tables can be added here based on documentId and documentType
   }),
 );
-
 export const searchQueriesRelations = relations(searchQueries, ({ one }) => ({
   // User relation can be added here
 });
-
 // Export types
 export type DocumentEmbedding = typeof documentEmbeddings.$inferSelect;
 export type NewDocumentEmbedding = typeof documentEmbeddings.$inferInsert;

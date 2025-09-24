@@ -4,11 +4,9 @@
  * Provides cross-worker job state management using LokiJS with Redis pub/sub
  * for real-time updates and synchronization
  */
-
 import Loki from 'lokijs';
 import type { Collection } from 'lokijs';
 import type Redis from 'ioredis';
-
 export interface JobState {
   id: string;
   type: string;
@@ -16,11 +14,10 @@ export interface JobState {
   progress?: number;
   result?: any;
   error?: string;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
   createdAt: number;
   updatedAt: number;
 }
-
 export class GlobalLokiStore {
   private db: Loki;
   private coll: Collection<JobState>;
@@ -29,23 +26,19 @@ export class GlobalLokiStore {
   private redisKeyPrefix = 'loki:jobs:';
   private pubsubChannel = 'loki:jobs:updates';
   private initialized = false;
-
   constructor() {
     this.db = new Loki('global-jobs.loki');
     this.coll = this.db.addCollection<JobState>('jobs', {
-      unique: ['id'],;
+      unique: ['id'],
       indices: ['state', 'type', 'createdAt']
     });
   }
-
   /**
    * Initialize with Redis client for cross-worker synchronization
   */
   async initRedis(redisClient?: Redis): Promise<void> {
     if (this.initialized) return;
-
     this.redis = redisClient || undefined;
-
     if (this.redis) {
       try {
         // Create subscriber connection (Redis clients can't pub/sub on same connection)
@@ -55,16 +48,14 @@ export class GlobalLokiStore {
         if (this.subscriber && typeof (this.subscriber as any).connect === 'function') {
           try {
             await (this.subscriber as any).connect();
-          } catch {}
+          } catch (error) {}
         }
-
         // Subscribe to job updates from other workers (defensive)
         if (this.subscriber && typeof (this.subscriber as any).subscribe === 'function') {
           try {
             await (this.subscriber as any).subscribe(this.pubsubChannel);
-          } catch {}
+          } catch (error) {}
         }
-
         if (this.subscriber && typeof (this.subscriber as any).on === 'function') {
           (this.subscriber as any).on('message', (channel: string, message: string) => {
             if (channel === this.pubsubChannel) {
@@ -77,7 +68,6 @@ export class GlobalLokiStore {
             }
           });
         }
-
         console.log('✅ GlobalLokiStore wired to Redis with pub/sub');
       } catch (error) {
         console.warn('⚠️ Redis pub/sub setup failed, running in local mode:', error);
@@ -86,19 +76,16 @@ export class GlobalLokiStore {
     } else {
       console.log('⚠️ GlobalLokiStore running without Redis (fallback mode)');
     }
-
     this.initialized = true;
   }
-
   /**
    * Apply remote update from Redis pub/sub
   */
   private applyRemoteUpdate(update: JobState): void {
     try {
       const existing = this.coll.by('id', update.id);
-
       if (existing) {
-        // Update existing job (avoid infinite pub/sub loops by checking timestamp);
+        // Update existing job (avoid infinite pub/sub loops by checking timestamp)
         if (update.updatedAt > existing.updatedAt) {
           Object.assign(existing, update);
           this.coll.update(existing);
@@ -111,7 +98,6 @@ export class GlobalLokiStore {
       console.warn('Failed to apply remote job update:', e);
     }
   }
-
   /**
    * Start a new job
   */
@@ -121,13 +107,12 @@ export class GlobalLokiStore {
       id: jobMeta.id || `job_${now}_${Math.random().toString(36).slice(2)}`,
       type: jobMeta.type || 'unknown',
       state: 'queued',
-      progress: 0,;
+      progress: 0,
       metadata: jobMeta.metadata || {},
-      createdAt: now,
-      updatedAt: now,
+      createdAt: now
+      updatedAt: now
       ...jobMeta
     };
-
   // Update local collection
     try {
       const existing = this.coll.by('id', job.id);
@@ -140,11 +125,9 @@ export class GlobalLokiStore {
     } catch (e) {
       console.warn('Failed to insert job locally:', e);
     }
-
     // Broadcast to other workers
     await this.broadcastUpdate(job);
   }
-
   /**
    * Update job state
   */
@@ -154,13 +137,11 @@ export class GlobalLokiStore {
       console.warn(`Job ${jobId} not found for update`);
       return;
     }
-
     const updated: JobState = {
       ...existing,
       ...patch,
       updatedAt: Date.now()
     };
-
   // Update local collection
     try {
       Object.assign(existing, updated);
@@ -168,87 +149,76 @@ export class GlobalLokiStore {
     } catch (e) {
       console.warn('Failed to update job locally:', e);
     }
-
     // Broadcast to other workers
     await this.broadcastUpdate(updated);
   }
-
   /**
    * Mark job as processing
   */
   async startProcessing(jobId: string): Promise<void> {
     return this.updateJob(jobId, {
-      state: 'processing',;
+      state: 'processing',
       progress: 0
     });
   }
-
   /**
    * Update job progress
   */
   async updateProgress(jobId: string, progress: number): Promise<void> {
     return this.updateJob(jobId, { progress });
   }
-
   /**
    * Complete job successfully
   */
   async completeJob(jobId: string, result?: any): Promise<void> {
     return this.updateJob(jobId, {
-      state: 'completed',;
+      state: 'completed',
       progress: 100,
       result
     });
   }
-
   /**
    * Mark job as failed
   */
   async failJob(jobId: string, error: string): Promise<void> {
-    return this.updateJob(jobId, {;
+    return this.updateJob(jobId, {
       state: 'failed',
       error
     });
   }
-
   /**
    * Mark job as skipped (dedupe)
   */
   async skipJob(jobId: string, reason: string): Promise<void> {
     return this.updateJob(jobId, {
-      state: 'skipped',;
+      state: 'skipped',
       error: reason
     });
   }
-
   /**
    * Get job by ID
   */
   getJob(jobId: string): JobState | null {
     return this.coll.by('id', jobId) || null;
   }
-
   /**
    * Get jobs by state
   */
   getJobsByState(state: JobState['state']): JobState[] {
     return this.coll.find({ state });
   }
-
   /**
    * Get jobs by type
   */
   getJobsByType(type: string): JobState[] {
     return this.coll.find({ type });
   }
-
   /**
    * Get all jobs
   */
   getAllJobs(): JobState[] {
     return this.coll.find();
   }
-
   /**
    * Get job statistics
   */
@@ -260,19 +230,16 @@ export class GlobalLokiStore {
     const jobs = this.getAllJobs();
     const byState: Record<string, number> = {};
     const byType: Record<string, number> = {};
-
     for (const job of jobs) {
       byState[job.state] = (byState[job.state] || 0) + 1;
       byType[job.type] = (byType[job.type] || 0) + 1;
     }
-
     return {
       total: jobs.length,
       byState,
       byType
     };
   }
-
   /**
    * Clear old completed jobs
   */
@@ -284,21 +251,17 @@ export class GlobalLokiStore {
         { updatedAt: { $lt: cutoff } }
       ]
     });
-
     for (const job of oldJobs) {
       this.coll.remove(job);
     }
-
     console.log(`🧹 Cleaned up ${oldJobs.length} old jobs`);
     return oldJobs.length;
   }
-
   /**
    * Broadcast update to Redis pub/sub
   */
   private async broadcastUpdate(job: JobState): Promise<void> {
     if (!this.redis) return;
-
     try {
       const r = this.redis as any;
       if (typeof r.publish === 'function') {
@@ -308,7 +271,6 @@ export class GlobalLokiStore {
       console.warn('Failed to broadcast job update to Redis:', e);
     }
   }
-
   /**
    * Shutdown and cleanup
   */
@@ -321,10 +283,8 @@ export class GlobalLokiStore {
         console.warn('Error disconnecting Redis subscriber:', e);
       }
     }
-
     console.log('GlobalLokiStore shutdown completed');
   }
 }
-
 // Export singleton instance
 export const globalLoki = new GlobalLokiStore();

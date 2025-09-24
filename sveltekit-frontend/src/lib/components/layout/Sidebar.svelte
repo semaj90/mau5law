@@ -1,9 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { page } from '$app/stores';
   import { Button } from '$lib/components/ui/enhanced-bits';
-
   interface Props {
     open?: boolean;
   }
@@ -25,13 +23,10 @@
   } from "lucide-svelte";
   import { onMount } from "svelte";
   let mounted = $state(false);
-
   $effect(() => {
     mounted = true;
   });
-
   let currentPath = $derived($page.url.pathname);
-
   type NavigationItem = {
     name: string;
     href: string;
@@ -39,71 +34,66 @@
     current: boolean;
     badge?: string;
   };
-
   let navigation = $derived([
     {
       name: "Dashboard",
       href: "/",
-      icon: Home,
-      current: currentPath === "/",;
+      icon: Home
+      current: currentPath === "/",
     },
     {
       name: "Evidence",
       href: "/evidence",
-      icon: FileText,
+      icon: FileText
       current: currentPath.startsWith("/evidence"),
-      badge: "12 New",;
+      badge: "12 New",
     },
     {
       name: "Cases",
       href: "/cases",
-      icon: Briefcase,
-      current: currentPath.startsWith("/cases"),;
+      icon: Briefcase
+      current: currentPath.startsWith("/cases"),
     },
     {
       name: "AI Assistant",
       href: "/ai-assistant",
-      icon: Bot,
+      icon: Bot
       current: currentPath.startsWith("/ai-assistant"),
-      badge: "Beta",;
+      badge: "Beta",
     },
     {
       name: "Evidence Canvas",
-      href: "/interactive-canvas",;
-      icon: Layers,;
-      current: currentPath.startsWith("/interactive-canvas"),;
+      href: "/interactive-canvas",
+      icon: Layers
+      current: currentPath.startsWith("/interactive-canvas"),
     },
   ]);
-
   let analytics = $derived([
     {
       name: "Analytics",
       href: "/analytics",
-      icon: BarChart3,
-      current: currentPath.startsWith("/analytics"),;
+      icon: BarChart3
+      current: currentPath.startsWith("/analytics"),
     },
     {
       name: "Reports",
-      href: "/reports",;
-      icon: FileBarChart,;
-      current: currentPath.startsWith("/reports"),;
+      href: "/reports",
+      icon: FileBarChart
+      current: currentPath.startsWith("/reports"),
     },
   ]);
-
   let settings = $derived([
     {
       name: "Settings",
-      href: "/settings",;
-      icon: Settings,;
-      current: currentPath.startsWith("/settings"),;
+      href: "/settings",
+      icon: Settings
+      current: currentPath.startsWith("/settings"),
     },
   ]);
-
   function closeSidebar() {
     open = false;
   }
 </script>
-
 <!-- Mobile backdrop -->
 {#if open}
   <div
@@ -114,7 +104,6 @@
     keydown={(e) => e.key === "Enter" && closeSidebar()}
   ></div>
 {/if}
-
 <!-- Sidebar -->
 <aside
   class={cn(
@@ -141,7 +130,6 @@
         </div>
       </div>
     </div>
-
     <!-- Quick actions -->
     <div class="p-4 border-b border-nier-gray">
       <div class="grid grid-cols-2 gap-2">
@@ -155,7 +143,6 @@
 </Button>
       </div>
     </div>
-
     <!-- Navigation -->
     <nav class="flex-1 overflow-y-auto py-4">
       <div class="px-3 space-y-1">
@@ -184,7 +171,6 @@
                 />
                 {item.name}
               </div>
-
               {#if item.badge}
                 <span
                   class={cn(
@@ -197,14 +183,12 @@
                   {item.badge}
                 </span>
               {/if}
-
               {#if item.current}
                 <ChevronRight class="h-4 w-4 text-white" />
               {/if}
             </a>
           {/each}
         </div>
-
         <!-- Analytics section -->
         <div class="pt-4">
           <h3
@@ -238,7 +222,6 @@
             {/each}
           </div>
         </div>
-
         <!-- Settings section -->
         <div class="pt-4">
           <h3
@@ -274,7 +257,6 @@
         </div>
       </div>
     </nav>
-
     <!-- Status indicator -->
     <div class="p-4 border-t border-nier-gray">
       <div class="flex items-center gap-3 p-3 bg-nier-surface-light rounded-md">
@@ -291,11 +273,10 @@
     </div>
   </div>
 </aside>
-
 <style>
   /* @unocss-include */
   /* Custom styles for Nier aesthetic */
-  aside {;
+  aside {
     background: linear-gradient(
       180deg,
       var(--color-ui-surface) 0%,
@@ -306,15 +287,14 @@
     box-shadow: 0 0 10px rgba(165, 28, 48, 0.3);
   }
   /* Enhance scrollbar for sidebar */
-  nav::-webkit-scrollbar {;
+  nav::-webkit-scrollbar {
     width: 4px;
   }
-  nav::-webkit-scrollbar-track {;
+  nav::-webkit-scrollbar-track {
     background: transparent;
   }
-  nav::-webkit-scrollbar-thumb {;
+  nav::-webkit-scrollbar-thumb {
     background: var(--color-accent-crimson);
     border-radius: 2px;
   }
 </style>
-

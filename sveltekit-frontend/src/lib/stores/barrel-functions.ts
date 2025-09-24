@@ -1,6 +1,5 @@
 // Barrel aggregation utilities for missing functions. Type safety intentionally relaxed where
 // underlying environment may not define globals (describe/it/etc.) to avoid TS noise.
-
 /**
  * TypeScript Barrel Store - Missing Functions & Methods
  * Systematic approach to resolve missing function declarations
@@ -12,12 +11,11 @@
  * 4. WebGPU extended methods (destroy, addEventListener, removeEventListener)
  * 5. Loki.js collection methods (remove, removeCollection)
  */
-
-// ===== TESTING FRAMEWORK BARREL STORE =====;
+// ===== TESTING FRAMEWORK BARREL STORE =====
 export const testingFramework = {
   describe: (globalThis as any).describe || ((name: string, fn: () => void) => fn()),
-  it: (globalThis as any).it || ((name: string, fn: () => void) => fn()),;
-  expect: (globalThis as any).expect || ((value: any) => ({
+  it: (globalThis as any).it || ((name: string, fn: () => void) => fn()),
+  expect: (globalThis as any).expect || ((value: any) => ({,
     toBe: (expected: any) => value === expected,
     toEqual: (expected: any) => JSON.stringify(value) === JSON.stringify(expected),
     toBeTruthy: () => !!value,
@@ -34,8 +32,7 @@ export const testingFramework = {
   afterAll: (globalThis as any).afterAll || ((fn: () => void) => fn()),
   test: (globalThis as any).test || (globalThis as any).it || ((name: string, fn: () => void) => fn()
 };
-
-// ===== CACHE LAYER METHODS BARREL STORE =====;
+// ===== CACHE LAYER METHODS BARREL STORE =====
 export const cacheLayerMethods = {
   memory: {
     get: async (key: string) => null,
@@ -101,26 +98,23 @@ export const cacheLayerMethods = {
     indexedDB: {
       open: async (name: string) => null,
       get: async (key: string) => null,
-      set: async (key: string, value: any) => true,;
+      set: async (key: string, value: any) => true,
       delete: async (key: string) => true
     }
   }
 };
-
-// ===== DATABASE ENTITY PROPERTIES BARREL STORE =====;
+// ===== DATABASE ENTITY PROPERTIES BARREL STORE =====
 export const databaseEntityProperties = {
-  // Common database entity properties that are missing in type definitions;
+  // Common database entity properties that are missing in type definitions
   withProperty: (obj: any, property: string, defaultValue: any = null) => {
     if (obj && typeof obj === 'object' && !(property in obj)) {
       obj[property] = defaultValue;
     }
     return obj;
   },
-
-  // Ensure common properties exist;
-  ensureProperties: (obj: any, properties: Record<string, any>) => {
+  // Ensure common properties exist
+  ensureProperties: (obj: any, properties: { [key: string]: any }) => {
     if (!obj || typeof obj !== 'object') return obj;
-
     for (const [prop, defaultValue] of Object.entries(properties)) {
       if (!(prop in obj)) {
         obj[prop] = defaultValue;
@@ -128,73 +122,64 @@ export const databaseEntityProperties = {
     }
     return obj;
   },
-
-  // Common legal document properties;
+  // Common legal document properties
   legalDocumentProperties: {
-    case_id: null,
-    document_id: null,
+    case_id: null
+    document_id: null
     content: '',
-    metadata: Record<string, any>,
+    metadata: { [key: string]: any },
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
-    user_id: null,
-    status: 'pending',;
+    user_id: null
+    status: 'pending',
     type: 'document'
   },
-
-  // Chat/message properties;
+  // Chat/message properties
   messageProperties: {
     message: '',
     role: 'user',
     timestamp: new Date().toISOString(),
-    sources: [],;
-    id: null,
+    sources: [],
+    id: null
     user_id: null
   },
-
-  // Cache entry properties;
+  // Cache entry properties
   cacheEntryProperties: {
     lastAccessed: Date.now(),
     accessCount: 0,
     createdAt: Date.now(),
     expiresAt: Date.now() + 3600000, // 1 hour
-    size: 0,;
+    size: 0,
     version: 1
   }
 };
-
-// ===== WEBGPU EXTENDED METHODS BARREL STORE =====;
+// ===== WEBGPU EXTENDED METHODS BARREL STORE =====
 export const webGPUExtendedMethods = {
-  // Enhanced GPUDevice with missing methods;
+  // Enhanced GPUDevice with missing methods
   enhanceGPUDevice: (device: any) => {
     if (!device || typeof device !== 'object') return device;
-
-    // Add missing destroy method;
+    // Add missing destroy method
     if (!device.destroy) {
       device.destroy = () => {
         // Graceful cleanup for GPU device
         console.log('GPUDevice.destroy() called');
       };
     }
-
-    // Add EventTarget methods for GPU error handling;
+    // Add EventTarget methods for GPU error handling
     if (!device.addEventListener) {
       const eventListeners = new Map();
-
       device.addEventListener = (type: string, listener: (event: any) => void) => {
         if (!eventListeners.has(type)) {
           eventListeners.set(type, new Set();
         }
         eventListeners.get(type).add(listener);
       };
-
       device.removeEventListener = (type: string, listener: (event: any) => void) => {
         const listeners = eventListeners.get(type);
         if (listeners) {
           listeners.delete(listener);
         }
       };
-
       device.dispatchEvent = (event: any) => {
         const listeners = eventListeners.get(event.type);
         if (listeners) {
@@ -204,32 +189,27 @@ export const webGPUExtendedMethods = {
         }
       };
     }
-
     return device;
   },
-
-  // GPU error event types;
+  // GPU error event types
   createGPUError: (type: string, message: string) => ({
     type,
-    message,;
+    message,
     timestamp: Date.now()
   }),
-
-  // GPU uncaptured error event;
-  createGPUUncapturedErrorEvent: (error: any) => ({
+  // GPU uncaptured error event
+  createGPUUncapturedErrorEvent: (error: any) => ({,
     type: 'uncapturederror',
-    error,;
+    error,
     timestamp: Date.now()
   })
 };
-
-// ===== LOKI.JS COLLECTION METHODS BARREL STORE =====;
+// ===== LOKI.JS COLLECTION METHODS BARREL STORE =====
 export const lokiCollectionMethods = {
-  // Enhanced collection with missing methods;
+  // Enhanced collection with missing methods
   enhanceCollection: (collection: any) => {
     if (!collection || typeof collection !== 'object') return collection;
-
-    // Add missing remove method;
+    // Add missing remove method
     if (!collection.remove) {
       collection.remove = (doc: any) => {
         if (collection.data && Array.isArray(collection.data)) {
@@ -242,8 +222,7 @@ export const lokiCollectionMethods = {
         return false;
       };
     }
-
-    // Add missing removeWhere method;
+    // Add missing removeWhere method
     if (!collection.removeWhere) {
       collection.removeWhere = (query: any) => {
         if (collection.data && Array.isArray(collection.data)) {
@@ -254,15 +233,12 @@ export const lokiCollectionMethods = {
         return 0;
       };
     }
-
     return collection;
   },
-
-  // Enhanced Loki database with missing methods;
+  // Enhanced Loki database with missing methods
   enhanceLoki: (loki: any) => {
     if (!loki || typeof loki !== 'object') return loki;
-
-    // Add missing removeCollection method;
+    // Add missing removeCollection method
     if (!loki.removeCollection) {
       loki.removeCollection = (name: string) => {
         if (loki.collections && Array.isArray(loki.collections)) {
@@ -275,8 +251,7 @@ export const lokiCollectionMethods = {
         return false;
       };
     }
-
-    // Add missing LokiMemoryAdapter;
+    // Add missing LokiMemoryAdapter
     if (!loki.LokiMemoryAdapter) {
       loki.LokiMemoryAdapter = class LokiMemoryAdapter {
         constructor() {}
@@ -288,83 +263,75 @@ export const lokiCollectionMethods = {
         }
       };
     }
-
     return loki;
   }
 };
-
-// ===== CONFIGURATION PROPERTIES BARREL STORE =====;
+// ===== CONFIGURATION PROPERTIES BARREL STORE =====
 export const configurationProperties = {
-  // Cache configuration with missing properties;
+  // Cache configuration with missing properties
   cacheConfiguration: {
     layers: [],
     defaultTtl: 3600000, // 1 hour
     maxMemoryUsage: 1024 * 1024 * 100, // 100MB
-    enableCompression: true,
-    enableIntelligentTierSelection: true,
-    enableAnalytics: true,
-    enablePredictiveLoading: true,
-    enableCoherence: true,
+    enableCompression: true
+    enableIntelligentTierSelection: true
+    enableAnalytics: true
+    enablePredictiveLoading: true
+    enableCoherence: true
     compressionThreshold: 1000,
     metricsInterval: 30000,
     analyticsInterval: 60000,
     defaultTTL: 3600000  // alias for defaultTtl to handle both naming conventions
   },
-
-  // Cache strategy properties;
+  // Cache strategy properties
   cacheStrategy: {
     readStrategy: 'cache-first',
     writeStrategy: 'write-through',
     evictionStrategy: 'lru',
     replicationStrategy: 'none'
   },
-
-  // Cache policy properties;
+  // Cache policy properties
   cachePolicy: {
     evictionStrategy: 'lru',
     maxSize: 1000,
     ttl: 3600000,
     compressionEnabled: false
   },
-
-  // Cache metrics with missing properties;
+  // Cache metrics with missing properties
   cacheMetrics: {
     hits: 0,
     misses: 0,
     errors: 0,
     gets: 0,
-    sets: 0,;
+    sets: 0,
     deletes: 0,
     totalOperations: 0,
     totalOperationTime: 0,
-    hitsByLayer: Record<string, any>,
-    writesByLayer: Record<string, any>,
+    hitsByLayer: { [key: string]: any },
+    writesByLayer: { [key: string]: any },
     hitRate: 0,
     averageOperationTime: 0
   },
-
-  // Cache analytics with missing properties;
+  // Cache analytics with missing properties
   cacheAnalytics: {
     accessPatterns: new Map(),
     hotKeys: new Set(),
     coldKeys: new Set(),
-    performanceMetrics: Record<string, any>,
-    usageStats: Record<string, any>
+    performanceMetrics: { [key: string]: any },
+    usageStats: { [key: string]: any }
   },
-
-  // Cache entry with missing properties;
+  // Cache entry with missing properties
   cacheEntry: {
-    value: null,
-    metadata: Record<string, any>,
+    value: null
+    metadata: { [key: string]: any },
     ttl: 3600000,
     createdAt: Date.now(),
     lastAccessed: Date.now(),
     accessCount: 0,
-    size: 0,;
+    size: 0,
     compressed: false
   },
-
-  // Cache stats with missing properties;
+  // Cache stats with missing properties
   cacheStats: {
     totalEntries: 0,
     memoryUsage: 0,
@@ -372,14 +339,12 @@ export const configurationProperties = {
     size: 0
   }
 };
-
-// ===== UTILITY FUNCTIONS BARREL STORE =====;
+// ===== UTILITY FUNCTIONS BARREL STORE =====
 export const utilityFunctions = {
-  // Safe property access;
+  // Safe property access
   safeAccess: (obj: any, path: string, defaultValue: any = null) => {
     const keys = path.split('.');
     let current = obj;
-
     for (const key of keys) {
       if (current && typeof current === 'object' && key in current) {
         current = current[key];
@@ -387,16 +352,13 @@ export const utilityFunctions = {
         return defaultValue;
       }
     }
-
     return current;
   },
-
-  // Type assertion with fallback;
+  // Type assertion with fallback
   assertType: <T>(value: any, fallback: T): T => {
     return value !== null && value !== undefined ? value : fallback;
   },
-
-  // Promise with timeout;
+  // Promise with timeout
   withTimeout: <T>(promise: Promise<T>, timeoutMs: number): Promise<T> => {
     return Promise.race([
       promise,
@@ -405,8 +367,7 @@ export const utilityFunctions = {
       )
     ]);
   },
-
-  // Debounce function;
+  // Debounce function
   debounce: (func: (...args: any[]) => void, wait: number) => {
     let timeout: any;
     return (...args: any[]) => {
@@ -415,22 +376,19 @@ export const utilityFunctions = {
     };
   }
 };
-
-// ===== MAIN BARREL STORE EXPORT =====;
+// ===== MAIN BARREL STORE EXPORT =====
 export const barrelStore = {
-  testing: testingFramework,
-  cache: cacheLayerMethods,
-  database: databaseEntityProperties,
-  webgpu: webGPUExtendedMethods,
-  loki: lokiCollectionMethods,
-  config: configurationProperties,;
+  testing: testingFramework
+  cache: cacheLayerMethods
+  database: databaseEntityProperties
+  webgpu: webGPUExtendedMethods
+  loki: lokiCollectionMethods
+  config: configurationProperties
   utils: utilityFunctions
 };
-
 // Export everything for easy access
 export default barrelStore;
-
-// Type definitions for barrel store;
+// Type definitions for barrel store
 export interface BarrelStore {
   testing: typeof testingFramework;
   cache: typeof cacheLayerMethods;
@@ -440,8 +398,7 @@ export interface BarrelStore {
   config: typeof configurationProperties;
   utils: typeof utilityFunctions;
 }
-
-// Global augmentation for missing types;
+// Global augmentation for missing types
 declare global {
   interface Window { barrelStore?: BarrelStore; }
 }

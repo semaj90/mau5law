@@ -4,13 +4,12 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { slide } from "svelte/transition";
-
   let {
     message,
     showSources = false,
     showMetadata = false
   }: {
-    message: {;
+    message: {
       id: string;
       role: "user" | "assistant" | "system";
       content: string;
@@ -27,26 +26,22 @@
     showSources?: boolean;
     showMetadata?: boolean;
   } = $props();
-
   let formattedTime = $state("");
   let isLoading = $state(false);
   let isSourcesExpanded = $state(false);
   let isMetadataExpanded = $state(false);
-
   // Format timestamp
   $effect(() => {
     if (browser) {
       formattedTime = new Date(message.timestamp).toLocaleTimeString([], {
-        hour: "2-digit",;
-        minute: "2-digit",;
+        hour: "2-digit",
+        minute: "2-digit",
       });
     }
   });
-
   // Copy message content to clipboard
   async function copyToClipboard() {
     if (!browser) return;
-
     try {
       await navigator.clipboard.writeText(message.content);
       // TODO: Show toast notification
@@ -64,7 +59,6 @@
     return `${(ms / 1000).toFixed(1)}s`;
   }
 </script>
-
 <div
   class="chat-message {message.role}"
   role="article"
@@ -124,7 +118,6 @@
         System
       {/if}
     </div>
-
     <div class="message-actions">
       <span
         class="timestamp"
@@ -132,7 +125,6 @@
       >
         {formattedTime}
       </span>
-
       <button
         type="button"
         class="action-btn"
@@ -154,12 +146,10 @@
       </button>
     </div>
   </div>
-
   <div class="message-content">
     <div class="content-text">
       {message.content}
     </div>
-
     {#if showSources && message.sources && message.sources.length > 0}
       <div class="sources-section">
         <button
@@ -182,7 +172,6 @@
           </svg>
           Sources ({message.sources.length})
         </button>
-
         {#if isSourcesExpanded}
           <div class="sources-list" transition:slide={{ duration: 200 }}>
             {#each message.sources as source (source.id)}
@@ -203,7 +192,6 @@
         {/if}
       </div>
     {/if}
-
     {#if showMetadata && message.metadata}
       <div class="metadata-section">
         <button
@@ -226,7 +214,6 @@
           </svg>
           Details
         </button>
-
         {#if isMetadataExpanded}
           <div class="metadata-content" transition:slide={{ duration: 200 }}>
             <div class="metadata-item">
@@ -261,8 +248,7 @@
     {/if}
   </div>
 </div>
-
-<style>/* @unocss-include */ .chat-message {;
+<style>/* @unocss-include */ .chat-message {
     margin: 16px 0;
     padding: 16px;
     border-radius: 8px;
@@ -282,7 +268,7 @@
 }
   .message-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 12px;
     font-size: 0.875rem;
@@ -393,7 +379,7 @@
 }
   .source-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 4px;
     font-weight: 500;
@@ -426,7 +412,7 @@
 }
   .metadata-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 4px 8px;
     background: var(--bg-secondary, #f8fafc);
@@ -468,5 +454,3 @@
     }
   }
 </style>
-
-

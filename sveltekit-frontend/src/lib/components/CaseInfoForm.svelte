@@ -1,16 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
-  import {   } from "svelte";
   import Button from 'bits-ui';
   import { fade } from 'svelte/transition';
-
-  
-
   interface FormData {
     title: string;
     client_name: string;
@@ -20,14 +14,11 @@ https://svelte.dev/e/js_parse_error -->
     description: string;
     key_dates: Array<any>;
   }
-
   interface Props {
     formData: FormData;
   }
-
   let { formData }: Props = $props();
   let validationErrors = $state<Record<string, string>( );
-
   // Case type options
   const caseTypes = [
     'Civil Litigation',
@@ -41,7 +32,6 @@ https://svelte.dev/e/js_parse_error -->
     'Contract Dispute',
     'Administrative Law'
   ];
-
   // Jurisdiction options
   const jurisdictions = [
     'Federal Court',
@@ -54,50 +44,39 @@ https://svelte.dev/e/js_parse_error -->
     'Administrative Agency',
     'International'
   ];
-
   function validateForm() {
     validationErrors = {};
     if (!formData.title.trim()) {
       validationErrors.title = 'Case title is required';
     }
-
     if (!formData.client_name.trim()) {
       validationErrors.client_name = 'Client name is required';
     }
-
     if (!formData.case_type) {
       validationErrors.case_type = 'Case type is required';
     }
-
     if (!formData.jurisdiction) {
       validationErrors.jurisdiction = 'Jurisdiction is required';
     }
-
     if (!formData.description.trim()) {
       validationErrors.description = 'Case description is required';
     }
-
     return Object.keys(errors).length === 0;
   }
-
   function addKeyDate() {
     formData.key_dates = [...formData.key_dates, { date: '', description: '' }];
   }
-
   function removeKeyDate(index: number) {
     formData.key_dates = formData.key_dates.filter((_, i) => i !== index);
   }
-
   function handleNext() {
     if (validateForm()) {
       ondispatch?.({ step: 'caseInfo', data: formData });
     }
   }
-
   function handleSaveDraft() {
     ondispatch?.({ step: 'caseInfo', data: formData });
   }
-
   // Priority colors
   function getPriorityColor(priority: string) {
     switch (priority) {
@@ -109,13 +88,11 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg" transition:fade>
   <div class="mb-8">
     <h2 class="text-2xl font-bold text-gray-900 mb-2">Case Information</h2>
     <p class="text-gray-600">Enter the basic information about this legal case</p>
   </div>
-
   <form onsubmit|preventDefault={handleNext} class="space-y-6">
     <!-- Case Title -->
     <div>
@@ -126,7 +103,7 @@ https://svelte.dev/e/js_parse_error -->
         id="title"
         type="text"
         bind:value={formData.title}
-        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
+        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus: outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
         class:border-red-500={validationErrors.title}
         placeholder="e.g., Smith vs. Jones Contract Dispute"
       />
@@ -134,7 +111,6 @@ https://svelte.dev/e/js_parse_error -->
         <p class="mt-1 text-sm text-red-600">{validationErrors.title}</p>
       {/if}
     </div>
-
     <!-- Client Name -->
     <div>
       <label for="client_name" class="block text-sm font-medium text-gray-700 mb-2">
@@ -144,7 +120,7 @@ https://svelte.dev/e/js_parse_error -->
         id="client_name"
         type="text"
         bind:value={formData.client_name}
-        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
+        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus: outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
         class:border-red-500={validationErrors.client_name}
         placeholder="Enter client's full name"
       />
@@ -152,7 +128,6 @@ https://svelte.dev/e/js_parse_error -->
         <p class="mt-1 text-sm text-red-600">{validationErrors.client_name}</p>
       {/if}
     </div>
-
     <!-- Case Type and Priority Row -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
@@ -162,7 +137,7 @@ https://svelte.dev/e/js_parse_error -->
         <select
           id="case_type";
           bind:value={formData.case_type}
-          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
+          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus: outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
           class:border-red-500={validationErrors.case_type}
         >
           <option value="">Select case type</option>
@@ -174,7 +149,6 @@ https://svelte.dev/e/js_parse_error -->
           <p class="mt-1 text-sm text-red-600">{validationErrors.case_type}</p>
         {/if}
       </div>
-
       <div>
         <label for="priority" class="block text-sm font-medium text-gray-700 mb-2">
           Priority Level
@@ -196,7 +170,6 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </div>
-
     <!-- Jurisdiction -->
     <div>
       <label for="jurisdiction" class="block text-sm font-medium text-gray-700 mb-2">
@@ -205,7 +178,7 @@ https://svelte.dev/e/js_parse_error -->
       <select
         id="jurisdiction"
         bind:value={formData.jurisdiction}
-        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
+        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus: outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
         class:border-red-500={validationErrors.jurisdiction}
       >
         <option value="">Select jurisdiction</option>
@@ -217,7 +190,6 @@ https://svelte.dev/e/js_parse_error -->
         <p class="mt-1 text-sm text-red-600">{validationErrors.jurisdiction}</p>
       {/if}
     </div>
-
     <!-- Case Description -->
     <div>
       <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
@@ -227,7 +199,7 @@ https://svelte.dev/e/js_parse_error -->
         id="description"
         bind:value={formData.description}
         rows="4"
-        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
+        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus: outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
         class:border-red-500={validationErrors.description}
         placeholder="Provide a detailed description of the case, including key issues, parties involved, and relevant background information..."
       ></textarea>
@@ -235,7 +207,6 @@ https://svelte.dev/e/js_parse_error -->
         <p class="mt-1 text-sm text-red-600">{validationErrors.description}</p>
       {/if}
     </div>
-
     <!-- Key Dates -->
     <div>
       <div class="flex items-center justify-between mb-3">
@@ -250,7 +221,6 @@ https://svelte.dev/e/js_parse_error -->
           + Add Date
         </Button.Root>
       </div>
-
       {#each formData.key_dates as keyDate, index}
         <div class="flex gap-3 mb-3" transition:fade>
           <input
@@ -273,12 +243,10 @@ https://svelte.dev/e/js_parse_error -->
           </Button.Root>
         </div>
       {/each}
-
       {#if formData.key_dates.length === 0}
         <p class="text-sm text-gray-500 italic">No key dates added yet. Click "Add Date" to include important deadlines or milestones.</p>
       {/if}
     </div>
-
     <!-- Form Actions -->
     <div class="flex justify-between pt-6 border-t border-gray-200">
       <Button.Root
@@ -288,7 +256,6 @@ https://svelte.dev/e/js_parse_error -->
       >
         Save Draft
       </Button.Root>
-
       <Button.Root
         type="submit"
         class="px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
@@ -298,6 +265,4 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </form>
 </div>
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

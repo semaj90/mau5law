@@ -1,25 +1,20 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
 export const GET: RequestHandler = async ({ request }) => {
   try {
     // Direct test of database connection and schema
     const { db } = await import('$lib/server/db/drizzle')
     const { users, sessions } = await import('$lib/server/db/schema-postgres')
-    
     // Test basic database connection
     await db.execute('SELECT 1 as test')
-    
     // Test schema inspection
     const userSchema = users._.config
     const sessionSchema = sessions._.config
-    
     // Test simple queries
     const userCount = await db.select({ count: db.sql`count(*)` }).from(users)
     const sessionCount = await db.select({ count: db.sql`count(*)` }).from(sessions)
-    
     return json({
-      success: true,
+      success: true
       message: 'Database connection and schema test successful',
       tests: {
         connection: 'OK',
@@ -39,7 +34,7 @@ export const GET: RequestHandler = async ({ request }) => {
     })
   } catch (error: any) {
     return json({
-      success: false,
+      success: false
       error: error.message,
       stack: error.stack,
       details: {

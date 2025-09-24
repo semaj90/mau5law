@@ -82,7 +82,6 @@ export const ArrowLeftRight = () => null;
 export const Move = () => null;
 export const Grab = () => null;
 export const DragHandle = () => null;
-;
 // Add any additional icons as needed
 export default {
   Search, Plus, Edit, Trash2, Save, X, ChevronDown, ChevronUp, ChevronLeft, ChevronRight,

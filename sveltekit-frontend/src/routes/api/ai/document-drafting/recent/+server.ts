@@ -1,34 +1,30 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: document-drafting\recent
  * Category: minimal
  * Memory Bank: SAVE_RAM
  * Priority: 120
  * Redis Type: documentProcessing
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: minimal
  * - Memory Bank: SAVE_RAM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 /**
  * Recent Documents API
  * GET /api/ai/document-drafting/recent - Get recently created/modified documents
  */
-
 import { json } from '@sveltejs/kit'
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 import type { RequestHandler } from './$types.js'
-
 const originalGETHandler: RequestHandler = async ({ url, locals }) => {
   try {
     const limit = parseInt(url.searchParams.get('limit') || '10')
-    
     // Mock recent documents data - in production this would query the database
     const recentDocuments = [
       {
@@ -142,12 +138,10 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
         lastModified: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString() // 7 days ago
       }
     ]
-
     // Sort by lastModified (most recent first) and apply limit
     const sortedDocuments = recentDocuments
       .sort((a, b) => new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime()
       .slice(0, limit)
-
     // Calculate summary statistics
     const stats = {
       totalDocuments: recentDocuments.length,
@@ -171,10 +165,9 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
         ).length
       }
     }
-
     return json({
-      success: true,
-      data: sortedDocuments,
+      success: true
+      data: sortedDocuments
       stats,
       meta: {
         limit,
@@ -184,7 +177,6 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
         version: '1.0'
       }
     })
-
   } catch (error) {
     console.error('Error fetching recent documents:', error)
     return json(
@@ -193,5 +185,4 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
     )
   }
 }
-
 export const GET = redisOptimized.documentProcessing(originalGETHandler)

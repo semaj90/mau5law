@@ -31,7 +31,6 @@ export default defineConfig({
     exclude: ['@webgpu/types'],
   },
   define: {
-    'process.env.NODE_ENV': '"production"',
     'process.env.DATABASE_URL': '"postgresql://legal_admin:123456@localhost:5433/legal_ai_db"',
   },
 });

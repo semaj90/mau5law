@@ -1,22 +1,16 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  
-
   interface Props {
     onclose?: (event?: unknown) => void;
   }
-
-
   import { aiService } from '$lib/services/aiService';
   import * as Dialog from '$lib/components/ui/dialog';
   import Button from "$lib/components/ui/button";
   // Badge replaced with span - not available in enhanced-bits
   import { Sparkles, Copy, X, AlertCircle, Check } from 'lucide-svelte';
   let copied = $state(false);
-
   // Use the Svelte store reactively
   let summary = $derived($aiService.summary);
   let isLoading = $derived($aiService.isLoading);
@@ -24,7 +18,6 @@ https://svelte.dev/e/js_parse_error -->
   let model = $derived($aiService.model);
   let lastSummarizedContent = $derived($aiService.lastSummarizedContent);
   let isOpen = $derived(isLoading || summary !== null || error !== null);
-
   async function copyToClipboard() {
     if (summary) {
       try {
@@ -39,14 +32,12 @@ https://svelte.dev/e/js_parse_error -->
     onclose?.();
   }
 </script>
-
 <Dialog.Root open={isOpen} close={closeModal}>
   <Dialog.Content size="lg">
   <Dialog.Header>
     <Dialog.Title>AI Summary</Dialog.Title>
     <Dialog.Description>AI-generated summary of your content</Dialog.Description>
   </Dialog.Header>
-
   <div class="space-y-4">
     {#if isLoading}
       <!-- Loading State -->
@@ -73,7 +64,6 @@ https://svelte.dev/e/js_parse_error -->
 copyToClipboard()} variant="ghost" size="sm" aria-label="Copy summary to clipboard">
             <Copy class="w-4 h-4" />
             <span>Copy</span>
-
           {#if copied}
             <span class="inline-flex items-center gap-1"><Check class="w-4 h-4" />Copied!</span>
           {/if}
@@ -91,23 +81,19 @@ copyToClipboard()} variant="ghost" size="sm" aria-label="Copy summary to clipboa
       <div class="space-y-4">No summary available.</div>
     {/if}
   </div>
-
   <Dialog.Footer>
     <Dialog.Close asChild>
       <Button class="bits-btn" onclick={() =>
 closeModal()} variant="secondary" aria-label="Close summary modal">
         <X class="space-y-4" />
         <span class="space-y-4">Close</span>
-
     </Dialog.Close>
   </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>
-
 <style>
   /* @unocss-include */
   .prose {
     max-width: none;
 }
 </style>
-

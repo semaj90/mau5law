@@ -1,13 +1,10 @@
 
 import type { RequestHandler } from './$types.js'
-
 /*
  * System Health API Endpoint
  */
-
 import { json } from "@sveltejs/kit"
 import { rateLimitAPI } from "$lib/server/monitoring/security"
-
 export const GET: RequestHandler = async (event) => {
   try {
     const { locals, request } = event
@@ -17,7 +14,6 @@ export const GET: RequestHandler = async (event) => {
     }
     // Apply rate limiting
     await rateLimitAPI()(event as any)
-
     // Get system health metrics
     const healthData = {
       cpu: Math.floor(Math.random() * 80) + 10, // Simulated - replace with actual CPU monitoring
@@ -27,16 +23,15 @@ export const GET: RequestHandler = async (event) => {
       uptime: process.uptime(),
       timestamp: new Date().toISOString()
     }
-
     return json({
-      success: true,
+      success: true
       data: healthData
     })
   } catch (error: any) {
     console.error("Health API error:", error)
     return json(
       {
-        success: false,
+        success: false
         error: "Failed to fetch health data",
         data: {
           cpu: 0,

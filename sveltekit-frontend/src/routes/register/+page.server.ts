@@ -6,12 +6,10 @@ import type { JSONSchema7 } from "json-schema";
 import { message, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import type { Actions, PageServerLoad } from './$types.js';
-
 export const load: PageServerLoad = async ({ locals }) => {
   if (locals.user) {
     throw redirect(303, "/dashboard");
   }
-
   const form = await superValidate(zod(registerSchema), {
     id: "register",
     jsonSchema: {
@@ -23,13 +21,12 @@ export const load: PageServerLoad = async ({ locals }) => {
         name: { type: "string" },
         role: { type: "string" },
         terms: { type: "boolean" }
-      },;
+      },
       required: ["email", "password", "confirmPassword", "name", "role"]
     } as JSONSchema7
   });
   return { form };
 };
-
 export const actions: Actions = {
   default: async ({ request }) => {
     const form = await superValidate(request, zod(registerSchema), {
@@ -43,15 +40,13 @@ export const actions: Actions = {
           name: { type: "string" },
           role: { type: "string" },
           terms: { type: "boolean" }
-        },;
+        },
         required: ["email", "password", "confirmPassword", "name", "role"]
       } as JSONSchema7
     });
-
     if (!form.valid) {
       return fail(400, { form });
     }
-
     // Extra server-side constraints not encoded in schema
     if (form.data.password !== form.data.confirmPassword) {
       return message(form, "Passwords do not match", { status: 400 });
@@ -65,29 +60,24 @@ export const actions: Actions = {
         .from(users)
         .where(helpers.eq(users.email, form.data.email as string) as any)
         .limit(1);
-
       if (existingUser.length > 0) {
         return message(form, "An account with this email already exists.", {
           status: 400
         });
       }
-
       const hashedPassword = await hashPassword(form.data.password);
-
       const nameValue = String(form.data.name || '');
-
       const [newUser] = await db
         .insert(users)
         .values({
           email: form.data.email,
-          hashed_password: hashedPassword,
+          hashed_password: hashedPassword
           first_name: nameValue.split(" ")[0] || "",
-          last_name: nameValue.split(" ").slice(1).join(" ") || "",;
+          last_name: nameValue.split(" ").slice(1).join(" ") || "",
           role: form.data.role,
           is_active: true
         })
         .returning();
-
       console.log("[Register] User created successfully:", newUser.id);
       throw redirect(302, "/login?registered=true");
     } catch (error: any) {

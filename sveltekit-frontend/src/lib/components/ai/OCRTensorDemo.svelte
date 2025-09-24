@@ -3,13 +3,10 @@
   Complete pipeline: Image → OCR.js → Embeddings → WebGPU Tensors → Database Storage
   Uses Svelte 5 runes and Service Workers for optimal performance
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { ocrTensorProcessor, type ProcessingResult } from '$lib/client/ocr-tensor-processor.js';
-
   // Svelte 5 runes for reactive state
   let initialized = $state(false);
   let processing = $state(false);
@@ -17,11 +14,10 @@
   let results: ProcessingResult[] = $state([]);
   let logs: string[] = $state([]);
   let cacheStats = $state({
-    hits: 0,;
+    hits: 0,
     misses: 0,
     totalProcessingTime: 0;
   });
-
   // Performance metrics
   let performanceMetrics = $state({
     ocrTime: 0,
@@ -29,10 +25,8 @@
     tensorTime: 0,
     storageTime: 0
   });
-
   // File input reference
   let fileInput: HTMLInputElement;
-
   $effect(() => {
     (async () => {
 try {
@@ -45,7 +39,6 @@ try {
     }
     })();
   });
-
   /**
    * Handle file selection
    */
@@ -57,11 +50,10 @@ try {
         addLog('❌ Please select an image file');
         return;
       }
-      uploadedFile = file;
+      uploadedFile = fil;
       addLog(`📁 Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`);
     }
   }
-
   /**
    * Process uploaded image
    */
@@ -90,7 +82,7 @@ try {
       } else {
         cacheStats.misses++;
       }
-      cacheStats.totalProcessingTime += (result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).processingTime;
+      cacheStats.totalProcessingTime += (result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).processingTim;
       addLog(`✅ Processing completed in ${(result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).processingTime.toFixed(2)}ms`);
       addLog(`📝 Extracted ${(result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).ocr.text.length} characters with ${(result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).ocr.confidence.toFixed(1)}% confidence`);
       addLog(`🧮 Generated ${(result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).embeddings.dimensions}-dimensional tensor`);
@@ -102,7 +94,6 @@ try {
       processing = false;
     }
   }
-
   /**
    * Store results in database
    */
@@ -119,7 +110,6 @@ try {
       addLog(`❌ Storage failed: ${error.message}`);
     }
   }
-
   /**
    * Process batch of sample images
    */
@@ -135,7 +125,7 @@ try {
       // Update stats
       batchResults.forEach.cacheHit) cacheStats.hits++;
         else cacheStats.misses++;
-        cacheStats.totalProcessingTime += (result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).processingTime;
+        cacheStats.totalProcessingTime += (result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).processingTim;
       });
       addLog(`✅ Batch processing completed: ${batchResults.length} images processed`);
       // Store batch results
@@ -146,7 +136,6 @@ try {
       processing = false;
     }
   }
-
   /**
    * Create sample canvas images for demo
    */
@@ -170,10 +159,9 @@ try {
       ctx.font = '24px Arial';
       ctx.textAlign = 'center';
       ctx.fillText(text, canvas.width / 2, canvas.height / 2);
-      return canvas;
+      return canva;
     });
   }
-
   /**
    * Clear all results and logs
    */
@@ -184,14 +172,12 @@ try {
     performanceMetrics = { ocrTime: 0, embeddingTime: 0, tensorTime: 0, storageTime: 0 };
     addLog('🗑️ Cleared all results');
   }
-
   /**
    * Add log entry
    */
   function addLog(message: string) {
     logs = [`[${new Date().toLocaleTimeString()}] ${message}`, ...logs.slice(0, 49)];
   }
-
   // Computed values using Svelte 5 $derived
   const averageProcessingTime = $derived(
     cacheStats.hits + cacheStats.misses > 0
@@ -204,12 +190,10 @@ try {
       : 0
   );
 </script>
-
 <div class="ocr-tensor-demo">
   <div class="demo-header">
     <h2>🔬 OCR + Tensor Processing Demo</h2>
     <p>Complete pipeline: Image → OCR.js → Embeddings → WebGPU Tensors → Database Storage</p>
-    
     <div class="status-bar" class:initialized class:processing>
       <span class="status-dot"></span>
       {#if processing}
@@ -221,7 +205,6 @@ try {
       {/if}
     </div>
   </div>
-
   <div class="demo-content">
     <!-- File Upload Section -->
     <div class="upload-section">
@@ -233,14 +216,12 @@ try {
         onchange={handleFileSelect}
         disabled={!initialized || processing}
       />
-      
       {#if uploadedFile}
         <div class="file-info">
           <strong>{uploadedFile.name}</strong>
           <span>({(uploadedFile.size / 1024).toFixed(1)} KB)</span>
         </div>
       {/if}
-      
       <div class="action-buttons">
         <button
           onclick={processImage}
@@ -252,14 +233,12 @@ try {
             🚀 Process Image
           {/if}
         </button>
-        
         <button
           onclick={processBatchDemo}
           disabled={!initialized || processing}
         >
           📊 Batch Demo
         </button>
-        
         <button
           onclick={clearResults}
           disabled={results.length === 0}
@@ -268,7 +247,6 @@ try {
         </button>
       </div>
     </div>
-
     <!-- Performance Metrics -->
     {#if Object.values.some(v => v > 0)}
       <div class="metrics-section">
@@ -293,7 +271,6 @@ try {
         </div>
       </div>
     {/if}
-
     <!-- Cache Statistics -->
     {#if cacheStats.hits + cacheStats.misses > 0}
       <div class="cache-stats">
@@ -318,7 +295,6 @@ try {
         </div>
       </div>
     {/if}
-
     <!-- Results Display -->
     {#if results.length > 0}
       <div class="results-section">
@@ -335,14 +311,12 @@ try {
                   {(result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).processingTime.toFixed(2)}ms
                 </span>
               </div>
-              
               <div class="result-content">
                 <div class="ocr-text">
                   <strong>OCR Text:</strong>
                   <p>{(result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).ocr.text.slice(0, 200)}{(result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).ocr.text.length > 200 ? '...' : ''}</p>
                   <small>Confidence: {(result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).ocr.confidence.toFixed(1)}%</small>
                 </div>
-                
                 <div class="tensor-info">
                   <strong>Tensor Data:</strong>
                   <div class="tensor-stats">
@@ -356,7 +330,6 @@ try {
         </div>
       </div>
     {/if}
-
     <!-- Live Logs -->
     {#if logs.length > 0}
       <div class="logs-section">
@@ -370,7 +343,6 @@ try {
     {/if}
   </div>
 </div>
-
 <style>
   .ocr-tensor-demo {
     max-width: 1200px;
@@ -378,22 +350,18 @@ try {
     padding: 2rem;
     font-family: 'Inter', sans-serif;
   }
-
   .demo-header {
     text-align: center;
     margin-bottom: 2rem;
   }
-
   .demo-header h2 {
     color: #1f2937;
     margin-bottom: 0.5rem;
   }
-
   .demo-header p {
     color: #6b7280;
     margin-bottom: 1rem;
   }
-
   .status-bar {
     display: inline-flex;
     align-items: center;
@@ -404,38 +372,31 @@ try {
     color: #6b7280;
     font-weight: 500;
   }
-
   .status-bar.initialized {
     background: #d1fae5;
     color: #065f46;
   }
-
   .status-bar.processing {
     background: #fef3c7;
-    color: #92400e;
+    color: #92400;
     animation: pulse 2s infinite;
   }
-
   .status-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     background: #9ca3af;
   }
-
   .initialized .status-dot {
     background: #10b981;
   }
-
   .processing .status-dot {
     background: #f59e0b;
   }
-
   .demo-content {
     display: grid;
     gap: 2rem;
   }
-
   .upload-section,
   .metrics-section,
   .cache-stats,
@@ -447,7 +408,6 @@ try {
     border: 1px solid #e5e7eb;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
-
   .upload-section h3,
   .metrics-section h3,
   .cache-stats h3,
@@ -456,128 +416,106 @@ try {
     margin-bottom: 1rem;
     color: #1f2937;
   }
-
   .file-info {
     margin: 1rem 0;
     padding: 0.75rem;
     background: #f3f4f6;
     border-radius: 0.5rem;
   }
-
   .action-buttons {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
   }
-
   .action-buttons button {
     padding: 0.75rem 1.5rem;
     border: none;
     border-radius: 0.5rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2;
   }
-
-  .action-buttons button:disabled {;
+  .action-buttons button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }
-
-  .action-buttons button:first-child {;
+  .action-buttons button:first-child {
     background: #3b82f6;
     color: white;
   }
-
-  .action-buttons button:first-child:hover:not(:disabled) {;
+  .action-buttons button:first-child:hover:not(:disabled) {,
     background: #2563eb;
   }
-
   .metrics-grid,
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
   }
-
   .metric,
   .stat {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
   }
-
   .metric label,
   .stat label {
     font-size: 0.875rem;
     color: #6b7280;
   }
-
   .metric span,
   .stat span {
     font-size: 1.25rem;
     font-weight: 600;
     color: #1f2937;
   }
-
   .hits {
     color: #059669 !important;
   }
-
   .misses {
     color: #dc2626 !important;
   }
-
   .rate {
     color: #7c3aed !important;
   }
-
   .results-list {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .result-card {
     border: 1px solid #e5e7eb;
     border-radius: 0.75rem;
     padding: 1rem;
     background: #fafafa;
   }
-
   .result-card.cache-hit {
     border-color: #10b981;
     background: #f0fdf4;
   }
-
   .result-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 0.75rem;
   }
-
   .result-index {
     font-weight: 600;
     color: #1f2937;
   }
-
   .cache-indicator {
     font-size: 0.875rem;
     color: #6b7280;
   }
-
   .processing-time {
     font-size: 0.875rem;
     color: #6b7280;
     font-family: 'JetBrains Mono', monospace;
   }
-
   .result-content {
     display: grid;
     gap: 1rem;
   }
-
   .ocr-text p {
     margin: 0.5rem 0;
     padding: 0.5rem;
@@ -585,7 +523,6 @@ try {
     border-radius: 0.5rem;
     border: 1px solid #e5e7eb;
   }
-
   .tensor-stats {
     display: flex;
     gap: 1rem;
@@ -593,7 +530,6 @@ try {
     color: #6b7280;
     margin-top: 0.5rem;
   }
-
   .logs-container {
     max-height: 300px;
     overflow-y: auto;
@@ -603,12 +539,10 @@ try {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.875rem;
   }
-
   .log-entry {
     color: #f3f4f6;
     margin-bottom: 0.25rem;
   }
-
   @keyframes pulse {
     0%, 100% {
       opacity: 1;

@@ -3,7 +3,6 @@
  * Common component types for better type safety
  */;
 }
-
 export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
@@ -11,7 +10,6 @@ export interface ApiResponse<T = unknown> {
   message?: string;
   timestamp?: string;
 }
-
 export interface EvidenceItem {
   id: string;
   title: string;
@@ -23,7 +21,6 @@ export interface EvidenceItem {
   chainOfCustody?: ChainOfCustodyEntry[];
   fileData?: FileData;
 }
-
 export interface ChainOfCustodyEntry {
   officerId: string;
   officerName: string;
@@ -32,7 +29,6 @@ export interface ChainOfCustodyEntry {
   location: string;
   notes?: string;
 }
-
 export interface CaseData {
   id: string;
   title: string;
@@ -44,7 +40,6 @@ export interface CaseData {
   assignedTo?: UserData[];
   metadata?: Record<string, unknown>;
 }
-
 export interface FileData {
   name: string;
   size: number;
@@ -54,7 +49,6 @@ export interface FileData {
   url?: string;
   checksum?: string;
 }
-
 export interface UserData {
   id: string;
   name: string;
@@ -63,14 +57,12 @@ export interface UserData {
   permissions?: string[];
   avatar?: string;
 }
-
 export interface UploadProgress {
   file: FileData;
   progress: number;
   status: 'pending' | 'uploading' | 'completed' | 'error';
   error?: string;
 }
-
 export interface SearchResult<T = unknown> {
   items: T[];
   total: number;
@@ -78,7 +70,6 @@ export interface SearchResult<T = unknown> {
   limit: number;
   hasMore: boolean;
 }
-
 export interface ComponentProps {
   className?: string;
   style?: string;
@@ -86,7 +77,6 @@ export interface ComponentProps {
   loading?: boolean;
   error?: string;
 }
-
 export interface EventHandlers {
   onclick?: (event: MouseEvent) => void;
   onchange?: (event: Event) => void;
@@ -97,21 +87,18 @@ export interface EventHandlers {
   onfocus?: (event: FocusEvent) => void;
   onblur?: (event: FocusEvent) => void;
 }
-
 export interface CanvasContext {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D | WebGLRenderingContext;
   width: number;
   height: number;
 }
-
 export interface WebGPUContext {
   device: GPUDevice;
   canvas: HTMLCanvasElement;
   context: GPUCanvasContext;
   format: GPUTextureFormat;
 }
-
 // Utility types
 export type AsyncFunction<T = void> = () => Promise<T>;
 export type EventCallback<T = Event> = (event: T) => void;

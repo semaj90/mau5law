@@ -1,7 +1,5 @@
 import { telemetryBus } from '$lib/telemetry/telemetry-bus.js';
-
 export type QuantizationLevel = 'float32' | 'int8' | 'int4' | 'binary';
-
 export interface VectorProcessingConfig {
   dimensions: number;
   batchSize: number;
@@ -9,13 +7,11 @@ export interface VectorProcessingConfig {
   quantization: QuantizationLevel;
   fallbackToWebGL?: boolean;
 }
-
 export class GpuVectorProcessor {
   private device?: GPUDevice;
   private lodCache: Map<string, unknown>;
   private config: VectorProcessingConfig;
   private isInitialized = false;
-
   // WebGL2 resources
   private gl?: WebGL2RenderingContext;
   private glCanvas?: HTMLCanvasElement;
@@ -27,18 +23,15 @@ export class GpuVectorProcessor {
   // reusable buffer pool for reducing allocations
   private bufferPool: Map<string, { buffer: WebGLBuffer; size: number; lastUsed: number }> =
     new Map();
-
   constructor(lodCache: any, config: VectorProcessingConfig) {
     this.lodCache = lodCache;
     this.config = config;
   }
-
   async initialize(device?: GPUDevice) {
     this.device = device;
     if (!this.device && this.config.fallbackToWebGL) await this.initWebGL2();
     this.isInitialized = true;
   }
-
   private async initWebGL2() {
     if (typeof document === 'undefined') return;
     try {
@@ -50,18 +43,17 @@ export class GpuVectorProcessor {
       this.glCanvas = canvas;
       this.gl = gl;
       telemetryBus.publish({
-        type: 'gpu.backend',;
+        type: 'gpu.backend',
         meta: { operation: 'init_webgl2', success: true }
       });
     } catch (e) {
       console.warn('[GpuVectorProcessor] WebGL2 init failed', e);
       telemetryBus.publish({
-        type: 'error',;
+        type: 'error',
         meta: { operation: 'init_webgl2', success: false, error: (e as Error).message }
       });
     }
   }
-
   private compileShader(gl: WebGL2RenderingContext, type: number, src: string) {
     const s = gl.createShader(type)!;
     gl.shaderSource(s, src);
@@ -73,7 +65,6 @@ export class GpuVectorProcessor {
     }
     return s;
   }
-
   private createProgramForDimension(dim: number) {
     if (!this.gl) throw new Error('webgl2-not-init');
     if (this.webglProgCache.has(dim)) return this.webglProgCache.get(dim)!;
@@ -113,14 +104,13 @@ export class GpuVectorProcessor {
     gl.bindVertexArray(null);
     const took = performance.now() - t0;
     telemetryBus.publish({
-      type: 'gpu.vector.process.start',;
+      type: 'gpu.vector.process.start',
       meta: { operation: 'compile_program', duration: took, dimension: dim, vec4Count }
     });
     const rec = { program: prog, vao, attribCount: vec4Count };
     this.webglProgCache.set(dim, rec);
     return rec;
   }
-
   private getOrCreateBuffer(type: 'input' | 'output', sizeBytes: number): WebGLBuffer {
     if (!this.gl) throw new Error('webgl2-not-init');
     const gl = this.gl;
@@ -140,7 +130,6 @@ export class GpuVectorProcessor {
     this.bufferPool.set(key, { buffer, size: sizeBytes, lastUsed: performance.now() });
     return buffer;
   }
-
   private evictOldBuffers(maxAgeMs = 30000) {
     if (!this.gl) return;
     const gl = this.gl;
@@ -152,7 +141,6 @@ export class GpuVectorProcessor {
       }
     }
   }
-
   private packToVec4Buffer(vectors: Float32Array[], dim: number) {
     const vec4Count = Math.ceil(dim / 4);
     const totalVerts = vectors.length;
@@ -165,31 +153,25 @@ export class GpuVectorProcessor {
     }
     return { packed, vec4Count };
   }
-
   private async executeWebGL2TransformFeedback(
-    vectors: Float32Array[],;
+    vectors: Float32Array[]
     dim: number;
   ): Promise<Float32Array[]> {
     if (!this.gl) throw new Error('webgl2-not-init');
     const gl = this.gl;
     const startTotal = performance.now();
-
     try {
       this.evictOldBuffers(); // periodic cleanup
-
       const progRec = this.createProgramForDimension(dim);
       const tSetupStart = performance.now();
       const { packed, vec4Count } = this.packToVec4Buffer(vectors, dim);
-
       // use pooled buffers
       const inBuf = this.getOrCreateBuffer('input', packed.byteLength);
       const outFloats = vectors.length * vec4Count * 4;
       const outBuf = this.getOrCreateBuffer('output', outFloats * 4);
-
       gl.bindBuffer(gl.ARRAY_BUFFER, inBuf);
       gl.bufferSubData(gl.ARRAY_BUFFER, 0, packed);
       const tSetup = performance.now() - tSetupStart;
-
       const tExecStart = performance.now();
       gl.bindVertexArray(progRec.vao);
       gl.useProgram(progRec.program);
@@ -211,12 +193,10 @@ export class GpuVectorProcessor {
       gl.endTransformFeedback();
       gl.disable(gl.RASTERIZER_DISCARD);
       const tExec = performance.now() - tExecStart;
-
       const tReadStart = performance.now();
       const readback = new Float32Array(outFloats);
       gl.bindBuffer(gl.ARRAY_BUFFER, outBuf);
-
-      // Handle environments without getBufferSubData;
+      // Handle environments without getBufferSubData
       if ('getBufferSubData' in gl) {
         // @ts-ignore
         gl.getBufferSubData(gl.ARRAY_BUFFER, 0, readback);
@@ -229,12 +209,10 @@ export class GpuVectorProcessor {
         readback.fill(0);
       }
       const tRead = performance.now() - tReadStart;
-
       // cleanup transient transform-feedback (keep buffers pooled)
       gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
       gl.bindVertexArray(null);
       gl.deleteTransformFeedback(tf);
-
       // unpack per-vector
       const results: Float32Array[] = [];
       for (let i = 0; i < vectors.length; i++) {
@@ -242,23 +220,21 @@ export class GpuVectorProcessor {
         const sl = readback.slice(base, base + dim);
         results.push(new Float32Array(sl);
       }
-
       const totalTime = performance.now() - startTotal;
       telemetryBus.publish({
         type: 'gpu.vector.process.end',
         meta: {
           operation: 'transform_feedback',
-          duration: totalTime,
-          setupMs: tSetup,
-          execMs: tExec,
-          readMs: tRead,
-          dimension: dim,;
+          duration: totalTime
+          setupMs: tSetup
+          execMs: tExec
+          readMs: tRead
+          dimension: dim
           count: vectors.length,
           vec4Count,
           buffersReused: true
         }
       });
-
       return results;
     } catch (error) {
       const totalTime = performance.now() - startTotal;
@@ -266,16 +242,15 @@ export class GpuVectorProcessor {
         type: 'error',
         meta: {
           operation: 'transform_feedback',
-          duration: totalTime,
+          duration: totalTime
           error: (error as Error).message,
-          dimension: dim,;
+          dimension: dim
           count: vectors.length
         }
       });
       throw error;
     }
   }
-
   async processBatch(vectors: Float32Array[]): Promise<Float32Array[]> {
     if (!this.isInitialized) throw new Error('not-initialized');
     if (this.device) {
@@ -287,8 +262,7 @@ export class GpuVectorProcessor {
     }
     throw new Error('no-backend');
   }
-
-  // Compatibility method for smoke test;
+  // Compatibility method for smoke test
   async processEmbeddings(params: {
     inputVectors: Float32Array[];
     similarityThreshold: number;
@@ -299,7 +273,6 @@ export class GpuVectorProcessor {
     const processedVectors = await this.processBatch(params.inputVectors);
     const processingTime = performance.now() - start;
     const memoryUsed = params.inputVectors.reduce((sum, v) => sum + v.byteLength, 0);
-
     return {
       processedVectors,
       processingTime,
@@ -309,10 +282,9 @@ export class GpuVectorProcessor {
       cacheHitRate: 0.95, // placeholder
     };
   }
-
   cleanup() {
     if (this.gl) {
-      // cleanup program cache;
+      // cleanup program cache
       for (const rec of this.webglProgCache.values()) {
         try {
           this.gl.deleteProgram(rec.program);
@@ -320,24 +292,20 @@ export class GpuVectorProcessor {
         } catch { /* Ignore cleanup errors */ }
       }
       this.webglProgCache.clear();
-
-      // cleanup buffer pool;
+      // cleanup buffer pool
       for (const cached of this.bufferPool.values()) {
         try {
           this.gl.deleteBuffer(cached.buffer);
         } catch { /* Ignore buffer deletion errors */ }
       }
       this.bufferPool.clear();
-
       this.gl = undefined;
     }
     this.isInitialized = false;
-
     telemetryBus.publish({
-      type: 'gpu.backend',;
+      type: 'gpu.backend',
       meta: { operation: 'cleanup_resources' }
     });
   }
 }
-
 export default GpuVectorProcessor;

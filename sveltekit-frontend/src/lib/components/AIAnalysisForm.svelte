@@ -1,12 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
-  import {   } from "svelte";
   import Button from '$lib/components/ui/bitsbutton.svelte';
   import { fade, slide } from 'svelte/transition';
   import { writable } from 'svelte/store';
-
   interface AnalysisResults {
     case_strength_score: number;
     predicted_outcome: string;
@@ -18,32 +14,26 @@
     legal_issues: string[];
     precedents: Array;
   }
-
   interface FormData {
     caseType?: string;
     jurisdiction?: string;
   }
-
   interface EvidenceData {
     type?: string;
     content?: string;
   }
-
   interface Props {
     formData?: FormData;
     evidenceData?: EvidenceData;
   }
-
   let {
-    formData = ,
-    evidenceData = }: Props = $props();
-
-  
+    formData = {},
+    evidenceData = {}
+  }: Props = $props();
   let isAnalyzing = $state(false);
   let analysisProgress = writable(0);
   let currentAnalysisStep = writable('');
   let analysisResults = writable<AnalysisResults | null>(null);
-
   // Outcome options
   const possibleOutcomes = [
     'Favorable Settlement',
@@ -53,14 +43,11 @@
     'Court Loss',
     'Uncertain'
   ];
-
   async function startAnalysis() {
     if (isAnalyzing) return;
-
     isAnalyzing = true;
     analysisProgress.set(0);
     currentAnalysisStep.set('Initializing AI analysis...');
-
     try {
       // Simulate analysis steps
       const steps = [
@@ -70,13 +57,11 @@
         'Finding similar cases...',
         'Generating recommendations...'
       ];
-
       for (let i = 0; i < steps.length; i++) {
         currentAnalysisStep.set(steps[i]);
         analysisProgress.set((i + 1) / steps.length * 100);
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
-
       // Mock results
       const mockResults: AnalysisResults = {
         case_strength_score: 75,
@@ -92,15 +77,13 @@
           { type: 'Date', value: '2024-01-15', confidence: 0.92 }
         ],
         key_facts: ['Incident occurred on company premises', 'Multiple witnesses present'],
-        legal_issues: ['Liability determination', 'Damages calculation'],;
+        legal_issues: ['Liability determination', 'Damages calculation'],
         precedents: [
           { case_name: 'Smith v. Company', relevance: 0.88, summary: 'Similar liability case' }
         ]
       };
-
       analysisResults.set(mockResults);
       ondispatch?.(mockResults);
-
     } catch (error) {
       console.error('Analysis failed:', error);
     } finally {
@@ -109,10 +92,8 @@
     }
   }
 </script>
-
 <div class="ai-analysis-form p-6 bg-white rounded-lg shadow-lg">
   <h3 class="text-xl font-bold mb-4">AI Legal Analysis</h3>
-
   <div class="mb-6">
     <Button
       onclick={startAnalysis}
@@ -122,7 +103,6 @@
 {isAnalyzing ? 'Analyzing...' : 'Start AI Analysis'}
 </Button>
   </div>
-
   {#if isAnalyzing}
     <div class="analysis-progress mb-6" transition:slide>
       <div class="progress-bar bg-gray-200 rounded-full h-3 mb-2">
@@ -134,11 +114,9 @@
       <p class="text-sm text-gray-600">{$currentAnalysisStep}</p>
     </div>
   {/if}
-
   {#if $analysisResults}
     <div class="analysis-results mt-6" transition:fade>
       <h4 class="text-lg font-semibold mb-4">Analysis Results</h4>
-
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="result-nier-bits-card p-4 bg-gray-50 rounded-lg">
           <h5 class="font-medium mb-2">Case Strength Score</h5>
@@ -146,7 +124,6 @@
             {$analysisResults.case_strength_score}%
           </div>
         </div>
-
         <div class="result-nier-bits-card p-4 bg-gray-50 rounded-lg">
           <h5 class="font-medium mb-2">Predicted Outcome</h5>
           <div class="text-lg font-medium text-green-600">
@@ -154,7 +131,6 @@
           </div>
         </div>
       </div>
-
       <div class="mt-6">
         <h5 class="font-medium mb-2">Key Facts</h5>
         <ul class="list-disc list-inside space-y-1">
@@ -163,7 +139,6 @@
           {/each}
         </ul>
       </div>
-
       <div class="mt-6">
         <h5 class="font-medium mb-2">Recommendations</h5>
         <ul class="list-disc list-inside space-y-1">
@@ -175,20 +150,16 @@
     </div>
   {/if}
 </div>
-
 <style>
-  .ai-analysis-form {;
+  .ai-analysis-form {
     max-width: 800px;
   }
-
   .progress-bar {
     overflow: hidden;
   }
-
   .result-card {
     transition: all 0.2s ease;
   }
-
   .result-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);

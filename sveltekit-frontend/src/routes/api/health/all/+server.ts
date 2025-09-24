@@ -1,6 +1,5 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
 interface ServiceHealthStatus {
   status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown'
   message?: string
@@ -8,9 +7,8 @@ interface ServiceHealthStatus {
   responseTime?: number
   lastChecked: string
 }
-
 interface AggregatedHealthResponse {
-  status: 'healthy' | 'degraded' | 'unhealthy'
+  status: 'healthy' | 'degraded' | 'unhealthy',
   timestamp: string
   services: {
     database: ServiceHealthStatus
@@ -32,7 +30,7 @@ interface AggregatedHealthResponse {
   }
   performance: {
     memoryUsage: NodeJS.MemoryUsage
-    cpuUsage: NodeJS.CpuUsage
+    cpuUsage: NodeJS.CpuUsage,
     loadAverage: number[] | string
   }
   summary: {
@@ -44,23 +42,18 @@ interface AggregatedHealthResponse {
     overallHealthScore: number
   }
 }
-
 async function checkServiceHealth(url: string, timeout: number = 5000): Promise<any> {
   const startTime = Date.now()
-
   try {
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), timeout)
-
     const response = await fetch(url, {
       method: 'GET',
       headers: { 'Accept': 'application/json' },
       signal: controller.signal
     })
-
     clearTimeout(timeoutId)
     const responseTime = Date.now() - startTime
-
     if ((response as { ok?: any; json?: any; status?: any; summary?: any }).ok) {
       const data = await (response as { ok?: any; json?: any; status?: any; summary?: any }).json().catch(() => ({})
       return { status: 'healthy', responseTime, details: data }
@@ -69,11 +62,9 @@ async function checkServiceHealth(url: string, timeout: number = 5000): Promise<
     }
   } catch (error: any) {
     const responseTime = Date.now() - startTime
-
     if (error.name === 'AbortError') {
       return { status: 'unhealthy', responseTime, details: { error: 'Request timeout' } }
     }
-
     return {
       status: 'unhealthy',
       responseTime,
@@ -81,7 +72,6 @@ async function checkServiceHealth(url: string, timeout: number = 5000): Promise<
     }
   }
 }
-
 async function checkDatabaseHealth(): Promise<ServiceHealthStatus> {
   const startTime = Date.now()
   try {
@@ -103,7 +93,6 @@ async function checkDatabaseHealth(): Promise<ServiceHealthStatus> {
     }
   }
 }
-
 async function checkRedisHealth(): Promise<ServiceHealthStatus> {
   const startTime = Date.now()
   try {
@@ -124,7 +113,6 @@ async function checkRedisHealth(): Promise<ServiceHealthStatus> {
     }
   }
 }
-
 async function checkNeo4jHealth(): Promise<ServiceHealthStatus> {
   const startTime = Date.now()
   try {
@@ -145,7 +133,6 @@ async function checkNeo4jHealth(): Promise<ServiceHealthStatus> {
     }
   }
 }
-
 async function checkOllamaHealth(): Promise<ServiceHealthStatus> {
   const startTime = Date.now()
   try {
@@ -167,14 +154,12 @@ async function checkOllamaHealth(): Promise<ServiceHealthStatus> {
     }
   }
 }
-
 async function checkOCRHealth(): Promise<ServiceHealthStatus> {
   const startTime = Date.now()
   try {
     // Check OCR service using the same endpoint structure as API client
     const ocrBaseUrl = (globalThis as any).__OCR_BASE__ || '/api/ocr'
     const result = await checkServiceHealth(`${ocrBaseUrl}/status`)
-
     return {
       status: (result as { status?: any; details?: any; responseTime?: any }).status,
       message: (result as { status?: any; details?: any; responseTime?: any }).status === 'healthy' ? 'OCR processing service operational' : 'OCR service issues',
@@ -199,7 +184,6 @@ async function checkOCRHealth(): Promise<ServiceHealthStatus> {
     }
   }
 }
-
 async function checkVectorSearchHealth(): Promise<ServiceHealthStatus> {
   const startTime = Date.now()
   try {
@@ -220,7 +204,6 @@ async function checkVectorSearchHealth(): Promise<ServiceHealthStatus> {
     }
   }
 }
-
 async function checkMinIOHealth(): Promise<ServiceHealthStatus> {
   const startTime = Date.now()
   try {
@@ -241,7 +224,6 @@ async function checkMinIOHealth(): Promise<ServiceHealthStatus> {
     }
   }
 }
-
 async function checkClusterHealth(): Promise<ServiceHealthStatus> {
   const startTime = Date.now()
   try {
@@ -262,17 +244,14 @@ async function checkClusterHealth(): Promise<ServiceHealthStatus> {
     }
   }
 }
-
 function calculateOverallHealth(services: AggregatedHealthResponse['services']): AggregatedHealthResponse['status'] {
   const serviceStatuses = Object.values(services).map(s => s.status)
   const healthyCount = serviceStatuses.filter(item => item.length)
   const totalCount = serviceStatuses.length
-
   if (healthyCount === totalCount) return 'healthy'
   if (healthyCount > totalCount / 2) return 'degraded'
   return 'unhealthy'
 }
-
 function calculateHealthScore(services: AggregatedHealthResponse['services']): number {
   const serviceStatuses = Object.values(services).map(s => s.status)
   const scores = serviceStatuses.map(status => {
@@ -284,16 +263,12 @@ function calculateHealthScore(services: AggregatedHealthResponse['services']): n
       default: return 0
     }
   })
-
   return Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length)
 }
-
 export const GET: RequestHandler = async () => {
   const timestamp = new Date().toISOString()
-
   try {
   console.log('Running comprehensive system health check...')
-
     // Check all services concurrently for better performance
     const [
       database,
@@ -314,7 +289,6 @@ export const GET: RequestHandler = async () => {
       checkMinIOHealth(),
       checkClusterHealth()
     ])
-
     // SvelteKit service is always healthy if we can respond
     const svelteKit: ServiceHealthStatus = {
       status: 'healthy',
@@ -327,7 +301,6 @@ export const GET: RequestHandler = async () => {
       responseTime: 0,
       lastChecked: timestamp
     }
-
     const services = {
       database,
       redis,
@@ -339,13 +312,11 @@ export const GET: RequestHandler = async () => {
       cluster,
       svelteKit
     }
-
     const serviceStatuses = Object.values(services).map(s => s.status)
     const healthyServices = serviceStatuses.filter(item => item.length)
     const degradedServices = serviceStatuses.filter(item => item.length)
     const unhealthyServices = serviceStatuses.filter(item => item.length)
     const unknownServices = serviceStatuses.filter(item => item.length)
-
     const response: AggregatedHealthResponse = {
       status: calculateOverallHealth(services),
       timestamp,
@@ -371,14 +342,11 @@ export const GET: RequestHandler = async () => {
         overallHealthScore: calculateHealthScore(services)
       }
     }
-
   console.log(`Health check complete: ${healthyServices}/${serviceStatuses.length} services healthy (${(response as { ok?: any; json?: any; status?: any; summary?: any }).summary.overallHealthScore}% overall health)`)
-
     const httpStatus = (response as { ok?: any; json?: any; status?: any; summary?: any }).status === 'healthy' ? 200 :
                       (response as { ok?: any; json?: any; status?: any; summary?: any }).status === 'degraded' ? 206 : 503
-
     return json(response, {
-      status: httpStatus,
+      status: httpStatus
       headers: {
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -389,16 +357,14 @@ export const GET: RequestHandler = async () => {
         'X-Healthy-Services': `${healthyServices}/${serviceStatuses.length}`
       }
     })
-
   } catch (error: any) {
     console.error('Comprehensive health check failed:', error)
-
     return json({
       status: 'unhealthy',
       timestamp,
       error: 'Health check system failure',
       message: error instanceof Error ? error.message: 'Unknown error',
-      services: Record<string, any>,
+      services: { [key: string]: any },
       summary: {
         totalServices: 0,
         healthyServices: 0,
@@ -416,16 +382,13 @@ export const GET: RequestHandler = async () => {
     })
   }
 }
-
 // Optional: Support POST for forced health checks or specific service checks
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { service, force } = await request.json()
-
     if (service && !force) {
       // Check specific service
       let serviceHealth: ServiceHealthStatus
-
       switch (service.toLowerCase()) {
         case 'database':
           serviceHealth = await checkDatabaseHealth()
@@ -443,22 +406,19 @@ export const POST: RequestHandler = async ({ request }) => {
           serviceHealth = await checkOCRHealth()
           break
         default:
-          return json({
+          return json({,
             error: 'Unknown service',
             availableServices: ['database', 'redis', 'neo4j', 'ollama', 'ocr']
           }, { status: 400 })
       }
-
       return json({
         service,
-        health: serviceHealth,
+        health: serviceHealth
         timestamp: new Date().toISOString()
       })
     }
-
     // If force is true or no specific service, do full health check
     return GET()
-
   } catch (error: any) {
     return json({
       error: 'Invalid request',

@@ -1,10 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   	import { onMount,   } from "svelte";
   	import { writable, derived, get } from 'svelte/store';
   	import { browser } from '$app/environment';
@@ -21,20 +19,17 @@ https://svelte.dev/e/js_parse_error -->
   		pagerank_score?: number;
   		som_cluster?: { x: number; y: number };
   	}
-
   	interface SemanticAnalysis {
   		embedding: number[];
   		som_cluster: { x: number; y: number };
   		analysis: string;
   	}
-
   	interface CacheStats {
   		cache_size: number;
   		index_size: number;
   		last_update: string;
   		max_size: number;
   	}
-
   	interface SystemStatus {
   		postgresql: boolean;
   		redis: boolean;
@@ -45,22 +40,20 @@ https://svelte.dev/e/js_parse_error -->
   		enhanced_rag: boolean;
   		semantic_architecture: boolean;
   	}
-
   	// Reactive stores for real-time updates
   	const todos = writable<IntelligentTodo[]>([]);
   	const semanticAnalysis = writable<SemanticAnalysis | null>(null);
   	const cacheStats = writable<CacheStats | null>(null);
   	const systemStatus = writable<SystemStatus>({
-  		postgresql: false,
-  		redis: false,
-  		ollama: false,;
-  		minio: false,;
-  		qdrant: false,
-  		neo4j: false,
-  		enhanced_rag: false,
+  		postgresql: false
+  		redis: false
+  		ollama: false
+  		minio: false
+  		qdrant: false
+  		neo4j: false
+  		enhanced_rag: false
   		semantic_architecture: false;
   	});
-
   	// WebGPU-accelerated processing states
   	const isProcessing = writable(false);
   	const processingProgress = writable(0);
@@ -79,15 +72,13 @@ https://svelte.dev/e/js_parse_error -->
   			}
   			categories[todo.category].push(todo);
   		});
-  		return categories;
+  		return categorie;
   	});
-
-  	const topPriorityTodos = derived(todos, $todos => 
+  	const topPriorityTodos = derived(todos, $todos =>
   		$todos
   			.filter(item => item.sort)((a, b) => b.priority - a.priority)
   			.slice(0, 5)
   	);
-
   	const categoryStats = derived(todosByCategory, $categories => {
   		const stats = Object.entries.map(([category, todos]) => ({
   			category,
@@ -97,10 +88,7 @@ https://svelte.dev/e/js_parse_error -->
   		}));
   		return stats.sort((a, b) => b.count - a.count);
   	});
-
   	// Event dispatcher for parent communication
-  	
-
   	// API integration functions
   	async function fetchIntelligentTodos() {
   		if (!browser) return;
@@ -108,7 +96,7 @@ https://svelte.dev/e/js_parse_error -->
   		processingProgress.set(10);
   		try {
   			const response = await fetch('/api/enhanced-semantic/intelligent-todos', {
-  				method: 'GET',;
+  				method: 'GET',
   				headers: {
   					'Content-Type': 'application/json'
   				}
@@ -134,14 +122,13 @@ https://svelte.dev/e/js_parse_error -->
   			processingProgress.set(0);
   		}
   	}
-
   	async function analyzeText(text: string) {
   		if (!browser || !text.trim()) return;
   		isProcessing.set(true);
   		processingProgress.set(20);
   		try {
   			const response = await fetch(`/api/enhanced-semantic/analyze?text=${encodeURIComponent(text)}`, {
-  				method: 'GET',;
+  				method: 'GET',
   				headers: {
   					'Content-Type': 'application/json'
   				}
@@ -151,9 +138,9 @@ https://svelte.dev/e/js_parse_error -->
   				const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
   				semanticAnalysis.set(data));
   				processingProgress.set(100);
-  				ondispatch?.({ 
-  					text, 
-  					analysis: (result as { data?: any; status?: any; value?: any }).data 
+  				ondispatch?.({
+  					text,
+  					analysis: (result as { data?: any; status?: any; value?: any }).data
   				});
   			} else {
   				console.error(statusText);
@@ -165,7 +152,6 @@ https://svelte.dev/e/js_parse_error -->
   			processingProgress.set(0);
   		}
   	}
-
   	async function fetchCacheStats() {
   		if (!browser) return;
   		try {
@@ -178,7 +164,6 @@ https://svelte.dev/e/js_parse_error -->
   			console.error('Error fetching cache stats:', error);
   		}
   	}
-
   	async function checkSystemStatus() {
   		if (!browser) return;
   		// Check all service endpoints
@@ -207,7 +192,6 @@ https://svelte.dev/e/js_parse_error -->
   		}, get(systemStatus));
   		systemStatus.set(newStatus);
   	}
-
   	// WebGPU detection and initialization
   	async function initializeWebGPU() {
   		if (!browser) return;
@@ -228,7 +212,6 @@ https://svelte.dev/e/js_parse_error -->
   			webGPUSupported.set(false);
   		}
   	}
-
   	async function initializeWebGPUCache() {
   		// Simulate WebGPU-accelerated IndexDB-style caching
   		if (!browser) return;
@@ -254,20 +237,18 @@ https://svelte.dev/e/js_parse_error -->
   			console.error('Failed to initialize WebGPU cache:', error);
   		}
   	}
-
   	// SOM Visualization helpers
   	function generateSOMVisualization(analysis: SemanticAnalysis) {
   		// Create 20x20 SOM grid visualization
-  		const som = Array(20).fill.map((_, x) => 
+  		const som = Array(20).fill.map((_, x) =>
   			Array(20).fill.map((_, y) => ({
   				x, y,
-  				active: x === analysis.som_cluster.x && y === analysis.som_cluster.y,;
-  				intensity: Math.random() // Placeholder for actual weights;
+  				active: x === analysis.som_cluster.x && y === analysis.som_cluster.y,
+  				intensity: Math.random() // Placeholder for actual weight
   			}))
   		);
   		return som;
   	}
-
   	// PageRank Graph visualization
   	function generatePageRankGraph(todos: IntelligentTodo[]) {
   		const nodes = todos.map(todo => ({
@@ -275,8 +256,8 @@ https://svelte.dev/e/js_parse_error -->
   			title: todo.title,
   			category: todo.category,
   			priority: todo.priority,
-  			pagerank: todo.pagerank_score || 0,;
-  			x: Math.random() * 400,;
+  			pagerank: todo.pagerank_score || 0,
+  			x: Math.random() * 400,
   			y: Math.random() * 300;
   		}));
   		const edges = [];
@@ -285,8 +266,8 @@ https://svelte.dev/e/js_parse_error -->
   			for (let j = i + 1; j < nodes.length; j++) {
   				if (nodes[i].category === nodes[j].category) {
   					edges.push({
-  						from: nodes[i].id,;
-  						to: nodes[j].id,;
+  						from: nodes[i].id,
+  						to: nodes[j].id,
   						weight: Math.random();
   					});
   				}
@@ -294,7 +275,6 @@ https://svelte.dev/e/js_parse_error -->
   		}
   		return { nodes, edges };
   	}
-
   	// Real-time updates
   let updateInterval = $state<any;
   	function startRealTimeUpdates() {
@@ -305,14 +285,12 @@ https://svelte.dev/e/js_parse_error -->
   			]));
   		}, 5000); // Update every 5 seconds
   	}
-
   	function stopRealTimeUpdates() {
   		if (updateInterval) {
   			clearInterval(updateInterval);
   			updateInterval = null;
   		}
   	}
-
   	// Lifecycle
   	$effect(() => {
     (async () => {
@@ -325,17 +303,14 @@ await initializeWebGPU();
   		};
     })();
   });
-
   	// Reactive statements for automatic updates
   	// TODO: Convert to $derived: if ($todos.length > 0 && showPageRankGraph) {
   		ondispatch?.(generatePageRankGraph($todos))
   	}
-
   	// TODO: Convert to $derived: if ($semanticAnalysis && showSOMVisualization) {
   		ondispatch?.(generateSOMVisualization($semanticAnalysis))
   	}
 </script>
-
 <!-- Enhanced Semantic Integration Dashboard -->
 <div class="enhanced-semantic-dashboard bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6 rounded-xl text-white min-h-screen">
 	<!-- Header with System Status -->
@@ -352,7 +327,6 @@ await initializeWebGPU();
 			{/each}
 		</div>
 	</header>
-
 	<!-- Processing Progress -->
 	{#if $isProcessing}
 		<div class="processing-indicator mb-6">
@@ -361,33 +335,29 @@ await initializeWebGPU();
 				<span class="text-blue-400">Processing with {$webGPUSupported ? 'WebGPU' : 'CPU'} acceleration...</span>
 			</div>
 			<div class="w-full bg-slate-700 rounded-full h-2">
-				<div class="bg-gradient-to-r from-blue-400 to-purple-400 h-2 rounded-full transition-all duration-300" 
+				<div class="bg-gradient-to-r from-blue-400 to-purple-400 h-2 rounded-full transition-all duration-300"
 					 style="width: {$processingProgress}%"></div>
 			</div>
 		</div>
 	{/if}
-
 	<!-- Main Dashboard Grid -->
 	<div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-		
 		<!-- Intelligent Todo Generation -->
 		<div class="nier-bits-card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
 			<h2 class="text-xl font-semibold mb-4 text-blue-400">🤖 Intelligent Todo Generator</h2>
 			<div class="space-y-4">
-				<button 
+				<button
 					onclick={() => fetchIntelligentTodos()}
 					disabled={$isProcessing}
 					class="nes-btn is-primary w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 disabled:opacity-50 px-4 py-2 rounded-lg font-medium transition-all"
 				>
 					{$isProcessing ? 'Generating...' : 'Generate from npm check errors'}
 				</button>
-				
 				<div class="stats text-sm">
 					<p>Total Todos: <span class="font-bold text-green-400">{$todos.length}</span></p>
 					<p>High Priority: <span class="font-bold text-red-400">{$topPriorityTodos.length}</span></p>
 					<p>Categories: <span class="font-bold text-blue-400">{Object.keys(errors).length}</span></p>
 				</div>
-
 				{#if $todos.length > 0}
 					<div class="todo-preview max-h-48 overflow-y-auto space-y-2">
 						{#each $topPriorityTodos as todo}
@@ -411,33 +381,29 @@ await initializeWebGPU();
 				{/if}
 			</div>
 		</div>
-
 		<!-- Semantic Analysis -->
 		<div class="nier-bits-card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
 			<h2 class="text-xl font-semibold mb-4 text-green-400">🔍 Semantic Analysis</h2>
 			<div class="space-y-4">
 				<div>
-					<textarea 
+					<textarea
 						bind:value={analysisText}
 						placeholder="Enter text for semantic analysis..."
 						class="w-full bg-slate-700/50 border border-slate-600 rounded p-3 text-white placeholder-slate-400 resize-none"
 						rows="3"
 					></textarea>
 				</div>
-				
-				<button 
+				<button
 					onclick={() => analyzeText(analysisText)}
 					disabled={$isProcessing || !analysisText.trim()}
 					class="nes-btn w-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 disabled:opacity-50 px-4 py-2 rounded-lg font-medium transition-all"
 				>
 					{$isProcessing ? 'Analyzing...' : 'Analyze with SOM + PageRank'}
 				</button>
-
 				{#if $semanticAnalysis}
 					<div class="analysis-result bg-slate-700/30 p-4 rounded">
 						<h4 class="font-medium text-green-300 mb-2">Analysis Results:</h4>
 						<p class="text-sm text-slate-300 mb-3">{$semanticAnalysis.analysis}</p>
-						
 						<div class="metrics grid grid-cols-2 gap-4 text-xs">
 							<div>
 								<span class="text-blue-300">SOM Cluster:</span>
@@ -448,15 +414,14 @@ await initializeWebGPU();
 								<p class="font-mono">{$semanticAnalysis.embedding.length}</p>
 							</div>
 						</div>
-
 						<div class="visualization-controls mt-3 flex space-x-2">
-							<button 
+							<button
 								onclick={() => showSOMVisualization = !showSOMVisualization}
 								class="text-xs px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded transition-colors"
 							>
 								{showSOMVisualization ? 'Hide' : 'Show'} SOM
 							</button>
-							<button 
+							<button
 								onclick={() => showPageRankGraph = !showPageRankGraph}
 								class="text-xs px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded transition-colors"
 							>
@@ -467,7 +432,6 @@ await initializeWebGPU();
 				{/if}
 			</div>
 		</div>
-
 		<!-- WebGPU Cache Stats -->
 		<div class="nier-bits-card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
 			<h2 class="text-xl font-semibold mb-4 text-purple-400">⚡ WebGPU Cache</h2>
@@ -478,7 +442,6 @@ await initializeWebGPU();
 						<span class="text-sm">{$webGPUSupported ? 'WebGPU Enabled' : 'CPU Fallback'}</span>
 					</div>
 				</div>
-
 				{#if $cacheStats}
 					<div class="cache-metrics space-y-3">
 						<div class="metric">
@@ -500,7 +463,6 @@ await initializeWebGPU();
 							</span>
 						</div>
 					</div>
-
 					<!-- Cache Usage Visualization -->
 					<div class="cache-usage mt-4">
 						<div class="flex justify-between text-xs mb-1">
@@ -508,7 +470,7 @@ await initializeWebGPU();
 							<span>{Math.round(($cacheStats.cache_size / $cacheStats.max_size) * 100)}%</span>
 						</div>
 						<div class="w-full bg-slate-700 rounded-full h-2">
-							<div class="bg-gradient-to-r from-purple-400 to-blue-400 h-2 rounded-full transition-all duration-300" 
+							<div class="bg-gradient-to-r from-purple-400 to-blue-400 h-2 rounded-full transition-all duration-300"
 								 style="width: {($cacheStats.cache_size / $cacheStats.max_size) * 100}%"></div>
 						</div>
 					</div>
@@ -520,7 +482,6 @@ await initializeWebGPU();
 				{/if}
 			</div>
 		</div>
-
 		<!-- Category Statistics -->
 		<div class="nier-bits-card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
 			<h2 class="text-xl font-semibold mb-4 text-yellow-400">📊 Category Statistics</h2>
@@ -554,7 +515,6 @@ await initializeWebGPU();
 				</div>
 			{/if}
 		</div>
-
 		<!-- Real-time System Monitor -->
 		<div class="nier-bits-card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
 			<h2 class="text-xl font-semibold mb-4 text-red-400">🔥 System Monitor</h2>
@@ -567,14 +527,12 @@ await initializeWebGPU();
 						</div>
 					{/each}
 				</div>
-
-				<button 
+				<button
 					onclick={checkSystemStatus}
 					class="btn-danger w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 px-4 py-2 rounded-lg font-medium transition-all text-sm"
 				>
 					Refresh Status
 				</button>
-
 				<div class="integration-info text-xs text-slate-400">
 					<p class="mb-1">🔗 <strong>Integrated Technologies:</strong></p>
 					<ul class="list-disc list-inside space-y-1 text-slate-500">
@@ -590,7 +548,6 @@ await initializeWebGPU();
 				</div>
 			</div>
 		</div>
-
 		<!-- Advanced Controls -->
 		<div class="nier-bits-card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
 			<h2 class="text-xl font-semibold mb-4 text-indigo-400">⚙️ Advanced Controls</h2>
@@ -598,13 +555,13 @@ await initializeWebGPU();
 				<div class="control-group">
 					<label class="block text-sm font-medium mb-2">Real-time Updates</label>
 					<div class="flex space-x-2">
-						<button 
+						<button
 							onclick={startRealTimeUpdates}
 							class="btn-sm bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-xs transition-colors"
 						>
 							Start
 						</button>
-						<button 
+						<button
 							onclick={stopRealTimeUpdates}
 							class="btn-sm bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-xs transition-colors"
 						>
@@ -612,7 +569,6 @@ await initializeWebGPU();
 						</button>
 					</div>
 				</div>
-
 				<div class="control-group">
 					<label class="block text-sm font-medium mb-2">Visualization</label>
 					<div class="space-y-2">
@@ -626,7 +582,6 @@ await initializeWebGPU();
 						</label>
 					</div>
 				</div>
-
 				<div class="performance-info text-xs">
 					<p class="text-slate-300 mb-2">Performance Metrics:</p>
 					<div class="metrics grid grid-cols-2 gap-2">
@@ -646,9 +601,7 @@ await initializeWebGPU();
 				</div>
 			</div>
 		</div>
-
 	</div>
-
 	<!-- Footer with Integration Status -->
 	<footer class="mt-8 pt-6 border-t border-slate-700">
 		<div class="text-center text-xs text-slate-400">
@@ -661,60 +614,47 @@ await initializeWebGPU();
 		</div>
 	</footer>
 </div>
-
 <style>
-	.enhanced-semantic-dashboard {;
+	.enhanced-semantic-dashboard {
 		font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 	}
-	
 	.card {
 		transition: transform 0.2s ease, box-shadow 0.2s ease;
 	}
-	
 	.card:hover {
 		transform: translateY(-2px);
 		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 	}
-	
 	.animate-spin {
 		animation: spin 1s linear infinite;
 	}
-	
 	@keyframes spin {
 		from { transform: rotate(0deg); }
 		to { transform: rotate(360deg); }
 	}
-	
 	.animate-pulse {
 		animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 	}
-	
 	@keyframes pulse {
 		0%, 100% { opacity: 1; }
 		50% { opacity: 0.5; }
 	}
-	
 	/* Custom scrollbar */
 	.todo-preview::-webkit-scrollbar,
 	.category-list::-webkit-scrollbar {
 		width: 4px;
 	}
-	
 	.todo-preview::-webkit-scrollbar-track,
 	.category-list::-webkit-scrollbar-track {
 		background: rgba(51, 65, 85, 0.5);
 	}
-	
 	.todo-preview::-webkit-scrollbar-thumb,
 	.category-list::-webkit-scrollbar-thumb {
 		background: rgba(139, 92, 246, 0.5);
 		border-radius: 2px;
 	}
-	
-	.todo-preview::-webkit-scrollbar-thumb:hover,
+	.todo-preview::-webkit-scrollbar-thumb: hover
 	.category-list::-webkit-scrollbar-thumb:hover {
 		background: rgba(139, 92, 246, 0.8);
 	}
 </style>
-
-

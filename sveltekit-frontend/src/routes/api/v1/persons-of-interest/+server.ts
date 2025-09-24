@@ -3,12 +3,10 @@
  * GET /api/v1/persons-of-interest - List user's persons of interest (with pagination)
  * POST /api/v1/persons-of-interest - Create new person of interest
  */
-
 import { json, type RequestHandler } from '@sveltejs/kit'
 import { db, sql } from '$lib/server/db'
 import { personsOfInterest } from '$lib/server/db/schema-postgres'
 import { z } from 'zod'
-
 // Query parameters schema for GET requests
 const PersonsOfInterestQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
@@ -17,7 +15,6 @@ const PersonsOfInterestQuerySchema = z.object({
   status: z.enum(['active', 'inactive', 'archived']).optional(),
   search: z.string().optional()
 })
-
 // Local create schema and service (minimal to unblock compilation)
 const CreatePersonOfInterestSchema = z.object({
   name: z.string().min(1),
@@ -31,12 +28,9 @@ const CreatePersonOfInterestSchema = z.object({
   tags: z.array(z.string()).optional(),
   position: z.record(z.any()).optional()
 })
-
 type CreatePersonOfInterestData = z.infer<typeof CreatePersonOfInterestSchema>
-
 class PersonsOfInterestCRUDService {
   constructor(private userId: string) {}
-
   async list({ page, limit }: { page: number; limit: number }) {
     const offset = (page - 1) * limit
     const [totalRow] = (await db.execute(
@@ -47,7 +41,6 @@ class PersonsOfInterestCRUDService {
     const totalPages = Math.max(1, Math.ceil(total / limit)
     return { data: rows, page, limit, total, totalPages }
   }
-
   async listByRiskLevel(
     riskLevel: 'low' | 'medium' | 'high' | 'critical',)
     { page, limit }: { page: number; limit: number }
@@ -66,14 +59,13 @@ class PersonsOfInterestCRUDService {
     const totalPages = Math.max(1, Math.ceil(total / limit)
     return { data: rows, page, limit, total, totalPages }
   }
-
   async create(data: CreatePersonOfInterestData) {
     const caseId = (data as { caseId?: any; caseIds?: any; name?: any; aliases?: any; relationship?: any; threatLevel?: any; status?: any; profileData?: any; tags?: any; position?: any }).caseId || (data as { caseId?: any; caseIds?: any; name?: any; aliases?: any; relationship?: any; threatLevel?: any; status?: any; profileData?: any; tags?: any; position?: any }).caseIds?.[0] || null
     const [row] = await db
       .insert(personsOfInterest)
       .values({
         name: (data as { caseId?: any; caseIds?: any; name?: any; aliases?: any; relationship?: any; threatLevel?: any; status?: any; profileData?: any; tags?: any; position?: any }).name,
-        caseId: caseId as any,
+        caseId: caseId as any
         aliases: (data as { caseId?: any; caseIds?: any; name?: any; aliases?: any; relationship?: any; threatLevel?: any; status?: any; profileData?: any; tags?: any; position?: any }).aliases ?? [],
         relationship: (data as { caseId?: any; caseIds?: any; name?: any; aliases?: any; relationship?: any; threatLevel?: any; status?: any; profileData?: any; tags?: any; position?: any }).relationship,
         threatLevel: (data as { caseId?: any; caseIds?: any; name?: any; aliases?: any; relationship?: any; threatLevel?: any; status?: any; profileData?: any; tags?: any; position?: any }).threatLevel ?? 'low',
@@ -84,10 +76,8 @@ class PersonsOfInterestCRUDService {
         createdBy: this.userId as any
       })
       .returning({ id: personsOfInterest.id })
-
     return row?.id as string
   }
-
   async getById(id: string) {
     const rows = await db
       .select()
@@ -97,7 +87,6 @@ class PersonsOfInterestCRUDService {
     return rows[0] ?? null
   }
 }
-
 /*
  * GET /api/v1/persons-of-interest
  * List user's persons of interest with pagination and filtering
@@ -107,22 +96,19 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     // Check authentication
     if (!locals.session || !locals.user) {
       return json({
-          success: false,
+          success: false
           message: 'Authentication required',
           code: 'AUTH_REQUIRED'
         },)
         { status: 401 }
       )
     }
-
     // Parse query parameters
     const url = new URL(request.url)
     const queryParams = Object.fromEntries(url.searchParams.entries()
     const validatedQuery = PersonsOfInterestQuerySchema.parse(queryParams)
-
     // Create service instance
     const personsService = new PersonsOfInterestCRUDService(locals.user.id)
-
     // Get persons of interest with pagination - filter by risk level if specified
     const result = validatedQuery.riskLevel
       ? await personsService.listByRiskLevel(validatedQuery.riskLevel, {
@@ -133,9 +119,8 @@ export const GET: RequestHandler = async ({ request, locals }) => {
           page: validatedQuery.page,
           limit: validatedQuery.limit
         })
-
     return json({
-      success: true,
+      success: true
       data: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).data,
       pagination: {
         page: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page,
@@ -151,13 +136,11 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         timestamp: new Date().toISOString()
       }
     })
-
   } catch (err: any) {
     console.error('Error fetching persons of interest:', err)
-
     if (err instanceof z.ZodError) {
       return json({
-          success: false,
+          success: false
           message: 'Invalid query parameters',
           code: 'INVALID_QUERY',
           details: err.errors
@@ -165,10 +148,9 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         { status: 400 }
       )
     }
-
     return json()
       {
-        success: false,
+        success: false
         message: 'Failed to fetch persons of interest',
         code: 'FETCH_FAILED',
         details: err?.message || String(err)
@@ -177,7 +159,6 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     )
   }
 }
-
 /*
  * POST /api/v1/persons-of-interest
  * Create new person of interest
@@ -187,30 +168,25 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Check authentication
     if (!locals.session || !locals.user) {
       return json({
-          success: false,
+          success: false
           message: 'Authentication required',
           code: 'AUTH_REQUIRED'
         },)
         { status: 401 }
       )
     }
-
     // Parse request body
     const body = await request.json()
     const validatedData = CreatePersonOfInterestSchema.parse(body) as CreatePersonOfInterestData
-
     // Create service instance
     const personsService = new PersonsOfInterestCRUDService(locals.user.id)
-
     // Create person of interest
     const personId = await personsService.create(validatedData)
-
     // Get the created person details
     const createdPerson = await personsService.getById(personId)
-
     return json({
-      success: true,
-      data: createdPerson,
+      success: true
+      data: createdPerson
       meta: {
         personId,
         userId: locals.user.id,
@@ -218,13 +194,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         timestamp: new Date().toISOString()
       }
     }, { status: 201 })
-
   } catch (err: any) {
     console.error('Error creating person of interest:', err)
-
     if (err instanceof z.ZodError) {
       return json({
-          success: false,
+          success: false
           message: 'Invalid person data',
           code: 'INVALID_DATA',
           details: err.errors
@@ -232,23 +206,21 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         { status: 400 }
       )
     }
-
     if (
       typeof err?.message === 'string' &&
       (err.message.includes('not found') || err.message.includes('access denied')
     ) {
       return json({
-          success: false,
+          success: false
           message: err.message,
           code: 'ACCESS_DENIED'
         },)
         { status: 403 }
       )
     }
-
     return json()
       {
-        success: false,
+        success: false
         message: 'Failed to create person of interest',
         code: 'CREATE_FAILED',
         details: err?.message || String(err)

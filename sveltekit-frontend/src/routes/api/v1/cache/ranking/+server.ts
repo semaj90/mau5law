@@ -2,7 +2,6 @@
 // CANONICAL CACHE API ENDPOINT - SvelteKit Integration
 // Provides HTTP/REST interface for the canonical result cache system
 // ======================================================================
-
 import { json, error } from '@sveltejs/kit'
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
 import type { RequestHandler } from './$types.js'
@@ -12,17 +11,14 @@ import {
   type RankingSet
 } from '$lib/services/canonical-result-cache.js'
 import { enhancedRAGService } from '$lib/services/enhanced-rag-service.js'
-
 // GET /api/v1/cache/ranking?key=X&metadata=true&limit=10
 export const GET: RequestHandler = async ({ url, request }) => {
   const startTime = performance.now()
-
   try {
     // Extract query parameters
     const slotKey = url.searchParams.get('key')
     const includeMetadata = url.searchParams.get('metadata') === 'true'
     const limit = parseInt(url.searchParams.get('limit') || '0') || undefined
-
     // Validate slot key
     if (!slotKey || slotKey.length !== 1) {
       throw error(
@@ -33,15 +29,12 @@ export const GET: RequestHandler = async ({ url, request }) => {
         })
       )
     }
-
     // Check if client prefers binary response
     const acceptHeader = request.headers.get('accept') || ''
     const preferBinary = acceptHeader.includes('application/octet-stream')
-
     // Attempt to retrieve from cache
     const rankingSet = await canonicalResultCache.retrieveRankingSet(slotKey)
     const latency = performance.now() - startTime
-
     if (!rankingSet) {
       // Cache miss - return 404 with metrics
       throw error(
@@ -54,13 +47,11 @@ export const GET: RequestHandler = async ({ url, request }) => {
         })
       )
     }
-
     // Apply result limit if specified
     let results = rankingSet.results
     if (limit && limit > 0 && limit < results.length) {
       results = results.slice(0, limit)
     }
-
     // Prepare response
     const responseData = {
       ...rankingSet,
@@ -68,8 +59,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
       metadata: includeMetadata
         ? {
             slotKey,
-            cacheHit: true,
-            latencyMs: latency,
+            cacheHit: true
+            latencyMs: latency
             compressionRatio: undefined, // Will be calculated if binary
             resultCount: results.length,
             totalResultCount: rankingSet.results.length,
@@ -77,7 +68,6 @@ export const GET: RequestHandler = async ({ url, request }) => {
           }
         : undefined
     }
-
     // Return binary response if requested
     if (preferBinary) {
       const binaryData = await packRankingSetToBinary(responseData as RankingSet)
@@ -97,7 +87,6 @@ export const GET: RequestHandler = async ({ url, request }) => {
         }
       })
     }
-
     // Return JSON response
     return json(responseData, {
       status: 200,
@@ -110,12 +99,10 @@ export const GET: RequestHandler = async ({ url, request }) => {
     })
   } catch (err) {
     const latency = performance.now() - startTime
-
     if (err && typeof err === 'object' && 'status' in err) {
       // SvelteKit error - re-throw
       throw err
     }
-
     // Unexpected error
     console.error('Cache ranking retrieval failed:', err)
     throw error(
@@ -128,14 +115,11 @@ export const GET: RequestHandler = async ({ url, request }) => {
     )
   }
 }
-
 // POST /api/v1/cache/ranking - Store new ranking set
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = performance.now()
-
   try {
     const body = await request.json()
-
     // Validate required fields
     if (!body.query || !Array.isArray(body.results)) {
       throw error(
@@ -146,7 +130,6 @@ export const POST: RequestHandler = async ({ request }) => {
         })
       )
     }
-
     // Validate results format
     const results: CanonicalResult[] = body.results.map((result: any, index: number) => {
       if (!(result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).docId || typeof (result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).score !== 'number') {
@@ -158,7 +141,6 @@ export const POST: RequestHandler = async ({ request }) => {
           })
         )
       }
-
       return {
         docId: (result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).docId,
         score: Math.max(0, Math.min(1, (result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).score)), // Clamp to [0, 1]
@@ -168,7 +150,6 @@ export const POST: RequestHandler = async ({ request }) => {
         metadata: (result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).metadata
       }
     })
-
     // Create ranking set
     const rankingSet: RankingSet = {
       results,
@@ -177,19 +158,17 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: Date.now(),
       version: body.version || 1
     }
-
     // Store in cache and get slot key
     const slotKey = await canonicalResultCache.storeRankingSet(rankingSet)
     const latency = performance.now() - startTime
-
     // Return slot key and metadata
     return json()
       {
-        success: true,
+        success: true
         slotKey,
         metadata: {
           resultCount: results.length,
-          latencyMs: latency,
+          latencyMs: latency
           cacheUtilization: canonicalResultCache.getSlotTableStatus().utilization,
           expiresAt: Date.now() + 30 * 1000, // 30 seconds TTL
         }
@@ -197,7 +176,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         status: 201,
         headers: {
-          'X-Slot-Key': slotKey,
+          'X-Slot-Key': slotKey
           'X-Latency-Ms': latency.toString(),
           'X-Result-Count': results.length.toString()
         }
@@ -205,11 +184,9 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   } catch (err) {
     const latency = performance.now() - startTime
-
     if (err && typeof err === 'object' && 'status' in err) {
       throw err
     }
-
     console.error('Cache ranking storage failed:', err)
     throw error(
       500,
@@ -221,14 +198,11 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 // DELETE /api/v1/cache/ranking - Clear cache
 export const DELETE: RequestHandler = async ({ url }) => {
   const startTime = performance.now()
-
   try {
     const slotKey = url.searchParams.get('key')
-
     if (slotKey) {
       // Clear specific slot (if we implement single slot clearing)
       throw error(
@@ -242,20 +216,17 @@ export const DELETE: RequestHandler = async ({ url }) => {
       // Clear entire cache
       await canonicalResultCache.clear()
       const latency = performance.now() - startTime
-
       return json({
-        success: true,
+        success: true
         message: 'Cache cleared successfully',
         latencyMs: latency
       })
     }
   } catch (err) {
     const latency = performance.now() - startTime
-
     if (err && typeof err === 'object' && 'status' in err) {
       throw err
     }
-
     console.error('Cache clear failed:', err)
     throw error(
       500,
@@ -267,7 +238,6 @@ export const DELETE: RequestHandler = async ({ url }) => {
     )
   }
 }
-
 // Utility function to pack ranking set to binary format
 async function packRankingSetToBinary(rankingSet: RankingSet): Promise<Uint8Array> {
   // This would use the actual packing logic from canonical-result-cache
@@ -275,10 +245,8 @@ async function packRankingSetToBinary(rankingSet: RankingSet): Promise<Uint8Arra
   const jsonString = JSON.stringify(rankingSet)
   const encoder = new TextEncoder()
   const jsonBytes = encoder.encode(jsonString)
-
   // Simple compression simulation (gzip would be used in production)
   const compressionRatio = 0.6; // Assume 40% compression
   const mockCompressedSize = Math.floor(jsonBytes.length * compressionRatio)
-
   return jsonBytes.slice(0, mockCompressedSize)
 }

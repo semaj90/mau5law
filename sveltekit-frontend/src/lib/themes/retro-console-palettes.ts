@@ -2,7 +2,6 @@
  * 🎮 Retro Console Color Palettes for Legal AI
  * Authentic color palettes from classic gaming consoles with legal AI integration
  */
-
 export interface ConsolePalette {
   name: string;
   era: string;
@@ -36,7 +35,6 @@ export interface ConsolePalette {
   };
   cssVariables: Record<string, string>;
 }
-
 // NES (Nintendo Entertainment System) - 1985
 export const NES_PALETTE: ConsolePalette = {
   name: 'NES Classic',
@@ -92,7 +90,6 @@ export const NES_PALETTE: ConsolePalette = {
     '--nes-priority': '#FF6347'
   }
 };
-
 // SNES (Super Nintendo) - 1990
 export const SNES_PALETTE: ConsolePalette = {
   name: 'SNES Mode 7',
@@ -148,7 +145,6 @@ export const SNES_PALETTE: ConsolePalette = {
     '--snes-priority': '#FF5252'
   }
 };
-
 // PS1 (PlayStation) - 1994
 export const PS1_PALETTE: ConsolePalette = {
   name: 'PlayStation Classic',
@@ -204,7 +200,6 @@ export const PS1_PALETTE: ConsolePalette = {
     '--ps1-priority': '#F59E0B'
   }
 };
-
 // N64 (Nintendo 64) - 1996
 export const N64_PALETTE: ConsolePalette = {
   name: 'N64 Ultra',
@@ -260,7 +255,6 @@ export const N64_PALETTE: ConsolePalette = {
     '--n64-priority': '#FF6347'
   }
 };
-
 // PS2 (PlayStation 2) - 2000
 export const PS2_PALETTE: ConsolePalette = {
   name: 'PS2 Emotion',
@@ -316,7 +310,6 @@ export const PS2_PALETTE: ConsolePalette = {
     '--ps2-priority': '#FC5C65'
   }
 };
-
 // Legal AI Professional Theme
 export const LEGAL_AI_PALETTE: ConsolePalette = {
   name: 'Legal AI Professional',
@@ -372,31 +365,25 @@ export const LEGAL_AI_PALETTE: ConsolePalette = {
     '--legal-priority': '#F59E0B'
   }
 };
-
 // Console palette collection
 export const CONSOLE_PALETTES = {
-  nes: NES_PALETTE,
-  snes: SNES_PALETTE,
-  ps1: PS1_PALETTE,
-  n64: N64_PALETTE,
-  ps2: PS2_PALETTE,
+  nes: NES_PALETTE
+  snes: SNES_PALETTE
+  ps1: PS1_PALETTE
+  n64: N64_PALETTE
+  ps2: PS2_PALETTE
   legal: LEGAL_AI_PALETTE
 } as const;
-
 export type ConsolePaletteName = keyof typeof CONSOLE_PALETTES;
-
 // Helper function to apply console palette to CSS variables
 export function applyConsolePalette(consoleName: ConsolePaletteName): void {
   if (typeof document === 'undefined') return;
-
   const palette = CONSOLE_PALETTES[consoleName];
   const root = document.documentElement;
-
   // Apply all CSS variables from the palette
   Object.entries(palette.cssVariables).forEach(([key, value]) => {
     root.style.setProperty(key, value);
   });
-
   // Apply generic console variables for cross-theme compatibility
   root.style.setProperty('--console-primary', palette.colors.primary);
   root.style.setProperty('--console-secondary', palette.colors.secondary);
@@ -410,91 +397,73 @@ export function applyConsolePalette(consoleName: ConsolePaletteName): void {
   root.style.setProperty('--console-classification', palette.colors.classification);
   root.style.setProperty('--console-confidence', palette.colors.confidence);
   root.style.setProperty('--console-priority', palette.colors.priority);
-
   // Apply gradients
   root.style.setProperty('--console-gradient-main', palette.gradients.main);
   root.style.setProperty('--console-gradient-modal', palette.gradients.modal);
   root.style.setProperty('--console-gradient-card', palette.gradients.card);
   root.style.setProperty('--console-gradient-evidence', palette.gradients.evidence);
   root.style.setProperty('--console-gradient-priority', palette.gradients.priority);
-
   // Apply accent colors
   palette.colors.accent.forEach((color, index) => {
     root.style.setProperty(`--console-accent-${index}`, color);
   });
-
   // Add theme class to body
   document.body.className = document.body.className.replace(/theme-\w+/g, '');
   document.body.classList.add(`theme-${consoleName}`);
-
   // Store current palette in localStorage
   if (typeof localStorage !== 'undefined') {
     localStorage.setItem('console-palette', consoleName);
   }
 }
-
 // Get color with bit depth constraint simulation
 export function getConstrainedColor(color: string, bitDepth: number): string {
   if (bitDepth >= 24) return color; // No constraint for 24-bit or higher
-
   // Parse hex color
   const r = parseInt(color.slice(1, 3), 16);
   const g = parseInt(color.slice(3, 5), 16);
   const b = parseInt(color.slice(5, 7), 16);
-
   // Calculate color reduction based on bit depth
   const levels = Math.pow(2, bitDepth / 3); // Approximate levels per channel
   const step = 255 / (levels - 1);
-
   // Quantize colors
   const qr = Math.round(Math.round(r / step) * step);
   const qg = Math.round(Math.round(g / step) * step);
   const qb = Math.round(Math.round(b / step) * step);
-
   // Return quantized color
   return `#${qr.toString(16).padStart(2, '0')}${qg.toString(16).padStart(2, '0')}${qb.toString(16).padStart(2, '0')}`;
 }
-
 // Generate palette-aware gradient with memory constraints
 export function generateConstrainedGradient(
-  colors: string[],
-  memoryKB: number,
+  colors: string[]
+  memoryKB: number
   angle = 45
 ): string {
   // Reduce colors based on memory constraints
   const maxStops = Math.min(colors.length, Math.floor(memoryKB / 8));
   const selectedColors = colors.slice(0, maxStops);
-
   return `linear-gradient(${angle}deg, ${selectedColors.join(', ')})`;
 }
-
 // Export utility for current palette
 export function getCurrentPalette(): ConsolePalette {
   if (typeof localStorage === 'undefined') return CONSOLE_PALETTES.legal;
-
   const stored = localStorage.getItem('console-palette') as ConsolePaletteName;
   return CONSOLE_PALETTES[stored] || CONSOLE_PALETTES.legal;
 }
-
 // Get all available palette names
 export function getPaletteNames(): ConsolePaletteName[] {
   return Object.keys(CONSOLE_PALETTES) as ConsolePaletteName[];
 }
-
 // Get palette by name
 export function getPalette(name: ConsolePaletteName): ConsolePalette {
   return CONSOLE_PALETTES[name];
 }
-
 // Create custom theme CSS from palette
 export function createThemeCSS(paletteName: ConsolePaletteName): string {
   const palette = CONSOLE_PALETTES[paletteName];
-
   return `
 /* ${palette.name} - ${palette.era} Theme */
 :root.theme-${paletteName} {
 ${Object.entries(palette.cssVariables).map(([key, value]) => `  ${key}: ${value};`).join('\n')}
-
   /* Generic console variables */
   --console-primary: ${palette.colors.primary};
   --console-secondary: ${palette.colors.secondary};
@@ -508,14 +477,12 @@ ${Object.entries(palette.cssVariables).map(([key, value]) => `  ${key}: ${value}
   --console-classification: ${palette.colors.classification};
   --console-confidence: ${palette.colors.confidence};
   --console-priority: ${palette.colors.priority};
-
   /* Gradients */
   --console-gradient-main: ${palette.gradients.main};
   --console-gradient-modal: ${palette.gradients.modal};
   --console-gradient-card: ${palette.gradients.card};
   --console-gradient-evidence: ${palette.gradients.evidence};
   --console-gradient-priority: ${palette.gradients.priority};
-
   /* Accent colors */
 ${palette.colors.accent.map((color, index) => `  --console-accent-${index}: ${color};`).join('\n')}
 }

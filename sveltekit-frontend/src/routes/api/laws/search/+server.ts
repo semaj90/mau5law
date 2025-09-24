@@ -1,7 +1,5 @@
 import { URL } from "url"
 import type { RequestHandler } from './$types.js'
-
-
 // Mock legal database - in production this would connect to a real legal database
 const mockLegalDatabase = [
   {
@@ -83,26 +81,21 @@ const mockLegalDatabase = [
     relatedSections: ['CORP § 200', 'CORP § 201', 'CORP § 202']
   }
 ]
-
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const query = url.searchParams.get('q') || ''
     const jurisdiction = url.searchParams.get('jurisdiction') || 'all'
     const category = url.searchParams.get('category') || 'all'
     const limit = parseInt(url.searchParams.get('limit') || '20')
-
     let results = [...mockLegalDatabase]
-
     // Filter by jurisdiction
     if (jurisdiction !== 'all') {
       results = results.filter(law => law.jurisdiction === jurisdiction)
     }
-
     // Filter by category
     if (category !== 'all') {
       results = results.filter(law => law.category === category)
     }
-
     // Search by query (simple text search)
     if (query.trim()) {
       const searchTerm = query.toLowerCase()
@@ -112,7 +105,6 @@ export const GET: RequestHandler = async ({ url }) => {
           law.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm)
         )
       })
-
       // Sort by relevance (simple scoring)
       results.sort((a, b) => {
         const aScore = calculateRelevanceScore(a, searchTerm)
@@ -120,65 +112,54 @@ export const GET: RequestHandler = async ({ url }) => {
         return bScore - aScore
       })
     }
-
     // Limit results
     results = results.slice(0, limit)
-
     return json({
-      success: true,
-      laws: results,
+      success: true
+      laws: results
       count: results.length,
       query,
       filters: { jurisdiction, category },
       timestamp: new Date().toISOString()
     })
-
   } catch (error: any) {
     console.error('Laws search error:', error)
-    return json({ 
-        success: false, 
+    return json({
+        success: false
         error: 'Search failed',
         laws: [],
-        count: 0 
+        count: 0
       }, )
       { status: 500 }
     )
   }
 }
-
 function calculateRelevanceScore(law: any, searchTerm: string): number {
   let score = 0
-
   // Title match gets highest score
   if (law.title.toLowerCase().includes(searchTerm)) {
     score += 10
   }
-
   // Code match gets high score
   if (law.code.toLowerCase().includes(searchTerm)) {
     score += 8
   }
-
   // Description match gets medium score
   if (law.description.toLowerCase().includes(searchTerm)) {
     score += 5
   }
-
   // Keyword matches get lower score
   law.keywords.forEach((keyword: string) => {
     if (keyword.toLowerCase().includes(searchTerm)) {
       score += 2
     }
   })
-
   // Exact keyword match gets bonus
   if (law.keywords.includes(searchTerm)) {
     score += 5
   }
-
   return score
 }
-
 // For integration with vector search in the future
 async function performVectorSearch(query: string, jurisdiction: string, category: string): Promise<any> {
   try {
@@ -193,7 +174,6 @@ async function performVectorSearch(query: string, jurisdiction: string, category
         limit: 10
       })
     })
-
     if ((response as { ok?: any; json?: any }).ok) {
       const result = await (response as { ok?: any; json?: any }).json()
       return (result as { results?: any }).results || []
@@ -201,6 +181,5 @@ async function performVectorSearch(query: string, jurisdiction: string, category
   } catch (error: any) {
     console.error('Vector search error:', error)
   }
-  
   return []
 }

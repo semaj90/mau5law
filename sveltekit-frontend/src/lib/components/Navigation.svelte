@@ -1,8 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
-
   	import { page } from '$app/state';
   	import { goto } from '$app/navigation';
   	import { browser } from '$app/environment';
@@ -26,7 +23,6 @@
   	import UniversalSearchBar from '$lib/components/search/UniversalSearchBar.svelte';
   	import { authStore, useAuth } from '$lib/stores/auth-store.svelte.js';
   	import { onMount } from 'svelte';
-
   	const navItems = [
   		{ href: '/', label: 'COMMAND CENTER', icon: Database },
   		{ href: '/evidence', label: 'EVIDENCE', icon: Eye },
@@ -36,15 +32,12 @@
   		{ href: '/search', label: 'SEARCH', icon: Search },
   		{ href: '/terminal', label: 'TERMINAL', icon: Terminal }
   	];
-
   		let currentPath = browser && page?.url ? page.url.pathname: '/';
-
   	// Authentication state using the auth store
   	const auth = useAuth();
   	let showMobileMenu = $state(false);
   	let showSearchModal = $state(false);
   	let userAvatarUrl = $state<string | null>(null);
-
   	// Generate user avatar URL from MinIO or use initials
   	$effect(() => {
   		if (auth.user) {
@@ -54,19 +47,17 @@
   			} else {
   				// Generate initials-based avatar URL (you could also use a service like UI Avatars)
   				const initials = `${auth.user.firstName?.[0] || ''}${auth.user.lastName?.[0] || ''}`.toUpperCase();
-  				userAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=random&color=fff&size=40`;
+  				userAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=random&color=fff&size=40`
   			}
   		} else {
   			userAvatarUrl = null;
   		}
   	});
-
   	// Optimized navigation with instant transitions
   	function handleNavigation(href: string, event?: Event) {
   		event?.preventDefault();
   		goto(href, { replaceState: false, noScroll: false, keepFocus: false, invalidateAll: false });
   	}
-
   		function handleSearchSelect(event: CustomEvent<any>) {
   		const { result } = event.detail;
   		// Navigate to the search result
@@ -77,8 +68,8 @@
   			const typeRoutes: Record<string, string> = {
   				caseItem: '/cases',
   				evidence: '/evidence',
-  				criminal: '/persons',;
-  				document: '/documents',;
+  				criminal: '/persons',
+  				document: '/documents',
   				precedent: '/analysis';
   			};
   			const baseRoute = typeRoutes[(result as { metadata?: unknown; type?: unknown; id?: unknown }).type] || '/search';
@@ -86,11 +77,9 @@
   		}
   		showSearchModal = false;
   	}
-
   	function toggleSearchModal() {
   		showSearchModal = !showSearchModal;
   	}
-
   	function handleAuth(action: 'login' | 'register' | 'logout') {
   		switch (action) {
   			case 'login':
@@ -104,12 +93,10 @@
   				break;
   		}
   	}
-
   		// Svelte 5: allow parent to bind sidebarOpen
   		// This enables: <Navigation bind:sidebarOpen={sidebarOpen} />
   		let { sidebarOpen = $bindable()  }: { sidebarOpen = $bindable() : unknown } = $props();
 </script>
-
 <nav class="nes-legal-header yorha-3d-panel">
 	<div class="container-nes-main">
 		<div class="nes-header-left">
@@ -120,7 +107,6 @@
 					<p class="nes-legal-subtitle">Investigation Interface</p>
 				</div>
 			</div>
-
 			<nav class="nes-nav-section">
 				{#each navItems as item}
 											<a
@@ -137,7 +123,6 @@
 				{/each}
 			</nav>
 		</div>
-
 		<div class="nes-header-center">
 			<!-- Universal Search Bar (shown for authenticated users) -->
 			{#if auth.isAuthenticated}
@@ -152,7 +137,6 @@
 				</div>
 			{/if}
 		</div>
-
 		<div class="nes-header-right">
 			<!-- Authentication Area -->
 			<div class="auth-section">
@@ -168,7 +152,6 @@
 							<Search class="w-4 h-4" />
 							<span class="hidden md:inline ml-2">SEARCH</span>
 						</button>
-
 						<!-- User Avatar & Profile -->
 						<div class="user-profile-section">
 													<button
@@ -190,7 +173,6 @@
 									<User class="w-6 h-6 text-yellow-400" />
 								{/if}
 							</button>
-
 							<div class="user-info hidden lg:block">
 								<span class="user-name text-yellow-400">
 									{auth.user?.firstName || auth.user?.email || 'User'}
@@ -200,7 +182,6 @@
 								</span>
 							</div>
 						</div>
-
 						<!-- Logout Button -->
 												<button
 							class="nes-legal-priority-medium yorha-3d-button logout-btn"
@@ -223,7 +204,6 @@
 							<Search class="w-4 h-4" />
 							<span class="hidden md:inline ml-2">SEARCH</span>
 						</button>
-
 						<!-- Login Button -->
 												<button
 							class="nes-legal-priority-high yorha-3d-button login-btn"
@@ -232,7 +212,6 @@
 							<LogIn class="w-4 h-4" />
 							<span class="hidden md:inline ml-2">LOGIN</span>
 						</button>
-
 						<!-- Register Button -->
 												<button
 							class="nes-legal-priority-critical yorha-3d-button register-btn"
@@ -244,14 +223,12 @@
 					</div>
 				{/if}
 			</div>
-
 			<!-- System Status -->
 			<div class="system-status">
 				<div class="nes-status-group">
 					<Brain class="w-4 h-4 neural-sprite-active" />
 					<span class="nes-legal-priority-critical">AI ACTIVE</span>
 				</div>
-
 				<div class="nes-status-group">
 					<div class="neural-sprite-loading nes-status-online"></div>
 					<span class="nes-legal-priority-high">ONLINE</span>
@@ -260,7 +237,6 @@
 		</div>
 	</div>
 </nav>
-
 <!-- Advanced Search Modal -->
 {#if showSearchModal}
 	<div
@@ -285,7 +261,6 @@
 					×
 				</button>
 			</div>
-
 			<div class="search-modal-content">
 								<UniversalSearchBar
 					placeholder={auth.isAuthenticated ?
@@ -297,7 +272,6 @@
 					maxResults={auth.isAuthenticated ? 50 : 10}
 									onselect={handleSearchSelect}
 				/>
-
 				{#if !auth.isAuthenticated}
 					<div class="auth-prompt">
 						<p class="text-sm opacity-70 mt-4">
@@ -317,30 +291,26 @@
 		</div>
 	</div>
 {/if}
-
 <style>
 	/* Navigation Layout */
 	.container-nes-main {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
+		justify-content: space-betwee;
 		padding: 0.75rem 1.5rem;
 		gap: 1rem;
 	}
-
 	.nes-header-left {
 		display: flex;
 		align-items: center;
 		gap: 2rem;
 		flex: 1;
 	}
-
 	.nes-header-center {
 		flex: 2;
 		max-width: 600px;
 		min-width: 0;
 	}
-
 	.nes-header-right {
 		display: flex;
 		align-items: center;
@@ -348,38 +318,32 @@
 		flex: 1;
 		justify-content: flex-end;
 	}
-
 	/* Search Container */
 	.search-container {
 		width: 100%;
 		max-width: 500px;
 	}
-
 	/* Authentication Section */
 	.auth-section {
 		display: flex;
 		align-items: center;
 		gap: 0.75rem;
 	}
-
 	.user-section {
 		display: flex;
 		align-items: center;
 		gap: 0.75rem;
 	}
-
 	.guest-section {
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
 	}
-
 	.user-profile-section {
 		display: flex;
 		align-items: center;
 		gap: 0.75rem;
 	}
-
 	.user-avatar-btn {
 		display: flex;
 		align-items: center;
@@ -391,37 +355,31 @@
 		border: 2px solid rgba(255, 255, 0, 0.3);
 		transition: all 0.2s ease;
 	}
-
 	.user-avatar-btn:hover {
 		border-color: rgba(255, 255, 0, 0.6);
 		transform: scale(1.05);
 	}
-
 	.user-avatar {
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
 		border-radius: 50%;
 	}
-
 	.user-info {
 		display: flex;
 		flex-direction: column;
 		gap: 0.125rem;
 	}
-
 	.user-name {
 		font-weight: 600;
 		font-size: 0.875rem;
 		line-height: 1.25;
 	}
-
 	.user-role {
 		font-size: 0.75rem;
 		opacity: 0.7;
 		text-transform: uppercase;
 	}
-
 	/* System Status */
 	.system-status {
 		display: flex;
@@ -431,10 +389,10 @@
 		padding-left: 1rem;
 		border-left: 1px solid rgba(255, 255, 0, 0.2);
 	}
-
 	/* Search Modal */
 	.search-modal-overlay {
 		position: fixed;
+d;
 		top: 0;
 		left: 0;
 		right: 0;
@@ -447,7 +405,6 @@
 		padding-top: 10vh;
 		z-index: 1000;
 	}
-
 	.search-modal {
 		width: 90%;
 		max-width: 800px;
@@ -455,15 +412,13 @@
 		overflow-y: auto;
 		border-radius: 8px;
 	}
-
 	.search-modal-header {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
+		justify-content: space-betwee;
 		padding: 1.5rem 2rem;
 		border-bottom: 1px solid rgba(255, 255, 0, 0.2);
 	}
-
 	.close-btn {
 		background: none;
 		border: none;
@@ -474,70 +429,58 @@
 		line-height: 1;
 		transition: opacity 0.2s ease;
 	}
-
 	.close-btn:hover {
 		opacity: 0.7;
 	}
-
 	.search-modal-content {
 		padding: 2rem;
 	}
-
 	.auth-prompt {
 		text-align: center;
 		padding: 1rem 0;
 	}
-
 	.auth-buttons {
 		display: flex;
 		justify-content: center;
 		gap: 0.75rem;
 	}
-
 	/* Responsive Design */
 	@media (max-width: 1024px) {
 		.nes-header-center {
 			display: none;
 		}
-
 		.system-status {
 			display: none;
 		}
 	}
-
 	@media (max-width: 768px) {
 		.container-nes-main {
 			padding: 0.5rem 1rem;
 		}
-
 		.nes-header-left {
 			gap: 1rem;
 		}
-
 		.user-profile-section {
 			gap: 0.5rem;
 		}
-
 		.search-modal {
 			width: 95%;
 			margin: 0 auto;
 		}
-
 		.search-modal-content {
 			padding: 1rem;
 		}
 	}
-
 	/* Legacy styles (keep for compatibility) */
 	.modern-header {
 		background: var(--yorha-bg-secondary);
 		border-bottom: 1px solid var(--yorha-border-primary);
 		box-shadow: var(--yorha-shadow-sm);
 		position: sticky;
+y;
 		top: 0;
 		z-index: 40;
 	}
-
 	.header-title {
 		font-size: var(--text-lg);
 		font-weight: 700;
@@ -546,7 +489,6 @@
 		letter-spacing: 0.05em;
 		margin: 0;
 	}
-
 	.header-subtitle {
 		font-size: var(--text-xs);
 		color: var(--yorha-text-secondary);
@@ -554,7 +496,6 @@
 		text-transform: uppercase;
 		letter-spacing: 0.025em;
 	}
-
 	.nav-link {
 		display: flex;
 		align-items: center;
@@ -570,42 +511,34 @@
 		transition: all 200ms ease;
 		border: 1px solid transparent;
 	}
-
-	.nav-link:hover {
+	.nav-link: hover {
 		background-color: var(--yorha-bg-hover);
 		color: var(--yorha-text-primary);
 		border-color: var(--yorha-border-primary);
 	}
-
 	.nav-link-active {
 		background-color: var(--yorha-bg-tertiary);
 		color: var(--yorha-accent-gold);
 		border-color: var(--yorha-border-accent);
 	}
-
 	.nav-link:focus-visible {
 		outline: 2px solid var(--yorha-accent-gold);
 		outline-offset: 2px;
 	}
-
 	.status-indicator {
 		gap: var(--golden-xs);
 	}
-
 	.status-info {
 		display: flex;
 		flex-direction: column;
 		gap: 2px;
 	}
-
 	@media (max-width: 768px) {
 		.header-title {
 			font-size: var(--text-base);
 		}
-
 		.header-subtitle {
 			display: none;
 		}
 	}
 </style>
-

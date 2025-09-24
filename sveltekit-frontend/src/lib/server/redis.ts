@@ -2,33 +2,27 @@
  * Centralized Redis Client for Legal AI Platform
  * Follows the integration guide pattern with enhanced error handling
  */
-
 import Redis from 'ioredis';
 import { getRedisConfig } from '$lib/config/redis-config';
-
 // Get optimized Redis configuration
-const url = process.env.REDIS_URL ?? 'redis://127.0.0.1:4005';
+const url = process.env.REDIS_URL ?? 'redis://127.0.0.1:4005'
 const baseConfig = getRedisConfig();
-
 function buildRedisOptions() {
   const password = process.env.REDIS_PASSWORD || baseConfig.password;
   return {
     ...baseConfig,
-    password: password || undefined,
+    password: password || undefined
     lazyConnect: true, // Changed to true to prevent immediate connection
     maxRetriesPerRequest: 1, // Limit retries to prevent flooding
     // If URL was provided separately, include it in options form
-    ...(url ? { host: undefined } : Record<string, any>)
+    ...(url ? { host: undefined } : { [key: string]: any })
   } as any;
 }
-
 // ioredis supports (url) or (options). We pass url via options for consistency.
 const redisOptions = buildRedisOptions();
 (redisOptions as any).url = url; // modern ioredis supports url in options
 export const redis = new Redis(redisOptions as any);
-
 export const REDIS_CONNECTION = redis;
-
 redis.on('connect', () => {
   console.log('[redis] ✅ Connected successfully');
 });
@@ -55,13 +49,11 @@ redis.on('reconnecting', (delay) => {
 redis.on('close', () => {
   console.log('[redis] 🔌 Connection closed');
 });
-
 export const createRedisInstance = () => {
   const opts = buildRedisOptions();
   (opts as any).url = url;
   return new Redis(opts as any);
 };
-
 // Thin interface describing only commands we actually use broadly
 export interface RedisBasicCommands {
   get(key: string): Promise<string | null>;
@@ -76,27 +68,23 @@ export interface RedisBasicCommands {
   on(event: string, listener: (...args: any[]) => void): any;
   quit(): Promise<'OK'>;
 }
-
-// Multi-client factory for pub/sub correctness;
+// Multi-client factory for pub/sub correctness
 export interface RedisClientSet {
   primary: RedisBasicCommands & any;
   subscriber: RedisBasicCommands & any;
   publisher: RedisBasicCommands & any;
   closeAll(): Promise<void>;
 }
-
 export function createRedisClientSet(): RedisClientSet {
   const primary = createRedisInstance();
   const subscriber = createRedisInstance();
   const publisher = createRedisInstance();
-
-  // Basic wiring of error logging;
+  // Basic wiring of error logging
   [primary, subscriber, publisher].forEach((client, idx) => {
     client.on('error', (err: any) => {
       console.error(`[redis-set] client${idx} error:`, err?.message || err);
     });
   });
-
   return {
     primary,
     subscriber,
@@ -108,7 +96,6 @@ export function createRedisClientSet(): RedisClientSet {
     }
   };
 }
-
 let legacyClient: Redis | null = null;
 export async function createRedisClient(): Promise<Redis> {
   if (legacyClient) return legacyClient;
@@ -125,8 +112,8 @@ export async function getFromCache(key: string): Promise<string | null> {
   }
 }
 export async function setCache(
-  key: string,;
-  value: string,
+  key: string
+  value: string
   expireInSeconds?: number;
 ): Promise<boolean> {
   try {

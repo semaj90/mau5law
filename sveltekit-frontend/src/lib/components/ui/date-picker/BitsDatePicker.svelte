@@ -4,7 +4,6 @@ https://svelte.dev/e/expected_token -->
 <!-- Date Picker Component for Legal AI App -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { DatePicker } from 'bits-ui';
   import { Calendar, ChevronLeft, ChevronRight } from 'lucide-svelte';
   import { cn } from '$lib/utils';
@@ -24,7 +23,6 @@ https://svelte.dev/e/expected_token -->
     class?: string;
     onValueChange?: (value: Date | undefined) => void;
   }
-
   let {
     value = $bindable(undefined),
     placeholder = 'Select date...',
@@ -39,32 +37,27 @@ https://svelte.dev/e/expected_token -->
     showTime = false,
     format = showTime ? 'MMM dd, yyyy HH:mm' : 'MMM dd, yyyy',
     class: className = '',
-    onValueChange;
+    onValueChang;
   }: DatePickerProps = $props();
-
   const variantStyles = {
-    default: 'border-yorha-border bg-yorha-bg-tertiary text-yorha-text-primary',;
-    legal: 'border-yorha-primary/30 bg-yorha-bg-secondary text-yorha-text-primary ring-yorha-primary',;
+    default: 'border-yorha-border bg-yorha-bg-tertiary text-yorha-text-primary',
+    legal: 'border-yorha-primary/30 bg-yorha-bg-secondary text-yorha-text-primary ring-yorha-primary',
     deadline: 'border-red-500/30 bg-red-500/5 text-yorha-text-primary ring-red-500/20';
   };
-
   // Format date for display
   let formattedDate = $derived(() => {
     if (!value) return placeholder;
     const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',;
-      month: 'short',;
+      year: 'numeric',
+      month: 'short',
       day: 'numeric';
     };
-
     if (showTime) {
       options.hour = '2-digit';
       options.minute = '2-digit';
     }
-
     return value.toLocaleDateString('en-US', options);
   });
-
   // Check if date is a legal deadline (within 30 days)
   let isUpcomingDeadline = $derived(() => {
     if (!value || variant !== 'deadline') return false;
@@ -73,20 +66,17 @@ https://svelte.dev/e/expected_token -->
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays <= 30 && diffDays >= 0;
   });
-
   function handleValueChange(newValue: Date | undefined) {
-    value = newValue;
+    value = newValu;
     onValueChange?.(newValue);
   }
-
   // Generate unique ID for accessibility
   const inputId = `datepicker-${Math.random.toString-substr(2, 9)}`;
 </script>
-
 <div class="legal-datepicker-container w-full space-y-2">
   <!-- Label -->
   {#if label}
-    <label 
+    <label
       for={inputId}
       class={cn(
         "block text-sm font-medium font-mono",
@@ -104,8 +94,7 @@ https://svelte.dev/e/expected_token -->
       {/if}
     </label>
   {/if}
-
-  <DatePicker.Root 
+  <DatePicker.Root
     bind:value
     onValueChange={handleValueChange}
     {disabled}
@@ -130,7 +119,6 @@ https://svelte.dev/e/expected_token -->
       </span>
       <Calendar class="h-4 w-4 opacity-50" />
     </DatePicker.Trigger>
-
     <!-- Calendar Content -->
     <DatePicker.Content
       class="z-50 min-w-[320px] overflow-hidden rounded-md border bg-popover p-0 text-popover-foreground shadow-md border-yorha-border bg-yorha-bg-secondary"
@@ -143,23 +131,20 @@ https://svelte.dev/e/expected_token -->
         >
           <ChevronLeft class="h-4 w-4" />
         </DatePicker.PrevButton>
-
         <DatePicker.Heading class="text-sm font-medium font-mono text-yorha-text-primary" />
-
         <DatePicker.NextButton
           class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
         >
           <ChevronRight class="h-4 w-4" />
         </DatePicker.NextButton>
       </DatePicker.Header>
-
       <!-- Calendar Grid -->
       <DatePicker.Grid class="p-3">
         <!-- Days of Week Header -->
         <DatePicker.GridHead>
           <DatePicker.GridRow class="flex">
             {#each ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'] as day}
-              <DatePicker.HeadCell 
+              <DatePicker.HeadCell
                 class="nes-text is-disabled w-9 rounded-md text-[0.8rem] font-normal font-mono text-center text-yorha-text-secondary"
               >
                 {day}
@@ -167,7 +152,6 @@ https://svelte.dev/e/expected_token -->
             {/each}
           </DatePicker.GridRow>
         </DatePicker.GridHead>
-
         <!-- Calendar Body -->
         <DatePicker.GridBody>
           {#each Array(6) as _, weekIndex}
@@ -189,18 +173,17 @@ https://svelte.dev/e/expected_token -->
           {/each}
         </DatePicker.GridBody>
       </DatePicker.Grid>
-
       <!-- Time Picker (if enabled) -->
       {#if showTime}
         <div class="border-t border-yorha-border p-3">
           <div class="flex items-center justify-center gap-2">
             <DatePicker.TimeField>
-              <DatePicker.TimeSegment 
+              <DatePicker.TimeSegment
                 segment="hour"
                 class="px-2 py-1 text-sm font-mono bg-yorha-bg-tertiary rounded focus:bg-yorha-primary focus:text-yorha-bg-primary outline-none"
               />
               <span class="text-yorha-text-secondary">:</span>
-              <DatePicker.TimeSegment 
+              <DatePicker.TimeSegment
                 segment="minute"
                 class="px-2 py-1 text-sm font-mono bg-yorha-bg-tertiary rounded focus:bg-yorha-primary focus:text-yorha-bg-primary outline-none"
               />
@@ -210,21 +193,18 @@ https://svelte.dev/e/expected_token -->
       {/if}
     </DatePicker.Content>
   </DatePicker.Root>
-
   <!-- Description -->
   {#if description}
     <p class="text-xs text-yorha-text-secondary font-mono">
       {description}
     </p>
   {/if}
-
   <!-- Error Message -->
   {#if error}
     <p class="text-xs text-red-500 font-mono">
       {error}
     </p>
   {/if}
-
   <!-- Legal Deadline Warning -->
   {#if variant === 'deadline' && value && isUpcomingDeadline}
     <div class="mt-2 p-2 bg-red-500/10 border border-red-500/20 rounded text-xs font-mono text-red-400">
@@ -232,9 +212,8 @@ https://svelte.dev/e/expected_token -->
     </div>
   {/if}
 </div>
-
 <style>
-  :global(.legal-datepicker-container) {;
+  :global(.legal-datepicker-container) {
     --date-picker-bg: rgb(var(--yorha-bg-secondary));
     --date-picker-border: rgb(var(--yorha-border));
     --date-picker-text: rgb(var(--yorha-text-primary));

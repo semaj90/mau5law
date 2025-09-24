@@ -3,45 +3,37 @@
  * Routes to QUIC /tensor/store → TensorManager.StoreTensor()
  * NO MOCKS - Full production implementation per apparch913.txt
  */
-
 import { json, error, type RequestHandler } from '@sveltejs/kit'
 import { z } from 'zod'
-
 // Tensor storage schema per architecture docs
 const TensorStoreSchema = z.object({
   tensor_id: z.string(),
   data: z.array(z.number()),
   dimensions: z.array(z.number()),
   dtype: z.enum(['float32', 'float64', 'int32', 'int64']).default('float32'),
-  metadata: z.object({
+  metadata: z.object({,
     model: z.string(),
     source: z.string(),
     compression: z.enum(['none', 'gzip', 'brotli']).default('none'),
     lod_levels: z.number().min(1).max(5).default(3)
   })
 })
-
 type TensorStoreRequest = z.infer<typeof TensorStoreSchema>
-
 const QUIC_SERVER_URL = process.env.QUIC_SERVER_URL || 'http://localhost:4433'
-
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
     const sessionId = cookies.get('session_id')
     if (!sessionId) {
       throw error(401, 'Authentication required for tensor operations')
     }
-
     const body = await request.json()
     const validatedData = TensorStoreSchema.safeParse(body)
-
     if (!validatedData.success) {
       throw error(400, {
         message: 'Invalid tensor data format',
         errors: validatedData.error.errors
       })
     }
-
     // Route to QUIC server with authentication (per architecture)
     const response = await fetch(`${QUIC_SERVER_URL}/tensor/store`, {
       method: 'POST',
@@ -53,17 +45,14 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       },
       body: JSON.stringify(validatedData.data)
     })
-
     if (!response.ok) {
       const errorData = await response.text()
       console.error('QUIC server tensor store error:', errorData)
       throw error(response.status, `Tensor storage failed: ${errorData}`)
     }
-
     const result = await response.json()
-
     return json({
-      success: true,
+      success: true
       data: {
         tensor_id: result.tensor_id,
         stored_bytes: result.stored_bytes,
@@ -74,40 +63,32 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         storage_path: result.storage_path
       }
     })
-
   } catch (err) {
     console.error('Tensor store API error:', err)
-
     if (err instanceof Error && 'status' in err) {
       throw err
     }
-
     throw error(500, 'Internal server error during tensor storage')
   }
 }
-
 export const GET: RequestHandler = async ({ cookies }) => {
   try {
     const sessionId = cookies.get('session_id')
     if (!sessionId) {
       throw error(401, 'Authentication required')
     }
-
     // Get tensor cache metrics from QUIC server
     const response = await fetch(`${QUIC_SERVER_URL}/tensor/metrics`, {
       headers: {
         'Authorization': `Bearer ${sessionId}`
       }
     })
-
     if (!response.ok) {
       throw error(response.status, 'Failed to retrieve tensor metrics')
     }
-
     const metrics = await response.json()
-
     return json({
-      success: true,
+      success: true
       metrics: {
         cache_hit_rate: metrics.cache_hit_rate,
         total_tensors_stored: metrics.total_tensors_stored,
@@ -116,14 +97,11 @@ export const GET: RequestHandler = async ({ cookies }) => {
         performance_stats: metrics.performance_stats
       }
     })
-
   } catch (err) {
     console.error('Tensor metrics error:', err)
-
     if (err instanceof Error && 'status' in err) {
       throw err
     }
-
     throw error(500, 'Failed to retrieve tensor metrics')
   }
 }

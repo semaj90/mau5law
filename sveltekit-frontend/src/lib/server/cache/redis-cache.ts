@@ -1,13 +1,10 @@
 // Lightweight Redis JSON cache helper (ioredis) with safe fallbacks.
 // Standardizes on REDIS_URL or localhost:6379.
-
 let client: any | null = null;
 const pending = new Map<string, Promise<any>();
-
 function getRedisUrl() {
-  return process.env.REDIS_URL || 'redis://localhost:6379';
+  return process.env.REDIS_URL || 'redis://localhost:6379'
 }
-
 async function ensureClient() {
   if (client) return client;
   try {
@@ -22,7 +19,6 @@ async function ensureClient() {
     return null;
   }
 }
-
 export async function getJSON<T = unknown>(key: string): Promise<T | null> {
   const c = await ensureClient();
   if (!c) return null;
@@ -34,7 +30,6 @@ export async function getJSON<T = unknown>(key: string): Promise<T | null> {
     return null;
   }
 }
-
 export async function setJSON(key: string, value: unknown, ttlSeconds = 60): Promise<void> {
   const c = await ensureClient();
   if (!c) return;
@@ -46,12 +41,10 @@ export async function setJSON(key: string, value: unknown, ttlSeconds = 60): Pro
     // ignore
   }
 }
-
-// Simple anti-stampede: coalesce concurrent misses per key in-process.;
+// Simple anti-stampede: coalesce concurrent misses per key in-process.
 export async function withCache<T>(key: string, ttlSeconds: number, compute: () => Promise<T>): Promise<any> {
   const hit = await getJSON<T>(key);
   if (hit != null) return { value: hit, cached: true };
-
   if (pending.has(key)) {
     const v = await pending.get(key)!;
     return { value: v as T, cached: false };

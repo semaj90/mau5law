@@ -1,6 +1,5 @@
 // Enhanced AI Types for Legal Document Processing
 // SvelteKit 2 + Svelte 5 Compatible Types
-
 export type PracticeArea =
   | 'contract_law'
   | 'tort_law'
@@ -16,7 +15,6 @@ export type PracticeArea =
   | 'environmental_law'
   | 'securities_law'
   | 'healthcare_law';
-
 export type Jurisdiction =
   | 'US'
   | 'federal'
@@ -28,7 +26,6 @@ export type Jurisdiction =
   | 'CA'
   | 'AU';
 }
-
 export interface EnhancedSearchOptions {
   query?: string;
   practiceArea?: PracticeArea;
@@ -52,7 +49,6 @@ export interface EnhancedSearchOptions {
     [key: string]: unknown;
   };
 }
-
 export interface EnhancedSearchResult {
   id: string;
   title: string;
@@ -82,7 +78,6 @@ export interface EnhancedSearchResult {
     recommendations?: string[];
   };
 }
-
 export interface AIAnalysisResult {
   summary: string;
   keyPoints: string[];
@@ -92,24 +87,21 @@ export interface AIAnalysisResult {
   confidence: number;
   processingTime: number;
 }
-
 export interface VectorSearchOptions {
   query: string;
   embedding?: number[];
   limit?: number;
   threshold?: number;
-  filters?: Record<string, any>;
+  filters?: { [key: string]: any };
   includeMetadata?: boolean;
 }
-
 export interface VectorSearchResult {
   id: string;
   content: string;
   score: number;
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
 }
-
-// Enhanced AI Processing Types;
+// Enhanced AI Processing Types
 export interface EnhancedProcessingOptions {
   useGoMicroservice?: boolean;
   enableCaching?: boolean;
@@ -119,7 +111,6 @@ export interface EnhancedProcessingOptions {
   includeAnalysis?: boolean;
   analysisDepth?: "basic" | "detailed" | "comprehensive";
 }
-
 export interface ProcessingResult {
   success: boolean;
   data?: unknown;
@@ -128,8 +119,7 @@ export interface ProcessingResult {
   cacheHit?: boolean;
   source?: "go-microservice" | "local-ai" | "cache";
 }
-
-// AI Model Configuration;
+// AI Model Configuration
 export interface AIModelConfig {
   modelName: string;
   temperature?: number;
@@ -140,8 +130,7 @@ export interface AIModelConfig {
   contextWindow?: number;
   systemPrompt?: string;
 }
-
-// Legal-specific AI types;
+// Legal-specific AI types
 export interface LegalDocumentAnalysis {
   documentType: string;
   practiceArea: PracticeArea;
@@ -159,7 +148,6 @@ export interface LegalDocumentAnalysis {
   recommendations: string[];
   confidenceScore: number;
 }
-
 export interface CaseAnalysis {
   caseId: string;
   title: string;

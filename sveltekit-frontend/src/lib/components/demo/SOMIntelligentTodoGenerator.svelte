@@ -1,17 +1,11 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount,  } from 'svelte';
-
-
-  
-  
   import { WebGPUSOMCache, type IntelligentTodo, type NPMError, initializeSOMCache } from '$lib/webgpu/som-webgpu-cache.js';
-
-  let somCache: WebGPUSOMCache;
+  let somCache: WebGPUSOMCach;
   let isLoading = $state(false);
   let webGPUEnabled = $state(false);
   let todos = $state<IntelligentTodo[] >([]);
@@ -39,7 +33,6 @@ https://svelte.dev/e/js_parse_error -->
   let filterCategory = $state('all');
   let sortBy = $state<'priority' | 'confidence' | 'effort' >('priority');
   let showDetails = $state(false);
-
   $effect(() => {
     (async () => {
 try {
@@ -50,24 +43,19 @@ try {
     }
     })();
   });
-
   async function processErrors() {
     if (!somCache) {
       alert('SOM Cache not initialized');
       return;
     }
-
     isLoading = true;
     const startTime = performance.now();
-
     try {
       // Process npm check errors with SOM analysis
       const generatedTodos = await somCache.processNPMCheckErrors(npmOutput);
-      todos = generatedTodos;
-
+      todos = generatedTodo;
       // Extract errors from npm output for display
       errors = extractErrorsFromOutput(npmOutput);
-
       // Simulate performance metrics (in a real implementation, these would come from the cache)
       performanceMetrics = {
         somTrainingTime: 150 + Math.random() * 50, // ms
@@ -76,9 +64,7 @@ try {
         cacheHitRatio: Math.random() * 0.3 + 0.1,
         totalProcessingTime: performance.now() - startTime
       };
-
-      processingTime = performanceMetrics.totalProcessingTime;
-
+      processingTime = performanceMetrics.totalProcessingTim;
     } catch (error) {
       console.error('Error processing npm output:', error);
       alert('Failed to process errors: ' + error.message);
@@ -86,30 +72,26 @@ try {
       isLoading = false;
     }
   }
-
   function extractErrorsFromOutput(output: string): NPMError[] {
     const lines = output.trim.split('\n');
     const extractedErrors: NPMError[] = [];
-
     lines.forEach(line => {
       const match = line.match(/(.+\.tsx?)\((\d+),\d+\): (.+)/);
       if (match) {
         extractedErrors.push({
-          message: match[3],
-          file: match[1],
+          message: match[3]
+          file: match[1]
           line: parseInt(match[2]),
           severity: determineSeverity(match[3]),
           category: determineCategory(match[3]),
-          type: 'error',;
-          timestamp: new Date().toISOString(),;
+          type: 'error',
+          timestamp: new Date().toISOString(),
           context: [line];
         });
       }
     });
-
-    return extractedErrors;
+    return extractedError;
   }
-
   function determineSeverity(message: string): 'low' | 'medium' | 'high' | 'critical' {
     const lowerMessage = message.toLowerCase();
     if (lowerMessage.includes('service unavailable') || lowerMessage.includes('timeout')) return 'critical';
@@ -117,7 +99,6 @@ try {
     if (lowerMessage.includes('property') || lowerMessage.includes('type')) return 'medium';
     return 'low';
   }
-
   function determineCategory(message: string): string {
     const lowerMessage = message.toLowerCase();
     if (lowerMessage.includes('ts23') || lowerMessage.includes('type')) return 'typescript';
@@ -126,13 +107,11 @@ try {
     if (lowerMessage.includes('service') || lowerMessage.includes('connection')) return 'service';
     return 'general';
   }
-
   function formatDuration(nanoseconds: number): string {
     const minutes = Math.floor(nanoseconds / (60 * 1000000000));
     const remainingSeconds = Math.floor((nanoseconds % (60 * 1000000000)) / 1000000000);
     return `${minutes}m ${remainingSeconds}s`;
   }
-
   function getSeverityColor(severity: string): string {
     switch (severity) {
       case 'critical': return 'text-red-600 bg-red-100';
@@ -142,28 +121,24 @@ try {
       default: return 'text-gray-600 bg-gray-100';
     }
   }
-
   function getPriorityColor(priority: number): string {
     if (priority > 0.05) return 'text-red-600 font-bold';
     if (priority > 0.03) return 'text-orange-600 font-semibold';
     if (priority > 0.02) return 'text-yellow-600';
     return 'text-green-600';
   }
-
   let filteredTodos = $derived(() => todos
     .filter(item => item.sort)((a, b) => {
       switch (sortBy) {
         case 'priority': return b.priority - a.priority;
-        case 'confidence': return b.confidence - a.confidence;
+        case 'confidence': return b.confidence - a.confidenc;
         case 'effort': return a.estimated_effort - b.estimated_effort;
         default: return 0;
       }
     })
   );
-
   let uniqueCategories = $derived([...new Set(todos.map(todo => todo.category))]);
 </script>
-
 <div class="p-6 max-w-7xl mx-auto">
   <div class="mb-8">
     <h1 class="text-3xl font-bold text-gray-900 mb-2">
@@ -172,7 +147,6 @@ try {
     <p class="text-gray-600 mb-4">
       Advanced semantic analysis using Self-Organizing Maps, WebGPU acceleration, and real-time PageRank prioritization
     </p>
-
     <!-- Status Indicators -->
     <div class="flex flex-wrap gap-4 mb-6">
       <div class="flex items-center space-x-2">
@@ -195,7 +169,6 @@ try {
       </div>
     </div>
   </div>
-
   <!-- NPM Output Input -->
   <div class="bg-gray-900 rounded-lg p-4 mb-6">
     <h3 class="text-white font-medium mb-3">📋 NPM Check Output:</h3>
@@ -204,7 +177,6 @@ try {
       class="w-full h-32 bg-gray-800 text-green-400 font-mono text-sm p-3 rounded border-none resize-none"
       placeholder="Paste npm check output here..."
     ></textarea>
-
     <div class="flex justify-between items-center mt-4">
       <button
         onclick={processErrors}
@@ -217,7 +189,6 @@ try {
           🚀 Generate Intelligent Todos
         {/if}
       </button>
-
       {#if processingTime > 0}
         <div class="text-white text-sm">
           ⚡ Processed in {processingTime.toFixed(1)}ms
@@ -225,14 +196,12 @@ try {
       {/if}
     </div>
   </div>
-
   {#if isLoading}
     <div class="text-center py-12">
       <div class="animate-spin w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
       <p class="text-gray-600">Running SOM analysis and WebGPU PageRank...</p>
     </div>
   {/if}
-
   {#if todos.length > 0}
     <!-- Performance Metrics -->
     <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 mb-6">
@@ -260,7 +229,6 @@ try {
         </div>
       </div>
     </div>
-
     <!-- Filters and Controls -->
     <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
       <div class="flex flex-wrap gap-4">
@@ -270,14 +238,12 @@ try {
             <option value={category}>{category}</option>
           {/each}
         </select>
-
         <select bind:value={sortBy} class="px-3 py-2 border rounded-lg">
           <option value="priority">Sort by Priority</option>
           <option value="confidence">Sort by Confidence</option>
           <option value="effort">Sort by Effort</option>
         </select>
       </div>
-
       <div class="flex items-center space-x-4">
         <label class="flex items-center space-x-2">
           <input type="checkbox" bind:checked={showDetails} class="rounded">
@@ -288,7 +254,6 @@ try {
         </div>
       </div>
     </div>
-
     <!-- Intelligent Todos -->
     <div class="space-y-4">
       {#each filteredTodos as todo, index}
@@ -305,7 +270,6 @@ try {
                   </div>
                 </div>
                 <p class="text-gray-600 mb-3">{todo.description}</p>
-
                 <div class="flex flex-wrap gap-2 mb-3">
                   {#each todo.tags as tag}
                     <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
@@ -314,7 +278,6 @@ try {
                   {/each}
                 </div>
               </div>
-
               <div class="text-right ml-6">
                 <div class={`text-lg font-bold mb-1 ${getPriorityColor(todo.priority)}`}>
                   Priority: {todo.priority.toFixed(4)}
@@ -327,7 +290,6 @@ try {
                 </div>
               </div>
             </div>
-
             <!-- Suggested Fixes -->
             <div class="mb-4">
               <h4 class="font-medium text-gray-900 mb-2">🔧 Suggested Fixes:</h4>
@@ -337,7 +299,6 @@ try {
                 {/each}
               </ul>
             </div>
-
             {#if showDetails}
               <!-- Related Errors -->
               <div class="border-t pt-4">
@@ -363,7 +324,6 @@ try {
                   {/if}
                 </div>
               </div>
-
               <!-- Metadata -->
               <div class="border-t pt-4 mt-4">
                 <h4 class="font-medium text-gray-900 mb-2">📊 Metadata:</h4>
@@ -391,7 +351,6 @@ try {
         </div>
       {/each}
     </div>
-
     <!-- Summary Statistics -->
     <div class="mt-8 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-6">
       <h3 class="text-lg font-bold text-gray-900 mb-4">📊 Analysis Summary</h3>
@@ -416,11 +375,8 @@ try {
     </div>
   {/if}
 </div>
-
 <style>
-  :global(body) {;
+  :global(body) {
     background-color: #f8fafc;
   }
 </style>
-
-

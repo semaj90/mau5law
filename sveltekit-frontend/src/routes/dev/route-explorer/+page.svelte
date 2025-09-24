@@ -1,12 +1,10 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
-
   interface RouteData {
     generated: string;
-    filters: {;
+    filters: {
       applied: boolean;
       category: string | null;
       status: string | null;
@@ -14,12 +12,12 @@
       search: string | null;
     };
     counts: {
-      total: {;
+      total: {
         config: number;
         fileBased: number;
         api: number;
       };
-      displayed: {;
+      displayed: {
         config: number;
         fileBased: number;
       };
@@ -48,11 +46,9 @@
       recommendations: string[];
     };
   }
-
   let routeData: RouteData | null = $state(null);
   let loading = $state(true);
   let error = $state<string | null>(null);
-
   // Filter state
   let searchTerm = $state('');
   let selectedCategory = $state('all');
@@ -60,33 +56,26 @@
   let selectedTag = $state('all');
   let showAnalytics = $state(false);
   let viewMode = $state<'grid' | 'table' | 'tree'>('grid');
-
   // Derived filtered data
   let filteredRoutes = $derived.by(() => {
     if (!routeData) return [];
-
     return routeData.data.configRoutes.filter(item => item.includes(searchTerm.toLowerCase()) ||
         route.route?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         route.id?.toLowerCase().includes(searchTerm.toLowerCase());
-
       const matchesCategory = selectedCategory === 'all' || route.category === selectedCategory;
-      const matchesStatus = selectedStatus === 'all' || route.status === selectedStatus;
+      const matchesStatus = selectedStatus === 'all' || route.status === selectedStatu;
       const matchesTag = selectedTag === 'all' || route.tags?.includes(selectedTag);
-
       return matchesSearch && matchesCategory && matchesStatus && matchesTag;
     });
   });
-
   let categories = $derived.by(() => {
     if (!routeData) return [];
     return [...new Set(routeData.data.configRoutes.map(r => r.category))].sort();
   });
-
   let statuses = $derived.by(() => {
     if (!routeData) return [];
     return [...new Set(routeData.data.configRoutes.map(r => r.status))].sort();
   });
-
   let allTags = $derived.by(() => {
     if (!routeData) return [];
     const tags = new Set<string>();
@@ -95,11 +84,9 @@
     });
     return [...tags].sort();
   });
-
   $effect(() => {
     (async () => {
 if (!browser) return;
-
     try {
       // Generate route data with analytics
       const response = await fetch('/api/dev/route-data');
@@ -115,7 +102,6 @@ if (!browser) return;
     }
     })();
   });
-
   function getStatusColor(status: string): string {
     switch (status) {
       case 'active': return 'bg-green-100 text-green-800 border-green-200';
@@ -124,7 +110,6 @@ if (!browser) return;
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
-
   function getCategoryColor(category: string): string {
     const colors = {
       'dashboard': 'bg-blue-100 text-blue-800 border-blue-200',
@@ -135,21 +120,18 @@ if (!browser) return;
     };
     return colors[category as keyof typeof colors] || 'bg-gray-100 text-gray-800 border-gray-200';
   }
-
   function clearFilters() {
     searchTerm = '';
     selectedCategory = 'all';
     selectedStatus = 'all';
     selectedTag = 'all';
   }
-
   async function refreshData() {
     loading = true;
     error = null;
     await onMount();
   }
 </script>
-
 <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
   <div class="container mx-auto px-6 py-8">
     <!-- Header -->
@@ -166,12 +148,10 @@ if (!browser) return;
           {loading ? '🔄 Loading...' : '🔄 Refresh'}
         </button>
       </div>
-
       <p class="text-gray-600 text-lg">
         Interactive route management and analysis dashboard
       </p>
     </div>
-
     {#if loading}
       <div class="text-center py-12">
         <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -202,7 +182,6 @@ if (!browser) return;
             </div>
           </div>
         </div>
-
         <div class="bg-white rounded-xl shadow-sm border p-6">
           <div class="flex items-center">
             <div class="p-2 bg-green-100 rounded-lg">
@@ -214,7 +193,6 @@ if (!browser) return;
             </div>
           </div>
         </div>
-
         <div class="bg-white rounded-xl shadow-sm border p-6">
           <div class="flex items-center">
             <div class="p-2 bg-orange-100 rounded-lg">
@@ -226,7 +204,6 @@ if (!browser) return;
             </div>
           </div>
         </div>
-
         <div class="bg-white rounded-xl shadow-sm border p-6">
           <div class="flex items-center">
             <div class="p-2 bg-red-100 rounded-lg">
@@ -241,7 +218,6 @@ if (!browser) return;
           </div>
         </div>
       </div>
-
       <!-- Filters -->
       <div class="bg-white rounded-xl shadow-sm border p-6 mb-8">
         <div class="flex items-center justify-between mb-4">
@@ -253,7 +229,6 @@ if (!browser) return;
             Clear All
           </button>
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <div>
             <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Search</label>
@@ -264,7 +239,6 @@ if (!browser) return;
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
           </div>
-
           <div>
             <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Category</label>
             <select
@@ -278,7 +252,6 @@ if (!browser) return;
               {/each}
             </select>
           </div>
-
           <div>
             <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Status</label>
             <select
@@ -292,7 +265,6 @@ if (!browser) return;
               {/each}
             </select>
           </div>
-
           <div>
             <label for="tag" class="block text-sm font-medium text-gray-700 mb-2">Tag</label>
             <select
@@ -306,7 +278,6 @@ if (!browser) return;
               {/each}
             </select>
           </div>
-
           <div>
             <label for="view" class="block text-sm font-medium text-gray-700 mb-2">View</label>
             <select
@@ -320,12 +291,10 @@ if (!browser) return;
             </select>
           </div>
         </div>
-
         <div class="mt-4 flex items-center justify-between">
           <p class="text-sm text-gray-600">
             Showing {filteredRoutes.length} of {routeData.data.configRoutes.length} routes
           </p>
-
           <button
             onclick={() => showAnalytics = !showAnalytics}
             class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
@@ -334,12 +303,10 @@ if (!browser) return;
           </button>
         </div>
       </div>
-
       <!-- Analytics Panel -->
       {#if showAnalytics && routeData.analytics}
         <div class="bg-white rounded-xl shadow-sm border p-6 mb-8">
           <h2 class="text-xl font-semibold text-gray-900 mb-6">📊 Route Analytics</h2>
-
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Status Breakdown -->
             <div>
@@ -353,7 +320,6 @@ if (!browser) return;
                 {/each}
               </div>
             </div>
-
             <!-- Category Breakdown -->
             <div>
               <h3 class="font-medium text-gray-900 mb-3">Category Distribution</h3>
@@ -366,7 +332,6 @@ if (!browser) return;
                 {/each}
               </div>
             </div>
-
             <!-- Complexity Metrics -->
             <div>
               <h3 class="font-medium text-gray-900 mb-3">Complexity</h3>
@@ -386,7 +351,6 @@ if (!browser) return;
               </div>
             </div>
           </div>
-
           <!-- Recommendations -->
           {#if routeData.analytics.recommendations.length > 0}
             <div class="mt-6 p-4 bg-blue-50 rounded-lg">
@@ -400,13 +364,11 @@ if (!browser) return;
           {/if}
         </div>
       {/if}
-
       <!-- Routes Display -->
       <div class="bg-white rounded-xl shadow-sm border">
         <div class="p-6 border-b">
           <h2 class="text-xl font-semibold text-gray-900">Routes</h2>
         </div>
-
         <div class="p-6">
           {#if viewMode === 'grid'}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -418,14 +380,11 @@ if (!browser) return;
                       {route.status}
                     </span>
                   </div>
-
                   <p class="text-sm text-gray-600 mb-2 font-mono">{route.route}</p>
-
                   <div class="flex items-center justify-between">
                     <span class="px-2 py-1 text-xs rounded border {getCategoryColor(route.category)}">
                       {route.category}
                     </span>
-
                     {#if route.tags?.length > 0}
                       <div class="flex gap-1">
                         {#each route.tags.slice(0, 2) as tag}
@@ -490,7 +449,6 @@ if (!browser) return;
               Tree view coming soon...
             </div>
           {/if}
-
           {#if filteredRoutes.length === 0}
             <div class="text-center py-8">
               <div class="text-4xl mb-4">🔍</div>

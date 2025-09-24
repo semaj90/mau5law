@@ -1,15 +1,12 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-
   interface Props {
     title?: string;
     subtitle?: string;
     children?: Snippet;
   }
-
   let { title = "Detective Interface", subtitle = "", children }: Props = $props();
 </script>
-
 <style>
   .detective-layout {
 	max-width: 100%;
@@ -17,31 +14,26 @@
 	padding: 1rem;
 	box-sizing: border-box;
   }
-
   .header {
 	display: flex;
 	flex-direction: column;
 	gap: 0.25rem;
 	margin-bottom: 1rem;
   }
-
   h1 {
 	margin: 0;
 	font-size: 1.25rem;
 	line-height: 1.2;
   }
-
   .subtitle {
 	margin: 0;
 	color: #6b7280;
 	font-size: 0.9rem;
   }
-
   main {
 	min-height: 200px;
   }
 </style>
-
 <div class="detective-layout" role="region" aria-label={title}>
   <header class="header">
 	<h1>{title}</h1>
@@ -49,9 +41,7 @@
 	  <div class="subtitle">{subtitle}</div>
 	{/if}
   </header>
-
   <main role="main">
 	{@render children?.()}
   </main>
 </div>
-

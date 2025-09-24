@@ -1,5 +1,4 @@
 import type { RequestHandler } from './$types.js'
-
 // "Did You Mean?" Suggestions API - SSR compatible with fuzzy search
 import { json, error } from '@sveltejs/kit'
 import Fuse from 'fuse.js'
@@ -9,24 +8,21 @@ import { generateEnhancedEmbedding } from '$lib/server/ai/embeddings-enhanced.js
 import { or, ilike, sql } from 'drizzle-orm'
 import { URL } from "url"
 }
-
 export interface Suggestion {
   label: string
   entityId: string
-  type: 'PERSON' | 'DOCUMENT' | 'CASE' | 'EVIDENCE' | 'TAG'
+  type: 'PERSON' | 'DOCUMENT' | 'CASE' | 'EVIDENCE' | 'TAG',
   score: number
   description: string
   icon: string
   tags: string[]
 }
-
 export interface SuggestResponse {
   suggestions: Suggestion[]
   correctedQuery: string
   explanation: string
   processingTimeMs: number
 }
-
 // Mock data for development - replace with database queries
 const mockPeople = [
   { id: '1', name: 'Sarah Johnson', email: 'sarah@law.com', role: 'attorney', specialization: 'corporate' },
@@ -34,33 +30,27 @@ const mockPeople = [
   { id: '3', name: 'Emily Rodriguez', email: 'emily.r@law.com', role: 'investigator', specialization: 'evidence' },
   { id: '4', name: 'David Thompson', email: 'dthompson@legal.com', role: 'attorney', specialization: 'criminal' }
 ]
-
 const mockCases = [
   { id: 'case-1', title: 'Corporate Merger Review', description: 'M&A due diligence case', status: 'active' },
   { id: 'case-2', title: 'Employment Discrimination', description: 'Workplace harassment investigation', status: 'pending' },
   { id: 'case-3', title: 'Contract Dispute Resolution', description: 'Breach of service agreement', status: 'closed' }
 ]
-
 const mockDocuments = [
   { id: 'doc-1', title: 'Service Agreement Template', type: 'contract', category: 'templates' },
   { id: 'doc-2', title: 'Evidence Collection Protocol', type: 'procedure', category: 'evidence' },
   { id: 'doc-3', title: 'Legal Research Memo', type: 'memo', category: 'research' }
 ]
-
 export const GET: RequestHandler = async ({ url, fetch }) => {
   const startTime = Date.now()
   const query = url.searchParams.get('q') || ''
   const limit = parseInt(url.searchParams.get('limit') || '10')
   const contextType = url.searchParams.get('context') || 'GENERAL'
   const userId = url.searchParams.get('userId') || ''
-
   if (!query || query.length < 2) {
     throw error(400, 'Query must be at least 2 characters')
   }
-
   try {
     const suggestions: Suggestion[] = []
-
     // Check recommendations service first
     let useService = false
     try {
@@ -68,7 +58,6 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
       if (serviceResponse.ok) {
         const serviceData = await serviceResponse.json()
         useService = true
-        
         return json({
           suggestions: serviceData.suggestions || [],
           correctedQuery: serviceData.corrected_query || query,
@@ -79,70 +68,57 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
     } catch (e: any) {
       console.log('Recommendations service not available, using fallback')
     }
-
     // Enhanced database search with fuzzy fallback
     if (!useService) {
       // Search database first
       const dbSuggestions = await searchDatabase(query, contextType, limit)
       suggestions.push(...dbSuggestions)
-      
       // If not enough results from database, use fuzzy search on mock data
       if (suggestions.length < limit) {
         const fuzzySuggestions = await searchWithFuzzy(query, contextType, limit - suggestions.length)
         suggestions.push(...fuzzySuggestions)
       }
     }
-
     // Sort by score and limit results
     suggestions.sort((a, b) => b.score - a.score)
     const limitedSuggestions = suggestions.slice(0, limit)
-
     // Simple spell correction (can be enhanced)
     const correctedQuery = query.toLowerCase().trim()
-
     const response: SuggestResponse = {
-      suggestions: limitedSuggestions,
+      suggestions: limitedSuggestions
       correctedQuery,
       explanation: `Found ${limitedSuggestions.length} suggestions for "${query}"`,
       processingTimeMs: Date.now() - startTime
     }
-
     return json(response)
-
   } catch (err: any) {
     console.error('Suggestions API error:', err)
     throw error(500, 'Failed to fetch suggestions')
   }
 }
-
 export const POST: RequestHandler = async ({ request, fetch }) => {
   const body = await request.json()
   const { query, contextType, userId, recentQueries } = body
-
   // Enhanced suggestions with user context and query history
   const enhancedQuery = `${query} ${recentQueries?.join(' ') || ''}`.trim()
-  
   // Use GET handler with enhanced query
   const url = new URL(`/api/suggest?q=${encodeURIComponent(enhancedQuery)}&context=${contextType}&userId=${userId}`, 'http://localhost')
   const mockRequest = new Request(url)
-  
-  return await GET({ 
-    params: Record<string, any>, 
-    url: new URL(url), 
+  return await GET({
+    params: { [key: string]: any },
+    url: new URL(url),
     fetch,
-    request: mockRequest,
+    request: mockRequest
     route: { id: '/api/suggest' },
-    locals: Record<string, any>,
-    platform: undefined,
-    isDataRequest: false,
+    locals: { [key: string]: any },
+    platform: undefined
+    isDataRequest: false
     isSubRequest: false
   } as any)
 }
-
 async function searchDatabase(query: string, contextType: string, limit: number): Promise<Suggestion[]> {
   const suggestions: Suggestion[] = []
   const queryLower = query.toLowerCase()
-
   try {
     // Search people in database
     if (contextType === 'PERSON' || contextType === 'GENERAL') {
@@ -162,16 +138,15 @@ async function searchDatabase(query: string, contextType: string, limit: number)
           )
         )
         .limit(Math.ceil(limit / 3)
-
       people.forEach(person => {
         const name = person.displayName || person.email || 'Unknown User'
         const similarity = calculateSimilarity(queryLower, name.toLowerCase()
         if (similarity > 0.3) {
           suggestions.push({
-            label: name,
+            label: name
             entityId: person.id,
             type: 'PERSON',
-            score: similarity,
+            score: similarity
             description: `${person.role || 'User'} - ${person.email}`,
             icon: 'user',
             tags: ['legal', 'professional', person.role || 'user'].filter(Boolean)
@@ -179,7 +154,6 @@ async function searchDatabase(query: string, contextType: string, limit: number)
         }
       })
     }
-
     // Search cases in database
     if (contextType === 'CASE' || contextType === 'GENERAL') {
       const dbCases = await db
@@ -199,7 +173,6 @@ async function searchDatabase(query: string, contextType: string, limit: number)
           )
         )
         .limit(Math.ceil(limit / 3)
-
       dbCases.forEach(caseItem => {
         const similarity = Math.max(
           calculateSimilarity(queryLower, caseItem.title.toLowerCase()),
@@ -210,7 +183,7 @@ async function searchDatabase(query: string, contextType: string, limit: number)
             label: caseItem.title,
             entityId: caseItem.id,
             type: 'CASE',
-            score: similarity,
+            score: similarity
             description: caseItem.description || `${caseItem.caseType} case`,
             icon: 'folder',
             tags: ['case', caseItem.status, caseItem.caseType].filter(Boolean)
@@ -218,7 +191,6 @@ async function searchDatabase(query: string, contextType: string, limit: number)
         }
       })
     }
-
     // Search evidence/documents in database
     if (contextType === 'DOCUMENT' || contextType === 'EVIDENCE' || contextType === 'GENERAL') {
       const evidenceItems = await db
@@ -239,7 +211,6 @@ async function searchDatabase(query: string, contextType: string, limit: number)
           )
         )
         .limit(Math.ceil(limit / 3)
-
       evidenceItems.forEach(evidenceItem => {
         const similarity = Math.max(
           calculateSimilarity(queryLower, evidenceItem.title.toLowerCase()),
@@ -251,7 +222,7 @@ async function searchDatabase(query: string, contextType: string, limit: number)
             label: evidenceItem.title,
             entityId: evidenceItem.id,
             type: 'EVIDENCE',
-            score: similarity,
+            score: similarity
             description: evidenceItem.description || `${evidenceItem.evidenceType} evidence`,
             icon: 'file-text',
             tags: ['evidence', evidenceItem.evidenceType, 'document'].filter(Boolean)
@@ -259,17 +230,13 @@ async function searchDatabase(query: string, contextType: string, limit: number)
         }
       })
     }
-
   } catch (error: any) {
     console.error('Database search error:', error)
   }
-
   return suggestions
 }
-
 async function searchWithFuzzy(query: string, contextType: string, limit: number): Promise<Suggestion[]> {
   const suggestions: Suggestion[] = []
-
   try {
     // Search people
     if (contextType === 'PERSON' || contextType === 'GENERAL') {
@@ -278,7 +245,6 @@ async function searchWithFuzzy(query: string, contextType: string, limit: number
         threshold: 0.4,
         includeScore: true
       })
-      
       const peopleResults = peopleFuse.search(query).slice(0, Math.ceil(limit / 3)
       peopleResults.forEach(result => {
         suggestions.push({
@@ -292,7 +258,6 @@ async function searchWithFuzzy(query: string, contextType: string, limit: number
         })
       })
     }
-
     // Search cases
     if (contextType === 'CASE' || contextType === 'GENERAL') {
       const casesFuse = new Fuse(mockCases, {
@@ -300,7 +265,6 @@ async function searchWithFuzzy(query: string, contextType: string, limit: number
         threshold: 0.5,
         includeScore: true
       })
-      
       const caseResults = casesFuse.search(query).slice(0, Math.ceil(limit / 3)
       caseResults.forEach(result => {
         suggestions.push({
@@ -314,7 +278,6 @@ async function searchWithFuzzy(query: string, contextType: string, limit: number
         })
       })
     }
-
     // Search documents
     if (contextType === 'DOCUMENT' || contextType === 'GENERAL') {
       const docsFuse = new Fuse(mockDocuments, {
@@ -322,7 +285,6 @@ async function searchWithFuzzy(query: string, contextType: string, limit: number
         threshold: 0.4,
         includeScore: true
       })
-      
       const docResults = docsFuse.search(query).slice(0, Math.ceil(limit / 3)
       docResults.forEach(result => {
         suggestions.push({
@@ -339,34 +301,26 @@ async function searchWithFuzzy(query: string, contextType: string, limit: number
   } catch (error: any) {
     console.error('Fuzzy search error:', error)
   }
-
   return suggestions
 }
-
 function calculateSimilarity(str1: string, str2: string): number {
   // Simple string similarity using Levenshtein distance
   const longer = str1.length > str2.length ? str1 : str2
   const shorter = str1.length > str2.length ? str2 : str1
-  
   if (longer.length === 0) {
     return 1.0
   }
-  
   const distance = levenshteinDistance(longer, shorter)
   return (longer.length - distance) / longer.length
 }
-
 function levenshteinDistance(str1: string, str2: string): number {
   const matrix = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(null)
-  
   for (let i = 0; i <= str1.length; i++) {
     matrix[0][i] = i
   }
-  
   for (let j = 0; j <= str2.length; j++) {
     matrix[j][0] = j
   }
-  
   for (let j = 1; j <= str2.length; j++) {
     for (let i = 1; i <= str1.length; i++) {
       const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1
@@ -377,6 +331,5 @@ function levenshteinDistance(str1: string, str2: string): number {
       )
     }
   }
-  
   return matrix[str2.length][str1.length]
 }

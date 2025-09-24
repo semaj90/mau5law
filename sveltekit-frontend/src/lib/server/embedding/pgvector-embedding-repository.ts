@@ -14,16 +14,13 @@ import type {
   IngestionJobStatus
 } from './embedding-repository.js';
 import { enqueue, processNext as queueProcessNext, getStatus } from './ingestion-queue.js';
-
 const DEFAULT_MODEL = 'embeddinggemma:latest';
-
 async function embedContent(text: string, model: string): Promise<number[]> {
   // Try Gemma embeddings first, with fallback chain
   const models =
     model === DEFAULT_MODEL
       ? ['embeddinggemma:latest', 'embeddinggemma', 'nomic-embed-text']
       : [model, 'embeddinggemma:latest', 'embeddinggemma', 'nomic-embed-text'];
-
   for (const tryModel of models) {
     try {
       // embedText handles cache lookups (memory/Redis) and caches results
@@ -33,7 +30,6 @@ async function embedContent(text: string, model: string): Promise<number[]> {
         : emb && typeof emb === 'object' && 'embedding' in emb
           ? ((emb as any).embedding as number[])
           : [];
-
       if (embedding.length > 0) {
         return embedding;
       }
@@ -42,15 +38,12 @@ async function embedContent(text: string, model: string): Promise<number[]> {
       continue;
     }
   }
-
   throw new Error(`All embedding models failed for text: ${text.substring(0, 100)}...`);
 }
-
 async function enqueueIngestion(job: IngestionJobRequest): Promise<IngestionJobStatus> {
   // Normalize optional overrides into payload (queue just stores object)
   return enqueue(job);
 }
-
 async function processNextJob(): Promise<IngestionJobStatus | null> {
   return queueProcessNext(async (payload, update) => {
     const { evidenceId, textContent, model = DEFAULT_MODEL, chunkSize, chunkOverlap } = payload;
@@ -63,8 +56,8 @@ async function processNextJob(): Promise<IngestionJobStatus | null> {
       await db.insert(documentChunks).values({
         documentId: evidenceId, // reuse evidenceId as document linkage for now
         documentType: 'evidence',
-        chunkIndex: index,
-        content: text,
+        chunkIndex: index
+        content: text
         embedding
       });
       processed++;
@@ -72,35 +65,31 @@ async function processNextJob(): Promise<IngestionJobStatus | null> {
     }
   });
 }
-
 function getJobStatus(jobId: string) {
   return getStatus(jobId);
 }
-
 async function querySimilar(query: string, options: SimilarityQueryOptions = {}): Promise<SimilarityResult[]> {
-  const model = options?.model || "unknown" // @ts-ignore - Model property access || DEFAULT_MODEL;
+  const model = options?.model || "unknown" // @ts-ignore - Model property access || DEFAULT_MODEL
   const queryEmbedding = await embedContent(query, model);
   const limit = options.limit || 8;
   const rows = await db.execute(sql`SELECT id, document_id, document_type, chunk_index, content, embedding <=> ${queryEmbedding} AS distance
                                      FROM document_chunks
                                      ORDER BY embedding <=> ${queryEmbedding}
                                      LIMIT ${limit}`);
-  return rows.map((r: any) => ({
+  return rows.map((r: any) => ({,
     id: String(r.id),
     documentId: String(r.document_id),
     documentType: String(r.document_type),
     chunkIndex: Number(r.chunk_index),
-    content: String(r.content),;
+    content: String(r.content),
     score: 1 - Number(r.distance)
   });
 }
-
 export const pgvectorEmbeddingRepository: EmbeddingRepository = {
   enqueueIngestion,
   processNextJob,
   getJobStatus: async (jobId: string) => getJobStatus(jobId) || null,
   querySimilar
 };
-
 // Named exports (optional direct usage)
 export { enqueueIngestion, processNextJob, getJobStatus, querySimilar };

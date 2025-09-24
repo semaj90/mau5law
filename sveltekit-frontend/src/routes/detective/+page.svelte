@@ -1,17 +1,13 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // Minimal hub that links to evidence board, evidence canvas, cases, and chat
   import DetectiveBoard from '$lib/components/detective/DetectiveBoard.svelte';
   import CaseForm from '$lib/components/forms/CaseForm.svelte';
   import { getAuthContext } from "$lib/stores/auth";
   import { onMount } from 'svelte';
-
   const auth = getAuthContext();
-
   let currentView = $state('board'); // 'board' | 'create-case' | 'auth-demo'
   let mounted = $state(false);
-
   // Sample evidence data for the detective board
   let sampleEvidence = $state([
     {
@@ -96,17 +92,15 @@
       createdAt: new Date('2024-01-20T09:00:00'),
       uploadedAt: new Date('2024-01-20T09:00:00'),
       updatedAt: new Date('2024-01-20T09:00:00'),
-      description: 'Forensic DNA analysis results',;
-      tags: ['dna', 'forensics', 'lab-report'],;
+      description: 'Forensic DNA analysis results',
+      tags: ['dna', 'forensics', 'lab-report'],
       hash: 'dna456',
       aiSummary: 'DNA evidence confirms 99.7% match with suspect sample collected at scene';
   }
   ]);
-
   $effect(() => {
     mounted = true;
   });
-
   function handleCaseFormSuccess(event: CustomEvent) {
     console.log('Case created/updated:', event.detail);
     currentView = 'board';
@@ -117,31 +111,25 @@
   // Demo collaboration simulation
   function simulateCollaboration() {
     if (!mounted) return;
-
     // Simulate other users joining
     const mockUsers = [
       { id: 'user-1', name: 'Sarah Chen', email: 'sarah.chen@prosecutor.office' },
       { id: 'user-2', name: 'Mike Rodriguez', email: 'mike.rodriguez@prosecutor.office' },
       { id: 'user-3', name: 'Dr. Lisa Kim', email: 'lisa.kim@forensics.office' }
     ];
-
     // Add one random user as if they joined
     const randomUser = mockUsers[Math.floor(Math.random() * mockUsers.length)];
-
     // Show notification
     if (typeof window !== 'undefined') {
       console.log(`${randomUser.name} joined the case`);
     }
-
     // Simulated notification timeout
     setTimeout(() => {
       console.log('Notification dismissed');
     }, 3000);
-
     console.log('🚀 Collaboration demo:', randomUser.name, 'joined the case');
   }
 </script>
-
 <div class="p-6 max-w-4xl mx-auto space-y-4">
   <h1 class="text-2xl font-bold">Detective Mode</h1>
   <p class="text-sm opacity-80">Jump into the core investigative tools.</p>
@@ -152,12 +140,10 @@
     <a class="border rounded p-4 hover:bg-white/5" href="/chat">💬 AI Chat</a>
   </div>
 </div>
-
 <svelte:head>
   <title>Detective Mode - Google Slides for Prosecutors</title>
   <meta name="description" content="Advanced evidence management and case visualization tool for legal professionals" />
 </svelte:head>
-
 {#if mounted}
   <!-- Navigation Bar -->
   <nav class="space-y-4">
@@ -183,7 +169,6 @@
             <span class="inline-block h-2 w-2 rounded-full bg-green-500"></span>
             <span>Live Demo</span>
           </div>
-
           {#if $auth.isAuthenticated}
             <div class="flex items-center gap-3">
               <span>Welcome, {$auth.user?.name || $auth.user?.email}</span>
@@ -195,7 +180,6 @@
         </div>
     </div>
   </nav>
-
   <!-- Main Content -->
   <main class="space-y-4">
     {#if currentView === 'board'}
@@ -215,13 +199,11 @@
             <p class="text-gray-300">
               This demonstrates the Svelte Context API alternative to $lib for authentication.
             </p>
-
             <div class="space-y-4">
               <div>
                 <h3 class="text-lg font-semibold mb-2">Auth State</h3>
                 <pre class="bg-black/30 p-2 rounded border border-white/10 overflow-x-auto text-sm">{JSON.stringify($auth, null, 2)}</pre>
               </div>
-
               <div>
                 <div class="flex gap-2 flex-wrap">
                   <button onclick={() => auth.login('test@example.com', 'password123')} class="border rounded px-2 py-1 hover:bg-white/5" disabled={$auth.isLoading}>
@@ -236,7 +218,6 @@
                 </div>
               </div>
             </div>
-
             <div class="space-y-4">
               <h3 class="text-lg font-semibold mb-3">Features Demonstrated</h3>
               <div class="space-y-3">
@@ -244,27 +225,22 @@
                   <h4 class="font-medium text-green-400">✅ UnoCSS Only</h4>
                   <p class="text-sm text-gray-300">PicoCSS removed, using UnoCSS utility classes throughout</p>
                 </div>
-
                 <div>
                   <h4 class="font-medium text-green-400">✅ Drag & Drop</h4>
                   <p class="text-sm text-gray-300">Evidence cards with svelte-dnd-action in 3-column layout</p>
                 </div>
-
                 <div>
                   <h4 class="font-medium text-green-400">✅ Context Menus</h4>
                   <p class="text-sm text-gray-300">Right-click menus using Melt UI primitives</p>
                 </div>
-
                 <div>
                   <h4 class="font-medium text-green-400">✅ Superforms + Zod</h4>
                   <p class="text-sm text-gray-300">Type-safe forms with validation and error handling</p>
                 </div>
-
                 <div>
                   <h4 class="font-medium text-green-400">✅ Auth Context</h4>
                   <p class="text-sm text-gray-300">Svelte Context API alternative to $lib for global state</p>
                 </div>
-
                 <div>
                   <h4 class="font-medium text-green-400">✅ File Upload</h4>
                   <p class="text-sm text-gray-300">Progress bar with drag/drop support</p>
@@ -276,7 +252,6 @@
       </div>
     {/if}
   </main>
-
 {:else}
   <!-- Loading Screen -->
   <div class="flex items-center justify-center min-h-64">
@@ -287,4 +262,3 @@
     </div>
   </div>
 {/if}
-

@@ -1,17 +1,14 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use rune without parentheses;
+<!-- @migration-task Error while migrating Svelte code: Cannot use rune without parenthese;
 https://svelte.dev/e/rune_missing_parentheses -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use rune without parentheses -->
 <!-- Enhanced YoRHa Case Creation Form with Superforms + XState Integration -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import {  , onMount, onDestroy  } from "svelte";
+  import { onMount, onDestroy  } from "svelte";
   import { createCaseCreationForm, FormStatePersistence, FORM_STORAGE_KEYS } from '$lib/forms/superforms-xstate-integration';
   import { enhancedCaseAPI } from '$lib/api/enhanced-case-api';
   import { goto } from '$app/navigation';
   import { z } from 'zod';
-  
-
   // Enhanced Zod schema for case creation with legal AI context
   const CaseCreationSchema = z.object.min(3, 'Title must be at least 3 characters'),
     description: z.string.min(10, 'Description must be at least 10 characters'),
@@ -21,11 +18,10 @@ https://svelte.dev/e/rune_missing_parentheses -->
     jurisdiction: z.string().optional(),
     caseType: z.enum(['low', 'medium', 'high']).default('civil'),
     assignedTo: z.string().optional(),
-    clientName: z.string().optional(),;
-    tags: z.array(z.string()).default([]),;
+    clientName: z.string().optional(),
+    tags: z.array(z.string()).default([]),
     notes: z.string.optional();
   });
-
   // Initialize form state persistence
   const formStatePersistence = new FormStatePersistence(FORM_STORAGE_KEYS.CASE_CREATION);
   // Form integration state
@@ -35,7 +31,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
   let unsubscribe = $state<(() =>(null) );
   let formState = $derived(formIntegration?.state?.get() || 'idle');
   let formContext = $derived(formIntegration?.context?.get() || );
-
   // Initialize form integration on mount
   $effect(() => {
     // Load saved form data if available
@@ -49,31 +44,28 @@ https://svelte.dev/e/rune_missing_parentheses -->
       jurisdiction: '',
       caseType: 'civil',
       assignedTo: '',
-      clientName: '',;
-      tags: [],;
+      clientName: '',
+      tags: [],
       notes: '';
     };
-
     // Create form integration with enhanced options
     formIntegration = createCaseCreationForm(initialData, {
-      autoSave: true,
+      autoSave: true
       autoSaveDelay: 2000,
-      resetOnSuccess: false,
-      onSuccess: handleFormSuccess,
-      onError: handleFormError,
+      resetOnSuccess: false
+      onSuccess: handleFormSuccess
+      onError: handleFormError
       onSubmit: handleEnhancedSubmit
     });
-
     // Subscribe to state changes for debugging and events
     unsubscribe = formIntegration.state.subscribe((state: string) => {
-      ondispatch?.({ 
-        state, 
+      ondispatch?.({
+        state,
         context: formIntegration.context.get() ;
       });
       console.log('📊 Case Form State:', state, formIntegration.context.get());
     });
   });
-
   onDestroy(() => {
     if (unsubscribe) {
       unsubscribe();
@@ -84,7 +76,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
       formStatePersistence.save(formData);
     }
   });
-
   // Enhanced form submission with PostgreSQL-first worker integration
   async function handleEnhancedSubmit(formData: unknown) {
     console.log('🚀 Enhanced case creation starting:', formData);
@@ -93,22 +84,17 @@ https://svelte.dev/e/rune_missing_parentheses -->
       const caseResponse = await enhancedCaseAPI.createCase.toISOString()
         }
       });
-
       if (!caseResponse.success) {
         throw new Error(caseResponse.error || 'Failed to create case');
       }
-
       const createdCase = caseResponse.data;
       console.log('✅ Case created successfully with enhanced API:', createdCase);
-
-      return createdCase;
-
+      return createdCa;
     } catch (error) {
       console.error('❌ Enhanced case creation failed:', error);
       throw error;
     }
   }
-
   // Success handler
   function handleFormSuccess(result: unknown) {
     console.log('🎉 Form submission successful:', result);
@@ -120,32 +106,27 @@ https://svelte.dev/e/rune_missing_parentheses -->
       goto(`/cases/${(result as { id?: unknown }).id}`);
     }
   }
-
   // Error handler
   function handleFormError(error: unknown) {
     console.error('❌ Form submission error:', error);
     ondispatch?.({ message: error.message || error || 'Case creation failed' });
   }
-
   // Step navigation
   function nextStep() {
     if (currentStep < totalSteps - 1) {
       currentStep += 1;
     }
   }
-
   function previousStep() {
     if (currentStep > 0) {
       currentStep -= 1;
     }
   }
-
   // Get step progress percentage
   function getStepProgress() {
     return ((currentStep + 1) / totalSteps) * 100;
   }
 </script>
-
 <!-- Enhanced Multi-Step YoRHa Styled Form -->
 {#if formIntegration}
 <div class="yorha-case-form bg-yorha-dark border border-yorha-accent-warm/30 rounded-lg p-6">
@@ -161,21 +142,20 @@ https://svelte.dev/e/rune_missing_parentheses -->
         </span>
         {#if progress > 0}
           <div class="w-16 h-1 bg-yorha-darker rounded-full mt-1 overflow-hidden">
-            <div 
-              class="h-full bg-yorha-accent-warm transition-all duration-300" 
+            <div
+              class="h-full bg-yorha-accent-warm transition-all duration-300"
               style="width: {progress}%"
             ></div>
           </div>
         {/if}
       </div>
     </div>
-    
     <!-- Multi-step Progress Indicator -->
     <div class="step-indicator flex items-center justify-between mb-4">
       <div class="step-progress flex items-center space-x-2">
         {#each Array(totalSteps) as _, index}
           <div class="flex items-center">
-            <div 
+            <div
               class="step-circle w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-colors"
               class:active={index === currentStep}
               class:completed={index < currentStep}
@@ -190,19 +170,16 @@ https://svelte.dev/e/rune_missing_parentheses -->
         {/each}
       </div>
       <div class="step-label text-sm text-yorha-muted">
-        Step {currentStep + 1} of {totalSteps}: 
+        Step {currentStep + 1} of {totalSteps}:
         {#if currentStep === 0}Basic Information{:else if currentStep === 1}Legal Details{:else}Review & Submit{/if}
       </div>
     </div>
-    
     <p class="text-yorha-muted text-sm">
       Initialize new investigation case in the YoRHa Legal AI System
     </p>
   </div>
-
   <!-- Enhanced Form with XState Integration -->
   <form use:formIntegration.form.enhance class="space-y-6">
-    
     {#if currentStep === 0}
       <!-- Step 1: Basic Information -->
       <div class="form-step" data-step="basic-info">
@@ -218,14 +195,13 @@ https://svelte.dev/e/rune_missing_parentheses -->
             value={formIntegration.form.get.title || ''} oninput={(e) => formIntegration.form.update(data => ({ ...data, title: e.target.value }))}
             placeholder="e.g., Corporate Fraud Investigation - TechCorp"
             required
-            class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light placeholder-yorha-muted focus:border-yorha-accent-warm focus:outline-none transition-colors";
+            class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light placeholder-yorha-muted focus: border-yorha-accent-warm focus:outline-none transition-colors";
             class:border-red-500={errors.title}
           />
           {#if errors.title}
             <p class="text-red-400 text-xs mt-1">{errors.title.join(', ')}</p>
           {/if}
         </div>
-
         <!-- Case Description -->
         <div class="form-group">
           <label for="case-description" class="form-label block text-sm font-bold text-yorha-light mb-2">
@@ -237,14 +213,13 @@ https://svelte.dev/e/rune_missing_parentheses -->
             value={formIntegration.form.get.description || ''} oninput={(e) => formIntegration.form.update(data => ({ ...data, description: e.target.value }))}
             rows="4"
             placeholder="Initial details and background of the investigation..."
-            class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light placeholder-yorha-muted focus:border-yorha-accent-warm focus:outline-none transition-colors resize-none";
+            class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light placeholder-yorha-muted focus: border-yorha-accent-warm focus:outline-none transition-colors resize-none";
             class:border-red-500={errors.description}
           ></textarea>
           {#if errors.description}
             <p class="text-red-400 text-xs mt-1">{errors.description.join(', ')}</p>
           {/if}
         </div>
-
         <!-- Priority and Status Row -->
         <div class="form-row grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Priority Level -->
@@ -264,7 +239,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
               <option value="critical">🔴 Critical Priority</option>
             </select>
           </div>
-
           <!-- Case Type -->
           <div class="form-group">
             <label for="case-type" class="form-label block text-sm font-bold text-yorha-light mb-2">
@@ -285,7 +259,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
           </div>
         </div>
       </div>
-      
       <!-- Step Navigation -->
       <div class="step-navigation flex justify-end pt-4">
         <button
@@ -297,11 +270,9 @@ https://svelte.dev/e/rune_missing_parentheses -->
           Next: Legal Details →
         </button>
       </div>
-    
     {:else if currentStep === 1}
       <!-- Step 2: Legal Details -->
       <div class="form-step" data-step="legal-details">
-
         <!-- Location and Jurisdiction Row -->
         <div class="form-row grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Location -->
@@ -318,7 +289,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
               class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light placeholder-yorha-muted focus:border-yorha-accent-warm focus:outline-none transition-colors"
             />
           </div>
-
           <!-- Jurisdiction -->
           <div class="form-group">
             <label for="case-jurisdiction" class="form-label block text-sm font-bold text-yorha-light mb-2">
@@ -334,7 +304,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
             />
           </div>
         </div>
-        
         <!-- Assignment and Client Row -->
         <div class="form-row grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Assigned To -->
@@ -351,7 +320,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
               class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light placeholder-yorha-muted focus:border-yorha-accent-warm focus:outline-none transition-colors"
             />
           </div>
-
           <!-- Client Name -->
           <div class="form-group">
             <label for="client-name" class="form-label block text-sm font-bold text-yorha-light mb-2">
@@ -367,7 +335,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
             />
           </div>
         </div>
-        
         <!-- Case Notes -->
         <div class="form-group">
           <label for="case-notes" class="form-label block text-sm font-bold text-yorha-light mb-2">
@@ -383,7 +350,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
           ></textarea>
         </div>
       </div>
-      
       <!-- Step Navigation -->
       <div class="step-navigation flex justify-between pt-4">
         <button
@@ -401,36 +367,30 @@ https://svelte.dev/e/rune_missing_parentheses -->
           Next: Review →
         </button>
       </div>
-    
     {:else if currentStep === 2}
       <!-- Step 3: Review & Submit -->
       <div class="form-step" data-step="review">
         <div class="review-section space-y-4">
           <h3 class="text-lg font-bold text-yorha-accent-warm mb-4">📋 Review Case Details</h3>
-          
           <!-- Case Summary -->
           <div class="review-item p-4 bg-yorha-darker rounded border border-yorha-accent-warm/20">
             <h4 class="font-bold text-yorha-light mb-2">Case Title</h4>
             <p class="text-yorha-muted">{formIntegration.form.get.title || 'Not specified'}</p>
           </div>
-          
           <div class="review-item p-4 bg-yorha-darker rounded border border-yorha-accent-warm/20">
             <h4 class="font-bold text-yorha-light mb-2">Description</h4>
             <p class="text-yorha-muted text-sm">{formIntegration.form.get.description || 'Not specified'}</p>
           </div>
-          
           <div class="review-grid grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="review-item p-4 bg-yorha-darker rounded border border-yorha-accent-warm/20">
               <h4 class="font-bold text-yorha-light mb-2">Priority</h4>
               <p class="text-yorha-muted capitalize">{formIntegration.form.get.priority || 'medium'}</p>
             </div>
-            
             <div class="review-item p-4 bg-yorha-darker rounded border border-yorha-accent-warm/20">
               <h4 class="font-bold text-yorha-light mb-2">Case Type</h4>
               <p class="text-yorha-muted capitalize">{formIntegration.form.get.caseType || 'civil'}</p>
             </div>
           </div>
-          
           <!-- AI Processing Indicator -->
           {#if formState === 'submitting' || formState === 'validating'}
             <div class="ai-processing-indicator p-4 bg-yorha-accent-warm/10 rounded border border-yorha-accent-warm/50">
@@ -447,8 +407,8 @@ https://svelte.dev/e/rune_missing_parentheses -->
                   </p>
                   {#if progress > 0}
                     <div class="progress-bar w-full h-1 bg-yorha-darker rounded-full mt-2 overflow-hidden">
-                      <div 
-                        class="h-full bg-yorha-accent-warm transition-all duration-300" 
+                      <div
+                        class="h-full bg-yorha-accent-warm transition-all duration-300"
                         style="width: {progress}%"
                       ></div>
                     </div>
@@ -459,7 +419,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
           {/if}
         </div>
       </div>
-      
       <!-- Final Step Navigation -->
       <div class="step-navigation flex justify-between pt-4">
         <button
@@ -473,7 +432,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
         <div class="final-actions flex space-x-4">
           <button
             type="button"
-            onclick={() => ondispatch?.()}
+            onclick={() => // ondispatch removed}
             disabled={isSubmitting}
             class="cancel-btn px-6 py-3 border border-yorha-accent-warm/50 text-yorha-light rounded hover:bg-yorha-accent-warm/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -494,10 +453,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
         </div>
       </div>
     {/if}
-
-    
   </form>
-  
   <!-- Debug Panel (development only) -->
   {#if process.env.NODE_ENV === 'development'}
     <div class="debug-panel mt-6 p-4 bg-yorha-darker/50 border border-yorha-accent-warm/20 rounded text-xs">
@@ -524,9 +480,8 @@ https://svelte.dev/e/rune_missing_parentheses -->
     </div>
   </div>
 {/if}
-
 <style>
-  .yorha-case-form {;
+  .yorha-case-form {
     --yorha-primary: #c4b49a;
     --yorha-secondary: #b5a48a;
     --yorha-accent-warm: #d4af37;
@@ -535,47 +490,39 @@ https://svelte.dev/e/rune_missing_parentheses -->
     --yorha-muted: #a0a0a0;
     --yorha-dark: #2a2a2a;
     --yorha-darker: #1a1a1a;
-
     font-family: 'JetBrains Mono', monospace;
     backdrop-filter: blur(10px);
     position: relative;
     overflow: hidden;
   }
-
   /* Multi-step progress indicators */
   .step-circle {
     transition: all 0.3s ease;
   }
-  
   .step-circle.active {
     background-color: var(--yorha-accent-warm);
     color: var(--yorha-dark);
     border-color: var(--yorha-accent-warm);
     box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.3);
   }
-  
   .step-circle.completed {
     background-color: rgba(212, 175, 55, 0.8);
     color: var(--yorha-dark);
     border-color: var(--yorha-accent-warm);
   }
-  
   .step-circle.pending {
     background-color: transparent;
     color: var(--yorha-muted);
     border-color: rgba(212, 175, 55, 0.3);
   }
-  
   .step-line {
     background: linear-gradient(90deg, var(--yorha-accent-warm) 0%, rgba(212, 175, 55, 0.3) 100%);
     transition: all 0.3s ease;
   }
-
   /* Form animations */
   .form-step {
     animation: fadeInUp 0.4s ease-out;
   }
-  
   @keyframes fadeInUp {
     from {
       opacity: 0;
@@ -586,39 +533,32 @@ https://svelte.dev/e/rune_missing_parentheses -->
       transform: translateY(0);
     }
   }
-
   /* Enhanced form inputs */
   .form-input {
     transition: all 0.2s ease;
     position: relative;
   }
-  
   .form-input:focus {
     box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
     transform: translateY(-1px);
   }
-  
   .form-input:hover:not(:focus) {
     border-color: rgba(212, 175, 55, 0.5);
   }
-
   /* Button enhancements */
   .next-btn, .prev-btn, .submit-btn {
     position: relative;
     transition: all 0.2s ease;
     overflow: hidden;
   }
-  
   .next-btn:hover, .submit-btn:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
   }
-  
   .prev-btn:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(212, 175, 55, 0.1);
   }
-  
   .next-btn::before, .submit-btn::before {
     content: '';
     position: absolute;
@@ -627,18 +567,15 @@ https://svelte.dev/e/rune_missing_parentheses -->
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition: left 0.5s;
+    transition: left 0.5;
   }
-  
   .next-btn:hover::before, .submit-btn:hover::before {
     left: 100%;
   }
-
   /* Progress animations */
   .progress-bar, .step-progress {
     animation: slideIn 0.3s ease-out;
   }
-  
   @keyframes slideIn {
     from {
       width: 0;
@@ -649,12 +586,10 @@ https://svelte.dev/e/rune_missing_parentheses -->
       opacity: 1;
     }
   }
-
   /* AI Processing indicator */
   .ai-processing-indicator {
     animation: pulseGlow 2s infinite;
   }
-  
   @keyframes pulseGlow {
     0%, 100% {
       box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
@@ -663,51 +598,41 @@ https://svelte.dev/e/rune_missing_parentheses -->
       box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
     }
   }
-
   /* Review section styling */
   .review-section {
     animation: fadeIn 0.5s ease-out;
   }
-  
   .review-item {
     transition: all 0.2s ease;
   }
-  
   .review-item:hover {
     background-color: rgba(212, 175, 55, 0.05);
     transform: translateY(-1px);
   }
-
   /* Loading spinner */
   .spinner {
     animation: spin 1s linear infinite;
   }
-
   @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
-  
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
   }
-
   /* Debug panel */
   .debug-panel {
     font-family: 'Courier New', monospace;
     font-size: 10px;
   }
-  
   .debug-panel details[open] {
     background-color: rgba(212, 175, 55, 0.05);
   }
-
   /* State indicators */
   .form-state-indicator {
     animation: slideInRight 0.3s ease-out;
   }
-  
   @keyframes slideInRight {
     from {
       transform: translateX(20px);
@@ -718,29 +643,24 @@ https://svelte.dev/e/rune_missing_parentheses -->
       opacity: 1;
     }
   }
-
   /* Responsive design */
   @media (max-width: 768px) {
     .form-row, .review-grid {
       grid-template-columns: 1fr;
     }
-    
     .step-navigation, .form-actions, .final-actions {
       flex-direction: column;
       gap: 1rem;
     }
-    
     .step-indicator {
       flex-direction: column;
       align-items: flex-start;
       gap: 1rem;
     }
-    
     .step-progress {
       width: 100%;
-      justify-content: space-between;
+      justify-content: space-betwee;
     }
-    
     .step-line {
       width: 100%;
       height: 2px;
@@ -748,12 +668,10 @@ https://svelte.dev/e/rune_missing_parentheses -->
       margin: 0.5rem 0;
     }
   }
-  
   @media (max-width: 480px) {
     .yorha-case-form {
       padding: 1rem;
     }
-    
     .step-circle {
       width: 2rem;
       height: 2rem;

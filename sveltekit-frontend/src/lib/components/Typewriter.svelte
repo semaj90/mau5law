@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
-https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+https: //svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  interface Props {;
+  interface Props {
     text: string ;
     speed: number ;
   }
@@ -35,11 +34,9 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 </script>
-
 <div class="space-y-4">
   {output}
 </div>
-
 <style>
   /* @unocss-include */
   .typewriter {
@@ -58,4 +55,3 @@ https://svelte.dev/e/js_parse_error -->
       border-color: transparent;
 }}
 </style>
-

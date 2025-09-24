@@ -4,7 +4,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- YoRHa Main Interface Page -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { goto } from '$app/navigation';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
   import YoRHaCommandCenter from '$lib/components/yorha/YoRHaCommandCenter.svelte';
@@ -40,7 +39,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     CommandResult,
     LegalAISession
   } from '$lib/types/yorha-interface';
-
   // Enhanced YoRHa system data with full metrics
   let systemData = $state<SystemMetrics>({
     cpu_usage: 45,
@@ -52,7 +50,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     quantum_state: 'COHERENT',
     neural_activity: 87
   });
-
   // Enhanced YoRHa state management
   let ragResult = $state<any>(null);
   let searchResults = $state<any[]>([]);
@@ -63,14 +60,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   let localIndexReady = $state<boolean>(false);
   let localIndexCount = $state<number>(0);
   let localLoadedFromCache = $state<boolean>(false);
-
   // YoRHa interface state
   let showCommandInterface = $state<boolean>(false);
   let activeModule = $state<string>('dashboard');
   let holographicMode = $state<boolean>(true);
   let legalSession = $state<LegalAISession | null>(null);
   let commandHistory = $state<CommandResult[]>([]);
-
   $effect(() => {
     // Fire and forget async initialization
     (async () => {
@@ -82,7 +77,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         console.warn('YoRHa layout not available:', error);
       }
     })();
-
     // Update YoRHa system metrics periodically
     const interval = setInterval(() => {
       systemData = {
@@ -95,27 +89,23 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         active_processes: Math.max(8, Math.min(20, systemData.active_processes + Math.round((Math.random() - 0.5) * 2)))
       };
     }, 3000);
-
     // Initialize legal AI session
     initializeLegalSession();
-
     return () => clearInterval(interval);
   });
-
   function navigateTo(path: string) {
     goto(path);
   }
-
   // Initialize legal AI session
   async function initializeLegalSession() {
     try {
       const response = await fetch('/api/v1/legal/session/create', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           user_id: 'yorha-user-001',
           case_id: `case-${Date.now()}`,
-          context: {;
+          context: {
             jurisdiction: 'Global',
             practice_area: ['AI Law', 'Tech Ethics', 'Data Privacy'],
             case_type: 'Investigation',
@@ -124,7 +114,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
           }
         })
       });
-
       if ((response as { ok?: unknown; json?: unknown; status?: unknown }).ok) {
         legalSession = await (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
         console.log('[YoRHa] Legal AI session initialized:', legalSession?.session_id);
@@ -133,29 +122,25 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       console.warn('[YoRHa] Legal session initialization failed:', error);
     }
   }
-
   // Enhanced command interface functions
   function toggleCommandInterface() {
-    showCommandInterface = !showCommandInterface;
+    showCommandInterface = !showCommandInterfac;
   }
-
   function toggleHolographicMode() {
-    holographicMode = !holographicMode;
+    holographicMode = !holographicMod;
   }
-
   function switchModule(module: string) {
-    activeModule = module;
-    activeSection = module;
+    activeModule = modul;
+    activeSection = modul;
   }
-
   // API integration functions
   async function performRAGQuery(query: string = 'Legal case precedent analysis') {
     isLoading = true;
     ragResult = null;
     const { promise, abort } = withAbort(async (signal) => {
       const response = await fetch('/api/yorha/enhanced-rag', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, context: 'legal_analysis' }),
         signal
       });
@@ -163,7 +148,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       return (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
     });
     try {
-      const data = await promise;
+      const data = await promi;
       ragResult = data;
       systemData.active_processes += 1;
       activeSection = 'rag-results';
@@ -174,7 +159,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     }
     return () => abort();
   }
-
   async function performSemanticSearch(searchTerm: string = 'contract liability') {
     isLoading = true;
     searchResults = [];
@@ -195,16 +179,16 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       return (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
     });
     try {
-      const data = await promise;
-      const remote = ((data as { results?: unknown }).results || []).map((item: unknown, index: number) => ({;
+      const data = await promi;
+      const remote = ((data as { results?: unknown }).results || []).map((item: unknown, index: number) => ({,
         id: (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).id || index + 1,
         title: (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).title || (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).name || `Document ${index + 1}`,
         type: (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).type || 'Legal Document',
-        relevance: Math.round.relevance || Math.random()) * 100),;
+        relevance: Math.round.relevance || Math.random()) * 100),
         status: (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).status || 'active',
         metadata: item;
       }));
-      searchResults = searchMode === 'hybrid' ? mergeResults(localResults, remote) : remote;
+      searchResults = searchMode === 'hybrid' ? mergeResults(localResults, remote) : remot;
       activeSection = 'search-results';
     } catch (e) {
       if ((e as any).name !== 'AbortError') console.error('Search failed', e);
@@ -213,7 +197,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     }
     return () => abort();
   }
-
   async function checkClusterHealth() {
     isLoading = true;
     const { promise, abort } = withAbort(async (signal) => {
@@ -222,11 +205,11 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       return (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
     });
     try {
-      const healthData = await promise;
+      const healthData = await promi;
       if (healthData.services) {
-        systemData.cpu_usage = healthData.cpu_usage || systemData.cpu_usage;
-        systemData.memory_usage = healthData.memory_usage || systemData.memory_usage;
-        systemData.gpu_utilization = healthData.gpu_utilization || systemData.gpu_utilization;
+        systemData.cpu_usage = healthData.cpu_usage || systemData.cpu_usag;
+        systemData.memory_usage = healthData.memory_usage || systemData.memory_usag;
+        systemData.gpu_utilization = healthData.gpu_utilization || systemData.gpu_utilizatio;
       }
       activeSection = 'system-health';
     } catch (e) {
@@ -236,10 +219,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     }
     return () => abort();
   }
-
   // Debounced helper for potential future search input
   const debouncedSearch = debounce((q: string) => performSemanticSearch(q), 400);
-
   // Build local index lazily after mount (non-blocking)
   $effect(() => {
     // Restore mode
@@ -255,18 +236,15 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     });
     initHybridLayer({ refreshIntervalMs: 300000 });
   });
-
   $effect(() => {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem('yorha-search-mode', searchMode);
     }
   });
 </script>
-
 <svelte:head>
   <title>YoRHa Interface - Command Center</title>
 </svelte:head>
-
 <div class="yorha-page">
   <!-- Hero Section -->
   <section class="yorha-hero">
@@ -276,7 +254,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         <h1>YoRHa COMMAND CENTER</h1>
         <div class="yorha-hero-subtitle">LEGAL AI SYSTEM INTERFACE</div>
       </div>
-
       <div class="yorha-hero-status">
         <div class="yorha-status-indicator yorha-status-online">
           <Activity size={20} />
@@ -300,7 +277,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
             <span>PROC: {systemData.active_processes}</span>
           </div>
         </div>
-
         <!-- YoRHa Control Panel -->
         <div class="yorha-control-panel">
           <button
@@ -323,7 +299,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       </div>
     </div>
   </section>
-
   <!-- Quick Actions -->
   <section class="yorha-actions">
     <div class="yorha-actions-grid">
@@ -339,7 +314,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
           <div class="yorha-loading-indicator"></div>
         {/if}
       </button>
-
       <button
         class="yorha-action-nier-bits-card yorha-action-search"
         onclick={() => performSemanticSearch()}
@@ -349,7 +323,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         <h3>VECTOR SEARCH</h3>
         <p>Semantic document retrieval</p>
       </button>
-
       <button
         class="yorha-action-nier-bits-card yorha-action-health"
         onclick={() => checkClusterHealth()}
@@ -359,7 +332,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         <h3>SYSTEM HEALTH</h3>
         <p>Cluster monitoring</p>
       </button>
-
       <button
         class="yorha-action-nier-bits-card yorha-action-database"
         onclick={() => performSemanticSearch('database evidence')}
@@ -371,12 +343,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       </button>
     </div>
   </section>
-
   <!-- YoRHa Command Center Integration -->
   <section class="yorha-dashboard">
     <YoRHaCommandCenter {systemData} />
   </section>
-
   <!-- YoRHa Command Interface (Toggle) -->
   {#if showCommandInterface}
     <section class="yorha-command-interface">
@@ -390,14 +360,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       />
     </section>
   {/if}
-
   <!-- Interface Navigation -->
   <section class="yorha-navigation">
     <h2 class="yorha-section-title">
       <Bot size={24} />
       INTERFACE MODULES
     </h2>
-
     <div class="yorha-nav-grid" role="grid" aria-label="YoRHa interface modules">
       <YoRHaNavCard title="SYSTEM DASHBOARD" description="Real-time monitoring and analytics" path="/yorha/dashboard" icon={Monitor} ariaLabel="Open System Dashboard">
         <ChevronRight size={16} slot="trailing" />
@@ -419,7 +387,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       </YoRHaNavCard>
     </div>
   </section>
-
   <!-- Results Display -->
   <section class="yorha-search-box" aria-label="Semantic Search">
     <div class="yorha-search-inner max-w-6xl mx-auto">
@@ -450,7 +417,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       </div>
     </section>
   {/if}
-
   {#if searchResults.length > 0}
     <section class="yorha-results">
       <h2 class="yorha-section-title">SEARCH RESULTS ({searchResults.length})</h2>
@@ -471,5 +437,4 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     </section>
   {/if}
 </div>
-
 <style lang="postcss">/*$$__STYLE_CONTENT__$$*/</style>

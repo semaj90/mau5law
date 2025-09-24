@@ -2,7 +2,6 @@
  * Authentication Components Export - Svelte 5 Compatible
  * User authentication and authorization components
  */
-
 // Core Auth Components
 export { default as AuthGuard } from './AuthGuard.svelte.js';
 export { default as RoleGuard } from './RoleGuard.svelte.js';
@@ -11,16 +10,13 @@ export { default as LoginButton } from './LoginButton.svelte.js';
 export { default as AuthProvider } from './AuthProvider.svelte.js';
 export { default as AuthForm } from './AuthForm.svelte.js';
 export { default as NesAuthModal } from './NesAuthModal.svelte.js';
-
 // Re-export auth store for convenience
 export { authStore, useAuth } from '$lib/stores/auth-store.svelte';
-
-// Auth utility types;
+// Auth utility types
 export type AuthComponentProps = {
   children?: import('svelte').Snippet;
   fallback?: import('svelte').Snippet;
 };
-
 export type GuardProps = AuthComponentProps & {
   requiredRole?: string;
   requiredPermission?: string;
@@ -28,11 +24,9 @@ export type GuardProps = AuthComponentProps & {
   permissions?: string | string[];
   requireAll?: boolean;
 };
-
 export type AuthMode = 'login' | 'register' | 'forgot-password' | 'reset-password';
 export type AuthProviderType = 'email' | 'google' | 'github' | 'microsoft';
 }
-
 export interface AuthFormData {
   email: string;
   password?: string;

@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // AuthProvider component - Global authentication context - Svelte 5 compatible
   import { authStore } from '$lib/stores/auth-store.svelte';
   import { browser } from '$app/environment';
@@ -8,12 +7,10 @@
     children?: import('svelte').Snippet;
     autoInitialize?: boolean;
   }
-
   let {
     children,
     autoInitialize = true
   }: Props = $props();
-
   // Initialize auth store on component mount
   $effect(() => {
     if (browser && autoInitialize) {
@@ -21,7 +18,6 @@
     }
   });
 </script>
-
 <!-- Provide the authentication context to child components -->
 {#if children}
   {@render children()}

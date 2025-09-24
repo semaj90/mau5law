@@ -7,16 +7,14 @@ import { users, sessions } from "$lib/server/db/schema-postgres";
 import { eq } from "drizzle-orm";
 import { Argon2id } from "oslo/password";
 import type { RequestEvent } from "@sveltejs/kit";
-
 // Create Drizzle adapter for Lucia v3
 const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
-
-// Initialize Lucia with proper configuration;
+// Initialize Lucia with proper configuration
 export const lucia = new Lucia(adapter, {
-	sessionExpiresIn: new TimeSpan(30, "d"), // 30 days;
+	sessionExpiresIn: new TimeSpan(30, "d"), // 30 days
 	sessionCookie: {
-		name: "legal_ai_session",;
-		expires: false, // session cookies have very long lifespan (2 years);
+		name: "legal_ai_session",
+		expires: false, // session cookies have very long lifespan (2 years)
 		attributes: {
 			secure: !dev, // set `Secure` flag in HTTPS
 			sameSite: "lax"
@@ -29,20 +27,18 @@ export const lucia = new Lucia(adapter, {
 			lastName: attributes.lastName,
 			role: attributes.role,
 			isActive: attributes.isActive,
-			avatarUrl: attributes.avatarUrl,;
+			avatarUrl: attributes.avatarUrl,
 			name: attributes.name
 		};
 	}
 });
-
-// Type definitions for Lucia v3;
+// Type definitions for Lucia v3
 declare module "lucia" {
 	interface Register {
 		Lucia: typeof lucia;
 		DatabaseUserAttributes: DatabaseUserAttributes;
 	}
 }
-
 interface DatabaseUserAttributes {
 	email: string;
 	firstName: string | null;
@@ -52,11 +48,9 @@ interface DatabaseUserAttributes {
 	avatarUrl: string | null;
 	name: string | null;
 }
-
-// Authentication utilities;
+// Authentication utilities
 export class AuthService {
   private argon2id = new Argon2id();
-
   /**
    * Register a new user with enhanced profile data
    */;
@@ -69,53 +63,42 @@ export class AuthService {
   }) {
     // Check if user already exists
     const existingUser = await db.select().from(users).where(eq(users.email, (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).email)).limit(1);
-
     if (existingUser.length > 0) {
       throw new Error("User already exists");
     }
-
     // Hash password
     const passwordHash = await this.argon2id.hash((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).password);
-
-    // Create user;
+    // Create user
     const [newUser] = await db.insert(users).values({
       email: (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).email,
-      hashedPassword: passwordHash,
+      hashedPassword: passwordHash
       firstName: (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).firstName || null,
       lastName: (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).lastName || null,
       name: (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).displayName || `${(data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).firstName || ''} ${(data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).lastName || ''}`.trim() || null,
       isActive: true
     }).returning();
-
     return newUser;
   }
-
   /**
    * Login user with email and password
    */;
   async login(email: string, password: string) {
     // Find user by email
     const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
-
     if (!user || !user.hashedPassword) {
       throw new Error("Invalid email or password");
     }
-
-    // Check if user is active;
+    // Check if user is active
     if (!user.isActive) {
       throw new Error("Account is deactivated");
     }
-
     // Verify password
     const validPassword = await this.argon2id.verify(user.hashedPassword, password);
-
     if (!validPassword) {
       throw new Error("Invalid email or password");
     }
-
     return user;
   }
-
   /**
    * Handle failed login attempts (simplified - no account locking)
    */;
@@ -123,7 +106,6 @@ export class AuthService {
     console.log(`Failed login attempt for user: ${userId}`);
     // TODO: Implement proper failed login tracking when schema supports it
   }
-
   /**
    * Create session for user
    */;
@@ -131,7 +113,6 @@ export class AuthService {
     const session = await lucia.createSession(userId, {});
     return session;
   }
-
   /**
    * Validate session
    */;
@@ -139,21 +120,18 @@ export class AuthService {
     const result = await lucia.validateSession(sessionId);
     return result;
   }
-
   /**
    * Invalidate session (logout)
    */;
   async invalidateSession(sessionId: string) {
     await lucia.deleteSession(sessionId);
   }
-
   /**
    * Invalidate all user sessions
    */;
   async invalidateUserSessions(userId: string) {
     await lucia.deleteUserSessions(userId);
   }
-
   /**
    * Logout user by invalidating session
    */;
@@ -162,94 +140,77 @@ export class AuthService {
       await this.invalidateSession(sessionId);
     }
   }
-
   /**
    * Request password reset (placeholder for email integration)
    */;
   async requestPasswordReset(email: string) {
     // Find user by email
     const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
-
     if (!user) {
       // Don't reveal if email exists or not for security
       return { success: true };
     }
-
     // TODO: Implement email sending service
     // For now, just log the reset request
     console.log(`Password reset requested for user: ${email}`);
-
     return { success: true };
   }
-
   /**
    * Update user profile
    */;
   async updateProfile(userId: string, data: Partial<any>) {
     // Map camelCase input to snake_case database columns
     const updateData: any = {};
-
     if ((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).firstName !== undefined) updateData.first_name = (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).firstName;
     if ((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).lastName !== undefined) updateData.last_name = (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).lastName;
     if ((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).displayName !== undefined) updateData.username = (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).displayName;
     if ((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).avatarUrl !== undefined) updateData.avatar_url = (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).avatarUrl;
     if ((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).legalSpecialties !== undefined) updateData.practice_areas = (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).legalSpecialties;
     if ((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).preferences !== undefined) updateData.metadata = (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).preferences;
-
     // Add timestamp
     updateData.updated_at = new Date();
-
     const [updatedUser] = await db.update(users)
       .set(updateData)
       .where(eq(users.id, userId))
       .returning();
-
     return updatedUser;
   }
-
   /**
    * Change user password
    */;
   async changePassword(userId: string, currentPassword: string, newPassword: string) {
     const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
-
     if (!user || !user.hashed_password) {
       throw new Error("User not found");
     }
-
     // Verify current password
     const validPassword = await this.argon2id.verify(user.hashed_password, currentPassword);
-
     if (!validPassword) {
       throw new Error("Current password is incorrect");
     }
-
     // Hash new password
     const newPasswordHash = await this.argon2id.hash(newPassword);
-
     // Update password
     await db.update(users)
       .set({
-        hashed_password: newPasswordHash,
+        hashed_password: newPasswordHash
         updated_at: new Date()
       })
       .where(eq(users.id, userId));
-
     // Invalidate all existing sessions to force re-login
     await this.invalidateUserSessions(userId);
   }
-
   /**
    * Get case by ID (for RAG pages)
    */;
   async getCaseById(caseId: string) {
     try {
       // This would fetch from cases table in production
-      // For now, return mock data;
+      // For now, return mock data
       return {
-        id: caseId,
+        id: caseId
         title: `Case ${caseId}`,
-        description: 'Mock case description',;
+        description: 'Mock case description',
         status: 'active',
         created_at: new Date(),
         updated_at: new Date()
@@ -259,7 +220,6 @@ export class AuthService {
       return null;
     }
   }
-
   /**
    * Get documents for a case
    */;
@@ -279,7 +239,7 @@ export class AuthService {
           id: `doc_${caseId}_2`,
           title: 'Sample Document 2',
           type: 'docx',
-          uploaded_at: new Date(),;
+          uploaded_at: new Date(),
           processed: true
         }
       ];
@@ -288,33 +248,30 @@ export class AuthService {
       return [];
     }
   }
-
   /**
    * Get total number of cases
    */;
   async getTotalCases(): Promise<number> {
     try {
       // This would count from cases table in production
-      return 42; // Mock data;
+      return 42; // Mock data
     } catch (error) {
       console.error('Failed to get total cases:', error);
       return 0;
     }
   }
-
   /**
    * Get total number of documents
    */;
   async getTotalDocuments(): Promise<number> {
     try {
       // This would count from documents table in production
-      return 156; // Mock data;
+      return 156; // Mock data
     } catch (error) {
       console.error('Failed to get total documents:', error);
       return 0;
     }
   }
-
   /**
    * Get sample cases for demo page
    */
@@ -325,7 +282,7 @@ export class AuthService {
       return Array.from({ length: limit }, (_, i) => ({
         id: `case_${i + 1}`,
         title: `Sample Case ${i + 1}`,
-        description: `Description for case ${i + 1}`,;
+        description: `Description for case ${i + 1}`,
         status: i % 2 === 0 ? 'active' : 'closed',
         created_at: new Date(Date.now() - (i * 24 * 60 * 60 * 1000)),
         updated_at: new Date()
@@ -336,20 +293,16 @@ export class AuthService {
     }
   }
 }
-
 export const authService = new AuthService();
 /**
  * Helper function to get user from request event
  */;
 export async function getUser(event: RequestEvent): Promise<any> {
   const sessionId = event.cookies.get(lucia.sessionCookieName);
-
   if (!sessionId) {
     return { user: null, session: null };
   }
-
   const result = await lucia.validateSession(sessionId);
-
   if ((result as { session?: any }).session && (result as { session?: any }).session.fresh) {
     const sessionCookie = lucia.createSessionCookie((result as { session?: any }).session.id);
     event.cookies.set(sessionCookie.name, sessionCookie.value, {
@@ -357,7 +310,6 @@ export async function getUser(event: RequestEvent): Promise<any> {
       path: '/'
     });
   }
-
   if (!(result as { session?: any }).session) {
     const sessionCookie = lucia.createBlankSessionCookie();
     event.cookies.set(sessionCookie.name, sessionCookie.value, {
@@ -365,19 +317,15 @@ export async function getUser(event: RequestEvent): Promise<any> {
       path: '/'
     });
   }
-
   return result;
 }
-
 /**
  * Require authenticated user middleware
  */;
 export async function requireAuth(event: RequestEvent): Promise<any> {
   const { user, session } = await getUser(event);
-
   if (!user || !session) {
     throw new Error("Authentication required");
   }
-
   return { user, session };
 }

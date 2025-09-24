@@ -1,13 +1,12 @@
-<!-- @migration-task Error while migrating Svelte code: 'default' is a reserved word in JavaScript and cannot be used here;
+<!-- @migration-task Error while migrating Svelte code: 'default' is a reserved word in JavaScript and cannot be used her;
 https://svelte.dev/e/unexpected_reserved_word -->
 <!-- @migration-task Error while migrating Svelte code: 'default' is a reserved word in JavaScript and cannot be used here -->
 {#snippet default}
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { pipelineManager, type PipelineType, type PipelineResult } from '$lib/services/pipeline-manager';
   import { PipelineVisualizer } from '$lib/services/pipeline-visualizer';
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import {
     Card,
     CardHeader,
@@ -23,7 +22,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
   let searchResults = $state<any>(null);
   let selectedPipeline = $state<PipelineType>('optimized');
   let cacheKey = $state('demo_legal_documents');
-
   // Performance metrics
   let metrics = $state({
     totalOperations: 0,
@@ -31,7 +29,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
     successRate: 0,
     lastUpdate: new Date()
   });
-
   // Pipeline execution with XState management
   async function executePipeline() {
     if (isProcessing) return;
@@ -39,9 +36,9 @@ https://svelte.dev/e/unexpected_reserved_word -->
     try {
       console.log(`🚀 Starting ${selectedPipeline} pipeline execution`);
       const result = await pipelineManager.executePipeline(cacheKey, {
-        type: selectedPipeline,
-        enableGPU: true,
-        enableConcurrency: true,
+        type: selectedPipeline
+        enableGPU: true
+        enableConcurrency: true
         enableMemoryOptimization: true;
       });
       results = [result, ...results.slice(0, 9)]; // Keep last 10 results
@@ -52,7 +49,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
       isProcessing = false;
     }
   }
-
   // Auto-select optimal pipeline
   async function autoExecutePipeline() {
     if (isProcessing) return;
@@ -61,8 +57,8 @@ https://svelte.dev/e/unexpected_reserved_word -->
       console.log('🧠 Auto-selecting optimal pipeline');
       const result = await pipelineManager.autoSelectPipeline(cacheKey, {
         estimatedSize: 25000,
-        requiresGPU: true,
-        requiresConcurrency: true,
+        requiresGPU: true
+        requiresConcurrency: true
         prioritizeSpeed: true
       });
       results = [result, ...results.slice(0, 9)];
@@ -73,7 +69,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
       isProcessing = false;
     }
   }
-
   // Batch processing demo
   async function batchProcess() {
     if (isProcessing) return;
@@ -94,19 +89,17 @@ https://svelte.dev/e/unexpected_reserved_word -->
       isProcessing = false;
     }
   }
-
   // Search across all pipelines
   async function searchPipelines() {
     if (!searchQuery.trim()) return;
     try {
       console.log(`🔍 Searching all pipelines for: "${searchQuery}"`);
       const results = await pipelineManager.searchAllPipelines(searchQuery, 10);
-      searchResults = results;
+      searchResults = result;
     } catch (error) {
       console.error('Search failed:', error);
     }
   }
-
   // System health check
   async function checkSystemHealth() {
     try {
@@ -116,13 +109,11 @@ https://svelte.dev/e/unexpected_reserved_word -->
       console.error('Health check failed:', error);
     }
   }
-
   // Generate performance report
   function generateReport() {
     console.log('📈 Generating performance report');
     performanceReport = pipelineManager.generatePerformanceReport();
   }
-
   // Update metrics
   function updateMetrics() {
     const successful = results.filter(item => item.length);
@@ -134,7 +125,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
       lastUpdate: new Date()
     };
   }
-
   // Cleanup resources
   async function cleanup() {
     try {
@@ -148,29 +138,24 @@ https://svelte.dev/e/unexpected_reserved_word -->
       console.error('Cleanup failed:', error);
     }
   }
-
   // Format time display
   function formatTime(ms: number): string {
     if (ms < 1000) return `${ms.toFixed(0)}ms`;
     return `${(ms / 1000).toFixed(2)}s`;
   }
-
   // Format memory display
   function formatMemory(mb: number): string {
     return `${mb.toFixed(0)}MB`;
   }
-
   // Get status color
   function getStatusColor(success: boolean): string {
     return success ? 'text-green-600' : 'text-red-600';
   }
-
   // Initialize on mount
   $effect(() => {
     checkSystemHealth();
   });
 </script>
-
 <div class="space-y-6 p-6 max-w-7xl mx-auto">
   <!-- Header -->
   <div class="text-center">
@@ -181,7 +166,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
       XState Management • Worker Threads • GPU Acceleration • Memory Optimization
     </p>
   </div>
-
   <!-- Pipeline Controls -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -201,66 +185,56 @@ https://svelte.dev/e/unexpected_reserved_word -->
             <option value="end-to-end">🔄 End-to-End (Full Stack)</option>
           </select>
         </div>
-        
         <div>
-          <label class="block text-sm font-medium mb-2" for="cache-key">Cache Key</label><input id="cache-key" 
-            type="text" 
+          <label class="block text-sm font-medium mb-2" for="cache-key">Cache Key</label><input id="cache-key"
+            type="text"
             bind:value={cacheKey}
             class="w-full p-2 border rounded-md"
             placeholder="Enter cache key..."
             disabled={isProcessing}
           />
         </div>
-        
         <div class="flex items-end">
-          <Button 
+          <Button
             onclick={executePipeline}
             disabled={isProcessing}
             class="w-full bits-btn bits-btn"
           >
 {isProcessing ? '⏳ Processing...' : '🚀 Execute Pipeline'}
-
         </div>
       </div>
-
       <!-- Advanced Controls -->
       <div class="flex flex-wrap gap-2">
-        <Button class="bits-btn" 
+        <Button class="bits-btn"
           onclick={autoExecutePipeline}
           disabled={isProcessing}
           variant="ghost"
         >
 🧠 Auto-Select Optimal
-
-        <Button class="bits-btn" 
+        <Button class="bits-btn"
           onclick={batchProcess}
           disabled={isProcessing}
           variant="ghost"
         >
 📦 Batch Process
-
-        <Button class="bits-btn" 
+        <Button class="bits-btn"
           onclick={checkSystemHealth}
           variant="ghost"
         >
 🏥 Health Check
-
-        <Button class="bits-btn" 
+        <Button class="bits-btn"
           onclick={generateReport}
           variant="ghost"
         >
 📈 Performance Report
-
-        <Button class="bits-btn" 
+        <Button class="bits-btn"
           onclick={cleanup}
           variant="error"
         >
 🧹 Cleanup
-
       </div>
     </div>
   </div>
-
   <!-- Search Interface -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -268,7 +242,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     </div>
     <div class="yorha-panel-content">
       <div class="flex gap-2">
-        <input 
+        <input
           type="text" ;
           bind:value={searchQuery}
           class="flex-1 p-2 border rounded-md"
@@ -277,9 +251,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         />
         <Button class="bits-btn" onclick={searchPipelines}>
 🔍 Search
-
       </div>
-      
       {#if searchResults}
         <div class="mt-4">
           <h4 class="font-semibold mb-2">Search Results ({searchResults.combinedResults.length})</h4>
@@ -303,7 +275,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
       {/if}
     </div>
   </div>
-
   <!-- Metrics Dashboard -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
     <div class="nes-container">
@@ -314,7 +285,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
         </div>
       </div>
     </div>
-    
     <div class="nes-container">
       <div class="yorha-panel-content p-4">
         <div class="text-center">
@@ -323,7 +293,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
         </div>
       </div>
     </div>
-    
     <div class="nes-container">
       <div class="yorha-panel-content p-4">
         <div class="text-center">
@@ -332,7 +301,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
         </div>
       </div>
     </div>
-    
     <div class="nes-container">
       <div class="yorha-panel-content p-4">
         <div class="text-center">
@@ -342,7 +310,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
       </div>
     </div>
   </div>
-
   <!-- System Health -->
   {#if systemHealth}
     <div class="nes-container">
@@ -375,7 +342,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
       </div>
     </div>
   {/if}
-
   <!-- Recent Results -->
   {#if results.length > 0}
     <div class="nes-container">
@@ -397,7 +363,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
                   {formatTime((result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).metrics.totalProcessingTime)}
                 </div>
               </div>
-              
               <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
                 <div>
                   <span class="text-gray-500">Cache Hit:</span>
@@ -416,7 +381,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
                   <span class="font-medium">{(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).metrics.throughputPerSecond.toFixed(1)}/s</span>
                 </div>
               </div>
-              
               {#if (result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).error}
                 <div class="mt-2 p-2 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
                   Error: {(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).error}
@@ -428,7 +392,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
       </div>
     </div>
   {/if}
-
   <!-- Performance Report -->
   {#if performanceReport}
     <div class="nes-container">
@@ -455,7 +418,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
               <div class="font-semibold">{performanceReport.memoryEfficiency.toFixed(1)}%</div>
             </div>
           </div>
-          
           <div>
             <h4 class="font-semibold mb-2">Recommendations</h4>
             <ul class="space-y-1 text-sm">
@@ -471,7 +433,6 @@ https://svelte.dev/e/unexpected_reserved_word -->
       </div>
     </div>
   {/if}
-
   <!-- Architecture Diagram -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -485,5 +446,4 @@ https://svelte.dev/e/unexpected_reserved_word -->
   </div>
 </div>
 {/snippet}
-
 {@render default()}

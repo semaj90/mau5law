@@ -3,7 +3,6 @@ import { goto } from '$app/navigation';
 import type { User } from '$lib/database/schema';
 import { EventEmitter } from "events";
 }
-
 export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
@@ -16,13 +15,11 @@ export interface AuthState {
     enable2FA: boolean;
   };
 }
-
 export interface LoginCredentials {
   email: string;
   password: string;
   rememberMe?: boolean;
 }
-
 export interface RegisterData {
   email: string;
   password: string;
@@ -30,37 +27,34 @@ export interface RegisterData {
   lastName: string;
   acceptTerms: boolean;
 }
-
 class EnhancedAuthStore {
-  // Svelte 5 reactive state;
+  // Svelte 5 reactive state
   private _state = browser ? $state<AuthState>({
-    user: null,
-    isAuthenticated: false,
-    isLoading: true,
-    session: null,
-    lastActivity: null,
+    user: null
+    isAuthenticated: false
+    isLoading: true
+    session: null
+    lastActivity: null
     securitySettings: {
       sessionTimeoutMinutes: 30,
-      requireReauth: false,
+      requireReauth: false
       enable2FA: false
     }
   }) : {
-    user: null,
-    isAuthenticated: false,
-    isLoading: false,;
-    session: null,
-    lastActivity: null,
+    user: null
+    isAuthenticated: false
+    isLoading: false
+    session: null
+    lastActivity: null
     securitySettings: {
       sessionTimeoutMinutes: 30,
-      requireReauth: false,
+      requireReauth: false
       enable2FA: false
     }
   };
-
   private _error = browser ? $state<string | null>(null) : null;
   private _sessionCheckInterval: NodeJS.Timeout | null = null;
   private _activityTimeout: NodeJS.Timeout | null = null;
-
   constructor() {
     if (browser) {
       this.initializeAuth();
@@ -68,94 +62,75 @@ class EnhancedAuthStore {
       this.startSessionCheck();
     }
   }
-
-  // Public getters (reactive);
+  // Public getters (reactive)
   get state() {
     return this._state;
   }
-
   get error() {
     return this._error;
   }
-
   get user() {
     return this._state.user;
   }
-
   get isAuthenticated() {
     return this._state.isAuthenticated;
   }
-
   get isLoading() {
     return this._state.isLoading;
   }
-
-  // Derived state;
+  // Derived state
   get userRole() {
     return this._state.user?.role || 'guest';
   }
-
   get userInitials() {
     if (!this._state.user) return 'GU';
     const { firstName, lastName } = this._state.user;
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
   }
-
   get isAdmin() {
     return this._state.user?.role === 'admin';
   }
-
   get isProsecutor() {
     return this._state.user?.role === 'prosecutor';
   }
-
   get isDetective() {
     return this._state.user?.role === 'detective';
   }
-
   get sessionTimeRemaining() {
     if (!this._state.lastActivity || !this._state.securitySettings.sessionTimeoutMinutes) {
       return null;
     }
-
     const elapsed = Date.now() - this._state.lastActivity.getTime();
     const timeout = this._state.securitySettings.sessionTimeoutMinutes * 60 * 1000;
     const remaining = timeout - elapsed;
-
     return Math.max(0, Math.floor(remaining / 1000);
   }
-
-  // Authentication methods;
+  // Authentication methods
   async login(credentials: LoginCredentials): Promise<any> {
     this._state.isLoading = true;
     this._error = null;
-
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },;
+        },
         body: JSON.stringify({
           ...credentials,
           ipAddress: await this.getClientIP(),
           userAgent: navigator.userAgent
         })
       });
-
       const result = await (response as { json?: any; ok?: any }).json();
-
       if ((response as { json?: any; ok?: any }).ok && (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).success) {
         this._state.user = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).user;
         this._state.session = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).session;
         this._state.isAuthenticated = true;
         this._state.lastActivity = new Date();
-        
-        // Store session info;
+        // Store session info
         if (credentials.rememberMe) {
           localStorage.setItem('auth:rememberMe', 'true');
         }
-        
         this.trackActivity();
         return { success: true };
       } else {
@@ -170,37 +145,31 @@ class EnhancedAuthStore {
       this._state.isLoading = false;
     }
   }
-
   async register(data: RegisterData): Promise<any> {
     this._state.isLoading = true;
     this._error = null;
-
     try {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },;
+        },
         body: JSON.stringify({
           ...data,
           ipAddress: await this.getClientIP(),
           userAgent: navigator.userAgent
         })
       });
-
       const result = await (response as { json?: any; ok?: any }).json();
-
       if ((response as { json?: any; ok?: any }).ok && (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).success) {
         if ((result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).requiresVerification) {
           return { success: true, requiresVerification: true };
         }
-        
         // Auto-login after registration
         this._state.user = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).user;
         this._state.session = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).session;
         this._state.isAuthenticated = true;
         this._state.lastActivity = new Date();
-        
         this.trackActivity();
         return { success: true };
       } else {
@@ -215,18 +184,16 @@ class EnhancedAuthStore {
       this._state.isLoading = false;
     }
   }
-
   async logout(): Promise<void> {
     this._state.isLoading = true;
-
     try {
       if (this._state.session?.id) {
         await fetch('/api/auth/logout', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
-          },;
-          body: JSON.stringify({
+          },
+          body: JSON.stringify({,
             sessionId: this._state.session.id
           })
         });
@@ -238,132 +205,111 @@ class EnhancedAuthStore {
       await goto('/');
     }
   }
-
   async verifyEmail(token: string): Promise<any> {
     try {
       const response = await fetch('/api/auth/verify-email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },;
+        },
         body: JSON.stringify({ token })
       });
-
       const result = await (response as { json?: any; ok?: any }).json();
-      
       if ((result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).success) {
         this._state.user = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).user;
         this._state.isAuthenticated = true;
         this._state.lastActivity = new Date();
       }
-
       return result;
     } catch (error: any) {
       console.error('Email verification error:', error);
       return { success: false, error: 'Verification failed' };
     }
   }
-
   async requestPasswordReset(email: string): Promise<any> {
     try {
       const response = await fetch('/api/auth/request-password-reset', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },;
+        },
         body: JSON.stringify({ email })
       });
-
       return await (response as { json?: any; ok?: any }).json();
     } catch (error: any) {
       console.error('Password reset request error:', error);
       return { success: false, error: 'Request failed' };
     }
   }
-
   async resetPassword(token: string, newPassword: string): Promise<any> {
     try {
       const response = await fetch('/api/auth/reset-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },;
+        },
         body: JSON.stringify({ token, newPassword })
       });
-
       const result = await (response as { json?: any; ok?: any }).json();
-      
       if ((result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).success) {
         // Clear any existing session and redirect to login
         this.clearAuthState();
       }
-
       return result;
     } catch (error: any) {
       console.error('Password reset error:', error);
       return { success: false, error: 'Reset failed' };
     }
   }
-
   async updateProfile(updates: Partial<User>): Promise<any> {
     if (!this._state.isAuthenticated) {
       return { success: false, error: 'Not authenticated' };
     }
-
     try {
       const response = await fetch('/api/auth/update-profile', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'
-        },;
+        },
         body: JSON.stringify(updates)
       });
-
       const result = await (response as { json?: any; ok?: any }).json();
-      
       if ((result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).success) {
         this._state.user = { ...this._state.user!, ...result.user };
       }
-
       return result;
     } catch (error: any) {
       console.error('Profile update error:', error);
       return { success: false, error: 'Update failed' };
     }
   }
-
   async changePassword(currentPassword: string, newPassword: string): Promise<any> {
     if (!this._state.isAuthenticated) {
       return { success: false, error: 'Not authenticated' };
     }
-
     try {
       const response = await fetch('/api/auth/change-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },;
+        },
         body: JSON.stringify({ currentPassword, newPassword })
       });
-
       return await (response as { json?: any; ok?: any }).json();
     } catch (error: any) {
       console.error('Password change error:', error);
       return { success: false, error: 'Password change failed' };
     }
   }
-
-  // Security and session management;
+  // Security and session management
   async refreshSession(): Promise<boolean> {
     try {
       const response = await fetch('/api/auth/refresh', {
-        method: 'POST',;
+        method: 'POST',
         credentials: 'include'
       });
-
       if ((response as { json?: any; ok?: any }).ok) {
         const result = await (response as { json?: any; ok?: any }).json();
-        
         if ((result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).success && (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).user) {
           this._state.user = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).user;
           this._state.session = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).session;
@@ -372,7 +318,6 @@ class EnhancedAuthStore {
           return true;
         }
       }
-      
       this.clearAuthState();
       return false;
     } catch (error: any) {
@@ -381,24 +326,19 @@ class EnhancedAuthStore {
       return false;
     }
   }
-
   trackActivity(): void {
     this._state.lastActivity = new Date();
-    
-    // Reset activity timeout;
+    // Reset activity timeout
     if (this._activityTimeout) {
       clearTimeout(this._activityTimeout);
     }
-    
     const timeoutMs = this._state.securitySettings.sessionTimeoutMinutes * 60 * 1000;
     this._activityTimeout = setTimeout(() => {
       this.handleSessionTimeout();
     }, timeoutMs);
   }
-
   async getSecuritySummary(): Promise<any> {
     if (!this._state.isAuthenticated) return null;
-
     try {
       const response = await fetch('/api/auth/security-summary');
       if ((response as { json?: any; ok?: any }).ok) {
@@ -409,37 +349,30 @@ class EnhancedAuthStore {
     }
     return null;
   }
-
   clearError(): void {
     this._error = null;
   }
-
-  // Permission helpers;
+  // Permission helpers
   hasPermission(permission: string): boolean {
     if (!this._state.user) return false;
-    
     const rolePermissions = {
       admin: ['*'],
       prosecutor: ['case:read', 'case:write', 'evidence:read', 'evidence:write', 'document:read', 'document:write'],
-      detective: ['case:read', 'evidence:read', 'evidence:write', 'document:read'],;
+      detective: ['case:read', 'evidence:read', 'evidence:write', 'document:read'],
       user: ['case:read', 'document:read']
     };
-
     const userPermissions = rolePermissions[this._state.user.role as keyof typeof rolePermissions] || [];
     return userPermissions.includes('*') || userPermissions.includes(permission);
   }
-
   canAccessCase(caseId: string): boolean {
     // TODO: Implement case-specific access control
     return this.hasPermission('case:read');
   }
-
-  // Private methods;
+  // Private methods
   private async initializeAuth(): Promise<void> {
     try {
       this._state.isLoading = true;
       const isValid = await this.refreshSession();
-      
       if (!isValid) {
         this.clearAuthState();
       }
@@ -450,28 +383,22 @@ class EnhancedAuthStore {
       this._state.isLoading = false;
     }
   }
-
   private setupActivityTracking(): void {
     if (!browser) return;
-
     const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
-    
     const activityHandler = () => {
       if (this._state.isAuthenticated) {
         this.trackActivity();
       }
     };
-
     events.forEach(event => {
       document.addEventListener(event, activityHandler, { passive: true });
     });
   }
-
   private startSessionCheck(): void {
     if (this._sessionCheckInterval) {
       clearInterval(this._sessionCheckInterval);
     }
-
     this._sessionCheckInterval = setInterval(async () => {
       if (this._state.isAuthenticated) {
         const isValid = await this.refreshSession();
@@ -481,30 +408,25 @@ class EnhancedAuthStore {
       }
     }, 5 * 60 * 1000); // Check every 5 minutes
   }
-
   private handleSessionTimeout(): void {
     this.clearAuthState();
     this._error = 'Your session has expired. Please log in again.';
     goto('/login?reason=session-expired');
   }
-
   private clearAuthState(): void {
     this._state.user = null;
     this._state.session = null;
     this._state.isAuthenticated = false;
     this._state.lastActivity = null;
     this._state.isLoading = false;
-    
     // Clear stored data
     localStorage.removeItem('auth:rememberMe');
-    
-    // Clear timeouts;
+    // Clear timeouts
     if (this._activityTimeout) {
       clearTimeout(this._activityTimeout);
       this._activityTimeout = null;
     }
   }
-
   private async getClientIP(): Promise<string> {
     try {
       const response = await fetch('/api/client-ip');
@@ -515,6 +437,5 @@ class EnhancedAuthStore {
     }
   }
 }
-
 // Create singleton instance
 export const enhancedAuthStore = new EnhancedAuthStore();

@@ -2,7 +2,6 @@
 <!-- @migration-task Error while migrating Svelte code: Cannot read properties of undefined (reading 'end') -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { page } from '$app/stores';
   import { goto, invalidateAll } from '$app/navigation';
   import { enhance } from '$app/forms';
@@ -31,32 +30,27 @@
   // Headless primitives
   import LoadingButton from '$lib/headless/LoadingButton.svelte';
   import FormField from '$lib/headless/FormField.svelte';
-
   // Feedback Integration
   import FeedbackIntegration from '$lib/components/feedback/FeedbackIntegration.svelte';
-
   // Zod schemas for validation
   const createCaseSchema = z.object({ title: z.string().min(1).max(500, 'Case title too long'),
     description: z.string().optional(),
     priority: z.enum(['low', 'medium', 'high']).default('medium'),
     status: z.enum(['low', 'medium', 'high']).default('open'),
-    incidentDate: z.string().optional(),;
-    location: z.string().optional(),;
+    incidentDate: z.string().optional(),
+    location: z.string().optional(),
     jurisdiction: z.string().optional();
   });
-
   const addEvidenceSchema = z.object({
     caseId: z.string().min(1, 'Case ID is required'),
-    title: z.string().min(1).max(255, 'Title too long'),;
+    title: z.string().min(1).max(255, 'Title too long'),
     description: z.string().optional(),
-    evidenceType: z.enum(['document', 'image', 'video']).default('document'),;
+    evidenceType: z.enum(['document', 'image', 'video']).default('document'),
     tags: z.string().optional();
   });
-
-  // Props from load function  
+  // Props from load function
   let { data }: { data: PageData } = $props();
   let form: ActionData | null = $state(null);
-
   // Superforms for type-safe form handling
   const createCaseForm = superForm((data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).createCaseForm, {
     validators: zodClient(createCaseSchema),
@@ -68,10 +62,10 @@
         invalidateAll();
         if (caseCreationFeedback) {
           caseCreationFeedback.markCompleted({
-            success: true,
+            success: true
             caseTitle: form.data.title,
             casePriority: form.data.priority,
-            caseStatus: form.data.status;
+            caseStatus: form.data.statu;
           });
         }
       }
@@ -84,7 +78,6 @@
       }
     }
   });
-
   const addEvidenceForm = superForm((data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).addEvidenceForm, {
     validators: zodClient(addEvidenceSchema),
     onUpdated: ({ form }) => {
@@ -105,13 +98,10 @@
       toast.error(error.message || 'Failed to add evidence');
     }
   });
-
   const { form: createFormData, enhance: createEnhance } = createCaseForm;
   const { form: evidenceFormData, enhance: evidenceEnhance } = addEvidenceForm;
-
   // Local vars to bind selects (avoid binding to store-derived expressions)
   // Removed duplicate variables - using $derived versions below
-
   // UI state (Svelte 5 runes)
   let createCaseDialogOpen = $state(false);
   let addEvidenceDialogOpen = $state(false);
@@ -124,7 +114,6 @@
   let optimisticEvidence: unknown[] = $state([]);
   // Focus management
   let lastDialogTrigger: HTMLElement | null = null; // still used for legacy alert dialog
-
   function handleCreateCaseSubmit() {
     isCreatingCase = true;
   }
@@ -136,39 +125,34 @@
         ...optimisticEvidence,
         {
           id: `temp-${Date.now()}`,
-          title: current.title,;
+          title: current.title,
           description: current.description,
           collectedAt: new Date().toISOString(),
-          evidenceType: current.evidenceType,;
+          evidenceType: current.evidenceType,
           tags: current.tags,
           __optimistic: true;
         }
       ];
     }
   }
-
   // Search and filter state (Svelte 5 runes)
   let searchQuery = $state('');
   let statusFilter: string | 'all' = $state('all');
   let priorityFilter: string | 'all' = $state('all');
   let sortBy = $state('createdAt');
   let sortOrder: 'asc' | 'desc' = $state('desc');
-
   // Vector search state
   let useVectorSearch = $state(false);
   let vectorSearchResults: unknown[] = $state([]);
   let isSearching = $state(false);
-
   // Feedback integration references
   let pageFeedback: unknown = $state(undefined);
   let searchFeedback: unknown = $state(undefined);
   let caseCreationFeedback: unknown = $state(undefined);
-
   // Sync local select variables from the form stores using Svelte 5 runes
   let createFormPriority = $derived($createFormData?.priority ?? 'medium');
   let createFormStatus = $derived($createFormData?.status ?? 'open');
   let evidenceFormType = $derived($evidenceFormData?.evidenceType ?? 'document');
-
   // Update form stores when local select variables change
   $effect(() => {
     if (createFormData && typeof createFormData.update === 'function') {
@@ -178,7 +162,6 @@
       }
     }
   });
-
   $effect(() => {
     if (createFormData && typeof createFormData.update === 'function') {
       const current = get(createFormData);
@@ -187,7 +170,6 @@
       }
     }
   });
-
   $effect(() => {
     if (evidenceFormData && typeof evidenceFormData.update === 'function') {
       const current = get(evidenceFormData);
@@ -196,11 +178,9 @@
       }
     }
   });
-
   // Filtered and sorted cases using Svelte 5 runes
   let filteredCases = $derived((() => {
     let filtered = data?.userCases || [];
-
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(c =>
@@ -209,82 +189,70 @@
         c.jurisdiction?.toLowerCase().includes(query)
       );
     }
-
     if (statusFilter !== 'all') {
       filtered = filtered.filter(c => c.status === statusFilter);
     }
-
     if (priorityFilter !== 'all') {
       filtered = filtered.filter(c => c.priority === priorityFilter);
     }
-
     // Sort cases
     filtered.sort((a, b) => {
       const aVal = (a as any)[sortBy];
       const bVal = (b as any)[sortBy];
       const comparison = aVal > bVal ? 1 : aVal < bVal ? -1 : 0;
-      return sortOrder === 'desc' ? -comparison : comparison;
+      return sortOrder === 'desc' ? -comparison : compariso;
     });
-
     return filtered;
   })());
-
   // Priority colors
   const priorityColors = {
     low: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-    medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',;
-    high: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',;
+    medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+    high: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',
     critical: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
   };
-
   // Status colors
   const statusColors = {
     open: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
     investigating: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
-    pending: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',;
-    closed: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',;
+    pending: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
+    closed: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
     archived: 'bg-gray-100 text-gray-600 dark:bg-gray-900 dark:text-gray-400';
   };
-
   // Vector search function
   async function performVectorSearch() {
     if (!searchQuery.trim()) return;
-
     // Track search interaction for feedback
     const searchInteractionId = searchFeedback?.triggerFeedback({
-      query: searchQuery,
+      query: searchQuery
       searchType: 'vector_search',
       legalDomain: 'case_management',
       searchStartTime: Date.now();
     });
-
     isSearching = true;
     const searchStartTime = Date.now();
-
     try {
       const response = await fetch('/api/cases/search', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: searchQuery,
-          useVectorSearch: true,;
-          limit: 10,;
+        body: JSON.stringify({,
+          query: searchQuery
+          useVectorSearch: true
+          limit: 10,
           threshold: 0.7;
         })
       });
-
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const results = await (response as { ok?: unknown; json?: unknown }).json();
         vectorSearchResults = results.data || [];
         toast.success(`Found ${vectorSearchResults.length} similar cases using AI search`);
-
         // Track successful search for feedback
         if (searchInteractionId && searchFeedback) {
           searchFeedback.markCompleted({
-            success: true,
+            success: true
             resultCount: vectorSearchResults.length,
             searchTime: Date.now() - searchStartTime,
-            relevanceScore: vectorSearchResults.length > 0 ? 0.8 : 0.3 // Estimated relevance;
+            relevanceScore: vectorSearchResults.length > 0 ? 0.8 : 0.3 // Estimated relevanc
           });
         }
       } else {
@@ -292,7 +260,6 @@
       }
     } catch (error) {
       toast.error('Vector search failed');
-
       // Track failed search for feedback
       if (searchInteractionId && searchFeedback) {
         searchFeedback.markFailed({
@@ -305,29 +272,23 @@
       isSearching = false;
     }
   }
-
   // View case details
   function viewCase(caseItem: unknown) {
     goto(`/cases?view=${caseItem.id}`);
   }
-
   // Delete evidence handler
   function confirmDeleteEvidence(evidence: unknown) {
-    evidenceToDelete = evidence;
+    evidenceToDelete = evidenc;
     deleteEvidenceDialogOpen = true;
   }
-
   async function deleteEvidence() {
     if (!evidenceToDelete) return;
-
     const formData = new FormData();
     formData.append('evidenceId', evidenceToDelete.id);
-
     const response = await fetch('/cases?/deleteEvidence', {
-      method: 'POST',;
+      method: 'POST',
       body: formData;
     });
-
     if ((response as { ok?: unknown; json?: unknown }).ok) {
       toast.success('Evidence deleted successfully');
       deleteEvidenceDialogOpen = false;
@@ -337,7 +298,6 @@
       toast.error('Failed to delete evidence');
     }
   }
-
   // Set evidence form case ID when dialog opens using Svelte 5 runes
   $effect(() => {
     if (addEvidenceDialogOpen && data?.activeCase?.id) {
@@ -352,12 +312,10 @@
     }
   });
 </script>
-
 <svelte:head>
   <title>Legal Cases - YoRHa Detective Interface</title>
   <meta name="description" content="Manage legal cases with AI-powered vector search and PostgreSQL storage" />
 </svelte:head>
-
 <div class="container mx-auto py-6 px-4 max-w-7xl">
   <div class="flex flex-col space-y-6">
     <!-- Header -->
@@ -373,9 +331,7 @@
           <Plus class="h-4 w-4" />
           New Case
         {/snippet}
-
     </div>
-
     <!-- Stats Overview -->
     {#if (data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseStats}
     <div class="grid gap-4 md:grid-cols-4">
@@ -417,7 +373,6 @@
       </div>
     </div>
     {/if}
-
     <!-- Filters and Search -->
     <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div class="flex flex-col gap-4 md:flex-row md:items-center">
@@ -429,7 +384,6 @@
             class="pl-8 w-full md:w-[400px]"
           />
         </div>
-
         <div class="flex gap-2 items-center">
           <Button
             variant="ghost"
@@ -446,7 +400,6 @@
               {/if}
               AI Search
             {/snippet}
-
           <Select
             options={[
               {value: 'all', label: 'All Status'},
@@ -460,7 +413,6 @@
             placeholder="Status"
             class="w-[140px]"
           />
-
           <Select
             options={[
               {value: 'all', label: 'All Priority'},
@@ -476,7 +428,6 @@
         </div>
       </div>
     </div>
-
     <!-- Cases Grid or Detail View -->
     {#if (data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).activeCase}
       <!-- Case Detail View -->
@@ -486,17 +437,14 @@
             {#snippet children()}
               ← Back to Cases
             {/snippet}
-
           <div class="flex gap-2">
             <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; addEvidenceDialogOpen = true; }}>
               {#snippet children()}
                 <Plus class="h-4 w-4 mr-2" />
                 Add Evidence
               {/snippet}
-
           </div>
         </div>
-
         <div class="p-6 nes-container">
           {#snippet children()}
             <div class="mb-4">
@@ -528,11 +476,9 @@
             {/if}
           {/snippet}
         </div>
-
         <!-- Evidence Section -->
         <div class="space-y-4">
           <h2 class="text-xl font-semibold">Evidence ({(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseEvidence.length})</h2>
-
           {#if (data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseEvidence.length === 0}
             <div class="p-6 nes-container">
               {#snippet children()}
@@ -544,7 +490,6 @@
                       <Plus class="h-4 w-4 mr-2" />
                       Add First Evidence
                     {/snippet}
-
                 </div>
               {/snippet}
             </div>
@@ -568,7 +513,6 @@
                             {#snippet children()}
                               <Edit2 class="h-4 w-4" />
                             {/snippet}
-
                           <Button class="bits-btn"
                             variant="ghost"
                             size="sm"
@@ -577,7 +521,6 @@
                             {#snippet children()}
                               <Trash2 class="h-4 w-4" />
                             {/snippet}
-
                         </div>
                       </div>
                     </div>
@@ -605,7 +548,6 @@
           </Tabs.Trigger>
           <Tabs.Trigger value="analytics">Analytics</Tabs.Trigger>
         </Tabs.List>
-
         <Tabs.Content value="all-cases" class="space-y-4">
           <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {#each filteredCases as caseItem}
@@ -657,7 +599,6 @@
                           <Plus class="h-4 w-4 mr-2" />
                           Create Your First Case
                         {/snippet}
-
                     </div>
                   {/snippet}
                 </div>
@@ -665,7 +606,6 @@
             {/each}
           </div>
         </Tabs.Content>
-
         <Tabs.Content value="vector-search" class="space-y-4">
           {#if vectorSearchResults.length > 0}
             <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -702,7 +642,6 @@
             </div>
           {/if}
         </Tabs.Content>
-
         <Tabs.Content value="analytics" class="space-y-4">
           <div class="grid gap-4 md:grid-cols-2">
             <div class="p-6 nes-container">
@@ -732,7 +671,6 @@
                 </div>
               {/snippet}
             </div>
-
             <div class="p-6 nes-container">
               {#snippet children()}
                 <div class="mb-4">
@@ -766,7 +704,6 @@
     {/if}
   </div>
 </div>
-
 <!-- Create Case Dialog -->
 <HeadlessDialog bind:open={createCaseDialogOpen} ariaLabelledby="create-case-title">
   <h2 id="create-case-title" class="text-lg font-semibold mb-2">Create New Case</h2>
@@ -866,17 +803,14 @@
       <div class="flex justify-end gap-2">
         <Button class="bits-btn" variant="ghost" type="button" onclick={() => createCaseDialogOpen = false}>
           {#snippet children()}Cancel{/snippet}
-
         <Button class="bits-btn" type="submit" disabled={isCreatingCase || !$createFormData.title?.trim()}>
           {#snippet children()}
             {#if isCreatingCase}Creating...{:else}Create Case{/if}
           {/snippet}
-
       </div>
     </form>
     <div aria-live="polite" class="sr-only">{isCreatingCase ? 'Creating case' : ''}</div>
 </HeadlessDialog>
-
 <!-- Add Evidence Dialog -->
 <HeadlessDialog bind:open={addEvidenceDialogOpen} ariaLabelledby="add-evidence-title">
   <h2 id="add-evidence-title" class="text-lg font-semibold mb-2">Add Evidence</h2>
@@ -940,17 +874,14 @@
       <div class="flex justify-end gap-2">
         <Button class="bits-btn" variant="ghost" type="button" onclick={() => addEvidenceDialogOpen = false}>
           {#snippet children()}Cancel{/snippet}
-
         <Button class="bits-btn" type="submit" disabled={isAddingEvidence || !$evidenceFormData.title?.trim()}>
           {#snippet children()}
             {#if isAddingEvidence}Adding...{:else}Add Evidence{/if}
           {/snippet}
-
       </div>
     </form>
     <div aria-live="polite" class="sr-only">{isAddingEvidence ? 'Adding evidence' : ''}</div>
 </HeadlessDialog>
-
 <!-- Delete Evidence Confirmation Dialog -->
 <AlertDialog.Root bind:open={deleteEvidenceDialogOpen}>
   <AlertDialog.Content>
@@ -964,14 +895,11 @@
     <AlertDialog.Footer>
       <Button class="bits-btn" variant="ghost" onclick={() => deleteEvidenceDialogOpen = false}>
         {#snippet children()}Cancel{/snippet}
-
       <Button class="bits-btn" variant="error" onclick={deleteEvidence}>
         {#snippet children()}Delete Evidence{/snippet}
-
     </AlertDialog.Footer>
   </AlertDialog.Content>
 </AlertDialog.Root>
-
 <!-- Feedback Integration Components -->
 <FeedbackIntegration
   bind:this={pageFeedback}
@@ -986,8 +914,7 @@
   trackOnMount={true}
   let:feedback
 />
-
-<FeedbackIntegration;
+<FeedbackIntegratio;
   bind:this={searchFeedback}
   interactionType="ai_search"
   ratingType="search_relevance"
@@ -995,8 +922,7 @@
   context={{ component: 'VectorSearch', legalDomain: 'case_management' }}
   let:feedback
 />
-
-<FeedbackIntegration;
+<FeedbackIntegratio;
   bind:this={caseCreationFeedback}
   interactionType="case_creation"
   ratingType="ui_experience"
@@ -1004,6 +930,4 @@
   context={{ component: 'CreateCaseDialog' }}
   let:feedback
 />
-
 <!-- Tailwind CSS will handle all styling through bits-ui components -->
-

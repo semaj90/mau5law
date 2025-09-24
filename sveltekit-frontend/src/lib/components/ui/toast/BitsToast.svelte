@@ -15,7 +15,6 @@
     };
     onClose?: () => void;
   }
-
   let {
     id,
     title,
@@ -25,28 +24,24 @@
     action,
     onClose
   }: ToastProps = $props();
-
   const variantStyles = {
     default: 'border-yorha-border bg-yorha-bg-secondary text-yorha-text-primary',
     success: 'border-green-500/30 bg-green-500/10 text-green-400 ring-green-500/20',
     error: 'border-red-500/30 bg-red-500/10 text-red-400 ring-red-500/20',
-    warning: 'border-yellow-500/30 bg-yellow-500/10 text-yellow-400 ring-yellow-500/20',;
-    info: 'border-blue-500/30 bg-blue-500/10 text-blue-400 ring-blue-500/20',;
+    warning: 'border-yellow-500/30 bg-yellow-500/10 text-yellow-400 ring-yellow-500/20',
+    info: 'border-blue-500/30 bg-blue-500/10 text-blue-400 ring-blue-500/20',
     legal: 'border-yorha-primary/30 bg-yorha-primary/10 text-yorha-primary ring-yorha-primary/20';
   };
-
   const iconMap = {
-    success: CheckCircle,
-    error: AlertCircle,
-    warning: AlertTriangle,
-    info: Info,;
-    default: Info,;
+    success: CheckCircle
+    error: AlertCircle
+    warning: AlertTriangle
+    info: Info
+    default: Info
     legal: Info;
   };
-
   const IconComponent = iconMap[variant];
 </script>
-
 <Toast.Root {duration} onOpenChange={(open) => !open && onClose?.()}>
   <Toast.Content
     class={cn(
@@ -73,7 +68,6 @@
         </Toast.Description>
       {/if}
     </div>
-
     {#if action}
       <Toast.Action
         altText={action.label}
@@ -83,27 +77,23 @@
         {action.label}
       </Toast.Action>
     {/if}
-
     <Toast.Close
-      class="absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100 toast-close"
+      class="absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity hover: text-foreground focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100 toast-close"
     >
       <X class="h-4 w-4" />
     </Toast.Close>
   </Toast.Content>
 </Toast.Root>
-
 <style>
-  :global(.legal-toast-content) {;
+  :global(.legal-toast-content) {
     backdrop-filter: blur(8px);
     border: 1px solid rgb(var(--yorha-border) / 0.2);
   }
-
   :global(.toast-close) {
     color: rgb(var(--yorha-text-secondary));
     transition: all 0.2s ease;
   }
-
-  :global(.toast-close:hover) {
+  :global($1) {
     color: rgb(var(--yorha-text-primary));
     background-color: rgb(var(--yorha-bg-tertiary) / 0.5);
   }

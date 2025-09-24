@@ -1,25 +1,22 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     showDetails?: unknown;
   }
   let {
     showDetails = false
   }: Props = $props();
-
   import { onMount, onDestroy } from 'svelte';
   import { memoryMonitoring } from '$lib/services/memory-monitoring.service';
   let memoryData = $state({
     currentLOD: { name: 'medium', level: 2 },
     memoryPressure: 0.5,
-    pools: [],;
+    pools: [],
     clusters: [],
     cacheLayers: [];
   });
   let updateCount = $state(0);
   let isOptimizing = $state(false);
-
   $effect(() => {
     memoryMonitoring.start(10000); // Update every 10 seconds
     memoryMonitoring.onUpdate((data) => {
@@ -27,11 +24,9 @@
       updateCount++;
     });
   });
-
   onDestroy(() => {
     memoryMonitoring.stop();
   });
-
   async function triggerOptimization() {
     isOptimizing = true;
     try {
@@ -45,13 +40,11 @@
       isOptimizing = false;
     }
   }
-
   function getMemoryPressureColor(pressure: number): string {
     if (pressure > 0.9) return 'text-red-600';
     if (pressure > 0.7) return 'text-yellow-600';
     return 'text-green-600';
   }
-
   function formatBytes(bytes: number): string {
     const sizes = ['B', 'KB', 'MB', 'GB'];
     if (bytes === 0) return '0 B';
@@ -59,13 +52,12 @@
     return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
   }
 </script>
-
 <div class="memory-monitor bg-white border rounded-lg p-4 shadow-sm">
   <div class="flex items-center justify-between mb-4">
     <h3 class="text-lg font-semibold">Memory Monitor</h3>
     <div class="flex items-center gap-2">
       <div class="text-xs text-gray-500">Updates: {updateCount}</div>
-      <button 
+      <button
         class="optimize-btn px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
         onclick={triggerOptimization}
         disabled={isOptimizing}
@@ -74,27 +66,23 @@
       </button>
     </div>
   </div>
-
   <!-- Key Metrics -->
   <div class="grid grid-cols-3 gap-4 mb-4">
     <div class="metric">
       <div class="text-xs text-gray-500">LOD Level</div>
       <div class="text-lg font-bold">{memoryData.currentLOD.name}</div>
     </div>
-    
     <div class="metric">
       <div class="text-xs text-gray-500">Memory Pressure</div>
       <div class="text-lg font-bold {getMemoryPressureColor(memoryData.memoryPressure)}">
         {(memoryData.memoryPressure * 100).toFixed(1)}%
       </div>
     </div>
-    
     <div class="metric">
       <div class="text-xs text-gray-500">Active Clusters</div>
       <div class="text-lg font-bold">{memoryData.clusters.length}</div>
     </div>
   </div>
-
   <!-- Memory Pools -->
   {#if showDetails && memoryData.pools.length > 0}
     <div class="pools mb-4">
@@ -105,7 +93,7 @@
             <span class="font-medium">{pool.id}</span>
             <div class="flex items-center gap-2">
               <div class="usage-bar w-20 h-2 bg-gray-200 rounded">
-                <div 
+                <div
                   class="usage-fill h-full bg-blue-600 rounded"
                   style="width: {pool.percentage}%"
                 ></div>
@@ -117,7 +105,6 @@
       </div>
     </div>
   {/if}
-
   <!-- Cache Layers -->
   {#if showDetails && memoryData.cacheLayers.length > 0}
     <div class="cache-layers">
@@ -133,9 +120,8 @@
     </div>
   {/if}
 </div>
-
 <style>
-  .usage-fill {;
+  .usage-fill {
     transition: width 0.3s ease;
   }
 </style>

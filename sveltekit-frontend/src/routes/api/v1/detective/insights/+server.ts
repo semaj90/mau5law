@@ -2,19 +2,16 @@
  * Detective Mode Insights API Route
  * GET /api/v1/detective/insights - Get AI-generated insights for case
  */
-
 import { json, error, type RequestHandler } from '@sveltejs/kit'
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
 import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud'
 import { z } from 'zod'
-
 // Query schema
 const InsightsQuerySchema = z.object({
   caseId: z.string().uuid(),
   insightType: z.enum(['summary', 'patterns', 'risks', 'recommendations', 'all']).default('all'),
   depth: z.enum(['quick', 'detailed', 'comprehensive']).default('detailed')
 })
-
 /*
  * GET /api/v1/detective/insights
  * Get AI-generated insights for a case
@@ -28,15 +25,12 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
       )
     }
-
     // Parse query parameters
     const queryParams = Object.fromEntries(url.searchParams.entries()
     const { caseId, insightType, depth } = InsightsQuerySchema.parse(queryParams)
-
     // Create service instances
     const casesService = new CasesCRUDService(locals.user.id)
     const evidenceService = new EvidenceCRUDService(locals.user.id)
-
     // Verify case exists and user has access
     const caseData = await casesService.getById(caseId)
     if (!caseData) {
@@ -45,10 +39,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' })
       )
     }
-
     // Get case evidence for insight generation
     const evidenceResult = await evidenceService.listByCase(caseId, { page: 1, limit: 100 })
-
     // Generate insights based on case data and evidence
     const insights = await generateDetectiveInsights(
       caseData,
@@ -57,9 +49,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       depth,
       locals.user.id
     )
-
     return json({
-      success: true,
+      success: true
       data: {
         caseId,
         insights,
@@ -77,10 +68,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         action: 'insights_generated'
       }
     })
-
   } catch (err: any) {
     console.error('Error getting detective insights:', err)
-
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -91,7 +80,6 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         })
       )
     }
-
     return error(
       500,
       makeHttpErrorPayload({
@@ -102,62 +90,54 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     )
   }
 }
-
 /*
  * Generate comprehensive detective insights
  */
 async function generateDetectiveInsights(
-  caseData: any,
-  evidence: any[],
-  insightType: string,
-  depth: string,
+  caseData: any
+  evidence: any[]
+  insightType: string
+  depth: string
   userId: string
 ): Promise<any> {
   const insights: any = {
     overallConfidence: 0,
-    summary: null,
+    summary: null
     patterns: [],
-    risks: null,
+    risks: null
     recommendations: [],
     keyFindings: [],
-    timeline: null,
+    timeline: null
     connections: null
   }
-
   try {
     // Generate summary insights
     if (insightType === 'summary' || insightType === 'all') {
       insights.summary = await generateSummaryInsights(caseData, evidence)
       insights.overallConfidence = Math.max(insights.overallConfidence, 0.82)
     }
-
     // Generate pattern insights
     if (insightType === 'patterns' || insightType === 'all') {
       insights.patterns = await generatePatternInsights(evidence)
       insights.overallConfidence = Math.max(insights.overallConfidence, 0.75)
     }
-
     // Generate risk assessment
     if (insightType === 'risks' || insightType === 'all') {
       insights.risks = await generateRiskInsights(caseData, evidence)
       insights.overallConfidence = Math.max(insights.overallConfidence, 0.78)
     }
-
     // Generate recommendations
     if (insightType === 'recommendations' || insightType === 'all') {
       insights.recommendations = await generateRecommendationInsights(caseData, evidence, depth)
       insights.overallConfidence = Math.max(insights.overallConfidence, 0.80)
     }
-
     // Generate key findings if comprehensive analysis
     if (depth === 'comprehensive') {
       insights.keyFindings = await generateKeyFindings(caseData, evidence)
       insights.timeline = await generateTimelineInsights(evidence)
       insights.connections = await generateConnectionInsights(evidence)
     }
-
     return insights
-
   } catch (error) {
     console.error('Insight generation error:', error)
     return {
@@ -167,7 +147,6 @@ async function generateDetectiveInsights(
     }
   }
 }
-
 /*
  * Generate summary insights
  */
@@ -181,7 +160,6 @@ async function generateSummaryInsights(caseData: any, evidence: any[]): Promise<
     confidence: 0.82
   }
 }
-
 /*
  * Generate pattern insights
  */
@@ -210,7 +188,6 @@ async function generatePatternInsights(evidence: any[]): Promise<any[]> {
     }
   ]
 }
-
 /*
  * Generate risk assessment insights
  */
@@ -250,7 +227,6 @@ async function generateRiskInsights(caseData: any, evidence: any[]): Promise<any
     ]
   }
 }
-
 /*
  * Generate recommendation insights
  */
@@ -281,7 +257,6 @@ async function generateRecommendationInsights(caseData: any, evidence: any[], de
       confidence: 0.78
     }
   ]
-
   if (depth === 'comprehensive') {
     recommendations.push({
         priority: 'low',
@@ -301,10 +276,8 @@ async function generateRecommendationInsights(caseData: any, evidence: any[], de
       }
     )
   }
-
   return recommendations
 }
-
 /*
  * Generate key findings
  */
@@ -317,7 +290,6 @@ async function generateKeyFindings(caseData: any, evidence: any[]): Promise<stri
     'Technical evidence requires expert interpretation'
   ]
 }
-
 /*
  * Generate timeline insights
  */
@@ -349,7 +321,6 @@ async function generateTimelineInsights(evidence: any[]): Promise<any> {
     ]
   }
 }
-
 /*
  * Generate connection insights
  */

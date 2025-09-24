@@ -1,12 +1,11 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { run } from 'svelte/legacy';
   // Badge replaced with span - not available in enhanced-bits
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import { Card } from '$lib/components/ui/enhanced-bits';
   import CardContent from '$lib/components/ui/enhanced-bits/CardContent.svelte';
   import CardHeader from '$lib/components/ui/enhanced-bits/CardHeader.svelte';
@@ -24,31 +23,26 @@ https://svelte.dev/e/js_parse_error -->
   import Input from '$lib/components/ui/enhanced-bits/Input.svelte';
   import { Copy, Edit, MoreVertical, Plus, Search, Star, Tag, Trash2 } from 'lucide-svelte';
   import { onMount } from 'svelte';
-
   import type { Citation } from '$lib/types/api';
-
   let editingCitation: Citation | null = $state(null);
   let searchQuery = $state('');
   let selectedCategory = $state('all');
   let showAddDialog = $state(false);
   let filteredCitations: Citation[] = $state([]);
   let savedCitations: Citation[] = $state([]);
-
   // Initialize with sample data
   $effect(() => {
     ];
   });
-
   // New citation form
   let newCitation = $state({
     title: '',
     content: '',
     source: '',
-    category: 'general',;
-    tags: '',;
-    notes: '',;
+    category: 'general',
+    tags: '',
+    notes: '',
   });
-
   // Categories for filtering
   const categories = [
     { value: 'all', label: 'All Categories' },
@@ -59,7 +53,6 @@ https://svelte.dev/e/js_parse_error -->
     { value: 'evidence', label: 'Evidence' },
     { value: 'report-citations', label: 'From Reports' },
   ];
-
   // Reactive filtering with Fuse.js-like search
   run(() => {
     filteredCitations = savedCitations.filter((citation) => {
@@ -71,7 +64,6 @@ https://svelte.dev/e/js_parse_error -->
   (citation.notes && citation.notes.toLowerCase().includes(searchQuery.toLowerCase())) ||
   citation.tags.some((tag: string) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
       const matchesCategory = selectedCategory === 'all' || citation.category === selectedCategory;
-
       return matchesSearch && matchesCategory;
     });
   });
@@ -81,27 +73,24 @@ https://svelte.dev/e/js_parse_error -->
         ...newCitation,
         tags: newCitation.tags
           .split.map((tag) => tag.trim())
-          .filter((tag: string) => tag.length > 0),;
+          .filter((tag: string) => tag.length > 0),
         id: crypto.randomUUID(),
-        isFavorite: false,
+        isFavorite: false
         savedAt: new Date(),
         createdAt: new Date(),
-        updatedAt: new Date(),;
+        updatedAt: new Date(),
       };
-
       // In a real app, this would POST to /api/user/saved-citations
       savedCitations = [...savedCitations, citation];
-
       // Reset form
       newCitation = {
         title: '',
         content: '',
         source: '',
-        category: 'general',;
-        tags: '',;
-        notes: '',;
+        category: 'general',
+        tags: '',
+        notes: '',
       };
-
       showAddDialog = false;
     } catch (error) {
       console.error('Error saving citation:', error);
@@ -117,7 +106,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   async function toggleFavorite(citation: unknown) {
     try {
-      citation.isFavorite = !citation.isFavorite;
+      citation.isFavorite = !citation.isFavorit;
       // In a real app, this would PATCH /api/user/saved-citations/{id}
       savedCitations = [...savedCitations];
     } catch (error) {
@@ -139,9 +128,8 @@ https://svelte.dev/e/js_parse_error -->
         tags: Array.isArray(editingCitation.tags)
           ? editingCitation.tags: (editingCitation.tags as any as string)
               ?.split.map((tag: string) => tag.trim())
-              .filter((tag: string) => tag.length > 0),;
+              .filter((tag: string) => tag.length > 0),
       };
-
       const index = savedCitations.findIndex((c) => c.id === updated.id);
       if (index >= 0) {
         savedCitations[index] = updated;
@@ -162,11 +150,9 @@ https://svelte.dev/e/js_parse_error -->
     }, )
   );
 </script>
-
 <svelte:head>
   <title>Saved Citations - Legal AI Assistant</title>
 </svelte:head>
-
 <div class="space-y-4">
   <!-- Header -->
   <div class="space-y-4">
@@ -175,7 +161,6 @@ https://svelte.dev/e/js_parse_error -->
         <h1 class="space-y-4">Saved Citations</h1>
         <p class="space-y-4">Manage your collection of legal citations and references</p>
       </div>
-
       <div class="space-y-4">
         <div class="space-y-4">
           <span class="space-y-4">{totalCitations}</span>
@@ -188,7 +173,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   </div>
-
   <!-- Toolbar -->
   <div class="space-y-4">
     <div class="space-y-4">
@@ -200,16 +184,14 @@ https://svelte.dev/e/js_parse_error -->
           bind:value={searchQuery}
           class="space-y-4" />
       </div>
-
       <select bind:value={selectedCategory} class="space-y-4">
         {#each categories as category}
           <option value={category.value}>{category.label}</option>
         {/each}
       </select>
     </div>
-
     <div class="space-y-4">
-  <Button 
+  <Button
         class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-add-btn"
         onclick={() =>
 (showAddDialog = true)}
@@ -222,13 +204,11 @@ https://svelte.dev/e/js_parse_error -->
       >
         <Plus class="mr-2 w-4 h-4" aria-hidden="true" role="img" aria-label="Plus icon" />
         Add Citation
-
       <div id="add-citation-help" class="sr-only">
         Create a new legal citation with title, content, source, category, and tags
       </div>
     </div>
   </div>
-
   <!-- Citations Grid -->
   <div class="space-y-4">
     {#each filteredCitations as citation (citation.id)}
@@ -236,13 +216,12 @@ https://svelte.dev/e/js_parse_error -->
         <div class="yorha-panel-header citation-header">
           <div class="space-y-4">
             <h3 class="space-y-4">{citation.title}</h3>
-
             <DropdownMenuRoot>
               {#snippet children({ trigger, menu })}
                 <DropdownMenuTrigger {trigger}>
-                  <Button 
+                  <Button
                     class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-menu-btn"
-                    variant="ghost" 
+                    variant="ghost"
                     size="sm"
                     aria-label="Open citation actions menu"
                     aria-describedby="citation-menu-help"
@@ -252,7 +231,6 @@ https://svelte.dev/e/js_parse_error -->
                     data-citation-id={citation.id}
                   >
 <MoreVertical class="w-4 h-4" aria-hidden="true" role="img" aria-label="Menu options icon" />
-
                   <div id="citation-menu-help" class="sr-only">
                     Access citation actions: favorite, copy, edit, or delete
                   </div>
@@ -281,7 +259,6 @@ https://svelte.dev/e/js_parse_error -->
               {/snippet}
             </DropdownMenuRoot>
           </div>
-
           <div class="space-y-4">
             <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{citation.category}</span>
             {#if citation.isFavorite}
@@ -292,17 +269,14 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </div>
         </div>
-
         <div class="yorha-panel-content citation-content">
           <p class="space-y-4">{citation.content}</p>
           <p class="space-y-4">Source: {citation.source}</p>
-
           {#if citation.notes}
             <div class="space-y-4">
               <p>{citation.notes}</p>
             </div>
           {/if}
-
           {#if citation.tags.length > 0}
             <div class="space-y-4">
               {#each citation.tags as tag}
@@ -313,12 +287,10 @@ https://svelte.dev/e/js_parse_error -->
               {/each}
             </div>
           {/if}
-
           <div class="space-y-4">
             <span class="space-y-4">
               Saved {new Date(citation.savedAt).toLocaleDateString()}
             </span>
-
             {#if citation.contextData?.caseId}
               <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Case: {citation.contextData.caseId}</span>
             {/if}
@@ -326,14 +298,13 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </CardRoot>
     {/each}
-
     {#if filteredCitations.length === 0}
       <div class="space-y-4">
         <div class="space-y-4">
           {#if searchQuery || selectedCategory !== 'all'}
             <h3 class="space-y-4">No citations found</h3>
             <p class="space-y-4">No citations match your current search criteria.</p>
-            <Button 
+            <Button
               class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-filter-btn"
               variant="secondary"
               onclick={() =>
@@ -349,7 +320,6 @@ https://svelte.dev/e/js_parse_error -->
               data-operation="clear-filters"
             >
               Clear filters
-
             <div id="clear-filters-help" class="sr-only">
               Remove search query and category filters to display all saved citations
             </div>
@@ -359,7 +329,7 @@ https://svelte.dev/e/js_parse_error -->
               You haven't saved any citations yet. Start by adding citations from reports or create
               new ones.
             </p>
-            <Button 
+            <Button
               class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-first-citation-btn"
               onclick={() =>
 (showAddDialog = true)}
@@ -372,7 +342,6 @@ https://svelte.dev/e/js_parse_error -->
             >
               <Plus class="mr-2 w-4 h-4" aria-hidden="true" role="img" aria-label="Plus icon" />
               Add your first citation
-
             <div id="first-citation-help" class="sr-only">
               Start your citation collection by creating your first legal citation with source and notes
             </div>
@@ -382,7 +351,6 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   </div>
 </div>
-
 <!-- Add Citation Dialog -->
 <DialogRoot open={showAddDialog} openchange={(open) => showAddDialog = open}>
   <DialogContent class="sm:max-w-[425px]" overlay={ } content={ } openState={showAddDialog}>
@@ -390,13 +358,11 @@ https://svelte.dev/e/js_parse_error -->
       <DialogTitle title="Add New Citation" />
       <DialogDescription description="Create a new citation to save for future reference." />
     </DialogHeader>
-
     <div class="space-y-4">
       <div class="space-y-4">
         <label for="title">Title</label>
         <Input id="title" bind:value={newCitation.title} placeholder="Citation title" />
       </div>
-
       <div class="space-y-4">
         <label for="content">Content</label>
         <textarea
@@ -405,12 +371,10 @@ https://svelte.dev/e/js_parse_error -->
           placeholder="Citation text or quote"
           rows="4"></textarea>
       </div>
-
       <div class="space-y-4">
         <label for="source">Source</label>
         <Input id="source" bind:value={newCitation.source} placeholder="Source reference" />
       </div>
-
       <div class="space-y-4">
         <div class="space-y-4">
           <label for="category">Category</label>
@@ -420,13 +384,11 @@ https://svelte.dev/e/js_parse_error -->
             {/each}
           </select>
         </div>
-
         <div class="space-y-4">
           <label for="tags">Tags</label>
           <Input id="tags" bind:value={newCitation.tags} placeholder="tag1, tag2, tag3" />
         </div>
       </div>
-
       <div class="space-y-4">
         <label for="notes">Notes (optional)</label>
         <textarea
@@ -436,11 +398,10 @@ https://svelte.dev/e/js_parse_error -->
           rows="4"></textarea>
       </div>
     </div>
-
     <DialogFooter>
-  <Button 
+  <Button
     class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
-    variant="secondary" 
+    variant="secondary"
     onclick={() =>
 (showAddDialog = false)}
     aria-label="Cancel citation creation and close dialog"
@@ -448,11 +409,10 @@ https://svelte.dev/e/js_parse_error -->
     data-nes-theme="dialog-secondary"
     data-enhanced-bits="true"
   >Cancel
-
-  <Button 
+  <Button
     class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-save-btn"
     onclick={() =>
-saveCitation()} 
+saveCitation()}
     disabled={!newCitation.title || !newCitation.content}
     aria-label={!newCitation.title || !newCitation.content ? 'Save citation - Title and content required' : 'Save new legal citation'}
     aria-describedby="save-citation-help"
@@ -463,14 +423,12 @@ saveCitation()}
     data-operation="save-citation"
   >
         Save Citation
-
       <div id="save-citation-help" class="sr-only">
         Save the new citation with all entered information to your collection
       </div>
     </DialogFooter>
   </DialogContent>
 </DialogRoot>
-
 <!-- Edit Citation Dialog -->
 {#if editingCitation}
   <DialogRoot open={true} openchange={() => (editingCitation = null)}>
@@ -478,23 +436,19 @@ saveCitation()}
       <DialogHeader>
         <DialogTitle title="Edit Citation" />
       </DialogHeader>
-
       <div class="space-y-4">
         <div class="space-y-4">
           <label for="edit-title">Title</label>
           <Input id="edit-title" bind:value={editingCitation.title} />
         </div>
-
         <div class="space-y-4">
           <label for="edit-content">Content</label>
           <textarea id="edit-content" bind:value={editingCitation.content} rows="4"></textarea>
         </div>
-
         <div class="space-y-4">
           <label for="edit-source">Source</label>
           <Input id="edit-source" bind:value={editingCitation.source} />
         </div>
-
         <div class="space-y-4">
           <div class="space-y-4">
             <label for="edit-category">Category</label>
@@ -504,23 +458,20 @@ saveCitation()}
               {/each}
             </select>
           </div>
-
           <div class="space-y-4">
             <label for="edit-tags">Tags</label>
             <Input id="edit-tags" bind:value={editingCitation.tags} />
           </div>
         </div>
-
         <div class="space-y-4">
           <label for="edit-notes">Notes</label>
           <textarea id="edit-notes" bind:value={editingCitation.notes} rows="4"></textarea>
         </div>
       </div>
-
       <DialogFooter>
-  <Button 
+  <Button
     class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
-    variant="secondary" 
+    variant="secondary"
     onclick={() =>
 (editingCitation = null)}
     aria-label="Cancel editing and close dialog"
@@ -528,8 +479,7 @@ saveCitation()}
     data-nes-theme="dialog-secondary"
     data-enhanced-bits="true"
   >Cancel
-
-  <Button 
+  <Button
     class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-update-btn"
     onclick={() =>
 updateCitation()}
@@ -540,7 +490,6 @@ updateCitation()}
     data-enhanced-bits="true"
     data-operation="update-citation"
   >Update Citation
-
   <div id="update-citation-help" class="sr-only">
     Apply changes to the citation and update your collection
   </div>
@@ -548,8 +497,6 @@ updateCitation()}
     </DialogContent>
   </DialogRoot>
 {/if}
-
 <style>
   /* @unocss-include */
 </style>
-

@@ -3,13 +3,11 @@
  * Demonstrates SSR data loading for the database sync integration test
  * Extends the main legal-ai page loader with testing-specific data
  */
-
 import type { PageServerLoad } from './$types.js';
 import { db } from '$lib/server/db/index.js';
 import { legalDocuments, ragSessions } from '$lib/server/db/schema-postgres.js';
 import { desc, eq, count, sql } from 'drizzle-orm';
 import { langExtractService } from '$lib/services/langextract-ollama-service.js';
-
 // Enhanced types for testing page
 export interface DatabaseSyncTestData {
   initialState: {
@@ -41,20 +39,16 @@ export interface DatabaseSyncTestData {
     testingEnvironment: boolean;
   };
 }
-
 export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSyncTestData> => {
   const startTime = Date.now();
-  
   try {
     // Test service availability with detailed error handling
     const [ollamaAvailable, ollamaModels] = await Promise.allSettled([
       langExtractService.isOllamaAvailable(),
       langExtractService.listAvailableModels().catch(() => [])
     ]);
-
     const isOllamaAvailable = ollamaAvailable.status === 'fulfilled' ? ollamaAvailable.value : false;
     const availableModels = ollamaModels.status === 'fulfilled' ? ollamaModels.value : [];
-
     // Enhanced database queries for testing
     const [
       recentSessions,
@@ -76,12 +70,11 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
         .where(eq(ragSessions.isActive, true))
         .orderBy(desc(ragSessions.updatedAt))
         .limit(10), // More sessions for testing
-
       // Recent documents with metadata
       db
         .select({
           id: legalDocuments.id,
-          title: legalDocuments.title,;
+          title: legalDocuments.title,
           summary: legalDocuments.summary,
           documentType: legalDocuments.documentType,
           createdAt: legalDocuments.createdAt,
@@ -91,19 +84,16 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
         .from(legalDocuments)
         .orderBy(desc(legalDocuments.createdAt))
         .limit(15), // More documents for testing
-
       // Total counts
       Promise.all([
         db.select({ count: count() }).from(legalDocuments),
         db.select({ count: count() }).from(ragSessions)
       ]),
-
       // Documents processed today
       db
         .select({ count: count() })
         .from(legalDocuments)
         .where(sql`DATE(created_at) = CURRENT_DATE`),
-
       // Processing performance metrics
       db
         .select({
@@ -114,7 +104,6 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
         .from(legalDocuments)
         .where(sql`processing_metadata IS NOT NULL`)
     ]);
-
     // Process results with error handling
     const sessions = recentSessions.status === 'fulfilled' ? recentSessions.value : [];
     const documents = recentDocuments.status === 'fulfilled' ? recentDocuments.value : [];
@@ -125,7 +114,6 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
       cacheHits: 0,
       totalProcessed: 0
     }];
-
     // Calculate document counts per session
     const sessionsWithCounts = await Promise.all(sessions.map(async (session) => {
         try {
@@ -152,13 +140,11 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
         }
       })
     );
-
     // Calculate metrics
     const metricsData = metrics[0];
-    const cacheHitRate = metricsData.totalProcessed > 0 
-      ? (metricsData.cacheHits / metricsData.totalProcessed) * 100 
+    const cacheHitRate = metricsData.totalProcessed > 0
+      ? (metricsData.cacheHits / metricsData.totalProcessed) * 100
       : 0;
-
     // Test database connectivity
     let postgresqlAvailable = true;
     try {
@@ -167,7 +153,6 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
       console.error('PostgreSQL connectivity test failed:', error);
       postgresqlAvailable = false;
     }
-
     // Test Redis connectivity (simplified for testing)
     let redisAvailable = true;
     try {
@@ -178,18 +163,16 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
       console.error('Redis connectivity test failed:', error);
       redisAvailable = false;
     }
-
     const serverRenderTime = Date.now() - startTime;
-
     const pageData: DatabaseSyncTestData = {
       initialState: {
         langchainService: {
-          isAvailable: isOllamaAvailable,
-          models: availableModels,
+          isAvailable: isOllamaAvailable
+          models: availableModels
           error: isOllamaAvailable ? null : 'Ollama service not available'
         },
-        recentSessions: sessionsWithCounts,
-        recentDocuments: documents.map(doc => ({
+        recentSessions: sessionsWithCounts
+        recentDocuments: documents.map(doc => ({,
           id: doc.id,
           title: doc.title || 'Untitled Test Document',
           summary: doc.summary || 'No summary available',
@@ -198,9 +181,9 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
           keyTerms: doc.keyTerms || []
         })),
         serviceStatus: {
-          postgresql: postgresqlAvailable,
-          ollama: isOllamaAvailable,
-          redis: redisAvailable,
+          postgresql: postgresqlAvailable
+          ollama: isOllamaAvailable
+          redis: redisAvailable
           lastChecked: new Date().toISOString()
         },
         testingMetrics: {
@@ -210,7 +193,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
           averageProcessingTime: Math.round(metricsData.avgProcessingTime || 0),
           cacheHitRate: Math.round(cacheHitRate * 100) / 100
         }
-      },;
+      },
       meta: {
         totalDocuments: Number((counts[0] as any)?.count) || 0,
         totalSessions: Number((counts[1] as any)?.count) || 0,
@@ -218,26 +201,23 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
         testingEnvironment: true
       }
     };
-
     return pageData;
-
   } catch (error) {
     console.error('Failed to load database sync test data:', error);
-    
-    // Return comprehensive fallback data for testing;
+    // Return comprehensive fallback data for testing
     return {
       initialState: {
         langchainService: {
-          isAvailable: false,
+          isAvailable: false
           models: [],
           error: `Failed to load service data: ${error instanceof Error ? error.message: 'Unknown error'}`
         },
         recentSessions: [],
         recentDocuments: [],
         serviceStatus: {
-          postgresql: false,
-          ollama: false,
-          redis: false,
+          postgresql: false
+          ollama: false
+          redis: false
           lastChecked: new Date().toISOString()
         },
         testingMetrics: {
@@ -247,7 +227,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
           averageProcessingTime: 0,
           cacheHitRate: 0
         }
-      },;
+      },
       meta: {
         totalDocuments: 0,
         totalSessions: 0,

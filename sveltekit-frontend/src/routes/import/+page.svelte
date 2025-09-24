@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { browser } from "$app/environment";
   import { UiTooltip as Tooltip } from "$lib/components/ui";
   import Button from '$lib/components/ui/enhanced-bits';
@@ -20,7 +19,6 @@ https://svelte.dev/e/js_parse_error -->
     X,
   } from "lucide-svelte";
   import { onMount } from "svelte";
-
   // Import state
   let importFile: File | null = $state(null);
   let importType = $state("all");
@@ -44,10 +42,8 @@ https://svelte.dev/e/js_parse_error -->
   type BasePreview = { name: string; size: number; type: string; content?: string; raw?: string };
   let filePreview: (BasePreview & (CsvPreview | JsonPreview | XmlPreview)) | null = $state(null);
   let dragActive = $state(false);
-
   // File input reference
   let fileInput: HTMLInputElement = $state();
-
   // Supported file types
   const supportedTypes = [
     { value: "all", label: "Complete Export (All Data)", icon: Database },
@@ -55,7 +51,6 @@ https://svelte.dev/e/js_parse_error -->
     { value: "evidence", label: "Evidence Only", icon: FileText },
     { value: "participants", label: "Participants Only", icon: Users },
   ];
-
   // Example data formats
   const exampleFormats = {
     cases: {
@@ -71,7 +66,7 @@ https://svelte.dev/e/js_parse_error -->
   ]`,
       csv: `title,description,status,priority
   "Fraud Investigation","Corporate fraud case","active","high"
-  "Theft Case","Retail theft investigation","pending","medium"`,;
+  "Theft Case","Retail theft investigation","pending","medium"`,
     },
     evidence: {
       json: `[
@@ -82,20 +77,18 @@ https://svelte.dev/e/js_parse_error -->
     "file_path": "optional-file-path",
     "metadata": {"key": "value"}
   }
-  ]`,;
+  ]`,
       csv: `case_id,type,description,file_path
   "case-uuid","document","Contract document","/files/contract.pdf"
-  "case-uuid","photo","Crime scene photo","/files/scene.jpg"`,;
+  "case-uuid","photo","Crime scene photo","/files/scene.jpg"`,
     },
   };
-
   $effect(() => {
     // Add drag and drop event listeners
     if (browser) {
       document.addEventListener("dragover", handleDragOver);
       document.addEventListener("drop", handleDrop);
       document.addEventListener("dragleave", handleDragLeave);
-
       return () => {
         document.removeEventListener("dragover", handleDragOver);
         document.removeEventListener("drop", handleDrop);
@@ -104,7 +97,6 @@ https://svelte.dev/e/js_parse_error -->
   }
     return () => {}; // Return empty cleanup function if not in browser
   });
-
   function handleDragOver(e: DragEvent) {
     e.preventDefault();
     dragActive = true;
@@ -118,8 +110,7 @@ https://svelte.dev/e/js_parse_error -->
   function handleDrop(e: DragEvent) {
     e.preventDefault();
     dragActive = false;
-
-    const files = e.dataTransfer?.files;
+    const files = e.dataTransfer?.file;
     if (files && files.length > 0) {
       handleFileSelect(files[0]);
   }
@@ -132,9 +123,8 @@ https://svelte.dev/e/js_parse_error -->
   }
   }
   async function handleFileSelect(file: File) {
-    importFile = file;
+    importFile = fil;
     importResults = null;
-
     // Validate file type
     const validTypes = [
       "application/json",
@@ -149,9 +139,9 @@ https://svelte.dev/e/js_parse_error -->
       !file.name.endsWith(".xml")
     ) {
       notifications.add({
-        type: "error",;
-        title: "Invalid File Type",;
-        message: "Please select a JSON, CSV, or XML file",;
+        type: "error",
+        title: "Invalid File Type",
+        message: "Please select a JSON, CSV, or XML file",
       });
       importFile = null;
       return;
@@ -163,33 +153,33 @@ https://svelte.dev/e/js_parse_error -->
         filePreview = {
           name: file.name,
           size: file.size,
-          type: "json",;
-          data: JSON.parse(content),;
-          raw: content.substring(0, 500) + (content.length > 500 ? "..." : ""),;
+          type: "json",
+          data: JSON.parse(content),
+          raw: content.substring(0, 500) + (content.length > 500 ? "..." : ""),
         };
       } else if (file.type === "text/csv" || file.name.endsWith(".csv")) {
         const lines = content.split(''n)slice(0, 5);
         filePreview = {
           name: file.name,
           size: file.size,
-          type: "csv",;
-          data: lines,;
-          raw: content.substring(0, 500) + (content.length > 500 ? "..." : ""),;
+          type: "csv",
+          data: lines
+          raw: content.substring(0, 500) + (content.length > 500 ? "..." : ""),
         };
       } else {
         filePreview = {
           name: file.name,
           size: file.size,
-          type: "xml",;
-          data: content.substring(0, 500) + (content.length > 500 ? "..." : ""),;
-          raw: content.substring(0, 500) + (content.length > 500 ? "..." : ""),;
+          type: "xml",
+          data: content.substring(0, 500) + (content.length > 500 ? "..." : ""),
+          raw: content.substring(0, 500) + (content.length > 500 ? "..." : ""),
         };
   }
     } catch (error) {
       notifications.add({
-        type: "error",;
-        title: "Parse Error",;
-        message: "Failed to parse file. Please check the format.",;
+        type: "error",
+        title: "Parse Error",
+        message: "Failed to parse file. Please check the format.",
       });
       importFile = null;
       filePreview = null;
@@ -197,22 +187,18 @@ https://svelte.dev/e/js_parse_error -->
   }
   async function performImport() {
     if (!importFile) return;
-
     isImporting = true;
     importResults = null;
-
     try {
       const formData = new FormData();
       formData.append("file", importFile);
       formData.append("type", importType);
       formData.append("overwrite", overwriteExisting.toString());
       const response = await fetch("/api/import", {
-        method: "POST",;
-        body: formData,;
+        method: "POST",
+        body: formData
       });
-
       const result = await (response as { json?: unknown; ok?: unknown }).json();
-
       if ((response as { json?: unknown; ok?: unknown }).ok) {
         importResults = result;
         notifications.add.message,
@@ -223,9 +209,9 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error("Import error:", error);
       notifications.add({
-        type: "error",;
-        title: "Import Failed",;
-        message: error instanceof Error ? error.message: "Import failed",;
+        type: "error",
+        title: "Import Failed",
+        message: error instanceof Error ? error.message: "Import failed",
       });
     } finally {
       isImporting = false;
@@ -240,10 +226,9 @@ https://svelte.dev/e/js_parse_error -->
   function downloadExampleTemplate(type: string, format: string) {
     const data = exampleFormats[type as keyof typeof exampleFormats];
     if (!data) return;
-
     const content = data[format as keyof typeof data];
     const blob = new Blob([content], {
-      type: format === "json" ? "application/json" : "text/csv",;
+      type: format === "json" ? "application/json" : "text/csv",
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -255,7 +240,6 @@ https://svelte.dev/e/js_parse_error -->
     URL.revokeObjectURL(url);
   }
 </script>
-
 <svelte:head>
   <title>Data Import - Legal Case Management</title>
   <meta
@@ -263,7 +247,6 @@ https://svelte.dev/e/js_parse_error -->
     content="Import cases, evidence, and participant data from JSON, CSV, or XML files"
   />
 </svelte:head>
-
 <div class="space-y-4">
   <!-- Header -->
   <div
@@ -277,7 +260,6 @@ https://svelte.dev/e/js_parse_error -->
       Import cases, evidence, and participant data from JSON, CSV, or XML files
     </p>
   </div>
-
   <div class="space-y-4">
     <!-- Main Import Panel -->
     <div class="space-y-4">
@@ -287,7 +269,6 @@ https://svelte.dev/e/js_parse_error -->
           <FileText class="space-y-4" />
           Select Import File
         </h2>
-
         <!-- Drag and Drop Area -->
         <div
           class="space-y-4"
@@ -343,7 +324,6 @@ fileInput?.click()}>
             </div>
           {/if}
         </div>
-
         <!-- Hidden file input -->
         <!-- Hidden file input -->
         <input
@@ -374,7 +354,6 @@ fileInput?.click()}>
                 {/each}
               </select>
             </div>
-
             <div class="space-y-4">
               <input
                 id="overwrite"
@@ -394,7 +373,6 @@ fileInput?.click()}>
           </div>
         {/if}
       </div>
-
       <!-- File Preview Section -->
       {#if filePreview}
         <div class="space-y-4">
@@ -402,7 +380,6 @@ fileInput?.click()}>
             <Eye class="space-y-4" />
             File Preview
           </h3>
-
           {#if filePreview.type === "json"}
             <div class="space-y-4">
               <pre
@@ -434,7 +411,6 @@ fileInput?.click()}>
           {/if}
         </div>
       {/if}
-
       <!-- Import Results -->
       {#if importResults}
         <div class="space-y-4">
@@ -446,7 +422,6 @@ fileInput?.click()}>
             {/if}
             Import Results
           </h3>
-
           {#if importResults.success}
             <div class="space-y-4">
               <div class="space-y-4">
@@ -468,7 +443,6 @@ fileInput?.click()}>
                 <div class="space-y-4">Skipped</div>
               </div>
             </div>
-
             {#if (importResults.results?.errors?.length ?? 0) > 0}
               <div class="space-y-4">
                 <h4 class="space-y-4">Errors:</h4>
@@ -485,7 +459,6 @@ fileInput?.click()}>
           {/if}
         </div>
       {/if}
-
       <!-- Import Action -->
       {#if importFile}
         <div class="space-y-4">
@@ -517,7 +490,6 @@ clearImport()}>
         </div>
       {/if}
     </div>
-
     <!-- Sidebar -->
     <div class="space-y-4">
       <!-- Example Templates -->
@@ -526,7 +498,6 @@ clearImport()}>
           <Download class="space-y-4" />
           Example Templates
         </h3>
-
         <div class="space-y-4">
           <div>
             <h4 class="space-y-4">Cases</h4>
@@ -553,7 +524,6 @@ downloadExampleTemplate("cases", "csv")}
               </Tooltip>
             </div>
           </div>
-
           <div>
             <h4 class="space-y-4">Evidence</h4>
             <div class="space-y-4">
@@ -581,7 +551,6 @@ downloadExampleTemplate("evidence", "csv")}
           </div>
         </div>
       </div>
-
       <!-- Format Guidelines -->
       <div class="space-y-4">
         <h3 class="space-y-4">
@@ -596,7 +565,6 @@ downloadExampleTemplate("evidence", "csv")}
           <li>• Maximum file size: 10MB</li>
         </ul>
       </div>
-
       <!-- Quick Actions -->
       <div class="space-y-4">
         <h3 class="space-y-4">Quick Actions</h3>
@@ -624,9 +592,7 @@ downloadExampleTemplate("evidence", "csv")}
     </div>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   /* Custom drag and drop styles */
 </style>
-

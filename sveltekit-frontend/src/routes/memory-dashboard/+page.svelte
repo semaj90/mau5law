@@ -1,58 +1,48 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
-
   let systemStatus = $state(null);
   let memoryPrediction = $state(null);
   let isLoading = $state(true);
   let error = $state(null);
-
   $effect(() => {
     (async () => {
 if (browser) {
       await loadData();
-
       // Refresh data every 30 seconds
       setInterval(loadData, 30000);
     }
     })();
   });
-
   async function loadData() {
     try {
       error = null;
-
       // Fetch system status and memory prediction
       const [statusResponse, predictionResponse] = await Promise.all([
         fetch('/api/memory/neural?action=status'),
         fetch('/api/memory/neural?action=predict&horizon=30')
       ]);
-
       if (statusResponse.ok) {
         const statusResult = await statusResponse.json();
         systemStatus = statusResult.success ? statusResult.data: null;
       }
-
       if (predictionResponse.ok) {
         const predictionResult = await predictionResponse.json();
         memoryPrediction = predictionResult.success ? predictionResult.data: null;
       }
     } catch (err) {
       console.error('Failed to load memory data:', err);
-      error = err.message;
+      error = err.messag;
     } finally {
       isLoading = false;
     }
   }
-
   async function triggerOptimization() {
     isLoading = true;
     try {
       const response = await fetch('/api/memory/neural?action=optimize');
       const result = await (response as { json?: unknown }).json();
-
       if ((result as { success?: unknown; error?: unknown }).success) {
         // Reload data after optimization
         await loadData();
@@ -61,18 +51,16 @@ if (browser) {
       }
     } catch (err) {
       console.error('Optimization failed:', err);
-      error = err.message;
+      error = err.messag;
     } finally {
       isLoading = false;
     }
   }
-
   function getHealthColor(value: number): string {
     if (value >= 0.8) return 'text-green-600';
     if (value >= 0.6) return 'text-yellow-600';
     return 'text-red-600';
   }
-
   function formatBytes(bytes: number): string {
     const sizes = ['B', 'KB', 'MB', 'GB'];
     if (bytes === 0) return '0 B';
@@ -80,11 +68,9 @@ if (browser) {
     return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
   }
 </script>
-
 <svelte:head>
   <title>Memory Optimization Dashboard</title>
 </svelte:head>
-
 <div class="container mx-auto p-6 space-y-6">
   <div class="flex items-center justify-between">
     <h1 class="text-3xl font-bold text-gray-900">Memory Optimization Dashboard</h1>
@@ -101,7 +87,6 @@ if (browser) {
       </button>
     </div>
   </div>
-
   {#if error}
     <div class="bg-red-50 border border-red-200 rounded-lg p-4">
       <div class="flex">
@@ -112,7 +97,6 @@ if (browser) {
       </div>
     </div>
   {/if}
-
   {#if systemStatus}
     <!-- System Overview -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -123,7 +107,6 @@ if (browser) {
         </div>
         <p class="text-sm text-gray-600 mt-1">System efficiency</p>
       </div>
-
       <div class="bg-white rounded-lg border p-6">
         <h3 class="text-lg font-semibold mb-3">LOD Level</h3>
         <div class="text-3xl font-bold text-blue-600">
@@ -133,7 +116,6 @@ if (browser) {
           Level {systemStatus.lodLevel?.level || 2}
         </p>
       </div>
-
       <div class="bg-white rounded-lg border p-6">
         <h3 class="text-lg font-semibold mb-3">Active Clusters</h3>
         <div class="text-3xl font-bold text-purple-600">
@@ -142,7 +124,6 @@ if (browser) {
         <p class="text-sm text-gray-600 mt-1">Memory clusters</p>
       </div>
     </div>
-
     <!-- Memory Pool Utilization -->
     {#if systemStatus.poolUtilization}
       <div class="bg-white rounded-lg border p-6">
@@ -168,12 +149,10 @@ if (browser) {
         </div>
       </div>
     {/if}
-
   {#if memoryPrediction}
     <!-- Memory Prediction -->
     <div class="bg-white rounded-lg border p-6">
       <h3 class="text-xl font-semibold mb-4">Memory Prediction (30 minutes)</h3>
-
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div>
           <h4 class="font-medium mb-2">Expected Usage</h4>
@@ -181,7 +160,6 @@ if (browser) {
             {formatBytes(memoryPrediction.expectedUsage)}
           </div>
         </div>
-
         <div>
           <h4 class="font-medium mb-2">Confidence</h4>
           <div class="text-2xl font-bold {getHealthColor(memoryPrediction.confidence)}">
@@ -189,7 +167,6 @@ if (browser) {
           </div>
         </div>
       </div>
-
       {#if memoryPrediction.recommendations?.length > 0}
         <div>
           <h4 class="font-medium mb-3">Recommendations</h4>
@@ -203,7 +180,6 @@ if (browser) {
           </ul>
         </div>
       {/if}
-
       {#if memoryPrediction.optimizations?.length > 0}
         <div class="mt-6">
           <h4 class="font-medium mb-3">Suggested Optimizations</h4>
@@ -226,7 +202,6 @@ if (browser) {
       {/if}
     </div>
   {/if}
-
   <!-- Quick Actions -->
   <div class="bg-white rounded-lg border p-6">
     <h3 class="text-xl font-semibold mb-4">Quick Actions</h3>
@@ -239,7 +214,6 @@ if (browser) {
         <div class="font-medium mb-1">Refresh Data</div>
         <div class="text-sm text-gray-600">Update all metrics</div>
       </button>
-
       <button
         class="p-4 border border-blue-300 rounded-lg hover:bg-blue-50 text-left transition-colors"
         onclick={triggerOptimization}
@@ -248,7 +222,6 @@ if (browser) {
         <div class="font-medium mb-1 text-blue-700">Run Optimization</div>
         <div class="text-sm text-gray-600">Optimize memory usage</div>
       </button>
-
       <button
         class="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 text-left transition-colors"
         disabled
@@ -258,7 +231,6 @@ if (browser) {
       </button>
     </div>
   </div>
-
   <!-- Footer Info -->
   <div class="text-center text-sm text-gray-500">
     <p>Memory Optimization Dashboard - Legal AI System</p>

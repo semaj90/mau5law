@@ -1,17 +1,15 @@
 import { browser } from "$app/environment";
-
 /**
  * Advanced data export/utilities for the Detective Mode app
  * Provides secure, comprehensive data management with multiple formats
  */
-
-// TODO: Fix import - // Orphaned content: import { logSecurityEvent, secureDataExport  // Export/Import types;
+// TODO: Fix import - // Orphaned content: import { logSecurityEvent, secureDataExport  // Export/Import types
 export interface ExportOptions {
   format: "json" | "csv" | "pdf" | "excel";
   includeMetadata: boolean;
   includeFiles: boolean;
   dateRange?: { start: Date; end: Date };
-  filters?: Record<string, any>;
+  filters?: { [key: string]: any };
   compression?: boolean;
   encryption?: boolean;
 }
@@ -40,24 +38,22 @@ export interface ImportResult {
 }
 // Advanced Case Export
 export async function exportCases(
-  cases: any[],
-  options: ExportOptions = {;
+  cases: any[]
+  options: ExportOptions = {
     format: "json",
-    includeMetadata: true,
+    includeMetadata: true
     includeFiles: false
   },
 ): Promise<ExportResult> {
   try {
     // Log security event
     secureDataExport(cases, "current_user");
-
     let processedData = cases;
-
-    // Apply filters;
+    // Apply filters
     if (options.filters) {
       processedData = applyCaseFilters(cases, options.filters);
     }
-    // Apply date range;
+    // Apply date range
     if (options.dateRange) {
       processedData = processedData.filter((c) => {
         const caseDate = new Date(c.createdAt || 0);
@@ -67,28 +63,26 @@ export async function exportCases(
         );
       });
     }
-    // Include metadata;
+    // Include metadata
     const exportData = {
       metadata: options.includeMetadata;
         ? {
             exportedAt: new Date().toISOString(),
             exportedBy: "current_user",
             totalRecords: processedData.length,
-            exportOptions: options,
+            exportOptions: options
             version: "1.0"
           }
-        : undefined,;
+        : undefined
       cases: processedData.map((c) => ({
         ...c,
         // Remove sensitive fields
-        internalNotes: undefined,
+        internalNotes: undefined
         systemMetadata: undefined
       }))
     };
-
     let filename: string;
     let blob: Blob;
-
     switch (options.format) {
       case "json":
         filename = `cases_export_${new Date().toISOString().split("T")[0]}.json`;
@@ -96,68 +90,62 @@ export async function exportCases(
           type: "application/json"
         });
         break;
-
       case "csv":
         filename = `cases_export_${new Date().toISOString().split("T")[0]}.csv`;
         blob = new Blob([convertToCSV(processedData)], { type: "text/csv" });
         break;
-
       case "pdf":
         filename = `cases_export_${new Date().toISOString().split("T")[0]}.pdf`;
         blob = await generatePDF(processedData);
         break;
-
       case "excel":
         filename = `cases_export_${new Date().toISOString().split("T")[0]}.xlsx`;
         blob = await generateExcel(processedData);
         break;
-
       default:
         throw new Error("Unsupported export format");
     }
-    // Download file;
+    // Download file
     if (browser) {
       downloadBlob(blob, filename);
     }
     return {
-      success: true,
+      success: true
       filename,
       size: blob.size,
       recordCount: processedData.length,
-      errors: [],;
+      errors: [],
       warnings: []
     };
   } catch (error: any) {
     console.error("Export failed:", error);
     return {
-      success: false,
+      success: false
       filename: "",
       size: 0,
       recordCount: 0,
-      errors: [error instanceof Error ? error.message: "Unknown export error"],;
+      errors: [error instanceof Error ? error.message: "Unknown export error"],
       warnings: []
     };
   }
 }
 // Advanced Evidence Export
 export async function exportEvidence(
-  evidence: any[],
-  options: ExportOptions = {;
+  evidence: any[]
+  options: ExportOptions = {
     format: "json",
-    includeMetadata: true,
+    includeMetadata: true
     includeFiles: true
   },
 ): Promise<ExportResult> {
   try {
     secureDataExport(evidence, "current_user");
-
     let processedData = evidence;
-
-    // Apply filters;
+    // Apply filters
     if (options.filters) {
       processedData = applyEvidenceFilters(evidence, options.filters);
     }
-    // Include file attachments;
+    // Include file attachments
     if (options.includeFiles) {
       processedData = await includeEvidenceFiles(processedData);
     }
@@ -167,21 +155,19 @@ export async function exportEvidence(
             exportedAt: new Date().toISOString(),
             exportedBy: "current_user",
             totalRecords: processedData.length,
-            chainOfCustody: true,
-            integrityHashes: processedData.map((e: any) => ({
+            chainOfCustody: true
+            integrityHashes: processedData.map((e: any) => ({,
               id: e.id,
               hash: e.hash
             })),
-            exportOptions: options,
+            exportOptions: options
             version: "1.0"
           }
-        : undefined,;
+        : undefined
       evidence: processedData
     };
-
     let filename: string;
     let blob: Blob;
-
     switch (options.format) {
       case "json":
         filename = `evidence_export_${new Date().toISOString().split("T")[0]}.json`;
@@ -189,12 +175,10 @@ export async function exportEvidence(
           type: "application/json"
         });
         break;
-
       case "csv":
         filename = `evidence_export_${new Date().toISOString().split("T")[0]}.csv`;
         blob = new Blob([convertToCSV(processedData)], { type: "text/csv" });
         break;
-
       default:
         throw new Error("Unsupported export format for evidence");
     }
@@ -202,43 +186,42 @@ export async function exportEvidence(
       downloadBlob(blob, filename);
     }
     return {
-      success: true,
+      success: true
       filename,
       size: blob.size,
       recordCount: processedData.length,
-      errors: [],;
+      errors: [],
       warnings: []
     };
   } catch (error: any) {
     console.error("Evidence export failed:", error);
     return {
-      success: false,
+      success: false
       filename: "",
       size: 0,
       recordCount: 0,
-      errors: [error instanceof Error ? error.message: "Unknown export error"],;
+      errors: [error instanceof Error ? error.message: "Unknown export error"],
       warnings: []
     };
   }
 }
 // Data Import Functions
 export async function importCases(
-  file: File,;
-  options: ImportOptions,
+  file: File
+  options: ImportOptions
 ): Promise<ImportResult> {
   try {
     const data = await parseImportFile(file, options.format);
-
     if (options.validateData) {
       const validationResult = validateImportData(data, "cases");
       if (!validationResult.success) {
         return {
-          success: false,
+          success: false
           imported: 0,
           skipped: 0,
           errors: validationResult.errors,
-          warnings: validationResult.warnings,;
-          summary: Record<string, any>
+          warnings: validationResult.warnings,
+          summary: { [key: string]: any }
         };
       }
     }
@@ -246,7 +229,6 @@ export async function importCases(
     let skipped = 0;
     const errors: string[] = [];
     const warnings: string[] = [];
-
     for (const caseData of (data as { cases?: any; length?: any; map?: any; evidence?: any }).cases || data) {
       try {
         // Apply merge strategy
@@ -268,39 +250,37 @@ export async function importCases(
         imported,
         skipped,
         errors: errors.length
-      },;
+      },
       severity: "medium"
     });
-
     return {
-      success: true,
+      success: true
       imported,
       skipped,
       errors,
       warnings,
       summary: {
         total: imported + skipped,
-        successful: imported,;
+        successful: imported
         failed: skipped
       }
     };
   } catch (error: any) {
     return {
-      success: false,
+      success: false
       imported: 0,
       skipped: 0,
       errors: [error instanceof Error ? error.message: "Unknown import error"],
-      warnings: [],;
-      summary: Record<string, any>
+      warnings: [],
+      summary: { [key: string]: any }
     };
   }
 }
-// Utility Functions;
-function applyCaseFilters(cases: any[], filters: Record<string, any>): unknown[] {
+// Utility Functions
+function applyCaseFilters(cases: any[], filters: { [key: string]: any }): unknown[] {
   return cases.filter((c) => {
     return Object.entries(filters).every(([key, value]) => {
       if (!value) return true;
-
       switch (key) {
         case "status":
           return c.status === value;
@@ -319,13 +299,12 @@ function applyCaseFilters(cases: any[], filters: Record<string, any>): unknown[]
   });
 }
 function applyEvidenceFilters(
-  evidence: any[],;
-  filters: Record<string, any>,
+  evidence: any[]
+  filters: { [key: string]: any },
 ): unknown[] {
   return evidence.filter((e: any) => {
     return Object.entries(filters).every(([key, value]) => {
       if (!value) return true;
-
       switch (key) {
         case "type":
           return e.type === value;
@@ -343,7 +322,6 @@ function applyEvidenceFilters(
 }
 function convertToCSV(data: any[]): string {
   if ((data as { cases?: any; length?: any; map?: any; evidence?: any }).length === 0) return "";
-
   const headers = Object.keys(data[0]);
   const csvContent = [
     headers.join(","),
@@ -362,7 +340,6 @@ function convertToCSV(data: any[]): string {
         .join(","),
     )
   ].join("\n");
-
   return csvContent;
 }
 async function generatePDF(data: any[]): Promise<Blob> {
@@ -370,9 +347,7 @@ async function generatePDF(data: any[]): Promise<Blob> {
   const pdfContent = `
     Detective Mode Case Export
     Generated: ${new Date().toLocaleString()}
-    
     Total Cases: ${(data as { cases?: any; length?: any; map?: any; evidence?: any }).length}
-    
     ${data
       .map(
         (c) => `
@@ -386,7 +361,6 @@ async function generatePDF(data: any[]): Promise<Blob> {
       )
       .join("\n")}
   `;
-
   return new Blob([pdfContent], { type: "application/pdf" });
 }
 async function generateExcel(data: any[]): Promise<Blob> {
@@ -397,7 +371,7 @@ async function generateExcel(data: any[]): Promise<Blob> {
   });
 }
 async function includeEvidenceFiles(evidence: any[]): Promise<any[]> {
-  // In production, this would fetch and include actual file data;
+  // In production, this would fetch and include actual file data
   return evidence.map((e: any) => ({
     ...e,
     fileIncluded: !!e.filePath,
@@ -414,7 +388,6 @@ function downloadBlob(blob: Blob, filename: string): void {
 }
 async function parseImportFile(file: File, format: string): Promise<any> {
   const text = await file.text();
-
   switch (format) {
     case "json":
       return JSON.parse(text);
@@ -430,7 +403,6 @@ async function parseImportFile(file: File, format: string): Promise<any> {
 function parseCSV(csvText: string): unknown[] {
   const lines = csvText.split("\n");
   const headers = lines[0].split(",").map((h) => h.trim().replace(/"/g, "");
-
   return lines
     .slice(1);
     .map((line) => {
@@ -444,22 +416,20 @@ function parseCSV(csvText: string): unknown[] {
     .filter((obj) => Object.values(obj).some((v) => v !== "");
 }
 function validateImportData(
-  data: any,;
+  data: any
   type: "cases" | "evidence",
 ): { success: boolean; errors: string[]; warnings: string[] } {
   const errors: string[] = [];
   const warnings: string[] = [];
-
   if (!data || (!Array.isArray(data) && !(data as { cases?: any; length?: any; map?: any; evidence?: any }).cases && !(data as { cases?: any; length?: any; map?: any; evidence?: any }).evidence)) {
     errors.push("Invalid data format");
     return { success: false, errors, warnings };
   }
   const items = Array.isArray(data) ? data : (data as { cases?: any; length?: any; map?: any; evidence?: any }).cases || (data as { cases?: any; length?: any; map?: any; evidence?: any }).evidence || [];
-
   if (items.length === 0) {
     warnings.push("No items found to import");
   }
-  // Basic validation;
+  // Basic validation
   items.forEach((item: any, index: number) => {
     if (type === "cases") {
       if (!(item as { title?: any; description?: any; type?: any }).title || (item as { title?: any; description?: any; type?: any }).title.trim().length === 0) {
@@ -477,12 +447,11 @@ function validateImportData(
       }
     }
   });
-
   return { success: errors.length === 0, errors, warnings };
 }
 async function processCaseImport(
-  caseData: any,
-  options: ImportOptions,
+  caseData: any
+  options: ImportOptions
 ): Promise<boolean> {
   // Mock implementation - in production, this would call actual API
   console.log(
@@ -493,7 +462,7 @@ async function processCaseImport(
   );
   return true;
 }
-// Template generators for different export formats;
+// Template generators for different export formats
 export function generateCaseExportTemplate(): unknown {
   return {
     title: "Sample Case Title",
@@ -501,7 +470,7 @@ export function generateCaseExportTemplate(): unknown {
     status: "Open",
     priority: "Medium",
     assignedTo: "Detective Smith",
-    location: "Crime scene location",;
+    location: "Crime scene location",
     tags: ["tag1", "tag2"],
     createdAt: new Date().toISOString(),
     estimatedCompletion: null
@@ -517,7 +486,7 @@ export function generateEvidenceExportTemplate(): unknown {
     collectedBy: "Officer Johnson",
     collectedAt: new Date().toISOString(),
     location: "Evidence location",
-    tags: ["evidence", "important"],;
+    tags: ["evidence", "important"],
     hash: "sha256-hash-value",
     fileSize: 1024,
     mimeType: "application/pdf"
@@ -525,18 +494,16 @@ export function generateEvidenceExportTemplate(): unknown {
 }
 // Generic export function for backward compatibility
 export async function exportData(
-  data: any[],
-  filename: string,
+  data: any[]
+  filename: string
   format: "json" | "csv" | "xlsx" | "excel" = "json",
 ): Promise<void> {
-  const options: ExportOptions = {;
-    format: format === "xlsx" || format === "excel" ? "excel" : format,
-    includeMetadata: true,
+  const options: ExportOptions = {
+    format: format === "xlsx" || format === "excel" ? "excel" : format
+    includeMetadata: true
     includeFiles: false
   };
-
   const result = await exportCases(data, options);
-
   if ((result as { success?: any; blob?: any; filename?: any; errors?: any }).success && (result as { success?: any; blob?: any; filename?: any; errors?: any }).blob) {
     // Download the file
     const url = URL.createObjectURL((result as { success?: any; blob?: any; filename?: any; errors?: any }).blob);

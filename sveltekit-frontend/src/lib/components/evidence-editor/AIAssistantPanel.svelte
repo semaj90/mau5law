@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { Badge } from '$lib/components/ui/badge';
   import Button from '$lib/components/ui/enhanced-bits';
   import {
@@ -15,21 +14,16 @@
   import { Search, Bot, Sparkles, FileText, Users, Clock, Tags } from 'lucide-svelte';
   import { onMount,   } from "svelte";
   import Fuse from 'fuse.js';
-
-  
-
   interface Props {
     selectedNode?: unknown;
     caseId?: string;
     evidenceList?: unknown[];
   }
-
   let {
     selectedNode = null,
     caseId = '',
     evidenceList = []
   }: Props = $props();
-
   let isProcessing = $state(false);
   let processingStatus = $state('');
   let searchQuery = $state('');
@@ -37,22 +31,20 @@
   let fuse = $state<Fuse<any>(null) | null >(null);
   let aiInsights = $state({
     connections: [],
-    similarEvidence: [],;
+    similarEvidence: [],
     timeline: [],
     suggestedActions: [];
   });
-
   // Initialize search index when evidence list changes
   $effect(() => {
     if (evidenceList.length > 0) {
       fuse = new Fuse(evidenceList, {
-        keys: ['name', 'tags', 'title', 'description'],;
+        keys: ['name', 'tags', 'title', 'description'],
         threshold: 0.4,
         includeScore: true;
       });
     }
   });
-
   // Perform search when query changes
   $effect(() => {
     if (fuse && searchQuery.trim()) {
@@ -62,46 +54,38 @@
       searchResults = [];
     }
   });
-
   function clearSearch() {
     searchQuery = '';
     searchResults = [];
   }
-
   async function analyzeWithAI() {
     if (!selectedNode || isProcessing) return;
-
     isProcessing = true;
     processingStatus = 'Analyzing with AI...';
-
     try {
       const response = await fetch('/api/ai/analyze-evidence', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          caseId,;
-          evidence: selectedNode,
+          caseId,
+          evidence: selectedNode
           analysisType: 'comprehensive';
         })
       });
-
       if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
         const analysis = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
-
         // Update the selected node with AI tags
         if (selectedNode) {
-          selectedNode.aiTags = analysis.tags;
+          selectedNode.aiTags = analysis.tag;
           selectedNode.aiSummary = analysis.summary;
         }
-
         // Update insights
         aiInsights = {
           connections: analysis.connections || [],
-          similarEvidence: analysis.similarEvidence || [],;
+          similarEvidence: analysis.similarEvidence || [],
           timeline: analysis.timeline || [],
           suggestedActions: analysis.suggestedActions || [];
         };
-
         ondispatch?.(analysis);
         processingStatus = 'Analysis complete!';
       } else {
@@ -115,27 +99,23 @@
       setTimeout(() => processingStatus = '', 3000);
     }
   }
-
   async function generateInsights() {
     if (!caseId || isProcessing) return;
-
     isProcessing = true;
     processingStatus = 'Generating insights...';
-
     try {
       const response = await fetch('/api/ai/generate-insights', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           caseId,
-          evidenceId: selectedNode?.id,;
+          evidenceId: selectedNode?.id,
           context: evidenceList;
         })
       });
-
       if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
         const insights = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
-        aiInsights = insights;
+        aiInsights = insight;
         processingStatus = 'Insights generated!';
       } else {
         throw new Error(`Insight generation failed: ${(response as { ok?: unknown; json?: unknown; statusText?: unknown }).statusText}`);
@@ -148,16 +128,13 @@
       setTimeout(() => processingStatus = '', 3000);
     }
   }
-
   function selectEvidence(item: unknown) {
     ondispatch?.({ id: (item as { id?: unknown }).id });
   }
-
   function selectConnection(connection: unknown) {
     ondispatch?.({ connection });
   }
 </script>
-
 <div class="ai-assistant-panel space-y-6 p-6 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg">
   <!-- Header -->
   <div class="flex items-center gap-3">
@@ -170,7 +147,6 @@
       </div>
     {/if}
   </div>
-
   <!-- Search Section -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -189,10 +165,8 @@
         {#if searchQuery}
           <Button class="bits-btn" onclick={clearSearch} variant="ghost" size="sm">
 Clear
-
         {/if}
       </div>
-
       {#if searchResults.length > 0}
         <div class="space-y-2">
           <p class="text-sm text-gray-600 dark:text-gray-300">
@@ -226,14 +200,12 @@ Clear
                     <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{Math.round.score) * 100)}% match</span>
                   {/if}
                 </div>
-
             {/each}
           </div>
         </div>
       {/if}
     </div>
   </div>
-
   <!-- Selected Evidence Analysis -->
   {#if selectedNode}
     <div class="nes-container">
@@ -254,17 +226,13 @@ Clear
             </p>
           {/if}
         </div>
-
         <div class="flex gap-2">
           <Button onclick={analyzeWithAI} disabled={isProcessing} class="flex-1 bits-btn bits-btn">
 <Sparkles class="w-4 h-4 mr-2" />
             {isProcessing ? 'Analyzing...' : 'Analyze with AI'}
-
           <Button class="bits-btn" onclick={generateInsights} disabled={isProcessing} variant="ghost">
 Generate Insights
-
         </div>
-
         <!-- AI Analysis Results -->
         {#if selectedNode.aiTags}
           <div class="space-y-3 p-4 border border-gray-200 dark:border-gray-600 rounded-md">
@@ -272,7 +240,6 @@ Generate Insights
               <Bot class="w-4 h-4" />
               AI Analysis Results
             </h4>
-
             {#if selectedNode.aiSummary}
               <div>
                 <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Summary:</p>
@@ -281,7 +248,6 @@ Generate Insights
                 </p>
               </div>
             {/if}
-
             {#if selectedNode.aiTags.tags && selectedNode.aiTags.tags.length > 0}
               <div>
                 <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">AI Tags:</p>
@@ -305,7 +271,6 @@ Generate Insights
       </div>
     </div>
   {/if}
-
   <!-- AI Insights -->
   {#if aiInsights.connections.length > 0 || aiInsights.similarEvidence.length > 0 || aiInsights.suggestedActions.length > 0}
     <div class="nes-container">
@@ -334,12 +299,10 @@ Generate Insights
                   <p class="text-sm text-gray-600 dark:text-gray-300">
                     {connection.description}
                   </p>
-
               {/each}
             </div>
           </div>
         {/if}
-
         {#if aiInsights.similarEvidence.length > 0}
           <div>
             <h4 class="font-medium text-gray-900 dark:text-white mb-3 flex items-center gap-2">
@@ -363,7 +326,6 @@ Generate Insights
             </div>
           </div>
         {/if}
-
         {#if aiInsights.suggestedActions.length > 0}
           <div>
             <h4 class="font-medium text-gray-900 dark:text-white mb-3 flex items-center gap-2">
@@ -387,7 +349,6 @@ Generate Insights
       </div>
     </div>
   {/if}
-
   <!-- Empty State -->
   {#if !selectedNode}
     <div class="text-center py-12 text-gray-500 dark:text-gray-400">
@@ -397,9 +358,8 @@ Generate Insights
     </div>
   {/if}
 </div>
-
 <style>
-  .line-clamp-2 {;
+  .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;

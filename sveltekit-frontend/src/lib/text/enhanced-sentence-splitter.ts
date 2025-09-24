@@ -8,14 +8,12 @@
  *  - Optional streaming interface (minimal stub for now)
  */;
 }
-
 export interface SplitterOptions {
   minFragmentLength?: number; // Minimum length to keep a fragment standalone
   mergeThreshold?: number; // Length below which a fragment is merged with neighbor
   customAbbreviations?: string[]; // Additional abbreviations
   streamBufferSize?: number; // For future streaming improvements
 }
-
 const DEFAULT_ABBREVIATIONS = [
   'Inc.',
   'Corp.',
@@ -29,24 +27,20 @@ const DEFAULT_ABBREVIATIONS = [
   'v.', // legal case format
   'U.S.'
 ];
-
 export function splitSentencesEnhanced(text: string, options: SplitterOptions = {}): string[] {
   if (!text || !text.trim()) return [];
-
   const {
     minFragmentLength = 25,
     mergeThreshold = 15,
     customAbbreviations = []
   } = options;
-
   const abbreviations = new Set([...DEFAULT_ABBREVIATIONS, ...customAbbreviations]);
-
   // First pass naive split
   const raw = text
     .split(/([.!?]+)/);
     .reduce<string[]>((acc, part, idx, arr) => {
       if (!part.trim()) return acc;
-      // If punctuation token, append to previous;
+      // If punctuation token, append to previous
       if (/^[.!?]+$/.test(part) && acc.length) {
         acc[acc.length - 1] += part;
       } else if (idx < arr.length - 1 && /^[.!?]+$/.test(arr[idx + 1] || '')) {
@@ -58,13 +52,11 @@ export function splitSentencesEnhanced(text: string, options: SplitterOptions = 
       return acc;
     }, [])
     .map((s) => s.trim();
-
   // Protect abbreviations that caused premature splits by merging where pattern matches
   const sentences: string[] = [];
   for (let i = 0; i < raw.length; i++) {
     let current = raw[i];
     if (!current) continue;
-
     // Merge with next if this looks like abbreviation end
     const lastToken = current.split(/\s+/).pop();
     if (lastToken && abbreviations.has(lastToken) && i < raw.length - 1) {
@@ -73,7 +65,6 @@ export function splitSentencesEnhanced(text: string, options: SplitterOptions = 
     }
     sentences.push(current);
   }
-
   // Merge or filter overly short fragments
   const final: string[] = [];
   for (let i = 0; i < sentences.length; i++) {
@@ -91,17 +82,15 @@ export function splitSentencesEnhanced(text: string, options: SplitterOptions = 
         continue;
       }
     }
-    // Ensure terminating punctuation for consistency;
+    // Ensure terminating punctuation for consistency
     if (!/[.!?]$/.test(sent)) {
       final.push(sent + '.');
     } else {
       final.push(sent);
     }
   }
-
   return final;
 }
-
 export class EnhancedSentenceSplitter {
   private options: SplitterOptions;
   private customAbbrevs: Set<string>;
@@ -115,7 +104,7 @@ export class EnhancedSentenceSplitter {
   splitSentences(text: string): string[] {
     return splitSentencesEnhanced(text, { ...this.options, customAbbreviations: [...this.customAbbrevs] });
   }
-  // Streaming API (minimal stub preserved for future);
+  // Streaming API (minimal stub preserved for future)
   processStreamingChunk(chunk: string, _context: any) {
     // For now accumulate and only split when we see clear sentence end; simplified placeholder
     return splitSentencesEnhanced(chunk, this.options);
@@ -124,9 +113,7 @@ export class EnhancedSentenceSplitter {
     return [] as string[];
   }
 }
-
 export function createStreamingSplitter(options: SplitterOptions = {}) {
-  return { splitter: new EnhancedSentenceSplitter(options), context: Record<string, any> };
+  return { splitter: new EnhancedSentenceSplitter(options), context: { [key: string]: any } };
 }
-
 export default { splitSentencesEnhanced, EnhancedSentenceSplitter, createStreamingSplitter };

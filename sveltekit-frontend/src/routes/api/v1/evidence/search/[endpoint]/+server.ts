@@ -3,15 +3,12 @@
  * POST /api/v1/evidence/search/similar - Find similar evidence using vector similarity
  * POST /api/v1/evidence/search/suggest - Get AI-powered search suggestions
  */
-
 import { json, type RequestHandler } from '@sveltejs/kit'
 import { z } from 'zod'
-
 // Configuration
 const OLLAMA_BASE_URL = 'http://localhost:11434'
 const LEGAL_MODEL = 'gemma3-legal:latest'
 const EMBEDDING_MODEL = 'nomic-embed-text:latest'; // Available in our Ollama instance
-
 // Request schemas
 const SimilarSearchSchema = z.object({
   query: z.string().min(1),
@@ -19,14 +16,12 @@ const SimilarSearchSchema = z.object({
   limit: z.number().min(1).max(20).default(5),
   threshold: z.number().min(0).max(1).default(0.7)
 })
-
 const SuggestionSchema = z.object({
   query: z.string().min(1),
   context: z.string().optional(),
   type: z.enum(['search', 'legal', 'case', 'precedent']).default('legal'),
   limit: z.number().min(1).max(10).default(5)
 })
-
 // Types
 interface SearchSuggestion {
   text: string
@@ -35,7 +30,6 @@ interface SearchSuggestion {
   source: string
   reasoning?: string
 }
-
 interface SimilarEvidence {
   id: string
   filename: string
@@ -44,23 +38,20 @@ interface SimilarEvidence {
   relevantLaws: string[]
   type: string
 }
-
 // Ollama helpers
 async function generateEmbedding(text: string): Promise<number[]> {
   try {
     const response = await fetch(`${OLLAMA_BASE_URL}/api/embeddings`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: EMBEDDING_MODEL,
+      body: JSON.stringify({,
+        model: EMBEDDING_MODEL
         prompt: text
       })
     })
-
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
       throw new Error(`Embedding generation failed: ${(response as { ok?: any; status?: any; json?: any }).status}`)
     }
-
     const data = await (response as { ok?: any; status?: any; json?: any }).json()
     return (data as { embedding?: any; response?: any }).embedding
   } catch (error) {
@@ -68,16 +59,15 @@ async function generateEmbedding(text: string): Promise<number[]> {
     throw error
   }
 }
-
 async function queryOllama(prompt: string): Promise<string> {
   try {
     const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: LEGAL_MODEL,
+      body: JSON.stringify({,
+        model: LEGAL_MODEL
         prompt,
-        stream: false,
+        stream: false
         options: {
           temperature: 0.3,
           top_p: 0.9,
@@ -85,11 +75,9 @@ async function queryOllama(prompt: string): Promise<string> {
         }
       })
     })
-
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
       throw new Error(`Ollama query failed: ${(response as { ok?: any; status?: any; json?: any }).status}`)
     }
-
     const data = await (response as { ok?: any; status?: any; json?: any }).json()
     return (data as { embedding?: any; response?: any }).response
   } catch (error) {
@@ -97,49 +85,38 @@ async function queryOllama(prompt: string): Promise<string> {
     throw error
   }
 }
-
 // Calculate cosine similarity between vectors
 function cosineSimilarity(a: number[], b: number[]): number {
   if (a.length !== b.length) return 0
-
   let dotProduct = 0
   let normA = 0
   let normB = 0
-
   for (let i = 0; i < a.length; i++) {
     dotProduct += a[i] * b[i]
     normA += a[i] * a[i]
     normB += b[i] * b[i]
   }
-
   normA = Math.sqrt(normA)
   normB = Math.sqrt(normB)
-
   if (normA === 0 || normB === 0) return 0
-
   return dotProduct / (normA * normB)
 }
-
 /*
  * POST /api/v1/evidence/search/similar
  * Find similar evidence using vector similarity
  */
 export const POST: RequestHandler = async ({ request, locals, url }) => {
   const endpoint = url.pathname.split('/').pop()
-
   if (endpoint === 'similar') {
     try {
       // Check authentication
       if (!locals.session || !locals.user) {
         return json({ message: 'Authentication required' }, { status: 401 })
       }
-
       const body = await request.json()
       const { query, evidenceId, limit, threshold } = SimilarSearchSchema.parse(body)
-
       // Generate embedding for the search query
       const queryEmbedding = await generateEmbedding(query)
-
       // TODO: In production, this would query a vector database (pgvector)
       // For now, we'll simulate with mock similar evidence
       const mockSimilarEvidence: SimilarEvidence[] = [
@@ -169,36 +146,31 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
         }
       ].filter(item => item.similarity) >= threshold)
        .slice(0, limit)
-
       return json({
-        success: true,
+        success: true
         data: {
           query,
-          results: mockSimilarEvidence,
+          results: mockSimilarEvidence
           total: mockSimilarEvidence.length,
           threshold,
           embedding: queryEmbedding, // Return for client-side caching
           processedAt: new Date().toISOString()
         }
       })
-
     } catch (error: any) {
       console.error('Similar evidence search failed:', error)
-
       if (error instanceof z.ZodError) {
         return json({
           message: 'Invalid search request',
           details: error.errors
         }, { status: 400 })
       }
-
       return json({
         message: 'Similar evidence search failed',
         details: error.message
       }, { status: 500 })
     }
   }
-
   /*
    * POST /api/v1/evidence/search/suggest
    * Get AI-powered search suggestions
@@ -209,17 +181,13 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       if (!locals.session || !locals.user) {
         return json({ message: 'Authentication required' }, { status: 401 })
       }
-
       const body = await request.json()
       const { query, context, type, limit } = SuggestionSchema.parse(body)
-
       // Generate AI suggestions based on query type
       const suggestionPrompt = `You are a legal research assistant. Based on the user's search query, provide helpful search suggestions.
-
 Query: "${query}"
 ${context ? `Context: ${context}` : ''}
 Suggestion Type: ${type}
-
 Generate ${limit} intelligent search suggestions that would help find relevant legal evidence, cases, or precedents. Format as JSON:
 [
   {
@@ -230,11 +198,8 @@ Generate ${limit} intelligent search suggestions that would help find relevant l
     "reasoning": "brief explanation"
   }
 ]
-
 Focus on legal terminology, case citations, statutory references, and evidence categories that would be most useful for legal research.`
-
       const aiResponse = await queryOllama(suggestionPrompt)
-
       let suggestions: SearchSuggestion[]
       try {
         // Try to parse JSON response
@@ -270,9 +235,8 @@ Focus on legal terminology, case citations, statutory references, and evidence c
           }
         ]
       }
-
       return json({
-        success: true,
+        success: true
         data: {
           query,
           suggestions: suggestions.slice(0, limit),
@@ -281,24 +245,20 @@ Focus on legal terminology, case citations, statutory references, and evidence c
           model: LEGAL_MODEL
         }
       })
-
     } catch (error: any) {
       console.error('Search suggestions failed:', error)
-
       if (error instanceof z.ZodError) {
         return json({
           message: 'Invalid suggestion request',
           details: error.errors
         }, { status: 400 })
       }
-
       return json({
         message: 'Search suggestions failed',
         details: error.message
       }, { status: 500 })
     }
   }
-
   // Unknown endpoint
   return json({ message: 'Endpoint not found' }, { status: 404 })
 }

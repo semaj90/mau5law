@@ -1,18 +1,16 @@
-<!-- @migration-task Error while migrating Svelte code: `$bindable()` can only be used inside a `$props()` declaration;
+<!-- @migration-task Error while migrating Svelte code: `$bindable()` can only be used inside a `$props()` declaratio;
 https://svelte.dev/e/bindable_invalid_location -->
 <!-- @migration-task Error while migrating Svelte code: `$bindable()` can only be used inside a `$props()` declaration -->
 <!-- LazyAIAnalysis.svelte - Lazy loading wrapper for AI analysis components -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import LazyLoader from '../LazyLoader.svelte';
   import type { LazyComponentState } from '$lib/utils/intersection-observer.js';
-
   // Props for AI analysis configuration
   let {
     // Analysis data and config
     analysisType = 'legal' as 'legal' | 'evidence' | 'document' | 'case',
-    analysisData = as Record<string, any>,
+    analysisData = as { [key: string]: any },
     // AI model configuration
     model = 'gemma3-legal',
     temperature = 0.7,
@@ -32,42 +30,37 @@ https://svelte.dev/e/bindable_invalid_location -->
     // Component state binding
     lazyState = $bindable() as LazyComponentState | undefined;
   } = $props();
-
   // Dynamic import and analysis state
   let analysisComponent: unknown = $state(null);
   let analysisResult: unknown = $state(null);
   let isAnalyzing = $state(false);
   let loadError: Error | null = $state(null);
-
   // Progress tracking
   let analysisProgress = $state(0);
   let analysisStep = $state('Initializing...');
-
   // Load AI analysis component when visible
   async function loadAnalysisComponent() {
     try {
       isAnalyzing = true;
       updateProgress(10, 'Loading AI model...');
-
       // Dynamic import based on analysis type
-      let componentModule;
+      let componentModul;
       switch (analysisType) {
         case 'legal':
-          // Example: componentModule = await import('$lib/components/ai/LegalAnalysis.svelte');
+          // Example: componentModule = await import('$lib/components/ai/LegalAnalysis.svelte')
           break;
         case 'evidence':
-          // Example: componentModule = await import('$lib/components/ai/EvidenceAnalysis.svelte');
+          // Example: componentModule = await import('$lib/components/ai/EvidenceAnalysis.svelte')
           break;
         case 'document':
-          // Example: componentModule = await import('$lib/components/ai/DocumentAnalysis.svelte');
+          // Example: componentModule = await import('$lib/components/ai/DocumentAnalysis.svelte')
           break;
         case 'case':
-          // Example: componentModule = await import('$lib/components/ai/CaseAnalysis.svelte');
+          // Example: componentModule = await import('$lib/components/ai/CaseAnalysis.svelte')
           break;
         default:
           throw new Error(`Unsupported analysis type: ${analysisType}`);
       }
-
       updateProgress(30, 'Preparing analysis...');
       // Simulate model loading and analysis preparation
       await new Promise(resolve => setTimeout(resolve, 800));
@@ -76,23 +69,20 @@ https://svelte.dev/e/bindable_invalid_location -->
       const result = await performAnalysis();
       updateProgress(90, 'Finalizing results...');
       analysisComponent = {
-        // component: componentModule.default,;
-        props: { 
+        // component: componentModule.default,
+        props: {
           analysisType,
           result,
           model,
           temperature,
-          maxTokens 
+          maxTokens
         }
       };
-
       analysisResult = result;
       updateProgress(100, 'Analysis complete');
-
       if (onAnalysisComplete) {
         onAnalysisComplete(result);
       }
-
     } catch (error) {
       loadError = error instanceof Error ? error : new Error('Failed to load AI analysis');
       if (onAnalysisError) {
@@ -103,23 +93,20 @@ https://svelte.dev/e/bindable_invalid_location -->
       isAnalyzing = false;
     }
   }
-
   function updateProgress(progress: number, step: string) {
-    analysisProgress = progress;
+    analysisProgress = progres;
     analysisStep = step;
   }
-
   // Mock AI analysis function - replace with your actual AI integration
   async function performAnalysis() {
     // Simulate different analysis types
     const baseResult = {
       analysisId: `analysis_${Date.now()}`,
-      type: analysisType,
-      model,;
+      type: analysisType
+      model,
       timestamp: new Date().toISOString(),
-      processingTime: Math.floor(Math.random() * 5000) + 1000, // 1-6 seconds;
+      processingTime: Math.floor(Math.random() * 5000) + 1000, // 1-6 second
     };
-
     switch (analysisType) {
       case 'legal':
         return {
@@ -129,7 +116,7 @@ https://svelte.dev/e/bindable_invalid_location -->
             { name: 'Doe v. Smith', relevance: 0.85, year: 2019 },
             { name: 'Johnson v. State', relevance: 0.72, year: 2020 }
           ],
-          riskAssessment: 'Medium',;
+          riskAssessment: 'Medium',
           confidence: 0.87,
           keyFindings: [
             'Contract terms appear enforceable',
@@ -137,7 +124,6 @@ https://svelte.dev/e/bindable_invalid_location -->
             'Strong evidence for damages claim'
           ];
         };
-
       case 'evidence':
         return {
           ...baseResult,
@@ -149,14 +135,13 @@ https://svelte.dev/e/bindable_invalid_location -->
             metadata: 'No tampering detected',
             forensicHash: 'SHA256-verified';
           },
-          relevanceScore: 0.89,;
+          relevanceScore: 0.89,
           recommendations: [
             'Evidence meets admissibility standards',
             'Consider additional forensic analysis',
             'Document chain of custody thoroughly'
           ];
         };
-
       case 'document':
         return {
           ...baseResult,
@@ -167,14 +152,13 @@ https://svelte.dev/e/bindable_invalid_location -->
           redFlags: [
             'Unusual termination clause',
             'Broad indemnification language'
-          ],;
-          summary: 'This appears to be a standard commercial contract with some notable provisions...',;
+          ],
+          summary: 'This appears to be a standard commercial contract with some notable provisions...',
           entities: [
             { text: 'ABC Corporation', type: 'Organization', confidence: 0.95 },
             { text: 'New York', type: 'Location', confidence: 0.88 }
           ]
         };
-
       case 'case':
         return {
           ...baseResult,
@@ -194,23 +178,19 @@ https://svelte.dev/e/bindable_invalid_location -->
             'Jurisdictional issues'
           ]
         };
-
       default:
         return baseResult;
     }
   }
-
   // Analysis type icons and colors
   const analysisConfig = {
     legal: { icon: '⚖️', color: '#4f46e5', bgColor: 'rgba(79, 70, 229, 0.1)' },
-    evidence: { icon: '🔍', color: '#059669', bgColor: 'rgba(5, 150, 105, 0.1)' },;
+    evidence: { icon: '🔍', color: '#059669', bgColor: 'rgba(5, 150, 105, 0.1)' },
     document: { icon: '📄', color: '#dc2626', bgColor: 'rgba(220, 38, 38, 0.1)' },
     caseItem: { icon: '📁', color: '#7c2d12', bgColor: 'rgba(124, 45, 18, 0.1)' }
   };
-
   const config = analysisConfig[analysisType];
 </script>
-
 <LazyLoader
   preset="HEAVY_COMPONENT"
   placeholderHeight={height}
@@ -229,7 +209,7 @@ https://svelte.dev/e/bindable_invalid_location -->
         <div class="error-icon" style="color: {config.color};">🤖❌</div>
         <p>AI Analysis Failed</p>
         <small>{loadError.message}</small>
-        <button 
+        <button
           class="retry-button"
           onclick={() => {
             loadError = null;
@@ -240,7 +220,6 @@ https://svelte.dev/e/bindable_invalid_location -->
           Retry Analysis
         </button>
       </div>
-
     {:else if isAnalyzing}
       <!-- Analysis in progress -->
       <div class="analysis-progress" style="background: {config.bgColor};">
@@ -250,19 +229,16 @@ https://svelte.dev/e/bindable_invalid_location -->
           </span>
           <h3>AI Analysis in Progress</h3>
         </div>
-        
         <div class="progress-bar">
-          <div 
-            class="progress-fill" 
+          <div
+            class="progress-fill"
             style="width: {analysisProgress}%; background: {config.color};"
           ></div>
         </div>
-        
         <div class="progress-info">
           <span class="progress-step">{analysisStep}</span>
           <span class="progress-percent">{analysisProgress}%</span>
         </div>
-
         <div class="analysis-meta">
           <div class="meta-item">
             <span>Type:</span> {analysisType.charAt.toUpperCase() + analysisType.slice(1)}
@@ -275,13 +251,11 @@ https://svelte.dev/e/bindable_invalid_location -->
           </div>
         </div>
       </div>
-
     {:else if analysisComponent && analysisResult}
       <!-- Render the analysis results -->
       <div class="analysis-content" data-analysis-type={analysisType}>
         <!-- Replace this with your actual analysis component -->
         <!-- <svelte:component this={analysisComponent.component} {...analysisComponent.props} /> -->
-        
         <!-- Mock results display -->
         <div class="analysis-results" style="border-color: {config.color};">
           <header class="results-header" style="background: {config.bgColor};">
@@ -293,17 +267,15 @@ https://svelte.dev/e/bindable_invalid_location -->
               {Math.round((analysisResult.confidence || 0.5) * 100)}% Confidence
             </span>
           </header>
-
           <div class="results-body">
             <div class="result-summary">
               <h4>Summary</h4>
               <p>
-                {analysisResult.summary || 
-                 analysisResult.legalOpinion || 
+                {analysisResult.summary ||
+                 analysisResult.legalOpinion ||
                  `${analysisType} analysis completed successfully with ${Object.keys(errors).length} data points.`}
               </p>
             </div>
-
             {#if analysisResult.keyFindings}
               <div class="result-findings">
                 <h4>Key Findings</h4>
@@ -314,7 +286,6 @@ https://svelte.dev/e/bindable_invalid_location -->
                 </ul>
               </div>
             {/if}
-
             {#if analysisResult.recommendations}
               <div class="result-recommendations">
                 <h4>Recommendations</h4>
@@ -325,7 +296,6 @@ https://svelte.dev/e/bindable_invalid_location -->
                 </ul>
               </div>
             {/if}
-
             <div class="analysis-metadata">
               <div class="meta-grid">
                 <div class="meta-cell">
@@ -347,10 +317,9 @@ https://svelte.dev/e/bindable_invalid_location -->
       </div>
     {/if}
   </div>
-
   <!-- Custom placeholder for AI analysis -->
-  <div 
-    class="ai-placeholder-content" 
+  <div
+    class="ai-placeholder-content"
     slot="placeholder"
     style="height: {height}; background: {config.bgColor};"
   >
@@ -368,19 +337,16 @@ https://svelte.dev/e/bindable_invalid_location -->
     </div>
   </div>
 </LazyLoader>
-
 <style>
   .lazy-ai-analysis {
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
-
   .analysis-wrapper {
     display: flex;
     flex-direction: column;
   }
-
   /* Error state */
   .analysis-error {
     display: flex;
@@ -391,12 +357,10 @@ https://svelte.dev/e/bindable_invalid_location -->
     padding: 32px;
     text-align: center;
   }
-
   .analysis-error .error-icon {
     font-size: 64px;
     margin-bottom: 16px;
   }
-
   .retry-button {
     margin-top: 16px;
     padding: 8px 20px;
@@ -406,11 +370,9 @@ https://svelte.dev/e/bindable_invalid_location -->
     cursor: pointer;
     transition: all 0.2s ease;
   }
-
   .retry-button:hover {
     background: rgba(0, 0, 0, 0.2);
   }
-
   /* Progress state */
   .analysis-progress {
     display: flex;
@@ -419,24 +381,20 @@ https://svelte.dev/e/bindable_invalid_location -->
     height: 100%;
     padding: 48px 32px;
   }
-
   .progress-header {
     display: flex;
     align-items: center;
     gap: 16px;
     margin-bottom: 32px;
   }
-
   .analysis-icon {
     font-size: 48px;
   }
-
   .progress-header h3 {
     margin: 0;
     font-size: 24px;
     font-weight: 600;
   }
-
   .progress-bar {
     width: 100%;
     height: 8px;
@@ -445,45 +403,37 @@ https://svelte.dev/e/bindable_invalid_location -->
     overflow: hidden;
     margin-bottom: 16px;
   }
-
   .progress-fill {
     height: 100%;
     transition: width 0.3s ease;
     border-radius: 4px;
   }
-
   .progress-info {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 32px;
     font-size: 14px;
   }
-
   .progress-step {
     font-weight: 500;
   }
-
   .progress-percent {
     font-weight: 600;
   }
-
   .analysis-meta {
     display: flex;
     gap: 24px;
     flex-wrap: wrap;
   }
-
   .meta-item {
     font-size: 12px;
     color: rgba(0, 0, 0, 0.6);
   }
-
-  .meta-item span:first-child {;
+  .meta-item span:first-child {
     font-weight: 600;
     margin-right: 4px;
   }
-
   /* Results display */
   .analysis-results {
     height: 100%;
@@ -491,7 +441,6 @@ https://svelte.dev/e/bindable_invalid_location -->
     border-radius: 8px;
     overflow: hidden;
   }
-
   .results-header {
     display: flex;
     align-items: center;
@@ -499,18 +448,15 @@ https://svelte.dev/e/bindable_invalid_location -->
     padding: 16px 24px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   }
-
   .header-icon {
     font-size: 24px;
   }
-
   .results-header h3 {
     margin: 0;
     flex: 1;
     font-size: 18px;
     font-weight: 600;
   }
-
   .confidence-badge {
     padding: 4px 12px;
     border-radius: 12px;
@@ -518,61 +464,51 @@ https://svelte.dev/e/bindable_invalid_location -->
     font-weight: 600;
     color: white;
   }
-
   .results-body {
     padding: 24px;
     height: calc(100% - 68px);
     overflow-y: auto;
   }
-
   .result-summary,
   .result-findings,
   .result-recommendations {
     margin-bottom: 24px;
   }
-
   .results-body h4 {
     margin: 0 0 12px 0;
     font-size: 16px;
     font-weight: 600;
     color: rgba(0, 0, 0, 0.8);
   }
-
   .results-body p {
     margin: 0;
     line-height: 1.6;
     color: rgba(0, 0, 0, 0.7);
   }
-
   .results-body ul {
     margin: 0;
     padding-left: 20px;
   }
-
   .results-body li {
     margin-bottom: 8px;
     line-height: 1.5;
     color: rgba(0, 0, 0, 0.7);
   }
-
   .analysis-metadata {
     margin-top: 32px;
     padding-top: 24px;
     border-top: 1px solid rgba(0, 0, 0, 0.1);
   }
-
   .meta-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 16px;
   }
-
   .meta-cell {
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
-
   .meta-label {
     font-size: 12px;
     font-weight: 600;
@@ -580,13 +516,11 @@ https://svelte.dev/e/bindable_invalid_location -->
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
-
   .meta-value {
     font-size: 14px;
     color: rgba(0, 0, 0, 0.8);
     font-family: monospace;
   }
-
   /* AI Placeholder */
   .ai-placeholder-content {
     display: flex;
@@ -596,74 +530,63 @@ https://svelte.dev/e/bindable_invalid_location -->
     gap: 24px;
     padding: 48px;
   }
-
   .placeholder-ai-brain {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-
   .brain-icon {
     font-size: 72px;
     z-index: 2;
     position: relative;
   }
-
   .brain-waves {
     position: absolute;
     width: 120px;
     height: 120px;
   }
-
   .wave {
     position: absolute;
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
     animation: brain-wave 2s infinite;
   }
-
   .wave-1 {
     width: 80px;
     height: 80px;
     top: 20px;
     left: 20px;
-    animation-delay: 0s;
+    animation-delay: 0;
   }
-
   .wave-2 {
     width: 100px;
     height: 100px;
     top: 10px;
     left: 10px;
-    animation-delay: 0.5s;
+    animation-delay: 0.5;
   }
-
   .wave-3 {
     width: 120px;
     height: 120px;
     top: 0;
     left: 0;
-    animation-delay: 1s;
+    animation-delay: 1;
   }
-
   .placeholder-text {
     text-align: center;
   }
-
   .placeholder-text h3 {
     margin: 0 0 8px 0;
     font-size: 20px;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
   }
-
   .placeholder-text p {
     margin: 0;
     color: rgba(255, 255, 255, 0.7);
     font-size: 14px;
   }
-
   /* Animations */
   @keyframes brain-wave {
     0% {
@@ -675,39 +598,32 @@ https://svelte.dev/e/bindable_invalid_location -->
       opacity: 0;
     }
   }
-
   /* Responsive design */
   @media (max-width: 768px) {
     .analysis-progress,
     .ai-placeholder-content {
       padding: 24px 16px;
     }
-
     .results-header {
       padding: 12px 16px;
     }
-
     .results-body {
       padding: 16px;
     }
-
     .meta-grid {
       grid-template-columns: 1fr;
     }
-
     .analysis-meta {
       flex-direction: column;
       gap: 12px;
     }
   }
-
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .progress-fill,
     .wave {
       animation: none;
     }
-
     .brain-waves {
       display: none;
     }

@@ -1,8 +1,6 @@
 
 import { json } from "@sveltejs/kit"
 import type { RequestHandler } from './$types.js'
-
-
 export const GET: RequestHandler = async () => {
   try {
     // Mock recent cases data - replace with actual database query
@@ -32,7 +30,6 @@ export const GET: RequestHandler = async () => {
         lastActivity: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
       }
     ]
-
     return json(recentCases)
   } catch (error: any) {
     console.error("Error fetching recent cases:", error)

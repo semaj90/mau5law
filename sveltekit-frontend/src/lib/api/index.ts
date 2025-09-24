@@ -3,12 +3,10 @@
  * Comprehensive TypeScript API routing system for SvelteKit integration
  * with Go microservice, Ollama LLM, and Redis caching layers
  */
-
 // =====================================
 // Core API Types & Interfaces
-// =====================================;
+// =====================================
 }
-
 export interface ApiResponse<T = any> {
   data?: T;
   error?: string;
@@ -16,16 +14,14 @@ export interface ApiResponse<T = any> {
   timestamp: string;
   requestId: string;
 }
-
 export interface PaginatedResponse<T> extends ApiResponse<T[]> {
-  pagination: {;
+  pagination: {
     page: number;
     limit: number;
     total: number;
     hasMore: boolean;
   };
 }
-
 export interface ApiLegalDocument {
   id: string;
   caseId: string;
@@ -37,9 +33,8 @@ export interface ApiLegalDocument {
   uploadedAt: string;
   processedAt?: string;
   embeddings?: number[];
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
 }
-
 export interface SemanticSearchQuery {
   query: string;
   limit?: number;
@@ -54,7 +49,6 @@ export interface SemanticSearchQuery {
   includeEmbeddings?: boolean;
   rerank?: boolean;
 }
-
 export interface ChatMessage {
   id: string;
   sessionId: string;
@@ -69,12 +63,10 @@ export interface ChatMessage {
     model?: string;
   };
 }
-
 // =====================================
 // Authentication & User Management
-// =====================================;
+// =====================================
 }
-
 export interface AuthUser {
   id: string;
   email: string;
@@ -83,48 +75,42 @@ export interface AuthUser {
   lastLogin?: string;
   preferences: UserPreferences;
 }
-
 export interface UserPreferences {
   theme: "yorha-dark" | "yorha-light" | "professional";
   language: "en" | "es" | "fr";
-  notifications: {;
+  notifications: {
     email: boolean;
     browser: boolean;
     mobile: boolean;
   };
-  dashboard: {;
+  dashboard: {
     layout: "grid" | "list";
     widgets: string[];
   };
 }
-
 export interface LoginCredentials {
   email: string;
   password: string;
   rememberMe?: boolean;
 }
-
 export interface RegisterData extends LoginCredentials {
   name: string;
   role: "prosecutor" | "detective" | "user";
   organization?: string;
 }
-
 // =====================================
 // Document Processing API
-// =====================================;
+// =====================================
 }
-
 export interface DocumentUploadOptions {
   caseId: string;
   documentType: ApiLegalDocument["documentType"];
   title?: string;
   jurisdiction?: string;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
   processImmediately?: boolean;
   generateEmbeddings?: boolean;
 }
-
 export interface DocumentProcessingResult {
   documentId: string;
   extractedText: string;
@@ -144,37 +130,32 @@ export interface DocumentProcessingResult {
     sentiment?: { score: number; label: "positive" | "negative" | "neutral" };
   };
 }
-
 // =====================================
 // Vector Search & Embeddings
-// =====================================;
+// =====================================
 }
-
 export interface VectorSearchOptions {
   query: string | number[];
   collection: "documents" | "cases" | "precedents";
   topK?: number;
   threshold?: number;
-  metadataFilters?: Record<string, any>;
+  metadataFilters?: { [key: string]: any };
   includePayload?: boolean;
   includeVectors?: boolean;
 }
-
 export interface VectorSearchResult {
   id: string;
   score: number;
-  payload?: Record<string, any>;
+  payload?: { [key: string]: any };
   vector?: number[];
   document?: Partial<ApiLegalDocument>;
 }
-
 export interface EmbeddingRequest {
   text: string | string[];
   model?: "nomic-embed-text" | "all-minilm-l6-v2" | "custom";
   normalize?: boolean;
   dimensions?: number;
 }
-
 export interface EmbeddingResponse {
   embeddings: number[][];
   model: string;
@@ -182,12 +163,10 @@ export interface EmbeddingResponse {
   tokensUsed: number;
   processingTime: number;
 }
-
 // =====================================
 // Real-time Chat & Streaming
-// =====================================;
+// =====================================
 }
-
 export interface ChatSessionOptions {
   caseId?: string;
   model?: "gemma3-legal:latest" | "mixtral:8x7b";
@@ -198,7 +177,6 @@ export interface ChatSessionOptions {
   ragEnabled?: boolean;
   ragSources?: string[];
 }
-
 export interface StreamingChatResponse {
   type: "token" | "complete" | "error" | "thinking";
   content?: string;
@@ -210,12 +188,10 @@ export interface StreamingChatResponse {
   };
   done: boolean;
 }
-
 // =====================================
 // Case Management
-// =====================================;
+// =====================================
 }
-
 export interface LegalCase {
   id: string;
   title: string;
@@ -231,9 +207,8 @@ export interface LegalCase {
   evidence: Evidence[];
   notes: CaseNote[];
   timeline: CaseTimelineEntry[];
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
 }
-
 export interface Evidence {
   id: string;
   caseId: string;
@@ -251,7 +226,6 @@ export interface Evidence {
   };
   files: Array<any>;
 }
-
 export interface CaseNote {
   id: string;
   caseId: string;
@@ -264,7 +238,6 @@ export interface CaseNote {
   updatedAt: string;
   tags: string[];
 }
-
 export interface CaseTimelineEntry {
   id: string;
   caseId: string;
@@ -278,9 +251,8 @@ export interface CaseTimelineEntry {
   description: string;
   actorId: string;
   timestamp: string;
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
 }
-
 export interface ChainOfCustodyEntry {
   id: string;
   evidenceId: string;
@@ -291,12 +263,10 @@ export interface ChainOfCustodyEntry {
   notes?: string;
   digitalSignature?: string;
 }
-
 // =====================================
 // API Client Configuration
-// =====================================;
+// =====================================
 }
-
 export interface ApiClientConfig {
   baseUrl: string;
   timeout?: number;
@@ -309,7 +279,6 @@ export interface ApiClientConfig {
     error?: Array<(error: any) => any>;
   };
 }
-
 export interface ServiceEndpoints {
   sveltekit: {
     baseUrl: string;
@@ -321,7 +290,7 @@ export interface ServiceEndpoints {
     port: number;
     grpcPort?: number;
     healthCheck: string;
-    endpoints: {;
+    endpoints: {
       documents: string;
       search: string;
       embeddings: string;
@@ -332,20 +301,20 @@ export interface ServiceEndpoints {
     baseUrl: string;
     port: number;
     healthCheck: string;
-    endpoints: {;
+    endpoints: {
       generate: string;
       chat: string;
       embeddings: string;
       models: string;
     };
   };
-  redis: {;
+  redis: {
     host: string;
     port: number;
     password?: string;
     db?: number;
   };
-  postgresql: {;
+  postgresql: {
     host: string;
     port: number;
     database: string;
@@ -357,44 +326,37 @@ export interface ServiceEndpoints {
     baseUrl: string;
     port: number;
     apiKey?: string;
-    collections: {;
+    collections: {
       documents: string;
       cases: string;
       precedents: string;
     };
   };
 }
-
 // =====================================
 // Barrel Exports - API Services
 // =====================================
-
 // Authentication Services
 export * from './services/auth-service.js';
 export * from './services/user-service.js';
-
 // Document Processing Services
 export * from './services/document-service.js';
 export * from './services/processing-service.js';
 export * from './services/upload-service.js';
-
 // Search & AI Services
 export * from './services/chat-service.js';
 export * from './services/embedding-service.js';
 export * from './services/ollama-service.js';
 export * from './services/search-service.js';
 export * from './services/vector-service.js';
-
 // Case Management Services
 export * from './services/case-service.js';
 export * from './services/evidence-service.js';
 export * from './services/note-service.js';
-
 // Infrastructure Services
 export * from './services/cache-service.js';
 export * from './services/health-service.js';
 export * from './services/metrics-service.js';
-
 // API Clients & Utilities
 export * from './clients/api-client.js';
 export * from './clients/sse-client.js';
@@ -402,13 +364,11 @@ export * from './clients/websocket-client.js';
 export * from './utils/api-helpers.js';
 export * from './utils/error-handlers.js';
 export * from './utils/rate-limiter.js';
-
 // =====================================
 // Route Constants
 // =====================================
-
 export const API_ROUTES = {
-  // Authentication;
+  // Authentication
   AUTH: {
     LOGIN: "/api/auth/login",
     LOGOUT: "/api/auth/logout",
@@ -417,8 +377,7 @@ export const API_ROUTES = {
     PROFILE: "/api/auth/profile",
     CHANGE_PASSWORD: "/api/auth/change-password"
   },
-
-  // Document Management;
+  // Document Management
   DOCUMENTS: {
     LIST: "/api/documents",
     UPLOAD: "/api/documents/upload",
@@ -429,23 +388,20 @@ export const API_ROUTES = {
     PROCESS: "/api/documents/:id/process",
     EXTRACT_TEXT: "/api/documents/extract-text"
   },
-
-  // Search & AI;
+  // Search & AI
   SEARCH: {
     SEMANTIC: "/api/search/semantic",
     FULLTEXT: "/api/search/fulltext",
     HYBRID: "/api/search/hybrid",
     SUGGESTIONS: "/api/search/suggestions"
   },
-
   CHAT: {
     SESSIONS: "/api/chat/sessions",
     STREAM: "/api/chat/stream",
     HISTORY: "/api/chat/sessions/:id/history",
     CLEAR: "/api/chat/sessions/:id/clear"
   },
-
-  // Vector Operations;
+  // Vector Operations
   VECTORS: {
     EMBED: "/api/vectors/embed",
     SEARCH: "/api/vectors/search",
@@ -453,8 +409,7 @@ export const API_ROUTES = {
     UPSERT: "/api/vectors/upsert",
     DELETE: "/api/vectors/delete"
   },
-
-  // Case Management;
+  // Case Management
   CASES: {
     LIST: "/api/cases",
     CREATE: "/api/cases",
@@ -467,8 +422,7 @@ export const API_ROUTES = {
     TIMELINE: "/api/cases/:id/timeline",
     EXPORT: "/api/cases/:id/export"
   },
-
-  // Evidence;
+  // Evidence
   EVIDENCE: {
     LIST: "/api/evidence",
     CREATE: "/api/evidence",
@@ -478,8 +432,7 @@ export const API_ROUTES = {
     CHAIN_OF_CUSTODY: "/api/evidence/:id/custody",
     ANALYSIS: "/api/evidence/:id/analysis"
   },
-
-  // System & Health;
+  // System & Health
   SYSTEM: {
     HEALTH: "/api/health",
     METRICS: "/api/metrics",
@@ -487,8 +440,7 @@ export const API_ROUTES = {
     CONFIG: "/api/config",
     LOGS: "/api/logs"
   },
-
-  // External Services;
+  // External Services
   EXTERNAL: {
     OLLAMA_HEALTH: "http://localhost:8086/api/version",
     GO_SERVICE_HEALTH: "http://localhost:8080/health",
@@ -496,11 +448,9 @@ export const API_ROUTES = {
     POSTGRES_HEALTH: "postgresql://localhost:5432/health"
   }
 } as const;
-
 // =====================================
 // HTTP Status Codes
 // =====================================
-
 export const HTTP_STATUS = {
   OK: 200,
   CREATED: 201,
@@ -515,11 +465,9 @@ export const HTTP_STATUS = {
   INTERNAL_SERVER_ERROR: 500,
   SERVICE_UNAVAILABLE: 503
 } as const;
-
 // =====================================
 // Default Configurations
 // =====================================
-
 export const DEFAULT_CONFIG: ServiceEndpoints = {
   sveltekit: {
     baseUrl: "http://localhost:3000",
@@ -566,16 +514,14 @@ export const DEFAULT_CONFIG: ServiceEndpoints = {
     port: 6333,
     collections: {
       documents: "legal_documents",
-      cases: "legal_cases",;
+      cases: "legal_cases",
       precedents: "legal_precedents"
     }
   }
 };
-
 // =====================================
 // Runtime Environment Detection
 // =====================================
-
 export const RUNTIME_ENV = {
   isDevelopment: import.meta.env.NODE_ENV === "development",
   isProduction: import.meta.env.NODE_ENV === "production",
@@ -583,7 +529,6 @@ export const RUNTIME_ENV = {
   isServer: typeof window === "undefined",
   isTest: import.meta.env.NODE_ENV === "test"
 } as const;
-
 export default {
   API_ROUTES,
   HTTP_STATUS,

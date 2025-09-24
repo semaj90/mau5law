@@ -2,12 +2,10 @@
  * LokiJS Browser-Compatible Adapter
  * Replaces filesystem operations with localStorage/IndexedDB
  */
-
 export class BrowserAdapter {
   constructor() {
     this.mode = 'normal';
   }
-
   // Load database from localStorage instead of filesystem
   loadDatabase(dbname, callback) {
     try {
@@ -22,7 +20,6 @@ export class BrowserAdapter {
       callback(null);
     }
   }
-
   // Save database to localStorage instead of filesystem
   saveDatabase(dbname, dbstring, callback) {
     try {
@@ -33,7 +30,6 @@ export class BrowserAdapter {
       if (callback) callback(error);
     }
   }
-
   // Delete database from localStorage
   deleteDatabase(dbname, callback) {
     try {
@@ -45,17 +41,15 @@ export class BrowserAdapter {
     }
   }
 }
-
 // Browser-compatible LokiJS configuration
 export const browserLokiConfig = {
   adapter: new BrowserAdapter(),
-  autoload: true,
+  autoload: true
   autoloadCallback: function() {
     console.log('🗄️ LokiJS database loaded successfully');
   },
-  autosave: true,
+  autosave: true
   autosaveInterval: 4000,
   persistenceMethod: 'localStorage',
 };
-
 export default BrowserAdapter;

@@ -2,31 +2,24 @@ import type { RequestHandler } from '@sveltejs/kit'
 import { json, type RequestHandler } from '@sveltejs/kit'
 import { enhancedRAGService } from '$lib/services/enhanced-rag-integration.js'
 import { dev } from '$app/environment'
-
 export const GET: RequestHandler = async () => {
   try {
     if (dev) {
       console.log('🔍 Enhanced RAG System Status Check')
     }
-
     // Check all system components
     const statusChecks = await Promise.allSettled([
       // Test Redis connection
       enhancedRAGService.testRedisConnection(),
-      
       // Test PostgreSQL connection
       enhancedRAGService.testPostgreSQLConnection(),
-      
       // Test Qdrant connection
       enhancedRAGService.testQdrantConnection(),
-      
       // Test Ollama connection
       enhancedRAGService.testOllamaConnection(),
-      
       // Test Neo4j connection (if available)
       enhancedRAGService.testNeo4jConnection()
     ])
-
     const systemHealth = {
       timestamp: new Date().toISOString(),
       systemVersion: '2.0.0-enhanced-rag',
@@ -54,11 +47,11 @@ export const GET: RequestHandler = async () => {
         }
       },
       capabilities: {
-        mlClassification: true,
-        vectorSearch: true,
+        mlClassification: true
+        vectorSearch: true
         knowledgeGraph: statusChecks[4].status === 'fulfilled',
-        realTimeStreaming: true,
-        gpuAcceleration: true,
+        realTimeStreaming: true
+        gpuAcceleration: true
         contextRanking: true
       },
       performance: {
@@ -68,10 +61,8 @@ export const GET: RequestHandler = async () => {
         uptime: '99.9%'
       }
     }
-
     // Determine overall status
     const failedServices = Object.values(systemHealth.services).filter(item => item.length)
-
     if (failedServices === 0) {
       systemHealth.overallStatus = 'fully_operational'
     } else if (failedServices <= 2) {
@@ -79,29 +70,25 @@ export const GET: RequestHandler = async () => {
     } else {
       systemHealth.overallStatus = 'service_disruption'
     }
-
     if (dev) {
       console.log(`🎯 System Status: ${systemHealth.overallStatus}`)
       console.log(`📊 Services: ${5 - failedServices}/5 operational`)
     }
-
     return json({
-      success: true,
+      success: true
       health: systemHealth
     })
-
   } catch (error: any) {
     console.error('❌ Enhanced RAG Status Check Error:', error)
-    
     return json({
-      success: false,
+      success: false
       error: error.message || 'System status check failed',
       timestamp: new Date().toISOString(),
       health: {
         overallStatus: 'system_error',
-        services: Record<string, any>,
-        capabilities: Record<string, any>,
-        performance: Record<string, any>
+        services: { [key: string]: any },
+        capabilities: { [key: string]: any },
+        performance: { [key: string]: any }
       }
     }, { status: 500 })
   }

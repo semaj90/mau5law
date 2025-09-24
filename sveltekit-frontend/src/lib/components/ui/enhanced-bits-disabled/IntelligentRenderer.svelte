@@ -1,21 +1,16 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   /**
    * Intelligent Renderer: Decides between regular DOM and canvas
    * 90% regular Enhanced-Bits + NES.css, 10% gaming LOD for glyph-heavy processes
    */
-
   import { onMount } from 'svelte';
   import { LegalAILogic, type EvidenceItem, type LegalDocument } from '$lib/core/logic/legal-ai-logic';
-
   // Import your existing components
   import * as Card from '$lib/components/ui/card';
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
-
+  import Button from '$lib/components/ui/Button.svelte';
   // Gaming LOD components (create when needed)
   import GlyphEngineRenderer from './GlyphEngineRenderer.svelte';
-
   // Props - single source of truth
   interface Props {
     data: {
@@ -29,12 +24,9 @@
     title?: string;
     priority?: 'critical' | 'high' | 'medium' | 'low';
   }
-
   let { data, type, title = '', priority = 'medium' }: Props = $props();
-
   // Intelligent rendering decision
   let useGlyphEngine = $derived(LegalAILogic.requiresGlyphEngine(data));
-
   // Process data with pure logic
   let processedData = $derived((() => {
     if ((data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).evidence) {
@@ -45,17 +37,14 @@
     }
     return data;
   })();
-
   function handleInteraction(event: CustomEvent) {
     // Pure event handling logic
     console.log('User interaction:', event.detail);
   }
 </script>
-
 <!--
   Intelligent Decision: Use regular DOM (90% of cases) or canvas (10% for heavy processes)
 -->
-
 {#if useGlyphEngine}
   <!-- Gaming LOD: Use canvas for glyph-heavy processes -->
   <div class="glyph-engine-container gaming-transition" role="application">
@@ -75,7 +64,6 @@
         {title}
       </CardTitle>
     </CardHeader>
-
     <CardContent class="space-y-4 nes-container">
       {#if type === 'evidence-card' && (data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).evidence}
         <!-- Regular DOM evidence display -->
@@ -89,7 +77,6 @@
             </div>
           {/each}
         </div>
-
       {:else if type === 'document-viewer' && (data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).documents}
         <!-- Regular DOM document display -->
         <div class="space-y-3">
@@ -105,7 +92,6 @@ Analyze
             </div>
           {/each}
         </div>
-
       {:else if type === 'chat-interface'}
         <!-- Regular DOM chat (unless real-time heavy processing) -->
         <div class="enhanced-bits-nier-bits-card p-4 bg-yorha-black">
@@ -116,7 +102,6 @@ Analyze
             <p class="mt-2 text-sm text-yorha-white">{(data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).textContent}</p>
           {/if}
         </div>
-
       {:else}
         <!-- Default regular DOM display -->
         <div class="enhanced-bits-nier-bits-card p-4">
@@ -125,7 +110,6 @@ Analyze
           </div>
         </div>
       {/if}
-
       <!-- Always show action buttons in regular DOM -->
       <div class="flex gap-2 mt-4">
         <Button
@@ -143,7 +127,6 @@ Details
     </CardContent>
   </Card>
 {/if}
-
 <style>
   /* Import hybrid theme */
   @import '$lib/styles/hybrid-theme.css';

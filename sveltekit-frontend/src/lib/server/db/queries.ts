@@ -3,7 +3,6 @@ import { users } from "$lib/server/db/schema-postgres";
 import { eq } from "drizzle-orm";
 import { db } from './index.js';
 }
-
 export interface User {
   id: string;
   email: string;
@@ -58,11 +57,10 @@ export async function createUser(userData: {
         hashedPassword: userData.hashedPassword,
         name: userData.name,
         firstName: userData.firstName,
-        lastName: userData.lastName,;
+        lastName: userData.lastName,
         role: userData.role || "prosecutor"
       })
       .returning();
-
     return result[0] || null;
   } catch (error) {
     console.error("Error creating user:", error);
@@ -70,8 +68,8 @@ export async function createUser(userData: {
   }
 }
 export async function updateUser(
-  id: string,;
-  updates: Partial<User>,
+  id: string
+  updates: Partial<User>
 ): Promise<User | null> {
   try {
     const result = await db
@@ -79,7 +77,6 @@ export async function updateUser(
       .set({ ...updates, updatedAt: new Date() })
       .where(eq(users.id, id)
       .returning();
-
     return result[0] || null;
   } catch (error) {
     console.error("Error updating user:", error);

@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy,   } from "svelte";
   import { writable, type Writable } from 'svelte/store';
   import { SoraGraphTraversal, type SoraTraversalPath, type SoraTraversalOptions } from '$lib/ai/sora-graph-traversal.js';
@@ -29,7 +28,6 @@ https://svelte.dev/e/js_parse_error -->
     theme?: 'dark' | 'light' | 'legal';
     interactive?: boolean;
   }
-
   let {
     query = '',
     startNodeId = '',
@@ -44,8 +42,6 @@ https://svelte.dev/e/js_parse_error -->
     interactive = true
   }: Props = $props();
   // Event dispatcher
-  
-
   // State stores
   const loading: Writable<boolean> = writable(false);
   const paths: Writable<SoraTraversalPath[]> = writable([]);
@@ -53,7 +49,6 @@ https://svelte.dev/e/js_parse_error -->
   const visualization3D: Writable<Moogle3DMesh | null> = writable(null);
   const stats: Writable<any> = writable( );
   const error: Writable<string | null> = writable(null);
-
   // Component instances
   let soraTraversal = $state<SoraGraphTraversal | null >(null);
   let moogleSynthesizer = $state<MoogleGraphSynthesizer | null >(null);
@@ -67,7 +62,6 @@ https://svelte.dev/e/js_parse_error -->
   let somCache = $state<SOMWebGPUCache | null >(null);
   let gpuWorker = $state<GPUTensorWorker | null >(null);
   let reranker = $state<LegalAIReranker | null >(null);
-
   // Theme configurations
   const themes = {
     dark: {
@@ -122,13 +116,12 @@ https://svelte.dev/e/js_parse_error -->
         cites: '#ff9f40',
         contains: '#4bc0c0',
         related: '#ff6384',
-        similar: '#36a2eb',;
-        references: '#9966ff',;
+        similar: '#36a2eb',
+        references: '#9966ff',
         contradicts: '#ff4757';
       }
     }
   };
-
   // Reactive statements
   let currentTheme = $derived(themes[theme]);
   let traversalConfig = $derived({
@@ -136,17 +129,16 @@ https://svelte.dev/e/js_parse_error -->
     maxNodes: 100,
     scoreThreshold: 0.6,
     traversalStrategy: 'reinforcement' as const,
-    semanticFiltering: true,
-    useGPUAcceleration: enableGPUAcceleration,
+    semanticFiltering: true
+    useGPUAcceleration: enableGPUAcceleration
     reinforcementLearning: {
-      enabled: enableReinforcementLearning,
+      enabled: enableReinforcementLearning
       explorationRate: 0.1,
       learningRate: 0.01,
       discountFactor: 0.95
     },
     ...config
   } as SoraTraversalOptions);
-
   let visualizationConfig = $derived({
     width,
     height,
@@ -159,27 +151,26 @@ https://svelte.dev/e/js_parse_error -->
     vertexCount: 10000,
     lodLevels: 4,
     colorScheme: 'semantic' as const,
-    layout: 'legal-context' as const,;
+    layout: 'legal-context' as const,
     physics: {
       gravity: 0.1,
       repulsion: 100,
       attraction: 0.05,
       damping: 0.9;
     },
-    reinforcementLearning: {;
-      enabled: enableReinforcementLearning,
-      showTrainingProgress: true,
-      highlightOptimalPaths: true,
-      showRewardHeatmap: true,
+    reinforcementLearning: {
+      enabled: enableReinforcementLearning
+      showTrainingProgress: true
+      highlightOptimalPaths: true
+      showRewardHeatmap: true
       qValueVisualization: true;
     },
-    useWebGL: true,
-    useWasm: true,
-    enableCaching: true,
+    useWebGL: true
+    useWasm: true
+    enableCaching: true
     qualityLevel: 'high' as const,
     ...config
   } as MoogleVisualizationConfig
-
   $effect(() => {
     (async () => {
 try {
@@ -195,11 +186,9 @@ try {
   });
     }
   });
-
   onDestroy(() => {
     cleanup();
   });
-
   async function initializeComponents(): Promise<void> {
     try {
       // Initialize GPU and memory architecture
@@ -207,19 +196,17 @@ try {
       memoryArch = new NESMemoryArchitecture();
       semanticPipeline = new SemanticAnalysisPipeline();
       tensorStore = new DimensionalTensorStore({
-        documents: 1000,;
-        chunks: 10000,;
+        documents: 1000,
+        chunks: 10000,
         representations: 100,
         maxLOD: 4;
       });
       somCache = new SOMWebGPUCache();
       reranker = new LegalAIReranker();
-
       // Initialize GPU worker if available
       if (enableGPUAcceleration && typeof Worker !== 'undefined') {
         gpuWorker = new GPUTensorWorker();
       }
-
       // Initialize Sora graph traversal
       if (neo4jDriver) {
         soraTraversal = new SoraGraphTraversal(
@@ -231,7 +218,6 @@ try {
           reranker
         );
       }
-
       // Initialize Moogle synthesizer
       moogleSynthesizer = new MoogleGraphSynthesizer(
         gpuIntegration,
@@ -240,31 +226,25 @@ try {
         somCache,
         gpuWorker
       );
-
     } catch (error) {
       throw new Error(`Component initialization failed: ${error.message}`);
     }
   }
-
   async function performGraphTraversal(): Promise<void> {
     if (!soraTraversal || !moogleSynthesizer) {
       error.set('Components not initialized');
       return;
     }
-
     try {
       loading.set(true);
       error.set(null);
-
       // Perform graph traversal
       const traversalPaths = await soraTraversal.traverseGraph(
         startNodeId,
         query,
         traversalConfig
       );
-
       paths.set(traversalPaths);
-
       // Generate visualizations
       if (mode === '2d' || mode === 'both') {
         const viz2D = await moogleSynthesizer.synthesize2D(traversalPaths, visualizationConfig);
@@ -272,19 +252,16 @@ try {
         renderCanvas2D(viz2D);
         ondispatch?.({ visualization: viz2D });
       }
-
       if (mode === '3d' || mode === 'both') {
         const viz3D = await moogleSynthesizer.synthesize3D(traversalPaths, visualizationConfig);
         visualization3D.set(viz3D);
         renderCanvas3D(viz3D);
         ondispatch?.({ visualization: viz3D });
       }
-
       // Update statistics
       const reinforcementStats = soraTraversal.getReinforcementStats();
       const tensorStats = await soraTraversal.getTensorStats();
       const cacheStats = await moogleSynthesizer.getEnhancedCacheStats();
-
       stats.set({
         paths: traversalPaths.length,
         totalNodes: reinforcementStats.totalNodes,
@@ -293,7 +270,6 @@ try {
         cacheHitRate: cacheStats.renderingCache.hitRate,
         renderTime: $visualization2D?.metadata.renderTime || $visualization3D?.metadata.renderTime || 0;
       });
-
     } catch (err) {
       console.error('Graph traversal failed:', err);
       error.set(`Traversal failed: ${err.message}`);
@@ -302,40 +278,30 @@ try {
       loading.set(false);
     }
   }
-
   function renderCanvas2D(viz: Moogle2DOutput): void {
     if (!canvas2D) return;
-
     const ctx = canvas2D.getContext('2d');
     if (!ctx) return;
-
     // Clear canvas
     ctx.clearRect(0, 0, canvas2D.width, canvas2D.height);
-
     // Draw the visualization
     ctx.putImageData(viz.imageData, 0, 0);
-
     // Add interactive overlays if enabled
     if (interactive) {
       addInteractiveOverlays2D(ctx, viz);
     }
   }
-
   function renderCanvas3D(viz: Moogle3DMesh): void {
     if (!canvas3D) return;
-
     // For WebGL rendering, we would set up a proper 3D context
     // This is a simplified implementation
     const ctx = canvas3D.getContext('2d');
     if (!ctx) return;
-
     ctx.fillStyle = visualizationConfig.backgroundColor;
     ctx.fillRect(0, 0, canvas3D.width, canvas3D.height);
-
     // Render simplified 3D projection
     renderSimple3DProjection(ctx, viz);
   }
-
   function addInteractiveOverlays2D(ctx: CanvasRenderingContext2D, viz: Moogle2DOutput): void {
     // Add hover regions for nodes
     viz.metadata.nodePositions.forEach((nodePos) => {
@@ -347,7 +313,6 @@ try {
       ctx.stroke();
     });
   }
-
   function renderSimple3DProjection(ctx: CanvasRenderingContext2D, viz: Moogle3DMesh): void {
     // Simple orthographic projection of 3D points
     viz.metadata.nodePositions.forEach((nodePos) => {
@@ -359,40 +324,33 @@ try {
       ctx.fill();
     });
   }
-
   function handleCanvasClick(event: MouseEvent, is3D: boolean = false): void {
     if (!interactive) return;
-
     const rect = (event.target as HTMLCanvasElement).getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-
     // Find clicked node
     const viz = is3D ? $visualization3D : $visualization2D;
     if (!viz) return;
-
     const clickedNode = viz.metadata.nodePositions.find(nodePos => {
       const distance = Math.sqrt(
         Math.pow(x - nodePos.x, 2) + Math.pow(y - nodePos.y, 2)
       );
       return distance < 20; // Click tolerance
     });
-
     if (clickedNode) {
-      ondispatch?.({ 
-        nodeId: clickedNode.id, 
+      ondispatch?.({
+        nodeId: clickedNode.id,
         nodeType: 'unknown' // Would need to track node types in metadata
       });
     }
   }
-
   function handlePathSelection(pathIndex: number): void {
     const selectedPath = $paths[pathIndex];
     if (selectedPath) {
       ondispatch?.({ path: selectedPath });
     }
   }
-
   function cleanup(): void {
     // Cleanup GPU resources
     if (gpuWorker) {
@@ -406,14 +364,12 @@ try {
       moogleSynthesizer.clearCache();
     }
   }
-
   // Public methods for external control
   export async function refresh(): Promise<void> {
     if (query && startNodeId) {
       await performGraphTraversal();
     }
   }
-
   export function clearVisualization(): void {
     paths.set([]);
     visualization2D.set(null);
@@ -421,11 +377,9 @@ try {
     stats.set( );
     error.set(null);
   }
-
   export function exportVisualization(format: 'png' | 'svg' | 'json' = 'png'): string | null {
     const viz = $visualization2D;
     if (!viz) return null;
-
     switch (format) {
       case 'png':
         return viz.base64;
@@ -433,7 +387,7 @@ try {
         return viz.svg;
       case 'json':
         return JSON.stringify({
-          paths: $paths,;
+          paths: $paths
           metadata: viz.metadata;
         }, null, 2);
       default:
@@ -441,9 +395,8 @@ try {
     }
   }
 </script>
-
-<div 
-  class="sora-graph-visualization" 
+<div
+  class="sora-graph-visualization"
   class:loading={$loading}
   class:error={$error};
   bind:this={container}
@@ -464,7 +417,6 @@ try {
       </div>
     </div>
   {/if}
-
   <!-- Error display -->
   {#if $error}
     <div class="error-overlay">
@@ -473,7 +425,6 @@ try {
       <button onclick={() => error.set(null)}>Dismiss</button>
     </div>
   {/if}
-
   <!-- 2D Visualization -->
   {#if (mode === '2d' || mode === 'both') && !$loading}
     <div class="canvas-container" class:hidden={mode === '3d'}>
@@ -484,7 +435,6 @@ try {
         class="visualization-canvas canvas-2d"
         onclick={(e) => handleCanvasClick(e, false)}
       ></canvas>
-      
       <!-- 2D Controls -->
       <div class="canvas-controls">
         <button class="control-btn" title="Zoom In">🔍+</button>
@@ -494,7 +444,6 @@ try {
       </div>
     </div>
   {/if}
-
   <!-- 3D Visualization -->
   {#if (mode === '3d' || mode === 'both') && !$loading}
     <div class="canvas-container" class:hidden={mode === '2d'}>
@@ -505,7 +454,6 @@ try {
         class="visualization-canvas canvas-3d"
         onclick={(e) => handleCanvasClick(e, true)}
       ></canvas>
-      
       <!-- 3D Controls -->
       <div class="canvas-controls">
         <button class="control-btn" title="Rotate">🔄</button>
@@ -515,7 +463,6 @@ try {
       </div>
     </div>
   {/if}
-
   <!-- Mode switcher for 'both' mode -->
   {#if mode === 'both' && !$loading}
     <div class="mode-switcher">
@@ -523,14 +470,13 @@ try {
       <button class="mode-btn" class:active={false}>3D</button>
     </div>
   {/if}
-
   <!-- Path explorer panel -->
   {#if $paths.length > 0 && interactive}
     <div class="path-explorer">
       <h4>🛤️ Traversal Paths ({$paths.length})</h4>
       <div class="path-list">
         {#each $paths.slice(0, 5) as path, index}
-          <div 
+          <div
             class="path-item"
             class:high-score={path.totalScore > 0.8}
             onclick={() => handlePathSelection(index)}
@@ -548,7 +494,6 @@ try {
       </div>
     </div>
   {/if}
-
   <!-- Statistics panel -->
   {#if Object.keys(errors).length > 0}
     <div class="stats-panel">
@@ -574,9 +519,8 @@ try {
     </div>
   {/if}
 </div>
-
 <style>
-  .sora-graph-visualization {;
+  .sora-graph-visualization {
     position: relative;
     border-radius: 8px;
     background: var(--bg-color, #0f1419);
@@ -584,7 +528,6 @@ try {
     overflow: hidden;
     font-family: 'JetBrains Mono', monospace;
   }
-
   .loading-overlay {
     position: absolute;
     top: 0;
@@ -599,7 +542,6 @@ try {
     z-index: 100;
     color: #4a9eff;
   }
-
   .spinner {
     width: 40px;
     height: 40px;
@@ -609,12 +551,10 @@ try {
     animation: spin 1s linear infinite;
     margin-bottom: 16px;
   }
-
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-
   .loading-stats {
     display: flex;
     gap: 16px;
@@ -622,14 +562,12 @@ try {
     font-size: 12px;
     opacity: 0.8;
   }
-
   .loading-detail {
     background: rgba(74, 158, 255, 0.2);
     padding: 4px 8px;
     border-radius: 4px;
     border: 1px solid rgba(74, 158, 255, 0.3);
   }
-
   .error-overlay {
     position: absolute;
     top: 50%;
@@ -643,21 +581,17 @@ try {
     z-index: 100;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   }
-
   .canvas-container {
     position: relative;
     width: 100%;
     height: 100%;
   }
-
   .canvas-container.hidden {
     display: none;
   }
-
   .visualization-canv.visualization-canvas:hover {
     opacity: 0.95;
   }
-
   .canvas-controls {
     position: absolute;
     top: 8px;
@@ -666,7 +600,6 @@ try {
     gap: 4px;
     z-index: 10;
   }
-
   .control-btn {
     background: rgba(42, 42, 42, 0.9);
     border: 1px solid rgba(74, 158, 255, 0.3);
@@ -677,13 +610,11 @@ try {
     font-size: 12px;
     transition: all 0.2s ease;
   }
-
   .control-btn:hover {
     background: rgba(74, 158, 255, 0.2);
     border-color: #4a9eff;
     transform: translateY(-1px);
   }
-
   .mode-switcher {
     position: absolute;
     top: 8px;
@@ -694,7 +625,6 @@ try {
     padding: 2px;
     z-index: 10;
   }
-
   .mode-btn {
     background: transparent;
     border: none;
@@ -705,12 +635,10 @@ try {
     font-size: 12px;
     transition: all 0.2s ease;
   }
-
   .mode-btn.active {
     background: #4a9eff;
     color: white;
   }
-
   .path-explorer {
     position: absolute;
     bottom: 8px;
@@ -724,20 +652,17 @@ try {
     overflow-y: auto;
     z-index: 10;
   }
-
   .path-explorer h4 {
     margin: 0 0 8px 0;
     color: #4a9eff;
     font-size: 12px;
     font-weight: 600;
   }
-
   .path-list {
     display: flex;
     flex-direction: column;
     gap: 6px;
   }
-
   .path-item {
     background: rgba(42, 42, 42, 0.5);
     border: 1px solid transparent;
@@ -747,39 +672,32 @@ try {
     transition: all 0.2s ease;
     font-size: 11px;
   }
-
   .path-item:hover {
     background: rgba(74, 158, 255, 0.1);
     border-color: rgba(74, 158, 255, 0.3);
   }
-
   .path-.high-score {
     border-color: rgba(6, 255, 165, 0.4);
     background: rgba(6, 255, 165, 0.1);
   }
-
   .path-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     margin-bottom: 4px;
     color: #87ceeb;
   }
-
   .path-score {
     font-weight: 600;
   }
-
   .path-length {
     opacity: 0.8;
   }
-
   .path-preview {
     color: #c77dff;
     font-family: monospace;
     font-size: 10px;
     opacity: 0.9;
   }
-
   .stats-panel {
     position: absolute;
     bottom: 8px;
@@ -791,55 +709,46 @@ try {
     min-width: 200px;
     z-index: 10;
   }
-
   .stats-panel h4 {
     margin: 0 0 8px 0;
     color: #4a9eff;
     font-size: 12px;
     font-weight: 600;
   }
-
   .stat-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 6px;
   }
-
   .stat-item {
     display: flex;
     flex-direction: column;
     gap: 2px;
   }
-
   .stat-label {
     font-size: 10px;
     color: #87ceeb;
     opacity: 0.8;
   }
-
   .stat-value {
     font-size: 12px;
     color: #06ffa5;
     font-weight: 600;
     font-family: monospace;
   }
-
   /* Theme overrides */
   :global(.sora-graph-visualization[data-theme="light"]) {
     --bg-color: #ffffff;
     --border-color: #e0e0e0;
   }
-
   :global(.sora-graph-visualization[data-theme="dark"]) {
     --bg-color: #1a1a1a;
     --border-color: #333333;
   }
-
   :global(.sora-graph-visualization[data-theme="legal"]) {
     --bg-color: #0f1419;
     --border-color: #2a2a2a;
   }
-
   /* Responsive design */
   @media (max-width: 768px) {
     .path-explorer {
@@ -847,18 +756,15 @@ try {
       bottom: 4px;
       left: 4px;
     }
-
     .stats-panel {
       min-width: 180px;
       bottom: 4px;
       right: 4px;
     }
-
     .canvas-controls {
       top: 4px;
       right: 4px;
     }
-
     .mode-switcher {
       top: 4px;
       left: 4px;

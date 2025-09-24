@@ -2,8 +2,7 @@
 // YoRHa Table and Grid Components
 export { default as YoRHaTable } from './YoRHaTable.svelte.js';
 export { default as YoRHaDataGrid } from './YoRHaDataGrid.svelte.js';
-
-// Table utilities and stores;
+// Table utilities and stores
 export {
   tableManager,
   createTableStats,
@@ -13,8 +12,7 @@ export {
   type TableState,
   type TableNotification
 } from '$lib/stores/tables';
-
-// Table-related types for components;
+// Table-related types for components
 export interface YoRHaTableColumn {
   key: string;
   title: string;
@@ -23,12 +21,10 @@ export interface YoRHaTableColumn {
   align?: 'left' | 'center' | 'right';
   type?: 'text' | 'number' | 'date' | 'status' | 'action';
 }
-
 export interface YoRHaTableRow {
   id: string;
     [key: string]: unknown;
   }
-
 export interface YoRHaGridColumn {
   key: string;
   title: string;
@@ -44,31 +40,27 @@ export interface YoRHaGridColumn {
     formatter?: (value: any, row: any) => string;
     validator?: (value: any) => boolean | string;
   }
-
 // (presets and utilities omitted for brevity in this quick fix)
 export const yorhaTablePresets = {} as const;
 export const yorhaGridPresets = {} as const;
-;
-// Status formatters for legal AI;
+// Status formatters for legal AI
 export const statusFormatters = {
     caseStatus: (status: string) => status?.toUpperCase() || 'UNKNOWN',
     priority: (p: string) => p?.toUpperCase() || 'NORMAL',
     evidenceType: (t: string) => t?.toUpperCase() || 'OTHER',
     userRole: (r: string) => r?.toUpperCase() || 'USER'
   };
-
-// Import stores used in convenience object;
+// Import stores used in convenience object
 import {
   tableManager as importedTableManager,
   createTableStats as importedCreateTableStats
 } from '$lib/stores/tables';
-
-// Export convenience object as named export only;
+// Export convenience object as named export only
 export const YoRHa = {
   YoRHaTable: () => import('./YoRHaTable.svelte'),
   YoRHaDataGrid: () => import('./YoRHaDataGrid.svelte'),
-  tableManager: importedTableManager,
-  createTableStats: importedCreateTableStats,
+  tableManager: importedTableManager
+  createTableStats: importedCreateTableStats
   yorhaTablePresets,
   yorhaGridPresets,
   statusFormatters

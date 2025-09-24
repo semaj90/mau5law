@@ -1,16 +1,11 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
-https://svelte.dev/e/js_parse_error -->
+https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import { , onDestroy, onMount } from 'svelte';
-
-  
-
-  
+  import { onDestroy, onMount } from 'svelte';
   import { quintOut } from "svelte/easing";
   import { fly } from "svelte/transition";
   import {
@@ -40,66 +35,54 @@ https://svelte.dev/e/js_parse_error -->
     Plus,
     Settings,
   } from "lucide-svelte";
-
   // State
   let editorComponent = $state({}) {
-        single: "layout-single",;
-        dual: "layout-dual",;
-        masonry: "layout-masonry",;
+        single: "layout-single",
+        dual: "layout-dual",
+        masonry: "layout-masonry",
       }[$report.settings.layout]
     : "layout-single"
   );
-
   // Reactive editor height
   let editorHeight = $derived($reportUI && $reportUI.fullscreen ? window.innerHeight - 200 : 500);
-
   function updateEditorHeight() {
     editorHeight = $reportUI.fullscreen ? window.innerHeight - 200 : 500;
   }
-
   $effect(() => {
     window.addEventListener('resize', updateEditorHeight);
   });
-
   onDestroy(() => {
     window.removeEventListener('resize', updateEditorHeight);
   });
-
   // Initialize auto-save
   $effect(() => {
     if ($report.settings.autoSave) {
       cleanupAutoSave = setupAutoSave();
     }
   });
-
   onDestroy(() => {
     if (cleanupAutoSave) {
       cleanupAutoSave();
     }
   });
-
   // Handle evidence actions
   const handleViewEvidence = (evidence: any) => {
-    selectedEvidence = evidence;
+    selectedEvidence = evidenc;
     showEvidenceModal = true;
   };
-
   const handleEditEvidence = (evidence: any) => {
-    selectedEvidence = evidence;
+    selectedEvidence = evidenc;
     showEvidenceModal = true;
   };
-
   const handleDeleteEvidence = async (evidence: any) => {
     if (confirm(`Are you sure you want to delete "${evidence.title}"?`)) {
       try {
         const formData = new FormData();
         formData.append("id", evidence.id);
-
         const response = await fetch("/api/evidence/delete", {
-          method: "POST",;
-          body: formData,;
+          method: "POST",
+          body: formData
         });
-
         if (response.ok) {
           reportActions.removeEvidence(evidence.id);
           await invalidateAll(); // Refresh the page data
@@ -112,7 +95,6 @@ https://svelte.dev/e/js_parse_error -->
       }
     }
   };
-
   const handleDownloadEvidence = (evidence: any) => {
     if (evidence.url) {
       window.open(evidence.url, "_blank");
@@ -127,12 +109,10 @@ https://svelte.dev/e/js_parse_error -->
       editorComponent.insertEvidence(evidence);
     }
   };
-
   const handleAddNewEvidence = () => {
     selectedEvidence = null;
     showEvidenceModal = true;
   };
-
   // Layout switching
   const switchLayout = () => {
     const layouts = ["single", "dual", "masonry"] as const;
@@ -140,12 +120,10 @@ https://svelte.dev/e/js_parse_error -->
     const nextLayout = layouts[(currentIndex + 1) % layouts.length];
     reportActions.updateSettings({ layout: nextLayout });
   };
-
   // Sidebar toggle
   const toggleSidebar = () => {
     reportUI.update((ui) => ({ ...ui, sidebarOpen: !ui.sidebarOpen }));
   };
-
   // Fullscreen toggle
   const toggleFullscreen = () => {
     reportUI.update((ui) => ({ ...ui, fullscreen: !ui.fullscreen }));
@@ -155,7 +133,6 @@ https://svelte.dev/e/js_parse_error -->
       document.exitFullscreen?.();
     }
   };
-
   // Keyboard shortcuts
   const handleKeydown = (e: CustomEvent<any>) => {
     if (e.ctrlKey || e.metaKey) {
@@ -180,9 +157,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   };
 </script>
-
 <svelte:window keydown={handleKeydown} />
-
 <div
   class="report-editor {layoutClass}"
   class:fullscreen={$reportUI.fullscreen}
@@ -192,7 +167,6 @@ https://svelte.dev/e/js_parse_error -->
   <header class="editor-toolbar">
     <ReportToolbar />
   </header>
-
   <!-- Main Content Area -->
   <div class="editor-content">
     <!-- Sidebar -->
@@ -221,7 +195,6 @@ https://svelte.dev/e/js_parse_error -->
             placeholder="Search evidence..."
           />
         </section>
-
         <!-- Evidence Grid -->
         <section class="evidence-section">
           {#if $report.settings.layout === "masonry"}
@@ -256,7 +229,6 @@ https://svelte.dev/e/js_parse_error -->
               {/each}
             </div>
           {/if}
-
           {#if evidenceSearchResults.length === 0}
             <div>
               <p>No evidence found</p>
@@ -290,7 +262,6 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </div>
         </section>
-
     <!-- Main Editor Area -->
     <main class="editor-main">
       <!-- Editor Header -->
@@ -306,14 +277,12 @@ https://svelte.dev/e/js_parse_error -->
               <PanelLeftOpen size={20} />
             </button>
           {/if}
-
           <input
             type="text"
             value={$report.title} oninput={(e) => reportActions.updateTitle(e.currentTarget.value)}
             placeholder="Report title..."
           />
         </div>
-
         <div>
           <button
             onclick={() => switchLayout()}
@@ -327,7 +296,6 @@ https://svelte.dev/e/js_parse_error -->
               <Grid size={18} />
             {/if}
           </button>
-
           <button
             onclick={() => toggleFullscreen()}
             title="Toggle fullscreen"
@@ -338,7 +306,6 @@ https://svelte.dev/e/js_parse_error -->
               <Maximize2 size={18} />
             {/if}
           </button>
-
           <button
             onclick={() => (showSettingsModal = true)}
             title="Settings"
@@ -347,13 +314,11 @@ https://svelte.dev/e/js_parse_error -->
           </button>
         </div>
       </div>
-
       <RichTextEditor
         bind:this={editorComponent}
         height={editorHeight}
       />
     </main>
-
     <!-- Evidence Panel (for dual layout) -->
     {#if $report.settings.layout === "dual"}
       <aside
@@ -366,7 +331,6 @@ https://svelte.dev/e/js_parse_error -->
             <Plus size={16} />
           </button>
         </div>
-
         <div class="evidence-grid-panel"></div>
           <MasonryGrid
             items={$report.attachedEvidence}
@@ -414,7 +378,6 @@ https://svelte.dev/e/js_parse_error -->
     />
   {/if}
 </Modal>
-
 <!-- Settings Modal -->
 <Modal bind:open={showSettingsModal}>
   <div slot="title">Report Settings</div>
@@ -424,9 +387,8 @@ https://svelte.dev/e/js_parse_error -->
     <p>Settings panel - TODO: Implement settings form</p>
   </div>
 </Modal>
-
 <style>
-  .report-editor {;
+  .report-editor {
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -435,6 +397,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .report-editor.fullscreen {
     position: fixed;
+d;
     top: 0;
     left: 0;
     right: 0;
@@ -465,7 +428,7 @@ https://svelte.dev/e/js_parse_error -->
   .section-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betwee;
     margin-bottom: 0.75rem;
   }
   .section-header h3 {
@@ -554,7 +517,7 @@ https://svelte.dev/e/js_parse_error -->
   .editor-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betwee;
     padding: 1rem;
     border-bottom: 1px solid #e2e8f0;
     background: #ffffff;
@@ -619,8 +582,8 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     transition: all 0.15s ease;
   }
-  .layout-toggle:hover,
-  .fullscreen-toggle:hover,
+  .layout-toggle: hover
+  .fullscreen-toggle: hover
   .settings-btn:hover {
     background: #f3f4f6;
     color: #3b82f6;
@@ -640,7 +603,7 @@ https://svelte.dev/e/js_parse_error -->
   .panel-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betwee;
     padding: 1rem;
     border-bottom: 1px solid #e2e8f0;
   }
@@ -689,6 +652,3 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </style>
-
-
-

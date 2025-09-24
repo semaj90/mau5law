@@ -1,4 +1,4 @@
-// Minimal Claude agent stub to unblock orchestration endpoint;
+// Minimal Claude agent stub to unblock orchestration endpoint
 export interface ClaudeAgentExecutionInput {
   prompt: string;
   context?: any;
@@ -8,13 +8,11 @@ export interface ClaudeAgentExecutionInput {
     area?: string;
   };
 }
-
 export interface ClaudeAgentExecutionResult {
   output: string;
   score: number;
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
 }
-
 class ClaudeAgentStub {
   async execute(input: ClaudeAgentExecutionInput): Promise<ClaudeAgentExecutionResult> {
     const { prompt, context, options } = input;
@@ -22,7 +20,7 @@ class ClaudeAgentStub {
       output: `[ClaudeStub] Response synthesized for: ${prompt.slice(0,120)}...` + (options?.includeContext7 ? ' (ctx7)' : ''),
       score: 0.72,
       metadata: {
-        simulated: true,;
+        simulated: true
         length: prompt.length,
         includeContext7: !!options?.includeContext7,
         autoFix: !!options?.autoFix,
@@ -31,5 +29,4 @@ class ClaudeAgentStub {
     };
   }
 }
-
 export const claudeAgent = new ClaudeAgentStub();

@@ -1,15 +1,12 @@
 <!-- Enhanced Bits UI: Keyboard Shortcuts Help Panel -->
 <!-- Professional help panel for displaying available keyboard shortcuts -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { cn } from '$lib/utils/cn';
   import { Card } from './index';
   import Button from './index';
-
   // Types
   interface KeyboardShortcut {
     id: string;
@@ -18,7 +15,6 @@
     category: string;
     enabled?: boolean;
   }
-
   interface KeyboardHelpProps {
     shortcuts?: KeyboardShortcut[];
     showCategories?: boolean;
@@ -26,7 +22,6 @@
     className?: string;
     open?: boolean;
   }
-
   // Props
   let { shortcuts = [],
     showCategories = true,
@@ -34,64 +29,52 @@
     className = '',
     open = $bindable(false)
    }: KeyboardHelpProps = $props();
-
   // State
   let searchQuery = $state('');
   let selectedCategory = $state('all');
-
   // Default legal shortcuts for display
   const defaultShortcuts: KeyboardShortcut[] = [
     // Case Management
     { id: 'new-case', keys: ['ctrl', 'shift', 'c'], description: 'Create New Case', category: 'Case Management' },
     { id: 'case-search', keys: ['ctrl', 'shift', 'f'], description: 'Search Cases', category: 'Case Management' },
     { id: 'case-list', keys: ['ctrl', 'shift', 'l'], description: 'View All Cases', category: 'Case Management' },
-    
     // Evidence Management
     { id: 'upload-evidence', keys: ['ctrl', 'u'], description: 'Upload Evidence', category: 'Evidence' },
     { id: 'evidence-analysis', keys: ['ctrl', 'shift', 'a'], description: 'AI Evidence Analysis', category: 'Evidence' },
     { id: 'evidence-search', keys: ['ctrl', 'e'], description: 'Search Evidence', category: 'Evidence' },
-    
     // AI Tools
     { id: 'ai-assistant', keys: ['ctrl', 'shift', 'i'], description: 'Open AI Assistant', category: 'AI Tools' },
     { id: 'legal-research', keys: ['ctrl', 'shift', 'r'], description: 'Legal Research', category: 'AI Tools' },
     { id: 'document-drafting', keys: ['ctrl', 'shift', 'd'], description: 'AI Document Drafting', category: 'AI Tools' },
-    
     // Documents
     { id: 'new-document', keys: ['ctrl', 'n'], description: 'New Document', category: 'Documents' },
     { id: 'save-document', keys: ['ctrl', 's'], description: 'Save Document', category: 'Documents' },
     { id: 'document-review', keys: ['ctrl', 'r'], description: 'Document Review', category: 'Documents' },
-    
     // Navigation
     { id: 'dashboard', keys: ['ctrl', 'h'], description: 'Go to Dashboard', category: 'Navigation' },
     { id: 'quick-search', keys: ['ctrl', 'k'], description: 'Quick Search', category: 'Navigation' },
     { id: 'settings', keys: ['ctrl', ','], description: 'Open Settings', category: 'Navigation' },
-    
     // Accessibility
     { id: 'accessibility-panel', keys: ['ctrl', 'alt', 'a'], description: 'Accessibility Panel', category: 'Accessibility' },
     { id: 'screen-reader', keys: ['ctrl', 'alt', 's'], description: 'Screen Reader Mode', category: 'Accessibility' },
     { id: 'high-contrast', keys: ['ctrl', 'alt', 'h'], description: 'High Contrast Mode', category: 'Accessibility' },
-    
     // Help
     { id: 'keyboard-help', keys: ['shift', '?'], description: 'Keyboard Shortcuts Help', category: 'Help' },
     { id: 'documentation', keys: ['f1'], description: 'Open Documentation', category: 'Help' },
     { id: 'support', keys: ['ctrl', 'shift', 'h'], description: 'Contact Support', category: 'Help' }
   ];
-
   // Combine default and custom shortcuts
   const allShortcuts = $derived(() => {
     const combined = [...defaultShortcuts, ...shortcuts];
     return combined.filter(s => s.enabled !== false);
   });
-
   // Filter shortcuts based on search and category
   const filteredShortcuts = $derived(() => {
-    let filtered = allShortcuts;
-
+    let filtered = allShortcut;
     // Filter by category
     if (selectedCategory !== 'all') {
       filtered = filtered.filter(s => s.category === selectedCategory);
     }
-
     // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
@@ -100,16 +83,13 @@
         s.keys.some.includes(query))
       );
     }
-
     return filtered;
   });
-
   // Get unique categories
   const categories = $derived(() => {
     const cats = new Set(allShortcuts.map(s => s.category));
     return ['all', ...Array.from.sort()];
   });
-
   // Group shortcuts by category for display
   const groupedShortcuts = $derived(() => {
     const groups: Record<string, KeyboardShortcut[]> = {};
@@ -119,10 +99,8 @@
       }
       groups[shortcut.category].push(shortcut);
     });
-
-    return groups;
+    return group;
   });
-
   // Format key combination for display
   function formatKeys(keys: string[]): string {
     return keys.map(key => {
@@ -139,43 +117,36 @@
       }
     }).join(' + ');
   }
-
   // Handle escape key to close
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
       open = false;
     }
   }
-
   // Handle backdrop click
   function handleBackdropClick(event: MouseEvent) {
     if (event.target === event.currentTarget) {
       open = false;
     }
   }
-
   $effect(() => {
     if (!browser) return;
-
     // Listen for global keyboard help shortcut
     function handleGlobalShortcut(event: KeyboardEvent) {
       if (event.shiftKey && event.key === '?') {
         event.preventDefault();
-        open = !open;
+        open = !ope;
       }
     }
-
     document.addEventListener('keydown', handleGlobalShortcut);
-    
     return () => {
       document.removeEventListener('keydown', handleGlobalShortcut);
     };
   });
 </script>
-
 <!-- Help Panel Modal -->
 {#if open}
-  <div 
+  <div
     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
     onclick={handleBackdropClick}
     onkeydown={handleKeydown}
@@ -194,7 +165,6 @@
             Boost your productivity with these keyboard shortcuts
           </p>
         </div>
-        
         <button class="nes-btn"
           variant="ghost"
           size="sm"
@@ -207,7 +177,6 @@
           </svg>
         </button>
       </div>
-
       <!-- Search and Filters -->
       {#if searchable || showCategories}
         <div class="p-6 border-b border-nier-border-muted">
@@ -223,7 +192,6 @@
                 />
               </div>
             {/if}
-
             <!-- Category Filter -->
             {#if showCategories}
               <div class="sm:w-48">
@@ -242,7 +210,6 @@
           </div>
         </div>
       {/if}
-
       <!-- Shortcuts Content -->
       <div class="flex-1 overflow-y-auto p-6">
         {#if Object.keys(errors).length === 0}
@@ -275,7 +242,6 @@
                   {/if}
                   {category}
                 </h3>
-                
                 <div class="grid gap-3">
                   {#each categoryShortcuts as shortcut}
                     <div class="flex items-center justify-between p-3 rounded-lg bg-nier-bg-tertiary border border-nier-border-muted hover:bg-nier-bg-secondary transition-colors">
@@ -284,7 +250,6 @@
                           {shortcut.description}
                         </p>
                       </div>
-                      
                       <div class="flex items-center gap-1">
                         {#each shortcut.keys as key, index}
                           {#if index > 0}
@@ -303,14 +268,12 @@
           </div>
         {/if}
       </div>
-
       <!-- Footer -->
       <div class="p-6 border-t border-nier-border-muted bg-nier-bg-secondary">
         <div class="flex items-center justify-between">
           <div class="text-sm text-nier-text-secondary">
             <span class="font-medium">{filteredShortcuts.length}</span> shortcuts available
           </div>
-          
           <div class="flex items-center gap-4 text-sm text-nier-text-secondary">
             <div class="flex items-center gap-2">
               <kbd class="px-2 py-1 text-xs font-mono bg-nier-bg-primary border border-nier-border-strong rounded text-nier-text-primary">
@@ -318,7 +281,6 @@
               </kbd>
               <span>Toggle this help</span>
             </div>
-            
             <div class="flex items-center gap-2">
               <kbd class="px-2 py-1 text-xs font-mono bg-nier-bg-primary border border-nier-border-strong rounded text-nier-text-primary">
                 Esc
@@ -331,9 +293,8 @@
     </div>
   </div>
 {/if}
-
 <style>
-  kbd {;
+  kbd {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   }
 </style>

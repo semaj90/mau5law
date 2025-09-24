@@ -8,12 +8,10 @@ import {
   crewAIAgent,
   enhancedRAGService
 } from '$lib/services/agent-stubs'
-
 /*
  * Agent Orchestrator API Endpoint
  * Coordinates multiple AI agents with Context7 MCP integration and auto-fix capabilities
  */
-
 // Define interfaces for context properties
 export interface Context7Analysis {
   documentation?: string
@@ -22,7 +20,6 @@ export interface Context7Analysis {
   bestPractices?: string[]
   timestamp?: string
 }
-
 export interface AutoFixResults {
   applied?: boolean
   area?: string
@@ -30,17 +27,13 @@ export interface AutoFixResults {
   summary?: string
   timestamp?: string
 }
-
 export interface AgentOrchestrationContext {
   context7Analysis?: Context7Analysis
   autoFixResults?: AutoFixResults
   [key: string]: any
 }
-
 // import { autoGenAgent } from '../../../../../agents/autogen-agent.js'
-
 // import { enhancedRAGService } from '../../../../../rag/enhanced-rag-service.js'
-
 export interface AgentOrchestrationRequest {
   prompt: string
   context?: AgentOrchestrationContext
@@ -55,7 +48,6 @@ export interface AgentOrchestrationRequest {
     priority?: 'low' | 'medium' | 'high' | 'urgent'
   }
 }
-
 export interface AgentOrchestrationResponse {
   success: boolean
   results: Array<any>
@@ -73,20 +65,16 @@ export interface AgentOrchestrationResponse {
     timestamp: string
   }
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now()
-
   try {
     const requestData: AgentOrchestrationRequest = await request.json()
-
     const {
       prompt,
       context = {},
       agents = ['claude', 'autogen', 'crewai', 'rag'],
       options = {}
     } = requestData
-
     // Validate request
     if (!prompt || prompt.trim().length === 0) {
       return json(
@@ -103,26 +91,23 @@ export const POST: RequestHandler = async ({ request }) => {
           orchestrationMetadata: {
             totalProcessingTime: Date.now() - startTime,
             agentsUsed: 0,
-            context7Enhanced: false,
-            autoFixApplied: false,
+            context7Enhanced: false
+            autoFixApplied: false
             timestamp: new Date().toISOString()
           }
         },
         { status: 400 }
       )
     }
-
     const results: any[] = []
     let context7Enhanced = false
     let autoFixApplied = false
-
     // Apply Context7 analysis and auto-fix if requested
     if (options.includeContext7) {
       const analysis = await context7Service.analyzeComponent('agent-orchestrator', 'legal-ai')
       context.context7Analysis = analysis
       context7Enhanced = true
     }
-
     if (options.autoFix) {
       const autoFixResult = await context7Service.autoFixCodebase({
         area: options.autoFixArea as any,
@@ -131,10 +116,8 @@ export const POST: RequestHandler = async ({ request }) => {
       context.autoFixResults = autoFixResult
       autoFixApplied = true
     }
-
     // Execute agents based on configuration
     const agentPromises: Promise<any>[] = []
-
     if (agents.includes('claude')) {
       const claudePromise = claudeAgent
         .execute({
@@ -146,22 +129,20 @@ export const POST: RequestHandler = async ({ request }) => {
             area: options.autoFixArea
           }
         })
-        .then((result: any) => ({
+        .then((result: any) => ({,
           agent: 'claude',
           ...result,
           error: undefined
         }))
-        .catch((error: any) => ({
+        .catch((error: any) => ({,
           agent: 'claude',
           output: '',
           score: 0,
           metadata: { error: true },
           error: error.message
         }))
-
       agentPromises.push(claudePromise)
     }
-
     if (agents.includes('autogen')) {
       const autogenPromise = autoGenAgent
         .execute({
@@ -175,22 +156,20 @@ export const POST: RequestHandler = async ({ request }) => {
             autoFix: options.autoFix
           }
         })
-        .then((result: any) => ({
+        .then((result: any) => ({,
           agent: 'autogen',
           ...result,
           error: undefined
         }))
-        .catch((error: any) => ({
+        .catch((error: any) => ({,
           agent: 'autogen',
           output: '',
           score: 0,
           metadata: { error: true },
           error: error.message
         }))
-
       agentPromises.push(autogenPromise)
     }
-
     if (agents.includes('crewai')) {
       const crewaiPromise = crewAIAgent
         .execute({
@@ -202,26 +181,24 @@ export const POST: RequestHandler = async ({ request }) => {
             autoFix: options.autoFix
           }
         })
-        .then((result: any) => ({
+        .then((result: any) => ({,
           agent: 'crewai',
           ...result,
           error: undefined
         }))
-        .catch((error: any) => ({
+        .catch((error: any) => ({,
           agent: 'crewai',
           output: '',
           score: 0,
           metadata: { error: true },
           error: error.message
         }))
-
       agentPromises.push(crewaiPromise)
     }
-
     if (agents.includes('rag')) {
       const ragPromise = enhancedRAGService
         .query({
-          query: prompt,
+          query: prompt
           context,
           options: {
             caseId: options.caseId,
@@ -231,12 +208,12 @@ export const POST: RequestHandler = async ({ request }) => {
             confidenceThreshold: 0.7
           }
         })
-        .then((result: any) => ({
+        .then((result: any) => ({,
           agent: 'rag',
           ...result,
           error: undefined
         }))
-        .catch((error: any) => ({
+        .catch((error: any) => ({,
           agent: 'rag',
           output: '',
           score: 0,
@@ -244,10 +221,8 @@ export const POST: RequestHandler = async ({ request }) => {
           metadata: { error: true },
           error: error.message
         }))
-
       agentPromises.push(ragPromise)
     }
-
     // Execute agents (parallel or sequential based on options)
     if (options.parallel !== false) {
       // Execute in parallel with timeout
@@ -255,13 +230,11 @@ export const POST: RequestHandler = async ({ request }) => {
       const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => reject(new Error('Agent execution timeout')), timeout)
       )
-
       try {
         const agentResults = (await Promise.race([
           Promise.allSettled(agentPromises),
           timeoutPromise
         ])) as PromiseSettledResult<any>[]
-
         agentResults.forEach((result, index) => {
           if (
             (result as { status?: any; value?: any; reason?: any; score?: any }).status ===
@@ -310,14 +283,11 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       }
     }
-
     // Synthesize results
     const synthesis = synthesizeResults(results, prompt)
-
     const totalProcessingTime = Date.now() - startTime
-
     const response: AgentOrchestrationResponse = {
-      success: true,
+      success: true
       results,
       synthesis,
       orchestrationMetadata: {
@@ -328,14 +298,12 @@ export const POST: RequestHandler = async ({ request }) => {
         timestamp: new Date().toISOString()
       }
     }
-
     return json(response)
   } catch (error: any) {
     console.error('Agent orchestration failed:', error)
-
     return json(
       {
-        success: false,
+        success: false
         error: error instanceof Error ? error.message : 'Unknown orchestration error',
         results: [],
         synthesis: {
@@ -347,8 +315,8 @@ export const POST: RequestHandler = async ({ request }) => {
         orchestrationMetadata: {
           totalProcessingTime: Date.now() - startTime,
           agentsUsed: 0,
-          context7Enhanced: false,
-          autoFixApplied: false,
+          context7Enhanced: false
+          autoFixApplied: false
           timestamp: new Date().toISOString()
         }
       },
@@ -356,11 +324,9 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 function synthesizeResults(results: any[], originalPrompt: string) {
   // Find best result by score
   const validResults = results.filter((r: any) => !r.error && r.score > 0)
-
   if (validResults.length === 0) {
     return {
       bestResult: 'No valid results from agents',
@@ -369,11 +335,9 @@ function synthesizeResults(results: any[], originalPrompt: string) {
       nextSteps: ['Test individual agent endpoints', 'Verify Context7 integration']
     }
   }
-
   const bestResult = validResults.reduce((best, current) =>
     current.score > best.score ? current : best
   )
-
   // Calculate consensus score
   const avgScore =
     validResults.reduce(
@@ -381,41 +345,36 @@ function synthesizeResults(results: any[], originalPrompt: string) {
         sum + (result as { status?: any; value?: any; reason?: any; score?: any }).score,
       0
     ) / validResults.length
-
   // Generate recommendations based on results
   const recommendations = [
     `Best performing agent: ${bestResult.agent} (score: ${bestResult.score.toFixed(2)})`,
     `Average confidence: ${avgScore.toFixed(2)}`,
     `${validResults.length}/${results.length} agents completed successfully`
   ]
-
   // Generate next steps
   const nextSteps = [
     'Review best result for actionable insights',
     'Consider running additional analysis if needed',
     'Document findings for case records'
   ]
-
   if (avgScore < 0.6) {
     recommendations.push('Consider refining the prompt for better results')
     nextSteps.push('Iterate with more specific queries')
   }
-
   return {
     bestResult: bestResult.output,
-    consensusScore: avgScore,
+    consensusScore: avgScore
     recommendations,
     nextSteps
   }
 }
-
 // Health check endpoints
 export const GET: RequestHandler = async () => {
   return json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
     availableAgents: ['claude', 'autogen', 'crewai', 'rag'],
-    context7Enabled: true,
+    context7Enabled: true
     autoFixEnabled: true
   })
 }

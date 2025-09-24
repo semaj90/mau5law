@@ -4,7 +4,6 @@
   interface Props { children: Snippet }
   let { children }: Props = $props();
 </script>
-
 <div class="app">
   <header>
     <h1>YoRHa Legal AI</h1>
@@ -13,7 +12,6 @@
   {@render children?.()}
   </main>
 </div>
-
 <style>
   .app {
     min-height: 100vh;

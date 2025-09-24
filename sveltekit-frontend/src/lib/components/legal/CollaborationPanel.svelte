@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -7,14 +7,14 @@ Real-time collaboration interface for multiple investigators working on evidence
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
-    collaborationSession: {;
+    collaborationSession: {
     activeCollaborators: string[];
     userId: string
     evidenceId: string
     wsConnection: WebSocket | null;
-    onAddAnnotation: (content: string, position: unknown) ;
+    onAddAnnotation: (content: string, position: unknown;
+) ;
   }
   let { collaborationSession,
     activeCollaborators,
@@ -29,9 +29,6 @@ Real-time collaboration interface for multiple investigators working on evidence
     wsConnection,
     onAddAnnotation = > void
   : unknown } = $props();
-
-
-
   import { onMount } from 'svelte';
   import { Badge } from '$lib/components/ui/badge';
   import Button from '$lib/components/ui/enhanced-bits';
@@ -43,7 +40,6 @@ Real-time collaboration interface for multiple investigators working on evidence
   } from '$lib/components/ui/enhanced-bits';
   import { Textarea } from '$lib/components/ui/textarea';
   import { Users, MessageCircle, MapPin, Send, Eye, UserCheck } from 'lucide-svelte';
-
   // Props
       sessionId: string
     participants: Array;
@@ -58,25 +54,22 @@ Real-time collaboration interface for multiple investigators working on evidence
   let chatContainer: HTMLDivElement
   let isTyping = $state(false);
   let typingUsers = $state<string[]>([]);
-
   // Auto-scroll chat to bottom when new messages arrive
   $effect(() => {
     if (collaborationSession?.chatHistory && chatContainer) {
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
   });
-
   $effect(() => {
     // Set up WebSocket message listeners for real-time collaboration
     if (wsConnection) {
-      const originalOnMessage = wsConnection.onmessage;
+      const originalOnMessage = wsConnection.onmessag;
       wsConnection.onmessage = (event) => {
         originalOnMessage?.(event);
         handleWebSocketMessage(JSON.parse(event.data));
       };
     }
   });
-
   function handleWebSocketMessage(data: unknown) {
     switch (data.type) {
       case 'chat-message':
@@ -105,36 +98,29 @@ Real-time collaboration interface for multiple investigators working on evidence
         break;
     }
   }
-
   function sendMessage() {
     if (!newMessage.trim() || !wsConnection || !collaborationSession) return;
-
     const message = {
       userId,
-      message: newMessage,;
+      message: newMessage
       timestamp: new Date().toISOString();
     };
-
     // Send via WebSocket
     wsConnection.send(JSON.stringify({
       type: 'chat-message',
       sessionId: collaborationSession.sessionId,
-      message;
+      messag;
     }));
-
     // Update local state
     collaborationSession.chatHistory = [
       ...collaborationSession.chatHistory,
       message
     ];
-
     newMessage = '';
     isTyping = false;
   }
-
   function handleTyping() {
     if (!wsConnection || !collaborationSession) return;
-
     if (!isTyping) {
       isTyping = true;
       wsConnection.send(JSON.stringify({
@@ -144,46 +130,39 @@ Real-time collaboration interface for multiple investigators working on evidence
       }));
     }
   }
-
   function addAnnotation() {
     if (!newAnnotation.trim()) return;
-
     const annotation = {
       userId,
-      content: newAnnotation,;
-      position: annotationPosition,;
+      content: newAnnotation
+      position: annotatio;
+Position,
       timestamp: new Date().toISOString();
     };
-
     // Send via WebSocket
     if (wsConnection && collaborationSession) {
       wsConnection.send(JSON.stringify({
         type: 'annotation-added',
         sessionId: collaborationSession.sessionId,
-        annotation;
+        annotatio;
       }));
     }
-
     // Call parent callback
     onAddAnnotation(newAnnotation, annotationPosition);
-
     // Reset form
     newAnnotation = '';
     showAnnotationInput = false;
   }
-
   function formatTimestamp(timestamp: string) {
     const date = new Date(timestamp);
     const now = new Date());
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
-
     if (diffMins < 1) return 'just now';
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffMins < 1440) return `${Math.floor(diffMins / 60)}h ago`;
     return date.toLocaleDateString();
   }
-
   function getRoleColor(role: string) {
     switch (role) {
       case 'investigator':
@@ -198,12 +177,10 @@ Real-time collaboration interface for multiple investigators working on evidence
         return 'bg-gray-100 text-gray-800';
     }
   }
-
   function isCurrentUser(participantUserId: string) {
     return participantUserId === userId;
   }
 </script>
-
 <div class="collaboration-panel space-y-4">
   {#if !collaborationSession}
     <div class="nes-container">
@@ -247,7 +224,6 @@ Real-time collaboration interface for multiple investigators working on evidence
         {/each}
       </div>
     </div>
-
     <!-- Real-time Chat -->
     <div class="nes-container">
       <div class="yorha-panel-header">
@@ -268,8 +244,8 @@ Real-time collaboration interface for multiple investigators working on evidence
             {#each collaborationSession.chatHistory as message}
               <div class={`flex ${isCurrentUser(message.userId) ? 'justify-end' : 'justify-start'}`}>
                 <div class={`max-w-xs lg:max-w-md px-3 py-2 rounded-lg ${
-                  isCurrentUser(message.userId) 
-                    ? 'bg-blue-600 text-white' 
+                  isCurrentUser(message.userId)
+                    ? 'bg-blue-600 text-white'
                     : 'bg-gray-100 text-gray-900'
                 }`}>
                   {#if !isCurrentUser(message.userId)}
@@ -287,7 +263,6 @@ Real-time collaboration interface for multiple investigators working on evidence
               </div>
             {/each}
           {/if}
-          
           <!-- Typing indicators -->
           {#if typingUsers.length > 0}
             <div class="flex justify-start">
@@ -306,11 +281,10 @@ Real-time collaboration interface for multiple investigators working on evidence
             </div>
           {/if}
         </div>
-
         <!-- Message input -->
         <div class="p-4">
           <div class="flex space-x-2">
-            <Textarea;
+            <Textarease;
               bind:value={newMessage}
               placeholder="Type your message..."
               class="flex-1 resize-none min-h-[40px] max-h-[120px]"
@@ -322,7 +296,7 @@ Real-time collaboration interface for multiple investigators working on evidence
                 }
               }}
             />
-            <Button 
+            <Button
               onclick={sendMessage}
               disabled={!newMessage.trim()}
               size="sm"
@@ -334,7 +308,6 @@ Real-time collaboration interface for multiple investigators working on evidence
         </div>
       </div>
     </div>
-
     <!-- Annotations -->
     <div class="nes-container">
       <div class="yorha-panel-header">
@@ -372,7 +345,6 @@ showAnnotationInput = false} variant="ghost" size="sm">
             </div>
           </div>
         {/if}
-
         {#if collaborationSession.annotations.length === 0}
           <div class="text-center text-gray-500 py-4">
             <MapPin class="w-8 h-8 mx-auto mb-2 opacity-50" />
@@ -405,7 +377,6 @@ showAnnotationInput = false} variant="ghost" size="sm">
         {/if}
       </div>
     </div>
-
     <!-- Session Info -->
     <div class="nes-container">
       <div class="yorha-panel-content p-4">
@@ -423,20 +394,17 @@ showAnnotationInput = false} variant="ghost" size="sm">
     </div>
   {/if}
 </div>
-
 <style>
-  .collaboration-panel {;
+  .collaboration-panel {
     max-height: 100vh;
     overflow-y: auto;
   }
-
   /* Typing indicator animation */
-  .typing-indicator {;
+  .typing-indicator {
     display: inline-flex;
     align-items: center;
     space: 1px;
   }
-  
   .typing-indicator span {
     display: inline-block;
     width: 4px;
@@ -446,15 +414,12 @@ showAnnotationInput = false} variant="ghost" size="sm">
     animation: typing 1.4s infinite;
     margin: 0 1px;
   }
-  
-  .typing-indicator span:nth-child(2) {;
-    animation-delay: 0.2s;
+  .typing-indicator span:nth-child(2) {
+    animation-delay: 0.2;
   }
-  
-  .typing-indicator span:nth-child(3) {;
-    animation-delay: 0.4s;
+  .typing-indicator span:nth-child(3) {
+    animation-delay: 0.4;
   }
-  
   @keyframes typing {
     0%, 60%, 100% {
       transform: translateY(0);
@@ -465,22 +430,18 @@ showAnnotationInput = false} variant="ghost" size="sm">
       opacity: 1;
     }
   }
-
   /* Custom scrollbar for chat */
   .collaboration-panel::-webkit-scrollbar {
     width: 4px;
   }
-  
   .collaboration-panel::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 2px;
   }
-  
   .collaboration-panel::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 2px;
   }
-  
   .collaboration-panel::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
   }

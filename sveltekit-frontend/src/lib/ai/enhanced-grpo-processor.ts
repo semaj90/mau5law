@@ -1,12 +1,10 @@
 // Enhanced GRPO-thinking processor with structured reasoning feedback
 // Extends existing thinking-processor.ts with advanced reasoning pipeline
-
 import { ThinkingProcessor, type ThinkingAnalysis, type AnalysisOptions } from './thinking-processor.js';
 import { db } from '$lib/db/connection';
 import { aiResponses, grpoFeedback, recommendationScores } from '$lib/db/enhanced-ai-schema';
 import { eq, desc, and, gte, sql } from 'drizzle-orm';
-
-// Enhanced analysis with GRPO context;
+// Enhanced analysis with GRPO context
 export interface GRPOAnalysis extends ThinkingAnalysis {
   grpoId?: string;
   structuredReasoning: {
@@ -25,7 +23,6 @@ export interface GRPOAnalysis extends ThinkingAnalysis {
     improvementSuggestions: string[];
   };
 }
-
 export interface RecommendationContext {
   responseId: string;
   similarity: number;
@@ -34,8 +31,7 @@ export interface RecommendationContext {
   finalScore: number;
   snippet: string;
 }
-
-// GRPO enhancement configuration;
+// GRPO enhancement configuration
 export interface GRPOConfig {
   enableStructuredReasoning: boolean;
   enableFeedbackLoop: boolean;
@@ -44,72 +40,62 @@ export interface GRPOConfig {
   temporalDecayDays: number;
   semanticSimilarityThreshold: number;
 }
-
 export class EnhancedGRPOProcessor extends ThinkingProcessor {
   private static readonly DEFAULT_CONFIG: GRPOConfig = {
-    enableStructuredReasoning: true,
-    enableFeedbackLoop: true,
-    enableRecommendations: true,
+    enableStructuredReasoning: true
+    enableFeedbackLoop: true
+    enableRecommendations: true
     maxRecommendations: 5,
     temporalDecayDays: 30,
     semanticSimilarityThreshold: 0.7
   };
-
   /**
    * Enhanced document analysis with GRPO-thinking and recommendations
    */
   static async analyzeDocumentEnhanced(
-    text: string,;
+    text: string
     options: AnalysisOptions & { config?: Partial<GRPOConfig> } = {}
   ): Promise<GRPOAnalysis> {
     const config = { ...this.DEFAULT_CONFIG, ...options.config };
-
-    // Get base thinking analysis;
+    // Get base thinking analysis
     const baseAnalysis = await super.analyzeDocument(text, {
       ...options,
       useThinkingStyle: true, // Force thinking style for GRPO
     });
-
     // Extract and structure reasoning from thinking content
     const structuredReasoning = config.enableStructuredReasoning
       ? await this.extractStructuredReasoning(baseAnalysis.thinking)
       : this.getEmptyStructuredReasoning();
-
     // Generate embeddings for similarity search
     const queryEmbedding = await this.generateEmbedding(text);
     const responseEmbedding = await this.generateEmbedding(
       typeof baseAnalysis.analysis === 'string'
         ? baseAnalysis.analysis: JSON.stringify(baseAnalysis.analysis)
     );
-
     // Get recommendation context from similar responses
     const recommendationContext = config.enableRecommendations
       ? await this.getRecommendationContext(queryEmbedding, config)
       : [];
-
     // Calculate temporal score based on recency
     const temporalScore = this.calculateTemporalScore(new Date(), config.temporalDecayDays);
-
     // Get feedback loop data if available
     const feedbackLoop = config.enableFeedbackLoop
       ? await this.getFeedbackLoopData(text)
       : { previousRatings: [], userPreferences: [], improvementSuggestions: [] };
-
-    // Save enhanced analysis to database;
+    // Save enhanced analysis to database
     const grpoId = await this.saveGRPOAnalysis({
-      query: text,
+      query: text
       response:
         typeof baseAnalysis.analysis === 'string'
           ? baseAnalysis.analysis: JSON.stringify(baseAnalysis.analysis),
       thinkingContent: baseAnalysis.thinking,
       structuredReasoning,
       queryEmbedding,
-      responseEmbedding,;
+      responseEmbedding,
       confidence: baseAnalysis.confidence,
       processingTime: baseAnalysis.metadata.processing_time,
       options
     });
-
     return {
       ...baseAnalysis,
       grpoId,
@@ -119,7 +105,6 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
       feedbackLoop
     };
   }
-
   /**
    * Extract structured reasoning components from thinking content
    */
@@ -129,13 +114,10 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
     if (!thinkingContent) {
       return this.getEmptyStructuredReasoning();
     }
-
     try {
       // Use Gemma3-Legal to parse the thinking content into structured components
       const structurePrompt = `Parse this legal reasoning into structured components:
-
 ${thinkingContent}
-
 Extract and format as JSON:;
 {
   "premises": ["premise 1", "premise 2"],
@@ -145,23 +127,20 @@ Extract and format as JSON:;
   "counterArguments": ["counter 1", "counter 2"],
   "confidenceFactors": ["factor 1", "factor 2"]
 }`;
-
       const response = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           model: 'gemma3-legal:latest',
-          prompt: structurePrompt,;
+          prompt: structurePrompt
           stream: false
         })
       });
-
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
         const parsed = ThinkingProcessor.extractJSON(
           (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).response
         ) as GRPOAnalysis['structuredReasoning'];
-
         // Validate structure
         if (
           parsed &&
@@ -175,11 +154,9 @@ Extract and format as JSON:;
     } catch (error) {
       console.warn('Failed to extract structured reasoning:', error);
     }
-
     // Fallback: basic extraction from thinking content
     return this.fallbackStructureExtraction(thinkingContent);
   }
-
   /**
    * Generate embedding using nomic-embed-text
    */;
@@ -188,12 +165,11 @@ Extract and format as JSON:;
       const response = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'nomic-embed-text',;
+        body: JSON.stringify({,
+          model: 'nomic-embed-text',
           prompt: text.slice(0, 2048), // Limit length
         })
       });
-
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
         return (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).embedding || [];
@@ -201,15 +177,13 @@ Extract and format as JSON:;
     } catch (error) {
       console.warn('Failed to generate embedding:', error);
     }
-
     return new Array(768).fill(0); // Fallback zero vector
   }
-
   /**
    * Get recommendation context from similar previous responses
    */
   private static async getRecommendationContext(
-    queryEmbedding: number[],
+    queryEmbedding: number[]
     config: GRPOConfig;
   ): Promise<RecommendationContext[]> {
     try {
@@ -227,16 +201,13 @@ Extract and format as JSON:;
         ORDER BY similarity ASC
         LIMIT ${config.maxRecommendations}
       `);
-
       const recommendations: RecommendationContext[] = [];
-
       for (const row of similarResponses) {
         const similarity = 1 - (row.similarity as number); // Convert distance to similarity
         const temporalFactor = this.calculateTemporalScore(
           new Date(row.created_at as string),
           config.temporalDecayDays
         );
-
         recommendations.push({
           responseId: row.id as string,
           similarity,
@@ -247,27 +218,22 @@ Extract and format as JSON:;
           snippet: (row.response as string).slice(0, 200) + '...'
         });
       }
-
       return recommendations.sort((a, b) => b.finalScore - a.finalScore);
     } catch (error) {
       console.warn('Failed to get recommendation context:', error);
       return [];
     }
   }
-
   /**
    * Calculate temporal decay score
    */;
   private static calculateTemporalScore(createdAt: Date, halfLifeDays: number): number {
     const now = new Date();
     const ageDays = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24);
-
     // Exponential decay: score = e^(-ln(2) * age / halfLife)
     const decayFactor = Math.exp((-Math.LN2 * ageDays) / halfLifeDays);
-
     return Math.max(0.1, Math.min(1.0, decayFactor); // Clamp between 0.1 and 1.0
   }
-
   /**
    * Get feedback loop data for learning
    */;
@@ -275,7 +241,6 @@ Extract and format as JSON:;
     try {
       // Get previous feedback for similar queries
       const queryEmbedding = await this.generateEmbedding(query);
-
       const feedbackData = await db.execute(sql`
         SELECT
           f.user_rating,
@@ -291,7 +256,6 @@ Extract and format as JSON:;
         ORDER BY f.created_at DESC
         LIMIT 10
       `);
-
       const previousRatings = feedbackData
         .map((row: any) => row.user_rating as number)
         .filter(Boolean);
@@ -299,10 +263,8 @@ Extract and format as JSON:;
         .map((row: any) => row.feedback_text as string)
         .filter(Boolean)
         .slice(0, 5);
-
       // Generate improvement suggestions based on low-rated aspects
       const improvementSuggestions = this.generateImprovementSuggestions(feedbackData);
-
       return {
         previousRatings,
         userPreferences,
@@ -317,7 +279,6 @@ Extract and format as JSON:;
       };
     }
   }
-
   /**
    * Save GRPO analysis to database
    */;
@@ -357,19 +318,17 @@ Extract and format as JSON:;
           }
         })
         .returning({ id: aiResponses.id });
-
       return (result as { id?: any; map?: any }).id;
     } catch (error) {
       console.error('Failed to save GRPO analysis:', error);
       throw new Error('Database save failed');
     }
   }
-
   /**
    * Record user feedback for GRPO learning
    */
   static async recordFeedback(
-    responseId: string,
+    responseId: string
     feedback: {
       userRating: number;
       feedbackText?: string;
@@ -388,13 +347,12 @@ Extract and format as JSON:;
         feedbackText: feedback.feedbackText,
         accuracy: feedback.accuracy,
         clarity: feedback.clarity,
-        completeness: feedback.completeness,;
+        completeness: feedback.completeness,
         relevance: feedback.relevance,
         userId: feedback.userId,
         userRole: feedback.userRole,
         feedbackType: 'rating'
       });
-
       // Update the response's usage metrics
       await db.execute(sql`
         UPDATE ai_responses
@@ -406,31 +364,28 @@ Extract and format as JSON:;
       console.error('Failed to record feedback:', error);
     }
   }
-
-  // Helper methods;
+  // Helper methods
   private static getEmptyStructuredReasoning(): GRPOAnalysis['structuredReasoning'] {
     return {
       premises: [],
-      inferences: [],;
+      inferences: [],
       conclusions: [],
       legalPrinciples: [],
       counterArguments: [],
       confidenceFactors: []
     };
   }
-
   private static fallbackStructureExtraction(
     thinkingContent: string;
   ): GRPOAnalysis['structuredReasoning'] {
     const lines = thinkingContent.split('\n').filter((line) => line.trim();
-
     return {
       premises: lines.filter(
         (line) => line.toLowerCase().includes('premise') || line.toLowerCase().includes('given')
       ),
       inferences: lines.filter(
         (line) => line.toLowerCase().includes('therefore') || line.toLowerCase().includes('infer')
-      ),;
+      ),
       conclusions: lines.filter(
         (line) =>
           line.toLowerCase().includes('conclude') || line.toLowerCase().includes('conclusion')
@@ -446,23 +401,18 @@ Extract and format as JSON:;
       )
     };
   }
-
   private static generateImprovementSuggestions(feedbackRows: any[]): string[] {
     const suggestions: string[] = [];
-
     // Analyze low ratings
     const lowAccuracy = feedbackRows.some((row) => (row.accuracy || 5) < 3);
     const lowClarity = feedbackRows.some((row) => (row.clarity || 5) < 3);
     const lowCompleteness = feedbackRows.some((row) => (row.completeness || 5) < 3);
-
     if (lowAccuracy) suggestions.push('Improve legal accuracy with more case law citations');
     if (lowClarity) suggestions.push('Use clearer language and better structure');
     if (lowCompleteness) suggestions.push('Provide more comprehensive analysis');
-
     return suggestions;
   }
 }
-
 /**
  * Utility functions for GRPO processing
  */;
@@ -471,12 +421,11 @@ export const GRPOUtils = {
    * Get personalized recommendations for a user
    */
   async getPersonalizedRecommendations(
-    userId: string,
-    query: string,;
+    userId: string
+    query: string
     limit: number = 5;
   ): Promise<RecommendationContext[]> {
     const queryEmbedding = await EnhancedGRPOProcessor['generateEmbedding'](query);
-
     const recommendations = await db.execute(sql`
       WITH user_preferences AS (
         SELECT
@@ -508,8 +457,7 @@ export const GRPOUtils = {
         COALESCE(up.avg_rating, 3.0) / 5.0 * 0.6 DESC
       LIMIT ${limit}
     `);
-
-    return recommendations.map((row: any) => ({
+    return recommendations.map((row: any) => ({,
       responseId: row.id as string,
       similarity: 1 - (row.distance as number),
       contextRelevance: (row.confidence as number) || 0.8,
@@ -517,11 +465,10 @@ export const GRPOUtils = {
         new Date(row.created_at as string),
         30
       ),
-      finalScore: (row.user_preference_score as number) || 0.6,;
+      finalScore: (row.user_preference_score as number) || 0.6,
       snippet: (row.response as string).slice(0, 200) + '...'
     });
   },
-
   /**
    * Get trending legal topics based on recent queries
    */
@@ -540,9 +487,8 @@ export const GRPOUtils = {
       ORDER BY count DESC, avg_rating DESC
       LIMIT 10
     `);
-
-    return (result as { id?: any; map?: any }).map((row: any) => ({
-      topic: row.topic as string,;
+    return (result as { id?: any; map?: any }).map((row: any) => ({,
+      topic: row.topic as string,
       count: parseInt(row.count as string),
       avgRating: parseFloat(row.avg_rating as string)
     });

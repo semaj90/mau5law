@@ -1,19 +1,17 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Modular File Upload Component - Bits UI + UnoCSS + Svelte 5 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
   import Progress from './Progress.svelte';
   import Badge from './Badge.svelte';
-
   // File upload types
   interface UploadFile {
     id: string;
-    file: File;
+    file: Fil;
     name: string;
     size: number;
     type: string;
@@ -22,7 +20,6 @@ https://svelte.dev/e/js_parse_error -->
     error?: string;
     preview?: string;
   }
-
   // Svelte 5 props pattern
   interface Props {
     variant?: 'default' | 'compact' | 'card' | 'yorha' | 'legal' | 'evidence';
@@ -41,7 +38,6 @@ https://svelte.dev/e/js_parse_error -->
     browseText?: string;
     supportedFormats?: string[];
   }
-
   let {
     variant = 'default',
     size = 'default',
@@ -58,12 +54,10 @@ https://svelte.dev/e/js_parse_error -->
     dragDropText = 'Drop files here or click to browse',
     browseText = 'Browse Files',
     supportedFormats = [],
-    ...restProps;
+    ...restProp;
   }: Props = $props();
-
   let fileInput: HTMLInputElement;
   let isDragOver = $state(false);
-
   // UnoCSS-based upload variants
   const uploadVariants = cva(
     // Base classes
@@ -91,12 +85,11 @@ https://svelte.dev/e/js_parse_error -->
         }
       ],
       defaultVariants: {
-        variant: 'default',;
+        variant: 'default',
         size: 'default';
       }
     }
   );
-
   // Computed class names
   let uploadClass = $derived(
     cn(
@@ -106,7 +99,6 @@ https://svelte.dev/e/js_parse_error -->
       class
     )
   );
-
   // File handling functions
   function createUploadFile(file: File): UploadFile {
     return {
@@ -114,25 +106,23 @@ https://svelte.dev/e/js_parse_error -->
       file,
       name: file.name,
       size: file.size,
-      type: file.type,;
-      status: 'pending',;
+      type: file.type,
+      status: 'pending',
       preview: file.type.startsWith('image/') ? URL.createObjectURL(file) : undefined;
     };
   }
-
   function validateFile(file: File): string | null {
     if (file.size > maxSize) {
       return `File size exceeds ${formatFileSize(maxSize)}`;
     }
-    if (accept !== '*/*' && !accept.split.some(type => 
-      type.trim() === file.type || 
+    if (accept !== '*/*' && !accept.split.some(type =>
+      type.trim() === file.type ||
       file.name.toLowerCase.endsWith(type.trim.replace('*', ''))
     )) {
       return `File type not supported`;
     }
     return null;
   }
-
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -140,7 +130,6 @@ https://svelte.dev/e/js_parse_error -->
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-
   function handleFiles(fileList: FileList) {
     const newFiles: UploadFile[] = [];
     for (let i = 0; i < fileList.length; i++) {
@@ -160,7 +149,6 @@ https://svelte.dev/e/js_parse_error -->
     }
     files = [...files, ...newFiles];
     onfileschange?.(files);
-
     // Auto-upload valid files
     newFiles.forEach(file => {
       if (file.status === 'pending' && onupload) {
@@ -169,7 +157,6 @@ https://svelte.dev/e/js_parse_error -->
       }
     });
   }
-
   // Event handlers
   function handleInputChange(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -177,38 +164,32 @@ https://svelte.dev/e/js_parse_error -->
       handleFiles(input.files);
     }
   }
-
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
     if (!disabled) {
       isDragOver = true;
     }
   }
-
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
     isDragOver = false;
   }
-
   function handleDrop(event: DragEvent) {
     event.preventDefault();
     isDragOver = false;
     if (disabled || !event.dataTransfer?.files) return;
     handleFiles(event.dataTransfer.files);
   }
-
   function handleClick() {
     if (!disabled) {
       fileInput.click();
     }
   }
-
   function removeFile(fileId: string) {
     files = files.filter(f => f.id !== fileId);
     onfileschange?.(files);
     onremove?.(fileId);
   }
-
   function getStatusBadgeVariant(status: UploadFile['status']) {
     switch (status) {
       case 'completed': return 'success';
@@ -218,7 +199,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <div class="file-upload-container space-y-4">
   <!-- Upload Drop Zone -->
   <div
@@ -240,16 +220,13 @@ https://svelte.dev/e/js_parse_error -->
       {disabled}
       class="sr-only" onchange={handleInputChange}
     />
-    
     <div class="flex flex-col items-center justify-center text-center">
       <!-- Upload Icon -->
       <div class="mb-4">
         <div class="i-lucide-cloud-upload w-12 h-12 text-gray-400" aria-hidden="true"></div>
       </div>
-      
       <!-- Upload Text -->
       <p class="text-lg font-medium mb-2">{dragDropText}</p>
-      
       <button
         type="button"
         class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
@@ -258,7 +235,6 @@ https://svelte.dev/e/js_parse_error -->
         <div class="i-lucide-folder-open w-4 h-4 mr-2" aria-hidden="true"></div>
         {browseText}
       </button>
-      
       <!-- File Info -->
       <div class="mt-4 text-xs text-gray-500 space-y-1">
         <p>Maximum {maxFiles} files, up to {formatFileSize(maxSize)} each</p>
@@ -268,14 +244,12 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   </div>
-
   <!-- File List -->
   {#if files.length > 0}
     <div class="file-list space-y-3">
       <h4 class="text-sm font-medium text-gray-900 dark:text-gray-100">
         Uploaded Files ({files.length}/{maxFiles})
       </h4>
-      
       <div class="space-y-2">
         {#each files as file (file.id)}
           <div class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg dark:border-gray-700">
@@ -287,7 +261,6 @@ https://svelte.dev/e/js_parse_error -->
                 <div class="i-lucide-file w-10 h-10 text-gray-400" aria-hidden="true"></div>
               {/if}
             </div>
-            
             <!-- File Info -->
             <div class="flex-1 min-w-0">
               <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
@@ -296,26 +269,22 @@ https://svelte.dev/e/js_parse_error -->
               <p class="text-xs text-gray-500">
                 {formatFileSize(file.size)} • {file.type || 'Unknown type'}
               </p>
-              
               <!-- Progress Bar -->
               {#if file.status === 'uploading' && file.progress !== undefined}
                 <div class="mt-2">
                   <Progress value={file.progress} variant="info" size="sm" />
                 </div>
               {/if}
-              
               <!-- Error Message -->
               {#if file.error}
                 <p class="text-xs text-red-600 mt-1">{file.error}</p>
               {/if}
             </div>
-            
             <!-- Status Badge -->
             <div class="flex items-center gap-2">
               <Badge variant={getStatusBadgeVariant(file.status)} size="sm">
                 {file.status}
               </Badge>
-              
               <!-- Remove Button -->
               <button
                 type="button"
@@ -332,29 +301,24 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
-
 <style>
   /* YoRHa-specific styling */
-  :global(.yorha-upload) {;
+  :global(.yorha-upload) {
     font-family: 'JetBrains Mono', monospace;
   }
-
   :global(.yorha-upload .file-list) {
     border: 1px solid rgba(212, 175, 55, 0.3);
     background-color: rgba(0, 0, 0, 0.8);
     color: rgb(212, 175, 55);
   }
-
   /* Drag over animation */
   .file-upload-container.drag-over {
     transform: scale(1.02);
   }
-
   /* File preview animations */
   .file-preview {
     transition: all 0.2s ease;
   }
-
   .file-preview:hover {
     transform: scale(1.05);
   }

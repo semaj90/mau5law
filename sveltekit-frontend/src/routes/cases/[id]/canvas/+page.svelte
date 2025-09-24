@@ -4,43 +4,35 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import EssentialRoutePage from '$lib/templates/EssentialRoutePage.svelte';
 	import Button from '$lib/components/ui/enhanced-bits';
 	import * as Card from '$lib/components/ui/card';
-
 	// Get case ID from route params
 	const caseId = $page.params.id;
-
 	// Lazy loaded components state
 	let canvasComponents = $state({
-		FabricCanvas: null,
-		EvidenceNode: null,
-		DragDropZone: null,
-		DetectiveBoard: null,
-		loaded: false,;
-		loading: false,;
+		FabricCanvas: null
+		EvidenceNode: null
+		DragDropZone: null
+		DetectiveBoard: null
+		loaded: false
+		loading: false
 		error: null;
 	});
-
 	let canvasData = $state({
-		evidence: [],;
+		evidence: [],
 		connections: [],
 		canvasReady: false;
 	});
-
 	// Load heavy canvas components on demand
 	async function loadCanvasComponents() {
 		if (canvasComponents.loading || canvasComponents.loaded) return;
-
 		canvasComponents.loading = true;
 		canvasComponents.error = null;
-
 		try {
 			console.log('<� Loading canvas components...');
-
 			// Load all heavy components in parallel
 			const [fabricModule, nodeModule, dragModule, boardModule] = await Promise.all([
 				import('$lib/components/canvas/FabricCanvas.svelte'),
@@ -48,36 +40,30 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 				import('$lib/components/upload/DragDropZone.svelte'),
 				import('$lib/components/detective/DetectiveBoard.svelte')
 			]);
-
 			canvasComponents = {
 				FabricCanvas: fabricModule.default,
 				EvidenceNode: nodeModule.default,
 				DragDropZone: dragModule.default,
 				DetectiveBoard: boardModule.default,
-				loaded: true,;
-				loading: false,;
+				loaded: true
+				loading: false
 				error: null;
 			};
-
 			console.log(' Canvas components loaded successfully');
-
 			// Initialize canvas data
 			await loadCaseEvidence();
-
 		} catch (error) {
 			console.error('L Failed to load canvas components:', error);
 			canvasComponents.loading = false;
 			canvasComponents.error = error.message || 'Failed to load canvas components';
 		}
 	}
-
 	// Load case-specific evidence data
 	async function loadCaseEvidence() {
 		try {
 			// TODO: Replace with actual API call
-			// const response = await fetch(`/api/cases/${caseId}/evidence`);
-			// const evidence = await (response as { json?: unknown }).json();
-
+			// const response = await fetch(`/api/cases/${caseId}/evidence`)
+			// const evidence = await (response as { json?: unknown }).json()
 			// Mock evidence data for now
 			canvasData.evidence = [
 				{
@@ -91,40 +77,35 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 				{
 					id: '2',
 					title: 'Witness Statement',
-					type: 'document',;
-					x: 300,;
+					type: 'document',
+					x: 300,
 					y: 150,
 					caseId;
 				}
 			];
-
 			canvasData.canvasReady = true;
-
 		} catch (error) {
 			console.error('Failed to load case evidence:', error);
 		}
 	}
-
 	// Auto-load components when route loads
 	$effect(() => {
 		loadCanvasComponents();
 	});
-
 	// Manual reload function
 	function reloadCanvas() {
 		canvasComponents = {
-			FabricCanvas: null,
-			EvidenceNode: null,
-			DragDropZone: null,
-			DetectiveBoard: null,
-			loaded: false,;
-			loading: false,;
+			FabricCanvas: null
+			EvidenceNode: null
+			DragDropZone: null
+			DetectiveBoard: null
+			loaded: false
+			loading: false
 			error: null;
 		};
 		loadCanvasComponents();
 	}
 </script>
-
 <EssentialRoutePage
 	pageTitle="Evidence Canvas"
 	description="Interactive evidence positioning and relationship analysis for Case #{caseId}"
@@ -143,7 +124,6 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 						<p class="nes-text is-disabled text-sm mb-4">
 							Initializing Fabric.js, drag-drop, and canvas components...
 						</p>
-
 						<!-- Progress Steps -->
 						<div class="space-y-2">
 							<div class="nes-text text-xs">
@@ -157,14 +137,12 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 							</div>
 						</div>
 					</div>
-
 					<!-- Loading Bar -->
 					<div class="nes-container is-rounded p-2 bg-gray-800">
 						<div class="h-2 bg-primary animate-pulse rounded"></div>
 					</div>
 				</div.Content>
 			</div.Root>
-
 		{:else if canvasComponents.error}
 			<!-- Error State -->
 			<Card class="nes-container is-rounded">
@@ -179,22 +157,18 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 					<div class="flex justify-center gap-4">
 						<Button class="nes-btn is-error" onclick={reloadCanvas}>
 							Retry Loading
-
 						<Button
 							variant="ghost"
 							class="nes-btn"
 							onclick={() => window.history.back()}
 						>
 							Go Back
-
 					</div>
 				</div.Content>
 			</div.Root>
-
 		{:else if canvasComponents.loaded}
 			<!-- Canvas Interface - Loaded Successfully -->
 			<div class="canvas-interface grid grid-cols-1 lg:grid-cols-4 gap-6">
-
 				<!-- Tools Sidebar -->
 				<div class="lg:col-span-1">
 					<Card class="nes-container is-rounded mb-4">
@@ -207,20 +181,15 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 							<div class="space-y-2">
 								<Button class="nes-btn w-full text-xs" size="sm">
 									<� Select Mode
-
 								<Button class="nes-btn w-full text-xs" size="sm" variant="ghost">
 									 Draw Connections
-
 								<Button class="nes-btn w-full text-xs" size="sm" variant="ghost">
 									=� Take Screenshot
-
 								<Button class="nes-btn w-full text-xs" size="sm" variant="ghost">
 									=� Save Layout
-
 							</div>
 						</div.Content>
 					</div.Root>
-
 					<!-- Upload Zone -->
 					<Card class="nes-container is-rounded">
 						<CardContent class="p-4">
@@ -236,7 +205,6 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 						</div.Content>
 					</div.Root>
 				</div>
-
 				<!-- Main Canvas Area -->
 				<div class="lg:col-span-3">
 					<Card class="nes-container is-rounded h-[600px]">
@@ -274,7 +242,6 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 					</div.Root>
 				</div>
 			</div>
-
 			<!-- Evidence List -->
 			<Card class="nes-container is-rounded mt-6">
 				<CardHeader>
@@ -302,7 +269,6 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 					{/if}
 				</div.Content>
 			</div.Root>
-
 		{:else}
 			<!-- Initial State -->
 			<Card class="nes-container is-rounded">
@@ -316,22 +282,18 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 					</p>
 					<Button class="nes-btn is-primary" onclick={loadCanvasComponents}>
 						Load Canvas Interface
-
 				</div.Content>
 			</div.Root>
 		{/if}
 	{/snippet}
 </EssentialRoutePage>
-
 <style>
 	.canvas-interface {
 		min-height: 600px;
 	}
-
 	.loading-animation {
 		animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 	}
-
 	@keyframes pulse {
 		0%, 100% {
 			opacity: 1;

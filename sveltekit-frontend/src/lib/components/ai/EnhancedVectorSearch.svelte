@@ -1,17 +1,15 @@
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
-https://svelte.dev/e/attribute_duplicate -->
+https: //svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- Enhanced Vector Search Interface with Ranking, Analytics, and Real-time Results -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // Updated to use melt-ui components
   import Button from '$lib/components/ui/bitsbutton.svelte';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
   import Select from '$lib/components/ui/MeltSelect.svelte';
-
   // TODO: Replace with melt-ui equivalents when available
   // import {
   //   Badge,
@@ -33,7 +31,7 @@ https://svelte.dev/e/js_parse_error -->
   //   TabsContent,
   //   TabsList,
   //   TabsTrigger,
-  // } from "bits-ui";
+  // } from "bits-ui"
   import {
     BarChart3,
     Brain,
@@ -50,9 +48,8 @@ https://svelte.dev/e/js_parse_error -->
     TrendingUp,
     Zap,
   } from "lucide-svelte";
-  import {  , onMount  } from "svelte";
+  import { onMount  } from "svelte";
   import { derived, get, writable } from "svelte/store";
-
   // Props
   let { caseId = "",
     userId = "",
@@ -60,19 +57,16 @@ https://svelte.dev/e/js_parse_error -->
     enableAnalytics = true,
     enableFilters = true,
     showPreview = true,
-    class: className = "",;
+    class: className = "",
    }: { caseId = "",
     userId = "",
     maxResults = 20,
     enableAnalytics = true,
     enableFilters = true,
-    showPreview = true,;
+    showPreview = true,
     class: className = "",
   : any } = $props();
-
   // Event dispatcher
-
-
   // Types
   interface SearchResult {
     id: string;
@@ -97,7 +91,6 @@ https://svelte.dev/e/js_parse_error -->
     aiSummary?: string;
     entities?: Array;
   }
-
   interface SearchFilters {
     documentTypes: string[];
     jurisdictions: string[];
@@ -111,7 +104,6 @@ https://svelte.dev/e/js_parse_error -->
     sortBy: "relevance" | "similarity" | "date" | "title";
     sortOrder: "asc" | "desc";
   }
-
   interface SearchAnalytics {
     totalSearches: number;
     averageResultCount: number;
@@ -126,7 +118,6 @@ https://svelte.dev/e/js_parse_error -->
       totalTime: number;
     };
   }
-
   // State management
   const searchQuery = writable("");
   const searchResults = writable<SearchResult[]>([]);
@@ -136,10 +127,10 @@ https://svelte.dev/e/js_parse_error -->
     jurisdictions: [],
     dateRange: ,
     similarityThreshold: 0.7,
-    maxResults: maxResults,;
+    maxResults: maxResults
     tags: [],
     sortBy: "relevance",
-    sortOrder: "desc",;
+    sortOrder: "desc",
   });
   const searchAnalytics = writable<SearchAnalytics>({
     totalSearches: 0,
@@ -155,12 +146,10 @@ https://svelte.dev/e/js_parse_error -->
       totalTime: 0,
     },
   });
-
   const showFilters = writable(false);
   const showAnalytics = writable(false);
   const selectedResult = writable<SearchResult | null>(null);
   const searchHistory = writable<string[]>([]);
-
   // Derived state
   const hasResults = derived(searchResults, ($results) => $results.length > 0);
   const averageSimilarity = derived(searchResults, ($results) => {
@@ -180,7 +169,6 @@ https://svelte.dev/e/js_parse_error -->
       .sort(([, a], [, b]) => b - a)
       .slice(0, 5);
   });
-
   // Available options
   const documentTypes = [
     { value: "contract", label: "Contract" },
@@ -193,79 +181,66 @@ https://svelte.dev/e/js_parse_error -->
     { value: "case_law", label: "Case Law" },
     { value: "other", label: "Other" },
   ];
-
   const jurisdictions = [
     { value: "federal", label: "Federal" },
     { value: "state", label: "State" },
     { value: "local", label: "Local" },
     { value: "international", label: "International" },
   ];
-
   const sortOptions = [
     { value: "relevance", label: "Relevance" },
     { value: "similarity", label: "Similarity" },
     { value: "date", label: "Date" },
     { value: "title", label: "Title" },
   ];
-
   // ============================================================================
   // SEARCH FUNCTIONALITY
   // ============================================================================
-
   async function performSearch(query?: string) {
     const searchTerm = query || get(searchQuery);
     if (!searchTerm.trim()) return;
-
     isSearching.set(true);
     const startTime = Date.now();
-
     try {
       const filters = get(searchFilters);
-
       // Build search request
       const searchRequest = {
-        query: searchTerm,
-        caseId: caseId || undefined,;
+        query: searchTerm
+        caseId: caseId || undefined
         filters: {
           documentTypes: filters.documentTypes,
           jurisdictions: filters.jurisdictions,
-          dateRange: filters.dateRange,;
+          dateRange: filters.dateRange,
           tags: filters.tags,
           similarityThreshold: filters.similarityThreshold,
-          maxResults: filters.maxResults,;
+          maxResults: filters.maxResults,
         },
         sortBy: filters.sortBy,
         sortOrder: filters.sortOrder,
-        includeAnalytics: enableAnalytics,
-        generateSnippets: true,
-        highlightTerms: true,
+        includeAnalytics: enableAnalytics
+        generateSnippets: true
+        highlightTerms: true
       };
-
       // Make API call
       const response = await fetch("/api/search/vector", {
-        method: "POST",;
-        headers: { "Content-Type": "application/json" },;
-        body: JSON.stringify(searchRequest),;
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(searchRequest),
       });
-
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`Search failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
-
       const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
-
       // Process results
       const results: SearchResult[] = (data as { results?: any; analytics?: any; createdAt?: any }).results.map(
         (result: any, index: number) => ({
           ...result,
-          rank: index + 1,;
+          rank: index + 1,
           highlights: (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).highlights || [],
           snippet: (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).snippet || (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).content.substring(0, 200) + "...",
         })
       );
-
       searchResults.set(results);
-
       // Update search history
       searchHistory.update((history) => {
         const newHistory = [
@@ -274,7 +249,6 @@ https://svelte.dev/e/js_parse_error -->
         ];
         return newHistory.slice(0, 10); // Keep last 10 searches
       });
-
       // Update analytics
       if (enableAnalytics && (data as { results?: any; analytics?: any; createdAt?: any }).analytics) {
         searchAnalytics.update((analytics) => ({
@@ -289,15 +263,14 @@ https://svelte.dev/e/js_parse_error -->
           averageSimilarity: get(averageSimilarity),
         }));
       }
-
       // Dispatch events
       ondispatch?.({ query: searchTerm, results });
       ondispatch?.({
-        event: "search_performed",;
-        data: {;
-          query: searchTerm,
+        event: "search_performed",
+        data: {
+          query: searchTerm
           resultCount: results.length,
-          responseTime: Date.now() - startTime,;
+          responseTime: Date.now() - startTime,
         },
       });
     } catch (error) {
@@ -307,33 +280,28 @@ https://svelte.dev/e/js_parse_error -->
       isSearching.set(false);
     }
   }
-
   function handleResultClick(result: SearchResult) {
     selectedResult.set(result);
-
     // Track click analytics
     if (enableAnalytics) {
       ondispatch?.({
-        event: "result_clicked",;
+        event: "result_clicked",
         data: {
           resultId: (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).id,
           rank: (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).rank,
-          query: get(searchQuery),;
+          query: get(searchQuery),
         },
       });
     }
-
     ondispatch?.({ result });
   }
-
   function applySorting(
-    results: SearchResult[],
-    sortBy: string,
+    results: SearchResult[]
+    sortBy: string
     sortOrder: string
   ): SearchResult[] {
     return [...results].sort((a, b) => {
   let comparison = $state(0);
-
       switch (sortBy) {
         case "similarity":
           comparison = b.similarity - a.similarity;
@@ -348,59 +316,50 @@ https://svelte.dev/e/js_parse_error -->
           break;
         case "relevance":
         default:
-          comparison = b.relevance - a.relevance;
+          comparison = b.relevance - a.relevanc;
           break;
       }
-
-      return sortOrder === "asc" ? -comparison : comparison;
+      return sortOrder === "asc" ? -comparison : compariso;
     });
   }
-
   // ============================================================================
   // FILTER MANAGEMENT
   // ============================================================================
-
   function applyFilters() {
     ondispatch?.({ filters: get(searchFilters) });
     if (get(searchQuery).trim()) {
       performSearch();
     }
   }
-
   function resetFilters() {
     searchFilters.set({
       documentTypes: [],
       jurisdictions: [],
       dateRange: ,
       similarityThreshold: 0.7,
-      maxResults: maxResults,;
+      maxResults: maxResults
       tags: [],
       sortBy: "relevance",
-      sortOrder: "desc",;
+      sortOrder: "desc",
     });
     applyFilters();
   }
-
   // ============================================================================
   // UTILITY FUNCTIONS
   // ============================================================================
-
   function formatSimilarity(similarity: number): string {
     return `${Math.round(similarity * 100)}%`;
   }
-
   function formatDate(dateString?: string): string {
     if (!dateString) return "Unknown";
     return new Date(dateString).toLocaleDateString();
   }
-
   function formatFileSize(bytes?: number): string {
     if (!bytes) return "Unknown";
     const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
     return `${Math.round((bytes / Math.pow(1024, i)) * 100) / 100} ${sizes[i]}`;
   }
-
   function getDocumentTypeColor(type?: string): string {
     const colors = {
       contract: "blue",
@@ -408,14 +367,13 @@ https://svelte.dev/e/js_parse_error -->
       brief: "purple",
       evidence: "red",
       correspondence: "yellow",
-      statute: "indigo",;
+      statute: "indigo",
       regulation: "pink",
-      case_law: "gray",;
-      other: "slate",;
+      case_law: "gray",
+      other: "slate",
     };
     return colors[type as keyof typeof colors] || "gray";
   }
-
   function highlightText(text: string, highlights: string[]): string {
     let highlightedText = text;
     highlights.forEach((highlight) => {
@@ -427,11 +385,9 @@ https://svelte.dev/e/js_parse_error -->
     });
     return highlightedText;
   }
-
   // ============================================================================
   // LIFECYCLE
   // ============================================================================
-
   $effect(() => {
     // Load search history from localStorage
     const savedHistory = localStorage.getItem("vector-search-history");
@@ -442,18 +398,15 @@ https://svelte.dev/e/js_parse_error -->
         console.warn("Failed to load search history");
       }
     }
-
     // Load analytics if enabled
     if (enableAnalytics) {
       loadAnalytics();
     }
-
     // Auto-save search history
     searchHistory.subscribe((history) => {
       localStorage.setItem("vector-search-history", JSON.stringify(history));
     });
   });
-
   async function loadAnalytics() {
     try {
       const response = await fetch("/api/search/analytics");
@@ -466,7 +419,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <!-- Main Search Interface -->
 <div class="enhanced-vector-search {className}">
   <!-- Search Header -->
@@ -485,9 +437,8 @@ https://svelte.dev/e/js_parse_error -->
           <Loader2 class="loading-icon animate-spin" size={20} />
         {/if}
       </div>
-
       <div class="search-actions">
-        <button class="nes-btn" 
+        <button class="nes-btn"
           onclick={() => performSearch()}
           disabled={$isSearching || !$searchQuery.trim()}
           class="bits-btn search-button"
@@ -500,7 +451,6 @@ https://svelte.dev/e/js_parse_error -->
             Search
           {/if}
         </button>
-
         {#if enableFilters}
           <Button class="bits-btn"
             variant="ghost"
@@ -515,9 +465,7 @@ showFilters.update((s) => !s)}
             {:else}
               <ChevronDown class="ml-2" size={16} />
             {/if}
-
         {/if}
-
         {#if enableAnalytics}
           <Button class="bits-btn"
             variant="ghost"
@@ -526,11 +474,9 @@ showAnalytics.update((s) => !s)}
           >
             <BarChart3 class="mr-2" size={16} />
             Analytics
-
         {/if}
       </div>
     </div>
-
     <!-- Search History -->
     {#if $searchHistory.length > 0}
       <div class="search-history">
@@ -549,13 +495,11 @@ showAnalytics.update((s) => !s)}
             >
               <Clock class="mr-1" size={12} />
               {historyItem}
-
           {/each}
         </div>
       </div>
     {/if}
   </div>
-
   <!-- Advanced Filters -->
   {#if $showFilters && enableFilters}
     <div class="filters-panel nes-container">
@@ -564,7 +508,6 @@ showAnalytics.update((s) => !s)}
           <span>Advanced Filters</span>
           <Button class="bits-btn" variant="ghost" size="sm" onclick={resetFilters}>
 Reset
-
         </h3>
       </div>
       <div class="yorha-panel-content space-y-4">
@@ -595,7 +538,6 @@ Reset
               {/each}
             </div>
           </div>
-
           <!-- Jurisdictions -->
           <div class="filter-group">
             <label class="filter-label">Jurisdictions</label>
@@ -625,7 +567,6 @@ Reset
               {/each}
             </div>
           </div>
-
           <!-- Similarity Threshold -->
           <div class="filter-group">
             <label class="filter-label">
@@ -641,7 +582,6 @@ Reset
               class="similarity-slider"
             />
           </div>
-
           <!-- Sort Options -->
           <div class="filter-group">
             <label class="filter-label">Sort By</label>
@@ -657,14 +597,11 @@ Reset
             </Select>
           </div>
         </div>
-
         <Button onclick={applyFilters} class="w-full bits-btn bits-btn">
 Apply Filters
-
       </div>
     </div>
   {/if}
-
   <!-- Search Results -->
   {#if $hasResults}
     <div class="search-results">
@@ -678,7 +615,6 @@ Apply Filters
             Average Similarity: {formatSimilarity($averageSimilarity)}
           </div>
         </div>
-
         <!-- Quick Stats -->
         {#if $topDocumentTypes.length > 0}
           <div class="quick-stats">
@@ -693,7 +629,6 @@ Apply Filters
           </div>
         {/if}
       </div>
-
       <!-- Results List -->
       <div class="results-list">
         {#each $searchResults as result ((result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).id)}
@@ -723,7 +658,6 @@ Apply Filters
                     {/if}
                   </div>
                 </div>
-
                 <div class="result-metrics">
                   <div class="metric">
                     <Target size={14} />
@@ -739,12 +673,10 @@ Apply Filters
                   </div>
                 </div>
               </div>
-
               <!-- Result Content -->
               <div class="result-snippet">
                 {@html highlightText((result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).snippet, (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).highlights)}
               </div>
-
               <!-- Result Tags -->
               {#if (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).metadata.tags && (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).metadata.tags.length > 0}
                 <div class="result-tags">
@@ -753,21 +685,17 @@ Apply Filters
                   {/each}
                 </div>
               {/if}
-
               <!-- Result Actions -->
               <div class="result-actions">
                 <Button class="bits-btn" variant="ghost" size="sm">
 <Eye class="mr-1" size={14} />
                   View
-
                 <Button class="bits-btn" variant="ghost" size="sm">
 <Download class="mr-1" size={14} />
                   Download
-
                 <Button class="bits-btn" variant="ghost" size="sm">
 <Share2 class="mr-1" size={14} />
                   Share
-
               </div>
             </div>
           </div>
@@ -785,11 +713,9 @@ Apply Filters
         </p>
         <Button class="bits-btn" variant="ghost" onclick={resetFilters}>
 Reset Filters
-
       </div>
     </div>
   {/if}
-
   <!-- Analytics Panel -->
   {#if $showAnalytics && enableAnalytics}
     <Dialog.Root bind:open={$showAnalytics}>
@@ -797,14 +723,12 @@ Reset Filters
         <Dialog.Header>
           <Dialog.Title>Search Analytics</Dialog.Title>
         </Dialog.Header>
-
         <Tabs value="overview" class="analytics-tabs">
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="performance">Performance</TabsTrigger>
             <TabsTrigger value="queries">Top Queries</TabsTrigger>
           </TabsList>
-
           <TabsContent value="overview" class="analytics-overview">
             <div class="analytics-grid">
               <div class="metric-nier-bits-card nes-container">
@@ -818,7 +742,6 @@ Reset Filters
                   </div>
                 </div>
               </div>
-
               <div class="metric-nier-bits-card nes-container">
                 <div class="yorha-panel-content metric-content">
                   <div class="metric-icon">
@@ -832,7 +755,6 @@ Reset Filters
                   </div>
                 </div>
               </div>
-
               <div class="metric-nier-bits-card nes-container">
                 <div class="yorha-panel-content metric-content">
                   <div class="metric-icon">
@@ -846,7 +768,6 @@ Reset Filters
                   </div>
                 </div>
               </div>
-
               <div class="metric-nier-bits-card nes-container">
                 <div class="yorha-panel-content metric-content">
                   <div class="metric-icon">
@@ -862,7 +783,6 @@ Reset Filters
               </div>
             </div>
           </TabsContent>
-
           <TabsContent value="performance" class="analytics-performance">
             <div class="performance-metrics">
               <div class="nes-container">
@@ -911,7 +831,6 @@ Reset Filters
               </div>
             </div>
           </TabsContent>
-
           <TabsContent value="queries" class="analytics-queries">
             {#if $searchAnalytics.topQueries.length > 0}
               <div class="nes-container">
@@ -943,39 +862,33 @@ Reset Filters
     </Dialog.Root>
   {/if}
 </div>
-
 <style>
-  .enhanced-vector-search {;
+  .enhanced-vector-search {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
-
   .search-header {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .search-input-container {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   @media (min-width: 1024px) {
     .search-input-container {
       flex-direction: row;
     }
   }
-
   .search-input {
     padding-left: 2.5rem;
     padding-right: 2.5rem;
     height: 3rem;
     font-size: 1rem;
   }
-
   .search-icon {
     position: absolute;
     left: 0.75rem;
@@ -983,7 +896,6 @@ Reset Filters
     transform: translateY(-50%);
     color: var(--muted-foreground);
   }
-
   .loading-icon {
     position: absolute;
     right: 0.75rem;
@@ -991,195 +903,161 @@ Reset Filters
     transform: translateY(-50%);
     color: var(--primary);
   }
-
   .search-actions {
     display: flex;
     gap: 0.5rem;
   }
-
   @media (min-width: 1024px) {
     .search-actions {
       flex-shrink: 0;
     }
   }
-
   .search-button,
   .filter-button {
     height: 3rem;
   }
-
   .search-button {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
   }
-
   .search-history {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   @media (min-width: 640px) {
     .search-history {
       flex-direction: row;
       align-items: center;
     }
   }
-
   .history-label {
     font-size: 0.875rem;
     color: var(--muted-foreground);
   }
-
   .history-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
   }
-
   .history-tag {
     height: 1.75rem;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
     font-size: 0.75rem;
   }
-
   .filters-panel {
     border: 2px dashed;
     border-color: rgba(107, 114, 128, 0.25);
   }
-
   .filter-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-
   @media (min-width: 768px) {
     .filter-grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }
-
   @media (min-width: 1024px) {
     .filter-grid {
       grid-template-columns: repeat(4, 1fr);
     }
   }
-
   .filter-group {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .filter-label {
     font-size: 0.875rem;
     font-weight: 500;
   }
-
   .checkbox-group {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
   }
-
   .similarity-slider {
     width: 100%;
   }
-
   .search-results {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .results-header {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
   }
-
   .results-meta {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betwee;
   }
-
   .results-title {
     font-size: 1.25rem;
     font-weight: 600;
   }
-
   .results-stats {
     font-size: 0.875rem;
     color: var(--muted-foreground);
   }
-
   .quick-stats {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   @media (min-width: 640px) {
     .quick-stats {
       flex-direction: row;
       align-items: center;
     }
   }
-
   .stats-label {
     font-size: 0.875rem;
     font-weight: 500;
   }
-
   .stats-badges {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
   }
-
   .results-list {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
   }
-
   .result-item {
     cursor: pointer;
-    transition: box-shadow 0.2s;
+    transition: box-shadow 0.2;
   }
-
   .result-item:hover {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   }
-
   .result-content {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
   }
-
   .result-header {
     display: flex;
     align-items: flex-start;
-    justify-content: space-between;
+    justify-content: space-betwee;
   }
-
   .result-title-section {
     flex: 1;
     min-width: 0;
   }
-
   .result-title {
     font-weight: 500;
     font-size: 1.125rem;
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: ellipsi;
     white-space: nowrap;
   }
-
   .result-meta {
     display: flex;
     align-items: center;
@@ -1188,203 +1066,166 @@ Reset Filters
     font-size: 0.875rem;
     color: var(--muted-foreground);
   }
-
   .result-date,
   .result-size {
     font-size: 0.75rem;
   }
-
   .result-metrics {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     text-align: right;
   }
-
   .metric {
     display: flex;
     align-items: center;
     gap: 0.25rem;
     font-size: 0.75rem;
   }
-
   .metric-label {
     color: var(--muted-foreground);
   }
-
   .metric-value {
     font-weight: 500;
   }
-
   .result-snippet {
     font-size: 0.875rem;
     line-height: 1.625;
   }
-
   .result-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rem;
   }
-
   .tag-badge {
     font-size: 0.75rem;
   }
-
   .result-actions {
     display: flex;
     gap: 0.5rem;
   }
-
   .no-results {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 3rem 0;
   }
-
   .no-results-content {
     text-align: center;
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .no-results-icon {
     margin: 0 auto;
     color: var(--muted-foreground);
   }
-
   .no-results-title {
     font-size: 1.125rem;
     font-weight: 500;
   }
-
   .no-results-description {
     color: var(--muted-foreground);
   }
-
   .analytics-tabs {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .analytics-overview {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .analytics-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-
   @media (min-width: 640px) {
     .analytics-grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }
-
   @media (min-width: 1024px) {
     .analytics-grid {
       grid-template-columns: repeat(4, 1fr);
     }
   }
-
   .metric-card {
     padding: 1rem;
   }
-
   .metric-content {
     display: flex;
     align-items: center;
     gap: 0.75rem;
   }
-
   .metric-icon {
     padding: 0.5rem;
     background-color: rgba(var(--primary-rgb), 0.1);
     border-radius: 0.5rem;
   }
-
   .metric-info {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
   }
-
   .metric-label {
     font-size: 0.875rem;
     color: var(--muted-foreground);
   }
-
   .metric-value {
     font-size: 1.25rem;
     font-weight: 600;
   }
-
   .performance-metrics {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .performance-bars {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
   }
-
   .performance-item {
     display: flex;
     align-items: center;
     gap: 0.75rem;
   }
-
   .performance-label {
     width: 6rem;
     font-size: 0.875rem;
   }
-
   .performance-bar {
     flex: 1;
   }
-
   .performance-value {
     width: 4rem;
     font-size: 0.875rem;
     font-family: monospace;
     text-align: right;
   }
-
   .top-queries-list {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .query-item {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betwee;
     padding: 0.5rem;
     border-radius: 0.375rem;
     border: 1px solid var(--border);
   }
-
   .query-text {
     font-family: monospace;
     font-size: 0.875rem;
   }
-
   .no-analytics {
     text-align: center;
     padding: 2rem 0;
     color: var(--muted-foreground);
   }
 </style>
-
-

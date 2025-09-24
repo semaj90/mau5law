@@ -1,79 +1,66 @@
 import type { RequestHandler } from './$types.js'
-
 // Test login endpoint to debug authentication
 import { json } from "@sveltejs/kit"
-
 import { db } from '$lib/server/db/index'
 import { users } from "$lib/server/db/schema-postgres"
 // Note: Need proper auth service imports - drizzle-orm doesn't export auth functions
 import { eq } from 'drizzle-orm'
-
 export async function POST({ request }): Promise<any> {
   try {
     const { email, password } = await request.json()
-    
     console.log(`[TEST LOGIN] Attempting login for: ${email}`)
-    
     // Find user by email
     const existingUser = await db
       .select()
       .from(users)
       .where(eq(users.email, email)
       .limit(1)
-
     if (!existingUser.length) {
       console.log(`[TEST LOGIN] User not found: ${email}`)
-      return json({ 
-        success: false, 
+      return json({
+        success: false
         error: 'User not found',
         step: 'user_lookup'
       })
     }
-
     const user = existingUser[0]
     console.log(`[TEST LOGIN] User found: ${user.email}, has password: ${!!user.hashedPassword}, active: ${user.isActive}`)
-
     if (!user.hashedPassword) {
       console.log(`[TEST LOGIN] User has no password hash: ${email}`)
-      return json({ 
-        success: false, 
+      return json({
+        success: false
         error: 'User has no password set',
         step: 'password_check'
       })
     }
-
     if (!user.isActive) {
       console.log(`[TEST LOGIN] User is inactive: ${email}`)
-      return json({ 
-        success: false, 
+      return json({
+        success: false
         error: 'Account is deactivated',
         step: 'active_check'
       })
     }
-
     // Test password verification
     console.log(`[TEST LOGIN] Testing password verification for: ${email}`)
     // TODO: Implement proper password verification - verifyPassword not available
     const validPassword = password && password.length > 0; // Mock validation
     console.log(`[TEST LOGIN] Password verification result: ${validPassword}`)
-
     if (!validPassword) {
-      return json({ 
-        success: false, 
+      return json({
+        success: false
         error: 'Invalid password',
         step: 'password_verification'
       })
     }
-
     // Test session creation
     console.log(`[TEST LOGIN] Creating session for: ${email}`)
     // TODO: Implement proper session creation - createUserSession not available
     const sessionId = 'mock-session-' + Date.now()
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
     console.log(`[TEST LOGIN] Session created: ${sessionId}, expires: ${expiresAt}`)
-
     return json({
-      success: true,
+      success: true
       message: 'Login successful',
       user: {
         id: user.id,
@@ -81,15 +68,14 @@ export async function POST({ request }): Promise<any> {
         role: user.role
       },
       session: {
-        id: sessionId,
+        id: sessionId
         expiresAt: expiresAt.toISOString()
       }
     })
-
   } catch (error: any) {
     console.error('[TEST LOGIN] Error:', error)
     return json({
-      success: false,
+      success: false
       error: error.message,
       step: 'general_error'
     }, { status: 500 })

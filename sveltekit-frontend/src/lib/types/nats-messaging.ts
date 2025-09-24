@@ -1,9 +1,7 @@
 // Enhanced NATS Messaging Types
 // Complete type definitions for production-ready NATS integration
-
-// Core Message Types;
+// Core Message Types
 }
-
 export interface LegalAIMessage {
 	id: string;
 	type: MessageType;
@@ -19,11 +17,10 @@ export interface LegalAIMessage {
 	priority?: MessagePriority;
 	expires_at?: string;
 }
-
-export type MessageType = 
+export type MessageType =
 	// Case management
 	| 'case_created' | 'case_updated' | 'case_closed'
-	// Document processing  
+	// Document processing
 	| 'document_uploaded' | 'document_processed' | 'document_analyzed' | 'document_indexed'
 	// AI analysis
 	| 'ai_analysis_started' | 'ai_analysis_completed' | 'ai_analysis_failed'
@@ -35,17 +32,13 @@ export type MessageType =
 	| 'system_health' | 'system_metrics'
 	// Generic types
 	| 'request' | 'response' | 'error' | 'notification' | 'unknown';
-
 export type MessagePriority = 'immediate' | 'high' | 'normal' | 'low';
 }
-
 export interface MessageHandler {
 	(message: LegalAIMessage): void | Promise<void>;
 }
-
-// Configuration Types;
+// Configuration Types
 }
-
 export interface NATSConfig {
 	servers: string[];
 	user?: string;
@@ -62,7 +55,6 @@ export interface NATSConfig {
 	pedantic?: boolean;
 	tls?: TLSConfig;
 }
-
 export interface TLSConfig {
 	cert_file?: string;
 	key_file?: string;
@@ -70,7 +62,6 @@ export interface TLSConfig {
 	verify?: boolean;
 	timeout?: number;
 }
-
 export interface StreamConfig {
 	name: string;
 	subjects: string[];
@@ -85,7 +76,6 @@ export interface StreamConfig {
 	discard?: 'old' | 'new';
 	duplicate_window?: number;
 }
-
 export interface ConsumerConfig {
 	name: string;
 	durable_name?: string;
@@ -103,10 +93,8 @@ export interface ConsumerConfig {
 	flow_control?: boolean;
 	idle_heartbeat?: number;
 }
-
-// Connection Status Types;
+// Connection Status Types
 }
-
 export interface NATSConnectionStatus {
 	connected: boolean;
 	server: string;
@@ -119,7 +107,6 @@ export interface NATSConnectionStatus {
 	msgs_in?: number;
 	msgs_out?: number;
 }
-
 export interface ConnectionInfo {
 	server_id: string;
 	server_name: string;
@@ -133,10 +120,8 @@ export interface ConnectionInfo {
 	tls_required?: boolean;
 	tls_verify?: boolean;
 }
-
-// Subscription Types;
+// Subscription Types
 }
-
 export interface SubscriptionOptions {
 	queue_group?: string;
 	max_in_flight?: number;
@@ -148,7 +133,6 @@ export interface SubscriptionOptions {
 	rate_limit_bps?: number;
 	sample_frequency?: number;
 }
-
 export interface Subscription {
 	subject: string;
 	queue_group?: string;
@@ -160,17 +144,14 @@ export interface Subscription {
 	delivered: number;
 	dropped: number;
 }
-
-// Message Processing Types;
+// Message Processing Types
 }
-
 export interface MessageBatch {
 	messages: LegalAIMessage[];
 	batch_id: string;
 	created_at: string;
 	total_size_bytes: number;
 }
-
 export interface ProcessingResult {
 	success: boolean;
 	processed_count: number;
@@ -178,7 +159,6 @@ export interface ProcessingResult {
 	processing_time_ms: number;
 	errors?: ProcessingError[];
 }
-
 export interface ProcessingError {
 	message_id: string;
 	error_type: string;
@@ -187,10 +167,8 @@ export interface ProcessingError {
 	max_retries: number;
 	next_retry_at?: string;
 }
-
-// Metrics and Monitoring Types;
+// Metrics and Monitoring Types
 }
-
 export interface MessageMetrics {
 	messages_published: number;
 	messages_received: number;
@@ -202,7 +180,6 @@ export interface MessageMetrics {
 	last_message_time: string | null;
 	error_count: number;
 }
-
 export interface PerformanceMetrics {
 	throughput: {
 		messages_per_second: number;
@@ -223,7 +200,6 @@ export interface PerformanceMetrics {
 		loss_rate: number;
 	};
 }
-
 export interface SystemHealth {
 	overall_status: 'healthy' | 'degraded' | 'critical';
 	connection_health: 'connected' | 'reconnecting' | 'disconnected';
@@ -232,10 +208,8 @@ export interface SystemHealth {
 	consumer_health: Record<string, 'active' | 'stalled' | 'failed'>;
 	last_check: string;
 }
-
-// Stream Processing Types;
+// Stream Processing Types
 }
-
 export interface StreamInfo {
 	config: StreamConfig;
 	state: StreamState;
@@ -243,7 +217,6 @@ export interface StreamInfo {
 	mirror?: MirrorInfo;
 	sources?: SourceInfo[];
 }
-
 export interface StreamState {
 	messages: number;
 	bytes: number;
@@ -256,13 +229,11 @@ export interface StreamState {
 	lost?: LostStreamData;
 	consumers: number;
 }
-
 export interface ClusterInfo {
 	name?: string;
 	leader?: string;
 	replicas?: PeerInfo[];
 }
-
 export interface PeerInfo {
 	name: string;
 	current: boolean;
@@ -270,31 +241,26 @@ export interface PeerInfo {
 	active: number;
 	lag?: number;
 }
-
 export interface MirrorInfo {
 	name: string;
 	lag: number;
 	active: number;
 	external?: ExternalStream;
 }
-
 export interface SourceInfo {
 	name: string;
 	lag: number;
 	active: number;
 	external?: ExternalStream;
 }
-
 export interface ExternalStream {
 	api: string;
 	deliver: string;
 }
-
 export interface LostStreamData {
 	msgs?: number[];
 	bytes: number;
 }
-
 export interface ConsumerInfo {
 	stream_name: string;
 	name: string;
@@ -308,23 +274,19 @@ export interface ConsumerInfo {
 	num_pending: number;
 	cluster?: ClusterInfo;
 }
-
 export interface DeliveryInfo {
 	consumer_seq: number;
 	stream_seq: number;
 	last_active?: string;
 }
-
-// Event Types;
+// Event Types
 }
-
 export interface NATSEvent {
 	type: NATSEventType;
 	timestamp: string;
 	data: any;
 }
-
-export type NATSEventType = 
+export type NATSEventType =
 	| 'connected'
 	| 'disconnected'
 	| 'reconnecting'
@@ -338,10 +300,8 @@ export type NATSEventType =
 	| 'stream_deleted'
 	| 'consumer_created'
 	| 'consumer_deleted';
-
-// Legal AI Specific Types;
+// Legal AI Specific Types
 }
-
 export interface CaseEventData {
 	case_id: string;
 	case_number: string;
@@ -351,9 +311,8 @@ export interface CaseEventData {
 	priority: 'low' | 'normal' | 'high' | 'urgent';
 	created_by: string;
 	updated_by?: string;
-	metadata?: Record<string, any>;
+	metadata?: { [key: string]: any };
 }
-
 export interface DocumentEventData {
 	document_id: string;
 	case_id?: string;
@@ -364,9 +323,8 @@ export interface DocumentEventData {
 	storage_path: string;
 	processing_status: 'uploaded' | 'processing' | 'processed' | 'indexed' | 'failed';
 	extracted_text?: string;
-	metadata?: Record<string, any>;
+	metadata?: { [key: string]: any };
 }
-
 export interface AIAnalysisEventData {
 	analysis_id: string;
 	case_id?: string;
@@ -379,7 +337,6 @@ export interface AIAnalysisEventData {
 	gpu_used?: boolean;
 	error_message?: string;
 }
-
 export interface ChatEventData {
 	message_id: string;
 	session_id: string;
@@ -391,7 +348,6 @@ export interface ChatEventData {
 	is_streaming?: boolean;
 	streaming_complete?: boolean;
 }
-
 export interface SearchEventData {
 	query_id: string;
 	user_id: string;
@@ -402,7 +358,6 @@ export interface SearchEventData {
 	total_results?: number;
 	processing_time_ms?: number;
 }
-
 export interface SearchFilters {
 	case_ids?: string[];
 	document_types?: string[];
@@ -414,16 +369,14 @@ export interface SearchFilters {
 	status?: string[];
 	assigned_to?: string[];
 }
-
 export interface SearchResult {
 	id: string;
 	type: 'case' | 'document' | 'precedent';
 	title: string;
 	relevance_score: number;
 	snippet?: string;
-	metadata?: Record<string, any>;
+	metadata?: { [key: string]: any };
 }
-
 export interface SystemHealthEventData {
 	component: string;
 	status: 'healthy' | 'degraded' | 'critical';
@@ -432,7 +385,6 @@ export interface SystemHealthEventData {
 	uptime_seconds: number;
 	last_error?: string;
 }
-
 export interface SystemAlert {
 	id: string;
 	level: 'info' | 'warning' | 'error' | 'critical';
@@ -441,10 +393,8 @@ export interface SystemAlert {
 	timestamp: string;
 	resolved: boolean;
 }
-
-// Queue and Work Distribution Types;
+// Queue and Work Distribution Types
 }
-
 export interface WorkQueue {
 	name: string;
 	stream_name: string;
@@ -456,7 +406,6 @@ export interface WorkQueue {
 	completed_messages: number;
 	failed_messages: number;
 }
-
 export interface WorkItem {
 	id: string;
 	queue_name: string;
@@ -470,10 +419,8 @@ export interface WorkItem {
 	error_message?: string;
 	worker_id?: string;
 }
-
-// Utility Types;
+// Utility Types
 }
-
 export interface RequestOptions {
 	timeout_ms?: number;
 	headers?: Record<string, string>;
@@ -481,52 +428,42 @@ export interface RequestOptions {
 	correlation_id?: string;
 	reply_to?: string;
 }
-
 export interface PublishOptions {
 	expect?: ExpectedStream | ExpectedLastSeq | ExpectedLastMsgId;
 	msg_id?: string;
 	headers?: Record<string, string>;
 	timeout_ms?: number;
 }
-
 export interface ExpectedStream {
 	name: string;
 	seq?: number;
 }
-
 export interface ExpectedLastSeq {
 	stream_seq: number;
 }
-
 export interface ExpectedLastMsgId {
 	msg_id: string;
 }
-
 export interface MessageAck {
 	ack(): void;
 	nak(delay?: number): void;
 	working(): void;
 	term(): void;
 }
-
-// Error Types;
+// Error Types
 }
-
 export interface NATSError extends Error {
 	code: string;
 	chain_code?: string;
 	api_error?: APIError;
 }
-
 export interface APIError {
 	code: number;
 	err_code?: number;
 	description?: string;
 }
-
-// Monitoring and Analytics;
+// Monitoring and Analytics
 }
-
 export interface MessageFlow {
 	subject: string;
 	source: string;
@@ -537,7 +474,6 @@ export interface MessageFlow {
 	error_rate: number;
 	last_activity: string;
 }
-
 export interface SubjectMetrics {
 	subject: string;
 	messages_published: number;
@@ -549,7 +485,6 @@ export interface SubjectMetrics {
 	last_published: string | null;
 	last_consumed: string | null;
 }
-
 export interface ConnectionMetrics {
 	client_connections: number;
 	total_connections: number;
@@ -560,7 +495,6 @@ export interface ConnectionMetrics {
 	slow_consumers: number;
 	subscriptions: number;
 }
-
 // Export utility types
 export type SubjectPattern = string;
 export type QueueGroup = string;

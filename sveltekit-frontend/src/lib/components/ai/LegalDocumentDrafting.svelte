@@ -2,15 +2,12 @@
   Legal Document Drafting Interface
   AI-powered legal document creation using Enhanced-Bits UI components
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   // Card components removed - using native HTML elements
   import * as Dialog from '$lib/components/ui/dialog';
   import Button from '$lib/components/ui/enhanced-bits';
-  
   // Document drafting state
   let documentTypes = $state<DocumentType[]>([]);
   let currentDocument = $state<DocumentDraft | null>(null);
@@ -19,7 +16,6 @@
   let isGenerating = $state(false);
   let showPreview = $state(false);
   let draftHistory = $state<DocumentDraft[]>([]);
-  
   // Editor state
   let selectedDocumentType = $state('');
   let selectedTemplate = $state('');
@@ -28,7 +24,6 @@
   let caseContext = $state('');
   let draftingMode = $state<'guided' | 'template' | 'freeform'>('guided');
   let aiAssistanceLevel = $state<'minimal' | 'moderate' | 'extensive'>('moderate');
-  
   interface DocumentType {
     id: string;
     name: string;
@@ -39,7 +34,6 @@
     requiredFields: DocumentField[];
     icon: string;
   }
-  
   interface DocumentTemplate {
     id: string;
     name: string;
@@ -50,7 +44,6 @@
     lastUpdated: string;
     usage_count: number;
   }
-  
   interface TemplateVariable {
     name: string;
     type: 'text' | 'date' | 'number' | 'select' | 'boolean';
@@ -59,7 +52,6 @@
     options?: string[];
     default_value?: any;
   }
-  
   interface DocumentField {
     name: string;
     type: 'text' | 'textarea' | 'date' | 'select' | 'number';
@@ -68,7 +60,6 @@
     placeholder?: string;
     options?: string[];
   }
-  
   interface DocumentDraft {
     id: string;
     title: string;
@@ -86,32 +77,29 @@
     status: 'draft' | 'review' | 'finalized';
     collaborators: string[];
   }
-  
   interface AISuggestion {
     id: string;
     type: 'content' | 'structure' | 'legal_point' | 'citation' | 'language';
-    position: number;
+    position: numb;
+r;
     suggestion: string;
     reasoning: string;
     confidence: number;
     applied: boolean;
   }
-  
   $effect(() => {
     loadDocumentTypes();
     loadTemplates();
     loadDraftHistory();
   });
-  
   async function loadDocumentTypes() {
     try {
       const response = await fetch('/api/ai/document-drafting/types', {
-        method: 'GET',;
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
         documentTypes = (data as { documentTypes?: any; templates?: any; history?: any; version?: any; completionScore?: any; lastModified?: any; wordCount?: any; createdAt?: any }).documentTypes || [];
@@ -120,16 +108,14 @@
       console.error('Error loading document types:', error);
     }
   }
-  
   async function loadTemplates() {
     try {
       const response = await fetch('/api/ai/document-drafting/templates', {
-        method: 'GET',;
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
         templates = (data as { documentTypes?: any; templates?: any; history?: any; version?: any; completionScore?: any; lastModified?: any; wordCount?: any; createdAt?: any }).templates || [];
@@ -138,16 +124,14 @@
       console.error('Error loading templates:', error);
     }
   }
-  
   async function loadDraftHistory() {
     try {
       const response = await fetch('/api/ai/document-drafting/history', {
-        method: 'GET',;
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
         draftHistory = (data as { documentTypes?: any; templates?: any; history?: any; version?: any; completionScore?: any; lastModified?: any; wordCount?: any; createdAt?: any }).history || [];
@@ -156,29 +140,25 @@
       console.error('Error loading draft history:', error);
     }
   }
-  
   async function startNewDocument() {
     if (!selectedDocumentType) return;
-    
     isDrafting = true;
     try {
       const request = {
-        documentType: selectedDocumentType,
-        template: selectedTemplate || undefined,;
-        title: documentTitle,
-        caseContext: caseContext || undefined,
+        documentType: selectedDocumentType
+        template: selectedTemplate || undefined
+        title: documentTitle
+        caseContext: caseContext || undefined
         draftingMode,
         aiAssistanceLevel;
       };
-      
       const response = await fetch('/api/ai/document-drafting', {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },;
+        },
         body: JSON.stringify(request);
       });
-      
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
         currentDocument = (result as { document?: any; content?: any; suggestions?: any }).document;
@@ -192,30 +172,26 @@
       isDrafting = false;
     }
   }
-  
   async function generateContent(prompt: string) {
     if (!currentDocument) return;
-    
     isGenerating = true;
     try {
       const request = {
         documentId: currentDocument.id,
         prompt,
         context: {
-          currentContent: documentContent,
+          currentContent: documentContent
           caseContext,
           assistanceLevel: aiAssistanceLevel
         }
       };
-      
       const response = await fetch('/api/ai/document-drafting/generate', {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },;
+        },
         body: JSON.stringify(request);
       });
-      
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
         documentContent = (result as { document?: any; content?: any; suggestions?: any }).content;
@@ -230,25 +206,21 @@
       isGenerating = false;
     }
   }
-  
   async function saveDocument() {
     if (!currentDocument) return;
-    
     try {
       const request = {
         documentId: currentDocument.id,
-        content: documentContent,;
-        title: documentTitle;
+        content: documentContent
+        title: documentTitl;
       };
-      
       const response = await fetch('/api/ai/document-drafting/save', {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },;
+        },
         body: JSON.stringify(request);
       });
-      
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         await loadDraftHistory();
       }
@@ -256,25 +228,21 @@
       console.error('Error saving document:', error);
     }
   }
-  
   async function applySuggestion(suggestion: AISuggestion) {
     if (!currentDocument) return;
-    
     try {
       const response = await fetch(`/api/ai/document-drafting/suggestions/${suggestion.id}/apply`, {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },;
-        body: JSON.stringify({
+        },
+        body: JSON.stringify({,
           documentId: currentDocument.id
         })
       });
-      
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
         documentContent = (result as { document?: any; content?: any; suggestions?: any }).content;
-        
         // Mark suggestion as applied
         if (currentDocument) {
           const suggestionIndex = currentDocument.aiSuggestions.findIndex(s => s.id === suggestion.id);
@@ -287,7 +255,6 @@
       console.error('Error applying suggestion:', error);
     }
   }
-  
   function getDocumentTypeIcon(category: string): string {
     switch (category) {
       case 'litigation': return '⚖️';
@@ -298,7 +265,6 @@
       default: return '📋';
     }
   }
-  
   function getCategoryColor(category: string): string {
     switch (category) {
       case 'litigation': return 'bg-red-100 text-red-800 border-red-200';
@@ -309,7 +275,6 @@
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
-  
   function getComplexityColor(complexity: string): string {
     switch (complexity) {
       case 'basic': return 'text-green-600';
@@ -318,7 +283,6 @@
       default: return 'text-gray-600';
     }
   }
-  
   function getSuggestionTypeIcon(type: string): string {
     switch (type) {
       case 'content': return '✏️';
@@ -329,30 +293,24 @@
       default: return '💡';
     }
   }
-  
   let filteredTemplates = $derived(() => {
     if (!selectedDocumentType) return [];
     return templates.filter(template => template.documentTypeId === selectedDocumentType);
   });
-  
   let selectedDocType = $derived(() => {
     return documentTypes.find(type => type.id === selectedDocumentType);
   });
-  
   let wordCount = $derived(() => {
     return documentContent.split.filter-length;
   });
-  
   let pendingSuggestions = $derived(() => {
     if (!currentDocument) return [];
     return currentDocument.aiSuggestions.filter(s => !s.applied);
   });
 </script>
-
 <svelte:head>
   <title>Legal Document Drafting - Legal AI Platform</title>
 </svelte:head>
-
 <div class="document-drafting">
   <header class="drafting-header">
     <div class="header-content">
@@ -370,7 +328,6 @@
       {/if}
     </div>
   </header>
-
   <div class="drafting-layout">
     <!-- Sidebar -->
     <aside class="drafting-sidebar">
@@ -409,7 +366,6 @@
             {/each}
           </div>
         </section>
-
         <!-- Template Selection -->
         {#if selectedDocumentType && filteredTemplates.length > 0}
           <section class="sidebar-section">
@@ -420,7 +376,6 @@
                 <option value={template.id}>{template.name}</option>
               {/each}
             </select>
-            
             {#if selectedTemplate}
               {@const template = templates.find(t => t.id === selectedTemplate)}
               {#if template}
@@ -434,7 +389,6 @@
               {/if}
           </section>
         {/if}
-
         <!-- Document Configuration -->
         <section class="sidebar-section">
           <h3>Configuration</h3>
@@ -449,7 +403,6 @@
                 class="form-input"
               />
             </div>
-            
             <div class="form-group">
               <label for="case-context">Case Context (Optional):</label>
               <textarea
@@ -460,7 +413,6 @@
                 class="form-textarea"
               ></textarea>
             </div>
-            
             <div class="form-group">
               <label for="drafting-mode">Drafting Mode:</label>
               <select id="drafting-mode" bind:value={draftingMode} class="form-select">
@@ -469,7 +421,6 @@
                 <option value="freeform">Freeform</option>
               </select>
             </div>
-            
             <div class="form-group">
               <label for="ai-assistance">AI Assistance Level:</label>
               <select id="ai-assistance" bind:value={aiAssistanceLevel} class="form-select">
@@ -505,7 +456,6 @@
             </div>
           </div>
         </section>
-
         <!-- AI Suggestions -->
         {#if pendingSuggestions.length > 0}
           <section class="sidebar-section">
@@ -533,35 +483,34 @@
             </div>
           </section>
         {/if}
-
         <!-- Quick Actions -->
         <section class="sidebar-section">
           <h3>Quick Actions</h3>
           <div class="quick-actions">
-            <button class="nes-btn" 
-              variant="ghost" 
-              size="sm" 
+            <button class="nes-btn"
+              variant="ghost"
+              size="sm"
               onclick={disabled}
             >
               Add Introduction
             </button>
-            <button class="nes-btn" 
-              variant="ghost" 
-              size="sm" 
+            <button class="nes-btn"
+              variant="ghost"
+              size="sm"
               onclick={disabled}
             >
               Add Conclusion
             </button>
-            <button class="nes-btn" 
-              variant="ghost" 
-              size="sm" 
+            <button class="nes-btn"
+              variant="ghost"
+              size="sm"
               onclick={disabled}
             >
               Improve Language
             </button>
-            <button class="nes-btn" 
-              variant="ghost" 
-              size="sm" 
+            <button class="nes-btn"
+              variant="ghost"
+              size="sm"
               onclick={disabled}
             >
               Add Citations
@@ -570,7 +519,6 @@
         </section>
       {/if}
     </aside>
-
     <!-- Main Content -->
     <main class="drafting-main">
       {#if !currentDocument}
@@ -579,7 +527,6 @@
           <div class="getting-started-content">
             <h2>Create a Legal Document</h2>
             <p>Select a document type and configuration to get started with AI-assisted drafting.</p>
-            
             {#if selectedDocType}
               <div class="selected-type-preview nier-bits-card">
                 <div class="card-header">
@@ -621,15 +568,13 @@
               </button>
             </div>
           </div>
-          
           <div class="editor-content">
-            <textarea;
+            <textarease;
               bind:value={documentContent}
               placeholder="Start typing your document or use AI suggestions..."
               class="document-textarea"
             ></textarea>
           </div>
-          
           <div class="editor-footer">
             <div class="ai-prompt-section">
               <input
@@ -652,7 +597,6 @@
       {/if}
     </main>
   </div>
-
   <!-- Recent Drafts -->
   {#if draftHistory.length > 0 && !currentDocument}
     <section class="recent-drafts">
@@ -689,7 +633,6 @@
     </section>
   {/if}
 </div>
-
 <!-- Document Preview Dialog -->
 <Dialog.Root bind:open={showPreview}>
   <Dialog.Content class="document-preview-dialog">
@@ -698,7 +641,6 @@
       <Dialog.Description>
         Preview of {currentDocument.title}
       </Dialog.Description>
-      
       <div class="preview-content">
         <div class="preview-header">
           <h1>{documentTitle}</h1>
@@ -708,7 +650,6 @@
             <span>Status: {currentDocument.status}</span>
           </div>
         </div>
-        
         <div class="preview-body">
           {#each documentContent.split('\n') as paragraph}
             {#if paragraph.trim()}
@@ -717,7 +658,6 @@
           {/each}
         </div>
       </div>
-      
       <div class="dialog-actions">
         <button class="nes-btn" variant="ghost" onclick={() => showPreview = false}>
           Close Preview
@@ -729,43 +669,37 @@
     {/if}
   </Dialog.Content>
 </Dialog.Root>
-
 <style>
-  .document-drafting {;
+  .document-drafting {
     max-width: 1600px;
     margin: 0 auto;
     padding: 2rem;
     font-family: system-ui, -apple-system, sans-serif;
   }
-
   .drafting-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: flex-start;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid #e2e8f0;
   }
-
   .drafting-title {
     font-size: 2rem;
     font-weight: 700;
     color: #1e293b;
     margin: 0;
   }
-
   .drafting-subtitle {
     color: #64748b;
     margin: 0.5rem 0 0 0;
   }
-
   .drafting-layout {
     display: grid;
     grid-template-columns: 300px 1fr;
     gap: 2rem;
     min-height: 600px;
   }
-
   .drafting-sidebar {
     background: #f8fafc;
     border-radius: 0.5rem;
@@ -774,69 +708,57 @@
     max-height: 80vh;
     overflow-y: auto;
   }
-
   .sidebar-section {
     margin-bottom: 2rem;
   }
-
   .sidebar-section:last-child {
     margin-bottom: 0;
   }
-
   .sidebar-section h3 {
     margin: 0 0 1rem 0;
     color: #374151;
     font-size: 1rem;
     font-weight: 600;
   }
-
   .document-types-list {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
   }
-
   .document-type-option {
     cursor: pointer;
   }
-
   .document-type-card {
     padding: 1rem;
     border: 1px solid #e5e7eb;
     border-radius: 0.375rem;
     background: white;
-    transition: all 0.2s;
+    transition: all 0.2;
   }
-
   .document-type-card:hover {
     border-color: #3b82f6;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
-
   .document-type-card.selected {
     border-color: #3b82f6;
     background: #eff6ff;
   }
-
   .type-header {
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
     margin-bottom: 0.5rem;
   }
-
   .type-icon {
     font-size: 1.25rem;
     margin-top: 0.125rem;
   }
-
   .type-header h4 {
     margin: 0 0 0.25rem 0;
     color: #374151;
     font-size: 0.875rem;
     font-weight: 600;
   }
-
   .type-category {
     padding: 0.125rem 0.375rem;
     border-radius: 0.25rem;
@@ -845,30 +767,25 @@
     border: 1px solid;
     text-transform: uppercase;
   }
-
   .type-description {
     margin: 0.5rem 0;
     font-size: 0.75rem;
     color: #64748b;
     line-height: 1.4;
   }
-
   .type-metadata {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     font-size: 0.75rem;
   }
-
   .complexity {
     font-weight: 600;
     text-transform: uppercase;
   }
-
   .estimated-time {
     color: #6b7280;
   }
-
   .template-select {
     width: 100%;
     padding: 0.5rem;
@@ -877,45 +794,38 @@
     font-size: 0.875rem;
     margin-bottom: 0.75rem;
   }
-
   .template-preview {
     padding: 0.75rem;
     background: white;
     border-radius: 0.375rem;
     border: 1px solid #e5e7eb;
   }
-
   .template-description {
     margin: 0 0 0.5rem 0;
     font-size: 0.75rem;
     color: #64748b;
   }
-
   .template-stats {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     font-size: 0.625rem;
     color: #9ca3af;
   }
-
   .config-form {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .form-group {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .form-group label {
     font-size: 0.75rem;
     font-weight: 500;
     color: #374151;
   }
-
   .form-input,
   .form-textarea,
   .form-select {
@@ -924,28 +834,23 @@
     border-radius: 0.375rem;
     font-size: 0.875rem;
   }
-
   .form-textarea {
     resize: vertical;
     min-height: 60px;
   }
-
   .document-info h4 {
     margin: 0 0 0.75rem 0;
     color: #374151;
   }
-
   .info-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.75rem;
     margin-bottom: 0.75rem;
   }
-
   .stat {
     text-align: center;
   }
-
   .stat-label {
     display: block;
     font-size: 0.625rem;
@@ -953,19 +858,16 @@
     text-transform: uppercase;
     margin-bottom: 0.25rem;
   }
-
   .stat-value {
     display: block;
     font-size: 1rem;
     font-weight: 600;
     color: #374151;
   }
-
   .last-modified {
     font-size: 0.75rem;
     color: #6b7280;
   }
-
   .suggestions-list {
     display: flex;
     flex-direction: column;
@@ -973,123 +875,103 @@
     max-height: 300px;
     overflow-y: auto;
   }
-
   .suggestion-item {
     padding: 0.75rem;
     background: white;
     border-radius: 0.375rem;
     border: 1px solid #e5e7eb;
   }
-
   .suggestion-header {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     margin-bottom: 0.5rem;
   }
-
   .suggestion-icon {
     font-size: 0.875rem;
   }
-
   .suggestion-type {
     flex: 1;
     font-size: 0.75rem;
     font-weight: 500;
     color: #374151;
-    text-transform: capitalize;
+    text-transform: capitaliz;
   }
-
   .suggestion-confidence {
     font-size: 0.625rem;
     color: #6b7280;
   }
-
   .suggestion-text {
     margin: 0 0 0.5rem 0;
     font-size: 0.75rem;
     color: #374151;
     line-height: 1.4;
   }
-
   .suggestion-reasoning {
     margin: 0 0 0.75rem 0;
     font-size: 0.625rem;
     color: #64748b;
     font-style: italic;
   }
-
   .suggestion-actions {
     display: flex;
     gap: 0.5rem;
   }
-
   .quick-actions {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .drafting-main {
     background: white;
     border-radius: 0.5rem;
     border: 1px solid #e2e8f0;
     overflow: hidden;
   }
-
   .getting-started {
     padding: 3rem;
     text-align: center;
   }
-
   .getting-started-content h2 {
     margin: 0 0 1rem 0;
     color: #374151;
   }
-
   .getting-started-content > p {
     margin: 0 0 2rem 0;
     color: #64748b;
   }
-
   .selected-type-preview {
     max-width: 400px;
     margin: 0 auto;
     text-align: left;
   }
-
   .required-fields h4 {
     margin: 0 0 0.5rem 0;
     font-size: 0.875rem;
     color: #374151;
   }
-
   .required-fields ul {
     margin: 0;
     padding-left: 1rem;
   }
-
   .required-fields li {
     font-size: 0.75rem;
     color: #64748b;
     margin-bottom: 0.25rem;
   }
-
   .document-editor {
     display: flex;
     flex-direction: column;
     height: 70vh;
   }
-
   .editor-toolbar {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 1rem 1.5rem;
     border-bottom: 1px solid #e2e8f0;
     background: #f8fafc;
   }
-
   .title-input {
     border: none;
     background: transparent;
@@ -1100,28 +982,23 @@
     border-radius: 0.375rem;
     width: 400px;
   }
-
   .title-input:focus {
     outline: 1px solid #3b82f6;
     background: white;
   }
-
   .toolbar-right {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
-
   .word-count {
     font-size: 0.875rem;
     color: #6b7280;
   }
-
   .editor-content {
     flex: 1;
     padding: 1.5rem;
   }
-
   .document-textarea {
     width: 100%;
     height: 100%;
@@ -1133,23 +1010,19 @@
     color: #374151;
     background: transparent;
   }
-
   .document-textarea:focus {
     outline: none;
   }
-
   .editor-footer {
     padding: 1rem 1.5rem;
     border-top: 1px solid #e2e8f0;
     background: #f8fafc;
   }
-
   .ai-prompt-section {
     display: flex;
     gap: 0.75rem;
     align-items: center;
   }
-
   .ai-prompt-input {
     flex: 1;
     padding: 0.5rem;
@@ -1157,43 +1030,35 @@
     border-radius: 0.375rem;
     font-size: 0.875rem;
   }
-
   .recent-drafts {
     margin-top: 3rem;
   }
-
   .recent-drafts h2 {
     margin: 0 0 1.5rem 0;
     color: #374151;
   }
-
   .drafts-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1.5rem;
   }
-
   .draft-card {
     border: 1px solid #e2e8f0;
-    transition: box-shadow 0.2s;
+    transition: box-shadow 0.2;
   }
-
   .draft-card:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
-
   .draft-title {
     margin: 0;
     font-size: 1rem;
   }
-
   .draft-stats {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 0.75rem;
   }
-
   .draft-status {
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
@@ -1201,83 +1066,69 @@
     font-weight: 600;
     text-transform: uppercase;
   }
-
   .status-draft {
     background: #fef3c7;
-    color: #92400e;
+    color: #92400;
   }
-
   .status-review {
-    background: #dbeafe;
+    background: #dbeaf;
     color: #1e40af;
   }
-
   .status-finalized {
     background: #d1fae5;
     color: #166534;
   }
-
   .draft-date {
     font-size: 0.75rem;
     color: #6b7280;
   }
-
   .draft-preview {
     font-size: 0.75rem;
     color: #64748b;
     line-height: 1.4;
   }
-
   .draft-actions {
     display: flex;
     gap: 0.5rem;
     justify-content: flex-end;
   }
-
   /* Dialog Styles */
   .document-preview-dialog {
     max-width: 800px;
     max-height: 90vh;
     overflow-y: auto;
   }
-
   .preview-content {
     padding: 1.5rem;
     background: white;
     border-radius: 0.375rem;
     border: 1px solid #e5e7eb;
   }
-
   .preview-header {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid #e5e7eb;
   }
-
   .preview-header h1 {
     margin: 0 0 0.5rem 0;
     color: #374151;
     font-size: 1.5rem;
   }
-
   .preview-metadata {
     display: flex;
     gap: 1rem;
     font-size: 0.75rem;
     color: #6b7280;
   }
-
   .preview-body {
     font-family: 'Georgia', serif;
     font-size: 1rem;
     line-height: 1.6;
     color: #374151;
   }
-
   .preview-body p {
     margin: 0 0 1rem 0;
   }
-
   .dialog-actions {
     display: flex;
     gap: 0.5rem;
@@ -1286,37 +1137,30 @@
     padding-top: 1.5rem;
     border-top: 1px solid #e2e8f0;
   }
-
   @media (max-width: 1024px) {
     .drafting-layout {
       grid-template-columns: 1fr;
     }
-
     .drafting-sidebar {
       order: 2;
       max-height: none;
     }
-
     .drafting-main {
       order: 1;
     }
   }
-
   @media (max-width: 768px) {
     .drafting-header {
       flex-direction: column;
       gap: 1rem;
     }
-
     .toolbar-right {
       flex-direction: column;
       gap: 0.5rem;
     }
-
     .title-input {
       width: 100%;
     }
-
     .drafts-grid {
       grid-template-columns: 1fr;
     }

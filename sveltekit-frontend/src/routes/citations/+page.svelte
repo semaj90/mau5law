@@ -1,11 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { ButtonBits, CardBits, InputBits } from '$lib/components/ui/bits-ui';
   import CitationsSaveButton from '$lib/components/citations/CitationsSaveButton.svelte';
   import { authDemo } from '$lib/modules/auth-demo';
   import { citationsManager } from '$lib/modules/citations-manager';
-
   let citations = $state([
     {
       id: '001',
@@ -46,50 +44,42 @@
       citation: '372 U.S. 335 (1963)',
       court: 'Supreme Court',
       year: '1963',
-      category: 'Criminal Defense',;
+      category: 'Criminal Defense',
       relevance: 'high',
-      keyPoints: ['Right to counsel', '6th Amendment', 'Public defender'],;
+      keyPoints: ['Right to counsel', '6th Amendment', 'Public defender'],
       cited: 34;
     }
   ]);
-
   let searchQuery = $state('');
   let selectedCategory = $state('all');
   let selectedCourt = $state('all');
   let currentUser = $state(authDemo.getCurrentUser());
   let showAuthDemo = $state(false);
-
   // Listen for auth changes
   citationsManager.onAuthChange((user) => {
     currentUser = user;
   });
-
   // Demo authentication for testing
   async function handleDemoSignIn(email: string) {
     await authDemo.signIn(email);
     currentUser = authDemo.getCurrentUser();
     showAuthDemo = false;
   }
-
   async function handleSignOut() {
     await authDemo.signOut();
     currentUser = null;
   }
 </script>
-
 <svelte:head>
   <title>Citations Database - YoRHa Legal AI</title>
 </svelte:head>
-
 <div class="citations-dashboard">
   <div class="header nes-container with-title">
     <p class="title">📚 CITATIONS LIBRARY</p>
     <p class="subtitle">Legal Precedent & Case Law Database</p>
   </div>
-
   <div class="controls">
     <InputBits bind:value={searchQuery} placeholder="Search citations..." class="search-input" />
-
     <div class="filters">
       <select bind:value={selectedCategory} class="nes-select">
         <option value="all">All Categories</option>
@@ -98,7 +88,6 @@
         <option value="Constitutional Law">Constitutional Law</option>
         <option value="Criminal Defense">Criminal Defense</option>
       </select>
-
       <select bind:value={selectedCourt} class="nes-select">
         <option value="all">All Courts</option>
         <option value="Supreme Court">Supreme Court</option>
@@ -106,7 +95,6 @@
         <option value="District Court">District Court</option>
       </select>
     </div>
-
     <div class="auth-controls">
       {#if currentUser}
         <span class="user-info">👤 {currentUser.name}</span>
@@ -120,7 +108,6 @@ Sign Out</ButtonBits>
       <ButtonBits variant="primary">➕ ADD CITATION</ButtonBits>
     </div>
   </div>
-
   <div class="citations-grid">
     {#each citations as citation (citation.id)}
       <CardBits class="citation-card">
@@ -135,7 +122,6 @@ Sign Out</ButtonBits>
             </span>
           </span>
         </div>
-
         <div class="citation-meta">
           <div class="meta-item">
             <span class="meta-label">Court:</span>
@@ -154,7 +140,6 @@ Sign Out</ButtonBits>
             <span class="meta-value">{citation.cited} times</span>
           </div>
         </div>
-
         <div class="key-points">
           <h4>Key Points:</h4>
           <div class="points-list">
@@ -163,7 +148,6 @@ Sign Out</ButtonBits>
             {/each}
           </div>
         </div>
-
         <div class="citation-actions">
           <CitationsSaveButton
             {citation}
@@ -181,7 +165,6 @@ Sign Out</ButtonBits>
     {/each}
   </div>
 </div>
-
 <!-- Demo Authentication Modal -->
 {#if showAuthDemo}
   <div class="auth-modal-overlay" onclick={() => showAuthDemo = false}>
@@ -189,7 +172,6 @@ Sign Out</ButtonBits>
       <div class="auth-header">
         <h3>🔐 Demo Authentication</h3>
         <button class="close-btn" onclick={() => showAuthDemo = false}>✕
-
       </div>
       <div class="auth-content">
         <p>Choose a demo user to test citation saving:</p>
@@ -204,7 +186,6 @@ Sign Out</ButtonBits>
                 <span class="user-role">{user.role}</span>
                 <span class="user-email">{user.email}</span>
               </div>
-
           {/each}
         </div>
         <p class="demo-note">
@@ -214,9 +195,8 @@ Sign Out</ButtonBits>
     </div>
   </div>
 {/if}
-
 <style>
-  .citations-dashboard {;
+  .citations-dashboard {
     max-width: 1200px;
     margin: 0 auto;
     padding: 1rem;
@@ -224,36 +204,30 @@ Sign Out</ButtonBits>
     flex-direction: column;
     gap: 1.5rem;
   }
-
   .header {
     background: linear-gradient(135deg, #4a90e2, #7ed321) !important;
     text-align: center;
   }
-
   .header .title {
     color: white !important;
     font-family: 'Press Start 2P', cursive !important;
     font-size: 1.25rem !important;
   }
-
   .header .subtitle {
     color: rgba(255, 255, 255, 0.9) !important;
     font-size: 0.75rem;
   }
-
   .controls {
     display: flex;
     gap: 1rem;
     align-items: center;
     flex-wrap: wrap;
   }
-
   .auth-controls {
     display: flex;
     gap: 0.5rem;
     align-items: center;
   }
-
   .user-info {
     color: var(--nier-text-primary);
     font-size: 0.75rem;
@@ -262,63 +236,53 @@ Sign Out</ButtonBits>
     border: 1px solid rgba(126, 227, 33, 0.3);
     border-radius: 4px;
   }
-
   .search-input {
     flex: 1;
     min-width: 250px;
   }
-
   .filters {
     display: flex;
     gap: 0.5rem;
   }
-
   .nes-select {
     padding: 0.5rem;
     font-size: 0.75rem;
   }
-
   .citations-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 1rem;
   }
-
   .citation-card {
     background: rgba(26, 26, 46, 0.6) !important;
     border: 2px solid var(--n64-primary) !important;
     padding: 1rem;
     transition: all 0.3s ease;
   }
-
   .citation-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(74, 144, 226, 0.2);
     border-color: var(--n64-secondary) !important;
   }
-
   .citation-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: flex-start;
     margin-bottom: 1rem;
     gap: 1rem;
   }
-
   .citation-title h3 {
     color: var(--nier-text-primary);
-    font-family: 'Press Start 2P', cursive;
+    font-family: 'Press Start 2P', cursiv;
     font-size: 0.875rem;
     margin: 0 0 0.5rem 0;
     line-height: 1.4;
   }
-
   .citation-number {
     color: var(--nier-text-secondary);
     font-size: 0.75rem;
     font-weight: bold;
   }
-
   .citation-meta {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -328,42 +292,35 @@ Sign Out</ButtonBits>
     background: rgba(15, 15, 35, 0.5);
     border-radius: 4px;
   }
-
   .meta-item {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
   }
-
   .meta-label {
     color: var(--nier-text-secondary);
     font-size: 0.625rem;
     font-weight: bold;
     text-transform: uppercase;
   }
-
   .meta-value {
     color: var(--nier-text-primary);
     font-size: 0.75rem;
   }
-
   .key-points {
     margin-bottom: 1rem;
   }
-
   .key-points h4 {
     color: var(--nier-text-primary);
-    font-family: 'Press Start 2P', cursive;
+    font-family: 'Press Start 2P', cursiv;
     font-size: 0.625rem;
     margin: 0 0 0.5rem 0;
   }
-
   .points-list {
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rem;
   }
-
   .point-tag {
     background: rgba(74, 144, 226, 0.2);
     color: var(--n64-primary);
@@ -372,36 +329,29 @@ Sign Out</ButtonBits>
     font-size: 0.625rem;
     border: 1px solid rgba(74, 144, 226, 0.3);
   }
-
   .citation-actions {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
   }
-
   @media (max-width: 768px) {
     .citations-grid {
       grid-template-columns: 1fr;
     }
-
     .controls {
       flex-direction: column;
       align-items: stretch;
     }
-
     .filters {
       justify-content: center;
     }
-
     .citation-meta {
       grid-template-columns: 1fr;
     }
-
     .citation-actions {
       justify-content: center;
     }
   }
-
   /* Demo Authentication Modal */
   .auth-modal-overlay {
     position: fixed;
@@ -415,7 +365,6 @@ Sign Out</ButtonBits>
     justify-content: center;
     z-index: 1000;
   }
-
   .auth-modal {
     background: rgba(26, 26, 46, 0.95);
     border: 2px solid var(--n64-primary);
@@ -425,23 +374,20 @@ Sign Out</ButtonBits>
     max-width: 500px;
     backdrop-filter: blur(10px);
   }
-
   .auth-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
     border-bottom: 1px solid rgba(74, 144, 226, 0.3);
   }
-
   .auth-header h3 {
     color: var(--nier-text-primary);
-    font-family: 'Press Start 2P', cursive;
+    font-family: 'Press Start 2P', cursiv;
     font-size: 0.875rem;
     margin: 0;
   }
-
   .close-btn {
     background: none;
     border: none;
@@ -450,24 +396,20 @@ Sign Out</ButtonBits>
     font-size: 1.25rem;
     padding: 0.25rem;
   }
-
   .close-btn:hover {
     color: var(--n64-error);
   }
-
   .auth-content p {
     color: var(--nier-text-primary);
     margin-bottom: 1rem;
     font-size: 0.875rem;
   }
-
   .demo-users {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
     margin-bottom: 1rem;
   }
-
   .demo-user-btn {
     background: rgba(15, 15, 35, 0.5);
     border: 1px solid rgba(74, 144, 226, 0.3);
@@ -477,34 +419,28 @@ Sign Out</ButtonBits>
     transition: all 0.3s ease;
     text-align: left;
   }
-
   .demo-user-btn:hover {
     background: rgba(74, 144, 226, 0.2);
     border-color: var(--n64-primary);
   }
-
   .user-details {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
   }
-
   .user-details strong {
     color: var(--nier-text-primary);
     font-size: 0.875rem;
   }
-
   .user-role {
     color: var(--n64-secondary);
     font-size: 0.75rem;
-    text-transform: capitalize;
+    text-transform: capitaliz;
   }
-
   .user-email {
     color: var(--nier-text-secondary);
     font-size: 0.625rem;
   }
-
   .demo-note {
     color: var(--nier-text-secondary);
     font-size: 0.75rem;
@@ -512,4 +448,3 @@ Sign Out</ButtonBits>
     margin: 0;
   }
 </style>
-

@@ -1,7 +1,7 @@
 
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
 <!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -12,20 +12,15 @@ https://svelte.dev/e/js_parse_error -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 // Type interfaces for the component
-
   import { getContext, onMount } from 'svelte';
-
   // UI components (Svelte 5 + melt v0.39.0 compatible)
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   // Remove unused Card imports
   import { aiGlobalStore, aiGlobalActions } from '$lib/stores/ai';
   import { legalCaseStore, legalCaseActions } from '$lib/stores/legal-case';
-
   // Since legalCaseStore uses $state, we access it directly without $ prefix
   // aiGlobalStore is a writable store, so we use $ prefix
-
   // Type definition for AI store context
   interface AIStoreContext {
     loading?: boolean;
@@ -34,15 +29,12 @@ https://svelte.dev/e/js_parse_error -->
     stream?: string;
     sources?: Array<any>;
   }
-
   interface AIStore {
     context: AIStoreContext;
   }
-
   // Get user from context (SSR-safe)
   const getUser = getContext<unknown>('user');
   const user = typeof getUser === 'function' ? getUser() : undefined;
-
   // Component props using Svelte 5 $props rune
   let {
     contextItems = [],
@@ -53,25 +45,20 @@ https://svelte.dev/e/js_parse_error -->
     caseId?: string;
     evidenceText?: string;
   } = $props();
-
   // Use the global AI store (XState-based, memoized, streaming-ready)
   // Access store state via $aiGlobalStore, send actions via aiGlobalActions.send
   // The actorRef is not directly used in the component's script, but can be accessed via aiGlobalStore if needed.
   // const { snapshot, send, actorRef } = useAIGlobalStore(); // Old usage
-
   // Add missing errorMessage variable
   let errorMessage = $state('');
-
   $effect(() => {
     // getSummaryCache(); // Uncomment and use this if you need to initialize cache on client
   });
-
   // Trigger summary
   function handleSummarize() {
     if (!user?.id) return;
     aiGlobalActions.summarize(caseId, contextItems, user?.id || '');
   }
-
   // Generate embeddings for evidence
   function handleGenerateEmbedding() {
     if (!evidenceText || !caseId || !user?.id) return;
@@ -81,40 +68,36 @@ https://svelte.dev/e/js_parse_error -->
       userId: user.id
     });
   }
-
   // Search for related evidence using embeddings
   function handleSearchRelatedEvidence() {
     if (!evidenceText || !caseId || !user?.id) return;
     legalCaseActions.searchRelatedEvidence({
       caseId,
-      query: evidenceText,
-      userId: user.id,;
+      query: evidenceText
+      userId: user.id,
       limit: 10;
     });
   }
-
     // Save summary to DB using the comprehensive summaries API
     async function saveSummary() {
       if (!(($aiGlobalStore as AIStore).context.summary) || !caseId || !user?.id) return;
       try {
         const response = await fetch('/api/summaries', {
-          method: 'POST',;
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          body: JSON.stringify({,
             type: 'case',
-            targetId: caseId,;
+            targetId: caseId
             depth: 'comprehensive',
-            includeRAG: true,
-            includeUserActivity: false,
-            enableStreaming: false,
+            includeRAG: true
+            includeUserActivity: false
+            enableStreaming: false
             userId: user.id;
           })
         });
-
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-
         const result = await response.json();
         if (result.success) {
           // Optionally show a success notification here
@@ -128,7 +111,6 @@ https://svelte.dev/e/js_parse_error -->
       }
     }
   </script>
-
   <div class="nier-nier-bits-card p-6 nes-container">
     <div class="nier-header mb-4">
       <h3 class="nier-title text-lg font-bold mb-2">AI Evidence Summary</h3>
@@ -141,7 +123,6 @@ https://svelte.dev/e/js_parse_error -->
       >
         {!user ? 'Sign in to Summarize' : ($aiGlobalStore.context.loading ? 'Summarizing...' : 'Summarize Evidence')}
       </Button>
-
       <Button
         onclick={saveSummary}
         disabled={!$aiGlobalStore.context.summary || $aiGlobalStore.context.loading}
@@ -150,7 +131,6 @@ https://svelte.dev/e/js_parse_error -->
       >
         Save Summary
       </Button>
-
       {#if evidenceText}
         <Button
           onclick={handleGenerateEmbedding}
@@ -160,7 +140,6 @@ https://svelte.dev/e/js_parse_error -->
         >
           {legalCaseStore.context.generatingEmbedding ? 'Generating...' : 'Find Related Evidence'}
         </Button>
-
         <Button
           onclick={handleSearchRelatedEvidence}
           disabled={!user || legalCaseStore.context.searchingRelatedEvidence}
@@ -169,11 +148,9 @@ https://svelte.dev/e/js_parse_error -->
         >
           {legalCaseStore.context.searchingRelatedEvidence ? 'Searching...' : 'Semantic Search'}
         </Button>
-
       {/if}
     </div>
   </div>
-
   <main>
     {#if $aiGlobalStore.context.loading}
       <div class="nier-loading">
@@ -204,7 +181,6 @@ https://svelte.dev/e/js_parse_error -->
             </ol>
           </div>
         {/if}
-
         {#if legalCaseStore.context.relatedEvidence && legalCaseStore.context.relatedEvidence.length > 0}
           <div class="nier-related-evidence mt-4 pt-4 border-t border-gray-200">
             <h4 class="nier-subtitle font-semibold mb-2">Related Evidence Found:</h4>
@@ -253,7 +229,6 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       </div>
     {/if}
-
     <!-- Loading states for embedding operations -->
     {#if legalCaseStore.context.generatingEmbedding}
       <div class="nier-embedding-status mt-4 p-3 bg-blue-50 rounded border border-blue-200">
@@ -263,7 +238,6 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     {/if}
-
     {#if legalCaseStore.context.searchingRelatedEvidence}
       <div class="nier-search-status mt-4 p-3 bg-green-50 rounded border border-green-200">
         <div class="flex items-center gap-2">
@@ -274,7 +248,6 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   </main>
 </div>
-
 <style>
   /* Nier.css inspired styles */
   :global(.nier-card) {
@@ -282,23 +255,19 @@ https://svelte.dev/e/js_parse_error -->
     border: 2px solid #000;
     box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
   }
-
   :global(.nier-title) {
     letter-spacing: 0.05em;
     text-transform: uppercase;
   }
-
   :global(.nier-button) {
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
   }
-
   :global(.nier-button\:hover) {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
-
   :global(.nier-code) {
     background: #f4f4f4;
     border: 1px solid #ddd;
@@ -306,12 +275,10 @@ https://svelte.dev/e/js_parse_error -->
     font-family: 'Courier New', monospace;
     font-size: 0.875rem;
   }
-
   :global(.nier-error) {
     background: rgba(255, 0, 0, 0.05);
     border: 2px solid #ff0000;
   }
-
   :global(.nier-badge) {
     display: inline-flex;
     align-items: center;
@@ -324,32 +291,26 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.75rem;
     margin-right: 0.5rem;
   }
-
   :global(.nier-text-muted) {
     color: #666;
     font-style: italic;
   }
-
   :global(.nier-list-item) {
     display: flex;
     align-items: center;
     padding: 0.5rem 0;
   }
-
   :global(.nier-evidence-item) {
     transition: all 0.2s ease;
   }
-
-  :global(.nier-evidence-item:hover) {
+  :global($1) {
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
-
   :global(.nier-similarity-score) {
     font-weight: 600;
     font-family: 'Courier New', monospace;
   }
-
   :global(.line-clamp-2) {
     display: -webkit-box;
     line-clamp: 2;
@@ -358,4 +319,3 @@ https://svelte.dev/e/js_parse_error -->
     overflow: hidden;
   }
 </style>
-

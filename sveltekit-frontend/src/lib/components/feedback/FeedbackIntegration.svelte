@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -7,11 +7,9 @@ https://svelte.dev/e/js_parse_error -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { getFeedbackStore } from '$lib/stores/feedback-store.svelte';
   import { aiRecommendationEngine } from '$lib/services/ai-recommendation-engine';
-
   // Props
   let { interactionType = $bindable(),
     context = $bindable(),
@@ -30,7 +28,6 @@ https://svelte.dev/e/js_parse_error -->
     trackOnVisible = $bindable(),
     ratingType = $bindable()
   : unknown } = $props();
-
   // Get feedback store
   const store = getFeedbackStore();
   let mounted = $state(false);
@@ -41,62 +38,54 @@ https://svelte.dev/e/js_parse_error -->
     if (trackOnMount) {
       triggerFeedback();
     }
-
     if (trackOnVisible) {
       setupVisibilityTracking();
     }
-
     return () => {
       // Cleanup
     };
   });
-
   /**
    * Trigger feedback collection for this interaction
    */
-  export function triggerFeedback(customContext: Record<string, any> = ) {
+  export function triggerFeedback(customContext: { [key: string]: any } = ) {
     const finalContext = { ...context, ...customContext };
     interactionId = store.trackInteraction(interactionType, finalContext, {
       autoTrigger,
       priority,
       delay
     });
-
     // Generate enhanced recommendations if AI interaction
     if (interactionType.includes('ai_') || interactionType.includes('search_')) {
       generateRecommendations(finalContext);
     }
-
     return interactionId;
   }
-
   /**
    * Update interaction context
    */
-  export function updateContext(newContext: Record<string, any>) {
+  export function updateContext(newContext: { [key: string]: any }) {
     context = { ...context, ...newContext };
   }
-
   /**
    * Mark interaction as completed successfully
    */
   export function markCompleted(result: unknown = {} {
     if (interactionId) {
-      updateContext({ 
-        completed: true, 
+      updateContext({
+        completed: true
         result,
         completedAt: new Date().toISOString();
       });
     }
   }
-
   /**
    * Mark interaction as failed
    */
   export function markFailed(error: unknown = {} {
     if (interactionId) {
-      updateContext({ 
-        failed: true, 
+      updateContext({
+        failed: true
         error,
         failedAt: new Date().toISOString();
       });
@@ -104,13 +93,11 @@ https://svelte.dev/e/js_parse_error -->
       triggerFeedback({ priority: 'high', error });
     }
   }
-
   /**
    * Setup visibility tracking using Intersection Observer
    */
   function setupVisibilityTracking() {
     if (!element || typeof IntersectionObserver === 'undefined') return;
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -122,21 +109,17 @@ https://svelte.dev/e/js_parse_error -->
       },
       { threshold: 0.5, rootMargin: '0px 0px -10% 0px' }
     );
-
     observer.observe(element);
-
     return () => observer.disconnect();
   }
-
   /**
    * Generate AI recommendations based on interaction
    */
-  async function generateRecommendations(interactionContext: Record<string, any>) {
+  async function generateRecommendations(interactionContext: { [key: string]: any }) {
     try {
       const userContext = store.userContext;
       const legalDomain = interactionContext.legalDomain || 'general';
-      const query = interactionContext.query || interactionType;
-
+      const query = interactionContext.query || interactionTyp;
       await aiRecommendationEngine.generateEnhancedRecommendations(
         userContext,
         query,
@@ -146,7 +129,6 @@ https://svelte.dev/e/js_parse_error -->
       console.error('❌ Failed to generate recommendations:', error);
     }
   }
-
   /**
    * Quick feedback methods for common scenarios
    */
@@ -154,13 +136,12 @@ https://svelte.dev/e/js_parse_error -->
     // AI Response feedback
     aiResponse: (query: string, response: string, confidence: number = 0) => {
       triggerFeedback({
-        query,;
+        query,
         response: response.substring(0, 200) + '...',
         confidence,
         aiModel: 'gemma3-legal';
       });
     },
-
     // Search results feedback
     searchResults: (query: string, resultCount: number, relevance: number = 0) => {
       triggerFeedback({
@@ -170,7 +151,6 @@ https://svelte.dev/e/js_parse_error -->
         searchType: 'legal'
       });
     },
-
     // Document processing feedback
     documentProcessed: (filename: string, processingTime: number, success: boolean) => {
       triggerFeedback({
@@ -180,34 +160,30 @@ https://svelte.dev/e/js_parse_error -->
         documentType: 'legal'
       });
     },
-
     // Feature usage feedback
-    featureUsed: (featureName: string, usageContext: Record<string, any> = ) => {
+    featureUsed: (featureName: string, usageContext: { [key: string]: any } = ) => {
       triggerFeedback({
         featureName,
         ...usageContext,
         featureCategory: 'legal_ai'
       });
     },
-
     // Error feedback
     error: (errorType: string, errorMessage: string, stack?: string) => {
       markFailed({
         errorType,
-        errorMessage,;
+        errorMessage,
         stack: stack?.substring(0, 500);
       });
     }
   };
 </script>
-
 <!-- Invisible tracking element -->
 <div bind:this={element} class="feedback-tracker" data-interaction={interactionType}>
-  <slot {triggerFeedback} {updateContext} {markCompleted} {markFailed} {feedback} {interactionId} />
+  {#snippet children({triggerFeedback} {updateContext} {markCompleted} {markFailed} {feedback} {interactionId} /)}
 </div>
-
 <style>
-  .feedback-tracker {;
-    display: contents;
+  .feedback-tracker {
+    display: content;
   }
 </style>

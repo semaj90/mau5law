@@ -1,9 +1,7 @@
 // Lightweight LokiJS compatibility shim to avoid runtime issues in browsers/SSR.
 // This stub provides a minimal API surface used across the app without importing
 // the actual 'lokijs' UMD bundle (which can break under ESM/HMR).
-
-type Doc = Record<string, any> & { $loki?: number };
-
+type Doc = { [key: string]: any } & { $loki?: number };
 class MemoryCollection<T extends Doc = Doc> {
 	name: string;
 	private data: T[] = [];
@@ -39,17 +37,14 @@ class MemoryCollection<T extends Doc = Doc> {
 		if (idx >= 0) this.data.splice(idx, 1);
 	}
 }
-
 class LokiMemoryAdapter {
 	// Placeholder for API compatibility
 }
-
 class Loki {
 	filename: string;
 	options: any;
 	private collections = new Map < string, MemoryCollection<any>();
 	static LokiMemoryAdapter = LokiMemoryAdapter;
-
 	constructor(filename: string, options?: any) {
 		this.filename = filename;
 		this.options = options || {};
@@ -81,6 +76,5 @@ class Loki {
 		cb?.();
 	}
 }
-
 export default Loki;
 export type Collection<T = any> = MemoryCollection<T>;

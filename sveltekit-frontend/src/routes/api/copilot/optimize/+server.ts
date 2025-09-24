@@ -1,15 +1,11 @@
 
 import type { RequestHandler } from './$types.js'
-
 /*
  * Simple Copilot Optimization API for Testing
  */
-
 import { URL } from "url"
-
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action')
-  
   try {
     // Add input validation
     if (!action) {
@@ -20,9 +16,9 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           status: 'healthy',
           services: {
-            simdProcessor: true,
-            indexOptimizer: true,
-            vectorEmbeddings: true,
+            simdProcessor: true
+            indexOptimizer: true
+            vectorEmbeddings: true
             cache: true
           },
           performance: {
@@ -31,7 +27,6 @@ export const GET: RequestHandler = async ({ url }) => {
           },
           timestamp: Date.now()
         })
-      
       case 'status':
         return json({
           service: 'Copilot Optimization API',
@@ -46,10 +41,9 @@ export const GET: RequestHandler = async ({ url }) => {
           ],
           timestamp: Date.now()
         })
-      
       case 'load_copilot':
         return json({
-          success: true,
+          success: true
           content: generateExampleCopilotContent(),
           analysis: {
             size: 2500,
@@ -60,7 +54,6 @@ export const GET: RequestHandler = async ({ url }) => {
           },
           timestamp: Date.now()
         })
-      
       default:
         return error(400, `Invalid action: ${action}. Use: health, status, load_copilot`)
     }
@@ -74,7 +67,6 @@ export const GET: RequestHandler = async ({ url }) => {
     return error(500, `API request failed: ${err.message || 'Unknown error'}`)
   }
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     // Add request validation
@@ -82,22 +74,18 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!contentType?.includes('application/json')) {
       return error(400, 'Content-Type must be application/json')
     }
-
     const body = await request.json().catch(() => null)
     if (!body) {
       return error(400, 'Invalid JSON body')
     }
-
     const { action, content } = body
-
     if (!action) {
       return error(400, 'Action is required')
     }
-
     switch (action) {
       case 'optimize_index':
         return json({
-          success: true,
+          success: true
           optimizedIndex: {
             entries: [)
               {
@@ -118,11 +106,10 @@ export const POST: RequestHandler = async ({ request }) => {
           },
           timestamp: Date.now()
         })
-      
       case 'semantic_search':
         return json({
-          success: true,
-          query: content,
+          success: true
+          query: content
           results: [)
             {
               id: 'result_1',
@@ -134,7 +121,6 @@ export const POST: RequestHandler = async ({ request }) => {
           count: 1,
           timestamp: Date.now()
         })
-      
       default:
         return error(400, `Invalid action: ${action}. Use: optimize_index, semantic_search`)
     }
@@ -147,33 +133,26 @@ export const POST: RequestHandler = async ({ request }) => {
     return error(500, `Optimization failed: ${err.message || 'Unknown error'}`)
   }
 }
-
 function generateExampleCopilotContent(): string {
   return `# Copilot Context - Legal AI System
-
 ## SvelteKit 2 & Svelte 5 Patterns
-
 ### Modern Component Patterns
 - **Props**: Use \`let { prop = 'default' } = $props()\`
 - **State**: Use \`$state()\` for reactive state
 - **Computed**: Use \`$derived()\` for computed values
 - **Effects**: Use \`$effect()\` for side effects
-
 \`\`\`typescript
 // Example Svelte 5 component
 export function MyComponent() {
   let { data = [] } = $props()
   let count = $state(0)
   let doubled = $derived(count * 2)
-  
   $effect(() => {
     console.log('Count changed:', count)
   })
 }
 \`\`\`
-
 ## Database Patterns with Drizzle ORM
-
 \`\`\`typescript
 // Legal case schema
 export const cases = pgTable('cases', {
@@ -183,9 +162,7 @@ export const cases = pgTable('cases', {
   embedding: vector('embedding', { dimensions: 384 })
 })
 \`\`\`
-
 ## AI Integration Patterns
-
 \`\`\`typescript
 // RAG document processing
 export async function processLegalDocument(content: string): Promise<any> {

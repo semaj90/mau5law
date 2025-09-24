@@ -3,12 +3,10 @@
  * Legal Document Processing State Machine
  * XState workflow for comprehensive legal document analysis pipeline
  */
-
 import { createMachine, assign, type ActorRefFrom } from 'xstate';
 // Orphaned content: import type { LegalDocument, LegalEntities, LegalRAGOptions
 import type { EnhancedContext7Service } from '$lib/services/enhancedContext7Service';
 // Orphaned content: import type { QdrantService
-
 // Context interface for the state machine
 export interface LegalDocumentContext {
   // Document data
@@ -18,7 +16,6 @@ export interface LegalDocumentContext {
   title: string;
   caseType: 'contract' | 'litigation' | 'compliance' | 'regulatory';
   jurisdiction: 'federal' | 'state' | 'local' | 'international';
-  
   // Processing results
   summary?: string;
   entities?: LegalEntities;
@@ -26,29 +23,24 @@ export interface LegalDocumentContext {
   embedding?: number[];
   riskScore?: number;
   confidenceScore?: number;
-  
-  // AI Analysis;
+  // AI Analysis
   aiAnalysis?: {
     keyFindings: string[];
     complianceStatus: any;
     recommendedActions: string[];
     legalPrecedents: any[];
   };
-  
   // Context7 MCP results
   mcpAnalysis?: unknown;
   stackRecommendations?: string[];
-  
   // Error handling
   errors: string[];
   retryCount: number;
   maxRetries: number;
-  
   // Performance tracking
   startTime?: number;
   processingDuration?: number;
-  
-  // Options;
+  // Options
   options: {
     extractEntities: boolean;
     generateSummary: boolean;
@@ -59,7 +51,6 @@ export interface LegalDocumentContext {
     useSemanticSearch: boolean;
   };
 }
-
 // Events for the state machine
 export type LegalDocumentEvent =
   | { type: 'START_PROCESSING'; document: Partial<LegalDocument>; options?: Partial<LegalDocumentContext['options']> }
@@ -74,71 +65,59 @@ export type LegalDocumentEvent =
   | { type: 'RETRY' }
   | { type: 'CANCEL' }
   | { type: 'ERROR'; error: string };
-
-// Services for async operations;
+// Services for async operations
 const services = {
   extractContent: async (context: LegalDocumentContext) => {
     // Simulate content extraction (OCR, PDF parsing, etc.)
     await new Promise((resolve: any) => setTimeout(resolve, 1000);
     return { content: context.content, title: context.title };
   },
-
   analyzeWithAI: async (context: LegalDocumentContext) => {
-    // This would integrate with your Ollama service;
+    // This would integrate with your Ollama service
     const mockAnalysis = {
       keyFindings: ['Contract terms identified', 'Liability clauses present'],
       complianceStatus: { gdpr: 'Under Review', contractLaw: 'Requires Review' },
       recommendedActions: ['Legal review recommended', 'Compliance verification needed'],
       legalPrecedents: []
     };
-    
     await new Promise((resolve: any) => setTimeout(resolve, 2000);
     return mockAnalysis;
   },
-
   extractEntities: async (context: LegalDocumentContext) => {
-    // This would integrate with your Context7 MCP service;
+    // This would integrate with your Context7 MCP service
     const mockEntities: LegalEntities = {
       parties: ['John Smith', 'ABC Corporation'],
       dates: ['2023-01-15', '2023-12-31'],
       monetary: ['$50,000', '$10,000'],
-      clauses: ['Section 3.1', 'Clause 7.2'],;
+      clauses: ['Section 3.1', 'Clause 7.2'],
       jurisdictions: [context.jurisdiction],
       caseTypes: [context.caseType]
     };
-    
     await new Promise((resolve: any) => setTimeout(resolve, 1500);
     return mockEntities;
   },
-
   generateSummary: async (context: LegalDocumentContext) => {
     // This would integrate with your Ollama service
     const mockSummary = `Legal document summary for ${context.caseType} case in ${context.jurisdiction} jurisdiction. Contains ${context.entities?.parties.length || 0} parties and ${context.entities?.clauses.length || 0} legal clauses.`;
-    
     await new Promise((resolve: any) => setTimeout(resolve, 1000);
     return mockSummary;
   },
-
   generateEmbedding: async (context: LegalDocumentContext) => {
     // This would integrate with your embedding service (nomic-embed-text)
     const mockEmbedding = new Array(384).fill(0).map(() => Math.random();
-    
     await new Promise((resolve: any) => setTimeout(resolve, 500);
     return mockEmbedding;
   },
-
   assessRisk: async (context: LegalDocumentContext) => {
     // This would integrate with your AI risk assessment
     const hasLiability = context.content.toLowerCase().includes('liability');
     const riskScore = hasLiability ? 85 : 35;
     const confidenceScore = 0.87;
-    
     await new Promise((resolve: any) => setTimeout(resolve, 800);
     return { riskScore, confidenceScore };
   },
-
   analyzWithMCP: async (context: LegalDocumentContext) => {
-    // This would integrate with your Context7 MCP service;
+    // This would integrate with your Context7 MCP service
     const mockMCPAnalysis = {
       stackAnalysis: 'SvelteKit + Drizzle + pgvector integration recommended',
       legalSpecificRecommendations: [
@@ -151,27 +130,23 @@ const services = {
         'Use parallel processing for entity extraction'
       ]
     };
-    
     await new Promise((resolve: any) => setTimeout(resolve, 1200);
     return {
-      mcpAnalysis: mockMCPAnalysis,
+      mcpAnalysis: mockMCPAnalysis
       recommendations: mockMCPAnalysis.legalSpecificRecommendations
     };
   },
-
   storeDocument: async (context: LegalDocumentContext) => {
     // This would integrate with your database and Qdrant services
     const documentId = `legal_doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
     await new Promise((resolve: any) => setTimeout(resolve, 800);
     return { documentId };
   }
 };
-
-// Legal Document Processing State Machine;
+// Legal Document Processing State Machine
 export const legalDocumentProcessingMachine = createMachine({
   id: 'legalDocumentProcessing',
-  types: Record<string, any> as {;
+  types: { [key: string]: any } as {
     context: LegalDocumentContext;
     events: LegalDocumentEvent;
   },
@@ -185,12 +160,12 @@ export const legalDocumentProcessingMachine = createMachine({
     retryCount: 0,
     maxRetries: 3,
     options: {
-      extractEntities: true,
-      generateSummary: true,
-      assessRisk: true,
-      generateEmbedding: true,
-      storeInQdrant: true,
-      useContext7: true,
+      extractEntities: true
+      generateSummary: true
+      assessRisk: true
+      generateEmbedding: true
+      storeInQdrant: true
+      useContext7: true
       useSemanticSearch: false
     }
   },
@@ -200,7 +175,7 @@ export const legalDocumentProcessingMachine = createMachine({
       on: {
         START_PROCESSING: {
           target: 'initializing',
-          actions: assign({
+          actions: assign({,
             caseId: ({ event }) => event.document.caseId || '',
             content: ({ event }) => event.document.content || '',
             title: ({ event }) => event.document.title || '',
@@ -217,8 +192,7 @@ export const legalDocumentProcessingMachine = createMachine({
         }
       }
     },
-
-    initializing: {;
+    initializing: {
       always: [;
         {
           target: 'extractingContent',
@@ -226,33 +200,31 @@ export const legalDocumentProcessingMachine = createMachine({
         },
         {
           target: 'error',
-          actions: assign({
+          actions: assign({,
             errors: ({ context }) => [...context.errors, 'No content provided for processing']
           })
         }
       ]
     },
-
     extractingContent: {
       invoke: {
         id: 'extractContent',
         src: services.extractContent,
         onDone: {
           target: 'analyzing',
-          actions: assign({
+          actions: assign({,
             content: ({ event }) => event.output.content,
             title: ({ event }) => event.output.title
           })
         },
         onError: {
           target: 'error',
-          actions: assign({
+          actions: assign({,
             errors: ({ context, event }) => [...context.errors, `Content extraction failed: ${event.error}`]
           })
         }
       }
     },
-
     analyzing: {
       type: 'parallel',
       states: {
@@ -265,13 +237,13 @@ export const legalDocumentProcessingMachine = createMachine({
                 src: services.analyzeWithAI,
                 onDone: {
                   target: 'completed',
-                  actions: assign({
+                  actions: assign({,
                     aiAnalysis: ({ event }) => event.output
                   })
                 },
                 onError: {
                   target: 'failed',
-                  actions: assign({
+                  actions: assign({,
                     errors: ({ context, event }) => [...context.errors, `AI analysis failed: ${event.error}`]
                   })
                 }
@@ -281,7 +253,6 @@ export const legalDocumentProcessingMachine = createMachine({
             failed: { type: 'final' }
           }
         },
-
         entityExtraction: {
           initial: 'idle',
           states: {
@@ -297,13 +268,13 @@ export const legalDocumentProcessingMachine = createMachine({
                 src: services.extractEntities,
                 onDone: {
                   target: 'completed',
-                  actions: assign({
+                  actions: assign({,
                     entities: ({ event }) => event.output
                   })
                 },
                 onError: {
                   target: 'failed',
-                  actions: assign({
+                  actions: assign({,
                     errors: ({ context, event }) => [...context.errors, `Entity extraction failed: ${event.error}`]
                   })
                 }
@@ -314,7 +285,6 @@ export const legalDocumentProcessingMachine = createMachine({
             skipped: { type: 'final' }
           }
         },
-
         summaryGeneration: {
           initial: 'idle',
           states: {
@@ -330,13 +300,13 @@ export const legalDocumentProcessingMachine = createMachine({
                 src: services.generateSummary,
                 onDone: {
                   target: 'completed',
-                  actions: assign({
+                  actions: assign({,
                     summary: ({ event }) => event.output
                   })
                 },
                 onError: {
                   target: 'failed',
-                  actions: assign({
+                  actions: assign({,
                     errors: ({ context, event }) => [...context.errors, `Summary generation failed: ${event.error}`]
                   })
                 }
@@ -347,7 +317,6 @@ export const legalDocumentProcessingMachine = createMachine({
             skipped: { type: 'final' }
           }
         },
-
         embeddingGeneration: {
           initial: 'idle',
           states: {
@@ -363,13 +332,13 @@ export const legalDocumentProcessingMachine = createMachine({
                 src: services.generateEmbedding,
                 onDone: {
                   target: 'completed',
-                  actions: assign({
+                  actions: assign({,
                     embedding: ({ event }) => event.output
                   })
                 },
                 onError: {
                   target: 'failed',
-                  actions: assign({
+                  actions: assign({,
                     errors: ({ context, event }) => [...context.errors, `Embedding generation failed: ${event.error}`]
                   })
                 }
@@ -380,7 +349,6 @@ export const legalDocumentProcessingMachine = createMachine({
             skipped: { type: 'final' }
           }
         },
-
         riskAssessment: {
           initial: 'idle',
           states: {
@@ -396,14 +364,14 @@ export const legalDocumentProcessingMachine = createMachine({
                 src: services.assessRisk,
                 onDone: {
                   target: 'completed',
-                  actions: assign({
+                  actions: assign({,
                     riskScore: ({ event }) => event.output.riskScore,
                     confidenceScore: ({ event }) => event.output.confidenceScore
                   })
                 },
                 onError: {
                   target: 'failed',
-                  actions: assign({
+                  actions: assign({,
                     errors: ({ context, event }) => [...context.errors, `Risk assessment failed: ${event.error}`]
                   })
                 }
@@ -414,7 +382,6 @@ export const legalDocumentProcessingMachine = createMachine({
             skipped: { type: 'final' }
           }
         },
-
         mcpAnalysis: {
           initial: 'idle',
           states: {
@@ -430,21 +397,21 @@ export const legalDocumentProcessingMachine = createMachine({
                 src: services.analyzWithMCP,
                 onDone: {
                   target: 'completed',
-                  actions: assign({
+                  actions: assign({,
                     mcpAnalysis: ({ event }) => event.output.mcpAnalysis,
                     stackRecommendations: ({ event }) => event.output.recommendations
                   })
                 },
                 onError: {
                   target: 'failed',
-                  actions: assign({
+                  actions: assign({,
                     errors: ({ context, event }) => [...context.errors, `MCP analysis failed: ${event.error}`]
                   })
                 }
               }
             },
             completed: { type: 'final' },
-            failed: { type: 'final' },;
+            failed: { type: 'final' },
             skipped: { type: 'final' }
           }
         }
@@ -459,43 +426,40 @@ export const legalDocumentProcessingMachine = createMachine({
         }
       ]
     },
-
     storing: {
       invoke: {
         id: 'storeDocument',
         src: services.storeDocument,
         onDone: {
           target: 'completed',
-          actions: assign({
+          actions: assign({,
             documentId: ({ event }) => event.output.documentId,
-            processingDuration: ({ context }) => 
+            processingDuration: ({ context }) =>
               context.startTime ? Date.now() - context.startTime: 0
           })
         },
         onError: {
           target: 'error',
-          actions: assign({
+          actions: assign({,
             errors: ({ context, event }) => [...context.errors, `Storage failed: ${event.error}`]
           })
         }
       }
     },
-
     completed: {
       type: 'final',
-      entry: assign({
-        processingDuration: ({ context }) => 
+      entry: assign({,
+        processingDuration: ({ context }) =>
           context.startTime ? Date.now() - context.startTime : 0
       })
     },
-
-    error: {;
+    error: {
       on: {
         RETRY: [;
           {
             target: 'initializing',
             guard: ({ context }) => context.retryCount < context.maxRetries,
-            actions: assign({
+            actions: assign({,
               retryCount: ({ context }) => context.retryCount + 1,
               errors: ({ context }) => [...context.errors, `Retry attempt ${context.retryCount + 1}`]
             })
@@ -509,17 +473,15 @@ export const legalDocumentProcessingMachine = createMachine({
         }
       }
     },
-
     failed: {
       type: 'final'
     },
-
-    cancelled: {;
+    cancelled: {
       type: 'final'
     }
   }
 }, {
-  // Guards;
+  // Guards
   guards: {
     hasContent: ({ context }) => !!context.content && context.content.length > 0,
     canRetry: ({ context }) => context.retryCount < context.maxRetries,
@@ -531,11 +493,9 @@ export const legalDocumentProcessingMachine = createMachine({
     shouldStore: ({ context }) => context.options.storeInQdrant
   }
 });
-
 // Type for the actor reference
 export type LegalDocumentProcessingActor = ActorRefFrom<typeof legalDocumentProcessingMachine>;
-
-// Helper function to create a configured machine;
+// Helper function to create a configured machine
 export function createLegalDocumentProcessor(initialContext?: Partial<LegalDocumentContext>) {
   return legalDocumentProcessingMachine.provide({
     guards: {
@@ -547,18 +507,15 @@ export function createLegalDocumentProcessor(initialContext?: Partial<LegalDocum
     ...initialContext
   });
 }
-
-// State selectors for UI components;
+// State selectors for UI components
 export const selectors = {
-  isProcessing: (state: any) => 
-    state.matches('extractingContent') || 
-    state.matches('analyzing') || 
+  isProcessing: (state: any) =>
+    state.matches('extractingContent') ||
+    state.matches('analyzing') ||
     state.matches('storing'),
-  
   isAnalyzing: (state: any) => state.matches('analyzing'),
   isCompleted: (state: any) => state.matches('completed'),
   isFailed: (state: any) => state.matches('failed') || state.matches('error'),
-  
   getProgress: (state: any) => {
     if (state.matches('idle')) return 0;
     if (state.matches('initializing')) return 10;
@@ -568,7 +525,6 @@ export const selectors = {
     if (state.matches('completed')) return 100;
     return 0;
   },
-
   getProcessingStage: (state: any) => {
     if (state.matches('idle')) return 'Ready';
     if (state.matches('initializing')) return 'Initializing';
@@ -580,10 +536,8 @@ export const selectors = {
     if (state.matches('failed')) return 'Failed';
     return 'Unknown';
   },
-
   getAnalysisProgress: (state: any) => {
     if (!state.matches('analyzing')) return {};
-    
     return {
       aiAnalysis: state.context.aiAnalysis ? 'completed' : 'processing',
       entityExtraction: state.context.entities ? 'completed' : 'processing',

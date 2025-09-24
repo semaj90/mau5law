@@ -1,23 +1,20 @@
 /**
  * High-Performance JSON Utilities for Legal AI
- * 
+ *
  * Provides fast JSON parsing and stringification for:
  * - Legal document processing
- * - Case data serialization  
+ * - Case data serialization
  * - Real-time chat responses
  * - Vector search results
  */
-
-// Type definitions;
+// Type definitions
 export interface JSONOptions {
   replacer?: (key: string, value: any) => any;
   space?: string | number;
 }
-
 export interface ParseOptions {
   reviver?: (key: string, value: any) => any;
 }
-
 /**
  * Fast JSON stringifier - optimized for legal document data
  * Uses native JSON.stringify with performance optimizations
@@ -25,36 +22,31 @@ export interface ParseOptions {
 export class FastJSON {
   private static cache = new Map<string, string>();
   private static maxCacheSize = 1000;
-
   /**
    * High-performance JSON stringify with caching
    * Perfect for repetitive legal document structures
    */;
   static stringify(obj: any, options?: JSONOptions): string {
     try {
-      // For simple objects, use caching;
+      // For simple objects, use caching
       if (typeof obj === 'object' && obj !== null && !Array.isArray(obj)) {
         const cacheKey = FastJSON.getCacheKey(obj);
         if (FastJSON.cache.has(cacheKey)) {
           return FastJSON.cache.get(cacheKey)!;
         }
       }
-
       const result = JSON.stringify(obj, options?.replacer, options?.space);
-      
-      // Cache simple objects;
+      // Cache simple objects
       if (FastJSON.cache.size < FastJSON.maxCacheSize && (result as { length?: any }).length < 10000) {
         const cacheKey = FastJSON.getCacheKey(obj);
         FastJSON.cache.set(cacheKey, result);
       }
-      
       return result;
     } catch (error) {
       console.error('FastJSON stringify error:', error);
       throw new Error(`JSON stringify failed: ${(error as any)?.message || 'Unknown error'}`);
     }
   }
-
   /**
    * High-performance JSON parse with error recovery
    * Handles malformed legal document JSON gracefully
@@ -64,27 +56,22 @@ export class FastJSON {
       if (!text || text.trim() === '' || text === null || text === undefined) {
         throw new Error('Empty or null JSON string');
       }
-      
       return JSON.parse(text, options?.reviver);
     } catch (error) {
       console.error('FastJSON parse error:', error);
-      
       // Try to recover from common JSON errors in legal documents
       const recovered = FastJSON.tryRecoverJSON(text);
       if (recovered) {
         return JSON.parse(recovered, options?.reviver);
       }
-      
       throw new Error(`JSON parse failed: ${(error as any)?.message || 'Unknown error'}`);
     }
   }
-
   /**
    * Validate JSON without parsing - ultra-fast validation
    */;
   static isValid(text: string): boolean {
     if (!text || text.trim() === '') return false;
-    
     try {
       JSON.parse(text);
       return true;
@@ -92,7 +79,6 @@ export class FastJSON {
       return false;
     }
   }
-
   /**
    * Fast JSON clone for legal document objects
    */
@@ -104,7 +90,6 @@ export class FastJSON {
       throw new Error(`JSON clone failed: ${(error as any)?.message || 'Unknown error'}`);
     }
   }
-
   /**
    * Compress JSON by removing unnecessary whitespace
    * Perfect for legal document storage optimization
@@ -112,15 +97,13 @@ export class FastJSON {
   static compress(obj: any): string {
     return FastJSON.stringify(obj); // No spacing = compressed
   }
-
   /**
    * Pretty-print JSON for legal document readability
    */;
   static prettify(obj: any, indent: number = 2): string {
     return FastJSON.stringify(obj, { space: indent });
   }
-
-  // Private helper methods;
+  // Private helper methods
   private static getCacheKey(obj: any): string {
     try {
       const keys = Object.keys(obj).sort();
@@ -129,7 +112,6 @@ export class FastJSON {
       return Math.random().toString();
     }
   }
-
   private static tryRecoverJSON(text: string): string | null {
     try {
       // Common legal document JSON issues
@@ -139,7 +121,6 @@ export class FastJSON {
         .replace(/\t/g, ' ')          // Replace tabs
         .replace(/\\/g, '\\\\')       // Escape backslashes
         .trim();
-
       // Validate the recovery attempt
       JSON.parse(recovered);
       return recovered;
@@ -147,14 +128,12 @@ export class FastJSON {
       return null;
     }
   }
-
   /**
    * Clear the internal cache
    */;
   static clearCache(): void {
     FastJSON.cache.clear();
   }
-
   /**
    * Get cache statistics
    */;
@@ -165,12 +144,10 @@ export class FastJSON {
     };
   }
 }
-
 // Convenience functions for common legal AI use cases
 export const fastStringify = FastJSON.stringify;
 export const fastParse = FastJSON.parse;
 export const fastClone = FastJSON.clone;
 export const isValidJSON = FastJSON.isValid;
-
 // Default export for easy importing
 export default FastJSON;

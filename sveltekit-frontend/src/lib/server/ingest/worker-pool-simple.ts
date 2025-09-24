@@ -9,11 +9,9 @@
  * - JSON parsing with simdjson-wasm
  * - Direct database insertion with pgvector
  */
-
 import { Worker } from "worker_threads";
 import path from "path";
 import os from "os";
-
 export type Job = {
   id: string;
   minioUrl?: string;
@@ -21,42 +19,34 @@ export type Job = {
   filename?: string;
   userId: string;
   contentType?: string;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 };
-
 export class WorkerPool {
   pool: Worker[] = [];
   queue: Job[] = [];
   free: boolean[] = [];
   private jobCallbacks = new Map<string, { resolve: Function; reject: Function }>();
-
   constructor(num = Math.max(1, Math.floor(os.cpus().length / 2))) {
     for (let i = 0; i < num; i++) {
       const workerPath = path.resolve(__dirname, "ingest-worker.js");
       const w = new Worker(workerPath);
-
       this.pool.push(w);
       this.free.push(true);
-
       w.on("message", (message) => {
         // Worker finished job -> mark free and resolve/reject promise
         const idx = this.pool.indexOf(w);
         this.free[idx] = true;
-
         if (message.jobId && this.jobCallbacks.has(message.jobId)) {
           const { resolve, reject } = this.jobCallbacks.get(message.jobId)!;
           this.jobCallbacks.delete(message.jobId);
-
           if (message.error) {
             reject(new Error(message.error);
           } else {
             resolve(message);
           }
         }
-
         this.maybeProcessQueue();
       });
-
       w.on("error", (err) => {
         console.error("Worker error:", err);
         const idx = this.pool.indexOf(w);
@@ -65,7 +55,6 @@ export class WorkerPool {
       });
     }
   }
-
   async processJob(job: Job): Promise<any> {
     return new Promise((resolve, reject) => {
       this.jobCallbacks.set(job.id, { resolve, reject });
@@ -73,12 +62,10 @@ export class WorkerPool {
       this.maybeProcessQueue();
     });
   }
-
   push(job: Job): void {
     this.queue.push(job);
     this.maybeProcessQueue();
   }
-
   private maybeProcessQueue(): void {
     for (let i = 0; i < this.pool.length; i++) {
       if (!this.free[i]) continue;
@@ -88,7 +75,6 @@ export class WorkerPool {
       this.pool[i].postMessage(job);
     }
   }
-
   getStats() {
     return {
       totalWorkers: this.pool.length,
@@ -98,9 +84,8 @@ export class WorkerPool {
       pendingCallbacks: this.jobCallbacks.size
     };
   }
-
   async shutdown(): Promise<void> {
-    // Terminate all workers;
+    // Terminate all workers
     for (const worker of this.pool) {
       await worker.terminate();
     }
@@ -110,6 +95,5 @@ export class WorkerPool {
     this.jobCallbacks.clear();
   }
 }
-
 // Instantiate a shared pool export
 export const sharedWorkerPool = new WorkerPool();

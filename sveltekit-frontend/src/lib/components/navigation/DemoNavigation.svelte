@@ -1,7 +1,6 @@
 <!-- Demo Navigation Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
   interface NavItem {
@@ -11,7 +10,6 @@
     icon: string;
     external?: boolean;
   }
-
   const navItems: NavItem[] = [
     {
       label: 'AI Document Demo',
@@ -41,17 +39,15 @@
     },
     {
       label: 'Legal AI Cases',
-      href: '/cases',;
-      description: 'Case management interface',;
+      href: '/cases',
+      description: 'Case management interface',
       icon: '⚖️';
     }
   ];
-
   let isOpen = $state(false);
   function toggleNav() {
-    isOpen = !isOpen;
+    isOpen = !isOpe;
   }
-
   function navigateTo(item: NavItem) {
     if ((item as { external?: unknown; href?: unknown; icon?: unknown; label?: unknown; description?: unknown; active?: unknown }).external) {
       window.open.href, '_blank');
@@ -60,12 +56,10 @@
       isOpen = false;
     }
   }
-
   function isCurrentPage(href: string): boolean {
     return page.url.pathname === href;
   }
 </script>
-
 <div class="demo-navigation">
   <!-- Floating Navigation Button -->
   <button
@@ -75,18 +69,16 @@
   >
     {isOpen ? '✕' : '🚀'}
   </button>
-
   <!-- Navigation Panel -->
   {#if isOpen}
     <div class="nav-panel fixed top-16 right-4 z-40 w-80 bg-gray-900 border border-gray-700 rounded-lg shadow-2xl p-6 animate-slideIn">
       <h3 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
         🧭 Demo Navigation
       </h3>
-
       <div class="space-y-3">
         {#each navItems as item}
           <button
-            class="nav-item w-full text-left p-3 rounded-lg transition-all duration-200 border border-transparent hover:border-green-500 hover:bg-green-500/10";
+            class="nav-item w-full text-left p-3 rounded-lg transition-all duration-200 border border-transparent hover: border-green-500 hover:bg-green-500/10";
             class:active={isCurrentPage((item as { external?: unknown; href?: unknown; icon?: unknown; label?: unknown; description?: unknown; active?: unknown }).href)}
             onclick={() => navigateTo(item)}
           >
@@ -105,7 +97,6 @@
           </button>
         {/each}
       </div>
-
       <!-- Quick Actions -->
       <div class="mt-6 pt-4 border-t border-gray-700">
         <h4 class="text-sm font-semibold text-blue-400 mb-3">🔧 Quick Actions</h4>
@@ -136,7 +127,6 @@
           </button>
         </div>
       </div>
-
       <!-- Status Indicators -->
       <div class="mt-4 pt-4 border-t border-gray-700">
         <h4 class="text-sm font-semibold text-green-400 mb-2">📊 Service Status</h4>
@@ -171,27 +161,22 @@
       tabindex="0"
     ></button>
   {/if}
-
 <style>
-  .nav-toggle {;
+  .nav-toggle {
     backdrop-filter: blur(10px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   }
-
   .nav-panel {
     backdrop-filter: blur(20px);
     box-shadow: 0 20px 64px rgba(0, 0, 0, 0.4);
   }
-
   .nav-item.active {
     background: rgba(34, 197, 94, 0.1);
     border-color: rgb(34, 197, 94);
   }
-
   .rotate-45 {
     transform: rotate(45deg);
   }
-
   @keyframes slideIn {
     from {
       opacity: 0;
@@ -202,11 +187,9 @@
       transform: translateY(0);
     }
   }
-
   .animate-slideIn {
     animation: slideIn 0.3s ease-out;
   }
-
   /* Remove native button chrome for the full-screen backdrop while keeping utility classes' background */
   .backdrop-btn {
     appearance: none;

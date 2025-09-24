@@ -2,9 +2,8 @@
 // Global user authentication store
 import type { User as UserType } from "$lib/types/user";
 import { writable } from 'svelte/store';
-
 // 1. User Class Model
-// Provides a structured, typed object for user data with default values.;
+// Provides a structured, typed object for user data with default values.
 export class User implements Partial<UserType> {
   id = "";
   email = "";
@@ -19,22 +18,18 @@ export class User implements Partial<UserType> {
   updatedAt?: Date;
   isAuthenticated = false;
   caseId = null; // Active case ID
-
   constructor(userData = {}) {
     Object.assign(this, userData);
   }
-
-  // Check if the user is authenticated;
+  // Check if the user is authenticated
   get isLoggedIn() {
     return this.isAuthenticated;
   }
-
-  // Check if the user has an admin role;
+  // Check if the user has an admin role
   get isAdmin() {
     return this.role === "admin";
   }
-
-  // Get display name;
+  // Get display name
   get displayName() {
     return (
       this.name ||
@@ -43,28 +38,26 @@ export class User implements Partial<UserType> {
     );
   }
 }
-
 // 2. User Store (Svelte Writable)
-// Creates a global, reactive store initialized with a Guest user.;
+// Creates a global, reactive store initialized with a Guest user.
 const createUserStore = () => {
   const { subscribe, set, update } = writable(new User();
-
   return {
     subscribe,
-    // Set the user data (e.g., on login);
+    // Set the user data (e.g., on login)
     setUser: (userData: any) => {
       const user = new User({ ...userData, isAuthenticated: true });
       set(user);
     },
-    // Clear user data (e.g., on logout);
+    // Clear user data (e.g., on logout)
     clearUser: () => {
       set(new User(); // Reset to Guest user
     },
-    // Update a specific property of the user;
+    // Update a specific property of the user
     updateUser: (props: any) => {
       update((user) => ({ ...user, ...props });
     },
-    // Select a case for the user;
+    // Select a case for the user
     selectCase: (caseId: string | null) => {
       update((user) => {
         user.caseId = caseId;
@@ -73,10 +66,7 @@ const createUserStore = () => {
     }
   };
 };
-
 export const user = createUserStore();
-;
 // Export individual functions for easier use
 export const { setUser, clearUser, updateUser, selectCase } = user;
-;
 export default user;

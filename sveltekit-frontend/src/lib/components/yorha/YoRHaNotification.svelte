@@ -1,10 +1,8 @@
 <!-- YoRHa Notification/Alert System Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import {  , onMount  } from "svelte";
+  import { onMount  } from "svelte";
   import { fade, fly } from 'svelte/transition';
-
   interface NotificationProps {
     type?: 'info' | 'success' | 'warning' | 'error' | 'system';
     title?: string;
@@ -16,7 +14,6 @@
     position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'center';
     showProgress?: boolean;
   }
-
   let { type = 'info',
     title = '',
     message,
@@ -36,15 +33,11 @@
     position = 'top-right',
     showProgress = true
   : unknown } = $props();
-
-  
-
   let visible = $state(true);
   let progress = $state(100);
   let progressInterval: NodeJS.Timeout;
   let autoCloseTimeout: NodeJS.Timeout;
   let notificationElement = $state<HTMLDivElement | null>(null);
-
   // Auto-close functionality
   $effect(() => {
     if (!persistent && duration > 0) {
@@ -55,60 +48,50 @@
           progress = Math.max(0, progress - progressStep);
         }, 100);
       }
-
       // Auto close
       autoCloseTimeout = setTimeout(() => {
         closeNotification();
       }, duration);
     }
-
     return () => {
       if (progressInterval) clearInterval(progressInterval);
       if (autoCloseTimeout) clearTimeout(autoCloseTimeout);
     };
   });
-
   function closeNotification() {
     visible = false;
     setTimeout(() => {
-      ondispatch?.();
+      // ondispatch removed;
     }, 300);
   }
-
   function pauseAutoClose() {
     if (progressInterval) clearInterval(progressInterval);
     if (autoCloseTimeout) clearTimeout(autoCloseTimeout);
   }
-
   function resumeAutoClose() {
     if (!persistent && duration > 0) {
-      const remainingTime = (progress / 100) * duration;
-
+      const remainingTime = (progress / 100) * duratio;
       if (showProgress) {
         const progressStep = 100 / (remainingTime / 100);
         progressInterval = setInterval(() => {
           progress = Math.max(0, progress - progressStep);
         }, 100);
       }
-
       autoCloseTimeout = setTimeout(() => {
         closeNotification();
       }, remainingTime);
     }
   }
-
   // Icon mapping
   const iconMap = {
     info: '■',
     success: '✓',
-    warning: '⚠',;
-    error: '✕',;
+    warning: '⚠',
+    error: '✕',
     system: '◆';
   };
-
   const notificationIcon = $derived(icon || iconMap[type])
 </script>
-
 {#if visible}
   <div
     bind:this={notificationElement}
@@ -129,14 +112,12 @@
         ></div>
       </div>
     {/if}
-
     <!-- Content -->
     <div class="notification-content">
       <!-- Icon -->
       <div class="notification-icon">
         {notificationIcon}
       </div>
-
       <!-- Text Content -->
       <div class="notification-text">
         {#if title}
@@ -144,7 +125,6 @@
         {/if}
         <div class="notification-message">{message}</div>
       </div>
-
       <!-- Close Button -->
       {#if closable}
         <button
@@ -156,7 +136,6 @@
         </button>
       {/if}
     </div>
-
     <!-- System Status Indicator -->
     {#if type === 'system'}
       <div class="system-indicator">
@@ -165,9 +144,8 @@
     {/if}
   </div>
 {/if}
-
 <style>
-  .yorha-notification {;
+  .yorha-notification {
     min-width: 300px;
     max-width: 450px;
     background: var(--yorha-bg-secondary, #1a1a1a);
@@ -178,23 +156,19 @@
       0 8px 32px rgba(0, 0, 0, 0.8);
     overflow: hidden;
   }
-
   /* Positioning is handled by the manager */
-
   /* Progress Bar */
-  .notification-progress {;
+  .notification-progress {
     height: 3px;
     background: var(--yorha-bg-primary, #0a0a0a);
     overflow: hidden;
   }
-
-  .progress-fill {;
+  .progress-fill {
     height: 100%;
     background: var(--yorha-secondary, #ffd700);
     transition: width 0.1s linear;
     box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
   }
-
   /* Content Layout */
   .notification-content {
     display: flex;
@@ -203,8 +177,7 @@
     padding: 16px;
     position: relative;
   }
-
-  .notification-icon {;
+  .notification-icon {
     flex-shrink: 0;
     width: 20px;
     height: 20px;
@@ -217,12 +190,10 @@
     border: 1px solid currentColor;
     background: var(--yorha-bg-primary, #0a0a0a);
   }
-
   .notification-text {
     flex: 1;
     min-width: 0;
   }
-
   .notification-title {
     font-size: 12px;
     font-weight: 700;
@@ -231,14 +202,12 @@
     letter-spacing: 1px;
     margin-bottom: 4px;
   }
-
   .notification-message {
     font-size: 12px;
     color: var(--yorha-text-primary, #e0e0e0);
     line-height: 1.4;
     word-wrap: break-word;
   }
-
   .notification-close {
     position: absolute;
     top: 8px;
@@ -249,54 +218,44 @@
     border: 1px solid var(--yorha-text-muted, #808080);
     color: var(--yorha-text-muted, #808080);
     font-size: 10px;
-    cursor: pointer
-    display: flex
+    cursor: pointer;
+    display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
   }
-
   .notification-close:hover {
     border-color: var(--yorha-danger, #ff0041);
     color: var(--yorha-danger, #ff0041);
     background: rgba(255, 0, 65, 0.1);
   }
-
   /* Type-specific styling */
   .yorha-.info {
     border-left: 4px solid var(--yorha-accent, #00ff41);
   }
-
   .yorha-.info .notification-icon {
     color: var(--yorha-accent, #00ff41);
   }
-
   .yorha-.success {
     border-left: 4px solid var(--yorha-accent, #00ff41);
     background: var(--yorha-bg-secondary, #1a1a1a);
   }
-
   .yorha-.success .notification-icon {
     color: var(--yorha-accent, #00ff41);
     background: rgba(0, 255, 65, 0.1);
   }
-
   .yorha-.warning {
     border-left: 4px solid var(--yorha-warning, #ffaa00);
   }
-
   .yorha-.warning .notification-icon {
     color: var(--yorha-warning, #ffaa00);
   }
-
   .yorha-.error {
     border-left: 4px solid var(--yorha-danger, #ff0041);
   }
-
   .yorha-.error .notification-icon {
     color: var(--yorha-danger, #ff0041);
   }
-
   .yorha-.system {
     border: 2px solid var(--yorha-secondary, #ffd700);
     background: var(--yorha-bg-primary, #0a0a0a);
@@ -305,12 +264,10 @@
       0 0 20px rgba(255, 215, 0, 0.3),
       inset 0 0 20px rgba(255, 215, 0, 0.1);
   }
-
   .yorha-.system .notification-icon {
     color: var(--yorha-secondary, #ffd700);
     animation: pulse 2s infinite;
   }
-
   /* System Status Indicator */
   .system-indicator {
     position: absolute;
@@ -319,14 +276,12 @@
     width: 8px;
     height: 8px;
   }
-
   .system-pulse {
     width: 100%;
     height: 100%;
     background: var(--yorha-secondary, #ffd700);
     animation: systemPulse 1.5s infinite;
   }
-
   /* Animations */
   @keyframes pulse {
     0%, 100% {
@@ -338,7 +293,6 @@
       transform: scale(1.1);
     }
   }
-
   @keyframes systemPulse {
     0%, 100% {
       opacity: 1;
@@ -349,7 +303,6 @@
       box-shadow: 0 0 0 8px rgba(255, 215, 0, 0);
     }
   }
-
   /* Responsive Design */
   @media (max-width: 768px) {
     .yorha-notification {
@@ -357,14 +310,12 @@
       max-width: calc(100vw - 40px);
       margin: 0 20px;
     }
-
     .notification-top-right,
     .notification-top-left {
       top: 10px;
       right: 10px;
       left: 10px;
     }
-
     .notification-bottom-right,
     .notification-bottom-left {
       bottom: 10px;

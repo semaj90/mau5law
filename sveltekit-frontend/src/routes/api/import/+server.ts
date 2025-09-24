@@ -3,22 +3,17 @@ import { db } from "$lib/server/db/index"
 import { cases, criminals, evidence } from "drizzle-orm"
 import { json } from "@sveltejs/kit"
 import type { RequestHandler } from './$types.js'
-
-
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const formData = await request.formData()
     const file = formData.get("file") as File
     const importType = formData.get("type") as string
     const overwriteExisting = formData.get("overwrite") === "true"
-
     if (!file) {
       return json({ error: "No file provided" }, { status: 400 })
     }
     const fileContent = await file.text()
     let data: any
-
     // Parse file based on type
     try {
       switch (file.type) {
@@ -48,7 +43,6 @@ export const POST: RequestHandler = async ({ request }) => {
       skipped: 0,
       errors: [] as string[]
     }
-
     // Process import based on type
     switch (importType) {
       case "cases":
@@ -72,7 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({ error: "Invalid import type" }, { status: 400 })
     }
     return json({
-      success: true,
+      success: true
       results,
       message: `Import completed: ${results.imported} imported, ${results.updated} updated, ${results.skipped} skipped`
     })
@@ -85,10 +79,9 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 async function importCases(
-  casesData: any[],
-  overwriteExisting: boolean,
+  casesData: any[]
+  overwriteExisting: boolean
   results: any
 ): Promise<any> {
   if (!Array.isArray(casesData)) {
@@ -113,7 +106,6 @@ async function importCases(
             .where(eq(cases.id, caseData.id)
             .limit(1)
         : []
-
       if (existingCase.length > 0) {
         if (overwriteExisting) {
           await db
@@ -143,7 +135,6 @@ async function importCases(
             : new Date(),
           updatedAt: new Date()
         }
-
         await db.insert(cases).values(newCase)
         results.imported++
       }
@@ -156,8 +147,8 @@ async function importCases(
   }
 }
 async function importEvidence(
-  evidenceData: any[],
-  overwriteExisting: boolean,
+  evidenceData: any[]
+  overwriteExisting: boolean
   results: any
 ): Promise<any> {
   if (!Array.isArray(evidenceData)) {
@@ -186,7 +177,6 @@ async function importEvidence(
             .where(eq(evidence.id, evidenceItem.id)
             .limit(1)
         : []
-
       if (existingEvidence.length > 0) {
         if (overwriteExisting) {
           await db
@@ -225,7 +215,7 @@ async function importEvidence(
           summary: evidenceItem.summary || null,
           isAdmissible:
             evidenceItem.is_admissible !== undefined
-              ? evidenceItem.is_admissible: true,
+              ? evidenceItem.is_admissible: true
           confidentialityLevel:
             evidenceItem.confidentiality_level || "standard",
           canvasPosition: evidenceItem.canvas_position || {},
@@ -234,7 +224,6 @@ async function importEvidence(
             ? new Date(evidenceItem.uploaded_at)
             : new Date()
         }
-
         await db.insert(evidence).values(newEvidence)
         results.imported++
       }
@@ -247,8 +236,8 @@ async function importEvidence(
   }
 }
 async function importParticipants(
-  participantsData: any[],
-  overwriteExisting: boolean,
+  participantsData: any[]
+  overwriteExisting: boolean
   results: any
 ): Promise<any> {
   if (!Array.isArray(participantsData)) {
@@ -273,7 +262,6 @@ async function importParticipants(
             .where(eq(criminals.id, participant.id)
             .limit(1)
         : []
-
       if (existingParticipant.length > 0) {
         if (overwriteExisting) {
           await db
@@ -283,7 +271,7 @@ async function importParticipants(
               lastName:
                 (participant.name || "").split(" ").slice(1).join(" ") ||
                 "Unknown",
-              notes: participant.role ? `Role: ${participant.role}` : null,
+              notes: participant.role ? `Role: ${participant.role}` : null
               email: participant.contact_info?.email || null,
               phone: participant.contact_info?.phone || null,
               updatedAt: new Date()
@@ -301,13 +289,12 @@ async function importParticipants(
           lastName: nameParts.slice(1).join(" ") || "Unknown",
           email: participant.contact_info?.email || null,
           phone: participant.contact_info?.phone || null,
-          notes: participant.role ? `Role: ${participant.role}` : null,
+          notes: participant.role ? `Role: ${participant.role}` : null
           createdAt: participant.created_at
             ? new Date(participant.created_at)
             : new Date(),
           updatedAt: new Date()
         }
-
         await db.insert(criminals).values(newParticipant)
         results.imported++
       }
@@ -322,21 +309,16 @@ async function importParticipants(
 function parseCSV(csvContent: string): unknown[] {
   const lines = csvContent.split("\n")
   if (lines.length < 2) return []
-
   const headers = lines[0].split(",").map((h) => h.trim().replace(/"/g, "")
   const data = []
-
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i].trim()
     if (!line) continue
-
     const values = line.split(",").map((v) => v.trim().replace(/"/g, "")
     const row: any = {}
-
     headers.forEach((header, index) => {
       row[header] = values[index] || ""
     })
-
     data.push(row)
   }
   return data
@@ -347,18 +329,14 @@ function parseXML(xmlContent: string): unknown {
     // This is a simplified parser - for production use a proper XML library
     const parser = new DOMParser()
     const xmlDoc = parser.parseFromString(xmlContent, "text/xml")
-
     // Convert XML to JSON structure
     const result: any = {}
-
     function xmlToJson(node: any): unknown {
       const obj: any = {}
-
       if (node.children && node.children.length > 0) {
         for (const child of node.children) {
           const childName = child.tagName
           const childValue = xmlToJson(child)
-
           if (obj[childName]) {
             if (Array.isArray(obj[childName])) {
               obj[childName].push(childValue)

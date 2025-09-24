@@ -4,17 +4,14 @@
  * PUT /api/v1/citations/[id] - Update specific citation
  * DELETE /api/v1/citations/[id] - Delete specific citation
  */
-
 import { json, error, type RequestHandler } from '@sveltejs/kit'
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
 import { db } from '$lib/server/db/unified-client'
 import { citations } from '$lib/server/db/schemas/cases-schema'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
-
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid citation ID format')
-
 // Update citation schema
 const UpdateCitationSchema = z.object({
   title: z.string().min(1).optional(),
@@ -31,7 +28,6 @@ const UpdateCitationSchema = z.object({
   verified: z.boolean().optional(),
   metadata: z.record(z.any()).optional()
 })
-
 /*
  * GET /api/v1/citations/[id]
  * Get a specific citation by ID
@@ -45,25 +41,21 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
       )
     }
-
     // Validate citation ID
     const citationId = UUIDSchema.parse(params.id)
-
     // Get citation from database
     const [citation] = await db.select()
       .from(citations)
       .where(eq(citations.id, citationId)
       .limit(1)
-
     if (!citation) {
       return error(
         404,
         makeHttpErrorPayload({ message: 'Citation not found', code: 'CITATION_NOT_FOUND' })
       )
     }
-
     return json({
-      success: true,
+      success: true
       data: {
         citation
       },
@@ -72,10 +64,8 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         timestamp: new Date().toISOString()
       }
     })
-
   } catch (err: any) {
     console.error('Citation GET error:', err)
-
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -86,7 +76,6 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         })
       )
     }
-
     return error(
       500,
       makeHttpErrorPayload({
@@ -97,7 +86,6 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     )
   }
 }
-
 /*
  * PUT /api/v1/citations/[id]
  * Update a specific citation
@@ -111,27 +99,22 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
       )
     }
-
     // Validate citation ID
     const citationId = UUIDSchema.parse(params.id)
-
     // Parse request body
     const body = await request.json()
     const updateData = UpdateCitationSchema.parse(body)
-
     // Check if citation exists
     const [existingCitation] = await db.select()
       .from(citations)
       .where(eq(citations.id, citationId)
       .limit(1)
-
     if (!existingCitation) {
       return error(
         404,
         makeHttpErrorPayload({ message: 'Citation not found', code: 'CITATION_NOT_FOUND' })
       )
     }
-
     // Update citation
     const [updatedCitation] = await db.update(citations)
       .set({
@@ -140,11 +123,10 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       })
       .where(eq(citations.id, citationId)
       .returning()
-
     return json({
-      success: true,
+      success: true
       data: {
-        citation: updatedCitation,
+        citation: updatedCitation
         message: 'Citation updated successfully'
       },
       meta: {
@@ -154,10 +136,8 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         action: 'citation_updated'
       }
     })
-
   } catch (err: any) {
     console.error('Citation PUT error:', err)
-
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -168,7 +148,6 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         })
       )
     }
-
     return error(
       500,
       makeHttpErrorPayload({
@@ -179,7 +158,6 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     )
   }
 }
-
 /*
  * DELETE /api/v1/citations/[id]
  * Delete a specific citation
@@ -193,47 +171,40 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
         makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
       )
     }
-
     // Validate citation ID
     const citationId = UUIDSchema.parse(params.id)
-
     // Check if citation exists
     const [existingCitation] = await db.select()
       .from(citations)
       .where(eq(citations.id, citationId)
       .limit(1)
-
     if (!existingCitation) {
       return error(
         404,
         makeHttpErrorPayload({ message: 'Citation not found', code: 'CITATION_NOT_FOUND' })
       )
     }
-
     // Delete citation
     await db.delete(citations)
       .where(eq(citations.id, citationId)
-
     return json({
-      success: true,
+      success: true
       data: {
         message: 'Citation deleted successfully',
         deletedCitation: {
-          id: citationId,
+          id: citationId
           title: existingCitation.title
         }
       },
       meta: {
         userId: locals.user.id,
-        deletedCitationId: citationId,
+        deletedCitationId: citationId
         timestamp: new Date().toISOString(),
         action: 'citation_deleted'
       }
     })
-
   } catch (err: any) {
     console.error('Citation DELETE error:', err)
-
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -244,7 +215,6 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
         })
       )
     }
-
     return error(
       500,
       makeHttpErrorPayload({

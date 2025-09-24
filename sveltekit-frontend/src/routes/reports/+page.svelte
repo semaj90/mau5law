@@ -1,14 +1,11 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import TauriAPI from "$lib/tauri";
   import type { Report } from "$lib/types/index";
   import { onMount } from "svelte";
-
   let reports: Report[] = $state([]);
   let loading = $state(true);
   let error: string | null = $state(null);
-
   $effect(() => {
     (async () => {
 try {
@@ -21,7 +18,6 @@ try {
   }
     })();
   });
-
   function formatDate(date: Date | string) {
     if (typeof date === 'string') {
       return new Date(date).toLocaleDateString();
@@ -40,11 +36,9 @@ try {
         return "badge-info";
   }}
 </script>
-
 <svelte:head>
   <title>Reports - Legal Case Management</title>
 </svelte:head>
-
 <div class="space-y-4">
   <div class="space-y-4">
     <h1 class="space-y-4">Reports</h1>
@@ -65,7 +59,6 @@ try {
       New Report
     </a>
   </div>
-
   {#if loading}
     <div class="space-y-4">
       <div class="space-y-4"></div>
@@ -139,7 +132,6 @@ try {
                   >
                 </h2>
                 <p class="space-y-4">{report.summary}</p>
-
                 <div class="space-y-4">
                   <span>Type: {report.reportType}</span>
                   <span>Created: {formatDate(report.createdAt)}</span>
@@ -148,7 +140,6 @@ try {
                     <span>Read time: {report.estimatedReadTime} min</span>
                   {/if}
                 </div>
-
                 {#if report.tags && report.tags.length > 0}
                   <div class="space-y-4">
                     {#each report.tags as tag}
@@ -157,12 +148,10 @@ try {
                   </div>
                 {/if}
               </div>
-
               <div class="space-y-4">
                 <span class="space-y-4"
                   >{report.status}</span
                 >
-
                 <div class="space-y-4">
                   <button
                     tabindex={0}
@@ -201,4 +190,3 @@ try {
     </div>
   {/if}
 </div>
-

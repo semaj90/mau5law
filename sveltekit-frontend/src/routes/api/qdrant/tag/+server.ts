@@ -2,12 +2,9 @@
 import { json } from "@sveltejs/kit"
 import { URL } from "url"
 import type { RequestHandler } from './$types.js'
-
-
 // Mock Qdrant client for development
 class MockQdrantClient {
   private collections = new Map()
-
   async createCollection(name: string, config: any) {
     this.collections.set(name, { name, config, points: [] })
     return { status: "ok" }
@@ -18,7 +15,6 @@ class MockQdrantClient {
   async upsert(collection: string, data: any) {
     const coll = this.collections.get(collection)
     if (!coll) throw new Error("Collection not found")
-
     // Mock upsert
     (data as { points?: any; embedding?: any }).points.forEach((point: any) => {
       const existingIndex = coll.points.findIndex(
@@ -30,17 +26,15 @@ class MockQdrantClient {
         coll.points.push(point)
       }
     })
-
     return { operation_id: "mock-op", status: "completed" }
   }
   async search(collection: string, query: any) {
     const coll = this.collections.get(collection)
     if (!coll) return []
-
     // Mock search - return first few points
     return coll.points
       .slice(0, query.limit || 10)
-      .map((point: any, index: number) => ({
+      .map((point: any, index: number) => ({,
         id: point.id,
         payload: point.payload,
         score: 0.9 - index * 0.1
@@ -49,20 +43,17 @@ class MockQdrantClient {
   async delete(collection: string, filter: any) {
     const coll = this.collections.get(collection)
     if (!coll) return { status: "ok" }
-
     // Mock delete
     return { status: "ok" }
   }
   async retrieve(collection: string, query: any) {
     const coll = this.collections.get(collection)
     if (!coll) return []
-
     return coll.points.filter((point: any) => query.ids.includes(point.id)
   }
   async scroll(collection: string, query: any) {
     const coll = this.collections.get(collection)
     if (!coll) return { points: [] }
-
     return { points: coll.points.slice(0, query.limit || 100) }
   }
   async count(collection: string, filter: any) {
@@ -83,14 +74,12 @@ class MockQdrantClient {
 }
 // Use mock client for development
 const qdrantClient = new MockQdrantClient()
-
 // Collection configuration
 const COLLECTIONS = {
   EVIDENCE: "legal_evidence",
   TAGS: "evidence_tags",
   EMBEDDINGS: "document_embeddings"
 }
-
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const session = locals.session
@@ -100,32 +89,23 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const sessionId = typeof session === 'string' ? session : (session as any)?.id
     const body = await request.json()
     const { action = "tag", ...data } = body
-
     // Initialize collections if they don't exist
     await initializeCollections()
-
     switch (action) {
       case "tag":
         return await tagDocument(data, sessionId)
-
       case "search":
         return await searchDocuments(data, sessionId)
-
       case "batch_tag":
         return await batchTagDocuments(data, sessionId)
-
       case "update_tags":
         return await updateDocumentTags(data, sessionId)
-
       case "delete":
         return await deleteDocument(data, sessionId)
-
       case "get_similar":
         return await getSimilarDocuments(data, sessionId)
-
       case "get_stats":
         return await getCollectionStats(sessionId)
-
       default:
         return json({ error: "Invalid action" }, { status: 400 })
     }
@@ -139,14 +119,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     )
   }
 }
-
 // Initialize Qdrant collections
 async function initializeCollections(): Promise<any> {
   try {
     const collections = await qdrantClient.getCollections()
     const existingCollections =
       collections.collections?.map((c: any) => c.name) || []
-
     // Create evidence collection
     if (!existingCollections.includes(COLLECTIONS.EVIDENCE)) {
       await qdrantClient.createCollection(COLLECTIONS.EVIDENCE, {
@@ -203,12 +181,11 @@ async function createSearchIndices(): Promise<any> {
       "userId",
       "tags"
     ]
-
     for (const collection of Object.values(COLLECTIONS)) {
       for (const field of indexFields) {
         try {
           await qdrantClient.createPayloadIndex(collection, {
-            field_name: field,
+            field_name: field
             field_schema: field === "tags" ? "keyword" : "keyword"
           })
         } catch (error: any) {
@@ -224,7 +201,6 @@ async function createSearchIndices(): Promise<any> {
 async function tagDocument(data: any, userId: string): Promise<any> {
   try {
     const { id, vector, payload } = data
-
     if (!id || !vector || !payload) {
       return json(
         { error: "Missing required fields: id, vector, payload" },)
@@ -236,10 +212,9 @@ async function tagDocument(data: any, userId: string): Promise<any> {
       userId,
       timestamp: new Date().toISOString()
     }
-
     // Store in main evidence collection
     const response = await qdrantClient.upsert(COLLECTIONS.EVIDENCE, {
-      wait: true,
+      wait: true
       points: [)
         {
           id,
@@ -248,13 +223,12 @@ async function tagDocument(data: any, userId: string): Promise<any> {
         }
       ]
     })
-
     // Also create individual tag embeddings for semantic tag search
     if (payload.tags && payload.tags.length > 0) {
       await createTagEmbeddings(payload.tags, id, userId)
     }
     return json({
-      success: true,
+      success: true
       operation_id: (response as { operation_id?: any; status?: any; ok?: any; json?: any }).operation_id,
       status: (response as { operation_id?: any; status?: any; ok?: any; json?: any }).status,
       message: "Document tagged successfully"
@@ -265,8 +239,8 @@ async function tagDocument(data: any, userId: string): Promise<any> {
 }
 // Create embeddings for individual tags
 async function createTagEmbeddings(
-  tags: string[],
-  documentId: string,
+  tags: string[]
+  documentId: string
   userId: string
 ): Promise<any> {
   try {
@@ -278,7 +252,7 @@ async function createTagEmbeddings(
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
+              body: JSON.stringify({,
                 model: "nomic-embed-text",
                 prompt: tag
               })
@@ -303,12 +277,10 @@ async function createTagEmbeddings(
         return null
       })
     )
-
     const validEmbeddings = tagEmbeddings.filter(Boolean)
-
     if (validEmbeddings.length > 0) {
       await qdrantClient.upsert(COLLECTIONS.TAGS, {
-        wait: false,
+        wait: false
         points: validEmbeddings
       })
     }
@@ -320,9 +292,7 @@ async function createTagEmbeddings(
 async function searchDocuments(data: any, userId: string): Promise<any> {
   try {
     const { vector, text, filters = {}, limit = 20, threshold = 0.7 } = data
-
     let queryVector = vector
-
     // If text query provided, generate embedding
     if (text && !queryVector) {
       queryVector = await generateTextEmbedding(text)
@@ -335,7 +305,6 @@ async function searchDocuments(data: any, userId: string): Promise<any> {
     }
     // Build filter conditions
     const mustConditions = [{ key: "userId", match: { value: userId } }]
-
     if (filters.evidenceType?.length) {
       mustConditions.push({
         key: "evidenceType",
@@ -362,32 +331,30 @@ async function searchDocuments(data: any, userId: string): Promise<any> {
     }
     // Perform vector search
     const searchResult = await qdrantClient.search(COLLECTIONS.EVIDENCE, {
-      vector: queryVector,
-      filter: mustConditions.length > 0 ? { must: mustConditions } : undefined,
+      vector: queryVector
+      filter: mustConditions.length > 0 ? { must: mustConditions } : undefined
       limit,
-      score_threshold: threshold,
-      with_payload: true,
+      score_threshold: threshold
+      with_payload: true
       with_vector: false
     })
-
     // Also search tags for semantic tag suggestions
     const tagSearchResults = await qdrantClient.search(COLLECTIONS.TAGS, {
       vector: queryVector.slice(0, 384), // Truncate for tag collection
       filter: { must: [{ key: "userId", match: { value: userId } }] },
       limit: 10,
       score_threshold: 0.6,
-      with_payload: true,
+      with_payload: true
       with_vector: false
     })
-
     return json({
-      success: true,
-      results: searchResult.map((result: any) => ({
+      success: true
+      results: searchResult.map((result: any) => ({,
         id: (result as { id?: any; score?: any; payload?: any }).id,
         score: (result as { id?: any; score?: any; payload?: any }).score,
         payload: (result as { id?: any; score?: any; payload?: any }).payload
       })),
-      relatedTags: tagSearchResults.map((result: any) => ({
+      relatedTags: tagSearchResults.map((result: any) => ({,
         tag: (result as { id?: any; score?: any; payload?: any }).payload?.tag,
         score: (result as { id?: any; score?: any; payload?: any }).score,
         documentId: (result as { id?: any; score?: any; payload?: any }).payload?.documentId
@@ -406,20 +373,17 @@ async function searchDocuments(data: any, userId: string): Promise<any> {
 async function batchTagDocuments(data: any, userId: string): Promise<any> {
   try {
     const { documents } = data
-
     if (!Array.isArray(documents) || documents.length === 0) {
       return json({ error: "No documents provided" }, { status: 400 })
     }
     const results = []
     const errors = []
-
     // Process in batches to avoid overwhelming Qdrant
     const batchSize = 50
     for (let i = 0; i < documents.length; i += batchSize) {
       const batch = documents.slice(i, i + batchSize)
-
       try {
-        const points = batch.map((doc: any) => ({
+        const points = batch.map((doc: any) => ({,
           id: doc.id,
           vector: doc.vector,
           payload: {
@@ -428,12 +392,10 @@ async function batchTagDocuments(data: any, userId: string): Promise<any> {
             timestamp: new Date().toISOString()
           }
         })
-
         const response = await qdrantClient.upsert(COLLECTIONS.EVIDENCE, {
-          wait: true,
+          wait: true
           points
         })
-
         results.push({
           batchIndex: Math.floor(i / batchSize),
           count: batch.length,
@@ -448,7 +410,7 @@ async function batchTagDocuments(data: any, userId: string): Promise<any> {
       }
     }
     return json({
-      success: true,
+      success: true
       processed: results.length * batchSize,
       successful: results.length,
       failed: errors.length,
@@ -463,7 +425,6 @@ async function batchTagDocuments(data: any, userId: string): Promise<any> {
 async function updateDocumentTags(data: any, userId: string): Promise<any> {
   try {
     const { documentId, tags, vector } = data
-
     if (!documentId) {
       return json({ error: "Document ID required" }, { status: 400 })
     }
@@ -472,7 +433,6 @@ async function updateDocumentTags(data: any, userId: string): Promise<any> {
       ids: [documentId],
       with_payload: true
     })
-
     if (existing.length === 0) {
       return json({ error: "Document not found" }, { status: 404 })
     }
@@ -483,24 +443,22 @@ async function updateDocumentTags(data: any, userId: string): Promise<any> {
       userId,
       timestamp: new Date().toISOString()
     }
-
     // Update document
     await qdrantClient.upsert(COLLECTIONS.EVIDENCE, {
-      wait: true,
+      wait: true
       points: [)
         {
-          id: documentId,
+          id: documentId
           vector: vector || existing[0].vector,
           payload: updatedPayload
         }
       ]
     })
-
     // Update tag embeddings
     if (tags) {
       // Delete old tag embeddings
       await qdrantClient.delete(COLLECTIONS.TAGS, {
-        wait: true,
+        wait: true
         filter: {
           must: [
             { key: "documentId", match: { value: documentId } },)
@@ -508,12 +466,11 @@ async function updateDocumentTags(data: any, userId: string): Promise<any> {
           ]
         }
       })
-
       // Create new tag embeddings
       await createTagEmbeddings(tags, documentId, userId)
     }
     return json({
-      success: true,
+      success: true
       message: "Document tags updated successfully"
     })
   } catch (error: any) {
@@ -524,22 +481,20 @@ async function updateDocumentTags(data: any, userId: string): Promise<any> {
 async function deleteDocument(data: any, userId: string): Promise<any> {
   try {
     const { documentId } = data
-
     if (!documentId) {
       return json({ error: "Document ID required" }, { status: 400 })
     }
     // Delete from evidence collection
     await qdrantClient.delete(COLLECTIONS.EVIDENCE, {
-      wait: true,
+      wait: true
       filter: {
         must: [{ key: "userId", match: { value: userId } }]
       },
       points: [documentId]
     })
-
     // Delete associated tags
     await qdrantClient.delete(COLLECTIONS.TAGS, {
-      wait: true,
+      wait: true
       filter: {
         must: [
           { key: "documentId", match: { value: documentId } },)
@@ -547,9 +502,8 @@ async function deleteDocument(data: any, userId: string): Promise<any> {
         ]
       }
     })
-
     return json({
-      success: true,
+      success: true
       message: "Document deleted successfully"
     })
   } catch (error: any) {
@@ -560,17 +514,15 @@ async function deleteDocument(data: any, userId: string): Promise<any> {
 async function getSimilarDocuments(data: any, userId: string): Promise<any> {
   try {
     const { documentId, limit = 10 } = data
-
     if (!documentId) {
       return json({ error: "Document ID required" }, { status: 400 })
     }
     // Get the source document vector
     const sourceDoc = await qdrantClient.retrieve(COLLECTIONS.EVIDENCE, {
       ids: [documentId],
-      with_vector: true,
+      with_vector: true
       with_payload: true
     })
-
     if (sourceDoc.length === 0) {
       return json({ error: "Source document not found" }, { status: 404 })
     }
@@ -583,17 +535,16 @@ async function getSimilarDocuments(data: any, userId: string): Promise<any> {
       },
       limit,
       score_threshold: 0.5,
-      with_payload: true,
+      with_payload: true
       with_vector: false
     })
-
     return json({
-      success: true,
+      success: true
       sourceDocument: {
         id: sourceDoc[0].id,
         payload: sourceDoc[0].payload
       },
-      similarDocuments: similarDocs.map((doc: any) => ({
+      similarDocuments: similarDocs.map((doc: any) => ({,
         id: doc.id,
         score: doc.score,
         payload: doc.payload
@@ -607,7 +558,6 @@ async function getSimilarDocuments(data: any, userId: string): Promise<any> {
 async function getCollectionStats(userId: string): Promise<any> {
   try {
     const stats: any = {}
-
     for (const [name, collection] of Object.entries(COLLECTIONS)) {
       try {
         const info = await qdrantClient.getCollection(collection)
@@ -616,7 +566,6 @@ async function getCollectionStats(userId: string): Promise<any> {
             must: [{ key: "userId", match: { value: userId } }]
           }
         })
-
         stats[name] = {
           totalDocuments: info.points_count || 0,
           userDocuments: userDocCount.count || 0,
@@ -628,8 +577,8 @@ async function getCollectionStats(userId: string): Promise<any> {
       }
     }
     return json({
-      success: true,
-      collections: stats,
+      success: true
+      collections: stats
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
@@ -642,12 +591,11 @@ async function generateTextEmbedding(text: string): Promise<number[]> {
     const response = await fetch("http://localhost:11434/api/embeddings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+      body: JSON.stringify({,
         model: "nomic-embed-text",
         prompt: text
       })
     })
-
     if (!(response as { operation_id?: any; status?: any; ok?: any; json?: any }).ok) {
       throw new Error("Embedding generation failed")
     }
@@ -670,23 +618,18 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const documentId = url.searchParams.get("documentId")
     const caseId = url.searchParams.get("caseId")
     const limit = parseInt(url.searchParams.get("limit") || "20")
-
     switch (action) {
       case "get_document":
         if (!documentId) {
           return json({ error: "Document ID required" }, { status: 400 })
         }
         return await getDocument(documentId, sessionId)
-
       case "list_documents":
         return await listDocuments(sessionId, { caseId, limit })
-
       case "get_tags":
         return await getUserTags(sessionId)
-
       case "health":
         return await getHealthStatus()
-
       default:
         return json({ error: "Invalid action" }, { status: 400 })
     }
@@ -700,19 +643,17 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     )
   }
 }
-
 async function getDocument(documentId: string, userId: string): Promise<any> {
   const document = await qdrantClient.retrieve(COLLECTIONS.EVIDENCE, {
     ids: [documentId],
-    with_payload: true,
+    with_payload: true
     with_vector: false
   })
-
   if (document.length === 0 || document[0].payload?.userId !== userId) {
     return json({ error: "Document not found" }, { status: 404 })
   }
   return json({
-    success: true,
+    success: true
     document: {
       id: document[0].id,
       payload: document[0].payload
@@ -720,27 +661,25 @@ async function getDocument(documentId: string, userId: string): Promise<any> {
   })
 }
 async function listDocuments(
-  userId: string,
+  userId: string
   options: { caseId?: string; limit: number }
 ): Promise<any> {
   const filter = {
     must: [{ key: "userId", match: { value: userId } }]
   }
-
   if (options.caseId) {
     filter.must.push({ key: "caseId", match: { value: options.caseId } })
   }
   const documents = await qdrantClient.scroll(COLLECTIONS.EVIDENCE, {
     filter,
     limit: options.limit,
-    with_payload: true,
+    with_payload: true
     with_vector: false
   })
-
   return json({
-    success: true,
+    success: true
     documents:
-      documents.points?.map((doc: any) => ({
+      documents.points?.map((doc: any) => ({,
         id: doc.id,
         payload: doc.payload
       })) || []
@@ -752,10 +691,9 @@ async function getUserTags(userId: string): Promise<any> {
       must: [{ key: "userId", match: { value: userId } }]
     },
     limit: 1000,
-    with_payload: true,
+    with_payload: true
     with_vector: false
   })
-
   // Group tags by frequency
   const tagCounts = new Map<string, number>()
   tags.points?.forEach((point: any) => {
@@ -764,13 +702,11 @@ async function getUserTags(userId: string): Promise<any> {
       tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1)
     }
   })
-
   const sortedTags = Array.from(tagCounts.entries()
     .sort((a, b) => b[1] - a[1])
     .map(([tag, count]) => ({ tag, count })
-
   return json({
-    success: true,
+    success: true
     tags: sortedTags
   })
 }
@@ -778,14 +714,14 @@ async function getHealthStatus(): Promise<any> {
   try {
     const health = await qdrantClient.getCollections()
     return json({
-      success: true,
+      success: true
       status: "healthy",
       collections: health.collections?.length || 0,
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
     return json({
-      success: false,
+      success: false
       status: "unhealthy",
       error: error instanceof Error ? error.message: "Unknown error",
       timestamp: new Date().toISOString()

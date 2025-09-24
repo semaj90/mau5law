@@ -4,5 +4,4 @@
   // Re-export all props
   let { ...props  }: { ...props: unknown } = $props();
 </script>
-
 <Textarea {...props} />

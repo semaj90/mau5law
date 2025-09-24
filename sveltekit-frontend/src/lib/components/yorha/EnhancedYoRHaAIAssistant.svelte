@@ -1,18 +1,15 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced YoRHa AI Assistant with RAG Integration & Evidence Mode -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import type { Props } from "$lib/types/global";
   import { onMount, onDestroy } from 'svelte';
   import { fly, fade, scale } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
   import { streamRag, createRagStreamStore } from '$lib/ai/ragStreamClient';
-
   let { isOpen = false, onClose, userRole = 'prosecutor' }: AssistantProps = $props();
-
   // Core state
   let currentMode = $state<'chat' | 'evidence' | 'analysis'>('chat');
   let searchQuery = $state('');
@@ -24,14 +21,12 @@ https://svelte.dev/e/js_parse_error -->
   >([]);
   let isProcessing = $state(false);
   let contextExpanded = $state(false);
-
   // RAG Integration
   let ragStore = createRagStreamStore({
     maxRetries: 3,
-    batching: { enabled: true, intervalMs: 40, adaptive: true },;
+    batching: { enabled: true, intervalMs: 40, adaptive: true },
     persistence: { enabled: true, storage: 'session' },
   });
-
   // UI state
   let searchBarRef = $state<HTMLInputElement;
   let chatContainerRef: HTMLDivElement;
@@ -39,12 +34,10 @@ https://svelte.dev/e/js_parse_error -->
   const GOLDEN_RATIO  | null>(null); const data = 1.618);
   let containerWidth = $state(800);
   let containerHeight = $state(containerWidth / GOLDEN_RATIO);
-
   $effect(() => {
     if (isOpen && searchBarRef) {
       setTimeout(() => searchBarRef.focus(), 200);
     }
-
     // Initialize with welcome message
     if (chatMessages.length === 0) {
       addMessage(
@@ -53,16 +46,14 @@ https://svelte.dev/e/js_parse_error -->
       );
     }
   });
-
   function addMessage(role: 'user' | 'assistant', content: string) {
     const message = {
       id: crypto.randomUUID(),
       role,
-      content,;
-      timestamp: new Date(),;
+      content,
+      timestamp: new Date(),
     };
     chatMessages = [...chatMessages, message];
-
     // Auto-scroll to bottom
     setTimeout(() => {
       if (chatContainerRef) {
@@ -70,26 +61,22 @@ https://svelte.dev/e/js_parse_error -->
       }
     }, 100);
   }
-
   async function handleSearch() {
     if (!searchQuery.trim() || isProcessing) return;
-
     const query = searchQuery.trim();
     addMessage('user', query);
     searchQuery = '';
     isProcessing = true;
-
     try {
   let responseContent = $state('');
-
       await streamRag({
         query,
-        model: 'gemma3-legal',;
-        intent: getIntentForRole(userRole),;
+        model: 'gemma3-legal',
+        intent: getIntentForRole(userRole),
         endpoint: '/api/rag/stream',
         contextIds: evidenceItems.map((item) => (item as { id?: unknown; name?: unknown; type?: unknown }).id),
         onToken: (token) => {
-          responseContent += token;
+          responseContent += toke;
           // Update the last assistant message in real-time
           updateLastAssistantMessage(responseContent);
         },
@@ -102,7 +89,6 @@ https://svelte.dev/e/js_parse_error -->
           isProcessing = false;
         },
       });
-
       if (!responseContent) {
         addMessage('assistant', "I'm processing your request. Please wait a moment...");
       }
@@ -115,7 +101,6 @@ https://svelte.dev/e/js_parse_error -->
       isProcessing = false;
     }
   }
-
   function updateLastAssistantMessage(content: string) {
     const lastMessage = chatMessages[chatMessages.length - 1];
     if (lastMessage && lastMessage.role === 'assistant') {
@@ -125,7 +110,6 @@ https://svelte.dev/e/js_parse_error -->
       addMessage('assistant', content);
     }
   }
-
   function getIntentForRole(role: string): string {
     switch (role) {
       case 'prosecutor':
@@ -138,14 +122,12 @@ https://svelte.dev/e/js_parse_error -->
         return 'legal-analysis';
     }
   }
-
   function switchMode(mode: 'chat' | 'evidence' | 'analysis') {
-    currentMode = mode;
+    currentMode = mod;
     if (mode === 'evidence' && evidenceEditorRef) {
       setTimeout(() => evidenceEditorRef.focus(), 100);
     }
   }
-
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
@@ -155,38 +137,33 @@ https://svelte.dev/e/js_parse_error -->
       onClose?.();
     }
   }
-
   function addEvidence(file?: File) {
     const evidenceId = crypto.randomUUID();
     const evidence = {
-      id: evidenceId,;
+      id: evidenceId
       name: file?.name || `Evidence-${evidenceItems.length + 1}`,
-      type: file?.type || 'document',;
-      content: 'Evidence content will be processed...',;
-      tags: ['new', userRole],;
+      type: file?.type || 'document',
+      content: 'Evidence content will be processed...',
+      tags: ['new', userRole],
     };
     evidenceItems = [...evidenceItems, evidence];
-
     // Simulate processing
     setTimeout(() => {
       evidence.content = `Processed evidence: ${evidence.name}. Ready for analysis.`;
       evidenceItems = [...evidenceItems];
     }, 1000);
   }
-
   function removeEvidence(id: string) {
     evidenceItems = evidenceItems.filter((item) => (item as { id?: unknown; name?: unknown; type?: unknown }).id !== id);
   }
-
   function exportEvidence() {
     const exportData = {
       timestamp: new Date().toISOString(),
       userRole,
-      evidenceCount: evidenceItems.length,;
-      evidence: evidenceItems,
-      chatHistory: chatMessages,;
+      evidenceCount: evidenceItems.length,
+      evidence: evidenceItems
+      chatHistory: chatMessages
     };
-
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -195,18 +172,15 @@ https://svelte.dev/e/js_parse_error -->
     a.click();
     URL.revokeObjectURL(url);
   }
-
   // Runes migration: convert legacy reactive blocks
   $effect(() => {
     if (isOpen && searchBarRef) {
       setTimeout(() => searchBarRef.focus(), 100);
     }
   });
-
   let ragStatus = $derived(ragStore.status);
   let ragTokenCount = $derived(ragStore.tokenCount);
 </script>
-
 {#if isOpen}
   <div class="ai-assistant-overlay" transitifade={{ duration: 200 }} onclick={onClose}>
     <div
@@ -223,7 +197,6 @@ https://svelte.dev/e/js_parse_error -->
             <p class="assistant-subtitle">{userRole.toUpperCase()} MODE</p>
           </div>
         </div>
-
         <div class="header-controls">
           <div class="mode-switcher">
             <button
@@ -245,11 +218,9 @@ https://svelte.dev/e/js_parse_error -->
               📊 Analysis
             </button>
           </div>
-
           <button class="close-btn" onclick={onClose}>✕</button>
         </div>
       </header>
-
       <!-- Search Bar - Golden Ratio Positioned -->
       <div class="search-section">
         <div class="search-container">
@@ -271,13 +242,11 @@ https://svelte.dev/e/js_parse_error -->
             {isProcessing ? '⚡' : '🔍'}
           </button>
         </div>
-
         <!-- Context Toggle -->
         <div class="context-controls">
           <button class="context-toggle" onclick={() => (contextExpanded = !contextExpanded)}>
             📋 Context ({evidenceItems.length})
           </button>
-
           {#if $ragStatus !== 'idle'}
             <div class="rag-status" class:processing={$ragStatus === 'streaming'}>
               RAG: {$ragStatus} ({$ragTokenCount} tokens)
@@ -285,7 +254,6 @@ https://svelte.dev/e/js_parse_error -->
           {/if}
         </div>
       </div>
-
       <!-- Context Panel -->
       {#if contextExpanded}
         <div class="context-panel" /* transition removed */}>
@@ -306,7 +274,6 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       {/if}
-
       <!-- Main Content Area -->
       <main class="assistant-main">
         {#if currentMode === 'chat'}
@@ -327,7 +294,6 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
               </div>
             {/each}
-
             {#if isProcessing}
               <div class="message assistant processing" transition:fade>
                 <div class="message-avatar">🤖</div>
@@ -359,7 +325,6 @@ https://svelte.dev/e/js_parse_error -->
                 <button onclick={exportEvidence}> 💾 Export </button>
               </div>
             </div>
-
             <div class="evidence-grid">
               {#each evidenceItems as evidence, index (evidence.id)}
                 <div class="evidence-item" transitiscale={{ duration: 200, delay: index * 50 }}>
@@ -378,7 +343,6 @@ https://svelte.dev/e/js_parse_error -->
                   </div>
                 </div>
               {/each}
-
               {#if evidenceItems.length === 0}
                 <div class="evidence-empty">
                   <div class="empty-icon">📁</div>
@@ -405,7 +369,6 @@ https://svelte.dev/e/js_parse_error -->
                 <div class="stat-label">Tokens Processed</div>
               </div>
             </div>
-
             <div class="analysis-sections">
               <section class="analysis-section">
                 <h3>Legal Summary</h3>
@@ -423,7 +386,6 @@ https://svelte.dev/e/js_parse_error -->
                   </ul>
                 </div>
               </section>
-
               <section class="analysis-section">
                 <h3>Evidence Analysis</h3>
                 <div class="analysis-content">
@@ -438,7 +400,6 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/if}
       </main>
-
       <!-- Footer -->
       <footer class="assistant-footer">
         <div class="footer-info">
@@ -447,7 +408,6 @@ https://svelte.dev/e/js_parse_error -->
           </span>
           <span class="token-count">{$ragTokenCount} tokens</span>
         </div>
-
         <div class="footer-controls">
           <button onclick={() => ragStore.clear()}>Clear Session</button>
           <button onclick={exportEvidence}>Export All</button>
@@ -456,10 +416,10 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 {/if}
-
 <style>
-  .ai-assistant-overlay {;
+  .ai-assistant-overlay {
     position: fixed;
+d;
     inset: 0;
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(8px);
@@ -469,7 +429,6 @@ https://svelte.dev/e/js_parse_error -->
     z-index: 1000;
     padding: 2rem;
   }
-
   .ai-assistant-container {
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
     border: 3px solid #ffd700;
@@ -484,28 +443,24 @@ https://svelte.dev/e/js_parse_error -->
     font-family: 'JetBrains Mono', monospace;
     color: #e0e0e0;
   }
-
   /* Header */
   .assistant-header {
     background: linear-gradient(45deg, #ffbf00, #ffd700);
     color: #000;
     padding: 1rem 1.5rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     border-bottom: 2px solid #ffd700;
   }
-
   .header-left {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
-
   .yorha-logo {
     font-size: 2rem;
   }
-
   .assistant-title {
     font-size: 1.25rem;
     font-weight: 700;
@@ -513,25 +468,21 @@ https://svelte.dev/e/js_parse_error -->
     text-transform: uppercase;
     letter-spacing: 1px;
   }
-
   .assistant-subtitle {
     font-size: 0.75rem;
     margin: 0;
     opacity: 0.8;
     font-weight: 600;
   }
-
   .header-controls {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
-
   .mode-switcher {
     display: flex;
     gap: 0.5rem;
   }
-
   .mode-btn {
     padding: 0.5rem 1rem;
     background: transparent;
@@ -544,13 +495,11 @@ https://svelte.dev/e/js_parse_error -->
     transition: all 0.2s ease;
     text-transform: uppercase;
   }
-
-  .mode-btn:hover,
+  .mode-btn: hover
   .mode-btn.active {
     background: #000;
     color: #ffd700;
   }
-
   .close-btn {
     background: #ff0041;
     border: 2px solid #ff0041;
@@ -561,27 +510,23 @@ https://svelte.dev/e/js_parse_error -->
     font-weight: bold;
     transition: all 0.2s ease;
   }
-
   .close-btn:hover {
     background: transparent;
     color: #ff0041;
   }
-
   /* Search Section */
   .search-section {
     padding: 1.5rem;
     background: #1a1a1a;
     border-bottom: 1px solid #333;
   }
-
   .search-container {
     position: relative;
-    max-width: 61.8%; /* Golden ratio */
+    max-width: 61.8%; /* Golden ratio */,
     margin: 0 auto;
     display: flex;
     gap: 0.5rem;
   }
-
   .search-input {
     flex: 1;
     padding: 1rem 1.5rem;
@@ -593,13 +538,11 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 1rem;
     transition: all 0.3s ease;
   }
-
   .search-input:focus {
     outline: none;
     border-color: #00ff41;
     box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
   }
-
   .search-btn {
     padding: 1rem 1.5rem;
     background: #ffd700;
@@ -610,25 +553,21 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     transition: all 0.2s ease;
   }
-
-  .search-btn:hover:not(:disabled) {
+  .search-btn:hover:not(:disabled) {,
     background: transparent;
     color: #ffd700;
     transform: translateY(-1px);
   }
-
   .search-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
-
   .context-controls {
     display: flex;
     justify-content: center;
     gap: 1rem;
     margin-top: 1rem;
   }
-
   .context-toggle {
     padding: 0.5rem 1rem;
     background: #333;
@@ -640,12 +579,10 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.9rem;
     transition: all 0.2s ease;
   }
-
   .context-toggle:hover {
     background: #ffd700;
     color: #000;
   }
-
   .rag-status {
     padding: 0.5rem 1rem;
     background: #1a1a1a;
@@ -656,37 +593,31 @@ https://svelte.dev/e/js_parse_error -->
     text-transform: uppercase;
     letter-spacing: 1px;
   }
-
   .rag-status.processing {
     animation: pulse 1.5s infinite;
   }
-
   /* Context Panel */
   .context-panel {
     background: #1a1a1a;
     border-bottom: 1px solid #333;
     padding: 1rem 1.5rem;
   }
-
   .context-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1rem;
   }
-
   .context-header h3 {
     margin: 0;
     color: #ffd700;
     font-size: 1rem;
   }
-
   .context-items {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
   }
-
   .context-item {
     display: flex;
     align-items: center;
@@ -696,17 +627,14 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 4px;
     font-size: 0.8rem;
   }
-
   .context-name {
     color: #e0e0e0;
   }
-
   .context-type {
     color: #ffd700;
     text-transform: uppercase;
     font-size: 0.7rem;
   }
-
   /* Main Content */
   .assistant-main {
     flex: 1;
@@ -714,7 +642,6 @@ https://svelte.dev/e/js_parse_error -->
     display: flex;
     flex-direction: column;
   }
-
   /* Chat Mode */
   .chat-container {
     flex: 1;
@@ -724,22 +651,18 @@ https://svelte.dev/e/js_parse_error -->
     flex-direction: column;
     gap: 1rem;
   }
-
   .message {
     display: flex;
     gap: 1rem;
     align-items: flex-start;
   }
-
   .message.user {
-    flex-direction: row-reverse;
+    flex-direction: row-rever;
   }
-
   .message-avatar {
     font-size: 1.5rem;
     flex-shrink: 0;
   }
-
   .message-content {
     max-width: 70%;
     background: #333;
@@ -747,27 +670,22 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 12px;
     position: relative;
   }
-
   .message.user .message-content {
     background: #ffd700;
     color: #000;
   }
-
   .message-text {
     line-height: 1.5;
     margin-bottom: 0.5rem;
   }
-
   .message-time {
     font-size: 0.7rem;
     opacity: 0.7;
   }
-
   .typing-indicator {
     display: flex;
     gap: 0.25rem;
   }
-
   .typing-indicator span {
     width: 6px;
     height: 6px;
@@ -775,14 +693,12 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 50%;
     animation: typing 1.4s infinite ease-in-out;
   }
-
-  .typing-indicator span:nth-child(2) {;
-    animation-delay: 0.2s;
+  .typing-indicator span:nth-child(2) {
+    animation-delay: 0.2;
   }
-  .typing-indicator span:nth-child(3) {;
-    animation-delay: 0.4s;
+  .typing-indicator span:nth-child(3) {
+    animation-delay: 0.4;
   }
-
   /* Evidence Mode */
   .evidence-container {
     flex: 1;
@@ -790,24 +706,20 @@ https://svelte.dev/e/js_parse_error -->
     display: flex;
     flex-direction: column;
   }
-
   .evidence-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1rem;
   }
-
   .evidence-header h2 {
     margin: 0;
     color: #ffd700;
   }
-
   .evidence-controls {
     display: flex;
     gap: 0.5rem;
   }
-
   .evidence-controls button {
     padding: 0.5rem 1rem;
     background: #333;
@@ -819,12 +731,10 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.9rem;
     transition: all 0.2s ease;
   }
-
-  .evidence-controls button:hover {;
+  .evidence-controls button:hover {
     background: #ffd700;
     color: #000;
   }
-
   .evidence-grid {
     flex: 1;
     display: grid;
@@ -832,7 +742,6 @@ https://svelte.dev/e/js_parse_error -->
     gap: 1rem;
     overflow-y: auto;
   }
-
   .evidence-item {
     background: #1a1a1a;
     border: 1px solid #333;
@@ -840,44 +749,37 @@ https://svelte.dev/e/js_parse_error -->
     padding: 1rem;
     transition: all 0.2s ease;
   }
-
-  .evidence-item:hover {
+  .evidence-item: hover {
     border-color: #ffd700;
     transform: translateY(-2px);
   }
-
   .evidence-item .evidence-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 0.5rem;
   }
-
   .evidence-item h3 {
     margin: 0;
     color: #ffd700;
     font-size: 0.9rem;
   }
-
   .evidence-type {
     color: #00ff41;
     font-size: 0.8rem;
     text-transform: uppercase;
     margin-bottom: 0.5rem;
   }
-
   .evidence-text {
     font-size: 0.8rem;
     line-height: 1.4;
     margin-bottom: 0.5rem;
   }
-
   .evidence-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rem;
   }
-
   .tag {
     background: #333;
     color: #ffd700;
@@ -886,33 +788,28 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.7rem;
     text-transform: uppercase;
   }
-
   .evidence-empty {
     grid-column: 1 / -1;
     text-align: center;
     padding: 3rem;
     color: #666;
   }
-
   .empty-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
   }
-
   /* Analysis Mode */
   .analysis-container {
     flex: 1;
     padding: 1rem;
     overflow-y: auto;
   }
-
   .analysis-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
     margin-bottom: 2rem;
   }
-
   .stat-card {
     background: #1a1a1a;
     border: 1px solid #333;
@@ -920,87 +817,73 @@ https://svelte.dev/e/js_parse_error -->
     text-align: center;
     border-radius: 8px;
   }
-
   .stat-value {
     font-size: 2rem;
     font-weight: bold;
     color: #ffd700;
     margin-bottom: 0.5rem;
   }
-
   .stat-label {
     font-size: 0.8rem;
     color: #999;
     text-transform: uppercase;
   }
-
   .analysis-sections {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
-
   .analysis-section {
     background: #1a1a1a;
     border: 1px solid #333;
     border-radius: 8px;
     padding: 1.5rem;
   }
-
   .analysis-section h3 {
     margin: 0 0 1rem 0;
     color: #ffd700;
     border-bottom: 1px solid #333;
     padding-bottom: 0.5rem;
   }
-
   .analysis-content {
     line-height: 1.6;
   }
-
   .evidence-analysis {
     margin-bottom: 0.5rem;
     padding: 0.5rem;
     background: #333;
     border-radius: 4px;
   }
-
   /* Footer */
   .assistant-footer {
     background: #1a1a1a;
     border-top: 1px solid #333;
     padding: 1rem 1.5rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
   }
-
   .footer-info {
     display: flex;
     gap: 1rem;
     align-items: center;
   }
-
   .status-indicator {
     font-size: 0.8rem;
     text-transform: uppercase;
     color: #666;
   }
-
   .status-indicator.active {
     color: #00ff41;
   }
-
   .token-count {
     font-size: 0.8rem;
     color: #ffd700;
   }
-
   .footer-controls {
     display: flex;
     gap: 0.5rem;
   }
-
   .footer-controls button {
     padding: 0.5rem 1rem;
     background: transparent;
@@ -1012,12 +895,10 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.8rem;
     transition: all 0.2s ease;
   }
-
-  .footer-controls button:hover {;
+  .footer-controls button: hover {
     border-color: #ffd700;
     color: #ffd700;
   }
-
   /* Animations */
   @keyframes typing {
     0%,
@@ -1029,7 +910,6 @@ https://svelte.dev/e/js_parse_error -->
       transform: translateY(-10px);
     }
   }
-
   @keyframes pulse {
     0%,
     100% {
@@ -1039,7 +919,6 @@ https://svelte.dev/e/js_parse_error -->
       opacity: 0.5;
     }
   }
-
   /* Responsive Design */
   @media (max-width: 1000px) {
     .ai-assistant-container {
@@ -1047,39 +926,31 @@ https://svelte.dev/e/js_parse_error -->
       height: 85vh !important;
       max-width: none;
     }
-
     .search-container {
       max-width: 100%;
     }
-
     .analysis-stats {
       grid-template-columns: 1fr;
     }
-
     .evidence-grid {
       grid-template-columns: 1fr;
     }
   }
-
   /* Scrollbar Styling */
   :global(.chat-container::-webkit-scrollbar),
   :global(.evidence-grid::-webkit-scrollbar),
-  :global(.analysis-container::-webkit-scrollbar) {
+  :global($1) {
     width: 8px;
   }
-
   :global(.chat-container::-webkit-scrollbar-track),
   :global(.evidence-grid::-webkit-scrollbar-track),
-  :global(.analysis-container::-webkit-scrollbar-track) {
+  :global($1) {
     background: #1a1a1a;
   }
-
   :global(.chat-container::-webkit-scrollbar-thumb),
   :global(.evidence-grid::-webkit-scrollbar-thumb),
-  :global(.analysis-container::-webkit-scrollbar-thumb) {
+  :global($1) {
     background: #ffd700;
     border-radius: 4px;
   }
 </style>
-
-

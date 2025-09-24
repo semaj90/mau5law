@@ -1,34 +1,21 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import {  ,   } from "svelte";
-
-
-
-
   	import { aiStore } from "../stores/canvas";
   	import Dialog from './Dialog.svelte';
-
   	import { Sparkles, Bot } from 'lucide-svelte';
-
-
-
   	// Reactive state
   	let dialogOpen = $derived($aiStore.dialogOpen);
   	let isGenerating = $derived($aiStore.isGenerating);
-
   	function toggleDialog() {
   		aiStore.update(state => ({
   			...state,
   			dialogOpen: !state.dialogOpen
   		}));
   	}
-
   	function handleAIRequest(event: CustomEvent) {
   		ondispatch?.(event.detail);
   	}
 </script>
-
 <!-- Floating Action Button -->
 <button
 	 class="mx-auto px-4 max-w-7xl"
@@ -44,10 +31,8 @@
 			<Sparkles size={24} />
 		{/if}
 	</div>
-
 	<div class="mx-auto px-4 max-w-7xl"></div>
 </button>
-
 <!-- AI Dialog -->
 {#if dialogOpen}
 	<Dialog.Root
@@ -57,9 +42,8 @@
 		airequest={handleAIRequest}
 	/>
 {/if}
-
 <style>
-	.ai-fab-button {;
+	.ai-fab-button {
 		position: fixed;
 		bottom: 2rem;
 		right: 2rem;
@@ -79,20 +63,16 @@
 		overflow: hidden;
 		position: relative;
 	}
-
 	.ai-fab-button:hover {
 		transform: translateY(-2px) scale(1.05);
 		box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
 	}
-
 	.ai-fab-button:active {
 		transform: translateY(-1px) scale(1.02);
 	}
-
 	.ai-fab-button.generating {
 		animation: pulse 2s infinite;
 	}
-
 	.fab-icon {
 		position: relative;
 		z-index: 2;
@@ -100,7 +80,6 @@
 		align-items: center;
 		justify-content: center;
 	}
-
 	.fab-glow {
 		position: absolute;
 		top: -50%;
@@ -112,7 +91,6 @@
 		transition: opacity 0.3s ease;
 		pointer-events: none;
 	}
-
 	.ai-fab-button:hover .fab-glow {
 		opacity: 1;
 	}
@@ -120,7 +98,6 @@
 		0% { transform: rotate(0deg); }
 		100% { transform: rotate(360deg); }
 	}
-
 	@keyframes pulse {
 		0%, 100% {
 			transform: scale(1);
@@ -131,7 +108,6 @@
 			box-shadow: 0 12px 40px rgba(124, 58, 237, 0.4);
 		}
 	}
-
 	/* Responsive */
 	@media (max-width: 768px) {
 		.ai-fab-button {
@@ -140,13 +116,9 @@
 			width: 56px;
 			height: 56px;
 		}
-
 		.fab-icon :global(svg) {
 			width: 20px;
 			height: 20px;
 		}
 }
 </style>
-
-
-

@@ -1,33 +1,29 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  interface Props {;
+  interface Props {
     message: any;
   }
   let {
     message
   }: Props = $props();
-
   import Button from '$lib/components/ui/enhanced-bits';
   import { chatActions } from "$lib/stores/chatStore";
   import { notifications } from "$lib/stores/notification";
   import { Bot, Clock, Copy, Heart, MoreVertical, Star, StarOff, ThumbsUp, User as UserIcon } from "lucide-svelte";
   import "../chat/chat-message.css";
-
   // Type-safe fallback for message.role
   let isUser = $derived(message.role === "user" || message.type === "user");
   let isAssistant = $derived(message.role === "assistant" || message.type === "assistant");
   let emotionalTone = $derived(message.metadata?.emotionalTone);
   let isProactive = $derived(message.metadata?.proactive);
-
   function copyToClipboard() {
     navigator.clipboard.writeText(message.content);
     notifications.add({
-      type: "success",;
-      title: "Copied",;
-      message: "Message copied to clipboard",;
+      type: "success",
+      title: "Copied",
+      message: "Message copied to clipboard",
     });
   }
   function toggleSaved() {
@@ -64,7 +60,6 @@ https://svelte.dev/e/js_parse_error -->
         return null;
   }}
 </script>
-
 <div class="space-y-4">
   <!-- Avatar -->
   <div class="space-y-4">
@@ -82,7 +77,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     {/if}
   </div>
-
   <!-- Message Content -->
   <div class="space-y-4">
     <!-- Message Bubble -->
@@ -97,14 +91,12 @@ https://svelte.dev/e/js_parse_error -->
             <span>Proactive suggestion</span>
           </div>
         {/if}
-
         <!-- Message Text -->
         <div
           class="space-y-4"
         >
           {@html message.content}
         </div>
-
         <!-- Emotional Tone Indicator for AI Messages -->
         {#if isAssistant && emotionalTone && emotionalTone !== "neutral"}
           {@const ToneIcon = getEmotionalToneIcon(emotionalTone)}
@@ -116,7 +108,6 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/if}
       </div>
-
       <!-- Message Actions -->
       <div
         class="space-y-4"
@@ -125,7 +116,6 @@ https://svelte.dev/e/js_parse_error -->
         <span class="space-y-4">
           {formatTime(message.timestamp)}
         </span>
-
         <!-- Actions (visible on hover) -->
         <div
           class="space-y-4"
@@ -141,7 +131,6 @@ copyToClipboard()}
           >
             <Copy class="space-y-4" />
 </Button>
-
           <!-- Save/Unsave -->
           <Button
             variant="ghost"
@@ -157,7 +146,6 @@ toggleSaved()}
               <StarOff class="space-y-4" />
             {/if}
 </Button>
-
           <!-- More Options -->
           <Button
             variant="ghost"
@@ -170,7 +158,6 @@ toggleSaved()}
         </div>
       </div>
     </div>
-
     <!-- Metadata (for AI messages) -->
     {#if isAssistant && message.metadata}
       <div class="space-y-4">
@@ -182,7 +169,6 @@ toggleSaved()}
             {/if}
           </div>
         {/if}
-
         {#if message.metadata.tokenCount}
           <div>Tokens: {message.metadata.tokenCount}</div>
         {/if}
@@ -190,7 +176,6 @@ toggleSaved()}
     {/if}
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   :global(.message-content) {
@@ -200,7 +185,7 @@ toggleSaved()}
   :global(.message-content p) {
     margin-bottom: 0.5rem;
 }
-  :global(.message-content p:last-child) {;
+  :global(.message-content p:last-child) {
     margin-bottom: 0;
 }
   :global(.message-content ul, .message-content ol) {
@@ -237,4 +222,3 @@ toggleSaved()}
     font-size: 1em;
 }
 </style>
-

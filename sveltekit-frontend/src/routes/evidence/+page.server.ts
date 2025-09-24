@@ -7,8 +7,7 @@ import { db } from "$lib/server/db/index";
 import type { PageServerLoad } from './$types.js';
 import { z } from "zod";
 import { URL } from "url";
-
-// Schema for validating evidence form data;
+// Schema for validating evidence form data
 const evidenceSchema = z.object({
   id: z.string().optional(),
   caseId: z.string().uuid(),
@@ -18,20 +17,17 @@ const evidenceSchema = z.object({
   url: z.string().url("Must be a valid URL").optional(),
   fileSize: z.number().optional(),
   mimeType: z.string().optional(),
-  tags: z.array(z.string()).default([]),;
+  tags: z.array(z.string()).default([]),
   metadata: z.record(z.unknown()).optional()
 });
-
 export const load: PageServerLoad = async ({ url, locals }) => {
   const user = locals.user;
   if (!user?.id) {
     throw error(401, "Authentication required");
   }
-
   try {
     // Get case ID from URL params or default to user's cases
     const caseId = url.searchParams.get("caseId");
-
     let evidenceData;
     if (caseId) {
       evidenceData = await db.select()
@@ -46,7 +42,6 @@ export const load: PageServerLoad = async ({ url, locals }) => {
         .where(helpers.eq(evidence.userId, user.id) as any)
         .limit(50);
     }
-
     return {
       evidence: evidenceData,
       caseId,

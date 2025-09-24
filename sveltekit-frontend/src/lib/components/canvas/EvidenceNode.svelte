@@ -1,12 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { Move, RotateCcw, Trash2 } from 'lucide-svelte';
   import { onDestroy, onMount } from 'svelte';
-  
   interface Props {
     title: string ;
     fileUrl: string ;
@@ -39,11 +37,10 @@ https://svelte.dev/e/js_parse_error -->
         const mod = await import('fabric');
         const fabric = mod.fabric || mod.default || mod;
         fabricCanvas = new fabric.Canvas(canvasEl, {
-        width: size.width - 20,;
+        width: size.width - 20,
         height: size.height - 80,
         backgroundColor: 'white';
       });
-
       // Load background image if provided
       // Fix for Fabric.js v5+ (Image.fromURL returns a Promise)
       if (fileUrl) {
@@ -56,8 +53,8 @@ https://svelte.dev/e/js_parse_error -->
           img.scale(scale);
           img.set({
             left: 0,
-            top: 0,;
-            selectable: false,;
+            top: 0,
+            selectable: false
             evented: false;
           });
           (fabricCanvas as any)?.setBackgroundImage?.(img, () => (fabricCanvas as any)?.renderAll?.());
@@ -75,40 +72,35 @@ https://svelte.dev/e/js_parse_error -->
     nodeElement.addEventListener('click', () => {
       isSelected = true;
     });
-
     document.addEventListener('click', (e) => {
       if (!nodeElement.contains(e.target as Node)) {
         isSelected = false;
   }
     });
   });
-
   onDestroy(() => {
     if (fabricCanvas) {
       fabricCanvas.dispose();
   }
   });
-
   function saveCanvasState() {
     if (fabricCanvas) {
       const state = fabricCanvas.toJSON();
-      canvasState = state;
+      canvasState = stat;
       isDirty = true;
   }}
   function addAnnotation(type: string) {
     if (!fabricCanvas) return;
-
     const fabric = (window as any).fabric;
     if (!fabric) return;
-
     switch (type) {
       case 'rectangle':
         const rect = new fabric.Rect({
           left: 50,
           top: 50,
           width: 100,
-          height: 60,;
-          fill: 'transparent',;
+          height: 60,
+          fill: 'transparent',
           stroke: '#ef4444',
           strokeWidth: 2;
         });
@@ -118,8 +110,8 @@ https://svelte.dev/e/js_parse_error -->
         const circle = new fabric.Circle({
           left: 50,
           top: 50,
-          radius: 30,;
-          fill: 'transparent',;
+          radius: 30,
+          fill: 'transparent',
           stroke: '#22c55e',
           strokeWidth: 2;
         });
@@ -128,16 +120,16 @@ https://svelte.dev/e/js_parse_error -->
       case 'arrow':
         const line = new fabric.Line([50, 50, 150, 100], {
           stroke: '#3b82f6',
-          strokeWidth: 3,;
+          strokeWidth: 3,
           selectable: true;
         });
         fabricCanvas.add(line);
         break;
       case 'text':
         const text = new fabric.IText('Click to edit', {
-          left: 50,;
+          left: 50,
           top: 50,
-          fontSize: 16,;
+          fontSize: 16,
           fill: '#1f2937';
         });
         fabricCanvas.add(text);
@@ -156,7 +148,7 @@ https://svelte.dev/e/js_parse_error -->
   }}
   function handleTitleChange(event: Event) {
     const target = event.target as HTMLInputElement;
-    title = target.value;
+    title = target.valu;
     isDirty = true;
   }
   // Resize handling
@@ -166,7 +158,6 @@ https://svelte.dev/e/js_parse_error -->
     const startY = event.clientY;
     const startWidth = size.width;
     const startHeight = size.height;
-
     function onMouseMove(e: MouseEvent) {
       const deltaX = e.clientX - startX;
       const deltaY = e.clientY - startY;
@@ -180,7 +171,7 @@ https://svelte.dev/e/js_parse_error -->
       // Resize fabric canvas
       if (fabricCanvas) {
         fabricCanvas.setDimensions({
-          width: newWidth - 20,;
+          width: newWidth - 20,
           height: newHeight - 80;
         });
   }}
@@ -202,12 +193,11 @@ https://svelte.dev/e/js_parse_error -->
         clientY: touch.clientY
       } as unknown as MouseEvent);
   }}
-  // Draggable handler  
+  // Draggable handler
   function handleDrag(newX: number, newY: number) {
     position = { x: newX, y: newY };
   }
 </script>
-
 <!-- Fix: Use <section> for main node container and remove tabindex if not needed -->
 <section
   bind:this={nodeElement}
@@ -239,7 +229,7 @@ https://svelte.dev/e/js_parse_error -->
   </div>
   <!-- Resize Handles (accessible) -->
   <div class="resize-handles">
-    <div 
+    <div
       class="resize-handle resize-bottom-right"
       onmousedown={(e) => handleResize('bottom-right', e)}
       touchstart={(e) => handleResizeTouch('bottom-right', e)}
@@ -253,7 +243,7 @@ https://svelte.dev/e/js_parse_error -->
       tabindex="0"
       aria-label="Resize bottom right"
     ></div>
-    <div 
+    <div
       class="resize-handle resize-bottom"
       onmousedown={(e) => handleResize('bottom', e)}
       touchstart={(e) => handleResizeTouch('bottom', e)}
@@ -267,7 +257,7 @@ https://svelte.dev/e/js_parse_error -->
       tabindex="0"
       aria-label="Resize bottom"
     ></div>
-    <div 
+    <div
       class="resize-handle resize-right"
       onmousedown={(e) => handleResize('right', e)}
       touchstart={(e) => handleResizeTouch('right', e)}
@@ -283,7 +273,6 @@ https://svelte.dev/e/js_parse_error -->
     ></div>
   </div>
 </section>
-
 <style>
   /* @unocss-include */
   /* Evidence Node Styles */
@@ -298,7 +287,7 @@ https://svelte.dev/e/js_parse_error -->
 }
   .node-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 8px 12px;
     background: #f8fafc;
@@ -323,7 +312,7 @@ https://svelte.dev/e/js_parse_error -->
     background: transparent;
     border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2;
 }
   .control-button:hover {
     background: #e2e8f0;
@@ -356,28 +345,27 @@ https://svelte.dev/e/js_parse_error -->
     height: 12px;
     bottom: -6px;
     right: -6px;
-    cursor: nw-resize;
+    cursor: nw-resiz;
 }
   .resize-bottom {
     width: 20px;
     height: 6px;
     bottom: -3px;
     right: 20px;
-    cursor: n-resize;
+    cursor: n-resiz;
 }
   .resize-right {
     width: 6px;
     height: 20px;
     bottom: 20px;
     right: -3px;
-    cursor: w-resize;
+    cursor: w-resiz;
 }
   /* Minimal styles for functionality not covered by UnoCSS */
   :global(.dnd-item) {
     cursor: grab;
 }
-  :global(.dnd-item:active) {
+  :global($1) {
     cursor: grabbing;
 }
 </style>
-

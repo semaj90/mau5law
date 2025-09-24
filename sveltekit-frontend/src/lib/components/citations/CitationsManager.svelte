@@ -1,10 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be uniqu;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- Citations Manager - Legal Citation System with AI-powered search -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   	import { onMount } from 'svelte';
   	import {
     Card,
@@ -12,17 +11,16 @@ https://svelte.dev/e/attribute_duplicate -->
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-  	import Button from '$lib/components/ui/button/Button.svelte';
+  	import Button from '$lib/components/ui/Button.svelte';
   	// Badge replaced with span - not available in enhanced-bits
   	import {
     Input
   } from '$lib/components/ui/enhanced-bits';
-  	import { 
-  		Search, BookOpen, ExternalLink, Download, 
+  	import {
+  		Search, BookOpen, ExternalLink, Download,
   		Plus, FileText, Calendar, User, Tags,
   		Filter, SortAsc, Eye, Edit, Trash2
   	} from 'lucide-svelte';
-
   	// Svelte 5 state management
   	let citations = $state<any[]>([]);
   	let filteredCitations = $state<any[]>([]);
@@ -38,7 +36,6 @@ https://svelte.dev/e/attribute_duplicate -->
   		{ id: 'articles', label: 'Articles', count: 0 },
   		{ id: 'evidence', label: 'Evidence', count: 0 }
   	]);
-
   	let newCitation = $state({
   		title: '',
   		authors: '',
@@ -46,22 +43,19 @@ https://svelte.dev/e/attribute_duplicate -->
   		source: '',
   		category: 'cases',
   		pages: '',
-  		url: '',;
-  		notes: '',;
+  		url: '',
+  		notes: '',
   		tags: [] as string[],
   		relevanceScore: 0;
   	});
-
   	let showAddForm = $state(false);
   	let selectedCitation = $state<any>(null);
   	let showDetailModal = $state(false);
-
   	// Component props
-  	let { 
+  	let {
   		caseId = '',
   		readonly = false
   	} = $props();
-
   	// Initialize citations
   	$effect(() => {
     (async () => {
@@ -69,11 +63,9 @@ await loadCitations();
   		updateCategoryCounts();
     })();
   });
-
   	async function loadCitations() {
   		isLoading = true;
   		console.log('📚 Loading citations for caseItem:', caseId);
-
   		try {
   			// Load sample citations data
   			citations = [
@@ -130,16 +122,15 @@ await loadCitations();
   					source: 'Academic Press',
   					category: 'articles',
   					pages: '1-45',
-  					url: 'https://doi.org/example',;
-  					notes: 'Comprehensive guide to handling digital evidence in modern legal proceedings',;
+  					url: 'https://doi.org/example',
+  					notes: 'Comprehensive guide to handling digital evidence in modern legal proceedings',
   					tags: ['digital-forensics', 'computer-crime', 'evidence-handling', 'technology'],
   					relevanceScore: 78,
   					dateAdded: new Date('2024-01-18'),
   					caseId;
   				}
   			];
-
-  			filteredCitations = citations;
+  			filteredCitations = citation;
   			updateCategoryCounts();
   			console.log(`✅ Loaded ${citations.length} citations`);
   		} catch (error) {
@@ -148,20 +139,16 @@ await loadCitations();
   			isLoading = false;
   		}
   	}
-
   	function updateCategoryCounts() {
   		citationCategories = citationCategories.map.length
   		}));
   	}
-
   	function filterCitations() {
-  		let filtered = citations;
-
+  		let filtered = citation;
   		// Filter by category
   		if (selectedCategory !== 'all') {
   			filtered = filtered.filter(c => c.category === selectedCategory);
   		}
-
   		// Filter by search query
   		if (searchQuery.trim()) {
   			const query = searchQuery.toLowerCase();
@@ -172,39 +159,33 @@ await loadCitations();
   				c.tags.some.includes(query))
   			);
   		}
-
   		// Sort results
   		filtered.sort((a, b) => {
   			switch (sortBy) {
   				case 'title':
   					return a.title.localeCompare(b.title);
   				case 'relevance':
-  					return b.relevanceScore - a.relevanceScore;
+  					return b.relevanceScore - a.relevanceScor;
   				case 'date':
   				default:
   					return b.dateAdded.getTime() - a.dateAdded.getTime();
   			}
   		});
-
   		filteredCitations = filtered;
   	}
-
   	function handleSearch(event: Event) {
   		const target = event.target as HTMLInputElement;
-  		searchQuery = target.value;
+  		searchQuery = target.valu;
   		filterCitations();
   	}
-
   	function selectCategory(categoryId: string) {
   		selectedCategory = categoryId;
   		filterCitations();
   	}
-
   	function changeSortBy(newSortBy: 'date' | 'title' | 'relevance') {
   		sortBy = newSortBy;
   		filterCitations();
   	}
-
   	function showAddCitationForm() {
   		showAddForm = true;
   		newCitation = {
@@ -214,39 +195,34 @@ await loadCitations();
   			source: '',
   			category: 'cases',
   			pages: '',
-  			url: '',;
-  			notes: '',;
+  			url: '',
+  			notes: '',
   			tags: [],
   			relevanceScore: 0;
   		};
   	}
-
   	function hideAddCitationForm() {
   		showAddForm = false;
   	}
-
   	async function saveCitation() {
   		if (!newCitation.title.trim() || !newCitation.authors.trim()) {
   			console.error('❌ Title and authors are required');
   			return;
   		}
-
   		const citation = {
   			...newCitation,
   			id: `citation-${Date.now()}`,
   			dateAdded: new Date(),
   			caseId
   		};
-
   		try {
   			console.log('💾 Saving citation:', citation.title);
   			// Save to server (stubbed)
   			const response = await fetch('/api/legal/citations', {
-  				method: 'POST',;
-  				headers: { 'Content-Type': 'application/json' },;
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
   				body: JSON.stringify(citation);
   			});
-
   			if (response.ok) {
   				citations = [...citations, citation];
   				updateCategoryCounts();
@@ -258,27 +234,22 @@ await loadCitations();
   			console.error('❌ Failed to save citation:', error);
   		}
   	}
-
   	function viewCitationDetails(citation: any) {
-  		selectedCitation = citation;
+  		selectedCitation = citatio;
   		showDetailModal = true;
   	}
-
   	function hideDetailModal() {
   		showDetailModal = false;
   		selectedCitation = null;
   	}
-
   	async function deleteCitation(citationId: string) {
   		if (!confirm('Are you sure you want to delete this citation?')) {
   			return;
   		}
-
   		try {
   			const response = await fetch(`/api/legal/citations/${citationId}`, {
   				method: 'DELETE';
   			});
-
   			if (response.ok) {
   				citations = citations.filter(c => c.id !== citationId);
   				updateCategoryCounts();
@@ -289,7 +260,6 @@ await loadCitations();
   			console.error('❌ Failed to delete citation:', error);
   		}
   	}
-
   	function formatCitation(citation: any): string {
   		// Generate proper legal citation format
   		switch (citation.category) {
@@ -303,16 +273,14 @@ await loadCitations();
   				return `${citation.authors}, ${citation.title}, ${citation.source} (${citation.year})`;
   		}
   	}
-
   	async function exportCitations() {
   		console.log('📄 Exporting citations...');
   		const exportData = filteredCitations.map(citation => ({
   			formattedCitation: formatCitation(citation),
   			...citation
   		}));
-
   		// Create downloadable file
-  		const blob = new Blob([JSON.stringify(exportData, null, 2)], { 
+  		const blob = new Blob([JSON.stringify(exportData, null, 2)], {
   			type: 'application/json' ;
   		});
   		const url = URL.createObjectURL(blob);
@@ -323,7 +291,6 @@ await loadCitations();
   		URL.revokeObjectURL(url);
   	}
 </script>
-
 <!-- Citations Manager Interface -->
 <div class="w-full h-full flex flex-col bg-background">
 	<!-- Header -->
@@ -339,13 +306,12 @@ await loadCitations();
 						<p class="text-sm nes-text is-disabled">Legal citation management system</p>
 					</div>
 				</div>
-				
 				<div class="flex items-center gap-2">
 					{#if !readonly}
-						<Button 
+						<Button
 							class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-add-btn"
-							variant="ghost" 
-							size="sm" 
+							variant="ghost"
+							size="sm"
 							onclick={showAddCitationForm}
 							aria-label="Open dialog to add a new legal citation"
 							aria-describedby="add-citation-help"
@@ -361,10 +327,10 @@ await loadCitations();
 							Create a new legal citation with complete source information
 						</div>
 					{/if}
-					<Button 
+					<Button
 						class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-export-btn"
-						variant="ghost" 
-						size="sm" 
+						variant="ghost"
+						size="sm"
 						onclick={exportCitations}
 						aria-label="Export citations to downloadable file"
 						aria-describedby="export-help"
@@ -383,7 +349,6 @@ await loadCitations();
 			</div>
 		</div>
 	</div>
-
 	<!-- Search and Filters -->
 	<div class="mb-4 nes-container">
 		<div class="yorha-panel-content py-4">
@@ -400,10 +365,9 @@ await loadCitations();
 						/>
 					</div>
 				</div>
-				
 				<!-- Sort Options -->
 				<div class="flex gap-2">
-					<Button 
+					<Button
 						class="enhanced-bits-btn nes-citation-sort n64-enhanced lod-optimized retro-sort-btn"
 						variant={sortBy === 'date' ? 'default' : 'outline'}
 						size="sm"
@@ -423,7 +387,7 @@ changeSortBy('date')}
 					<div id="sort-date-help" class="sr-only">
 						Sort citations by the date they were added to the system
 					</div>
-					<Button 
+					<Button
 						class="enhanced-bits-btn nes-citation-sort n64-enhanced lod-optimized retro-sort-btn"
 						variant={sortBy === 'title' ? 'default' : 'outline'}
 						size="sm"
@@ -443,7 +407,7 @@ changeSortBy('title')}
 					<div id="sort-title-help" class="sr-only">
 						Sort citations alphabetically by title
 					</div>
-					<Button 
+					<Button
 						class="enhanced-bits-btn nes-citation-sort n64-enhanced lod-optimized retro-sort-btn"
 						variant={sortBy === 'relevance' ? 'default' : 'outline'}
 						size="sm"
@@ -467,7 +431,6 @@ changeSortBy('relevance')}
 			</div>
 		</div>
 	</div>
-
 	<!-- Main Content -->
 	<div class="flex-1 grid grid-cols-4 gap-4">
 		<!-- Categories Sidebar -->
@@ -478,7 +441,7 @@ changeSortBy('relevance')}
 			<div class="yorha-panel-content space-y-2">
 				{#each citationCategories as category}
 					<button
-						class="w-full flex justify-between items-center p-2 rounded text-sm hover:bg-muted transition-colors";
+						class="w-full flex justify-between items-center p-2 rounded text-sm hover: bg-muted transition-colors";
 						class:bg-primary={selectedCategory === category.id};
 						class:text-primary-foreground={selectedCategory === category.id}
 						onclick={() => selectCategory(category.id)}
@@ -489,7 +452,6 @@ changeSortBy('relevance')}
 				{/each}
 			</div>
 		</div>
-
 		<!-- Citations List -->
 		<div class="col-span-3 space-y-4">
 			{#if isLoading}
@@ -522,7 +484,6 @@ changeSortBy('relevance')}
 											<span class="px-2 py-1 rounded text-xs font-medium bg-blue-500 text-white">High Relevance</span>
 										{/if}
 									</div>
-									
 									<div class="text-sm nes-text is-disabled mb-2">
 										<div class="flex items-center gap-4 flex-wrap">
 											<span class="flex items-center gap-1">
@@ -542,11 +503,9 @@ changeSortBy('relevance')}
 											{/if}
 										</div>
 									</div>
-									
 									{#if citation.notes}
 										<p class="text-sm mb-3">{citation.notes}</p>
 									{/if}
-									
 									<div class="flex flex-wrap gap-1">
 										{#each citation.tags as tag}
 											<Badge variant="ghost" class="text-xs">
@@ -556,7 +515,6 @@ changeSortBy('relevance')}
 										{/each}
 									</div>
 								</div>
-								
 								<div class="flex items-center gap-1">
 									<button class="nes-btn"
 										variant="ghost"
@@ -567,7 +525,7 @@ changeSortBy('relevance')}
 										<Eye class="w-4 h-4" />
 									</button>
 									{#if citation.url}
-										<Button 
+										<Button
 											class="enhanced-bits-btn nes-citation-action n64-enhanced lod-optimized retro-external-btn h-8 w-8 p-0"
 											variant="ghost"
 											size="sm"
@@ -584,7 +542,7 @@ window.open(citation.url, '_blank')}
 </Button>
 									{/if}
 									{#if !readonly}
-										<Button 
+										<Button
 											class="enhanced-bits-btn nes-citation-action n64-enhanced lod-optimized retro-delete-btn danger-variant h-8 w-8 p-0 text-destructive hover:text-destructive"
 											variant="ghost"
 											size="sm"
@@ -610,7 +568,6 @@ deleteCitation(citation.id)}
 		</div>
 	</div>
 </div>
-
 <!-- Add Citation Modal -->
 {#if showAddForm}
 	<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50" role="button" tabindex="0"
@@ -630,7 +587,6 @@ deleteCitation(citation.id)}
 						<Input bind:value={newCitation.authors} placeholder="Author names or court" />
 					</div>
 				</div>
-				
 				<div class="grid grid-cols-3 gap-4">
 					<div>
 						<label class="block text-sm font-medium mb-1">Year</label>
@@ -651,29 +607,25 @@ deleteCitation(citation.id)}
 						<Input bind:value={newCitation.pages} placeholder="e.g., 123-145" />
 					</div>
 				</div>
-				
 				<div>
 					<label class="block text-sm font-medium mb-1">Source</label>
 					<Input bind:value={newCitation.source} placeholder="Journal, reporter, publisher" />
 				</div>
-				
 				<div>
 					<label class="block text-sm font-medium mb-1">URL</label>
 					<Input bind:value={newCitation.url} placeholder="https://..." />
 				</div>
-				
 				<div>
-					<label class="block text-sm font-medium mb-1" for="notes">Notes</label><textarea id="notes" 
+					<label class="block text-sm font-medium mb-1" for="notes">Notes</label><textarea id="notes"
 						bind:value={newCitation.notes}
 						placeholder="Brief description or notes about this citation"
 						class="w-full p-2 border rounded min-h-[80px]"
 					></textarea>
 				</div>
-				
 				<div class="flex justify-end gap-2 pt-4">
-					<Button 
+					<Button
 						class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
-						variant="ghost" 
+						variant="ghost"
 						onclick={hideAddCitationForm}
 						aria-label="Cancel adding citation and close dialog"
 						role="button"
@@ -682,7 +634,7 @@ deleteCitation(citation.id)}
 					>
 Cancel
 </Button>
-					<Button 
+					<Button
 						class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-save-btn"
 						onclick={saveCitation}
 						aria-label="Save new citation to collection"
@@ -702,7 +654,6 @@ Save Citation
 		</div>
 	</div>
 {/if}
-
 <!-- Citation Detail Modal -->
 {#if showDetailModal && selectedCitation}
 	<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onclick|self={hideDetailModal}>
@@ -714,7 +665,6 @@ Save Citation
 				<div class="bg-muted p-4 rounded font-mono text-sm">
 					{formatCitation(selectedCitation)}
 				</div>
-				
 				<div class="grid grid-cols-2 gap-4 text-sm">
 					<div>
 						<strong>Authors:</strong> {selectedCitation.authors}
@@ -731,14 +681,12 @@ Save Citation
 						</div>
 					{/if}
 				</div>
-				
 				{#if selectedCitation.notes}
 					<div>
 						<strong>Notes:</strong>
 						<p class="mt-1">{selectedCitation.notes}</p>
 					</div>
 				{/if}
-				
 				{#if selectedCitation.tags.length > 0}
 					<div>
 						<strong>Tags:</strong>
@@ -749,16 +697,15 @@ Save Citation
 						</div>
 					</div>
 				{/if}
-				
 				<div class="flex justify-between items-center pt-4">
 					<div>
 						<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Relevance: {selectedCitation.relevanceScore}%</span>
 					</div>
 					<div class="flex gap-2">
 						{#if selectedCitation.url}
-							<Button 
+							<Button
 								class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-external-btn"
-								variant="ghost" 
+								variant="ghost"
 								onclick={() =>
 window.open(selectedCitation.url, '_blank')}
 								aria-label="Open citation source link in new tab"
@@ -771,7 +718,7 @@ window.open(selectedCitation.url, '_blank')}
 								Open Link
 </Button>
 						{/if}
-						<Button 
+						<Button
 							class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-close-btn"
 							onclick={hideDetailModal}
 							aria-label="Close citation details dialog"
@@ -787,22 +734,18 @@ Close
 		</div>
 	</div>
 {/if}
-
 <style>
 	/* Custom scrollbar for modal content */
-	.overflow-y-auto {;
-		scrollbar-width: thin;
+	.overflow-y-auto {
+		scrollbar-width: thi;
 		scrollbar-color: hsl(var(--muted-foreground)) hsl(var(--muted));
 	}
-	
 	.overflow-y-auto::-webkit-scrollbar {
 		width: 6px;
 	}
-	
 	.overflow-y-auto::-webkit-scrollbar-track {
 		background: hsl(var(--muted));
 	}
-	
 	.overflow-y-auto::-webkit-scrollbar-thumb {
 		background: hsl(var(--muted-foreground));
 		border-radius: 3px;

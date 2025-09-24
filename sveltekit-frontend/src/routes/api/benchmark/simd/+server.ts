@@ -2,18 +2,15 @@
  * SIMD JSON Performance Benchmark Endpoint
  * Quantifies performance gains across the legal AI data pipeline
  */
-
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { simdBodyParser } from '$lib/server/simd-body-parser.js'
 import { nodeSIMDJSON } from '$lib/services/node-simd-json.js'
-
 interface BenchmarkRequest {
   iterations?: number
   documentSize?: 'small' | 'medium' | 'large'
   testType?: 'legal' | 'general' | 'batch'
 }
-
 interface BenchmarkResult {
   testType: string
   iterations: number
@@ -40,7 +37,6 @@ interface BenchmarkResult {
     cpuCores: number
   }
 }
-
 // Sample legal documents of varying sizes
 const sampleDocuments = {
   small: {
@@ -56,7 +52,6 @@ const sampleDocuments = {
       ]
     }
   },
-  
   medium: {
     id: 'doc-002',
     title: 'Commercial Litigation Case Analysis',
@@ -81,7 +76,6 @@ const sampleDocuments = {
       ]
     }
   },
-  
   large: {
     id: 'doc-003',
     title: 'Comprehensive Legal Brief with Multiple Citations',
@@ -96,7 +90,7 @@ const sampleDocuments = {
         type: i % 3 === 0 ? 'corporation' : 'individual'
       })),
       practice_areas: [
-        'constitutional_law', 'administrative_law', 'contract_law', 
+        'constitutional_law', 'administrative_law', 'contract_law',
         'tort_law', 'criminal_law', 'tax_law', 'employment_law'
       ],
       entities: new Array(50).fill(null).map((_, i) => ({
@@ -112,52 +106,41 @@ const sampleDocuments = {
     }
   }
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   const iterations = parseInt(url.searchParams.get('iterations') || '1000')
   const documentSize = url.searchParams.get('size') as 'small' | 'medium' | 'large' || 'medium'
   const testType = url.searchParams.get('type') as 'legal' | 'general' | 'batch' || 'legal'
-  
   try {
     const benchmark = await runSIMDBenchmark({
       iterations,
       documentSize,
       testType
     })
-    
     return json(benchmark)
-    
   } catch (error) {
     console.error('SIMD benchmark error:', error)
     return json({ error: 'Benchmark failed' }, { status: 500 })
   }
 }
-
 export const POST: RequestHandler = async (event) => {
   try {
     const request = await simdBodyParser.readBodyFast<BenchmarkRequest>(event)
-    
     const benchmark = await runSIMDBenchmark({
       iterations: request?.iterations || 1000,
       documentSize: request?.documentSize || 'medium',
       testType: request?.testType || 'legal'
     })
-    
     return json(benchmark)
-    
   } catch (error) {
     console.error('SIMD benchmark error:', error)
     return json({ error: 'Benchmark failed' }, { status: 500 })
   }
 }
-
 async function runSIMDBenchmark(params: Required<BenchmarkRequest>): Promise<BenchmarkResult> {
   const { iterations, documentSize, testType } = params
   const document = sampleDocuments[documentSize]
   const jsonString = JSON.stringify(document)
-  
   console.log(`🚀 Running SIMD benchmark: ${testType}, ${documentSize}, ${iterations} iterations`)
-  
   // Standard JSON benchmark
   const standardStart = performance.now()
   for (let i = 0; i < iterations; i++) {
@@ -165,7 +148,6 @@ async function runSIMDBenchmark(params: Required<BenchmarkRequest>): Promise<Ben
     const parsed = JSON.parse(serialized)
   }
   const standardTotal = performance.now() - standardStart
-  
   // SIMD JSON benchmark
   const simdStart = performance.now()
   for (let i = 0; i < iterations; i++) {
@@ -173,36 +155,32 @@ async function runSIMDBenchmark(params: Required<BenchmarkRequest>): Promise<Ben
     const parsed = nodeSIMDJSON.fastParse(serialized)
   }
   const simdTotal = performance.now() - simdStart
-  
   // Calculate performance metrics
   const standardAvg = standardTotal / iterations
   const simdAvg = simdTotal / iterations
   const speedupFactor = standardTotal / simdTotal
   const percentImprovement = ((standardTotal - simdTotal) / standardTotal) * 100
   const timeSaved = standardTotal - simdTotal
-  
   const standardOps = 1000 / standardAvg
   const simdOps = 1000 / simdAvg
-  
   console.log(`✅ SIMD Benchmark Results:`, {
     standardTime: `${standardTotal.toFixed(2)}ms`,
     simdTime: `${simdTotal.toFixed(2)}ms`,
     speedup: `${speedupFactor.toFixed(2)}x`,
     improvement: `${percentImprovement.toFixed(1)}%`
   })
-  
   return {
     testType,
     iterations,
     documentSize,
     standardJSON: {
-      totalTime: standardTotal,
-      avgTime: standardAvg,
+      totalTime: standardTotal
+      avgTime: standardAvg
       opsPerSecond: standardOps
     },
     simdJSON: {
-      totalTime: simdTotal,
-      avgTime: simdAvg,
+      totalTime: simdTotal
+      avgTime: simdAvg
       opsPerSecond: simdOps
     },
     performance: {
@@ -218,20 +196,17 @@ async function runSIMDBenchmark(params: Required<BenchmarkRequest>): Promise<Ben
     }
   }
 }
-
 // Additional endpoint for live performance monitoring
 export const PUT: RequestHandler = async () => {
   try {
     const stats = simdBodyParser.getPerformanceStats()
     const nodeStats = nodeSIMDJSON.getPerformanceStats()
-    
     return json({
-      bodyParser: stats,
-      nodeJSON: nodeStats,
+      bodyParser: stats
+      nodeJSON: nodeStats
       uptime: process.uptime(),
       memoryUsage: process.memoryUsage()
     })
-    
   } catch (error) {
     console.error('Performance stats error:', error)
     return json({ error: 'Stats collection failed' }, { status: 500 })

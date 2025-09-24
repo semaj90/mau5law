@@ -1,17 +1,14 @@
 /**
  * Type declarations for missing modules and dependencies
  */
-
-// Common missing modules;
+// Common missing modules
 declare module 'simdjson' {
   export function parse(json: string): any;
   export function stringify(obj: any): string;
 }
-
 declare module '@fastify/websocket' {
   export default any;
 }
-
 declare module 'lokijs' {
   export class Collection<T = any> {
     insert(doc: T): T;
@@ -21,7 +18,6 @@ declare module 'lokijs' {
     remove(doc: T): void;
     clear(): void;
   }
-
   export default class Loki {
     constructor(name: string, options?: any);
     addCollection<T = any>(name: string, options?: any): Collection<T>;
@@ -30,12 +26,10 @@ declare module 'lokijs' {
     loadDatabase(options?: any, callback?: () => void): void;
   }
 }
-
 declare module 'nes.css/css/nes.min.css' {
   const content: string;
   export default content;
 }
-
 declare module '@minio/minio' {
   export class Client {
     constructor(config: any);
@@ -45,15 +39,12 @@ declare module '@minio/minio' {
     presignedGetObject(bucket: string, name: string, expires?: number): Promise<string>;
   }
 }
-
 declare module 'amqplib' {
   export function connect(url: string): Promise<any>;
 }
-
 declare module 'nats' {
   export function connect(options?: any): Promise<any>;
 }
-
 declare module '@qdrant/js-client-rest' {
   export class QdrantClient {
     constructor(config?: any);
@@ -62,11 +53,9 @@ declare module '@qdrant/js-client-rest' {
     createCollection(collection: string, params: any): Promise<any>;
   }
 }
-
 declare module 'neo4j-driver' {
   export function driver(url: string, auth: any): any;
 }
-
 declare module '@xenova/transformers' {
   export class pipeline {
     static async create(task: string, model: string): Promise<any>;
@@ -78,20 +67,16 @@ declare module '@xenova/transformers' {
     static fromPretrained(model: string): Promise<any>;
   }
 }
-
 declare module 'sharp' {
   function sharp(input?: any): any;
   export = sharp;
 }
-
 declare module 'tesseract.js' {
   export function createWorker(options?: any): Promise<any>;
 }
-
 declare module 'pdfjs-dist' {
   export function getDocument(src: any): any;
 }
-
 declare module '@huggingface/inference' {
   export class HfInference {
     constructor(token?: string);
@@ -99,7 +84,6 @@ declare module '@huggingface/inference' {
     featureExtraction(params: any): Promise<any>;
   }
 }
-
 declare module 'bullmq' {
   export class Queue {
     constructor(name: string, options?: any);
@@ -109,11 +93,9 @@ declare module 'bullmq' {
     constructor(name: string, processor: any, options?: any);
   }
 }
-
 declare module '@tensorflow/tfjs-node' {
   export * from '@tensorflow/tfjs';
 }
-
 declare module 'ioredis' {
   export default class Redis {
     constructor(options?: any);
@@ -125,37 +107,30 @@ declare module 'ioredis' {
     pipeline(): any;
   }
 }
-
 declare module 'pg-vector' {
   export function register(pg: any): void;
 }
-
 declare module '@langchain/*' {
   export default any;
   export const anything: any;
 }
-
 declare module 'langchain/*' {
   export default any;
   export const anything: any;
 }
-
 declare module '*.wasm' {
   const content: any;
   export default content;
 }
-
 declare module '*.wgsl' {
   const content: string;
   export default content;
 }
-
 declare module '*.glsl' {
   const content: string;
   export default content;
 }
-
-// Global type extensions;
+// Global type extensions
 declare global {
   interface Window {
     ai?: any;

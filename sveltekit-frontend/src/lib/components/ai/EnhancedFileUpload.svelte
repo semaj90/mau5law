@@ -1,17 +1,15 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced File Upload with Real OCR, Embeddings, and Database Integration -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { createUploadMachine } from '$lib/machines/uploadMachine';
   import type { ProcessingPipeline } from '$lib/types/upload';
   import { toast } from '$lib/utils/toast';
   import { Check, FileText, Loader2, Search, Upload, X } from 'lucide-svelte';
   import { onMount } from 'svelte';
   import { createActor } from 'xstate';
-
   // Props interface
   interface Props {
     onUploadComplete?: (doc: any) => void;
@@ -22,7 +20,6 @@ https://svelte.dev/e/js_parse_error -->
     enableRAG?: boolean;
     class?: string;
   }
-
   // Svelte 5 props with defaults
   let {
     onUploadComplete = () => ,
@@ -31,9 +28,8 @@ https://svelte.dev/e/js_parse_error -->
     enableOCR = true,
     enableEmbedding = true,
     enableRAG = true,
-    class: className = '',;
+    class: className = '',
   }: Props = $props();
-
   // State variables
   let files = $state<File[]>([]);
   let fileStates = $state<Map<string, any>('')>(new Map());
@@ -41,18 +37,16 @@ https://svelte.dev/e/js_parse_error -->
   let searchResults = $state<unknown[]>([]);
   let isSearching = $state(false);
   let systemStatus = $state<any>( );
-
   // === MCP INTEGRATION LAYER ===
   const MCP_ENDPOINTS = {
-    process: '/rag/process',;
-    status: '/rag/status',;
-    search: '/rag/search',;
+    process: '/rag/process',
+    status: '/rag/status',
+    search: '/rag/search',
   } as const;
   let statusSocket = $state<WebSocket | null >(null);
-
   function connectStatusSocket() {
     try {
-      const wsUrl = `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/rag/ws/uploads`;
+      const wsUrl = `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/rag/ws/uploads`
       statusSocket = new WebSocket(wsUrl);
       statusSocket.onopen = () => console.debug('[UploadWS] connected');
       statusSocket.onmessage = (ev) => {
@@ -66,10 +60,10 @@ https://svelte.dev/e/js_parse_error -->
             const current = fileStates.get(entryId);
             fileStates.set(entryId, {
               ...current,
-              progress: typeof msg.progress === 'number' ? msg.progress: current.progress,;
-              status: msg.status || current.status,;
+              progress: typeof msg.progress === 'number' ? msg.progress: current.progress,
+              status: msg.status || current.status,
               error: msg.error || current.error,
-              documentId: msg.documentId || current.documentId,;
+              documentId: msg.documentId || current.documentId,
             });
             fileStates = new Map(fileStates);
           }
@@ -86,7 +80,6 @@ https://svelte.dev/e/js_parse_error -->
       console.warn('[UploadWS] init failed', e);
     }
   }
-
   async function checkSystemStatus() {
     const status = { ocr: false, embeddings: false, search: false, storage: false }
     try {
@@ -94,9 +87,9 @@ https://svelte.dev/e/js_parse_error -->
       if (aggregate?.ok) {
         const json = await aggregate.json.catch(() => ( ));
         status.ocr = !!json.ocr?.healthy || !!json.ocr;
-        status.embeddings = !!json.embeddings?.healthy || !!json.embeddings;
+        status.embeddings = !!json.embeddings?.healthy || !!json.embedding;
         status.search = !!json.search?.healthy || !!json.search;
-        status.storage = !!json.storage?.healthy || !!json.storage;
+        status.storage = !!json.storage?.healthy || !!json.storag;
       } else {
         const probes: [keyof typeof status, string][] = [
           ['ocr', '/rag/ocr/health'],
@@ -118,37 +111,33 @@ https://svelte.dev/e/js_parse_error -->
     } catch (e) {
       console.warn('System status check failed:', e);
     }
-    systemStatus = status;
+    systemStatus = statu;
   }
-
   // Initialize basic pipeline config (placeholder until prop wiring)
   const basePipeline: ProcessingPipeline = {
     gpu: {
-      enabled: enableOCR,
-      webgpuEnabled: false,
-      accelerateOCR: true,
-      accelerateEmbedding: true,;
+      enabled: enableOCR
+      webgpuEnabled: false
+      accelerateOCR: true
+      accelerateEmbedding: true
     },
     rag: {
-      enabled: enableRAG,
-      extractText: true,
-      generateEmbeddings: true,
-      storeVectors: true,
-      updateIndex: true,;
+      enabled: enableRAG
+      extractText: true
+      generateEmbeddings: true
+      storeVectors: true
+      updateIndex: true
     },
-    ocr: { enabled: enableOCR, engines: ['tesseract'], languages: ['eng'] },;
+    ocr: { enabled: enableOCR, engines: ['tesseract'], languages: ['eng'] },
     yolo: { enabled: false },
   } as any;
   const uploadMachineActor = createActor(createUploadMachine(basePipeline));
   uploadMachineActor.start();
-
   // File upload handler with real RAG processing
   async function handleFileUpload(event: Event) {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
-
     const incoming: File[] = Array.from(input.files);
-
     // Validate files
     const validFiles = incoming.filter(file => {
       if (file.size > maxSize) {
@@ -157,12 +146,9 @@ https://svelte.dev/e/js_parse_error -->
       }
       return true;
     });
-
     if (validFiles.length === 0) return;
-
     // Add files to state
     files = [...files, ...validFiles];
-
     // Process files through RAG pipeline
     try {
       const formData = new FormData();
@@ -170,28 +156,24 @@ https://svelte.dev/e/js_parse_error -->
       formData.append('enableOCR', enableOCR.toString());
       formData.append('enableEmbedding', enableEmbedding.toString());
       formData.append('enableRAG', enableRAG.toString());
-
       // Update file states to show processing
       validFiles.forEach(file => {
         const fileId = `${file.name}-${Date.now()}`;
         fileStates.set(fileId, {
           name: file.name,
-          size: file.size,;
-          progress: 0,;
+          size: file.size,
+          progress: 0,
           status: 'uploading';
         });
       });
       fileStates = new Map(fileStates);
-
       const response = await fetch('/api/rag/process', {
-        method: 'POST',;
+        method: 'POST',
         body: formData;
       });
-
       if ((response as { ok?: any; json?: any }).ok) {
         const result = await (response as { ok?: any; json?: any }).json();
         toast.success.successfulUploads} of ${(result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).totalFiles} files`);
-
         // Update file states with results
         (result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).results.forEach((fileResult: any) => {
           const fileId = Array.from(fileStates.keys()).find(
@@ -200,21 +182,19 @@ https://svelte.dev/e/js_parse_error -->
           if (fileId) {
             fileStates.set(fileId, {
               ...fileStates.get(fileId),
-              progress: fileResult.status === 'processed' ? 100 : -1,;
+              progress: fileResult.status === 'processed' ? 100 : -1,
               status: fileResult.status,
-              documentId: fileResult.documentId,;
+              documentId: fileResult.documentId,
               error: fileResult.error;
             });
           }
         });
         fileStates = new Map(fileStates);
-
         // Call completion callback
         onUploadComplete(result);
       } else {
         const error = await (response as { ok?: any; json?: any }).json();
         toast.error(`Upload failed: ${error.error}`);
-
         // Mark all files as failed
         validFiles.forEach(file => {
           const fileId = Array.from(fileStates.keys()).find(
@@ -223,8 +203,8 @@ https://svelte.dev/e/js_parse_error -->
           if (fileId) {
             fileStates.set(fileId, {
               ...fileStates.get(fileId),
-              progress: -1,;
-              status: 'error',;
+              progress: -1,
+              status: 'error',
               error: error.error;
             });
           }
@@ -235,11 +215,9 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Upload error:', error);
       toast.error(`Upload failed: ${error.message}`);
     }
-
     // Clear input
     input.value = '';
   }
-
   // Update file state
   function updateFileState(fileId: string, updates: any) {
     const current = fileStates.get(fileId);
@@ -248,24 +226,21 @@ https://svelte.dev/e/js_parse_error -->
       fileStates = new Map(fileStates);
     }
   }
-
   // Semantic search with real API
   async function handleSearch() {
     if (!searchQuery.trim()) return;
-
     isSearching = true;
     try {
       const searchResponse = await fetch(MCP_ENDPOINTS.search, {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: searchQuery,
-          searchType: 'hybrid',;
-          limit: 10,;
-          threshold: 0.7,;
+        body: JSON.stringify({,
+          query: searchQuery
+          searchType: 'hybrid',
+          limit: 10,
+          threshold: 0.7,
         }),
       });
-
       if (searchResponse.ok) {
         const result = await searchResponse.json();
         if ((result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).success) {
@@ -284,33 +259,27 @@ https://svelte.dev/e/js_parse_error -->
       isSearching = false;
     }
   }
-
   // Helper functions
   function formatFileSize(bytes: number): string {
     const units = ['B', 'KB', 'MB', 'GB'];
-    let size = bytes;
+    let size = byte;
   let unitIndex = $state(0);
-
     while (size >= 1024 && unitIndex < units.length - 1) {
       size /= 1024;
       unitIndex++;
     }
-
     return `${size.toFixed(1)} ${units[unitIndex]}`;
   }
-
   function getStatusColor(progress: number): string {
     if (progress === -1) return 'text-red-500';
     if (progress === 100) return 'text-green-500';
     return 'text-blue-500';
   }
-
   function getProgressColor(progress: number): string {
     if (progress === -1) return 'bg-red-500';
     if (progress === 100) return 'bg-green-500';
     return 'bg-blue-500';
   }
-
   // Auto-search effect
   $effect(() => {
     if (searchQuery.length > 2) {
@@ -318,7 +287,6 @@ https://svelte.dev/e/js_parse_error -->
       return () => clearTimeout(timer);
     }
   });
-
   // Mount lifecycle: connect WebSocket + initial status
   $effect(() => {
     (async () => {
@@ -326,12 +294,10 @@ connectStatusSocket();
     await checkSystemStatus();
     })();
   });
-
   const machineState = $state<any>(uploadMachineActor.getSnapshot());
   uploadMachineActor.subscribe((sn) => { machineState.value = sn; });
   function getEntries() { return machineState.value?.context?.files || []; }
 </script>
-
 <div class="enhanced-file-upload {className}">
   <!-- System Status -->
   <div class="system-status mb-4 grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -369,7 +335,6 @@ connectStatusSocket();
       </span>
     </div>
   </div>
-
   <!-- Upload Area -->
   <div class="upload-area">
     <input
@@ -389,7 +354,6 @@ connectStatusSocket();
       </p>
     </label>
   </div>
-
   <!-- File Processing Status -->
   {#if getEntries().length > 0}
     <div class="file-list mt-6">
@@ -427,7 +391,6 @@ connectStatusSocket();
       {/each}
     </div>
   {/if}
-
   <!-- Semantic Search -->
   {#if enableEmbedding && systemStatus.search}
     <div class="search-section mt-8">
@@ -450,7 +413,6 @@ connectStatusSocket();
           Search
         </button>
       </div>
-
       <!-- Search Results -->
       {#if searchResults.length > 0}
         <div class="search-results mt-4">
@@ -484,9 +446,8 @@ connectStatusSocket();
     </div>
   {/if}
 </div>
-
 <style>
-  .enhanced-file-upload {;
+  .enhanced-file-upload {
     padding: 1.5rem;
     background: #fff;
     border-radius: 0.5rem;
@@ -504,7 +465,7 @@ connectStatusSocket();
     padding: 2rem;
     text-align: center;
     cursor: pointer;
-    transition: border-color 0.2s;
+    transition: border-color 0.2;
   }
   .upload-area:hover {
     border-color: #60a5fa;
@@ -529,7 +490,7 @@ connectStatusSocket();
   }
   .result-item {
     cursor: pointer;
-    transition: background-color 0.15s;
+    transition: background-color 0.15;
   }
   .result-item:hover {
     background: #f9fafb;
@@ -538,4 +499,3 @@ connectStatusSocket();
     display: none;
   }
 </style>
-

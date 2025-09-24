@@ -3,10 +3,8 @@
  * Tracks user typing behavior for contextual prompting and analytics
  * Integrates with multi-core workers for real-time processing
  */
-
 import { createMachine, assign, fromPromise } from 'xstate';
-
-export type TypingEvent = 
+export type TypingEvent =
   | { type: 'USER_STARTED_TYPING'; text: string; timestamp: number }
   | { type: 'USER_STOPPED_TYPING'; text: string; timestamp: number }
   | { type: 'USER_SUBMITTED'; text: string; timestamp: number }
@@ -17,7 +15,6 @@ export type TypingEvent =
   | { type: 'PROCESS_CONTEXT'; text: string }
   | { type: 'ANALYTICS_UPDATE'; data: any };
 }
-
 export interface TypingContext {
   currentText: string;
   lastActivity: number;
@@ -31,7 +28,7 @@ export interface TypingContext {
   sessionStartTime: number;
   userBehavior: {
     avgTypingSpeed: number; // chars per minute
-    avgPauseTime: number;   // ms between typing bursts
+    avgPauseTime: number;   // ms between typing bursts,
     patternRecognition: string[];
     contextualHints: string[];
   };
@@ -46,26 +43,23 @@ export interface TypingContext {
   lastProcessedText: string;
   contextualPrompts: string[];
 }
-
-// Multi-core worker for contextual processing;
+// Multi-core worker for contextual processing
 const processContextualContent = fromPromise(async ({ input }: { input: { text: string; context: TypingContext } }) => {
   try {
-    // Call MCP multi-core server for real-time processing;
+    // Call MCP multi-core server for real-time processing
     const response = await fetch('http://localhost:3002/mcp/contextual-process', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      body: JSON.stringify({,
         text: input.text,
         userBehavior: input.context.userBehavior,
-        analytics: input.context.analytics,;
+        analytics: input.context.analytics,
         timestamp: Date.now()
       })
     });
-
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
       throw new Error(`MCP Server error: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
-
     const result = await (response as { ok?: any; status?: any; json?: any }).json();
     return {
       contextualHints: (result as { hints?: any; suggestions?: any; intent?: any; confidence?: any }).hints || [],
@@ -78,17 +72,16 @@ const processContextualContent = fromPromise(async ({ input }: { input: { text: 
     return {
       contextualHints: ['Unable to process context'],
       suggestions: [],
-      userIntent: 'unknown',;
+      userIntent: 'unknown',
       confidence: 0
     };
   }
 });
-
 export const userTypingStateMachine = createMachine({
   id: 'userTyping',
   types: {
-    context: Record<string, any> as TypingContext,
-    events: Record<string, any> as TypingEvent
+    context: { [key: string]: any } as TypingContext,
+    events: { [key: string]: any } as TypingEvent
   },
   context: {
     currentText: '',
@@ -121,14 +114,14 @@ export const userTypingStateMachine = createMachine({
   initial: 'idle',
   states: {
     idle: {
-      entry: assign({
+      entry: assign({,
         mcpWorkerStatus: 'idle',
         lastActivity: () => Date.now()
       }),
       on: {
         USER_STARTED_TYPING: {
           target: 'typing',
-          actions: assign({
+          actions: assign({,
             typingStartTime: () => Date.now(),
             lastActivity: () => Date.now(),
             currentText: ({ event }) => event.text,
@@ -140,7 +133,7 @@ export const userTypingStateMachine = createMachine({
         },
         USER_RETURNED: {
           target: 'user_present',
-          actions: assign({
+          actions: assign({,
             lastActivity: () => Date.now(),
             analytics: ({ context }) => ({
               ...context.analytics,
@@ -154,13 +147,12 @@ export const userTypingStateMachine = createMachine({
         30000: 'user_inactive'
       }
     },
-
     typing: {
       entry: assign({
         mcpWorkerStatus: 'ready'
       }),
       on: {
-        USER_STARTED_TYPING: {;
+        USER_STARTED_TYPING: {
           actions: [;
             assign({
               currentText: ({ event }) => event.text,
@@ -176,7 +168,7 @@ export const userTypingStateMachine = createMachine({
                 return newLength < oldLength ? context.deletionsCount + 1 : context.deletionsCount;
               }
             }),
-            // Trigger contextual processing for long text;
+            // Trigger contextual processing for long text
             ({ context, event }) => {
               if (event.text.length > 50 && event.text !== context.lastProcessedText) {
                 // Send to MCP worker for contextual analysis
@@ -186,8 +178,8 @@ export const userTypingStateMachine = createMachine({
           ]
         },
         USER_STOPPED_TYPING: {
-          target: 'not_typing',;
-          actions: assign({
+          target: 'not_typing',
+          actions: assign({,
             typingEndTime: () => Date.now(),
             typingDuration: ({ context }) => Date.now() - context.typingStartTime,
             wordsTyped: ({ event }) => event.text.split(/\s+/).filter(item => item.length),
@@ -214,7 +206,7 @@ export const userTypingStateMachine = createMachine({
         },
         USER_SUBMITTED: {
           target: 'processing_submission',
-          actions: assign({
+          actions: assign({,
             submissionsCount: ({ context }) => context.submissionsCount + 1,
             lastActivity: () => Date.now()
           })
@@ -228,7 +220,6 @@ export const userTypingStateMachine = createMachine({
         2000: 'not_typing'
       }
     },
-
     not_typing: {
       entry: assign({
         typingEndTime: () => Date.now(),
@@ -240,7 +231,7 @@ export const userTypingStateMachine = createMachine({
       on: {
         USER_STARTED_TYPING: {
           target: 'typing',
-          actions: assign({
+          actions: assign({,
             typingStartTime: () => Date.now(),
             lastActivity: () => Date.now()
           })
@@ -251,12 +242,12 @@ export const userTypingStateMachine = createMachine({
         TYPING_TIMEOUT: {
           target: 'waiting_user'
         }
-      },;
+      },
       after: {
-        // After 5 seconds of not typing, show contextual prompts;
+        // After 5 seconds of not typing, show contextual prompts
         5000: {
-          target: 'waiting_user',;
-          actions: assign({
+          target: 'waiting_user',
+          actions: assign({,
             contextualPrompts: ({ context }) => {
               // Generate contextual prompts based on current text
               const prompts = [];
@@ -275,7 +266,6 @@ export const userTypingStateMachine = createMachine({
         }
       }
     },
-
     waiting_user: {
       entry: assign({
         userBehavior: ({ context }) => ({
@@ -290,7 +280,7 @@ export const userTypingStateMachine = createMachine({
       on: {
         USER_STARTED_TYPING: {
           target: 'typing',
-          actions: assign({
+          actions: assign({,
             contextualPrompts: [],
             lastActivity: () => Date.now()
           })
@@ -307,7 +297,6 @@ export const userTypingStateMachine = createMachine({
         30000: 'user_inactive'
       }
     },
-
     user_present: {
       on: {
         USER_STARTED_TYPING: {
@@ -321,45 +310,43 @@ export const userTypingStateMachine = createMachine({
         2000: 'idle'
       }
     },
-
     user_inactive: {
       entry: assign({
         analytics: ({ context }) => ({
           ...context.analytics,
           sessionDuration: Date.now() - context.sessionStartTime,
-          userEngagement: context.analytics.totalInteractions > 10 ? 'high' : 
+          userEngagement: context.analytics.totalInteractions > 10 ? 'high' :
                           context.analytics.totalInteractions > 5 ? 'medium' : 'low'
         })
       }),
       on: {
         USER_RETURNED: {
           target: 'user_present',
-          actions: assign({
+          actions: assign({,
             lastActivity: () => Date.now()
           })
         },
         USER_STARTED_TYPING: {
           target: 'typing',
-          actions: assign({
+          actions: assign({,
             lastActivity: () => Date.now()
           })
         }
       }
     },
-
     processing_submission: {
       entry: assign({
         mcpWorkerStatus: 'processing'
       }),
       invoke: {
-        src: processContextualContent,
+        src: processContextualContent
         input: ({ context }) => ({
           text: context.currentText,
           context
         }),
         onDone: {
           target: 'idle',
-          actions: assign({
+          actions: assign({,
             userBehavior: ({ context, event }) => ({
               ...context.userBehavior,
               contextualHints: event.output.contextualHints
@@ -375,7 +362,7 @@ export const userTypingStateMachine = createMachine({
         },
         onError: {
           target: 'idle',
-          actions: assign({
+          actions: assign({,
             mcpWorkerStatus: 'idle',
             userBehavior: ({ context }) => ({
               ...context.userBehavior,
@@ -385,20 +372,19 @@ export const userTypingStateMachine = createMachine({
         }
       }
     },
-
     contextual_processing: {
       entry: assign({
         mcpWorkerStatus: 'processing'
       }),
       invoke: {
-        src: processContextualContent,
+        src: processContextualContent
         input: ({ context }) => ({
           text: context.currentText,
           context
         }),
         onDone: {
           target: 'typing',
-          actions: assign({
+          actions: assign({,
             userBehavior: ({ context, event }) => ({
               ...context.userBehavior,
               contextualHints: event.output.contextualHints,
@@ -412,8 +398,8 @@ export const userTypingStateMachine = createMachine({
           })
         },
         onError: {
-          target: 'typing',;
-          actions: assign({
+          target: 'typing',
+          actions: assign({,
             mcpWorkerStatus: 'ready'
           })
         }
@@ -421,22 +407,20 @@ export const userTypingStateMachine = createMachine({
     }
   }
 }, {
-  // State machine configuration;
+  // State machine configuration
   delays: {
     TYPING_TIMEOUT: 2000,
     INACTIVITY_TIMEOUT: 30000,
     CONTEXTUAL_PROMPT_DELAY: 5000
   }
 });
-
-export type TypingState = 
+export type TypingState =
   | 'idle'
-  | 'typing' 
+  | 'typing'
   | 'not_typing'
   | 'waiting_user'
   | 'user_present'
   | 'user_inactive'
   | 'processing_submission'
   | 'contextual_processing';
-
 export default userTypingStateMachine;

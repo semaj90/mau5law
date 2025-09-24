@@ -4,8 +4,6 @@ import { eq } from "drizzle-orm"
 import { db } from "$lib/server/db/index"
 import type { RequestHandler } from './$types.js'
 import { URL } from "url"
-
-
 export const GET: RequestHandler = async ({ url, locals }) => {
   const userId = locals.user?.id
   if (!userId) {
@@ -48,16 +46,15 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       .leftJoin(cases, eq(evidence.caseId, cases.id)
       .leftJoin(users, eq(evidence.uploadedBy, users.id)
       .where(eq(evidence.hash, hash.toLowerCase())
-
     if (evidenceResults.length === 0) {
       return json({
-        found: false,
+        found: false
         message: "No evidence found with the specified hash",
         hash
       })
     }
     return json({
-      found: true,
+      found: true
       message: `Found ${evidenceResults.length} evidence item(s) matching the hash`,
       hash,
       evidence: evidenceResults
@@ -72,14 +69,12 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     )
   }
 }
-
 export const POST: RequestHandler = async ({ request, locals }) => {
   const userId = locals.user?.id
   if (!userId) {
     return json({ error: "Not authenticated" }, { status: 401 })
   }
   const { hash, evidenceId } = await request.json()
-
   if (!hash || !evidenceId) {
     return json({ error: "Hash and evidenceId required" }, { status: 400 })
   }
@@ -100,17 +95,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       .from(evidence)
       .where(eq(evidence.id, evidenceId)
       .limit(1)
-
     if (evidenceItem.length === 0) {
       return json({ error: "Evidence not found" }, { status: 404 })
     }
     const item = evidenceItem[0]
     const providedHash = hash.toLowerCase()
     const storedHash = (item as { hash?: any; fileName?: any; uploadedAt?: any; fileSize?: any }).hash?.toLowerCase()
-
     // Compare hashes
     const isMatch = storedHash === providedHash
-
     return json({
       evidenceId,
       fileName: (item as { hash?: any; fileName?: any; uploadedAt?: any; fileSize?: any }).fileName,

@@ -1,4 +1,4 @@
-// Legal Case Management Types;
+// Legal Case Management Types
 export interface Case {
   id: string;
   title: string;
@@ -17,7 +17,6 @@ export interface Case {
   actualHours?: number;
   metadata?: Record<string, unknown>;
 }
-
 export interface CaseForm {
   id?: string;
   title: string;
@@ -36,7 +35,6 @@ export interface CaseForm {
   actualHours?: number;
   metadata?: Record<string, unknown>;
 }
-
 export interface CaseFormValidationErrors {
   title?: string;
   description?: string;
@@ -46,7 +44,6 @@ export interface CaseFormValidationErrors {
   jurisdiction?: string;
   [key: string]: string | undefined;
 }
-
 export interface CaseFormState {
   data: CaseForm;
   errors: CaseFormValidationErrors;
@@ -55,8 +52,7 @@ export interface CaseFormState {
   isDirty: boolean;
   touchedFields: Set<keyof CaseForm>;
 }
-
-// Case Timeline and Events;
+// Case Timeline and Events
 export interface TimelineEvent {
   id: string;
   caseId: string;
@@ -70,8 +66,7 @@ export interface TimelineEvent {
   createdBy: string;
   createdAt: Date;
 }
-
-// Case Analytics and Metrics;
+// Case Analytics and Metrics
 export interface CaseMetrics {
   caseId: string;
   totalDocuments: number;
@@ -84,8 +79,7 @@ export interface CaseMetrics {
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
   confidenceScore: number;
 }
-
-// Legal Context and Relationships;
+// Legal Context and Relationships
 export interface LegalContext {
   caseId: string;
   precedents: LegalPrecedent[];
@@ -94,7 +88,6 @@ export interface LegalContext {
   jurisdiction: JurisdictionInfo;
   practiceArea: string[];
 }
-
 export interface LegalPrecedent {
   id: string;
   title: string;
@@ -105,7 +98,6 @@ export interface LegalPrecedent {
   summary: string;
   url?: string;
 }
-
 export interface LegalStatute {
   id: string;
   title: string;
@@ -116,7 +108,6 @@ export interface LegalStatute {
   summary: string;
   relevanceScore: number;
 }
-
 export interface LegalRegulation {
   id: string;
   title: string;
@@ -126,14 +117,12 @@ export interface LegalRegulation {
   summary: string;
   relevanceScore: number;
 }
-
 export interface JurisdictionInfo {
   name: string;
   type: 'federal' | 'state' | 'local';
   code: string;
   courts: CourtInfo[];
 }
-
 export interface CourtInfo {
   name: string;
   level: 'trial' | 'appellate' | 'supreme';

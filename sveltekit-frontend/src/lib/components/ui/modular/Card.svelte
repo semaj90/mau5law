@@ -1,14 +1,12 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Modular Card Component - Bits UI + UnoCSS + Svelte 5 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import type { Snippet } from 'svelte';
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
-
   // Svelte 5 props pattern
   interface Props {
     variant?: 'default' | 'elevated' | 'outlined' | 'filled' | 'yorha' | 'glass';
@@ -21,7 +19,6 @@ https://svelte.dev/e/js_parse_error -->
     hoverable?: boolean;
     interactive?: boolean;
   }
-
   let {
     variant = 'default',
     size = 'default',
@@ -32,9 +29,8 @@ https://svelte.dev/e/js_parse_error -->
     footer,
     hoverable = false,
     interactive = false,
-    ...restProps;
+    ...restProp;
   }: Props = $props();
-
   // UnoCSS-based card variants
   const cardVariants = cva(
     // Base classes
@@ -63,17 +59,15 @@ https://svelte.dev/e/js_parse_error -->
         }
       },
       defaultVariants: {
-        variant: 'default',;
-        size: 'default',;
+        variant: 'default',
+        size: 'default',
         padding: 'default';
       }
     }
   );
-
   // Interactive states
   const interactiveClasses = 'cursor-pointer hover:scale-102 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2';
   const hoverableClasses = 'hover:shadow-md hover:-translate-y-1';
-
   // Computed class names
   let cardClass = $derived(
     cn(
@@ -84,7 +78,6 @@ https://svelte.dev/e/js_parse_error -->
     )
   );
 </script>
-
 <div class={cardClass} {...restProps}>
   <!-- Card Header -->
   {#if header}
@@ -92,14 +85,12 @@ https://svelte.dev/e/js_parse_error -->
       {@render header()}
     </div>
   {/if}
-
   <!-- Card Content -->
   {#if children}
     <div class="nier-bits-yorha-panel-content">
       {@render children()}
     </div>
   {/if}
-
   <!-- Card Footer -->
   {#if footer}
     <div class="border-t border-gray-200 pt-4 mt-4 dark:border-gray-700">
@@ -107,11 +98,9 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
-
-<style>/* YoRHa-specific animations */ .yorha-glow {;
+<style>/* YoRHa-specific animations */ .yorha-glow {
     animation: yorha-pulse 2s ease-in-out infinite alternate;
   }
-
   @keyframes yorha-pulse {
     from {
       box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);

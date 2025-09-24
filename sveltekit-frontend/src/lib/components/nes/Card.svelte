@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-
   interface Props {
     title?: string;
     subtitle?: string;
@@ -8,7 +7,6 @@
     content?: string;
     children?: Snippet;
   }
-
   let {
     title = 'Card Title',
     subtitle,
@@ -17,7 +15,6 @@
     children
   }: Props = $props();
 </script>
-
 <section class="nes-container with-title is-dark">
   <h3 class="title">{title}</h3>
   {#if subtitle}

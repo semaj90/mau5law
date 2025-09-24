@@ -6,7 +6,6 @@ https://svelte.dev/e/bind_invalid_expression -->
 <!-- @migration-task Error while migrating Svelte code: Can only bind to an Identifier or MemberExpression -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits';
   import {
@@ -25,7 +24,7 @@ https://svelte.dev/e/bind_invalid_expression -->
   import { Slider } from '$lib/components/ui/slider/index.js';
   import { Switch } from '$lib/components/ui/switch/index.js';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
-  import { 
+  import {
     aiAssistantManager,
     isAIActive,
     isProcessing,
@@ -40,7 +39,6 @@ https://svelte.dev/e/bind_invalid_expression -->
   } from '$lib/stores/aiAssistant.svelte.js';
   import { unifiedAIService } from '$lib/ai/unified-ai-service.js';
   import type { UnifiedQueryOptions, UnifiedResponse } from '$lib/ai/unified-ai-service.js';
-
   // Component props
   interface Props {
     height?: string;
@@ -48,14 +46,12 @@ https://svelte.dev/e/bind_invalid_expression -->
     enableContext7?: boolean;
     autoFocus?: boolean;
   }
-
   let {
     height = '600px',
     showSettings = true,
     enableContext7 = true,
     autoFocus = true
   }: Props = $props();
-
   // Reactive state using Svelte 5 runes
   let currentMessage = $state('');
   let isLoading = $state(false);
@@ -68,7 +64,6 @@ https://svelte.dev/e/bind_invalid_expression -->
   let availableModels = $state<string[]>(['gemma3-legal', 'nomic-embed-text', 'deeds-web']);
   let useUnifiedService = $state(true);
   let selectedMode = $state<'auto' | 'wasm' | 'langchain' | 'gpu'>('auto');
-
   // Derived state for UI
   let canSend = $derived(() => currentMessage.trim.length > 0 && !isProcessing());
   let hasConversation = $derived(() => conversationHistory().length > 0);
@@ -76,12 +71,11 @@ https://svelte.dev/e/bind_invalid_expression -->
     const health = clusterHealth();
     const healthyCount = Object.values.filter-length;
     return {
-      healthy: healthyCount === Object.keys(errors).length,;
-      count: healthyCount,;
+      healthy: healthyCount === Object.keys(errors).length,
+      count: healthyCount
       total: Object.keys(errors).length;
     };
   });
-
   // Component lifecycle
   $effect(() => {
     (async () => {
@@ -89,29 +83,23 @@ https://svelte.dev/e/bind_invalid_expression -->
     if (autoFocus && messageInput) {
       messageInput.focus();
     }
-
     // Initialize unified AI service
     try {
       await unifiedAIService.initialize();
       console.log('✅ Unified AI Service ready');
     } catch (error) {
       console.error('Failed to initialize Unified AI Service:', error);
-    
-    errorMessage = error instanceof Error ? error.message: 'An error occurred';}
-
+    errorMessage = error instanceof Error ? error.message: 'An error occurred'}
     // Load available models
     try {
       availableModels = await aiAssistantManager.getAvailableModels();
     } catch (error) {
       console.warn('Failed to load available models:', error);
-    
-    errorMessage = error instanceof Error ? error.message: 'An error occurred';}
-
+    errorMessage = error instanceof Error ? error.message: 'An error occurred'}
     // Check cluster health
     aiAssistantManager.checkClusterHealth();
     })();
   });
-
   // Effect to scroll to bottom when conversation updates
   $effect(() => {
     if (conversationHistory().length > 0 && chatContainer) {
@@ -120,26 +108,22 @@ https://svelte.dev/e/bind_invalid_expression -->
       }, 100);
     }
   });
-
   // Send message to AI
   async function sendMessage() {
     performance.mark('function-start');
     if (!canSend) return;
-
     const message = currentMessage.trim();
     currentMessage = '';
-
     try {
       if (useUnifiedService) {
         // Use unified AI service
         const options: UnifiedQueryOptions = {
-          query: message,;
-          mode: selectedMode === 'auto' ? undefined : selectedMode,
-          useContext7: enableContext7 && useContext7,
-          maxResults: 10,;
+          query: message
+          mode: selectedMode === 'auto' ? undefined : selectedMode
+          useContext7: enableContext7 && useContext7
+          maxResults: 10,
           threshold: 0.7;
         };
-
         const response = await unifiedAIService.query(options);
         if (response.success) {
           // Add to conversation history manually since we're bypassing the store
@@ -147,9 +131,9 @@ https://svelte.dev/e/bind_invalid_expression -->
             id: crypto.randomUUID(),
             type: 'assistant' as const,
             content: response.response,
-            timestamp: new Date(),;
+            timestamp: new Date(),
             metadata: {
-              model: response.metadata?.model || selectedMode,;
+              model: response.metadata?.model || selectedMode,
               temperature: currentTemperature(),
               responseTime: response.processingTime,
               tokenCount: response.metadata?.tokenCount || 0,
@@ -159,8 +143,8 @@ https://svelte.dev/e/bind_invalid_expression -->
           // Add user message first
           const userEntry = {
             id: crypto.randomUUID(),
-            type: 'user' as const,;
-            content: message,;
+            type: 'user' as const,
+            content: message
             timestamp: new Date();
           };
           console.log('📝 Unified AI Response:', response);
@@ -168,30 +152,27 @@ https://svelte.dev/e/bind_invalid_expression -->
           console.error('Unified AI query failed:', response.error);
           // Fall back to regular AI assistant
           await aiAssistantManager.sendMessage(message, {
-            useContext7: enableContext7 && useContext7,
-            model: currentModel(),;
+            useContext7: enableContext7 && useContext7
+            model: currentModel(),
             temperature: currentTemperature();
           });
         }
       } else {
         // Use regular AI assistant manager
         await aiAssistantManager.sendMessage(message, {
-          useContext7: enableContext7 && useContext7,
-          model: currentModel(),;
+          useContext7: enableContext7 && useContext7
+          model: currentModel(),
           temperature: currentTemperature();
         });
       }
     } catch (error) {
       console.error('Failed to send message:', error);
-    
-    errorMessage = error instanceof Error ? error.message: 'An error occurred';}
-
+    errorMessage = error instanceof Error ? error.message: 'An error occurred'}
     // Focus back to input
     if (messageInput) {
       messageInput.focus();
     }
   }
-
   // Handle keyboard shortcuts
   function handleKeydown(event: KeyboardEvent) {
     performance.mark('function-start');
@@ -200,12 +181,10 @@ https://svelte.dev/e/bind_invalid_expression -->
       sendMessage();
     }
   }
-
   // Format timestamp
   function formatTime(date: Date): string {
     return new Intl.DateTimeFormat.format(date);
   }
-
   // Get message role color
   function getRoleColor(role: string): string {
     switch (role) {
@@ -215,32 +194,27 @@ https://svelte.dev/e/bind_invalid_expression -->
       default: return 'bg-gray-100 border-gray-200';
     }
   }
-
   // Clear conversation
   function clearConversation() {
     performance.mark('function-start');
     aiAssistantManager.clearConversation();
   }
-
   // Export conversation
   function exportConversation() {
     performance.mark('function-start');
     aiAssistantManager.exportConversation();
   }
-
   // Stop generation
   function stopGeneration() {
     performance.mark('function-start');
     aiAssistantManager.stopGeneration();
   }
-
   // Retry last message
   function retryLast() {
     performance.mark('function-start');
     aiAssistantManager.retryLast();
   }
 </script>
-
 <div class="w-full nes-container">
   <div class="yorha-panel-header p-4 border-b">
     <div class="flex items-center justify-between">
@@ -250,11 +224,10 @@ https://svelte.dev/e/bind_invalid_expression -->
           {clusterStatus.healthy ? 'Online' : `${clusterStatus.count}/${clusterStatus.total} Healthy`}
         </Badge>
       </h3>
-      
       <div class="flex items-center gap-2">
         {#if showSettings}
-          <Button class="bits-btn" 
-            variant="ghost" 
+          <Button class="bits-btn"
+            variant="ghost"
             size="sm"
             onclick={(event: MouseEvent) => ) =>
 showSettingsDialog = true}
@@ -265,10 +238,9 @@ showSettingsDialog = true}
             </svg>
 </Button>
         {/if}
-
         {#if hasConversation}
-          <Button class="bits-btn" 
-            variant="ghost" 
+          <Button class="bits-btn"
+            variant="ghost"
             size="sm"
             onclick={(event: MouseEvent) => ) =>
 showExportDialog = true}
@@ -281,10 +253,9 @@ showExportDialog = true}
       </div>
     </div>
   </div>
-
   <main style="height: calc({height} - 80px);">
     <!-- Chat Messages -->
-    <div 
+    <div
       bind:this={chatContainer}
       class="flex-1 overflow-y-auto p-4 space-y-4"
     >
@@ -326,21 +297,19 @@ showExportDialog = true}
           </div>
         {/each}
       {/if}
-
       {#if isProcessing()}
         <div class="flex items-center gap-2 text-gray-500">
           <div class="animate-spin h-4 w-4 border-2 border-gray-300 border-t-blue-600 rounded-full"></div>
           <span class="text-sm">AI is thinking...</span>
         </div>
       {/if}
-
       {#if aiError()}
         <div class="p-3 bg-red-50 border border-red-200 rounded-lg">
           <div class="text-sm text-red-800 font-medium">Error</div>
           <div class="text-sm text-red-600 mt-1">{aiError()}</div>
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             class="mt-2 bits-btn bits-btn"
             onclick={(event: MouseEvent) => retryLast}
           >
@@ -349,12 +318,11 @@ Retry
         </div>
       {/if}
     </div>
-
     <!-- Input Area -->
     <div class="border-t p-4">
       <!-- Unified AI Service Controls -->
       <div class="flex items-center gap-2 mb-3">
-        <Switch 
+        <Switch
           bind:checked={useUnifiedService}
           disabled={isProcessing()}
         />
@@ -362,7 +330,7 @@ Retry
           Use Unified AI Service (WASM + LangChain + GPU)
         </label>
         {#if useUnifiedService}
-          <select 
+          <select
             bind:value={selectedMode}
             disabled={isProcessing()}
             class="px-2 py-1 text-xs border rounded"
@@ -374,10 +342,9 @@ Retry
           </select>
         {/if}
       </div>
-
       {#if enableContext7}
         <div class="flex items-center gap-2 mb-3">
-          <Switch 
+          <Switch
             bind:checked={useContext7}
             disabled={isProcessing()}
           />
@@ -389,7 +356,6 @@ Retry
           {/if}
         </div>
       {/if}
-
       <div class="flex gap-2">
         <Textarea
           bind:this={messageInput}
@@ -399,9 +365,8 @@ Retry
           disabled={isProcessing()}
           class="flex-1 min-h-[40px] max-h-[120px] resize-none"
         />
-        
         <div class="flex flex-col gap-1">
-          <Button 
+          <Button
             onclick={(event: MouseEvent) => sendMessage}
             disabled={!canSend}
             class="px-4 bits-btn bits-btn"
@@ -414,9 +379,8 @@ Retry
               </svg>
             {/if}
 </Button>
-          
           {#if isProcessing()}
-            <Button class="bits-btn" 
+            <Button class="bits-btn"
               variant="ghost"
               size="sm"
               onclick={(event: MouseEvent) => stopGeneration}
@@ -428,7 +392,6 @@ Retry
           {/if}
         </div>
       </div>
-
       <!-- Usage Stats -->
       {#if aiUsage().totalQueries > 0}
         <div class="flex items-center gap-4 mt-2 text-xs text-gray-500">
@@ -440,14 +403,12 @@ Retry
     </div>
   </div>
 </div>
-
 <!-- Settings Dialog -->
 <Dialog.Root open={showSettingsDialog} openchange={(open) => showSettingsDialog = open}>
   <Dialog.Portal>
     <Dialog.Overlay class="fixed inset-0 z-50 bg-black/80" />
     <Dialog.Content class="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg">
       <Dialog.Title class="text-lg font-semibold">AI Assistant Settings</Dialog.Title>
-      
       <div class="space-y-4">
         <!-- Model Selection -->
         <div class="space-y-2">
@@ -463,7 +424,6 @@ Retry
             </SelectContent>
           </SelectRoot>
         </div>
-
         <!-- Temperature Slider -->
         <div class="space-y-2">
           <label class="text-sm font-medium">
@@ -480,7 +440,6 @@ Retry
             Lower values make responses more focused, higher values more creative
           </p>
         </div>
-
         <!-- Cluster Health -->
         <div class="space-y-2">
           <label class="text-sm font-medium">Cluster Health</label>
@@ -498,8 +457,8 @@ Retry
               <span class="text-sm">Embeddings</span>
             </div>
           </div>
-          <Button class="bits-btn" 
-            variant="ghost" 
+          <Button class="bits-btn"
+            variant="ghost"
             size="sm"
             onclick={(event: MouseEvent) => ) =>
 aiAssistantManager.checkClusterHealth(}
@@ -508,9 +467,8 @@ aiAssistantManager.checkClusterHealth(}
 </Button>
         </div>
       </div>
-
       <div class="flex justify-between gap-2">
-        <Button class="bits-btn" 
+        <Button class="bits-btn"
           variant="error"
           onclick={(event: MouseEvent) => clearConversation}
           disabled={!hasConversation}
@@ -525,19 +483,16 @@ showSettingsDialog = false}>
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
-
 <!-- Export Dialog -->
 <Dialog.Root open={showExportDialog} openchange={(open) => showExportDialog = open}>
   <Dialog.Portal>
     <Dialog.Overlay class="fixed inset-0 z-50 bg-black/80" />
     <Dialog.Content class="fixed left-[50%] top-[50%] z-50 grid w-full max-w-md translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg">
       <Dialog.Title class="text-lg font-semibold">Export Conversation</Dialog.Title>
-      
       <div class="space-y-4">
         <p class="text-sm text-gray-600">
           Export your conversation history as a JSON file for backup or analysis.
         </p>
-        
         <div class="space-y-2">
           <div class="text-sm">
             <strong>Messages:</strong> {conversationHistory().length}
@@ -550,9 +505,8 @@ showSettingsDialog = false}>
           </div>
         </div>
       </div>
-
       <div class="flex justify-end gap-2">
-        <Button class="bits-btn" 
+        <Button class="bits-btn"
           variant="ghost"
           onclick={(event: MouseEvent) => ) =>
 showExportDialog = false}
@@ -570,13 +524,11 @@ showExportDialog = false}
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
-
 <style>
   /* Component-specific styles */
   :global(.animate-spin) {
     animation: spin 1s linear infinite;
   }
-  
   @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }

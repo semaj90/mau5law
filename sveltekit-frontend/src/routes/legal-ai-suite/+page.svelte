@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import {
     Card,
@@ -15,7 +14,6 @@ https://svelte.dev/e/js_parse_error -->
   import Progress from '$lib/components/ui/progress/Progress.svelte';
   import { AlertCircle, UploadCloud, Search, Brain, CheckCircle, AlertTriangle } from 'lucide-svelte';
   import GPUAcceleratedLegalSearch from '$lib/components/gpu/GPUAcceleratedLegalSearch.svelte';
-
   // Svelte 5 runes for state management
   let selectedFiles = $state<File[]>([]);
   let isProcessing = $state(false);
@@ -23,7 +21,7 @@ https://svelte.dev/e/js_parse_error -->
   let ragQuery = $state('');
   let ragResults = $state<any[]>([]);
   let systemMetrics = $state({
-    gpuAcceleration: false,
+    gpuAcceleration: false
     ollamaStatus: 'unknown',
     processingSpeed: 0,
     caseAIScore: 0,
@@ -31,7 +29,6 @@ https://svelte.dev/e/js_parse_error -->
   let selectedJurisdiction = $state('federal');
   let processingSummary = $state<any>(null);
   let realTimeLogs = $state<string[]>([]);
-
   // Computed properties using Svelte 5 $derived runes
   let hasFiles = $derived(selectedFiles.length > 0);
   let canProcess = $derived(hasFiles && !isProcessing);
@@ -41,7 +38,6 @@ https://svelte.dev/e/js_parse_error -->
       ? processedDocuments.reduce((sum, doc) => sum + (doc?.prosecutionScore || 0), 0) / processedDocuments.length: 0
   );
   let canQuery = $derived(ragQuery.trim.length > 0);
-
   $effect(() => {
     (async () => {
 await checkSystemStatus();
@@ -49,7 +45,6 @@ await checkSystemStatus();
     startRealTimeLogging();
     })();
   });
-
   function handleFileSelect(event: Event) {
     const input = event.target as HTMLInputElement;
     const files = input?.files ? Array.from(input.files) : [];)
@@ -61,47 +56,36 @@ await checkSystemStatus();
     );
     addLog(`📄 Selected ${selectedFiles.length} PDF files for processing`);
   }
-
   async function processLegalDocuments() {
     if (!canProcess) return;
-
     isProcessing = true;
     processingSummary = null;
     addLog(`🚀 Starting legal document processing...`);
-
     try {
       const formData = new FormData();
-
       // Add files to form data
       selectedFiles.forEach((file) => {
         formData.append('pdfFiles', file);
       });
-
       // Add processing parameters
       formData.append('jurisdiction', selectedJurisdiction);
       formData.append('enhanceRAG', 'true');
       formData.append('caseId', `case-${Date.now()}`);
-
       addLog(
         `⚖️ Processing ${selectedFiles.length} documents under ${selectedJurisdiction} jurisdiction`
       );
-
       const response = await fetch('/api/legal/ingest', {
-        method: 'POST',;
-        body: formData,;
+        method: 'POST',
+        body: formData
       });
-
       if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
         throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
       }
-
       const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
-
       if ((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).success) {
         processedDocuments = (result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).documents || [];
         processingSummary = (result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).summary;
-        systemMetrics.caseAIScore = (result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).caseAISummaryScore;
-
+        systemMetrics.caseAIScore = (result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).caseAISummaryScor;
         addLog(`✅ Processing complete: ${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).documentsProcessed} documents`);
         addLog(`📊 Total entities extracted: ${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).summary?.totalEntities || 0}`);
         addLog(`🎯 Average prosecution score: ${(averageProsecutionScore * 100).toFixed(1)}%`);
@@ -117,40 +101,33 @@ await checkSystemStatus();
       isProcessing = false;
     }
   }
-
   async function executeRAGQuery() {
     if (!ragQuery.trim()) return;
-
     addLog(`🔍 Executing enhanced RAG query: "${ragQuery}"`);
-
     try {
       const response = await fetch('/api/enhanced-rag/query', {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          query: ragQuery,;
-          jurisdiction: selectedJurisdiction,
+        body: JSON.stringify({,
+          query: ragQuery
+          jurisdiction: selectedJurisdiction
           maxResults: 5,
-          includeContext7: true,
-          prioritizeFactChecked: true,
-          minProsecutionScore: 0.5,;
+          includeContext7: true
+          prioritizeFactChecked: true
+          minProsecutionScore: 0.5,
         }),
       });
-
       if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
         throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
       }
-
       const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
-
       if ((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).success) {
         ragResults = (result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).results || [];
         addLog(
           `✅ RAG query complete: ${ragResults.length} results, score: ${((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).ragScore * 100).toFixed(1)}%`
         );
-
         if ((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).aggregatedAnalysis?.recommendedNextQuery) {
           addLog(`💡 Recommended follow-up: "${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).aggregatedAnalysis.recommendedNextQuery}"`);
         }
@@ -163,20 +140,17 @@ await checkSystemStatus();
       addLog(`❌ RAG query failed: ${error.message}`);
     }
   }
-
   async function checkSystemStatus() {
     try {
       // Check Ollama status
-      const ollamaResponse = await fetch('http://localhost:11434/api/tags');
+      const ollamaResponse = await fetch('http://localhost:11434/api/tags')
       systemMetrics.ollamaStatus = ollamaResponse.ok ? 'healthy' : 'offline';
-
       // Check actual GPU service status
       try {
         const gpuResponse = await fetch('/api/v1/gpu');
         if (gpuResponse.ok) {
           const gpuStatus = await gpuResponse.json();
           systemMetrics.gpuAcceleration = gpuStatus.gpu_status?.gpu_available || false;
-
           if (systemMetrics.gpuAcceleration) {
             addLog(`🔥 GPU acceleration available: ${gpuStatus.integration?.gpu_model || 'RTX 3060 Ti'}`);
             addLog(`⚡ Expected performance: ${gpuStatus.performance?.speedup_vs_cpu || '8.3x faster'}`);
@@ -190,7 +164,6 @@ await checkSystemStatus();
         systemMetrics.gpuAcceleration = false;
         addLog('⚠️ GPU service not responding - using CPU processing');
       }
-
       addLog(
         `🖥️ System status: Ollama ${systemMetrics.ollamaStatus}, GPU: ${systemMetrics.gpuAcceleration ? 'enabled' : 'disabled'}`
       );
@@ -200,22 +173,18 @@ await checkSystemStatus();
       addLog(`⚠️ System check failed: ${error.message}`);
     }
   }
-
   function addLog(message: string) {
     const timestamp = new Date().toLocaleTimeString();
     realTimeLogs = [...realTimeLogs, `[${timestamp}] ${message}`];
-
     // Keep only the last 20 log entries
     if (realTimeLogs.length > 20) {
       realTimeLogs = realTimeLogs.slice(-20);
     }
   }
   let loggingInterval = $state<number | null >(null);
-
   function startRealTimeLogging() {
     // Prevent multiple intervals
     if (loggingInterval) return;
-
     // Simulate periodic system metrics updates
     loggingInterval = window.setInterval(() => {
       if (isProcessing) {
@@ -223,19 +192,16 @@ await checkSystemStatus();
       }
     }, 1000);
   }
-
   onDestroy(() => {
     if (loggingInterval !== null) {
       clearInterval(loggingInterval);
       loggingInterval = null;
     }
   });
-
   function clearLogs() {
     realTimeLogs = [];
     addLog('📋 Logs cleared');
   }
-
   function getFactCheckBadgeVariant(status: string) {
     switch (status) {
       case 'FACT':
@@ -249,21 +215,18 @@ await checkSystemStatus();
         return 'outline';
     }
   }
-
   function getProsecutionScoreColor(score: number) {
     if (score >= 0.8) return 'text-green-600';
     if (score >= 0.6) return 'text-yellow-600';
     return 'text-red-600';
   }
 </script>
-
 <svelte:head>
   <title>Legal AI Suite - Enhanced RAG & Multi-PDF Processing</title>
   <meta
     name="description"
     content="GPU-accelerated legal document analysis with enhanced RAG and fact-checking" />
 </svelte:head>
-
 <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
   <div class="max-w-7xl mx-auto space-y-6">
     <!-- Header -->
@@ -271,7 +234,6 @@ await checkSystemStatus();
       <h1 class="text-4xl font-bold text-gray-900 mb-2">⚖️ Legal AI Suite</h1>
       <p class="text-lg text-gray-600">GPU-Accelerated Legal Document Analysis with Enhanced RAG</p>
     </div>
-
     <!-- System Status Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
       <div class="nes-container">
@@ -290,7 +252,6 @@ await checkSystemStatus();
           </div>
         </div>
       </div>
-
       <div class="nes-container">
         <div class="yorha-panel-header pb-2">
           <h3 class="nes-text is-primary text-sm font-medium">Ollama Status</h3>
@@ -307,7 +268,6 @@ await checkSystemStatus();
           </div>
         </div>
       </div>
-
       <div class="nes-container">
         <div class="yorha-panel-header pb-2">
           <h3 class="nes-text is-primary text-sm font-medium">Processing Speed</h3>
@@ -322,7 +282,6 @@ await checkSystemStatus();
           </div>
         </div>
       </div>
-
       <div class="nes-container">
         <div class="yorha-panel-header pb-2">
           <h3 class="nes-text is-primary text-sm font-medium">Case AI Score</h3>
@@ -335,7 +294,6 @@ await checkSystemStatus();
         </div>
       </div>
     </div>
-
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Document Processing Panel -->
       <div class="nes-container">
@@ -360,7 +318,6 @@ await checkSystemStatus();
               </p>
             {/if}
           </div>
-
           <!-- Jurisdiction Selection -->
           <div>
             <label for="jurisdiction" class="block text-sm font-medium text-gray-700 mb-2">
@@ -376,7 +333,6 @@ await checkSystemStatus();
               <option value="international">International</option>
             </select>
           </div>
-
           <!-- Processing Controls -->
           <!-- Processing Controls -->
           <div class="flex space-x-2">
@@ -422,7 +378,6 @@ await checkSystemStatus();
           {/if}
         </div>
       </div>
-
       <!-- Enhanced RAG Query Panel -->
       <div class="nes-container">
         <div class="yorha-panel-header">
@@ -452,7 +407,6 @@ await checkSystemStatus();
               </button>
             </div>
           </div>
-
           <!-- RAG Results -->
           {#if ragResults.length > 0}
             <div class="border-t pt-4">
@@ -489,7 +443,6 @@ await checkSystemStatus();
           {/if}
         </div>
       </div>
-
       <!-- GPU-Accelerated Legal Search -->
       <div class="nes-container">
         <div class="yorha-panel-header">
@@ -508,7 +461,6 @@ await checkSystemStatus();
         </div>
       </div>
     </div>
-
     <!-- Processed Documents Display -->
     {#if processedDocuments.length > 0}
       <div class="nes-container">
@@ -559,7 +511,6 @@ await checkSystemStatus();
         </div>
       </div>
     {/if}
-
     <!-- Real-time System Logs -->
     <div class="nes-container">
       <div class="yorha-panel-header flex flex-row items-center justify-between">
@@ -586,7 +537,6 @@ await checkSystemStatus();
         </div>
       </div>
     </div>
-
     <!-- System Statistics -->
     {#if processedDocuments.length > 0 || ragResults.length > 0}
       <div class="nes-container">
@@ -619,25 +569,20 @@ await checkSystemStatus();
     {/if}
   </div>
 </div>
-
 <style>
   /* Custom scrollbar for logs */
-  :global(.max-h-64::-webkit-scrollbar) {;
+  :global($1) {
     width: 6px;
   }
-
-  :global(.max-h-64::-webkit-scrollbar-track) {
+  :global($1) {
     background: #f1f1f1;
     border-radius: 3px;
   }
-
-  :global(.max-h-64::-webkit-scrollbar-thumb) {
+  :global($1) {
     background: #c1c1c1;
     border-radius: 3px;
   }
-
-  :global(.max-h-64::-webkit-scrollbar-thumb:hover) {
+  :global($1) {
     background: #a8a8a8;
   }
 </style>
-

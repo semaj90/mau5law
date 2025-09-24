@@ -1,14 +1,12 @@
 <!-- Draggable Evidence Node - Svelte 5 + Enhanced Drag System -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { draggable } from '$lib/actions/draggable';
   import { evidenceStore } from '$lib/stores/evidence';
   import { embeddingsService } from '$lib/services/embeddings-service';
   import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits';
   import { showSuccess, showError } from '$lib/stores/alerts';
   import { FileText, Image, Video, Mic, Zap, Bot } from 'lucide-svelte';
-
   interface EvidenceNode {
     id: string;
     title: string;
@@ -33,9 +31,8 @@
       importance?: number;
     };
   }
-
   interface Props {
-    evidence: EvidenceNode;
+    evidence: EvidenceNod;
     canvasContainer?: HTMLElement;
     selected?: boolean;
     highlighted?: boolean;
@@ -43,7 +40,6 @@
     onAnalyze?: (id: string) => void;
     onConnect?: (fromId: string, toId: string) => void;
   }
-
   let {
     evidence = $bindable(),
     canvasContainer,
@@ -53,14 +49,12 @@
     onAnalyze,
     onConnect
   }: Props = $props();
-
   // Svelte 5 state
   let nodeElement = $state<HTMLDivElement>();
   let isDragging = $state(false);
   let isAnalyzing = $state(false);
   let showDetails = $state(false);
   let analysisProgress = $state(0);
-
   // Derived properties
   let nodeClass = $derived(`
     evidence-node
@@ -69,98 +63,81 @@
     ${highlighted ? 'highlighted' : ''}
     ${isDragging ? 'dragging' : ''}
   `);
-
   let iconComponent = $derived(() => {
     switch (evidence.type) {
       case 'document': return FileText;
-      case 'image': return Image;
+      case 'image': return Imag;
       case 'video': return Video;
       case 'audio': return Mic;
       default: return FileText;
     }
   });
-
   let confidenceColor = $derived(() => {
     const confidence = evidence.metadata?.confidence || 0;
     if (confidence > 0.8) return 'text-green-600';
     if (confidence > 0.6) return 'text-yellow-600';
     return 'text-red-600';
   });
-
   // Position update handler
   function handlePositionUpdate(x: number, y: number) {
     evidence.x = x;
     evidence.y = y;
-
     // Update in store
     evidenceStore.updateEvidence(evidence.id, { x, y });
   }
-
   // Drag event handlers
   function handleDragStart() {
     isDragging = true;
   }
-
   function handleDragEnd(x: number, y: number) {
     isDragging = false;
     handlePositionUpdate(x, y);
     showSuccess(`Evidence moved to (${Math.round(x)}, ${Math.round(y)})`);
   }
-
   // AI Analysis
   async function analyzeEvidence() {
     if (isAnalyzing) return;
-
     isAnalyzing = true;
     analysisProgress = 0;
-
     try {
       // Step 1: Preprocess text (25%)
       analysisProgress = 25;
-      const textContent = evidence.content || evidence.metadata?.extractedText || evidence.title;
+      const textContent = evidence.content || evidence.metadata?.extractedText || evidence.titl;
       const preprocessed = await embeddingsService.preprocessText(textContent);
-
       // Step 2: Generate embeddings (50%)
       analysisProgress = 50;
       const embeddingResult = await embeddingsService.generateEmbedding(preprocessed.cleanText);
-
       // Step 3: Send to AI server for analysis (75%)
       analysisProgress = 75;
       const aiResponse = await fetch('/api/ai/analyze-evidence', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           evidenceId: evidence.id,
-          text: preprocessed.cleanText,;
-          embeddings: embeddingResult.embedding,;
+          text: preprocessed.cleanText,
+          embeddings: embeddingResult.embedding,
           metadata: evidence.metadata;
         })
       });
-
       if (!aiResponse.ok) {
         throw new Error('AI analysis failed');
       }
-
       const analysis = await aiResponse.json();
-
       // Step 4: Update evidence with analysis (100%)
       analysisProgress = 100;
-      evidence.analysis = analysis;
+      evidence.analysis = analysi;
       evidence.metadata = {
         ...evidence.metadata,
-        embeddings: embeddingResult.embedding,;
+        embeddings: embeddingResult.embedding,
         confidence: analysis.confidence || 0.8;
       };
-
       // Update store
       evidenceStore.updateEvidence(evidence.id, {
-        analysis: evidence.analysis,;
+        analysis: evidence.analysis,
         metadata: evidence.metadata;
       });
-
       showSuccess(`Analysis complete for ${evidence.title}`);
       onAnalyze?.(evidence.id);
-
     } catch (error) {
       console.error('❌ Evidence analysis failed:', error);
       showError(`Analysis failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
@@ -169,17 +146,14 @@
       analysisProgress = 0;
     }
   }
-
   // Connection handling
   function handleNodeClick(event: MouseEvent) {
     event.stopPropagation();
     onSelect?.(evidence.id);
   }
-
   function handleConnectionDrop(event: DragEvent) {
     event.preventDefault();
     const droppedData = event.dataTransfer?.getData('text/plain');
-
     if (droppedData) {
       try {
         const droppedEvidence = JSON.parse(droppedData);
@@ -192,30 +166,28 @@
       }
     }
   }
-
   // Drag data for connections
   function handleDragStart_Connection(event: DragEvent) {
     if (event.dataTransfer) {
       event.dataTransfer.setData('text/plain', JSON.stringify({
-        id: evidence.id,;
-        title: evidence.title,;
-        type: evidence.type;
+        id: evidence.id,
+        title: evidence.title,
+        type: evidence.typ;
       }));
     }
   }
 </script>
-
 <!-- Evidence Node -->
 <div
   bind:this={nodeElement}
   class={nodeClass}
   style="left: {evidence.x}px; top: {evidence.y}px;"
-  use:draggable={{
+  use:draggable={{,
     id: evidence.id,
-    onDrag: handlePositionUpdate,
-    onDragStart: handleDragStart,
-    onDragEnd: handleDragEnd,;
-    handle: '.drag-handle',;
+    onDrag: handlePositionUpdate
+    onDragStart: handleDragStart
+    onDragEnd: handleDragEnd
+    handle: '.drag-handle',
     constraint: canvasContainer ? { container: canvasContainer } : undefined
   }}
   onclick={handleNodeClick}
@@ -234,7 +206,6 @@
           <svelte:component this={iconComponent} class="w-4 h-4" />
           <CardTitle class="text-sm truncate">{evidence.title}</CardTitle>
         </div>
-
         <div class="flex items-center gap-1">
           <!-- Confidence indicator -->
           {#if evidence.metadata?.confidence}
@@ -242,7 +213,6 @@
                  title="Confidence: {Math.round((evidence.metadata.confidence || 0) * 100)}%">
             </div>
           {/if}
-
           <!-- Analysis button -->
           <Button
             size="sm"
@@ -260,28 +230,24 @@
         </div>
       </div>
     </CardHeader>
-
     <CardContent class="pt-0">
       <!-- Type badge -->
       <div class="flex items-center justify-between mb-2">
         <span class="px-2 py-1 text-xs bg-muted rounded-full">
           {evidence.type}
         </span>
-
         {#if evidence.metadata?.fileSize}
           <span class="text-xs text-muted-foreground">
             {(evidence.metadata.fileSize / 1024).toFixed(1)}KB
           </span>
         {/if}
       </div>
-
       <!-- Content preview -->
       {#if evidence.content}
         <p class="text-xs text-muted-foreground line-clamp-2 mb-2">
           {evidence.content.substring(0, 100)}...
         </p>
       {/if}
-
       <!-- Analysis progress -->
       {#if isAnalyzing}
         <div class="w-full bg-muted rounded-full h-1 mb-2">
@@ -292,14 +258,12 @@
         </div>
         <p class="text-xs text-muted-foreground">Analyzing... {analysisProgress}%</p>
       {/if}
-
       <!-- Analysis results -->
       {#if evidence.analysis}
         <div class="mt-2 p-2 bg-muted/50 rounded">
           {#if evidence.analysis.summary}
             <p class="text-xs mb-1">{evidence.analysis.summary}</p>
           {/if}
-
           {#if evidence.analysis.keyTerms?.length}
             <div class="flex flex-wrap gap-1">
               {#each evidence.analysis.keyTerms.slice(0, 3) as term}
@@ -311,7 +275,6 @@
           {/if}
         </div>
       {/if}
-
       <!-- Connections indicator -->
       {#if evidence.connections?.length}
         <div class="mt-2 flex items-center gap-1">
@@ -321,7 +284,6 @@
           </span>
         </div>
       {/if}
-
       <!-- Tags -->
       {#if evidence.tags?.length}
         <div class="mt-2 flex flex-wrap gap-1">
@@ -340,47 +302,37 @@
     </CardContent>
   </Card>
 </div>
-
 <style>
   .evidence-node {
     @apply absolute cursor-pointer select-none;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
-
   .evidence-node:hover {
     transform: scale(1.02);
   }
-
   .evidence-node.selected {
     @apply ring-2 ring-primary ring-opacity-75;
   }
-
   .evidence-node.highlighted {
     @apply ring-2 ring-yellow-400 ring-opacity-75;
     animation: pulse-glow 1.5s ease-in-out infinite;
   }
-
   .evidence-node.dragging {
     @apply z-50 rotate-2 scale-105;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   }
-
   .evidence-node.document {
     @apply border-l-4 border-l-blue-500;
   }
-
   .evidence-node.image {
     @apply border-l-4 border-l-green-500;
   }
-
   .evidence-node.video {
     @apply border-l-4 border-l-purple-500;
   }
-
   .evidence-node.audio {
     @apply border-l-4 border-l-orange-500;
   }
-
   @keyframes pulse-glow {
     0%, 100% {
       box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
@@ -389,7 +341,6 @@
       box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
     }
   }
-
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;

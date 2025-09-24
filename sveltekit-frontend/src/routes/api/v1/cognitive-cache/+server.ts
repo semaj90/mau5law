@@ -1,35 +1,28 @@
 import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
-
 /*
  * Cognitive Cache API Endpoint
  * Unified interface for Reinforcement Learning Cache + GPU Shader Cache
  * Provides intelligent caching with ML-driven decision making
  */
-
 import * as cognitiveIntegration from '$lib/services/cognitive-cache-integration'
 import { dev } from '$app/environment'
-
 // === Cognitive Cache API Handlers ===
-
 // POST /api/v1/cognitive-cache (Store data with cognitive analysis)
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json()
     const { key, data, type = 'legal-data', context = {}, options = {} } = body
-
     if (!key || !data) {
       return json({ error: 'Missing required fields: key, data' }, { status: 400 })
     }
-
     // Enhance context with request metadata
     const enhancedContext = {
       ...context,
       requestTime: Date.now(),
-      dataType: typeof data,
+      dataType: typeof data
       dataSize: JSON.stringify(data).length
     }
-
     const success = await cognitiveIntegration.cognitiveCacheManager.set(
       { key, type, context: enhancedContext, options },
       data,)
@@ -39,11 +32,10 @@ export const POST: RequestHandler = async ({ request }) => {
         shaderMetadata: options.shaderMetadata
       }
     )
-
     if (success) {
       return json({
-        success: true,
-        cached: true,
+        success: true
+        cached: true
         key,
         type,
         cognitiveAnalysis: {
@@ -55,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
       })
     } else {
       return json({
-          success: false,
+          success: false
           error: 'Failed to cache data',
           key
         },)
@@ -72,7 +64,6 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 // GET /api/v1/cognitive-cache/[key] (Retrieve with cognitive optimization)
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -82,7 +73,6 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!key) {
       return json({ error: 'Missing cache key' }, { status: 400 })
     }
-
     // Parse query parameters
     const type = url.searchParams.get('type') || 'legal-data'
     const userId = url.searchParams.get('userId')
@@ -91,10 +81,9 @@ export const GET: RequestHandler = async ({ url }) => {
     const priority = url.searchParams.get('priority') as any
     const enablePredictive = url.searchParams.get('predictive') === 'true'
     const semanticTags = url.searchParams.get('tags')?.split(',') || []
-
     const request = {
       key,
-      type: type as any,
+      type: type as any
       context: {
         userId,
         workflowStep,
@@ -107,12 +96,10 @@ export const GET: RequestHandler = async ({ url }) => {
         enablePhysics: true
       }
     }
-
     const result = await (cognitiveIntegration.cognitiveCache as any).get(request)
-
     if (result && (result as { data?: any; source?: any; confidence?: any; processingTime?: any; metadata?: any; predictions?: any }).data) {
       return json({
-        success: true,
+        success: true
         key,
         data: (result as { data?: any; source?: any; confidence?: any; processingTime?: any; metadata?: any; predictions?: any }).data,
         cacheInfo: {
@@ -128,9 +115,9 @@ export const GET: RequestHandler = async ({ url }) => {
       })
     } else {
       return json({
-          success: false,
+          success: false
           key,
-          found: false,
+          found: false
           suggestions: [
             'Data may not be cached yet',
             'Try adjusting semantic tags or context',
@@ -150,19 +137,16 @@ export const GET: RequestHandler = async ({ url }) => {
     )
   }
 }
-
 // PUT /api/v1/cognitive-cache/analyze (Cognitive analysis and optimization)
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json()
     const { action = 'analyze', key, context = {}, options = {} } = body
-
     switch (action) {
       case 'analyze': {
         if (!key) {
           return json({ error: 'Key required for analysis' }, { status: 400 })
         }
-
         // Perform cognitive analysis of cache entry
         const analysis = {
           key,
@@ -188,14 +172,12 @@ export const PUT: RequestHandler = async ({ request }) => {
             accessPressure: 0.4
           }
         }
-
         return json({
-          success: true,
+          success: true
           analysis,
           timestamp: Date.now()
         })
       }
-
       case 'optimize': {
         // Trigger cognitive optimization
         const optimizationResult = {
@@ -204,20 +186,17 @@ export const PUT: RequestHandler = async ({ request }) => {
           memoryReduction: Math.random() * 0.2 + 0.05,
           learningProgress: Math.random() * 0.1 + 0.02
         }
-
         return json({
-          success: true,
-          optimization: optimizationResult,
+          success: true
+          optimization: optimizationResult
           message: 'Cognitive optimization completed',
           timestamp: Date.now()
         })
       }
-
       case 'predict': {
         if (!context.workflowStep) {
           return json({ error: 'Workflow step required for prediction' }, { status: 400 })
         }
-
         // Generate workflow predictions
         const predictions = {
           nextSteps: ['evidence-view', 'timeline-analysis', 'report-generation'],
@@ -229,14 +208,12 @@ export const PUT: RequestHandler = async ({ request }) => {
           confidenceScores: [0.85, 0.72, 0.68],
           estimatedLatency: Math.random() * 50 + 10
         }
-
         return json({
-          success: true,
+          success: true
           predictions,
           timestamp: Date.now()
         })
       }
-
       default:
         return json({ error: 'Invalid action. Use: analyze, optimize, predict' }, { status: 400 })
     }
@@ -250,13 +227,11 @@ export const PUT: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 // DELETE /api/v1/cognitive-cache/[key] (Intelligent cache invalidation)
 export const DELETE: RequestHandler = async ({ url, request }) => {
   try {
     const parts = url.pathname.split('/')
     const key = parts[parts.length - 1]
-
     if (key === 'all') {
       // Clear all caches with cognitive analysis
       const clearResult = {
@@ -264,32 +239,28 @@ export const DELETE: RequestHandler = async ({ url, request }) => {
         memoryReclaimed: Math.floor(Math.random() * 100) + 50,
         cognitiveStateReset: true
       }
-
       return json({
-        success: true,
+        success: true
         cleared: 'all',
-        result: clearResult,
+        result: clearResult
         message: 'All cognitive caches cleared',
         timestamp: Date.now()
       })
     }
-
     if (!key) {
       return json({ error: 'Cache key required' }, { status: 400 })
     }
-
     // Intelligent invalidation with dependency analysis
     const invalidationResult = {
       key,
-      invalidated: true,
+      invalidated: true
       relatedKeys: [`${key}_related_1`, `${key}_related_2`],
       dependentEntries: Math.floor(Math.random() * 5),
       cognitiveImpact: Math.random() * 0.1 + 0.02
     }
-
     return json({
-      success: true,
-      invalidation: invalidationResult,
+      success: true
+      invalidation: invalidationResult
       message: `Cache entry ${key} intelligently invalidated`,
       timestamp: Date.now()
     })
@@ -303,19 +274,16 @@ export const DELETE: RequestHandler = async ({ url, request }) => {
     )
   }
 }
-
 // OPTIONS /api/v1/cognitive-cache/metrics (Performance and learning metrics)
 export const OPTIONS: RequestHandler = async ({ url }) => {
   try {
     const includeDetailed = url.searchParams.get('detailed') === 'true'
     const includePredictions = url.searchParams.get('predictions') === 'true'
-
     const metrics = (cognitiveIntegration.cognitiveCache as any).getMetrics?.() ?? {
       totalRequests: 0,
       cacheHits: 0
     }
     const statistics = (await (cognitiveIntegration.cognitiveCache as any).getStatistics?.()) ?? {}
-
     const response: any = {
       performance: {
         totalRequests: metrics.totalRequests,
@@ -332,16 +300,15 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
         shaderRatio: metrics.totalRequests > 0 ? metrics.shaderHits / metrics.totalRequests : 0
       },
       learning: {
-        reinforcementActive: true,
+        reinforcementActive: true
         adaptationRate: 0.85,
         predictionImprovement: 0.12,
         cognitiveEvolutionScore: 0.73
       }
     }
-
     if (includeDetailed) {
       (response as { detailed?: any; predictions?: any }).detailed = {
-        cacheStatistics: statistics,
+        cacheStatistics: statistics
         memoryUsage: {
           reinforcementCache: '45 MB',
           shaderCache: '128 MB',
@@ -354,7 +321,6 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
         }
       }
     }
-
     if (includePredictions) {
       (response as { detailed?: any; predictions?: any }).predictions = {
         nextOptimization: Date.now() + 3600000, // 1 hour
@@ -366,10 +332,9 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
         ]
       }
     }
-
     return json({
-      success: true,
-      metrics: response,
+      success: true
+      metrics: response
       timestamp: Date.now()
     })
   } catch (error: any) {

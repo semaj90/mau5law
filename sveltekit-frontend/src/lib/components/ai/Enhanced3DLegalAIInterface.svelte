@@ -3,10 +3,8 @@
   Integrates all systems: vLLM CUDA, SIMD Parser, Neo4j Recommendations, XState, RabbitMQ
   Features: 3D headless vertex buffer, progress animations, bit-encoding, QUIC streaming
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { createIdleDetectionService, type IdleDetectionActor } from '$lib/machines/idle-detection-rabbitmq-machine';
@@ -14,7 +12,7 @@
   import { SIMDGPUParserIntegration, type ParsedDocument } from '$lib/services/simd-gpu-parser-integration';
   import { Neo4jRecommendationEngine, type Recommendation } from '$lib/services/neo4j-recommendation-engine';
   // Props for component configuration
-  let { 
+  let {
     enableGPUAcceleration = true,
     enableAIRecommendations = true,
     enableIdleProcessing = true,
@@ -22,7 +20,6 @@
     maxConcurrentStreams = 100,
     progressAnimationSpeed = 1.0
   } = $props();
-
   // Component state
   let containerRef: HTMLDivElement;
   let canvasRef: HTMLCanvasElement;
@@ -78,8 +75,7 @@ if (!browser) return;
     } catch (error) {
       console.error('System initialization failed:', error);
       addSystemMessage('System initialization failed. Running in degraded mode.');
-    
-    errorMessage = error instanceof Error ? error.message: 'An error occurred';}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred'}
     })();
   });
   onDestroy(() => {
@@ -112,35 +108,35 @@ if (!browser) return;
     }
     // Create shader program for 3D vertex buffer visualization
     const vertexShaderSource = `
-      attribute vec3 position;
+      attribute vec3 positio;
       attribute vec3 color;
-      attribute float progress;
+      attribute float progres;
       uniform mat4 mvpMatrix;
       uniform float time;
-      uniform float globalProgress;
+      uniform float globalProgres;
       varying vec3 vColor;
-      varying float vProgress;
+      varying float vProgres;
       void main() {
         // Animate vertices based on progress and time
-        vec3 animatedPosition = position;
+        vec3 animatedPosition = positio;
         animatedPosition.y += sin(time + position.x * 0.1) * progress * 0.1;
         // Scale based on global progress
         animatedPosition *= mix(0.1, 1.0, globalProgress);
         gl_Position = mvpMatrix * vec4(animatedPosition, 1.0);
         gl_PointSize = mix(2.0, 8.0, progress);
         vColor = mix(vec3(0.3, 0.3, 0.3), color, progress);
-        vProgress = progress;
+        vProgress = progres;
       }
     `;
     const fragmentShaderSource = `
       precision mediump float;
       varying vec3 vColor;
-      varying float vProgress;
+      varying float vProgres;
       uniform float time;
       void main() {
         // Pulsing effect based on progress
         float pulse = sin(time * 3.0) * 0.1 + 0.9;
-        vec3 finalColor = vColor * pulse;
+        vec3 finalColor = vColor * pul;
         // Add glow effect for high progress
         if (vProgress > 0.8) {
           finalColor += vec3(0.2, 0.4, 0.8) * sin(time * 5.0) * 0.3;
@@ -223,7 +219,7 @@ if (!browser) return;
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(interleavedData), gl.DYNAMIC_DRAW);
   }
   async function initializeServicesWithProgress() {
-    const stages = progressStages;
+    const stages = progressStage;
     try {
       // Stage 1: GPU Initialization
       stages[0].status = 'active';
@@ -232,13 +228,13 @@ if (!browser) return;
       stages[1].status = 'active';
       if (enableGPUAcceleration) {
         simdParser = new SIMDGPUParserIntegration({
-          enableSpellCheck: true,
-          enableEntityExtraction: true,
-          enableLegalTermSuggestions: true,
-          enableCitationValidation: true,
+          enableSpellCheck: true
+          enableEntityExtraction: true
+          enableLegalTermSuggestions: true
+          enableCitationValidation: true
           confidenceThreshold: 0.7,
           maxSuggestions: 10,
-          simdOptimization: true,
+          simdOptimization: true
           gpuAcceleration: true
         });
         await simdParser.initializeGPU();
@@ -286,18 +282,17 @@ if (!browser) return;
         if (stage.status === 'active') {
           stage.status = 'pending';
           stage.progress = 0;
-        
-    errorMessage = error instanceof Error ? error.message: 'An error occurred';}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred'}
       });
       throw error;
     }
   }
   function startAnimationLoop() {
     const animate = (currentTime: number) => {
-      deltaTime = currentTime - lastFrameTime;
-      lastFrameTime = currentTime;
+      deltaTime = currentTime - lastFrameTim;
+      lastFrameTime = currentTim;
       // Update performance metrics
-      performanceMetrics.fps = 1000 / deltaTime;
+      performanceMetrics.fps = 1000 / deltaTim;
       // Render 3D scene
       render3DScene(currentTime);
       // Update progress animations
@@ -349,11 +344,11 @@ if (!browser) return;
     // Calculate overall progress
     const completedStages = progressStages.filter(item => item.length);
     const totalStages = progressStages.length;
-    currentProgress = completedStages / totalStages;
+    currentProgress = completedStages / totalStage;
     // Animate progress bars with easing
     progressStages.forEach((stage, index) => {
       if (stage.status === 'active') {
-        const targetProgress = stage.progress;
+        const targetProgress = stage.progres;
         const currentTime = time * 0.001;
         const animatedProgress = Math.min(targetProgress, (Math.sin(currentTime * 2) + 1) * 0.5);
         stage.progress = animatedProgress * progressAnimationSpeed;
@@ -418,9 +413,9 @@ if (!browser) return;
       if (neo4jEngine) {
         recommendations = await neo4jEngine.getRecommendations({
           userId: 'demo_user',
-          context: message,;
+          context: message
           type: 'expert_insights',
-          useAI: true,;
+          useAI: true
           limit: 3;
         });
         if (recommendations.length > 0) {
@@ -431,19 +426,19 @@ if (!browser) return;
       if (vllmIntegration) {
         const streamRequest: StreamingRequest = {
           id: crypto.randomUUID(),
-          model: 'gemma3-legal',;
+          model: 'gemma3-legal',
           prompt: `Legal AI Analysis: ${message}`,
           temperature: 0.1,
-          maxTokens: 500,;
-          stream: true,
-          useCache: true,;
+          maxTokens: 500,
+          stream: true
+          useCache: true
           priority: 'high';
         };
         // Add streaming chunk visualization
         streamingChunks.push({
           id: streamRequest.id,
-          data: new ArrayBuffer(1024), // Mock data;
-          progress: 0,;
+          data: new ArrayBuffer(1024), // Mock data
+          progress: 0,
           status: 'streaming';
         });
         // Process streaming response
@@ -466,32 +461,32 @@ if (!browser) return;
     } catch (error) {
       console.error('Processing failed:', error);
       addSystemMessage(`Processing failed: ${error instanceof Error ? error.message: 'Unknown error'
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';}`);
+    errorMessage = error instanceof Error ? error.message : 'An error occurred'}`);
     } finally {
       isProcessing = false;
     }
   }
   function addUserMessage(content: string) {
     chatMessages = [...chatMessages, {
-      id: crypto.randomUUID(),;
+      id: crypto.randomUUID(),
       type: 'user',
-      content,;
+      content,
       timestamp: Date.now();
     }];
   }
   function addAIMessage(content: string) {
     chatMessages = [...chatMessages, {
-      id: crypto.randomUUID(),;
+      id: crypto.randomUUID(),
       type: 'ai',
-      content,;
+      content,
       timestamp: Date.now();
     }];
   }
   function addSystemMessage(content: string) {
     chatMessages = [...chatMessages, {
-      id: crypto.randomUUID(),;
+      id: crypto.randomUUID(),
       type: 'system',
-      content,;
+      content,
       timestamp: Date.now();
     }];
   }
@@ -513,24 +508,21 @@ if (!browser) return;
     }
   }
 </script>
-
 <div class="enhanced-3d-legal-ai-interface" class:yorha={theme === 'yorha'} bind:this={containerRef}>
   <!-- 3D Visualization Canvas -->
-  <canvas 
+  <canvas
     bind:this={canvasRef}
     class="visualization-canvas"
     width="800"
     height="400"
   ></canvas>
-  
   <!-- Progress Animation Canvas -->
-  <canvas 
+  <canvas
     bind:this={progressCanvasRef}
     class="progress-canvas"
     width="800"
     height="100"
   ></canvas>
-  
   <!-- System Status Panel -->
   <div class="status-panel">
     <div class="status-header">
@@ -540,7 +532,6 @@ if (!browser) return;
         {isInitialized ? 'OPERATIONAL' : 'INITIALIZING'}
       </div>
     </div>
-    
     <!-- Initialization Progress -->
     <div class="initialization-progress">
       {#each progressStages as stage, index}
@@ -555,7 +546,6 @@ if (!browser) return;
         </div>
       {/each}
     </div>
-    
     <!-- Performance Metrics -->
     <div class="performance-metrics">
       <div class="metric">
@@ -576,7 +566,6 @@ if (!browser) return;
       </div>
     </div>
   </div>
-  
   <!-- Streaming Chunks Visualization -->
   <div class="streaming-chunks">
     <h4>QUIC Streaming Chunks</h4>
@@ -594,7 +583,6 @@ if (!browser) return;
       {/each}
     </div>
   </div>
-  
   <!-- Chat Interface -->
   <div class="chat-interface">
     <div class="chat-header">
@@ -603,7 +591,6 @@ if (!browser) return;
         {isProcessing ? 'PROCESSING...' : 'READY'}
       </div>
     </div>
-    
     <div class="chat-messages">
       {#each chatMessages as message}
         <div class="message" class:user={message.type === 'user'} class:ai={message.type === 'ai'} class:system={message.type === 'system'}>
@@ -613,9 +600,8 @@ if (!browser) return;
         </div>
       {/each}
     </div>
-    
     <div class="chat-input">
-      <input 
+      <input
         bind:value={userInput}
         placeholder="Enter legal query or document text..."
         onkeydown={(e) => e.key === 'Enter' && handleUserInput()}
@@ -626,7 +612,6 @@ if (!browser) return;
       </button>
     </div>
   </div>
-  
   <!-- Recommendations Panel -->
   {#if recommendations.length > 0}
     <div class="recommendations-panel">
@@ -647,9 +632,8 @@ if (!browser) return;
     </div>
   {/if}
 </div>
-
 <style>
-  .enhanced-3d-legal-ai-interface {;
+  .enhanced-3d-legal-ai-interface {
     display: grid;
     grid-template-columns: 1fr 300px;
     grid-template-rows: 400px 100px auto;
@@ -661,7 +645,6 @@ if (!browser) return;
     min-height: 100vh;
     overflow: hidden;
   }
-  
   .visualization-canv.progress-canvas {
     grid-column: 1;
     grid-row: 2;
@@ -669,7 +652,6 @@ if (!browser) return;
     border-radius: 4px;
     background: rgba(0, 0, 0, 0.6);
   }
-  
   .status-panel {
     grid-column: 2;
     grid-row: 1 / 3;
@@ -679,21 +661,18 @@ if (!browser) return;
     padding: 16px;
     overflow-y: auto;
   }
-  
   .status-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 16px;
   }
-  
   .status-header h3 {
     margin: 0;
     color: #00d4aa;
     font-size: 14px;
     text-transform: uppercase;
   }
-  
   .status-indicator {
     display: flex;
     align-items: center;
@@ -701,11 +680,9 @@ if (!browser) return;
     font-size: 12px;
     color: #888;
   }
-  
   .status-indicator.active {
     color: #00d4aa;
   }
-  
   .pulse {
     width: 8px;
     height: 8px;
@@ -713,15 +690,12 @@ if (!browser) return;
     background: #888;
     animation: pulse 2s infinite;
   }
-  
   .status-indicator.active .pulse {
     background: #00d4aa;
   }
-  
   .initialization-progress {
     margin-bottom: 16px;
   }
-  
   .stage {
     margin-bottom: 8px;
     padding: 8px;
@@ -729,28 +703,23 @@ if (!browser) return;
     border-radius: 4px;
     font-size: 12px;
   }
-  
   .stage.active {
     border-color: #00d4aa;
     background: rgba(0, 212, 170, 0.1);
   }
-  
   .stage.completed {
     border-color: #4caf50;
     background: rgba(76, 175, 80, 0.1);
   }
-  
   .stage-name {
     font-weight: bold;
     margin-bottom: 4px;
   }
-  
   .stage-progress {
     display: flex;
     align-items: center;
     gap: 8px;
   }
-  
   .progress-bar {
     flex: 1;
     height: 4px;
@@ -758,47 +727,40 @@ if (!browser) return;
     border-radius: 2px;
     overflow: hidden;
   }
-  
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #00d4aa, #00ff88);
     border-radius: 2px;
     transition: width 0.3s ease;
   }
-  
   .progress-text {
     font-size: 10px;
     color: #888;
     min-width: 30px;
     text-align: right;
   }
-  
   .performance-metrics {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
     margin-bottom: 16px;
   }
-  
   .metric {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 4px 8px;
     background: rgba(0, 0, 0, 0.5);
     border-radius: 4px;
     font-size: 11px;
   }
-  
   .metric-label {
     color: #888;
   }
-  
   .metric-value {
     color: #00d4aa;
     font-weight: bold;
   }
-  
   .streaming-chunks {
     grid-column: 1 / 3;
     grid-row: 3;
@@ -809,20 +771,17 @@ if (!browser) return;
     max-height: 200px;
     overflow-y: auto;
   }
-  
   .streaming-chunks h4 {
     margin: 0 0 16px 0;
     color: #00d4aa;
     font-size: 14px;
     text-transform: uppercase;
   }
-  
   .chunks-container {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
   }
-  
   .chunk {
     display: flex;
     align-items: center;
@@ -834,26 +793,21 @@ if (!browser) return;
     font-size: 11px;
     min-width: 200px;
   }
-  
   .chunk.streaming {
     border-color: #00d4aa;
     background: rgba(0, 212, 170, 0.1);
   }
-  
   .chunk.completed {
     border-color: #4caf50;
     background: rgba(76, 175, 80, 0.1);
   }
-  
   .chunk-id {
     font-family: monospace;
     color: #888;
   }
-  
   .chunk-progress {
     flex: 1;
   }
-  
   .chunk-progress-bar {
     width: 100%;
     height: 3px;
@@ -861,20 +815,17 @@ if (!browser) return;
     border-radius: 2px;
     overflow: hidden;
   }
-  
   .chunk-progress-fill {
     height: 100%;
     background: #00d4aa;
     border-radius: 2px;
     transition: width 0.1s linear;
   }
-  
   .chunk-status {
     color: #888;
     text-transform: uppercase;
     font-size: 10px;
   }
-  
   .chat-interface {
     grid-column: 1 / 3;
     background: rgba(0, 0, 0, 0.7);
@@ -885,33 +836,28 @@ if (!browser) return;
     flex-direction: column;
     height: 400px;
   }
-  
   .chat-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 16px;
     padding-bottom: 8px;
     border-bottom: 1px solid #333;
   }
-  
   .chat-header h3 {
     margin: 0;
     color: #00d4aa;
     font-size: 14px;
     text-transform: uppercase;
   }
-  
   .ai-status {
     font-size: 12px;
     color: #888;
   }
-  
   .ai-status.processing {
     color: #ff9800;
     animation: pulse 1s infinite;
   }
-  
   .chat-messages {
     flex: 1;
     overflow-y: auto;
@@ -920,57 +866,48 @@ if (!browser) return;
     flex-direction: column;
     gap: 8px;
   }
-  
   .message {
     padding: 8px 12px;
     border-radius: 8px;
     font-size: 13px;
   }
-  
   .message.user {
     background: rgba(0, 212, 170, 0.1);
     border-left: 3px solid #00d4aa;
     align-self: flex-end;
     max-width: 70%;
   }
-  
   .message.ai {
     background: rgba(33, 150, 243, 0.1);
     border-left: 3px solid #2196f3;
     align-self: flex-start;
     max-width: 80%;
   }
-  
   .message.system {
     background: rgba(255, 152, 0, 0.1);
     border-left: 3px solid #ff9800;
     align-self: center;
     max-width: 90%;
   }
-  
   .message-type {
     font-size: 10px;
     color: #888;
     text-transform: uppercase;
     margin-bottom: 4px;
   }
-  
   .message-content {
     margin-bottom: 4px;
     line-height: 1.4;
   }
-  
   .message-time {
     font-size: 10px;
     color: #666;
     text-align: right;
   }
-  
   .chat-input {
     display: flex;
     gap: 12px;
   }
-  
   .chat-input input {
     flex: 1;
     padding: 10px 12px;
@@ -981,13 +918,11 @@ if (!browser) return;
     font-family: inherit;
     font-size: 13px;
   }
-  
-  .chat-input input:focus {;
+  .chat-input input:focus {
     outline: none;
     border-color: #00d4aa;
     box-shadow: 0 0 0 2px rgba(0, 212, 170, 0.2);
   }
-  
   .chat-input button {
     padding: 10px 16px;
     background: #00d4aa;
@@ -998,19 +933,16 @@ if (!browser) return;
     font-size: 13px;
     font-weight: bold;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2;
   }
-  
-  .chat-input button:hover:not(:disabled) {;
+  .chat-input button:hover:not(:disabled) {,
     background: #00ff88;
   }
-  
-  .chat-input button:disabled {;
+  .chat-input button:disabled {
     background: #333;
     color: #666;
     cursor: not-allowed;
   }
-  
   .recommendations-panel {
     grid-column: 1 / 3;
     background: rgba(0, 0, 0, 0.7);
@@ -1020,14 +952,12 @@ if (!browser) return;
     max-height: 300px;
     overflow-y: auto;
   }
-  
   .recommendations-panel h3 {
     margin: 0 0 16px 0;
     color: #00d4aa;
     font-size: 14px;
     text-transform: uppercase;
   }
-  
   .recommendation {
     margin-bottom: 12px;
     padding: 12px;
@@ -1036,32 +966,27 @@ if (!browser) return;
     border-radius: 4px;
     position: relative;
   }
-  
   .rec-title {
     font-weight: bold;
     color: #00d4aa;
     margin-bottom: 6px;
     font-size: 13px;
   }
-  
   .rec-description {
     color: #ccc;
     font-size: 12px;
     line-height: 1.4;
     margin-bottom: 8px;
   }
-  
   .rec-meta {
     display: flex;
     gap: 16px;
     font-size: 11px;
     color: #888;
   }
-  
   .rec-score, .rec-confidence {
     font-weight: bold;
   }
-  
   .rec-ai-badge {
     position: absolute;
     top: 8px;
@@ -1074,72 +999,58 @@ if (!browser) return;
     text-transform: uppercase;
     font-weight: bold;
   }
-  
   /* YoRHa theme specific styles */
   .enhanced-3d-legal-ai-interface.yorha {
     background: linear-gradient(135deg, #2c1810 0%, #1a1a2e 100%);
   }
-  
   .yorha .visualization-canv.yorha .status-indicator.active {
     color: #d4af37;
   }
-  
   .yorha .status-indicator.active .pulse {
     background: #d4af37;
   }
-  
   .yorha .stage.active {
     border-color: #d4af37;
     background: rgba(212, 175, 55, 0.1);
   }
-  
   .yorha .metric-value {
     color: #d4af37;
   }
-  
   .yorha .chunk.streaming {
     border-color: #d4af37;
     background: rgba(212, 175, 55, 0.1);
   }
-  
   .yorha .chunk-progress-fill {
     background: #d4af37;
   }
-  
   @keyframes pulse {
     0% { opacity: 0.5; }
     50% { opacity: 1; }
     100% { opacity: 0.5; }
   }
-  
   @media (max-width: 1200px) {
     .enhanced-3d-legal-ai-interface {
       grid-template-columns: 1fr;
       grid-template-rows: 300px auto auto auto auto;
     }
-    
     .visualization-canv.progress-canvas {
       grid-column: 1;
       grid-row: 2;
       height: 80px;
     }
-    
     .status-panel {
       grid-column: 1;
       grid-row: 3;
       max-height: 300px;
     }
-    
     .streaming-chunks {
       grid-column: 1;
       grid-row: 4;
     }
-    
     .chat-interface {
       grid-column: 1;
       grid-row: 5;
     }
-    
     .recommendations-panel {
       grid-column: 1;
     }

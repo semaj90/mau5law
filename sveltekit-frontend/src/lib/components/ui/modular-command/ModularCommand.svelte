@@ -1,14 +1,12 @@
 <!-- Modular API-Integrated Command Palette -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { Command } from 'bits-ui';
   import { Search, FileText, Users, Calendar, Gavel, Loader2 } from 'lucide-svelte';
   import { cn } from '$lib/utils';
-  import {  , onMount  } from "svelte";
+  import { onMount  } from "svelte";
   import { reactiveApiClient } from '$lib/services/api-client';
   import type { CommandSearchRequest, CommandSearchResponse, Case, Evidence, User, LegalDocument } from '$lib/types/api';
-
   interface Props {
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
@@ -23,12 +21,11 @@
     // Data filtering
     userId?: string;
     caseId?: string;
-    filters?: Record<string, any>;
+    filters?: { [key: string]: any };
     // Event handlers
     onSelect?: (item: unknown, type: string) => void;
     onSearchChange?: (query: string) => void;
   }
-
   let { open = $bindable(false),
     onOpenChange,
     placeholder = 'Search cases, evidence, documents...',
@@ -42,56 +39,46 @@
     caseId,
     filters = ,
     onSelect,
-    onSearchChange;
+    onSearchChang;
    }: Props = $props();
-
-  
-
   // Search state
   let query = $state('');
   let isSearching = $state(false);
   let searchResults = $state<CommandSearchResponse['results']>({
     cases: [],
-    evidence: [],;
-    documents: [],;
+    evidence: [],
+    documents: [],
     people: [];
   });
   let totalResults = $state(0);
-
   // Debounced search
   let searchTimeout = $state<number | null >(null);
-
   const iconMap = {
-    cases: Gavel,
-    evidence: FileText,;
-    documents: FileText,;
-    people: Users;
+    cases: Gavel
+    evidence: FileText
+    documents: FileText
+    people: User;
   };
-
   const labelMap = {
     cases: 'Cases',
-    evidence: 'Evidence',;
-    documents: 'Documents',;
+    evidence: 'Evidence',
+    documents: 'Documents',
     people: 'People';
   };
-
   async function performSearch(searchQuery: string) {
     if (searchQuery.length < minQueryLength) {
       searchResults = { cases: [], evidence: [], documents: [], people: [] };
       totalResults = 0;
       return;
     }
-
     isSearching = true;
-
     try {
       const searchParams: CommandSearchRequest = {
-        query: searchQuery,;
-        types: searchTypes,;
-        limit: searchLimit,
+        query: searchQuery
+        types: searchTypes
+        limit: searchLimit
         userId;
       };
-
       const response = await reactiveApiClient.commandSearch(searchParams);
       if ((response as { success?: unknown; data?: unknown }).success && (response as { success?: unknown; data?: unknown }).data) {
         searchResults = (response as { success?: unknown; data?: unknown }).data.results || { cases: [], evidence: [], documents: [], people: [] };
@@ -105,16 +92,13 @@
       isSearching = false;
     }
   }
-
   function handleQueryChange(newQuery: string) {
     query = newQuery;
     onSearchChange?.(newQuery);
-
     // Clear previous timeout
     if (searchTimeout) {
       clearTimeout(searchTimeout);
     }
-
     // Debounce search
     if (newQuery.trim()) {
       searchTimeout = setTimeout(() => {
@@ -125,15 +109,13 @@
       totalResults = 0;
     }
   }
-
   function handleSelect(item: unknown, type: string) {
     onSelect?.(item, type);
     ondispatch?.({ item, type });
     open = false;
   }
-
   function handleOpenChange(newOpen: boolean) {
-    open = newOpen;
+    open = newOpe;
     onOpenChange?.(newOpen);
     if (!newOpen) {
       // Clear search when closed
@@ -142,7 +124,6 @@
       totalResults = 0;
     }
   }
-
   function formatResultText(item: unknown, type: string): string {
     switch (type) {
       case 'cases':
@@ -157,7 +138,6 @@
         return (item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).title || (item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).name || 'Unknown';
     }
   }
-
   function formatResultDescription(item: unknown, type: string): string {
     switch (type) {
       case 'cases':
@@ -172,7 +152,6 @@
         return '';
     }
   }
-
   // Cleanup timeout on unmount
   $effect(() => {
     return () => {
@@ -182,7 +161,6 @@
     };
   });
 </script>
-
 <Command.Root
   bind:open
   onOpenChange={handleOpenChange}
@@ -203,7 +181,6 @@
       <Loader2 class="ml-2 h-4 w-4 animate-spin opacity-50" />
     {/if}
   </div>
-
   <Command.List class="max-h-[400px] overflow-y-auto overflow-x-hidden modular-command-list">
     {#if query.length < minQueryLength}
       <div class="py-6 text-center text-sm nes-text is-disabled font-mono">
@@ -227,7 +204,6 @@
               <SvelteComponent class="h-3 w-3" />
               {labelMap[type]} ({searchResults[type].length})
             </Command.GroupHeading>
-            
             {#each searchResults[type] as item}
               <Command.Item
                 value={formatResultText(item, type)}
@@ -256,7 +232,6 @@
           </Command.Group>
         {/if}
       {/each}
-
       {#if totalResults > searchLimit}
         <div class="px-2 py-2 text-xs nes-text is-disabled text-center font-mono border-t">
           Showing {searchLimit} of {totalResults} results
@@ -264,30 +239,24 @@
       {/if}
   </Command.List>
 </Command.Root>
-
 <style>
   :global(.modular-command-palette) {
     @apply bg-yorha-bg-primary border border-yorha-border shadow-xl;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   }
-
   :global(.modular-command-header) {
     @apply border-yorha-border bg-yorha-bg-secondary;
   }
-
   :global(.modular-command-list) {
     @apply bg-yorha-bg-primary;
   }
-
   :global(.modular-command-group) {
     @apply border-yorha-border;
   }
-
   :global(.modular-command-item) {
     @apply hover:bg-yorha-bg-hover text-yorha-text-primary;
     @apply transition-colors duration-150;
   }
-
   :global(.modular-command-item[aria-selected="true"]) {
     @apply bg-yorha-accent text-yorha-text-accent;
   }

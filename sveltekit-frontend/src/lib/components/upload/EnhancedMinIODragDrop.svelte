@@ -1,24 +1,22 @@
-<!-- 
+<!--
   EnhancedMinIODragDrop.svelte
   Optimized HTML5 drag-and-drop with MinIO sync using Clang/LLVM optimizations
   Features: CUDA GPU acceleration, Visual Studio 2022 native performance
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import {  , onMount  } from "svelte";
+  import { onMount  } from "svelte";
   import { writable } from 'svelte/store';
   import { CONFIG } from '$lib/config/production-config.js';
   interface UploadFile {
     id: string;
-    file: File;
+    file: Fil;
     progress: number;
     status: 'pending' | 'uploading' | 'completed' | 'error';
     minioPath?: string;
     cudaProcessed?: boolean;
     errorMessage?: string;
   }
-
   interface UploadResult {
     id: string;
     fileName: string;
@@ -28,7 +26,6 @@
     cudaOptimized: boolean;
     processingTime: number;
   }
-
   // Props using Svelte 5 runes
   interface Props {
     caseId?: string;
@@ -48,7 +45,6 @@
     enableGpuOptimization = true,
     useMsvcOptimizations = true
   }: Props = $props();
-
   // State
   let dragOver = $state(false);
   let uploading = $state(false);
@@ -57,7 +53,6 @@
   let errorMessage = $state<string | null>(null);
   let successMessage = $state<string | null>(null);
   let fileInput: HTMLInputElement;
-
   // Performance metrics
   let performanceStats = $state({
     totalFiles: 0,
@@ -65,20 +60,16 @@
     avgProcessingTime: 0,
     throughputMBps: 0
   });
-
-  
-
   $effect(() => {
     console.log('EnhancedMinIODragDrop initialized with Clang/LLVM optimizations');
     if (enableCudaAcceleration) {
       testCudaWorkerAvailability();
     }
   });
-
   async function testCudaWorkerAvailability() {
     try {
       const response = await fetch('/api/v1/gpu/cuda/health', {
-        method: 'GET',;
+        method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
       if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
@@ -89,7 +80,6 @@
       console.warn('CUDA acceleration not available:', err);
     }
   }
-
   // Drag and drop handlers with performance optimizations
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
@@ -98,7 +88,6 @@
       dragOver = true;
     }
   }
-
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
@@ -109,7 +98,6 @@
       dragOver = false;
     }
   }
-
   function handleDrop(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
@@ -117,7 +105,6 @@
     const droppedFiles = Array.from(event.dataTransfer?.files || []);
     processDroppedFiles(droppedFiles);
   }
-
   // File processing with CUDA acceleration
   async function processDroppedFiles(droppedFiles: File[]) {
     errorMessage = null;
@@ -140,26 +127,22 @@
       }
       return true;
     });
-
     if (validFiles.length === 0) {
       errorMessage = 'No valid files to upload';
       return;
     }
-
     // Create upload file objects
-    const uploadFiles: UploadFile[] = validFiles.map(file => ({
+    const uploadFiles: UploadFile[] = validFiles.map(file => ({,
       id: `${Date.now()}-${Math.random()}`,
       file,
-      progress: 0,;
+      progress: 0,
       status: 'pending';
     }));
-
-    files = uploadFiles;
+    files = uploadFile;
     performanceStats.totalFiles = files.length;
     // Start upload process
     await uploadFilesToMinIO(uploadFiles);
   }
-
   // Optimized MinIO upload with CUDA preprocessing
   async function uploadFilesToMinIO(uploadFiles: UploadFile[]) {
     uploading = true;
@@ -172,21 +155,19 @@
         uploadFile.status = 'uploading';
         ondispatch?.({
           progress: (i / uploadFiles.length) * 100,
-          currentFile: uploadFile.file.name;
+          currentFile: uploadFile.file.nam;
         });
-
         // CUDA preprocessing for supported file types
-        let preprocessedData = uploadFile.file;
+        let preprocessedData = uploadFile.fil;
         let cudaProcessed = false;
         if (enableCudaAcceleration && shouldUseCudaPreprocessing(uploadFile.file)) {
           const cudaResult = await preprocessWithCuda(uploadFile.file);
           if (cudaResult.success) {
-            preprocessedData = cudaResult.processedFile || uploadFile.file;
+            preprocessedData = cudaResult.processedFile || uploadFile.fil;
             cudaProcessed = true;
             performanceStats.cudaAccelerated++;
           }
         }
-
         // Upload to MinIO via evidence API
         const result = await uploadSingleFile(uploadFile, preprocessedData, cudaProcessed);
         if ((result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).success) {
@@ -201,19 +182,16 @@
           uploadFile.errorMessage = (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).error;
         }
       }
-
       const endTime = Date.now();
       const totalTime = endTime - startTime;
       const totalSizeMB = uploadFiles.reduce((sum, f) => sum + f.file.size, 0) / (1024 * 1024);
       performanceStats.avgProcessingTime = totalTime / uploadFiles.length;
       performanceStats.throughputMBps = totalSizeMB / (totalTime / 1000);
-
       successMessage = `Uploaded ${results.length} files successfully`;
       if (enableCudaAcceleration) {
         successMessage += ` (${performanceStats.cudaAccelerated} CUDA-optimized)`;
       }
       ondispatch?.(results);
-
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message: 'Upload failed';
       errorMessage = errorMsg;
@@ -223,14 +201,12 @@
       uploadProgress = 0;
     }
   }
-
   function shouldUseCudaPreprocessing(file: File): boolean {
     // Use CUDA for image processing, PDF text extraction, and large files
     const cudaTypes = ['image/', 'application/pdf'];
     const isLargeFile = file.size > 10 * 1024 * 1024; // 10MB+
-    return cudaTypes.some(type => file.type.startsWith(type)) || isLargeFile;
+    return cudaTypes.some(type => file.type.startsWith(type)) || isLargeFil;
   }
-
   async function preprocessWithCuda(file: File): Promise {
     try {
       const formData = new FormData();
@@ -241,83 +217,73 @@
         targetGpuArch: 'sm_75', // RTX 3060 Ti
         useClangOptimizations: true
       }));
-
       const response = await fetch('/api/v1/gpu/cuda/preprocess', {
-        method: 'POST',;
+        method: 'POST',
         body: formData;
       });
-
       if (!(response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
         throw new Error(`CUDA preprocessing failed: ${(response as { ok?: unknown; json?: unknown; statusText?: unknown }).statusText}`);
       }
-
       const result = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
       return {
-        success: true,
-        processedFile: (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).processedFile ? new File([(result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).processedFile], file.name, { type: file.type }) : undefined,;
+        success: true
+        processedFile: (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).processedFile ? new File([(result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).processedFile], file.name, { type: file.type }) : undefined
         metadata: (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).metadata
       };
-
     } catch (error) {
       console.warn('CUDA preprocessing failed:', error);
       return { success: false };
     }
   }
-
   async function uploadSingleFile(uploadFile: UploadFile, file: File, cudaProcessed: boolean) {
     const formData = new FormData();
     // Add file and metadata
     formData.append('file', file);
     formData.append('uploadData', JSON.stringify({
       caseId,
-      title: file.name,;
+      title: file.name,
       description: `Uploaded via enhanced drag-and-drop: ${file.name}`,
       evidenceType: getEvidenceType(file),
-      enableAiAnalysis: true,
-      enableEmbeddings: true,
+      enableAiAnalysis: true
+      enableEmbeddings: true
       enableOcr: file.type.startsWith('image/') || file.type === 'application/pdf',
-      cudaPreprocessed: cudaProcessed,
+      cudaPreprocessed: cudaProcessed
       clangOptimized: useMsvcOptimizations
     }));
-
     const startTime = Date.now();
     const response = await fetch('/api/evidence/upload', {
-      method: 'POST',;
+      method: 'POST',
       body: formData;
     });
-
     if (!(response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
       const errorData = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
       return {
-        success: false,;
+        success: false
         error: errorData.error?.message || 'Upload failed';
       };
     }
-
     const result = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
     const processingTime = Date.now() - startTime;
     if ((result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).success && (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).data?.[0]) {
       return {
-        success: true,;
+        success: true
         data: {
           ...result.data[0],
-          cudaOptimized: cudaProcessed,
+          cudaOptimized: cudaProcessed
           processingTime
         } as UploadResult
       };
     }
-
     return {
-      success: false,;
+      success: false
       error: 'Invalid response from upload service';
     };
   }
-
   async function publishMinIOSyncEvent(uploadResult: UploadResult, caseId: string) {
     try {
       await fetch('/api/v1/redis/publish', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(toISOString)();
           }
         })
@@ -326,7 +292,6 @@
       console.warn('Redis sync event failed:', error);
     }
   }
-
   function getEvidenceType(file: File): string {
     if (file.type.startsWith('image/')) return 'IMAGE';
     if (file.type === 'application/pdf') return 'PDF';
@@ -335,22 +300,18 @@
     if (file.type.startsWith('text/')) return 'TEXT';
     return 'UNKNOWN';
   }
-
   function clearFiles() {
     files = [];
     errorMessage = null;
     successMessage = null;
   }
-
   function removeFile(fileId: string) {
     files = files.filter(f => f.id !== fileId);
   }
-
   function handleClickToSelect() {
     if (disabled || uploading) return;
     fileInput?.click();
   }
-
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;
     if (!target.files) return;
@@ -360,7 +321,6 @@
     target.value = '';
   }
 </script>
-
 <!-- Enhanced drag-and-drop UI with Clang/LLVM performance indicators -->
 <div class="enhanced-minio-upload relative w-full">
   <!-- Performance Stats -->
@@ -376,7 +336,6 @@
       </div>
     </div>
   {/if}
-
   <!-- Hidden file input -->
   <input
     type="file"
@@ -386,7 +345,6 @@
     onchange={handleFileSelect}
     style="display: none;"
   />
-
   <!-- Drop Zone -->
   <div
     class="drop-zone {dragOver ? 'drag-over' : ''} {disabled ? 'disabled' : ''} {uploading ? 'uploading' : ''}"
@@ -397,8 +355,8 @@
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
     ondrop={handleDrop}
-    role="button" 
-    aria-label="Drop zone" 
+    role="button"
+    aria-label="Drop zone"
     tabindex="0"
     onclick={handleClickToSelect}
   >
@@ -415,7 +373,6 @@
         </div>
       </div>
     {/if}
-
     <!-- Default content -->
     <div class="drop-content p-8 text-center">
       {#if uploading}
@@ -454,7 +411,6 @@
       {/if}
     </div>
   </div>
-
   <!-- File List -->
   {#if files.length > 0}
     <div class="file-list mt-4 space-y-2">
@@ -468,7 +424,6 @@
           Clear All
         </button>
       </div>
-      
       {#each files as file (file.id)}
         <div class="file-item p-3 border rounded-lg bg-white">
           <div class="flex items-center justify-between">
@@ -481,7 +436,6 @@
                 {/if}
               </div>
             </div>
-            
             <div class="flex items-center gap-2">
               <!-- Status indicator -->
               {#if file.status === 'completed'}
@@ -493,7 +447,6 @@
               {:else}
                 <span class="text-gray-400 text-sm">⏳</span>
               {/if}
-              
               <!-- Remove button -->
               {#if file.status === 'pending' || file.status === 'error'}
                 <button
@@ -506,17 +459,15 @@
               {/if}
             </div>
           </div>
-          
           <!-- Progress bar -->
           {#if file.status === 'uploading' || file.status === 'completed'}
             <div class="mt-2 w-full bg-gray-200 rounded-full h-1">
-              <div 
+              <div
                 class="bg-blue-600 h-1 rounded-full transition-all duration-300"
                 style="width: {file.progress}%"
               ></div>
             </div>
           {/if}
-          
           <!-- Error message -->
           {#if file.status === 'error' && file.errorMessage}
             <div class="mt-2 text-xs text-red-600">
@@ -527,50 +478,40 @@
       {/each}
     </div>
   {/if}
-
   <!-- Messages -->
   {#if errorMessage}
     <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
       {errorMessage}
     </div>
   {/if}
-
   {#if successMessage}
     <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
       {successMessage}
     </div>
   {/if}
 </div>
-
 <style>
   .drop-zone {
     @apply relative border-2 border-dashed rounded-lg transition-all duration-200 min-h-48;
   }
-  
   .drop-zone.drag-over {
     @apply border-blue-400 bg-blue-50;
   }
-  
   .drop-zone.disabled {
     @apply opacity-50 cursor-not-allowed;
   }
-  
   .drop-zone.uploading {
     @apply border-blue-300 bg-blue-25;
   }
-  
   .drop-overlay {
     z-index: 10;
   }
-  
   .file-item {
     @apply transition-all duration-200;
   }
-  
   .file-item:hover {
     @apply shadow-sm border-gray-300;
   }
-  
   .performance-stats {
     @apply transition-all duration-300;
   }

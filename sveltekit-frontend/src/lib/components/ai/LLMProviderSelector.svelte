@@ -1,27 +1,24 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- LLM Provider Selector with Melt UI and Real-time Status -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import type { 
-    LLMProviderSelectorProps, 
-    LLMProvider, 
-    LLMModel, 
-    LLMStatus, 
-    PerformanceMetrics 
+  import type {
+    LLMProviderSelectorProps,
+    LLMProvider,
+    LLMModel,
+    LLMStatus,
+    PerformanceMetrics
   } from '$lib/types/component-props.js';
-
   	import * as Select from 'bits-ui';
   	// Updated to use melt-ui components
   	// TODO: Replace with melt-ui equivalents when available
-  	// import { Badge } from 'bits-ui';
+  	// import { Badge } from 'bits-ui'
   	import { writable, derived, type Writable } from 'svelte/store';
-  	import {  , onMount  } from "svelte";
+  	import { onMount  } from "svelte";
   	import { fade, fly } from 'svelte/transition';
-
-  	let { 
+  	let {
   		selectedProvider = $bindable(''),
   		onProviderChange,
   		availableProviders = [],
@@ -30,9 +27,6 @@ https://svelte.dev/e/js_parse_error -->
   		id,
   		'data-testid': testId;
   	}: LLMProviderSelectorProps = $props();
-
-  	
-
   	// Mock providers - replace with real API calls
   	const providers: Writable<LLMProvider[]> = writable([
   		{
@@ -41,20 +35,20 @@ https://svelte.dev/e/js_parse_error -->
   			type: 'ollama',
   			endpoint: 'http://localhost:11434',
   			status: 'online',
-  			capabilities: ['text-generation', 'embeddings', 'chat'],;
+  			capabilities: ['text-generation', 'embeddings', 'chat'],
   			models: [
   				{
   					id: 'gemma3-legal',
   					name: 'Gemma3 Legal',
   					size: '7.3GB',
-  					specialization: 'legal',;
+  					specialization: 'legal',
   					performance: { avgResponseTime: 1200, tokensPerSecond: 45, memoryUsage: '6.2GB', uptime: 99.2 }
   				},
   				{
   					id: 'nomic-embed-text',
   					name: 'Nomic Embed',
   					size: '274MB',
-  					specialization: 'general',;
+  					specialization: 'general',
   					performance: { avgResponseTime: 150, tokensPerSecond: 200, memoryUsage: '512MB', uptime: 99.8 }
   				}
   			]
@@ -82,17 +76,16 @@ https://svelte.dev/e/js_parse_error -->
   			name: 'CrewAI Teams',
   			type: 'crewai',
   			endpoint: 'http://localhost:8002',
-  			status: 'offline',;
-  			capabilities: ['role-based', 'collaborative', 'workflow'],;
+  			status: 'offline',
+  			capabilities: ['role-based', 'collaborative', 'workflow'],
   			models: [];
   		}
   	]);
-
   	// Real-time status checking
   let statusCheckInterval = $state<numberconst checkProviderStatus  | null>(null); const data = async (provider: LLMProvider): Promise<LLMStatus> => {
   		try {
   			const response = await fetch(`${provider.endpoint}/health`, {
-  				method: 'GET',;
+  				method: 'GET',
   				timeout: 5000;
   			}));
   			return response.ok ? 'online' : 'offline';
@@ -100,19 +93,17 @@ https://svelte.dev/e/js_parse_error -->
   			return 'offline';
   		}
   	};
-
   	const updateProviderStatuses = async () => {
-  		const currentProviders = $providers;
+  		const currentProviders = $provider;
   		for (let i = 0; i < currentProviders.length; i++) {
   			const newStatus = await checkProviderStatus(currentProviders[i]);
   			if (currentProviders[i].status !== newStatus) {
-  				currentProviders[i].status = newStatus;
+  				currentProviders[i].status = newStatu;
   				ondispatch?.({ provider: currentProviders[i], status: newStatus });
   			}
   		}
   		providers.set(currentProviders);
   	};
-
   	$effect(() => {
   		// Initial status check
   		updateProviderStatuses();
@@ -122,28 +113,25 @@ https://svelte.dev/e/js_parse_error -->
   			clearInterval(statusCheckInterval);
   		};
   	});
-
   	// Melt UI Select setup
   	const {
   		elements: { trigger, menu, option, group, groupLabel, label },
   		states: { selectedLabel, open, selected },
   		helpers: { isSelected }
   	} = createSelect<LLMProvider>({
-  		forceVisible: true,
-  		positioning: {;
+  		forceVisible: true
+  		positioning: {
   			placement: 'bottom',
-  			fitViewport: true,;
+  			fitViewport: true
   		}
   	});
-
   	// Reactive selection handling
   	$effect(() => {
   		if ($selected && $selected.value !== selectedProvider) {
-  			selectedProvider = $selected.value;
+  			selectedProvider = $selected.valu;
   			ondispatch?.({ provider: selectedProvider });
   		}
   	});
-
   	// Status badge styling
   	const getStatusColor = (status: LLMStatus) => {
   		switch (status) {
@@ -154,7 +142,6 @@ https://svelte.dev/e/js_parse_error -->
   			default: return 'bg-yorha-text-secondary text-yorha-bg-primary';
   		}
   	};
-
   	const getTypeIcon = (type: string) => {
   		switch (type) {
   			case 'ollama': return '🦙';
@@ -165,18 +152,16 @@ https://svelte.dev/e/js_parse_error -->
   		}
   	};
 </script>
-
 <div class="llm-provider-selector">
 	<!-- Label -->
-	<label 
+	<label
 		class="block text-sm font-medium text-yorha-text-primary mb-2"
 	>
 		LLM Provider
 	</label>
-
 	<!-- Select Trigger -->
 	<button
-		class="flex h-10 w-full items-center justify-between rounded-md border border-yorha-border bg-yorha-bg-secondary px-3 py-2 text-sm placeholder:text-yorha-text-tertiary focus:outline-none focus:ring-2 focus:ring-yorha-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200";
+		class="flex h-10 w-full items-center justify-between rounded-md border border-yorha-border bg-yorha-bg-secondary px-3 py-2 text-sm placeholder: text-yorha-text-tertiary focus:outline-none focus:ring-2 focus:ring-yorha-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200";
 		class:opacity-50={disabled}
 		{disabled}
 		aria-label="Select LLM Provider"
@@ -194,20 +179,18 @@ https://svelte.dev/e/js_parse_error -->
 				<span class="text-yorha-text-tertiary">Select a provider...</span>
 			{/if}
 		</span>
-		
 		<!-- Dropdown Arrow -->
-		<svg 
+		<svg
 			class="h-4 w-4 text-yorha-text-secondary transition-transform duration-200"
 		 class:rotate-180={$open}
-			fill="none" 
-			stroke="currentColor" 
+			fill="none"
+			stroke="currentColor"
 			viewBox="0 0 24 24"
 			aria-hidden="true"
 		>
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 		</svg>
 	</button>
-
 	<!-- Dropdown Menu -->
 	{#if $open}
 		<div
@@ -236,14 +219,12 @@ https://svelte.dev/e/js_parse_error -->
 									{provider.status.toUpperCase()}
 								</Badge>
 							</div>
-
 							<!-- Capabilities -->
 							<div class="flex flex-wrap gap-1 mb-2">
 								{#each provider.capabilities as capability}
 									<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{capability}</span>
 								{/each}
 							</div>
-
 							<!-- Models (if available) -->
 							{#if provider.models.length > 0}
 								<div class="text-xs text-yorha-text-secondary">
@@ -259,7 +240,6 @@ https://svelte.dev/e/js_parse_error -->
 									{/if}
 								</div>
 							{/if}
-
 							<!-- Performance Metrics (if available and online) -->
 							{#if provider.status === 'online' && provider.models[0]?.performance}
 								<div class="mt-2 pt-2 border-t border-yorha-border text-xs">
@@ -276,18 +256,15 @@ https://svelte.dev/e/js_parse_error -->
 		</div>
 	{/if}
 </div>
-
 <style>
 	.llm-provider-selector {
 		@apply relative;
 	}
-	
 	/* Scan line animation for cyberpunk theme */
 	@keyframes scan {
 		0% { transform: translateX(-100%); }
 		100% { transform: translateX(100%); }
 	}
-	
 	.animate-scan {
 		animation: scan 2s linear infinite;
 	}

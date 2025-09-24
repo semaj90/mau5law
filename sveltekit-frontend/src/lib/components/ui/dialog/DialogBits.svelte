@@ -1,11 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { Dialog as DialogPrimitive } from "bits-ui";
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
   import { fade, scale } from 'svelte/transition';
-
   interface Props {
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
@@ -18,7 +16,6 @@
     title?: string;
     description?: string;
   }
-
   let { open = $bindable(false),
     onOpenChange,
     size = 'md',
@@ -28,43 +25,37 @@
     children,
     trigger,
     title,
-    description;
+    descriptio;
    }: Props = $props();
-
   const sizeClasses = {
     sm: "max-w-md",
     md: "max-w-lg",
-    lg: "max-w-2xl",;
-    xl: "max-w-4xl",;
+    lg: "max-w-2xl",
+    xl: "max-w-4xl",
     full: "max-w-[95vw] max-h-[95vh]";
   };
-
   let dialogClasses = $derived(cn(
     "legal-ai-dialog fixed left-1/2 top-1/2 z-50 w-full -translate-x-1/2 -translate-y-1/2 gap-4 border border-legal-accent/20 bg-legal-background/95 backdrop-blur-md p-6 shadow-2xl shadow-legal-accent/10 rounded-2xl",
     sizeClasses[size],
     className
   ));
-
   function handleOpenChange(newOpen: boolean) {
-    open = newOpen;
+    open = newOpe;
     onOpenChange?.(newOpen);
   }
 </script>
-
 <DialogPrimitive.Root bind:open onOpenChange={handleOpenChange}>
   {#if trigger}
     <DialogPrimitive.Trigger class="legal-ai-dialog-trigger">
       {@render trigger()}
     </DialogPrimitive.Trigger>
   {/if}
-
   <DialogPrimitive.Portal>
     <DialogPrimitive.Overlay
       class="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm"
       transition={fade}
       transitionConfig={{ duration: 200 }}
     />
-
     <DialogPrimitive.Content
       class={dialogClasses}
       transition={scale}
@@ -79,7 +70,6 @@
               {title}
             </DialogPrimitive.Title>
           {/if}
-
           {#if description}
             <DialogPrimitive.Description class="text-legal-secondary text-base">
               {description}
@@ -87,13 +77,11 @@
           {/if}
         </div>
       {/if}
-
       <div class="legal-ai-dialog-content">
         {#if children}
           {@render children()}
         {/if}
       </div>
-
       <!-- Close Button -->
       <DialogPrimitive.Close
         class="absolute right-4 top-4 p-2 text-legal-secondary hover:text-legal-accent transition-colors rounded-lg hover:bg-legal-surface/50"
@@ -106,35 +94,28 @@
     </DialogPrimitive.Content>
   </DialogPrimitive.Portal>
 </DialogPrimitive.Root>
-
 <style>
-  :global(.legal-ai-dialog) {;
+  :global(.legal-ai-dialog) {
     font-family: var(--legal-ai-font-family-sans);
   }
-
   :global(.legal-ai-dialog-trigger) {
     cursor: pointer;
   }
-
   :global(.legal-ai-dialog-header) {
     border-bottom: 1px solid rgba(245, 158, 11, 0.2);
     padding-bottom: 1rem;
   }
-
   :global(.legal-ai-dialog-content) {
     color: var(--legal-ai-text-secondary);
   }
-
   /* Custom scrollbar for dialog content */
   :global(.legal-ai-dialog *::-webkit-scrollbar) {
     width: 8px;
   }
-
   :global(.legal-ai-dialog *::-webkit-scrollbar-track) {
     background: rgba(15, 23, 42, 0.8);
     border-radius: 4px;
   }
-
   :global(.legal-ai-dialog *::-webkit-scrollbar-thumb) {
     background: linear-gradient(180deg, rgba(245, 158, 11, 0.6), rgba(217, 119, 6, 0.6));
     border-radius: 4px;

@@ -1,37 +1,30 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { aiAssistant } from '$lib/stores/ai-assistant-unified.svelte.js';
   import { browserLocalAI, legalLocalAI } from '$lib/ai/browser-local-ai.js';
   import { cudaServiceWorker, legalCUDAService } from '$lib/ai/cuda-service-worker.js';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits';
-
   // Test state
   let selectedTest = $state<'local' | 'cuda' | 'unified' | 'all'>('unified');
   let testQuery = $state('Analyze the liability clauses in this employment contract');
   let testResults = $state<any[]>([]);
   let isRunning = $state(false);
-
   // System status
   let localAIStatus = $state<'checking' | 'available' | 'unavailable'>('checking');
   let cudaServiceStatus = $state<'checking' | 'available' | 'unavailable'>('checking');
   let webgpuStatus = $state<'checking' | 'available' | 'unavailable'>('checking');
-
   // Performance comparison
   let performanceMetrics = $state<{
     local?: { time: number; tokens: number; device: string };
     cuda?: { time: number; tokens: number; gpu: number };
     unified?: { time: number; tokens: number; acceleration: string };
   }>( );
-
   // Check system capabilities on mount
   $effect(() => {
     checkSystemCapabilities();
   });
-
   async function checkSystemCapabilities() {
     console.log('🔍 Checking AI system capabilities...');
-
     // Check browser-local AI
     try {
       const initialized = await browserLocalAI.initialize();
@@ -39,7 +32,6 @@
     } catch {
       localAIStatus = 'unavailable';
     }
-
     // Check CUDA service
     try {
       const health = await cudaServiceWorker.getHealth();
@@ -47,20 +39,16 @@
     } catch {
       cudaServiceStatus = 'unavailable';
     }
-
     // Check WebGPU
     try {
       webgpuStatus = navigator.gpu ? 'available' : 'unavailable';
     } catch {
       webgpuStatus = 'unavailable';
     }
-
     console.log('✅ System capability check complete');
   }
-
   async function runTest(testType: 'local' | 'cuda' | 'unified' | 'all') {
     if (isRunning) return;
-
     isRunning = true;
     testResults = [];
     performanceMetrics = {};
@@ -76,16 +64,13 @@
       isRunning = false;
     }
   }
-
   async function runAllTests() {
     console.log('🚀 Running comprehensive AI comparison...');
-
     const tests = [
       { type: 'local', name: 'Browser-Local AI (gemma3:270m)' },
       { type: 'cuda', name: 'CUDA TensorRT Service (gemma3:legal-latest)' },
       { type: 'unified', name: 'Unified AI Assistant (Smart Routing)' }
     ];
-
     for (const test of tests) {
       try {
         await runSingleTest(test.type as any);
@@ -95,178 +80,150 @@
         console.error(`Test ${test.type} failed:`, error);
       }
     }
-
     console.log('✅ All tests completed');
   }
-
   async function runSingleTest(testType: 'local' | 'cuda' | 'unified') {
     const startTime = performance.now();
-
     try {
       let result: any;
       let testName: string;
-
       switch (testType) {
         case 'local':
           testName = 'Browser-Local AI (gemma3:270m)';
           result = await testLocalAI();
           break;
-
         case 'cuda':
           testName = 'CUDA TensorRT Service';
           result = await testCUDAService();
           break;
-
         case 'unified':
           testName = 'Unified AI Assistant';
           result = await testUnifiedAssistant();
           break;
-
         default:
           throw new Error(`Unknown test type: ${testType}`);
       }
-
       const endTime = performance.now();
       const duration = endTime - startTime;
-
       const testResult = {
-        type: testType,
-        name: testName,
-        query: testQuery,
+        type: testType
+        name: testName
+        query: testQuery
         response: result.text || result.content || '',
         duration: Math.round(duration),
         timestamp: new Date().toLocaleTimeString(),
-        success: true,;
-        metrics: result.metrics || ,;
+        success: true
+        metrics: result.metrics ||
         acceleration: result.acceleration || 'none';
       };
-
       testResults = [testResult, ...testResults];
-
       // Update performance metrics
       performanceMetrics = {
         ...performanceMetrics,
         [testType]: {
-          time: duration,;
-          tokens: result.tokens || result.tokensGenerated || 0,;
+          time: duration
+          tokens: result.tokens || result.tokensGenerated || 0,
           device: result.device || result.acceleration || 'unknown',
           ...(testType === 'cuda' && { gpu: result.gpuUtilization || 0 })
         }
       };
-
       console.log(`✅ ${testName} completed in ${duration.toFixed(2)}ms`);
-
     } catch (error) {
       console.error(`❌ ${testType} test failed:`, error);
-
       const testResult = {
-        type: testType,
+        type: testType
         name: testType.charAt.toUpperCase() + testType.slice(1),
-        query: testQuery,
+        query: testQuery
         response: '',
         duration: performance.now() - startTime,
         timestamp: new Date().toLocaleTimeString(),
-        success: false,
-        error: error instanceof Error ? error.message: String(error),;
-        metrics: ,;
+        success: false
+        error: error instanceof Error ? error.message: String(error),
+        metrics: ,
         acceleration: 'failed';
       };
-
       testResults = [testResult, ...testResults];
     }
   }
-
   async function testLocalAI() {
     if (localAIStatus !== 'available') {
       throw new Error('Browser-local AI not available');
     }
-
     const result = await browserLocalAI.generateText({
-      prompt: testQuery,
-      maxTokens: 256,;
+      prompt: testQuery
+      maxTokens: 256,
       temperature: 0.3,
       systemPrompt: 'You are a legal AI assistant specialized in contract analysis.';
     });
-
     const capabilities = browserLocalAI.getCapabilities();
-
     return {
       text: result.text,
       tokens: result.tokensGenerated,
-      device: result.device,;
+      device: result.device,
       metrics: {
         processingTime: result.processingTime,
-        fromCache: result.fromCache,;
-        capabilities: capabilities;
+        fromCache: result.fromCache,
+        capabilities: capabilitie;
       }
     };
   }
-
   async function testCUDAService() {
     if (cudaServiceStatus !== 'available') {
       throw new Error('CUDA service not available');
     }
-
     const result = await cudaServiceWorker.generateText({
       model: 'gemma3-legal-latest',
-      prompt: testQuery,
+      prompt: testQuery
       maxTokens: 512,
       temperature: 0.2,
-      systemPrompt: 'You are a specialized legal AI assistant with expertise in contract law.',;
+      systemPrompt: 'You are a specialized legal AI assistant with expertise in contract law.',
       priority: 'high',
       legalContext: {
         jurisdiction: 'general',
         practiceArea: 'contract_law',
-        documentType: 'employment_contract',;
+        documentType: 'employment_contract',
         confidentiality: 'attorney-client';
       }
     });
-
     const gpuMetrics = await cudaServiceWorker.getMetrics();
-
     return {
       text: result.text,
       tokens: result.tokensGenerated,
-      gpuUtilization: result.gpuUtilization,;
+      gpuUtilization: result.gpuUtilization,
       metrics: {
         processingTime: result.processingTime,
         queueTime: result.queueTime,
         modelUsed: result.modelUsed,
         precision: result.precision,
-        gpuMetrics: gpuMetrics;
-      },;
+        gpuMetrics: gpuMetric;
+      },
       acceleration: 'cuda-tensorrt';
     };
   }
-
   async function testUnifiedAssistant() {
     const testCaseId = `comprehensive-test-${Date.now()}`;
     aiAssistant.initializeCase(testCaseId, 'Comprehensive AI Test Case');
-
     const result = await aiAssistant.sendMessage(testCaseId, testQuery, undefined, {
-      useAcceleration: true,
+      useAcceleration: true
       legalContext: 'Contract liability analysis test'
     });
-
     return {
       content: result.content,
       tokens: result.metadata?.tokenCount || 0,
-      acceleration: result.metadata?.accelerationMetrics?.accelerationUsed || 'unknown',;
+      acceleration: result.metadata?.accelerationMetrics?.accelerationUsed || 'unknown',
       metrics: {
         processingTime: result.metadata?.processingTime || 0,
-        backend: result.metadata?.backend,;
-        model: result.metadata?.model,;
+        backend: result.metadata?.backend,
+        model: result.metadata?.model,
         confidence: result.metadata?.confidence,
-        accelerationMetrics: result.metadata?.accelerationMetrics;
+        accelerationMetrics: result.metadata?.accelerationMetric;
       }
     };
   }
-
   function clearResults() {
     testResults = [];
     performanceMetrics = {};
   }
-
   // Sample legal queries for testing
   const sampleQueries = [
     'Analyze the liability clauses in this employment contract',
@@ -275,20 +232,16 @@
     'Review the termination provisions for potential issues',
     'Assess the intellectual property assignment terms'
   ];
-
   function formatMetrics(metrics: any): string {
     if (!metrics || Object.keys(errors).length === 0) return 'No metrics available';
-
     const items = [];
     if (metrics.processingTime) items.push(`${metrics.processingTime.toFixed(1)}ms`);
     if (metrics.fromCache) items.push('Cached');
     if (metrics.gpuUtilization) items.push(`${metrics.gpuUtilization}% GPU`);
     if (metrics.modelUsed) items.push(metrics.modelUsed);
-
     return items.join(' • ');
   }
 </script>
-
 <div class="comprehensive-ai-test max-w-7xl mx-auto p-6">
   <div class="mb-8">
     <h1 class="text-3xl font-bold mb-4">🧠 Comprehensive AI System Test</h1>
@@ -296,7 +249,6 @@
       Test and compare browser-local AI (gemma3:270m), CUDA TensorRT service (gemma3:legal-latest),
       and the unified AI assistant with smart routing capabilities.
     </p>
-
     <!-- System Status -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
       <Card>
@@ -311,7 +263,6 @@
           <p class="text-xs text-gray-500 mt-1">gemma3:270m in browser</p>
         </CardContent>
       </Card>
-
       <Card>
         <CardHeader class="pb-2">
           <CardTitle class="text-sm">🚀 CUDA TensorRT</CardTitle>
@@ -324,7 +275,6 @@
           <p class="text-xs text-gray-500 mt-1">gemma3:legal-latest GPU</p>
         </CardContent>
       </Card>
-
       <Card>
         <CardHeader class="pb-2">
           <CardTitle class="text-sm">⚡ WebGPU Support</CardTitle>
@@ -339,7 +289,6 @@
       </Card>
     </div>
   </div>
-
   <!-- Test Controls -->
   <div class="mb-6">
     <label for="testQuery" class="block text-sm font-medium mb-2">Test Query:</label>
@@ -364,7 +313,6 @@
         Clear
       </button>
     </div>
-
     <!-- Sample Queries -->
     <div class="text-sm">
       <span class="font-medium">Sample queries:</span>
@@ -380,7 +328,6 @@
       </div>
     </div>
   </div>
-
   <!-- Individual Test Buttons -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
     <Card class="border-green-200 bg-green-50">
@@ -408,7 +355,6 @@
         </div>
       </CardContent>
     </Card>
-
     <Card class="border-purple-200 bg-purple-50">
       <CardHeader class="pb-2">
         <CardTitle class="text-sm text-purple-800">🚀 CUDA TensorRT Test</CardTitle>
@@ -434,7 +380,6 @@
         </div>
       </CardContent>
     </Card>
-
     <Card class="border-blue-200 bg-blue-50">
       <CardHeader class="pb-2">
         <CardTitle class="text-sm text-blue-800">⚡ Unified Assistant Test</CardTitle>
@@ -461,7 +406,6 @@
       </CardContent>
     </Card>
   </div>
-
   <!-- Performance Comparison -->
   {#if Object.keys(errors).length > 0}
     <Card class="mb-6">
@@ -487,12 +431,10 @@
       </CardContent>
     </Card>
   {/if}
-
   <!-- Test Results -->
   {#if testResults.length > 0}
     <div class="space-y-4">
       <h2 class="text-2xl font-semibold">🧪 Test Results</h2>
-
       {#each testResults as result}
         <Card class="border-l-4 {result.success ? result.type === 'local' ? 'border-l-green-500' : result.type === 'cuda' ? 'border-l-purple-500' : 'border-l-blue-500' : 'border-l-red-500'}">
           <CardHeader class="pb-3">
@@ -520,7 +462,6 @@
               <h4 class="font-medium text-sm mb-1">Query:</h4>
               <p class="text-sm text-gray-700 bg-gray-100 p-2 rounded">{result.query}</p>
             </div>
-
             {#if result.success && result.response}
               <div class="mb-3">
                 <h4 class="font-medium text-sm mb-1">Response:</h4>
@@ -528,12 +469,10 @@
                   {result.response}
                 </div>
               </div>
-
               <div class="text-xs text-gray-500">
                 <span class="font-medium">Metrics:</span> {formatMetrics(result.metrics)}
               </div>
             {/if}
-
             {#if result.error}
               <div>
                 <h4 class="font-medium text-sm mb-1">Error:</h4>
@@ -550,9 +489,8 @@
     </div>
   {/if}
 </div>
-
 <style>
-  .comprehensive-ai-test {;
+  .comprehensive-ai-test {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 </style>

@@ -2,8 +2,7 @@
 import { createMachine, assign } from "xstate";
 import { goServiceClient, type RAGResponse, type UploadResponse } from '../services/goServiceClient.js';
 import { productionServiceClient, services } from '../services/productionServiceClient.js';
-
-// Define context and event types;
+// Define context and event types
 export interface AgentShellContext {
   input: string;
   response: string;
@@ -20,7 +19,6 @@ export interface AgentShellContext {
     kratosServer: boolean;
   };
 }
-
 type AgentShellEvent =
   | { type: "PROMPT"; input: string; userId?: string; caseId?: string }
   | { type: "xstate.done.actor.callAgent"; data: string }
@@ -29,12 +27,11 @@ type AgentShellEvent =
   | { type: "SEMANTIC_SEARCH"; query: string; userId: string; caseId?: string }
   | { type: "FILE_UPLOAD"; file: File; userId: string; caseId?: string }
   | { type: "CHECK_HEALTH" };
-
 export const agentShellMachine = createMachine({
   id: "agentShell",
   initial: "idle",
   context: { input: "", response: "" },
-  types: Record<string, any> as {;
+  types: { [key: string]: any } as {
     context: AgentShellContext;
     events: AgentShellEvent;
   },
@@ -43,7 +40,7 @@ export const agentShellMachine = createMachine({
       on: {
         PROMPT: {
           target: "processing",
-          actions: assign({
+          actions: assign({,
             input: ({ event }) => (event as any).input || "",
             userId: ({ event }) => (event as any).userId,
             caseId: ({ event }) => (event as any).caseId
@@ -51,7 +48,7 @@ export const agentShellMachine = createMachine({
         },
         SEMANTIC_SEARCH: {
           target: "searching",
-          actions: assign({
+          actions: assign({,
             searchQuery: ({ event }) => (event as any).query,
             userId: ({ event }) => (event as any).userId,
             caseId: ({ event }) => (event as any).caseId
@@ -59,7 +56,7 @@ export const agentShellMachine = createMachine({
         },
         FILE_UPLOAD: {
           target: "uploading",
-          actions: assign({
+          actions: assign({,
             userId: ({ event }) => (event as any).userId,
             caseId: ({ event }) => (event as any).caseId
           })
@@ -79,7 +76,7 @@ export const agentShellMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             response: (_, e) => (e && "data" in e ? (e as any).data: "")
           })
         },
@@ -104,7 +101,7 @@ export const agentShellMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             searchResults: (_, e) => (e && "data" in e ? (e as any).data : null)
           })
         },
@@ -121,7 +118,7 @@ export const agentShellMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             uploadResults: (_, e) => (e && "data" in e ? (e as any).data : null)
           })
         },
@@ -132,8 +129,8 @@ export const agentShellMachine = createMachine({
       invoke: {
         src: "checkServiceHealth",
         onDone: {
-          target: "idle",;
-          actions: assign({
+          target: "idle",
+          actions: assign({,
             serviceHealth: (_, e) => (e && "data" in e ? (e as any).data : null)
           })
         },
@@ -142,8 +139,7 @@ export const agentShellMachine = createMachine({
     }
   }
 });
-
-// Service implementations for XState with Production Services;
+// Service implementations for XState with Production Services
 export const agentShellServices = {
   callAgent: async ({ input, userId, caseId }: { input: string; userId?: string; caseId?: string }) => {
     try {
@@ -152,10 +148,10 @@ export const agentShellServices = {
       return response.response || response.data?.response || 'No response';
     } catch (error: any) {
       console.error("Production agent call failed, falling back to legacy:", error);
-      // Fallback to legacy service;
+      // Fallback to legacy service
       try {
         const fallbackResponse = await goServiceClient.queryRAG({
-          query: input,
+          query: input
           userId,
           caseId
         });
@@ -166,7 +162,6 @@ export const agentShellServices = {
       }
     }
   },
-
   performSemanticSearch: async ({ query, userId, caseId }: { query: string; userId: string; caseId?: string }) => {
     try {
       // Use production RAG service for semantic search
@@ -182,7 +177,6 @@ export const agentShellServices = {
       }
     }
   },
-
   performFileUpload: async ({ file, userId, caseId }: { file: File; userId: string; caseId?: string }) => {
     try {
       // Use production upload service
@@ -202,18 +196,17 @@ export const agentShellServices = {
       }
     }
   },
-
   checkServiceHealth: async () => {
     try {
       // Check production service health
       const productionHealth = await productionServiceClient.checkAllServicesHealth();
       return {
-        production: productionHealth,;
+        production: productionHealth
         legacy: await goServiceClient.checkServiceHealth()
       };
     } catch (error: any) {
       console.error("Production health check failed:", error);
-      // Fallback to legacy health check;
+      // Fallback to legacy health check
       try {
         return { legacy: await goServiceClient.checkServiceHealth() };
       } catch (fallbackError) {
@@ -223,8 +216,7 @@ export const agentShellServices = {
     }
   }
 };
-
-// Action implementations;
+// Action implementations
 export const agentShellActions = {
   acceptPatchAction: async ({ event }: any) => {
     try {
@@ -239,13 +231,12 @@ export const agentShellActions = {
       console.error("Patch acceptance failed:", error);
     }
   },
-
   rateSuggestionAction: async ({ event }: any) => {
     try {
       const result = await goServiceClient.rateSuggestion({
         jobId: event.jobId,
         rating: event.rating,
-        userId: event.userId,;
+        userId: event.userId,
         feedback: event.feedback
       });
       console.log("Rating submitted:", result);

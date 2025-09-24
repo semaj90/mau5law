@@ -6,12 +6,9 @@
 // used across the SvelteKit application, addressing the root cause of hundreds of
 // TypeScript errors related to type mismatches and missing properties.
 // ---
-
 // --- Core Service & API Types ---
-
 export type ServiceStatus = 'operational' | 'degraded' | 'offline' | 'unknown';
 }
-
 export interface APIResponse<T> {
     success: boolean;
     data?: T;
@@ -24,13 +21,10 @@ export interface APIResponse<T> {
         processingTimeMs: number;
     };
 }
-
 // --- AI & Worker Manager Types (Fixes ~50+ errors) ---
-
 export type AITaskType = "generate" | "analyze" | "embed" | "search" | "embedding" | "analysis" | "classification" | "summarization";
 export type WorkerMessageType = "error" | "status" | "result" | "task" | "TASK_STARTED" | "TASK_COMPLETED" | "TASK_ERROR" | "TASK_CANCELLED" | "STATUS_UPDATE";
 }
-
 export interface AITask {
   taskId: string;
   type: AITaskType;
@@ -42,7 +36,6 @@ export interface AITask {
   // Additional properties for specific tasks can be added
   [key: string]: any;
 }
-
 export interface WorkerStatus {
   status: 'idle' | 'processing' | 'error';
   activeRequests: number;
@@ -58,25 +51,20 @@ export interface WorkerStatus {
   };
   lastActivity: Date;
 }
-
 export interface WorkerMessage {
   taskId?: string;
   type: WorkerMessageType;
   data?: unknown;
   payload?: AITask | APIResponse<unknown> | WorkerStatus;
 }
-
 // --- Copilot & RAG Types (Fixes ~20+ errors) ---
-
 export type CopilotSource = "context7_mcp" | "enhanced_local_index" | "basic_index";
 }
-
 export interface CopilotIndexEntry {
   // Base properties
   id: string;
   content: string;
   score: number;
-
   // Unified metadata properties
   source: CopilotSource;
   type: 'case' | 'document' | 'evidence' | 'statute';
@@ -88,7 +76,6 @@ export interface CopilotIndexEntry {
   language: string;
   tags: string[];
 }
-
 export interface SimilarityResult {
     id: string;
     documentId: string;
@@ -97,8 +84,7 @@ export interface SimilarityResult {
     content: string;
     score: number;
 }
-
-// --- Database & Document Types ---;
+// --- Database & Document Types ---
 export interface LegalDocument {
     id: string;
     caseId: string;
@@ -106,18 +92,16 @@ export interface LegalDocument {
     content: string;
     createdAt: string;
     updatedAt: string;
-    metadata: Record<string, any>;
+    metadata: { [key: string]: any };
     embedding?: number[];
 }
-
-// --- NES-Style Canvas Engine & AI Prediction Types ---;
+// --- NES-Style Canvas Engine & AI Prediction Types ---
 }
-
 export interface CanvasState {
   id: string;
   animation: string;
   frame: number;
-  fabricJSON: object; // Represents the serialized fabric.js canvas state;
+  fabricJSON: object; // Represents the serialized fabric.js canvas state
   metadata: {
     duration?: number;
     transitions?: string[];
@@ -125,36 +109,30 @@ export interface CanvasState {
     confidence?: number;
   };
 }
-
 export interface CanvasAnimation {
     name: string;
     frames: CanvasState[];
     loop: boolean;
 }
-
 export interface UserActivityLog {
     timestamp: number;
     action: string; // e.g., 'canvas_click', 'animation_changed'
-    context: Record<string, any>;
+    context: { [key: string]: any };
     sessionId: string;
 }
-
-// --- XState & Machine Types ---;
+// --- XState & Machine Types ---
 export interface GlobalAppContext {
     user: { id: string; email: string; } | null;
     activeCaseId: string | null;
     theme: 'light' | 'dark';
 }
-
 export type GlobalAppEvent =
   | { type: 'LOGIN'; user: { id: string; email: string } }
   | { type: 'LOGOUT' }
   | { type: 'SET_CASE'; caseId: string }
   | { type: 'SET_THEME'; theme: 'light' | 'dark' };
-
-// --- Legal Case & Evidence Types ---;
+// --- Legal Case & Evidence Types ---
 }
-
 export interface LegalCase {
   id: string;
   title: string;
@@ -164,9 +142,8 @@ export interface LegalCase {
   createdAt: string;
   updatedAt: string;
   userId: string;
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
 }
-
 export interface Evidence {
   id: string;
   caseId: string;
@@ -177,48 +154,39 @@ export interface Evidence {
   fileSize?: number;
   mimeType?: string;
   uploadedAt: string;
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
   embedding?: number[];
 }
-
-// --- Vector & Search Types ---;
+// --- Vector & Search Types ---
 }
-
 export interface VectorSearchRequest {
   query: string;
-  filters?: Record<string, any>;
+  filters?: { [key: string]: any };
   limit?: number;
   threshold?: number;
 }
-
 export interface VectorSearchResult {
   id: string;
   content: string;
   score: number;
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
 }
-
-// --- Form & Validation Types ---;
+// --- Form & Validation Types ---
 }
-
 export interface FormValidationError {
   field: string;
   message: string;
   code?: string;
 }
-
 export interface FormState<T> {
   data: T;
   errors: FormValidationError[];
   isValid: boolean;
   isSubmitting: boolean;
 }
-
 // --- Notification & Alert Types ---
-
 export type NotificationType = 'info' | 'success' | 'warning' | 'error';
 }
-
 export interface Notification {
   id: string;
   type: NotificationType;
@@ -228,10 +196,8 @@ export interface Notification {
   autoClose?: boolean;
   duration?: number;
 }
-
-// --- UI Component Props Types ---;
+// --- UI Component Props Types ---
 }
-
 export interface ButtonProps {
   variant?: 'default' | 'primary' | 'secondary' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
@@ -242,7 +208,6 @@ export interface ButtonProps {
   onclick?: (event: MouseEvent) => void;
   class?: string;
 }
-
 export interface ModalProps {
   show: boolean;
   title?: string;
@@ -251,10 +216,8 @@ export interface ModalProps {
   onClose?: () => void;
   class?: string;
 }
-
-// --- Authentication Types ---;
+// --- Authentication Types ---
 }
-
 export interface User {
   id: string;
   email: string;
@@ -265,24 +228,20 @@ export interface User {
   createdAt: string;
   lastLoginAt?: string;
 }
-
 export interface AuthSession {
   user: User;
   token: string;
   expiresAt: string;
   refreshToken?: string;
 }
-
-// --- File Upload Types ---;
+// --- File Upload Types ---
 }
-
 export interface FileUploadRequest {
   file: File;
   caseId?: string;
   description?: string;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 }
-
 export interface FileUploadResponse {
   id: string;
   fileName: string;
@@ -291,22 +250,17 @@ export interface FileUploadResponse {
   url: string;
   uploadedAt: string;
 }
-
 // --- WebSocket & Real-time Types ---
-
 export type WebSocketMessageType = 'ping' | 'pong' | 'subscribe' | 'unsubscribe' | 'notification' | 'update';
 }
-
 export interface WebSocketMessage {
   type: WebSocketMessageType;
   payload?: any;
   timestamp: number;
   requestId?: string;
 }
-
 // --- API Types Re-export ---
 // Export only types that actually exist in api.ts
-
 export type {
   // Core API Response Types
   ApiResponse,
@@ -314,13 +268,11 @@ export type {
   HealthStatus,
   ServiceHealth,
   SystemInfo,
-
   // AI & Chat Types
   ChatRequest,
   ChatResponse,
   AIAnalysisRequest,
   AIAnalysisResponse,
-
   // Enhanced Production Types that exist
   APIResponse as EnhancedAPIResponse,
   ServiceTier,

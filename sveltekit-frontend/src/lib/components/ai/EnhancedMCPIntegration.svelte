@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     caseId: string | undefined ;
     enableRealtimeUpdates: boolean
@@ -12,9 +11,6 @@
     showMetrics = true,
     enableClusterMode = true
    }: Props = $props();
-
-
-
   	/**
   	 * Enhanced MCP Integration Component for SvelteKit Frontend
   	 * Connects cluster system, MCP tools, and Context7 integration
@@ -66,7 +62,7 @@ await initializeMCPConnection();
   		mcpStatus.set('connecting');
   		try {
   			// Test connection to Context7 MCP server
-  			const response = await fetch('http://localhost:40000/health');
+  			const response = await fetch('http://localhost:40000/health')
   			if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
   				mcpStatus.set('connected');
   				console.log('🚀 Enhanced MCP Integration connected');
@@ -87,7 +83,7 @@ await initializeMCPConnection();
   	}
   	function setupWebSocketConnection() {
   		try {
-  			wsConnection = new WebSocket('ws://localhost:40000');
+  			wsConnection = new WebSocket('ws://localhost:40000')
   			wsConnection.onopen = () => {
   				console.log('📡 WebSocket connected for real-time updates');
   			};
@@ -131,10 +127,10 @@ await initializeMCPConnection();
   		if (caseId) {
   			suggestions.push({
   				type: 'mcp_tool',
-  				title: 'Analyze Case Evidence',;
-  				description: 'Run enhanced RAG analysis on case evidence',;
+  				title: 'Analyze Case Evidence',
+  				description: 'Run enhanced RAG analysis on case evidence',
   				action: async () => {
-  					await executeMCPTool('enhanced_rag_query', {;
+  					await executeMCPTool('enhanced_rag_query', {
   						query: `Analyze all evidence for case ${caseId}`,
   						caseId,
   						maxResults: 10,
@@ -145,16 +141,16 @@ await initializeMCPConnection();
   			});
   			suggestions.push({
   				type: 'memory_relation',
-  				title: 'Update Knowledge Graph',;
-  				description: 'Create memory relations for current case',;
+  				title: 'Update Knowledge Graph',
+  				description: 'Create memory relations for current case',
   				action: async () => {
   					await executeMCPTool('mcp_memory2_create_relations', {
   						entities: [
   							{
-  								type: 'case',;
-  								id: caseId,;
+  								type: 'case',
+  								id: caseId
   								properties: {
-  									analyzed_at: new Date().toISOString(),;
+  									analyzed_at: new Date().toISOString(),
   									source: 'enhanced_mcp_integration';
   								}
   							}
@@ -167,17 +163,17 @@ await initializeMCPConnection();
   		// Context7 documentation suggestions
   		suggestions.push({
   			type: 'context7_doc',
-  			title: 'Get SvelteKit Best Practices',;
-  			description: 'Fetch Context7 documentation for SvelteKit',;
+  			title: 'Get SvelteKit Best Practices',
+  			description: 'Fetch Context7 documentation for SvelteKit',
   			action: async () => {
   				await executeMCPTool('mcp_context72_get-library-docs', {
-  					libraryId: '/sveltejs/kit',;
+  					libraryId: '/sveltejs/kit',
   					topic: 'best-practices';
   				});
   			},
   			priority: 'low';
   		});
-  		return suggestions;
+  		return suggestion;
   	}
   	function startMetricsPolling() {
   		setInterval(async () => {
@@ -188,7 +184,7 @@ await initializeMCPConnection();
   	}
   	async function updateClusterMetrics() {
   		try {
-  			const response = await fetch('http://localhost:40000/mcp/metrics');
+  			const response = await fetch('http://localhost:40000/mcp/metrics')
   			if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
   				const data = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json();
   				if ((data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).success) {
@@ -246,8 +242,8 @@ await initializeMCPConnection();
   					throw new Error(`Unknown tool: ${toolId}`);
   			}
   			const response = await fetch(`http://localhost:40000${endpoint}`, {
-  				method: 'POST',;
-  				headers: { 'Content-Type': 'application/json' },;
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
   				body: JSON.stringify(args);
   			});
   			if (!(response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
@@ -259,16 +255,16 @@ await initializeMCPConnection();
   			queryResults.update(results => [{
   				id: crypto.randomUUID(),
   				query: JSON.stringify(args),
-  				result,;
-  				source: getSourceType(toolId),;
+  				result,
+  				source: getSourceType(toolId),
   				timestamp: new Date(),
-  				responseTime,;
+  				responseTime,
   				success: true;
   			}, ...results.slice(0, 9)]);
   			// Update tool success count
   			mcpTools.update(tools =>
   				tools.map(tool =>
-  					tool.id === toolId 
+  					tool.id === toolId
   						? { ...tool, status: 'available', successCount: tool.successCount + 1, lastUsed: new Date() }
   						: tool
   				)
@@ -279,19 +275,19 @@ await initializeMCPConnection();
   			// Update tool error count
   			mcpTools.update(tools =>
   				tools.map(tool =>
-  					tool.id === toolId 
+  					tool.id === toolId
   						? { ...tool, status: 'error', errorCount: tool.errorCount + 1 }
   						: tool
   				)
   			);
   			// Add error to results
   			queryResults.update(results => [{
-  				id: crypto.randomUUID(),;
-  				query: JSON.stringify(args),;
+  				id: crypto.randomUUID(),
+  				query: JSON.stringify(args),
   				result: { error: error.message },
-  				source: getSourceType(toolId),;
+  				source: getSourceType(toolId),
   				timestamp: new Date(),
-  				responseTime: Date.now() - startTime,;
+  				responseTime: Date.now() - startTime,
   				success: false;
   			}, ...results.slice(0, 9)]);
   		} finally {
@@ -307,7 +303,7 @@ await initializeMCPConnection();
   	}
   	async function executeQuery() {
   		if (!queryInput.trim() || !selectedTool) return;
-  		const args = selectedTool === 'enhanced_rag_query' 
+  		const args = selectedTool === 'enhanced_rag_query'
   			? { query: queryInput, caseId, maxResults: 10, includeContext7: true }
   			: selectedTool.includes('memory') && selectedTool.includes('search')
   			? { query: queryInput }
@@ -318,7 +314,6 @@ await initializeMCPConnection();
   		queryInput = '';
   	}
 </script>
-
 <div class="enhanced-mcp-integration">
 	<div class="mcp-header">
 		<h2 class="mcp-title">
@@ -329,7 +324,6 @@ await initializeMCPConnection();
 			Status: <span class="status-text">{$mcpStatus}</span>
 		</div>
 	</div>
-
 	{#if showMetrics && $mcpStatus === 'connected'}
 		<div class="cluster-metrics">
 			<h3>📊 Cluster Performance Metrics</h3>
@@ -357,7 +351,6 @@ await initializeMCPConnection();
 			</div>
 		</div>
 	{/if}
-
 	<div class="mcp-interface">
 		<div class="query-section">
 			<h3>🔍 MCP Query Interface</h3>
@@ -374,7 +367,7 @@ await initializeMCPConnection();
 					class="query-input"
 					onkeydown={(e) => e.key === 'Enter' && executeQuery()}
 				/>
-				<button 
+				<button
 					onclick={executeQuery}
 					disabled={!queryInput.trim() || !selectedTool || isProcessing}
 					class="execute-button"
@@ -383,12 +376,11 @@ await initializeMCPConnection();
 				</button>
 			</div>
 		</div>
-
 		<div class="suggestions-section">
 			<h3>💡 Contextual Suggestions</h3>
 			<div class="suggestions-list">
 				{#each $contextualSuggestions as suggestion}
-					<button 
+					<button
 						class="suggestion-item suggestion-{suggestion.priority}"
 						onclick={suggestion.action}
 						disabled={isProcessing}
@@ -400,7 +392,6 @@ await initializeMCPConnection();
 				{/each}
 			</div>
 		</div>
-
 		<div class="tools-status">
 			<h3>🛠️ MCP Tools Status</h3>
 			<div class="tools-grid">
@@ -421,7 +412,6 @@ await initializeMCPConnection();
 				{/each}
 			</div>
 		</div>
-
 		<div class="results-section">
 			<h3>📋 Recent Query Results</h3>
 			<div class="results-list">
@@ -446,7 +436,6 @@ await initializeMCPConnection();
 		</div>
 	</div>
 </div>
-
 <style>
 	.enhanced-mcp-integration {
 		background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
@@ -456,16 +445,14 @@ await initializeMCPConnection();
 		font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
 		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 	}
-
 	.mcp-header {
 		display: flex;
-		justify-content: space-between;
+		justify-content: space-betwee;
 		align-items: center;
 		margin-bottom: 24px;
 		border-bottom: 1px solid rgba(229, 231, 235, 0.1);
 		padding-bottom: 16px;
 	}
-
 	.mcp-title {
 		font-size: 1.5rem;
 		font-weight: 600;
@@ -473,67 +460,56 @@ await initializeMCPConnection();
 		align-items: center;
 		gap: 8px;
 	}
-
 	.status-indicator {
 		width: 12px;
 		height: 12px;
 		border-radius: 50%;
 		margin-left: 8px;
 	}
-
 	.status-connected { background: #10b981; }
 	.status-connecting { background: #f59e0b; animation: pulse 2s infinite; }
 	.status-disconnected { background: #6b7280; }
 	.status-error { background: #ef4444; }
-
 	@keyframes pulse {
 		0%, 100% { opacity: 1; }
 		50% { opacity: 0.5; }
 	}
-
 	.connection-status {
 		font-size: 0.875rem;
 		color: #9ca3af;
 	}
-
 	.cluster-metrics {
 		margin-bottom: 24px;
 		background: rgba(255, 255, 255, 0.05);
 		border-radius: 8px;
 		padding: 16px;
 	}
-
 	.metrics-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
 		gap: 16px;
 		margin-top: 12px;
 	}
-
 	.metric {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		text-align: center;
 	}
-
 	.metric-label {
 		font-size: 0.75rem;
 		color: #9ca3af;
 		margin-bottom: 4px;
 	}
-
 	.metric-value {
 		font-size: 1.25rem;
 		font-weight: 600;
 		color: #10b981;
 	}
-
 	.mcp-interface {
 		display: grid;
 		gap: 24px;
 	}
-
 	.query-section h3,
 	.suggestions-section h3,
 	.tools-status h3,
@@ -543,14 +519,12 @@ await initializeMCPConnection();
 		margin-bottom: 12px;
 		color: #f3f4f6;
 	}
-
 	.query-form {
 		display: flex;
 		gap: 12px;
 		align-items: center;
 		flex-wrap: wrap;
 	}
-
 	.tool-selector,
 	.query-input {
 		background: rgba(255, 255, 255, 0.1);
@@ -560,16 +534,13 @@ await initializeMCPConnection();
 		color: #e5e7eb;
 		font-size: 0.875rem;
 	}
-
 	.tool-selector {
 		min-width: 200px;
 	}
-
 	.query-input {
 		flex: 1;
 		min-width: 200px;
 	}
-
 	.execute-button {
 		background: linear-gradient(135deg, #3b82f6, #1d4ed8);
 		border: none;
@@ -578,24 +549,20 @@ await initializeMCPConnection();
 		color: white;
 		font-weight: 500;
 		cursor: pointer;
-		transition: all 0.2s;
+		transition: all 0.2;
 	}
-
-	.execute-button:hover:not(:disabled) {
+	.execute-button:hover:not(:disabled) {,
 		transform: translateY(-1px);
 		box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 	}
-
 	.execute-button:disabled {
 		opacity: 0.5;
 		cursor: not-allowed;
 	}
-
 	.suggestions-list {
 		display: grid;
 		gap: 8px;
 	}
-
 	.suggestion-item {
 		background: rgba(255, 255, 255, 0.05);
 		border: 1px solid rgba(255, 255, 255, 0.1);
@@ -603,64 +570,53 @@ await initializeMCPConnection();
 		padding: 12px;
 		text-align: left;
 		cursor: pointer;
-		transition: all 0.2s;
+		transition: all 0.2;
 	}
-
-	.suggestion-item:hover:not(:disabled) {
+	.suggestion-item:hover:not(:disabled) {,
 		background: rgba(255, 255, 255, 0.1);
 		transform: translateY(-1px);
 	}
-
 	.suggestion-high { border-left: 4px solid #ef4444; }
 	.suggestion-medium { border-left: 4px solid #f59e0b; }
 	.suggestion-low { border-left: 4px solid #10b981; }
-
 	.tools-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 		gap: 12px;
 	}
-
 	.tool-card {
 		background: rgba(255, 255, 255, 0.05);
 		border-radius: 6px;
 		padding: 12px;
 		border-left: 4px solid #6b7280;
 	}
-
 	.tool-available { border-left-color: #10b981; }
 	.tool-busy { border-left-color: #f59e0b; }
 	.tool-error { border-left-color: #ef4444; }
-
 	.tool-name {
 		font-weight: 500;
 		margin-bottom: 8px;
 	}
-
 	.tool-stats {
 		display: flex;
 		gap: 12px;
 		font-size: 0.75rem;
 		margin-bottom: 4px;
 	}
-
 	.results-list {
 		max-height: 400px;
 		overflow-y: auto;
 		display: grid;
 		gap: 12px;
 	}
-
 	.result-item {
 		background: rgba(255, 255, 255, 0.05);
 		border-radius: 6px;
 		padding: 12px;
 		border-left: 4px solid #6b7280;
 	}
-
 	.result-success { border-left-color: #10b981; }
 	.result-error { border-left-color: #ef4444; }
-
 	.result-header {
 		display: flex;
 		gap: 12px;
@@ -668,13 +624,11 @@ await initializeMCPConnection();
 		color: #9ca3af;
 		margin-bottom: 8px;
 	}
-
 	.result-content {
 		font-size: 0.875rem;
 		max-height: 200px;
 		overflow-y: auto;
 	}
-
 	.result-content pre {
 		background: rgba(0, 0, 0, 0.3);
 		padding: 8px;
@@ -682,7 +636,6 @@ await initializeMCPConnection();
 		white-space: pre-wrap;
 		word-wrap: break-word;
 	}
-
 	.error-message {
 		color: #ef4444;
 		font-weight: 500;

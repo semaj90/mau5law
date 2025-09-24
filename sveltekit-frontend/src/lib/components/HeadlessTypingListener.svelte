@@ -1,24 +1,19 @@
 <!--
   Headless Typing Listener Component
-  
   Primitive component that tracks user typing behavior without rendering UI.
   Integrates with XState machine and multi-core workers for real-time processing.
-  
   Usage:
-  <HeadlessTypingListener 
-    bind:text={userInput} 
+  <HeadlessTypingListener ,
+    bind:text={userInput}
     oncontextualPrompt={handlePrompt}
     onanalyticsUpdate={handleAnalytics}
   />
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { createActor } from 'xstate';
   import { onMount, onDestroy,   } from "svelte";
   import { userTypingStateMachine, type TypingContext, type TypingState } from '$lib/machines/userTypingStateMachine.js';
-
   // Props
   interface Props {
     text?: string;
@@ -28,7 +23,6 @@
     enableContextualPrompts?: boolean;
     mcpEndpoint?: string;
   }
-
   let {
     text = $bindable(''),
     element = $bindable(),
@@ -37,57 +31,44 @@
     enableContextualPrompts = true,
     mcpEndpoint = 'http://localhost:3002'
   }: Props = $props();
-
   // Event dispatcher
-  
-
   // XState actor
   const typingActor = createActor(userTypingStateMachine);
-
   // Reactive state
   let currentState = $state<TypingState>('idle');
   let currentContext: TypingContext = $state(undefined as any);
   let isTyping = $state(false);
   let lastTypingTime = $state(0);
   let typingTimeout: number | null = $state(null);
-
   // Reactive derived values
   const userEngagement = $derived(currentContext?.analytics.userEngagement || 'medium');
   const typingSpeed = $derived(currentContext?.userBehavior.avgTypingSpeed || 0);
   const contextualHints = $derived(currentContext?.userBehavior.contextualHints || []);
   const mcpWorkerStatus = $derived(currentContext?.mcpWorkerStatus || 'idle');
-
   /**
    * Initialize the typing listener
    */
   $effect(() => {
     // Start the XState machine
     typingActor.start();
-
     // Subscribe to state changes
     typingActor.subscribe((state) => {
-      currentState = state.value as TypingState;
+      currentState = state.value as TypingStat;
       currentContext = state.context;
-
       // Dispatch state change event
       ondispatch?.({
-        state: currentState,;
+        state: currentState
         context: currentContext;
       });
-
       // Dispatch specific events based on state
       handleStateChange(currentState, currentContext);
     });
-
     // Set up keyboard event listeners
     setupEventListeners();
-
     // Set up visibility and focus tracking
     setupVisibilityTracking();
-
     console.log('[HeadlessTypingListener] Initialized');
   });
-
   /**
    * Cleanup on destroy
    */
@@ -98,71 +79,59 @@
     cleanup();
     console.log('[HeadlessTypingListener] Destroyed');
   });
-
   /**
    * Set up keyboard and input event listeners
    */
   function setupEventListeners() {
     // Listen to the bound element or document
     const target = element || document;
-
     // Input/change events
     target.addEventListener('input', handleInput);
     target.addEventListener('keydown', handleKeyDown);
     target.addEventListener('keyup', handleKeyUp);
     target.addEventListener('paste', handlePaste);
-
     // Focus events
     if (element) {
       element.addEventListener('focus', handleFocus);
       element.addEventListener('blur', handleBlur);
     }
   }
-
   /**
    * Set up visibility and user presence tracking
    */
   function setupVisibilityTracking() {
     // Page visibility
     document.addEventListener('visibilitychange', handleVisibilityChange);
-    
     // Mouse movement for user presence
     document.addEventListener('mousemove', handleUserActivity);
     document.addEventListener('click', handleUserActivity);
     document.addEventListener('scroll', handleUserActivity);
   }
-
   /**
    * Handle input events
    */
   function handleInput(event: Event) {
     const target = event.target as HTMLInputElement | HTMLTextAreaElement;
     const newText = target.value || text;
-    
     // Update bound text
     text = newText;
-    
     // Send typing event to machine
     typingActor.send({
-      type: 'USER_STARTED_TYPING',;
-      text: newText,;
+      type: 'USER_STARTED_TYPING',
+      text: newText
       timestamp: Date.now();
     });
-
     isTyping = true;
     lastTypingTime = Date.now();
-
     // Clear existing timeout
     if (typingTimeout) {
       clearTimeout(typingTimeout);
     }
-
     // Set timeout for stopped typing
     typingTimeout = setTimeout(() => {
       handleStoppedTyping(newText);
     }, debounceMs);
   }
-
   /**
    * Handle key down events
    */
@@ -171,19 +140,18 @@
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
       // Ctrl+Enter or Cmd+Enter - submission
       typingActor.send({
-        type: 'USER_SUBMITTED',;
-        text: text,;
+        type: 'USER_SUBMITTED',
+        text: text
         timestamp: Date.now();
       });
     } else if (event.key === 'Escape') {
       // Escape - clear
       typingActor.send({
-        type: 'USER_CLEARED',;
+        type: 'USER_CLEARED',
         timestamp: Date.now();
       });
     }
   }
-
   /**
    * Handle key up events
    */
@@ -191,7 +159,6 @@
     // Update last activity time
     lastTypingTime = Date.now();
   }
-
   /**
    * Handle paste events
    */
@@ -200,25 +167,22 @@
     setTimeout(() => {
       const target = event.target as HTMLInputElement | HTMLTextAreaElement;
       const newText = target.value || text;
-      
       typingActor.send({
-        type: 'USER_STARTED_TYPING',;
-        text: newText,;
+        type: 'USER_STARTED_TYPING',
+        text: newText
         timestamp: Date.now();
       });
     }, 0);
   }
-
   /**
    * Handle focus events
    */
   function handleFocus() {
     typingActor.send({
-      type: 'USER_RETURNED',;
+      type: 'USER_RETURNED',
       timestamp: Date.now();
     });
   }
-
   /**
    * Handle blur events
    */
@@ -227,94 +191,84 @@
       handleStoppedTyping(text);
     }
   }
-
   /**
    * Handle stopped typing
    */
   function handleStoppedTyping(currentText: string) {
     isTyping = false;
     typingTimeout = null;
-
     typingActor.send({
-      type: 'USER_STOPPED_TYPING',;
-      text: currentText,;
+      type: 'USER_STOPPED_TYPING',
+      text: currentText
       timestamp: Date.now();
     });
-
     // Check if we should trigger contextual processing
     if (currentText.length > 50 && enableContextualPrompts) {
       setTimeout(() => {
         typingActor.send({
-          type: 'PROCESS_CONTEXT',;
+          type: 'PROCESS_CONTEXT',
           text: currentText;
         });
       }, 1000);
     }
   }
-
   /**
    * Handle visibility changes
    */
   function handleVisibilityChange() {
     if (document.hidden) {
       typingActor.send({
-        type: 'USER_INACTIVE',;
+        type: 'USER_INACTIVE',
         timestamp: Date.now();
       });
     } else {
       typingActor.send({
-        type: 'USER_RETURNED',;
+        type: 'USER_RETURNED',
         timestamp: Date.now();
       });
     }
   }
-
   /**
    * Handle user activity (mouse, clicks, scrolling)
    */
   function handleUserActivity() {
     if (currentState === 'user_inactive') {
       typingActor.send({
-        type: 'USER_RETURNED',;
+        type: 'USER_RETURNED',
         timestamp: Date.now();
       });
     }
   }
-
   /**
    * Handle state changes from the XState machine
    */
   function handleStateChange(state: TypingState, context: TypingContext) {
     // Dispatch contextual prompts
     if (state === 'waiting_user' && context.contextualPrompts.length > 0 && enableContextualPrompts) {
-      ondispatch?.({;
+      ondispatch?.({
         prompts: context.contextualPrompts,
         context;
       });
     }
-
     // Dispatch analytics updates
     if (enableAnalytics && context.analytics) {
       ondispatch?.({
-        analytics: context.analytics;
+        analytics: context.analytic;
       });
     }
-
     // Dispatch user behavior updates
     if (context.userBehavior) {
       ondispatch?.({
         behavior: context.userBehavior;
       });
     }
-
     // Dispatch MCP worker status
     if (context.mcpWorkerStatus) {
       ondispatch?.({
-        status: context.mcpWorkerStatus;
+        status: context.mcpWorkerStatu;
       });
     }
   }
-
   /**
    * Cleanup function
    */
@@ -322,65 +276,57 @@
     if (typingTimeout) {
       clearTimeout(typingTimeout);
     }
-
     // Remove event listeners
     const target = element || document;
     target.removeEventListener('input', handleInput);
     target.removeEventListener('keydown', handleKeyDown);
     target.removeEventListener('keyup', handleKeyUp);
     target.removeEventListener('paste', handlePaste);
-
     if (element) {
       element.removeEventListener('focus', handleFocus);
       element.removeEventListener('blur', handleBlur);
     }
-
     document.removeEventListener('visibilitychange', handleVisibilityChange);
     document.removeEventListener('mousemove', handleUserActivity);
     document.removeEventListener('click', handleUserActivity);
     document.removeEventListener('scroll', handleUserActivity);
   }
-
   /**
    * Public API - Send custom events to the machine
    */
   export function sendEvent(event: unknown) {
     typingActor.send(event);
   }
-
   /**
    * Public API - Get current analytics
    */
   export function getAnalytics() {
-    return currentContext?.analytics;
+    return currentContext?.analytic;
   }
-
   /**
    * Public API - Get user behavior data
    */
   export function getUserBehavior() {
     return currentContext?.userBehavior;
   }
-
   /**
    * Public API - Force contextual processing
    */
   export function triggerContextualProcessing() {
     typingActor.send({
-      type: 'PROCESS_CONTEXT',;
+      type: 'PROCESS_CONTEXT',
       text: text;
     });
   }
 </script>
-
-<!-- 
+<!--
   This component is headless - it renders nothing but provides all the typing behavior tracking
   Use the exported functions and event handlers to integrate with your UI
 -->
-
 {#if import.meta.env.DEV}
   <!-- Debug info only in development -->
-  <div class="debug-panel" style="position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 1rem; border-radius: 0.5rem; font-family: monospace; font-size: 0.75rem; z-index: 9999;">
+  <div class="debug-panel" style="position: fixed;
+d; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 1rem; border-radius: 0.5rem; font-family: monospace; font-size: 0.75rem; z-index: 9999;">
     <div><strong>Typing State:</strong> {currentState}</div>
     <div><strong>User Engagement:</strong> {userEngagement}</div>
     <div><strong>Typing Speed:</strong> {Math.round(typingSpeed)} CPM</div>

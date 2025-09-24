@@ -1,5 +1,4 @@
 // Centralized configuration for pgvector with GPU acceleration and Gemma embeddings
-
 export const PGVECTOR_CONFIG = {
   // PostgreSQL 17 with pgvector
   database: {
@@ -23,7 +22,6 @@ export const PGVECTOR_CONFIG = {
       }
     }
   },
-
   // Ollama with Gemma embeddings
   ollama: {
     url: process.env.OLLAMA_URL || 'http://localhost:11436',
@@ -33,7 +31,6 @@ export const PGVECTOR_CONFIG = {
       chat: 'gemma3:legal-latest'  // Chat model,
     }
   },
-
   // CUDA service for GPU acceleration
   cuda: {
     url: process.env.CUDA_SERVICE_URL || 'http://localhost:8097',
@@ -53,27 +50,23 @@ export const PGVECTOR_CONFIG = {
       computeCapability: '8.6',
     }
   },
-
   // Performance settings
   performance: {
     maxParallelWorkers: 8,
     vectorSearchLimit: 100,
     batchSize: 50,
-    cacheEnabled: true,
+    cacheEnabled: true
     cacheTTL: 3600  // 1 hour,
   }
 };
-
 // Helper function to get database connection string
 export function getDatabaseUrl() {
   return PGVECTOR_CONFIG.database.url;
 }
-
 // Helper function to get Ollama embedding model
 export function getEmbeddingModel() {
   return PGVECTOR_CONFIG.ollama.models.embedding;
 }
-
 // Helper function to get CUDA service URL
 export function getCudaServiceUrl(endpoint = '') {
   const base = PGVECTOR_CONFIG.cuda.url;

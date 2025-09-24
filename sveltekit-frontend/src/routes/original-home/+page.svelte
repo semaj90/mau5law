@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import Typewriter from "$lib/components/Typewriter.svelte";
   import UploadArea from "$lib/components/UploadArea.svelte";
@@ -49,12 +48,10 @@ https://svelte.dev/e/js_parse_error -->
       console.error('AI search failed:', error);
   }}
 </script>
-
 <svelte:head>
   <title>Dashboard - Prosecutor Case Management System</title>
   <meta name="description" content="Advanced legal case management with AI-powered document analysis" />
 </svelte:head>
-
 <!-- Hero Section -->
 <section class="space-y-4">
   <div class="space-y-4">
@@ -62,11 +59,9 @@ https://svelte.dev/e/js_parse_error -->
       <h1 class="space-y-4">
         <Typewriter text={heroText} speed={100} />
       </h1>
-      
       <p class="space-y-4">
         Harness the power of AI to analyze evidence, build stronger cases, and streamline your prosecution workflow
       </p>
-      
       <div class="space-y-4">
         <a href="/cases" class="space-y-4">
           View Cases
@@ -78,12 +73,10 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </section>
-
 <!-- Quick Actions Section -->
 <section class="space-y-4">
   <div class="space-y-4">
     <h2 class="space-y-4">Quick Actions</h2>
-    
     <div class="space-y-4">
       <!-- AI Search -->
       <div class="space-y-4">
@@ -94,15 +87,14 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <h3 class="space-y-4">AI-Powered Search</h3>
         <p class="space-y-4">Search through cases and evidence using natural language queries</p>
-        
         <div class="space-y-4">
-          <input 
+          <input
             id="aiSearchInput"
-            type="text" 
+            type="text"
             placeholder="Search cases, evidence, or legal precedents..."
             class="space-y-4"
           />
-          <button 
+          <button
             id="aiSearchBtn"
             class="space-y-4"
           >
@@ -110,7 +102,6 @@ https://svelte.dev/e/js_parse_error -->
           </button>
         </div>
       </div>
-      
       <!-- Quick Upload -->
       <div class="space-y-4">
         <div class="space-y-4">
@@ -120,10 +111,8 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <h3 class="space-y-4">Quick Evidence Upload</h3>
         <p class="space-y-4">Drag and drop files for instant AI analysis</p>
-        
         <UploadArea upload={handleQuickUpload} />
       </div>
-      
       <!-- Case Analytics -->
       <div class="space-y-4">
         <div class="space-y-4">
@@ -140,7 +129,6 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </section>
-
 <!-- Recent Cases Section -->
 {#if recentCases && recentCases.length > 0}
 <section class="space-y-4">
@@ -153,21 +141,17 @@ https://svelte.dev/e/js_parse_error -->
             <h3 class="space-y-4">{caseItem.title}</h3>
             <span class="space-y-4">{caseItem.status || 'Active'}</span>
           </div>
-          
           <p class="space-y-4">{caseItem.description || 'No description available'}</p>
-          
           <div class="space-y-4">
             <span>Case #{caseItem.id}</span>
             <span>{new Date(caseItem.createdAt).toLocaleDateString()}</span>
           </div>
-          
           <a href="/cases/{caseItem.id}" class="space-y-4">
             View Details →
           </a>
         </div>
       {/each}
     </div>
-    
     <div class="space-y-4">
       <a href="/cases" class="space-y-4">
         View All Cases
@@ -176,12 +160,10 @@ https://svelte.dev/e/js_parse_error -->
   </div>
 </section>
 {/if}
-
 <!-- Features Section -->
 <section class="space-y-4">
   <div class="space-y-4">
     <h2 class="space-y-4">Powerful Features</h2>
-    
     <div class="space-y-4">
       <div class="space-y-4">
         <div class="space-y-4">
@@ -192,7 +174,6 @@ https://svelte.dev/e/js_parse_error -->
         <h3 class="space-y-4">Document Analysis</h3>
         <p class="space-y-4">AI-powered analysis of legal documents and evidence</p>
       </div>
-      
       <div class="space-y-4">
         <div class="space-y-4">
           <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -202,7 +183,6 @@ https://svelte.dev/e/js_parse_error -->
         <h3 class="space-y-4">Case Tracking</h3>
         <p class="space-y-4">Comprehensive case management and progress tracking</p>
       </div>
-      
       <div class="space-y-4">
         <div class="space-y-4">
           <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -212,7 +192,6 @@ https://svelte.dev/e/js_parse_error -->
         <h3 class="space-y-4">Smart Insights</h3>
         <p class="space-y-4">Generate insights and recommendations from case data</p>
       </div>
-      
       <div class="space-y-4">
         <div class="space-y-4">
           <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -225,7 +204,6 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </section>
-
 <style>
   /* @unocss-include */
   .hero-section {
@@ -241,4 +219,3 @@ https://svelte.dev/e/js_parse_error -->
     overflow: hidden;
 }
 </style>
-

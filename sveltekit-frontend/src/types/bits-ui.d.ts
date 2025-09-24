@@ -2,9 +2,7 @@ declare module 'bits-ui' {
   // Minimal ambient declarations for bits-ui used during development.
   // Use Svelte's SvelteComponentTyped constructor shape to avoid `any` ESLint/TS warnings.
   import type { SvelteComponentTyped } from 'svelte';
-
   type ComponentCtor = new (...args: unknown[]) => SvelteComponentTyped<unknown, unknown, unknown>;
-
   export const Dialog: ComponentCtor;
   export const Button: ComponentCtor;
   export const Badge: ComponentCtor;
@@ -18,7 +16,6 @@ declare module 'bits-ui' {
   export const Avatar: ComponentCtor;
   export const Menu: ComponentCtor;
   export const ScrollAreaViewport: ComponentCtor;
-
   const _default: {
     Dialog: ComponentCtor;
     Button: ComponentCtor;
@@ -34,6 +31,5 @@ declare module 'bits-ui' {
     Menu: ComponentCtor;
     ScrollAreaViewport: ComponentCtor;
   };
-
   export default _default;
 }

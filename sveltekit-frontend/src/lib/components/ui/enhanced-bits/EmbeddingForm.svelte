@@ -1,31 +1,26 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import Button from './Button.svelte';
   import Input from './Input.svelte';
   import Card from './Card.svelte';
   import { z } from "zod";
   import { Search, Database, Zap, AlertCircle, CheckCircle } from 'lucide-svelte';
-
   // Form validation schema
   const embeddingFormSchema = z.object({
-    content: z.string().min(1, "Content is required").max(10000, "Content too long"),;
+    content: z.string().min(1, "Content is required").max(10000, "Content too long"),
   });
-
   interface Props {
     onSuccess?: (result: any) => void;
     onError?: (error: string) => void;
     variant?: 'default' | 'legal' | 'evidence';
     showRecentEmbeddings?: boolean;
   }
-
   let {
     onSuccess,
     onError,
     variant = 'default',
     showRecentEmbeddings = true
   }: Props = $props();
-
   // Form state using Svelte 5 runes
   let content = $state('');
   let isSubmitting = $state(false);
@@ -33,13 +28,11 @@
   let error = $state<string>('');
   let recentEmbeddings = $state<any[]>([]);
   let validationErrors = $state<Record<string, string>>({});
-
   // Load recent embeddings on mount
   async function loadRecentEmbeddings() {
     try {
       const response = await fetch('/api/embeddings/enhanced?action=recent&limit=5');
       const data = await response.json();
-
       if (data.success) {
         recentEmbeddings = data.data;
       }
@@ -47,31 +40,27 @@
       console.error('Failed to load recent embeddings:', err);
     }
   }
-
   // Generate embedding using Gemma API with WASM fallback
   async function generateEmbedding(text: string): Promise<number[]> {
     try {
       // Always try Gemma API first
       const response = await fetch('/api/embeddings/gemma?action=generate', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text })
       });
-
       if (response.ok) {
         const data = await response.json();
         if (data.success && data.embedding) {
           return data.embedding;
         }
       }
-
       throw new Error('Gemma API failed, using fallback');
     } catch {
       // Fallback to WASM worker for client-side generation
       return new Promise((resolve, reject) => {
         const worker = new Worker('/embeddings-worker.js');
         worker.postMessage({ text, model: 'gemma:270m' });
-
         worker.onmessage = (e) => {
           if (e.data.error) {
             reject(new Error(e.data.error));
@@ -80,7 +69,6 @@
           }
           worker.terminate();
         };
-
         worker.onerror = () => {
           reject(new Error('WASM worker failed'));
           worker.terminate();
@@ -88,41 +76,35 @@
       });
     }
   }
-
   // Validate form data
   function validateForm(): boolean {
     validationErrors = {};
-
     try {
       embeddingFormSchema.parse({ content });
       return true;
     } catch (err) {
       if (err instanceof z.ZodError) {
         err.errors.forEach(error => {
-          validationErrors[error.path[0] as string] = error.message;
+          validationErrors[error.path[0] as string] = error.messag;
         });
       }
       return false;
     }
   }
-
   // Handle form submission
   async function handleSubmit() {
     if (!validateForm()) {
       return;
     }
-
     isSubmitting = true;
     error = '';
     result = null;
-
     try {
       // Generate embedding using Gemma API with WASM fallback
       const embedding = await generateEmbedding(content);
-
       // Submit to API
       const response = await fetch('/api/embeddings/enhanced', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           content,
@@ -131,13 +113,11 @@
             timestamp: new Date().toISOString(),
             length: content.length,
             variant;
-          },;
+          },
           source: 'enhanced_bits_form';
         }),
       });
-
       const data = await response.json();
-
       if (data.success) {
         result = data.data;
         content = ''; // Clear form
@@ -154,19 +134,16 @@
       isSubmitting = false;
     }
   }
-
   // Load recent embeddings when component mounts
   $effect(() => {
     if (showRecentEmbeddings) {
       loadRecentEmbeddings();
     }
   });
-
   // Reactive validation
   let isValid = $derived(content.length > 0 && content.length <= 10000);
   let hasValidationErrors = $derived(Object.keys(validationErrors).length > 0);
 </script>
-
 <div class="embedding-form-container">
   <Card
     title="Enhanced-Bits Embedding Generator"
@@ -180,7 +157,6 @@
             <Database class="inline-icon" />
             Legal Content to Embed:
           </label>
-
           <textarea
             id="content-input"
             bind:value={content}
@@ -190,21 +166,18 @@
             disabled={isSubmitting}
             maxlength="10000"
           ></textarea>
-
           {#if validationErrors.content}
             <p class="nes-text is-error error-message">
               <AlertCircle class="inline-icon" />
               {validationErrors.content}
             </p>
           {/if}
-
           <div class="char-counter">
             <span class="nes-text {content.length > 9000 ? 'is-warning' : 'is-primary'}">
               {content.length}/10000 characters
             </span>
           </div>
         </div>
-
         <div class="form-actions">
           <Button
             variant="legal"
@@ -222,7 +195,6 @@
             {/if}
           </Button>
         </div>
-
         {#if result}
           <div class="result-display">
             <div class="nes-container is-rounded is-dark">
@@ -239,7 +211,6 @@
             </div>
           </div>
         {/if}
-
         {#if error}
           <div class="error-display">
             <div class="nes-container is-rounded">
@@ -253,7 +224,6 @@
       </form>
     {/snippet}
   </Card>
-
   {#if showRecentEmbeddings && recentEmbeddings.length > 0}
     <Card
       title="Recent Embeddings"
@@ -284,104 +254,87 @@
     </Card>
   {/if}
 </div>
-
 <style>
-  .embedding-form-container {;
+  .embedding-form-container {
     max-width: 800px;
     margin: 0 auto;
     padding: 1rem;
   }
-
   .embedding-form {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
-
   .form-group {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .form-group label {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-weight: bold;
   }
-
   .char-counter {
     text-align: right;
     margin-top: 0.25rem;
   }
-
   .form-actions {
     display: flex;
     justify-content: center;
     margin: 1rem 0;
   }
-
   .result-display,
   .error-display {
     margin-top: 1rem;
   }
-
   .result-details {
     margin-top: 1rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .result-details code {
     background: rgba(255, 255, 255, 0.1);
     padding: 0.2rem 0.4rem;
     border-radius: 3px;
     font-family: 'Courier New', monospace;
   }
-
   .recent-embeddings {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .embedding-item {
     border: 1px solid #333;
     padding: 1rem;
     border-radius: 4px;
     background: rgba(255, 255, 255, 0.05);
   }
-
   .embedding-content {
     margin-bottom: 0.5rem;
   }
-
   .embedding-meta {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     font-size: 0.8rem;
   }
-
   .inline-icon {
     width: 1rem;
     height: 1rem;
-    display: inline;
+    display: inli;
     vertical-align: text-bottom;
   }
-
   .error-message {
     margin-top: 0.5rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
-
   .animate-spin {
     animation: spin 1s linear infinite;
   }
-
   @keyframes spin {
     from {
       transform: rotate(0deg);
@@ -390,13 +343,11 @@
       transform: rotate(360deg);
     }
   }
-
   /* NES.css overrides for better form styling */
   .nes-textarea {
     min-height: 120px;
     resize: vertical;
   }
-
   .nes-textarea.is-error {
     border-color: #ce372b;
   }

@@ -1,7 +1,6 @@
 <!--
   NES 8-Bit Button Component
   Authentic NES.css styling with bits-ui compatibility
-
   Features:
   - Hardware-accurate NES color palette
   - Pixel-perfect rendering
@@ -11,12 +10,9 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { Button as BitsButton } from 'bits-ui';
-  import {   } from "svelte";
   import type { GamingComponentProps } from '../types/gaming-types.js';
   import { NES_COLOR_PALETTE } from '../constants/gaming-constants.js';
-
   interface Props extends GamingComponentProps {
     // Button specific props
     type?: 'button' | 'submit' | 'reset';
@@ -37,7 +33,6 @@
     children?: unknown;
     class?: string;
   }
-
   let {
     era = '8bit',
     variant = 'primary',
@@ -65,16 +60,13 @@
     class: className = '',
     onClick,
     onHover,
-    onFocus;
+    onFocu;
   }: Props = $props();
-
   // Events now handled via props in Svelte 5
   //
-
   let isPressed = $state(false);
   let audioContext = $state<AudioContext | null >(null);
   let buttonElement = $state<HTMLButtonElement | null >(null);
-
   // Create 8-bit button press sound
   const playButtonSound = async () => {
     if (!enableSound) return;
@@ -98,7 +90,6 @@
       console.warn('Could not play button sound:', error);
     }
   };
-
   const handleClick = async () => {
     if (disabled || loading) return;
     isPressed = true;
@@ -107,21 +98,18 @@
       isPressed = false;
     }, 100);
     onClick?.();
-    ondispatch?.();
+    // ondispatch removed;
   };
-
   const handleHover = () => {
     if (disabled) return;
     onHover?.();
-    ondispatch?.();
+    // ondispatch removed;
   };
-
   const handleFocus = () => {
     if (disabled) return;
     onFocus?.();
-    ondispatch?.();
+    // ondispatch removed;
   };
-
   // Get NES color based on variant
   const getVariantColor = (variant: string, nesVariant: string) => {
     const colorMap = {
@@ -132,24 +120,21 @@
       'error': NES_COLOR_PALETTE.red,
       'info': NES_COLOR_PALETTE.blue
     };
-    return colorMap[variant as keyof typeof colorMap] || NES_COLOR_PALETTE.blue;
+    return colorMap[variant as keyof typeof colorMap] || NES_COLOR_PALETTE.blu;
   };
-
   const getSizeStyles = (size: string) => {
     const sizeMap = {
       small: { padding: '8px 12px', fontSize: '10px', minHeight: '32px' },
       medium: { padding: '12px 16px', fontSize: '12px', minHeight: '40px' },
-      large: { padding: '16px 20px', fontSize: '14px', minHeight: '48px' },;
+      large: { padding: '16px 20px', fontSize: '14px', minHeight: '48px' },
       xl: { padding: '20px 24px', fontSize: '16px', minHeight: '56px' }
     };
     return sizeMap[size as keyof typeof sizeMap] || sizeMap.medium;
   };
-
   let sizeStyles = $derived(getSizeStyles(size));
   let variantColor = $derived(getVariantColor(variant, nesVariant));
   let pressTransform = $derived(isPressed ? `translateY(${pressDepth}px)` : 'translateY(0px)');
 </script>
-
 <BitsButton.Root
   bind:el={buttonElement}
   {type}
@@ -163,10 +148,10 @@
   {name}
   {value}
   onclick={handleClick}
-  ononmouseenter={handleHover}
+  onmouseenter={handleHover}
   onfocus={handleFocus}
   class="nes-8bit-button nes-btn {nesVariant} {className}"
-  style=";
+  style="
     --button-color: {variantColor};
     --button-padding: {sizeStyles.padding};
     --button-font-size: {sizeStyles.fontSize};
@@ -182,7 +167,6 @@
     {@render children?.()}
   {/if}
 </BitsButton.Root>
-
 <style>
   :global(.nes-8bit-button) {
 /* Base NES button styling */ font-family: 'Press Start 2P', 'Courier New', monospace !important;
@@ -194,10 +178,9 @@
     font-size: var(--button-font-size);
     min-height: var(--button-min-height);
 /* Pixel perfect rendering */ image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
+    image-rendering: -moz-crisp-edge;
+    image-rendering: crisp-edge;
 /* 3D button effect */ box-shadow: 2px 2px 0px #000000, 0px 0px 0px 2px var(--button-color);
-
     transform: var(--press-transform);
     transition: transform 50ms ease-out;
 /* Remove default button styles */ -webkit-appearance: none;
@@ -220,19 +203,16 @@
     background-color: #3cbcfc;
     --button-color: #3cbcfc;
   }
-
   :global(.nes-8bit-button.is-success) {
     background-color: #92cc41;
     --button-color: #92cc41;
   }
-
   :global(.nes-8bit-button.is-warning) {
     background-color: #f7d51d;
     --button-color: #f7d51d;
     color: #000000;
     text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.8);
   }
-
   :global(.nes-8bit-button.is-error) {
     background-color: #f83800;
     --button-color: #f83800;
@@ -245,14 +225,14 @@
     transform: none !important;
     box-shadow: 1px 1px 0px #000000;
   }
-/* Hover effects */ :global(.nes-8bit-button:not(:disabled):hover) {
+/* Hover effects */ :global(.nes-8bit-button:not(:disabled):hover) {,
     filter: brightness(1.1);
 box-shadow: 3px 3px 0px #000000, 0px 0px 0px 2px var(--button-color);
   }
 /* Active/Pressed state */ :global(.nes-8bit-button:not(:disabled):active) {
 box-shadow: 1px 1px 0px #000000, 0px 0px 0px 2px var(--button-color);
   }
-/* Focus styles for accessibility */ :global(.nes-8bit-button:focus-visible) {
+/* Focus styles for accessibility */ :global($1) {
     outline: 2px solid #ffffff;
     outline-offset: 2px;
   }
@@ -261,7 +241,6 @@ box-shadow: 1px 1px 0px #000000, 0px 0px 0px 2px var(--button-color);
     align-items: center;
     justify-content: center;
   }
-
   .pixel-spinner {
     width: 12px;
     height: 12px;
@@ -270,7 +249,6 @@ box-shadow: 1px 1px 0px #000000, 0px 0px 0px 2px var(--button-color);
     border-right: 2px solid currentColor;
     animation: pixelSpin 1s steps(4, end) infinite;
   }
-
   @keyframes pixelSpin {
     0% { transform: rotate(0deg); }
     25% { transform: rotate(90deg); }
@@ -278,7 +256,7 @@ box-shadow: 1px 1px 0px #000000, 0px 0px 0px 2px var(--button-color);
     75% { transform: rotate(270deg); }
     100% { transform: rotate(360deg); }
   }
-/* Scanlines effect (optional) */ :global(.nes-8bit-button.enable-scanlines::after) {
+/* Scanlines effect (optional) */ :global($1) {
     content: '';
     position: absolute;
     top: 0;
@@ -293,18 +271,16 @@ background: repeating-linear-gradient( 0deg, transparent, transparent 1px, rgba(
     border-radius: 2px;
 box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 2px 2px 0px #000000;
   }
-/* Retro bounce animation */ :global(.nes-8bit-button.retro-bounce:hover) {
+/* Retro bounce animation */ :global($1) {
     animation: retroBounce 0.3s ease-in-out;
   }
-
   @keyframes retroBounce {
     0%, 100% { transform: translateY(0px) scale(1); }
     50% { transform: translateY(-2px) scale(1.02); }
   }
-/* Glitch transition effect */ :global(.nes-8bit-button.glitch-transition:hover) {
+/* Glitch transition effect */ :global($1) {
     animation: glitchTransition 0.2s ease-in-out;
   }
-
   @keyframes glitchTransition {
     0% { transform: translateY(0px); }
     20% { transform: translateY(-1px) translateX(1px); }
@@ -324,7 +300,6 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 2px 2px 0px #000000;
       border-width: 1px;
 box-shadow: 1px 1px 0px #000000, 0px 0px 0px 1px var(--button-color);
     }
-
   :global(.nes-8bit-button:not(:disabled):hover) {
 box-shadow: 2px 2px 0px #000000, 0px 0px 0px 1px var(--button-color);
     }

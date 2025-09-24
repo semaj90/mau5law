@@ -1,7 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   interface Props {
     title?: string;
     dark?: boolean;
@@ -9,16 +7,14 @@
     centered?: boolean;
     class?: string;
   }
-
   let {
     title = '',
     dark = false,
     rounded = false,
     centered = false,
     class: className = '',
-    ...restProps;
+    ...restProp;
   }: Props = $props();
-
   let containerClass = $derived([
     'nes-container',
     title && 'with-title',
@@ -26,16 +22,14 @@
     rounded && 'is-rounded',
     centered && 'is-centered',
     className
-  ].filter(item => item.join)(' '));
+  ].filter(Boolean).join(' '));
 </script>
-
 <div class={containerClass} {...restProps}>
   {#if title}
     <p class="title">{title}</p>
   {/if}
   {@render children?.()}
 </div>
-
 <style>
   /* Additional card styling if needed */
   .nes-container {

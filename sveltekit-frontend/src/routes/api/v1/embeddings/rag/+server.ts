@@ -2,11 +2,9 @@
  * Enhanced RAG API Endpoint
  * GPU-accelerated RAG queries with semantic embeddings
  */
-
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { gpuEmbeddingService } from '$lib/services/gpu-semantic-embedding-service'
-
 interface RAGRequest {
   query: string
   documents: string[]
@@ -18,7 +16,6 @@ interface RAGRequest {
     threshold?: number
   }
 }
-
 /*
  * POST /api/v1/embeddings/rag
  * Enhanced RAG query with GPU-accelerated embeddings
@@ -26,22 +23,19 @@ interface RAGRequest {
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const ragRequest: RAGRequest = await request.json()
-
     // Validate required fields
     if (!ragRequest.query) {
       return json({ error: 'Missing required field: query' }, { status: 400 })
     }
-
     if (!ragRequest.documents || !Array.isArray(ragRequest.documents)) {
       return json()
         { error: 'Missing or invalid field: documents (must be array)' },
         { status: 400 }
       )
     }
-
     if (ragRequest.documents.length === 0) {
       return json({
-        success: true,
+        success: true
         query: ragRequest.query,
         context: {
           similarDocs: [],
@@ -49,26 +43,24 @@ export const POST: RequestHandler = async ({ request }) => {
           processingTime: 0,
           metadata: {
             model: 'nomic-embed-text:latest',
-            gpuUsed: false,
+            gpuUsed: false
             vectorDimensions: 384
           }
         },
         message: 'No documents provided for context'
       })
     }
-
     // Perform enhanced RAG query
     const context = await gpuEmbeddingService.enhancedRAGQuery(
       ragRequest.query,
       ragRequest.documents,
       ragRequest.options || {}
     )
-
     return json({
-      success: true,
+      success: true
       query: ragRequest.query,
       context: {
-        similarDocs: context.similarDocs.map((doc: any) => ({
+        similarDocs: context.similarDocs.map((doc: any) => ({,
           document:
             doc.document.length > 500 ? doc.document.substring(0, 500) + '...' : doc.document,
           score: Math.round(doc.score * 10000) / 10000,
@@ -96,7 +88,6 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 /*
  * GET /api/v1/embeddings/rag
  * Get enhanced RAG endpoint information
@@ -116,17 +107,17 @@ export const GET: RequestHandler = async () => {
     parameters: {
       query: {
         type: 'string',
-        required: true,
+        required: true
         description: 'The user query or question'
       },
       documents: {
         type: 'string[]',
-        required: true,
+        required: true
         description: 'Array of documents to use as context'
       },
       options: {
         type: 'object',
-        required: false,
+        required: false
         properties: {
           useGPU: { type: 'boolean', default: true, description: 'Enable GPU acceleration' },
           model: {
@@ -167,7 +158,7 @@ export const GET: RequestHandler = async () => {
     integration: {
       embeddingModel: 'nomic-embed-text:latest',
       ragService: 'http://localhost:8094/api/rag',
-      gpuSupport: true,
+      gpuSupport: true
       telemetryEnabled: true
     },
     examples: {
@@ -179,7 +170,7 @@ export const GET: RequestHandler = async () => {
           'Either party may terminate with 30 days notice...'
         ],
         options: {
-          useGPU: true,
+          useGPU: true
           model: 'gemma3-legal:latest',
           contextLimit: 3,
           temperature: 0.7,

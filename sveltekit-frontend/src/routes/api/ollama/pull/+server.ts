@@ -1,26 +1,22 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
 const OLLAMA_BASE = "http://localhost:11434"
-
 export const GET: RequestHandler = async () => {
   return json({
     status: "healthy",
     service: "ollama",
     version: "0.11.10",
-    url: OLLAMA_BASE,
+    url: OLLAMA_BASE
     model: "gemma3-legal",
     timestamp: new Date().toISOString()
   })
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { model } = await request.json()
     if (!model || typeof model !== "string") {
       return json({ ok: false, error: "Missing model" }, { status: 400 })
     }
-
     const res = await fetch(`${OLLAMA_BASE}/api/pull`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -28,7 +24,6 @@ export const POST: RequestHandler = async ({ request }) => {
       body: JSON.stringify({ name: model }),
       signal: AbortSignal.timeout(15 * 60 * 1000), // up to 15 minutes
     })
-
     if (!res.ok) {
       const text = await res.text()
       return json()
@@ -36,7 +31,6 @@ export const POST: RequestHandler = async ({ request }) => {
         { status: 502 }
       )
     }
-
     // Read the full stream (progressive NDJSON); return the last JSON line
     const reader = res.body?.getReader()
     let lastLine: Record<string, unknown> | null = null
@@ -68,7 +62,6 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       }
     }
-
     return json({ ok: true, done: true, last: lastLine })
   } catch (e: any) {
     const msg = e instanceof Error ? e.message: "pull failed"

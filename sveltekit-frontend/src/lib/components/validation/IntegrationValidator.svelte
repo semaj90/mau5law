@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { goTensorService } from '$lib/services/go-tensor-service-client';
   import { gpuPerformanceOptimizer } from '$lib/services/gpu-performance-optimizer';
@@ -31,7 +30,7 @@
   const suiteConfigs = [
     {
       name: 'Core UI Components',
-      description: 'Validate critical UI component functionality',;
+      description: 'Validate critical UI component functionality',
       tests: [
         { id: 'dropdown-test', name: 'Dropdown Component', description: 'Test dropdown rendering and interaction' },
         { id: 'checkbox-test', name: 'Checkbox Component', description: 'Test checkbox state management' },
@@ -40,7 +39,7 @@
     },
     {
       name: 'GPU Acceleration',
-      description: 'Validate GPU processing and tensor operations',;
+      description: 'Validate GPU processing and tensor operations',
       tests: [
         { id: 'tensor-service-test', name: 'Tensor Service Connection', description: 'Test Go tensor service connectivity' },
         { id: 'gpu-processing-test', name: 'GPU Processing Pipeline', description: 'Test batch GPU processing capabilities' },
@@ -49,7 +48,7 @@
     },
     {
       name: 'Legal AI Workflows',
-      description: 'Validate legal document processing workflows',;
+      description: 'Validate legal document processing workflows',
       tests: [
         { id: 'evidence-upload-test', name: 'Evidence Upload System', description: 'Test evidence upload and processing' },
         { id: 'case-automation-test', name: 'Case Automation Workflows', description: 'Test legal case automation pipeline' },
@@ -57,8 +56,8 @@
       ]
     },
     {
-      name: 'System Integration',;
-      description: 'Validate system-wide integration and performance',;
+      name: 'System Integration',
+      description: 'Validate system-wide integration and performance',
       tests: [
         { id: 'api-endpoints-test', name: 'API Endpoints', description: 'Test all API endpoint functionality' },
         { id: 'database-integration-test', name: 'Database Integration', description: 'Test database connectivity and operations' },
@@ -74,13 +73,13 @@
   function initializeValidationSuites() {
     validationSuites = suiteConfigs.map(config => ({
       name: config.name,
-      description: config.description,;
+      description: config.description,
       tests: config.tests.map(test => ({
         ...test,
         status: 'pending';
       })),
-      passed: 0,;
-      failed: 0,;
+      passed: 0,
+      failed: 0,
       warnings: 0,
       totalDuration: 0;
     }));
@@ -116,7 +115,7 @@
       const testStartTime = Date.now();
       try {
         await runIndividualTest(test);
-        test.duration = Date.now() - testStartTime;
+        test.duration = Date.now() - testStartTim;
         if (test.status === 'passed') {
           suite.passed++;
         } else if (test.status === 'warning') {
@@ -127,13 +126,13 @@
       } catch (error) {
         test.status = 'failed';
         test.error = error instanceof Error ? error.message: 'Unknown error';
-        test.duration = Date.now() - testStartTime;
+        test.duration = Date.now() - testStartTim;
         suite.failed++;
       }
       // Force reactivity update
       validationSuites = [...validationSuites];
     }
-    suite.totalDuration = Date.now() - suiteStartTime;
+    suite.totalDuration = Date.now() - suiteStartTim;
   }
   // Run individual test
   async function runIndividualTest(test: ValidationTest) {
@@ -230,8 +229,8 @@
       const tensorRequest = {
         id: 'validation-test',
         documentId: 'test-doc',
-        data: testData,;
-        operation: 'process' as const,;
+        data: testData
+        operation: 'process' as const,
         options: { timeout: 5000 }
       };
       const response = await goTensorService.processTensor(tensorRequest);
@@ -268,19 +267,19 @@
     // Test case automation API endpoint
     try {
       const testConfig = {
-        id: 'test-automation',;
-        type: 'batch_upload',;
+        id: 'test-automation',
+        type: 'batch_upload',
         source: 'test_source',
-        autoProcessing: true,
-        gpuAcceleration: true,
+        autoProcessing: true
+        gpuAcceleration: true
         batchSize: 10,
         confidenceThreshold: 0.8,
         processingOptions: ['entity_extraction'],
         createdAt: new Date().toISOString();
       };
       const response = await fetch('/api/legal/automation/config', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(testConfig);
       });
       if (response.ok) {
@@ -352,7 +351,7 @@
       tensorProcessingTime: Math.random() * 1000 + 200,
       memoryUsage: Math.random() * 50 + 30
     };
-    const benchmarksPassed = 
+    const benchmarksPassed =
       metrics.apiResponseTime < 500 &&
       metrics.tensorProcessingTime < 2000 &&
       metrics.memoryUsage < 80;
@@ -399,7 +398,6 @@
   let totalWarnings = $derived(validationSuites.reduce((sum, suite) => sum + suite.warnings, 0));
   let overallSuccessRate = $derived(totalTests > 0 ? Math.round((totalPassed / totalTests) * 100) : 0);
 </script>
-
 <div class="space-y-6 p-6 bg-slate-800 text-white rounded-xl">
   <!-- Header -->
   <div class="flex items-center justify-between">
@@ -412,7 +410,6 @@
         </div>
       {/if}
     </div>
-    
     <button
       class="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors duration-200 flex items-center gap-2"
       onclick={runAllValidationTests}
@@ -427,7 +424,6 @@
       {/if}
     </button>
   </div>
-
   <!-- Overall Results Summary -->
   {#if overallStatus !== 'idle'}
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -448,7 +444,6 @@
         <div class="text-sm text-slate-300">Failed</div>
       </div>
     </div>
-    
     <!-- Success Rate -->
     <div class="bg-slate-700/50 border border-slate-600 rounded-lg p-4">
       <div class="flex items-center justify-between mb-2">
@@ -458,7 +453,7 @@
         </span>
       </div>
       <div class="w-full bg-slate-600 rounded-full h-3">
-        <div 
+        <div
           class="h-3 rounded-full transition-all duration-500 {overallSuccessRate >= 80 ? 'bg-green-400' : overallSuccessRate >= 60 ? 'bg-yellow-400' : 'bg-red-400'}"
           style="width: {overallSuccessRate}%"
         ></div>
@@ -470,7 +465,6 @@
       {/if}
     </div>
   {/if}
-
   <!-- Validation Suites -->
   <div class="space-y-6">
     {#each validationSuites as suite}
@@ -492,17 +486,15 @@
             {/if}
           </div>
         </div>
-
         <!-- Suite Progress -->
         {#if suite.tests.some(test => test.status === 'running')}
           <div class="w-full bg-slate-600 rounded-full h-2 mb-4">
-            <div 
+            <div
               class="bg-blue-400 h-2 rounded-full transition-all duration-300"
               style="width: {((suite.passed + suite.failed + suite.warnings) / suite.tests.length) * 100}%"
             ></div>
           </div>
         {/if}
-
         <!-- Tests -->
         <div class="space-y-3">
           {#each suite.tests as test}
@@ -514,7 +506,6 @@
                   {getStatusIcon(test.status)}
                 {/if}
               </div>
-              
               <div class="flex-1">
                 <div class="flex items-center justify-between">
                   <h4 class="font-medium text-white">{test.name}</h4>
@@ -523,13 +514,11 @@
                   {/if}
                 </div>
                 <p class="text-sm text-slate-300 mt-1">{test.description}</p>
-                
                 {#if test.details}
                   <p class="text-xs {getStatusColor(test.status)} mt-2 bg-slate-700/50 p-2 rounded">
                     {test.details}
                   </p>
                 {/if}
-                
                 {#if test.error}
                   <p class="text-xs text-red-300 mt-2 bg-red-900/20 p-2 rounded border border-red-700/50">
                     <strong>Error:</strong> {test.error}
@@ -542,14 +531,13 @@
       </div>
     {/each}
   </div>
-
   {#if overallStatus === 'completed'}
     <!-- Final Results -->
     <div class="bg-green-900/20 border border-green-700/50 rounded-lg p-6 text-center">
       <div class="text-4xl mb-2">🎉</div>
       <h3 class="text-xl font-bold text-green-400 mb-2">Integration Validation Complete!</h3>
       <p class="text-slate-300">
-        The Legal AI Platform integration is successfully validated with {totalPassed} passed tests, 
+        The Legal AI Platform integration is successfully validated with {totalPassed} passed tests,
         {totalWarnings} warnings, and {totalFailed} failures.
       </p>
       {#if overallSuccessRate >= 90}
@@ -577,12 +565,11 @@
     </div>
   {/if}
 </div>
-
 <style>
   /* Smooth animations for progress bars */
-  .transition-all {;
+  .transition-all {
     transition-property: all;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 300ms;
+    transition-duration: 300m;
   }
 </style>

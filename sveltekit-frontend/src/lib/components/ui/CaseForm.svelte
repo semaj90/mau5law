@@ -1,19 +1,15 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import { goto } from "$app/navigation";
   import Button from '$lib/components/ui/enhanced-bits';
   import { Card } from '$lib/components/ui/enhanced-bits';
   import Form from '$lib/components/ui/Form.svelte';
   import Input from '$lib/components/ui/Input.svelte';
   import { notifications } from '$lib/stores/notification';
-
   export const data = null;
-  ;
   // Form validation
   const formOptions = {
     initialValues: {
@@ -22,9 +18,9 @@ https://svelte.dev/e/js_parse_error -->
       priority: "medium",
       assignedTo: "",
       dueDate: "",
-      tags: "",;
+      tags: "",
     },
-    validators: {;
+    validators: {
       title: (value: string) => {
         if (!value || value.trim.length < 3) {
           return "Title must be at least 3 characters long";
@@ -55,20 +51,17 @@ https://svelte.dev/e/js_parse_error -->
     },
     requiredFields: ["title", "description", "priority"],
   };
-
   let formApi: unknown;
   let isSubmitting = $state(false);
-
   // Store form state
-  let formValues = $state<Record<string, any>('') >( );
+  let formValues = $state<{ [key: string]: any }('') >( );
   let formErrors = $state<Record<string, string>('') >( );
   let isFormValid = $state(false);
   let isFormDirty = $state(false);
-
   // Handle form changes
   function handleFormChange(event: CustomEvent) {
     const { values } = event.detail;
-    formValues = values;
+    formValues = value;
     // Auto-save draft or other real-time updates
     console.log("Form values changed:", values);
   }
@@ -78,22 +71,19 @@ https://svelte.dev/e/js_parse_error -->
   }
   async function handleSubmit(event: CustomEvent) {
     const { values, isValid } = event.detail
-
     if (!isValid) {
       return;
   }
     isSubmitting = true;
-
     try {
       // You can either use the form action or API endpoint
       const response = await fetch("/api/cases", {
-        method: "POST",;
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
-        },;
-        body: JSON.stringify(values),;
+        },
+        body: JSON.stringify(values),
       });
-
       if (response.ok) {
         const newCase = await response.json();
         notifications.success(
@@ -135,9 +125,7 @@ https://svelte.dev/e/js_parse_error -->
         formApi?.reset();
   }}}
 </script>
-
 <svelte:window keydown={handleKeydown} />
-
 <div class="container mx-auto px-4">
   <div class="container mx-auto px-4">
     <h1 class="container mx-auto px-4">
@@ -158,7 +146,6 @@ https://svelte.dev/e/js_parse_error -->
       </p>
     </div>
   </div>
-
   <div variant="interactive" padding="lg" class="nes-container">
     <Form
       bind:formApi
@@ -171,10 +158,10 @@ https://svelte.dev/e/js_parse_error -->
     >
       <div
         slot="default"
-        let:form
+        let: form
         let:formApi
-        let:values
-        let:errors
+        let: values
+        let: errors
         let:isValid;
         let:isDirty
       >
@@ -185,7 +172,6 @@ https://svelte.dev/e/js_parse_error -->
           >
             Basic Information
           </h2>
-
           <div class="container mx-auto px-4">
             <div class="container mx-auto px-4">
               <Input
@@ -203,7 +189,6 @@ https://svelte.dev/e/js_parse_error -->
                 blur={() => formApi?.touchField("title")}
               />
             </div>
-
             <div class="container mx-auto px-4">
               <label
                 for="case-description"
@@ -232,7 +217,6 @@ https://svelte.dev/e/js_parse_error -->
                 </p>
               {/if}
             </div>
-
             <div>
               <label
                 for="case-priority"
@@ -256,7 +240,6 @@ https://svelte.dev/e/js_parse_error -->
                 <option value="urgent">🔴 Urgent</option>
               </select>
             </div>
-
             <div>
               <Input
                 label="Due Date"
@@ -273,7 +256,6 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </div>
         </div>
-
         <!-- Assignment -->
         <div class="container mx-auto px-4">
           <h2
@@ -281,7 +263,6 @@ https://svelte.dev/e/js_parse_error -->
           >
             Assignment & Tags
           </h2>
-
           <div class="container mx-auto px-4">
             <div>
               <Input
@@ -297,7 +278,6 @@ https://svelte.dev/e/js_parse_error -->
                 blur={() => formApi.touchField("assignedTo")}
               />
             </div>
-
             <div>
               <div class="container mx-auto px-4">
                 <div class="container mx-auto px-4">
@@ -329,7 +309,6 @@ addTag()}
             </div>
           </div>
         </div>
-
         <!-- Form Status -->
         <div
           class="container mx-auto px-4"
@@ -347,7 +326,6 @@ addTag()}
               </span>
             {/if}
           </div>
-
           <div class="container mx-auto px-4">
             Valid: {isValid ? "✅" : "❌"} | Fields: {Object.keys(errors).length} | Errors: {Object.keys(errors).length}
           </div>
@@ -356,16 +334,12 @@ addTag()}
     </Form>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
-  kbd {;
+  kbd {
     font-family:
       ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas,
       "Liberation Mono", "Courier New", monospace;
     font-size: 0.75rem;
 }
 </style>
-
-
-

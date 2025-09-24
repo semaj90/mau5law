@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import {
     Card,
     Button,
@@ -15,7 +14,6 @@
     BoardItem,
     VectorSearchResult
   } from './types';
-
   // Sample evidence data
   let sampleEvidence: EvidenceItem[] = $state([
     {
@@ -25,7 +23,7 @@
       priority: 'critical',
       confidence: 0.92,
       thumbnailUrl: '/api/placeholder/150/100',
-      hash: 'sha256:abc123...',;
+      hash: 'sha256:abc123...',
       metadata: { duration: '5:30', location: 'Main Entrance' },
       createdAt: new Date('2024-01-15'),
       updatedAt: new Date('2024-01-15')
@@ -36,7 +34,7 @@
       type: 'document',
       priority: 'high',
       confidence: 0.87,
-      hash: 'sha256:def456...',;
+      hash: 'sha256:def456...',
       metadata: { pages: 12, fileSize: '2.3MB' },
       createdAt: new Date('2024-01-14'),
       updatedAt: new Date('2024-01-14')
@@ -45,17 +43,16 @@
       id: 'ev-003',
       title: 'Witness Photo',
       type: 'image',
-      priority: 'medium',;
+      priority: 'medium',
       confidence: 0.76,
-      thumbnailUrl: '/api/placeholder/150/100',;
+      thumbnailUrl: '/api/placeholder/150/100',
       metadata: { resolution: '1920x1080', timestamp: '2024-01-13 14:30' },
       createdAt: new Date('2024-01-13'),
       updatedAt: new Date('2024-01-13')
     }
   ]);
-
   // Sample AI analysis
-  let sampleAnalysis: AIAnalysis = $state({
+  let sampleAnalysis: AIAnalysis = $state({,
     confidence: 0.85,
     entities: [
       { text: 'John Doe', type: 'Person', confidence: 0.92 },
@@ -67,10 +64,9 @@
       { topic: 'Contract Violation', weight: 0.78 },
       { topic: 'Financial Liability', weight: 0.65 },
       { topic: 'Corporate Governance', weight: 0.45 }
-    ],;
+    ],
     summary: 'The evidence suggests a potential breach of contract involving ABC Corporation and financial obligations totaling $50,000. Key individuals identified include John Doe as a primary stakeholder. The incident appears to have occurred on January 15, 2024, with supporting documentation and witness testimony corroborating the timeline.';
   });
-
   // Board state
   let boardItems: BoardItem[] = $state([
     {
@@ -90,16 +86,14 @@
     {
       id: 'item-3',
       x: 150,
-      y: 200,;
-      type: 'note',;
+      y: 200,
+      type: 'note',
       data: { text: 'Timeline correlation needed' }
     }
   ]);
-
   // Search state
   let searchQuery = $state('');
   let searchResults: VectorSearchResult[] = $state([]);
-
   // Search filters
   let searchFilters = $state([
     { label: 'Documents', value: 'document', active: false },
@@ -107,40 +101,32 @@
     { label: 'Videos', value: 'video', active: false },
     { label: 'High Priority', value: 'high_priority', active: true }
   ]);
-
   let selectedEvidence = $state<EvidenceItem | null>(null);
   let showAnalysis = $state(false);
-
   // Event handlers
   function handleEvidenceSelect(evidence: EvidenceItem) {
-    selectedEvidence = evidence;
+    selectedEvidence = evidenc;
     showAnalysis = true;
   }
-
   function handleSearch(event: CustomEvent) {
     console.log('Search performed:', event.detail);
-    searchResults = event.detail.results;
+    searchResults = event.detail.result;
   }
-
   function handleSearchSelect(event: CustomEvent<VectorSearchResult>) {
     console.log('Search result selected:', event.detail);
   }
-
   function handleBoardItemMove(event: CustomEvent) {
     console.log('Board item moved:', event.detail);
   }
-
   function handleBoardSave(event: CustomEvent) {
     console.log('Board saved:', event.detail);
   }
 </script>
-
 <div class="p-6 space-y-6 bg-gray-50 min-h-screen">
   <div class="text-center mb-8">
     <h1 class="text-3xl font-bold mb-2">Enhanced Bits Legal AI Demo</h1>
     <p class="text-gray-600">Specialized UI components for legal evidence management</p>
   </div>
-
   <!-- Search Section -->
   <Card class="p-4">
     <h2 class="text-xl font-semibold mb-4">🔍 AI-Powered Search</h2>
@@ -156,7 +142,6 @@
       onselect={handleSearchSelect}
     />
   </Card>
-
   <!-- Evidence Gallery -->
   <Card class="p-4">
     <h2 class="text-xl font-semibold mb-4">📁 Evidence Gallery</h2>
@@ -181,7 +166,6 @@
       {/each}
     </div>
   </Card>
-
   <!-- Two Column Layout -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- AI Analysis Panel -->
@@ -201,7 +185,6 @@
         </div>
       {/if}
     </Card>
-
     <!-- Evidence Board -->
     <Card class="p-4">
       <h2 class="text-xl font-semibold mb-4">📋 Evidence Board</h2>
@@ -218,7 +201,6 @@
       />
     </Card>
   </div>
-
   <!-- Quick Actions -->
   <Card class="p-4">
     <h2 class="text-xl font-semibold mb-4">⚡ Quick Actions</h2>
@@ -240,7 +222,6 @@
       </Button>
     </div>
   </Card>
-
   <!-- Component Stats -->
   <Card class="p-4 bg-blue-50">
     <h3 class="text-lg font-semibold mb-3">📊 Demo Statistics</h3>
@@ -263,7 +244,6 @@
       </div>
     </div>
   </Card>
-
   <!-- Technical Information -->
   <Card class="p-4 bg-gray-100">
     <details>

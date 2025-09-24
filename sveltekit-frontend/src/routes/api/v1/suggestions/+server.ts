@@ -2,14 +2,12 @@
 // "DID YOU MEAN" API ENDPOINT - QUIC-Optimized Suggestions
 // Ultra-low latency intelligent search suggestions with graph traversal
 // ======================================================================
-
 import { json, error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import didYouMeanModule from '$lib/services/did-you-mean-quic-graph.js'
 type DidYouMeanQuery = any
 const didYouMeanService: any = (didYouMeanModule as any)?.didYouMeanService ?? didYouMeanModule
 import { z } from 'zod'
-
 // Validation schema for suggestion requests
 const suggestionRequestSchema = z.object({
   query: z.string().min(1, 'Query cannot be empty').max(500, 'Query too long'),
@@ -35,11 +33,9 @@ const suggestionRequestSchema = z.object({
     })
     .optional()
 })
-
 // GET /api/v1/suggestions?q=contract+law&intent=legal_research&maxSuggestions=10
 export const GET: RequestHandler = async ({ url, request }) => {
   const startTime = performance.now()
-
   try {
     // Extract query parameters
     const query = url.searchParams.get('q') || url.searchParams.get('query')
@@ -49,48 +45,43 @@ export const GET: RequestHandler = async ({ url, request }) => {
     const includeTypos = url.searchParams.get('includeTypos') !== 'false'
     const caseId = url.searchParams.get('caseId')
     const practiceArea = url.searchParams.get('practiceArea')
-
     if (!query) {
       return json(
         { message: 'Query parameter is required', code: 'MISSING_QUERY' },)
         { status: 400 }
       )
     }
-
     // Build suggestion query
     const suggestionQuery: DidYouMeanQuery = {
-      originalQuery: query,
-      userIntent: intent as any,
+      originalQuery: query
+      userIntent: intent as any
       context:
         caseId || practiceArea
           ? {
-              caseId: caseId || undefined,
+              caseId: caseId || undefined
               practiceArea: practiceArea || undefined
             }
-          : undefined,
+          : undefined
       options: {
         maxSuggestions,
-        similarityThreshold: threshold,
+        similarityThreshold: threshold
         includeTypos,
         includeSemanticSuggestions: true
       }
     }
-
     // Generate suggestions
     const result = await didYouMeanService.generateSuggestions(suggestionQuery)
     const processingTime = performance.now() - startTime
-
     // Add request metadata
     const response = {
       ...result,
       metadata: {
         requestTime: new Date().toISOString(),
-        processingTimeMs: processingTime,
+        processingTimeMs: processingTime
         streamStats: didYouMeanService.getStreamStats(),
         version: '1.0'
       }
     }
-
     return json(response, {
       status: 200,
       headers: {
@@ -103,11 +94,9 @@ export const GET: RequestHandler = async ({ url, request }) => {
     })
   } catch (err: any) {
     const processingTime = performance.now() - startTime
-
     if (err && typeof err === 'object' && 'status' in err) {
       throw err; // Re-throw SvelteKit errors
     }
-
     console.error('Suggestion generation failed:', err)
     return json({
         message: 'Failed to generate suggestions',
@@ -118,17 +107,13 @@ export const GET: RequestHandler = async ({ url, request }) => {
     )
   }
 }
-
 // POST /api/v1/suggestions - Advanced suggestions with full context
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = performance.now()
-
   try {
     const body = await request.json()
-
     // Validate request body
     const validatedData = suggestionRequestSchema.parse(body)
-
     // Build suggestion query
     const suggestionQuery: DidYouMeanQuery = {
       originalQuery: validatedData.query,
@@ -136,18 +121,16 @@ export const POST: RequestHandler = async ({ request }) => {
       context: validatedData.context,
       options: validatedData.options
     }
-
     // Generate suggestions with full context
     const result = await didYouMeanService.generateSuggestions(suggestionQuery)
     const processingTime = performance.now() - startTime
-
     // Enhanced response with detailed metrics
     const response = {
       ...result,
       metadata: {
         requestTime: new Date().toISOString(),
         requestId: crypto.randomUUID(),
-        processingTimeMs: processingTime,
+        processingTimeMs: processingTime
         streamStats: didYouMeanService.getStreamStats(),
         version: '1.0',
         optimizations: {
@@ -159,7 +142,6 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       }
     }
-
     return json(response, {
       status: 200,
       headers: {
@@ -171,10 +153,8 @@ export const POST: RequestHandler = async ({ request }) => {
         'Cache-Control': 'public, max-age=300'
       }
     })
-
   } catch (err: any) {
     const processingTime = performance.now() - startTime
-
     if (err.name === 'ZodError') {
       return json({
           message: 'Invalid request format',
@@ -185,11 +165,9 @@ export const POST: RequestHandler = async ({ request }) => {
         { status: 400 }
       )
     }
-
   if (err && typeof err === 'object' && 'status' in err) {
     throw err
   }
-
   console.error('Advanced suggestion generation failed:', err)
   return json({
       message: 'Failed to generate suggestions',
@@ -200,25 +178,20 @@ export const POST: RequestHandler = async ({ request }) => {
   )
   }
 }
-
 // DELETE /api/v1/suggestions - Clear suggestion cache
 export const DELETE: RequestHandler = async ({ request }) => {
   const startTime = performance.now()
-
   try {
     await didYouMeanService.clearCache()
     const processingTime = performance.now() - startTime
-
     return json({
-      success: true,
+      success: true
       message: 'Suggestion cache cleared',
-      processingTimeMs: processingTime,
+      processingTimeMs: processingTime
       timestamp: new Date().toISOString()
     })
-
   } catch (err: any) {
     const processingTime = performance.now() - startTime
-
     console.error('Cache clear failed:', err)
     return json({
         message: 'Failed to clear cache',

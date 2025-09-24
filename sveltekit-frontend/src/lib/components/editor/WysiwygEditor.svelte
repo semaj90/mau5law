@@ -1,9 +1,7 @@
 // Enhanced WYSIWYG Editor with Melt UI Integration
 // Combines Hugerte with Melt UI components for legal document editing
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     content?: unknown;
     placeholder?: unknown;
@@ -21,59 +19,47 @@
     enableAI = true,
     enableCitation = true
   }: Props = $props();
-
   import { onMount,   } from "svelte";
   import * as Dialog from 'bits-ui';
   import { writable } from 'svelte/store';
   import type {     Writable     } from 'svelte/store';
-
   // Props
               export const enableCollaboration = false;
-  ;
   // Events
-  
-
   // Stores
   let editorElement: HTMLElement;
   let hugerte: unknown;
   let isInitialized = $state(false);
   const wordCount: Writable<number> = writable(0);
   const charCount: Writable<number> = writable(0);
-
   // Melt UI Dialog for AI Assistant
   // Melt UI component creation removed - replace with bits-ui declarative components
-
   // Melt UI Dialog for Citations
   // Melt UI component creation removed - replace with bits-ui declarative components
-
   // AI Assistant state
   let aiQuery = $state('');
   let aiResults = $state('');
   let isProcessingAI = $state(false);
   let selectedText = $state('');
-
   // Citation state
   let citationQuery = $state('');
   let citationResults = $state<Array() >([]);
-
   $effect(() => {
     (async () => {
 await initializeEditor();
     })();
   });
-
   async function initializeEditor() {
     try {
       // Dynamically import TinyMCE as an alternative
-      // const { default: Hugerte } = await import('hugerte');
-
+      // const { default: Hugerte } = await import('hugerte')
       // Initialize basic editor for now
       hugerte = {
         getContent: () => content,
         setContent: (newContent: string) => content = newContent,
         destroy: () => ,
         on: () => ,
-        off: () => ,;
+        off: () => ,
         ui: {
           registry: {
             addButton: () => ,
@@ -82,7 +68,7 @@ await initializeEditor();
         config: {
           readonly,
           height,
-          menubar: true,
+          menubar: true
           plugins: [
             'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
             'anchor', 'searchreplace', 'visualblocks', 'codesample', 'fullscreen',
@@ -90,14 +76,14 @@ await initializeEditor();
             'autosave', 'save', 'directionality', 'emoticons', 'template',
             'textpattern', 'nonbreaking', 'pagebreak', 'permanentpen', 'powerpaste',
             'advtable', 'tinymcespellchecker', 'mentions', 'linkchecker'
-          ],;
+          ],
           toolbar: [
             'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify',
             'outdent indent | numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen preview save print',
             'insertfile image media template link anchor codesample | ltr rtl | ai-assistant citation-helper'
           ],
           content_style: `
-            body {;
+            body {
               font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
               font-size: 14px;
               line-height: 1.6;
@@ -130,23 +116,20 @@ await initializeEditor();
           setup: (editor: unknown) => {
             // Custom AI Assistant button
             editor.ui.registry.addButton('ai-assistant', {
-              text: '🤖 AI',;
+              text: '🤖 AI',
               tooltip: 'AI Assistant',
               onAction: () => openAIAssistant(editor.selection.getContent());
             });
-
             // Custom Citation Helper button
             editor.ui.registry.addButton('citation-helper', {
-              text: '📚 Cite',;
+              text: '📚 Cite',
               tooltip: 'Citation Helper',
               onAction: () => openCitationHelper(editor.selection.getContent());
             });
-
             // Auto-save functionality
             editor.on('NodeChange', () => {
               updateCounts(editor.getContent());
             });
-
             // Content change listener
             editor.on('input', () => {
               const newContent = editor.getContent();
@@ -154,13 +137,12 @@ await initializeEditor();
               updateCounts(newContent);
               ondispatch?.({ content: newContent, wordCount: $wordCount });
             });
-
             // Save handler
             editor.on('save', () => {
               ondispatch?.({ content: editor.getContent() });
             });
           },
-          save_enablewhendirty: true,
+          save_enablewhendirty: true
           save_onsavecallback: () => {
             ondispatch?.({ content: hugerte.getContent() });
           },
@@ -169,17 +151,15 @@ await initializeEditor();
           // Legal document specific settings
           spellchecker_language: 'en_US',
           spellchecker_whitelist: ['appellant', 'appellee', 'plaintiff', 'defendant', 'jurisdiction'],
-          word_count: true,
-          character_count: true,
+          word_count: true
+          character_count: true
         }
       };
-
       // Listen to content changes from Hugerte
       hugerte.$on('input', (event: unknown) => {
         content = event.detail.content;
         updateCounts(content);
       });
-
       isInitialized = true;
     } catch (error) {
       console.error('Failed to initialize editor:', error);
@@ -203,23 +183,21 @@ await initializeEditor();
   }
   async function processAIRequest() {
     if (!aiQuery.trim()) return;
-
     isProcessingAI = true;
     try {
       const response = await fetch('/api/ai/ask', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: aiQuery,;
+        body: JSON.stringify({,
+          query: aiQuery
           context: selectedText ? [{ role: 'user', content: `Selected text: ${selectedText}` }] : [],
           options: {
-            maxSources: 5,;
+            maxSources: 5,
             provider: 'auto',
             enableLegalClassification: true;
   }
         })
       });
-
       const data = await response.json();
       if (data.success) {
         aiResults = data.data.answer;
@@ -235,22 +213,20 @@ await initializeEditor();
   }}
   async function searchCitations() {
     if (!citationQuery.trim()) return;
-
     try {
       const response = await fetch('/api/search/citations', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: citationQuery,;
+        body: JSON.stringify({,
+          query: citationQuery
           limit: 10;
         })
       });
-
       const data = await response.json();
       if (data.success) {
-        citationResults = data.results.map((r: unknown) => ({
-          title: r.title,;
-          citation: r.citation,;
+        citationResults = data.results.map((r: unknown) => ({,
+          title: r.title,
+          citation: r.citation,
           relevance: r.similarity;
         }));
   }
@@ -282,7 +258,6 @@ await initializeEditor();
     updateCounts(newContent);
   }
 </script>
-
 <!-- Main Editor Container -->
 <div class="space-y-4">
   <!-- Editor Toolbar -->
@@ -294,7 +269,6 @@ await initializeEditor();
       >
         🤖 AI Assistant
       </button>
-
       <button
         class="space-y-4"
         disabled={!enableCitation}
@@ -302,13 +276,11 @@ await initializeEditor();
         📚 Citations
       </button>
     </div>
-
     <div class="space-y-4">
       <span class="space-y-4">Words: {$wordCount}</span>
       <span class="space-y-4">Characters: {$charCount}</span>
     </div>
   </div>
-
   <!-- Main Editor -->
   <div
     bind:this={editorElement}
@@ -316,21 +288,18 @@ await initializeEditor();
     style="height: {height};"
   ></div>
 </div>
-
 <!-- AI Assistant Dialog -->
 <div>
   {#if $aiOpen}
     <div class="space-y-4"></div>
     <div class="space-y-4">
       <h2 class="space-y-4">AI Legal Assistant</h2>
-
       {#if selectedText}
         <div class="space-y-4">
           <strong>Selected text:</strong>
           <p>"{selectedText}"</p>
         </div>
       {/if}
-
       <div class="space-y-4">
         <label for="ai-query">What would you like help with?</label>
         <textarea
@@ -340,7 +309,6 @@ await initializeEditor();
           rows="4"
           class="space-y-4"
         ></textarea>
-
         <button
           onclick={() => processAIRequest()}
           disabled={isProcessingAI || !aiQuery.trim()}
@@ -352,7 +320,6 @@ await initializeEditor();
             Ask AI
           {/if}
         </button>
-
         {#if aiResults}
           <div class="space-y-4">
             <strong>AI Response:</strong>
@@ -363,19 +330,16 @@ await initializeEditor();
           </div>
         {/if}
       </div>
-
       <button class="space-y-4">×</button>
     </div>
   {/if}
 </div>
-
 <!-- Citation Helper Dialog -->
 <div>
   {#if $citeOpen}
     <div class="space-y-4"></div>
     <div class="space-y-4">
       <h2 class="space-y-4">Citation Helper</h2>
-
       <div class="space-y-4">
         <label for="cite-query">Search for citations:</label>
         <input
@@ -384,7 +348,6 @@ await initializeEditor();
           placeholder="Enter legal concept, case name, or statute..."
           class="space-y-4"
         />
-
         <button
           onclick={() => searchCitations()}
           disabled={!citationQuery.trim()}
@@ -392,7 +355,6 @@ await initializeEditor();
         >
           Search
         </button>
-
         {#if citationResults.length > 0}
           <div class="space-y-4">
             <h4>Found Citations:</h4>
@@ -414,15 +376,13 @@ await initializeEditor();
           </div>
         {/if}
       </div>
-
       <button class="space-y-4">×</button>
     </div>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
-  .wysiwyg-container {;
+  .wysiwyg-container {
     border: 1px solid #d1d5db;
     border-radius: 0.5rem;
     overflow: hidden;
@@ -430,7 +390,7 @@ await initializeEditor();
 }
   .editor-toolbar {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 0.5rem 1rem;
     background: #f9fafb;
@@ -446,7 +406,7 @@ await initializeEditor();
     background: white;
     border: 1px solid #d1d5db;
     border-radius: 0.25rem;
-    transition: background-color 0.2s;
+    transition: background-color 0.2;
     cursor: pointer;
 }
   .toolbar-btn:hover {
@@ -477,6 +437,7 @@ await initializeEditor();
 }
   .dialog-overlay {
     position: fixed;
+d;
     top: 0;
     left: 0;
     right: 0;
@@ -509,7 +470,7 @@ await initializeEditor();
 }
   .selected-text {
     background: #eff6ff;
-    border: 1px solid #bfdbfe;
+    border: 1px solid #bfdbf;
     border-radius: 0.25rem;
     padding: 0.75rem;
     margin-bottom: 1rem;
@@ -546,7 +507,7 @@ await initializeEditor();
     padding: 0.75rem;
     margin-bottom: 0.75rem;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2;
 }
   .citation-item:hover {
     background: #f9fafb;
@@ -569,7 +530,7 @@ await initializeEditor();
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
     font-weight: 500;
-    transition: background-color 0.2s;
+    transition: background-color 0.2;
     cursor: pointer;
     border: none;
 }
@@ -599,4 +560,3 @@ await initializeEditor();
     background: inherit;
 }
 </style>
-

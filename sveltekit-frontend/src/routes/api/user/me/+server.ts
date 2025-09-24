@@ -1,29 +1,24 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
 export const GET: RequestHandler = async ({ locals }) => {
   try {
     // Lucia put user into locals in hooks.server.ts
     const user = locals.user
-
     if (!user) {
       return json({
-        success: true,
+        success: true
         user: null
       })
     }
-
     return json({
-      success: true,
+      success: true
       user
     })
-
   } catch (error) {
     console.error('User profile API error:', error)
-
     // Return mock user data on failure
     const mockUser = {
-      success: false,
+      success: false
       error: 'failure default to mock',
       user: {
         id: 'mock-user-001',
@@ -32,7 +27,7 @@ export const GET: RequestHandler = async ({ locals }) => {
         role: 'attorney',
         preferences: {
           theme: 'legal-console',
-          notifications: true,
+          notifications: true
           practiceAreas: ['employment', 'corporate']
         },
         metadata: {
@@ -42,7 +37,6 @@ export const GET: RequestHandler = async ({ locals }) => {
         }
       }
     }
-
     return json(mockUser, { status: 500 })
   }
 }

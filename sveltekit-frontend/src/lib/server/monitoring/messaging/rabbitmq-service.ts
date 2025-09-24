@@ -2,20 +2,17 @@
  * RabbitMQ Message Queue Service
  * Production-ready messaging system for async task processing
  */
-
 import * as amqp from 'amqplib';
 import type { Connection, Channel, Message } from 'amqplib';
-
-// RabbitMQ configuration;
+// RabbitMQ configuration
 const RABBITMQ_CONFIG = {
   url: import.meta.env.RABBITMQ_URL || 'amqp://localhost:5672',
   username: import.meta.env.RABBITMQ_USERNAME || 'guest',
   password: import.meta.env.RABBITMQ_PASSWORD || 'guest',
-  vhost: import.meta.env.RABBITMQ_VHOST || '/',;
+  vhost: import.meta.env.RABBITMQ_VHOST || '/',
   heartbeat: 60
 };
-
-// Queue configurations;
+// Queue configurations
 const QUEUES = {
   DOCUMENT_PROCESSING: 'document.processing',
   FILE_UPLOAD: 'file.upload',
@@ -27,31 +24,25 @@ const QUEUES = {
   EVIDENCE_ANALYSIS: 'evidence.analysis'
 } as const;
 }
-
 export interface MessageHandler {
   (message: any, originalMessage: Message): Promise<void>;
 }
-
 export class RabbitMQService {
   private static instance: RabbitMQService;
   private connection: any = null;
   private channel: any = null;
   private isConnected = false;
-
   static getInstance(): RabbitMQService {
     if (!RabbitMQService.instance) {
       RabbitMQService.instance = new RabbitMQService();
     }
     return RabbitMQService.instance;
   }
-
   async connect(): Promise<boolean> {
     try {
       this.connection = await amqp.connect(RABBITMQ_CONFIG.url);
       this.channel = await (this.connection as any).createChannel();
-      
       await this.setupQueues();
-      
       this.isConnected = true;
       console.log('✅ RabbitMQ connected');
       return true;
@@ -60,27 +51,22 @@ export class RabbitMQService {
       return false;
     }
   }
-
   private async setupQueues(): Promise<void> {
     if (!this.channel) return;
-
-    // Queue options that match existing configurations to prevent conflicts;
+    // Queue options that match existing configurations to prevent conflicts
     const queueOptions = {
-      durable: true,;
+      durable: true
       arguments: {
         'x-message-ttl': 3600000, // 1 hour TTL to match existing queues
         'x-max-length': 10000     // Max 10k messages
       }
     };
-
     for (const queue of Object.values(QUEUES)) {
       await this.channel.assertQueue(queue, queueOptions);
     }
   }
-
   async publish(queue: string, message: any): Promise<boolean> {
     if (!this.channel) return false;
-
     try {
       const messageBuffer = Buffer.from(JSON.stringify(message);
       return this.channel.sendToQueue(queue, messageBuffer, { persistent: true });
@@ -89,10 +75,8 @@ export class RabbitMQService {
       return false;
     }
   }
-
   async consume(queue: string, handler: MessageHandler): Promise<void> {
     if (!this.channel) return;
-
     await this.channel.consume(queue, async (msg) => {
       if (msg) {
         try {
@@ -106,25 +90,22 @@ export class RabbitMQService {
       }
     });
   }
-
   async healthCheck(): Promise<any> {
     try {
       if (!this.isConnected || !this.connection) {
         return { status: 'unhealthy', details: { error: 'Not connected' } };
       }
-
       return {
-        status: 'healthy',;
+        status: 'healthy',
         details: { connected: this.isConnected, queues: Object.keys(QUEUES).length }
       };
     } catch (error: any) {
       return {
-        status: 'unhealthy',;
+        status: 'unhealthy',
         details: { error: error instanceof Error ? error.message: 'Unknown error' }
       };
     }
   }
-
   async disconnect(): Promise<void> {
     if (this.channel) await (this.channel as any).close();
     if (this.connection) await (this.connection as any).close();
@@ -132,6 +113,5 @@ export class RabbitMQService {
     console.log('👋 RabbitMQ disconnected');
   }
 }
-
 export const rabbitmqService = RabbitMQService.getInstance();
 export { QUEUES };

@@ -2,7 +2,6 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <script lang="ts">
-
   import * as DropdownMenu from 'bits-ui';
   import {
     Download,
@@ -26,42 +25,32 @@ https://svelte.dev/e/js_parse_error -->
     reportActions,
     reportUI,
   } from '$lib/stores/report';
-
   // File menu dropdown
   // Melt UI component creation removed - replace with bits-ui declarative components
-
   // Edit menu dropdown
   // Melt UI component creation removed - replace with bits-ui declarative components
-
   // View menu dropdown
   // Melt UI component creation removed - replace with bits-ui declarative components
-
   // Toolbar
   // Melt UI component creation removed - replace with bits-ui declarative components
-
   // Actions
   const handleSave = () => {
     reportActions.save();
   };
-
   const handleExport = () => {
     // TODO: Implement export functionality
     console.log("Export report");
   };
-
   const handlePreview = () => {
     // TODO: Implement preview functionality
     console.log("Preview report");
   };
-
   const toggleSidebar = () => {
     reportUI.update((ui) => ({ ...ui, sidebarOpen: !ui.sidebarOpen }));
   };
-
   const toggleFullscreen = () => {
     reportUI.update((ui) => ({ ...ui, fullscreen: !ui.fullscreen }));
   };
-
   const toggleLayout = () => {
     const layouts = ["single", "dual", "masonry"] as const;
     const currentIndex = layouts.indexOf($report.settings.layout);
@@ -69,28 +58,23 @@ https://svelte.dev/e/js_parse_error -->
     reportActions.updateSettings({ layout: nextLayout });
   };
 </script>
-
 <div class="container mx-auto px-4">
   <!-- Main Menu Bar -->
   <div class="container mx-auto px-4">
     <!-- File Menu -->
     <div class="container mx-auto px-4">
       <button
-        
         class="container mx-auto px-4"
         class:active={$fileOpen}
       >
         File
       </button>
-
       {#if $fileOpen}
         <div
-          
           class="container mx-auto px-4"
           /* transition removed */}
         >
           <button
-            
             class="container mx-auto px-4"
             onclick={() => handleSave()}
           >
@@ -109,7 +93,6 @@ https://svelte.dev/e/js_parse_error -->
             Import
           </button>
           <button
-            
             class="container mx-auto px-4"
             onclick={() => handleExport()}
           >
@@ -118,7 +101,6 @@ https://svelte.dev/e/js_parse_error -->
           </button>
           <div class="container mx-auto px-4"></div>
           <button
-            
             class="container mx-auto px-4"
             onclick={() => handlePreview()}
           >
@@ -128,20 +110,16 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       {/if}
     </div>
-
     <!-- Edit Menu -->
     <div class="container mx-auto px-4">
       <button
-        
         class="container mx-auto px-4"
         class:active={$editOpen}
       >
         Edit
       </button>
-
       {#if $editOpen}
         <div
-          
           class="container mx-auto px-4"
           /* transition removed */ />
             Undo
@@ -166,20 +144,16 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       {/if}
     </div>
-
     <!-- View Menu -->
     <div class="container mx-auto px-4">
       <button
-        
         class="container mx-auto px-4"
         class:active={$viewOpen}
       >
         View
       </button>
-
       {#if $viewOpen}
         <div
-          
           class="container mx-auto px-4"
           /* transition removed */
           >
@@ -188,7 +162,6 @@ https://svelte.dev/e/js_parse_error -->
             <span class="container mx-auto px-4">Ctrl+B</span>
           </button>
           <button
-            
             class="container mx-auto px-4"
             onclick={() => toggleLayout()}
           >
@@ -196,7 +169,6 @@ https://svelte.dev/e/js_parse_error -->
             Switch Layout ({$report.settings.layout})
           </button>
           <button
-            
             class="container mx-auto px-4"
             onclick={() => toggleFullscreen()}
           >
@@ -213,11 +185,9 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
     </div>
   </div>
-
   <!-- Quick Actions -->
   <div class="container mx-auto px-4">
     <button
-      
       class="container mx-auto px-4"
       class:unsaved={$editorState.hasUnsavedChanges}
       onclick={() => handleSave()}
@@ -225,31 +195,23 @@ https://svelte.dev/e/js_parse_error -->
     >
       <Save size={16} />
     </button>
-
     <div class="container mx-auto px-4"></div>
-
     <button
-      
       class="container mx-auto px-4"
       onclick={() => toggleSidebar()}
       title="Toggle Sidebar"
     >
       <Sidebar size={16} />
     </button>
-
     <button
-      
       class="container mx-auto px-4"
       onclick={() => toggleLayout()}
       title="Switch Layout"
     >
       <Layout size={16} />
     </button>
-
     <div class="container mx-auto px-4"></div>
-
     <button
-      
       class="container mx-auto px-4"
       onclick={() => handlePreview()}
       title="Preview Report"
@@ -257,13 +219,11 @@ https://svelte.dev/e/js_parse_error -->
       <Eye size={16} />
     </button>
   </div>
-
   <!-- Status Info -->
   <div class="container mx-auto px-4">
     <span class="container mx-auto px-4">
       {$editorState.wordCount} words
     </span>
-
     {#if $editorState.hasUnsavedChanges}
       <span class="container mx-auto px-4" transitislide={{ duration: 200 ">
         Unsaved changes
@@ -275,13 +235,12 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   </div>
 </div>
-
 <style>
   /* @unocss-include */
-  .report-toolbar {;
+  .report-toolbar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betwee;
     background: var(--pico-background-color, #ffffff);
     border-bottom: 1px solid var(--pico-border-color, #e2e8f0);
     padding: 0.5rem 1rem;
@@ -308,7 +267,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     transition: all 0.15s ease;
 }
-  .menu-trigger:hover,
+  .menu-trigger: hover
   .menu-trigger.active {
     background: var(--pico-primary-background, #f3f4f6);
 }
@@ -402,6 +361,3 @@ https://svelte.dev/e/js_parse_error -->
     color: var(--pico-ins-color, #10b981);
 }
 </style>
-
-
-

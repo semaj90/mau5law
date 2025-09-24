@@ -1,18 +1,15 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { componentLoader } from '$lib/utils/dynamic-imports';
   import AILoadingIndicator from './AILoadingIndicator.svelte';
-
   interface Props {
     loader: () => Promise<any>;
     key: string;
     fallback?: string;
     errorFallback?: string;
-    props?: Record<string, any>;
+    props?: { [key: string]: any };
   }
-
   let {
     loader,
     key,
@@ -20,11 +17,9 @@
     errorFallback = 'Failed to load component',
     props: componentProps = {}
   }: Props = $props();
-
   let Component = $state<any>(null);
   let isLoading = $state(true);
   let error = $state<Error | null>(null);
-
   async function loadComponent() {
     try {
       isLoading = true;
@@ -37,17 +32,14 @@
       isLoading = false;
     }
   }
-
   $effect(() => {
     loadComponent();
   });
-
   function retry() {
     componentLoader.clear();
     loadComponent();
   }
 </script>
-
 {#if isLoading}
   <AILoadingIndicator
     isLoading={true}
@@ -74,9 +66,8 @@
 {:else if Component}
   <Component {...componentProps} />
 {/if}
-
 <style>
-  .lazy-load-error {;
+  .lazy-load-error {
     min-height: 100px;
     display: flex;
     flex-direction: column;

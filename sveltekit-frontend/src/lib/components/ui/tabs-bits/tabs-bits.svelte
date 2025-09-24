@@ -2,7 +2,6 @@
 <script>
 	import { Tabs as TabsPrimitive } from 'bits-ui';
 	import { cn } from '$lib/utils';
-
 	let {
 		value = $bindable(),
 		onValueChange = undefined,
@@ -12,10 +11,9 @@
 		dir = 'ltr',
 		class: className = undefined,
 		children = undefined,
-		...restProps;
+		...restProp;
 	} = $props();
 </script>
-
 <TabsPrimitive.Root
 	bind:value
 	{onValueChange}

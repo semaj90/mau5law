@@ -1,32 +1,24 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { ButtonBits } from '$lib/components/ui/bits-ui';
   import { citationsManager, type Citation, type CitationCollection } from '$lib/modules/citations-manager';
-  import {   } from "svelte";
-
   interface Props {
-    citation: Citation;
+    citation: Citatio;
     size?: 'sm' | 'md' | 'lg';
     variant?: 'primary' | 'secondary' | 'ghost' | 'outline';
     showText?: boolean;
   }
-
   const {
     citation,
     size = 'sm',
     variant = 'ghost',
     showText = true
   } = $props<Props>();
-
-  
-
   let isAuthenticated = $state(citationsManager.isAuthenticated());
   let isSaved = $state(false);
   let isSaving = $state(false);
   let collections = $state<CitationCollection[]>([]);
   let showCollectionSelector = $state(false);
-
   // Check if citation is already saved
   $effect(() => {
     if (isAuthenticated) {
@@ -35,7 +27,6 @@
       collections = citationsManager.getCollections();
     }
   });
-
   // Listen for authentication changes
   citationsManager.onAuthChange((user) => {
     isAuthenticated = user?.isAuthenticated ?? false;
@@ -48,7 +39,6 @@
       collections = [];
     }
   });
-
   async function handleSave() {
     if (!isAuthenticated) {
       ondispatch?.({
@@ -57,7 +47,6 @@
       });
       return;
     }
-
     isSaving = true;
     try {
       const success = await citationsManager.saveCitation(citation);
@@ -79,10 +68,8 @@
       isSaving = false;
     }
   }
-
   async function handleRemove() {
     if (!isAuthenticated) return;
-
     isSaving = true;
     try {
       const success = citationsManager.removeSavedCitation(citation.id);
@@ -99,10 +86,8 @@
       isSaving = false;
     }
   }
-
   async function handleSaveToCollection(collectionId: string) {
     if (!isAuthenticated) return;
-
     try {
       // First save the citation if not already saved
       if (!isSaved) {
@@ -122,7 +107,6 @@
     }
   }
 </script>
-
 {#if !isAuthenticated}
   <ButtonBits
     {variant}
@@ -151,7 +135,6 @@
         💾 {showText ? 'Save' : ''}
       {/if}
     </ButtonBits>
-
     {#if collections.length > 0}
       <ButtonBits
         variant="ghost"
@@ -162,13 +145,11 @@
       >
         📁
       </ButtonBits>
-
       {#if showCollectionSelector}
         <div class="collection-selector">
           <div class="collection-header">
             <h4>Save to Collection</h4>
             <button class="close-btn" onclick={() => showCollectionSelector = false}>✕
-
           </div>
           <div class="collection-list">
             {#each collections as collection}
@@ -180,14 +161,12 @@
                 <span class="collection-count">
                   {collection.citations.length} citations
                 </span>
-
             {/each}
           </div>
         </div>
       {/if}
   </div>
 {/if}
-
 <style>
   .citation-save-container {
     position: relative;
@@ -195,18 +174,15 @@
     gap: 0.25rem;
     align-items: center;
   }
-
   :global(.citation-save-btn.saved) {
     background: rgba(126, 227, 33, 0.2) !important;
     border-color: var(--n64-secondary) !important;
     color: var(--n64-secondary) !important;
   }
-
   :global(.citation-save-btn.disabled) {
     opacity: 0.5;
     cursor: not-allowed;
   }
-
   .collection-selector {
     position: absolute;
     top: 100%;
@@ -220,23 +196,20 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(10px);
   }
-
   .collection-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 0.75rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid rgba(74, 144, 226, 0.3);
   }
-
   .collection-header h4 {
     color: var(--nier-text-primary);
-    font-family: 'Press Start 2P', cursive;
+    font-family: 'Press Start 2P', cursiv;
     font-size: 0.625rem;
     margin: 0;
   }
-
   .close-btn {
     background: none;
     border: none;
@@ -246,11 +219,9 @@
     padding: 0.25rem;
     line-height: 1;
   }
-
   .close-btn:hover {
     color: var(--n64-error);
   }
-
   .collection-list {
     display: flex;
     flex-direction: column;
@@ -258,10 +229,9 @@
     max-height: 200px;
     overflow-y: auto;
   }
-
   .collection-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 0.5rem;
     background: rgba(15, 15, 35, 0.5);
@@ -271,27 +241,24 @@
     transition: all 0.3s ease;
     text-align: left;
   }
-
   .collection-item:hover {
     background: rgba(74, 144, 226, 0.2);
     border-color: var(--n64-primary);
   }
-
   .collection-name {
     color: var(--nier-text-primary);
     font-size: 0.75rem;
     font-weight: bold;
   }
-
   .collection-count {
     color: var(--nier-text-secondary);
     font-size: 0.625rem;
   }
-
   /* Mobile responsiveness */
   @media (max-width: 768px) {
     .collection-selector {
       position: fixed;
+d;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);

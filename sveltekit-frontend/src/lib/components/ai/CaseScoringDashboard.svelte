@@ -3,14 +3,11 @@
   Integrates with /api/ai/case-scoring API using Enhanced-Bits UI components
   Uses Svelte 5 runes and event handling syntax
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   // Card components removed - using native HTML elements
   // Using native <button aria-label="Button"> elements for consistent event handling
-
   // Case scoring state
   let cases = $state<CaseScore[]>([]);
   let selectedCase = $state<CaseScore | null>(null);
@@ -19,12 +16,10 @@
   let scoringInProgress = $state(false);
   let showScoreDetails = $state(false);
   let useMockData = $state(true); // Toggle for demo mode
-
   // Filters and sorting
   let scoreFilter = $state<'all' | 'high' | 'medium' | 'low'>('all');
   let sortBy = $state<'score' | 'priority' | 'date'>('score');
   let searchQuery = $state('');
-
   interface CaseScore {
     id: string;
     title: string;
@@ -38,7 +33,6 @@
     recommendations: string[];
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
   }
-
   interface ScoreFactor {
     category: string;
     weight: number;
@@ -46,14 +40,12 @@
     description: string;
     confidence: number;
   }
-
   interface ScoringRequest {
     caseId: string;
     evidence?: string[];
-    context?: Record<string, any>;
+    context?: { [key: string]: any };
     scoringModel?: 'comprehensive' | 'priority' | 'risk';
   }
-
   // Mock data generator for demonstration
   function generateMockCases(): CaseScore[] {
     const mockCases: CaseScore[] = [
@@ -65,7 +57,7 @@
         priority: 'critical',
         confidence: 92,
         dateCreated: '2024-01-15',
-        lastUpdated: new Date().toISOString(),;
+        lastUpdated: new Date().toISOString(),
         factors: [
           { category: 'Financial Risk', weight: 0.3, impact: 0.9, description: 'Potential damages exceed $10M', confidence: 95 },
           { category: 'Legal Precedent', weight: 0.25, impact: 0.85, description: 'Limited favorable precedents', confidence: 88 },
@@ -89,7 +81,7 @@
         priority: 'high',
         confidence: 85,
         dateCreated: '2024-02-01',
-        lastUpdated: new Date(Date.now() - 86400000).toISOString(),;
+        lastUpdated: new Date(Date.now() - 86400000).toISOString(),
         factors: [
           { category: 'Evidence Strength', weight: 0.35, impact: 0.75, description: 'Prosecution has substantial documentation', confidence: 90 },
           { category: 'Witness Credibility', weight: 0.25, impact: 0.6, description: 'Key witness reliability questionable', confidence: 70 },
@@ -111,7 +103,7 @@
         priority: 'medium',
         confidence: 88,
         dateCreated: '2024-01-20',
-        lastUpdated: new Date(Date.now() - 172800000).toISOString(),;
+        lastUpdated: new Date(Date.now() - 172800000).toISOString(),
         factors: [
           { category: 'Tax Implications', weight: 0.4, impact: 0.5, description: 'Moderate tax exposure under current structure', confidence: 85 },
           { category: 'Family Dynamics', weight: 0.3, impact: 0.4, description: 'Generally cooperative beneficiaries', confidence: 80 },
@@ -133,7 +125,7 @@
         priority: 'low',
         confidence: 91,
         dateCreated: '2024-02-10',
-        lastUpdated: new Date(Date.now() - 259200000).toISOString(),;
+        lastUpdated: new Date(Date.now() - 259200000).toISOString(),
         factors: [
           { category: 'Contract Clarity', weight: 0.35, impact: 0.25, description: 'Well-drafted agreement with clear terms', confidence: 95 },
           { category: 'Damages Amount', weight: 0.3, impact: 0.3, description: 'Limited financial exposure', confidence: 90 },
@@ -155,13 +147,13 @@
         priority: 'high',
         confidence: 79,
         dateCreated: '2024-01-25',
-        lastUpdated: new Date().toISOString(),;
+        lastUpdated: new Date().toISOString(),
         factors: [
           { category: 'Medical Evidence', weight: 0.35, impact: 0.65, description: 'Mixed expert opinions on standard of care', confidence: 75 },
           { category: 'Jury Sympathy', weight: 0.25, impact: 0.8, description: 'Plaintiff has compelling personal story', confidence: 85 },
           { category: 'Insurance Coverage', weight: 0.2, impact: 0.5, description: 'Adequate coverage with reasonable deductible', confidence: 90 },
           { category: 'Prior Cases', weight: 0.2, impact: 0.7, description: 'Previous similar claims settled', confidence: 80 }
-        ],;
+        ],
         recommendations: [
           'Engage top medical experts early',
           'Prepare comprehensive standard of care documentation',
@@ -171,15 +163,13 @@
         riskLevel: 'medium';
       }
     ];
-
     // Add some randomization to scores for demo effect
     return mockCases.map(c => ({
       ...c,
-      score: Math.min(100, Math.max(0, c.score + Math.floor(Math.random() * 10 - 5))),;
+      score: Math.min(100, Math.max(0, c.score + Math.floor(Math.random() * 10 - 5))),
       confidence: Math.min(100, Math.max(50, c.confidence + Math.floor(Math.random() * 10 - 5)));
     }));
   }
-
   $effect(() => {
     if (useMockData) {
       // Load mock data for demonstration
@@ -191,7 +181,6 @@
       loadCaseScores();
     }
   });
-
   async function loadCaseScores() {
     isLoading = true;
     try {
@@ -202,12 +191,11 @@
       } else {
         // Real API call
         const response = await fetch('/api/ai/case-scoring', {
-          method: 'GET',;
+          method: 'GET',
           headers: {
             'Content-Type': 'application/json'
           }
         });
-
         if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
           const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
           cases = (data as { cases?: any }).cases || [];
@@ -221,32 +209,28 @@
       console.error('Error loading case scores:', error);
       // Fall back to mock data on error
       cases = generateMockCases();
-    
-    errorMessage = error instanceof Error ? error.message: 'An error occurred';} finally {
+    errorMessage = error instanceof Error ? error.message: 'An error occurred'} finally {
       isLoading = false;
     }
   }
-
   async function scoreCase(caseId: string, options: Partial<ScoringRequest> = ) {
     scoringInProgress = true;
     try {
       if (useMockData) {
         // Simulate scoring with mock data
         await new Promise(resolve => setTimeout(resolve, 2000));
-        
         const caseIndex = cases.findIndex(c => c.id === caseId);
         if (caseIndex !== -1) {
           // Simulate score recalculation
           const oldCase = cases[caseIndex];
           const scoreChange = Math.floor(Math.random() * 20 - 10);
           const newScore = Math.min(100, Math.max(0, oldCase.score + scoreChange));
-          
           cases[caseIndex] = {
             ...oldCase,
-            score: newScore,;
+            score: newScore
             confidence: Math.min(100, oldCase.confidence + Math.floor(Math.random() * 5)),
             lastUpdated: new Date().toISOString(),
-            riskLevel: newScore >= 70 ? 'high' : newScore >= 40 ? 'medium' : 'low',;
+            riskLevel: newScore >= 70 ? 'high' : newScore >= 40 ? 'medium' : 'low',
             priority: newScore >= 70 ? 'critical' : newScore >= 50 ? 'high' : newScore >= 30 ? 'medium' : 'low';
           };
         }
@@ -258,15 +242,13 @@
           scoringModel: 'comprehensive',
           ...options
         };
-
         const response = await fetch('/api/ai/case-scoring', {
-          method: 'POST',;
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json'
-          },;
+          },
           body: JSON.stringify(request);
         });
-
         if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
           const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
           const caseIndex = cases.findIndex(c => c.id === caseId);
@@ -283,19 +265,16 @@
     } catch (error) {
       console.error('Error scoring case:', error);
       throw error;
-    
-    errorMessage = error instanceof Error ? error.message: 'An error occurred';} finally {
+    errorMessage = error instanceof Error ? error.message: 'An error occurred'} finally {
       scoringInProgress = false;
     }
   }
-
   function getScoreColor(score: number): string {
     if (score >= 85) return 'text-red-600';
     if (score >= 70) return 'text-orange-600';
     if (score >= 50) return 'text-yellow-600';
     return 'text-green-600';
   }
-
   function getPriorityBadgeClass(priority: string): string {
     switch (priority) {
       case 'critical': return 'bg-red-100 text-red-800 border-red-200';
@@ -305,10 +284,8 @@
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
-
   let filteredCases = $derived(() => {
-    let filtered = cases;
-
+    let filtered = case;
     // Apply score filter
     if (scoreFilter !== 'all') {
       filtered = filtered.filter(case_ => {
@@ -320,7 +297,6 @@
         }
       });
     }
-
     // Apply search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
@@ -329,11 +305,10 @@
         case_.description.toLowerCase().includes(query)
       );
     }
-
     // Apply sorting
     filtered.sort((a, b) => {
       switch (sortBy) {
-        case 'score': return b.score - a.score;
+        case 'score': return b.score - a.scor;
         case 'priority': {
           const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
           return priorityOrder[b.priority] - priorityOrder[a.priority];
@@ -342,20 +317,16 @@
         default: return 0;
       }
     });
-
     return filtered;
   });
-
   function openScoreDetails(caseItem: CaseScore) {
     selectedCase = caseItem;
     showScoreDetails = true;
   }
 </script>
-
 <svelte:head>
   <title>Case Scoring Dashboard - Legal AI Platform</title>
 </svelte:head>
-
 <div class="case-scoring-dashboard">
   <header class="dashboard-header">
     <div class="header-content">
@@ -372,7 +343,6 @@
       </button>
     </div>
   </header>
-
   <!-- Filters and Controls -->
   <section class="controls-section">
     <div class="filters-row">
@@ -386,7 +356,6 @@
           class="search-input"
         />
       </div>
-
       <div class="filter-group">
         <label for="score-filter">Score Range:</label>
         <select id="score-filter" bind:value={scoreFilter} class="filter-select">
@@ -396,7 +365,6 @@
           <option value="low">Low Risk (0-39)</option>
         </select>
       </div>
-
       <div class="filter-group">
         <label for="sort-by">Sort By:</label>
         <select id="sort-by" bind:value={sortBy} class="filter-select">
@@ -407,7 +375,6 @@
       </div>
     </div>
   </section>
-
   <!-- Cases Grid -->
   <main class="cases-grid">
     {#if isLoading}
@@ -440,7 +407,6 @@
               {caseItem.description}
             </p>
           </div>
-
           <div class="nier-bits-yorha-panel-content">
             <div class="score-metrics">
               <div class="metric">
@@ -456,7 +422,6 @@
                 <span class="metric-value risk-{caseItem.riskLevel}">{caseItem.riskLevel}</span>
               </div>
             </div>
-
             <div class="top-factors">
               <h4>Top Risk Factors:</h4>
               <ul class="factors-list">
@@ -469,7 +434,6 @@
               </ul>
             </div>
           </div>
-
             <div class="nier-bits-yorha-panel-content">
               <div class="nier-bits-card-actions">
                 <button aria-label="Action button" type="button" onclick={(event: MouseEvent) => ) => openScoreDetails(caseItem} class="px-2 py-1 text-sm rounded border bg-white hover:bg-gray-50">
@@ -490,7 +454,6 @@
     {/if}
   </main>
 </div>
-
 <!-- Score Details Modal -->
 {#if showScoreDetails && selectedCase}
   <div class="modal-overlay" role="dialog" aria-modal="true" onclick={(event: MouseEvent) => ) => showScoreDetails = false} onkeydown={(e) => e.key === 'Escape' && (showScoreDetails = false)}>
@@ -502,7 +465,6 @@
           ×
         </button>
       </div>
-
       <div class="score-details-content">
         <!-- Overall Score -->
         <section class="score-overview">
@@ -516,7 +478,6 @@
             </div>
           </div>
         </section>
-
         <!-- Scoring Factors -->
         <section class="scoring-factors">
           <h3>Scoring Factors</h3>
@@ -536,7 +497,6 @@
             {/each}
           </div>
         </section>
-
         <!-- Recommendations -->
         <section class="recommendations">
           <h3>AI Recommendations</h3>
@@ -558,42 +518,36 @@
     </div>
   </div>
 {/if}
-
 <style>
-  .case-scoring-dashboard {;
+  .case-scoring-dashboard {
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
     font-family: system-ui, -apple-system, sans-serif;
   }
-
   .dashboard-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: flex-start;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid #e2e8f0;
   }
-
   .dashboard-title {
     font-size: 2rem;
     font-weight: 700;
     color: #1e293b;
     margin: 0;
   }
-
   .dashboard-subtitle {
     color: #64748b;
     margin: 0.5rem 0 0 0;
   }
-
   .header-actions {
     display: flex;
     gap: 1rem;
     align-items: center;
   }
-
   .demo-toggle {
     display: flex;
     align-items: center;
@@ -605,32 +559,26 @@
     font-size: 0.875rem;
     cursor: pointer;
   }
-
   .demo-toggle input[type="checkbox"] {
     cursor: pointer;
   }
-
   .demo-toggle span {
     color: #1e40af;
     font-weight: 500;
   }
-
   .controls-section {
     margin-bottom: 2rem;
   }
-
   .filters-row {
     display: flex;
     gap: 1.5rem;
     align-items: end;
     flex-wrap: wrap;
   }
-
   .search-group {
     flex: 1;
     min-width: 250px;
   }
-
   .search-input {
     width: 100%;
     padding: 0.75rem;
@@ -638,19 +586,16 @@
     border-radius: 0.5rem;
     font-size: 0.875rem;
   }
-
   .filter-group {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .filter-group label {
     font-size: 0.875rem;
     font-weight: 500;
     color: #374151;
   }
-
   .filter-select {
     padding: 0.5rem;
     border: 1px solid #d1d5db;
@@ -658,42 +603,35 @@
     font-size: 0.875rem;
     min-width: 140px;
   }
-
   .cases-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 1.5rem;
   }
-
   .case-score-card {
     border: 1px solid #e2e8f0;
     border-radius: 0.5rem;
     overflow: hidden;
-    transition: box-shadow 0.2s;
+    transition: box-shadow 0.2;
   }
-
   .case-score-card:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
-
   .case-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: flex-start;
     gap: 1rem;
   }
-
   .case-title {
     flex: 1;
     margin: 0;
   }
-
   .case-badges {
     display: flex;
     gap: 0.5rem;
     flex-shrink: 0;
   }
-
   .priority-badge {
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
@@ -701,7 +639,6 @@
     font-weight: 600;
     border: 1px solid;
   }
-
   .score-badge {
     padding: 0.25rem 0.5rem;
     background: #f1f5f9;
@@ -709,82 +646,68 @@
     font-size: 0.875rem;
     font-weight: 700;
   }
-
   .case-description {
     margin: 0.5rem 0 0 0;
     color: #64748b;
   }
-
   .score-metrics {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
     margin-bottom: 1rem;
   }
-
   .metric {
     text-align: center;
   }
-
   .metric-label {
     display: block;
     font-size: 0.75rem;
     color: #64748b;
     margin-bottom: 0.25rem;
   }
-
   .metric-value {
     display: block;
     font-weight: 600;
     font-size: 0.875rem;
   }
-
   .risk-low { color: #059669; }
   .risk-medium { color: #d97706; }
   .risk-high { color: #dc2626; }
   .risk-critical { color: #991b1b; }
-
   .top-factors h4 {
     margin: 0 0 0.5rem 0;
     font-size: 0.875rem;
     color: #374151;
   }
-
   .factors-list {
     list-style: none;
     padding: 0;
     margin: 0;
   }
-
   .factor-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     padding: 0.25rem 0;
     font-size: 0.75rem;
   }
-
   .factor-category {
     font-weight: 500;
     color: #374151;
   }
-
   .factor-impact {
     color: #64748b;
   }
-
   .card-actions {
     display: flex;
     gap: 0.5rem;
     justify-content: flex-end;
   }
-
   .loading-state, .empty-state {
     grid-column: 1 / -1;
     text-align: center;
     padding: 3rem;
     color: #64748b;
   }
-
   .loading-spinner {
     width: 2rem;
     height: 2rem;
@@ -794,14 +717,13 @@
     animation: spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
-
   @keyframes spin {
     to { transform: rotate(360deg); }
   }
-
   /* Modal Styles */
   .modal-overlay {
     position: fixed;
+d;
     top: 0;
     left: 0;
     right: 0;
@@ -812,7 +734,6 @@
     justify-content: center;
     z-index: 1000;
   }
-
   .modal-content {
     background: white;
     border-radius: 0.5rem;
@@ -823,23 +744,19 @@
     margin: 1rem;
     padding: 1.5rem;
   }
-
   .modal-header {
     position: relative;
     margin-bottom: 1.5rem;
   }
-
   .modal-title {
     font-size: 1.5rem;
     font-weight: 600;
     margin: 0 0 0.5rem 0;
   }
-
   .modal-description {
     color: #64748b;
     margin: 0;
   }
-
   .modal-close {
     position: absolute;
     top: 0;
@@ -856,73 +773,61 @@
     cursor: pointer;
     border-radius: 0.25rem;
   }
-
   .modal-close:hover {
     background: #f1f5f9;
     color: #1e293b;
   }
-
   .score-details-dialog {
     max-width: 800px;
     max-height: 90vh;
     overflow-y: auto;
   }
-
   .score-details-content {
     display: flex;
     flex-direction: column;
     gap: 2rem;
   }
-
   .score-overview {
     text-align: center;
     padding: 1.5rem;
     background: #f8fafc;
     border-radius: 0.5rem;
   }
-
   .score-display {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 2rem;
   }
-
   .large-score {
     font-size: 4rem;
     font-weight: 700;
   }
-
   .score-metadata p {
     margin: 0.25rem 0;
     font-size: 0.875rem;
   }
-
   .factors-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
   }
-
   .factor-card {
     padding: 1rem;
     border: 1px solid #e2e8f0;
     border-radius: 0.375rem;
     background: #fafafa;
   }
-
   .factor-card h4 {
     margin: 0 0 0.5rem 0;
     color: #374151;
   }
-
   .factor-metrics {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     margin-bottom: 0.5rem;
   }
-
   .factor-bar {
     flex: 1;
     height: 0.5rem;
@@ -930,37 +835,31 @@
     border-radius: 0.25rem;
     overflow: hidden;
   }
-
   .factor-fill {
     height: 100%;
     background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
-    transition: width 0.3s;
+    transition: width 0.3;
   }
-
   .factor-percentage {
     font-size: 0.75rem;
     font-weight: 600;
     color: #374151;
   }
-
   .factor-description {
     font-size: 0.75rem;
     color: #64748b;
     margin: 0.5rem 0;
   }
-
   .factor-confidence {
     font-size: 0.75rem;
     color: #6b7280;
     margin: 0;
   }
-
   .recommendations-list {
     list-style: none;
     padding: 0;
     margin: 0;
   }
-
   .recommendation-item {
     padding: 0.75rem;
     margin-bottom: 0.5rem;
@@ -970,7 +869,6 @@
     font-size: 0.875rem;
     color: #374151;
   }
-
   .dialog-actions {
     display: flex;
     gap: 0.5rem;
@@ -979,27 +877,22 @@
     padding-top: 1.5rem;
     border-top: 1px solid #e2e8f0;
   }
-
   @media (max-width: 768px) {
     .dashboard-header {
       flex-direction: column;
       gap: 1rem;
     }
-
     .filters-row {
       flex-direction: column;
       align-items: stretch;
     }
-
     .cases-grid {
       grid-template-columns: 1fr;
     }
-
     .score-display {
       flex-direction: column;
       gap: 1rem;
     }
-
     .factors-grid {
       grid-template-columns: 1fr;
     }

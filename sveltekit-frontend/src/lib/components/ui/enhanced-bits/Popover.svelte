@@ -3,7 +3,6 @@
   import type { PopoverProps } from 'bits-ui';
   import { createEventDispatcher } from 'svelte';
   import { fade, fly, scale } from 'svelte/transition';
-
   interface EnhancedPopoverProps extends Partial<PopoverProps> {
     theme?: 'default' | 'primary' | 'secondary' | 'gaming' | 'legal';
     size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -15,7 +14,6 @@
     closeOnOutsideClick?: boolean;
     closeOnEscape?: boolean;
   }
-
   let {
     theme = 'default',
     size = 'md',
@@ -30,43 +28,37 @@
     content,
     ...props
   }: EnhancedPopoverProps = $props();
-
   const dispatch = createEventDispatcher();
-
   let open = $state(false);
-
   const themeClasses = {
     default: 'bg-popover text-popover-foreground border border-border shadow-md',
     primary: 'bg-primary text-primary-foreground border border-primary shadow-lg',
-    secondary: 'bg-secondary text-secondary-foreground border border-secondary shadow-lg',;
-    gaming: 'bg-black text-green-400 border border-green-400 shadow-[0_0_20px_rgba(34,197,94,0.4)] backdrop-blur-sm',;
+    secondary: 'bg-secondary text-secondary-foreground border border-secondary shadow-lg',
+    gaming: 'bg-black text-green-400 border border-green-400 shadow-[0_0_20px_rgba(34,197,94,0.4)] backdrop-blur-sm',
     legal: 'bg-white text-slate-900 border border-slate-200 shadow-lg dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700';
   };
-
   const sizeClasses = {
     sm: 'max-w-xs p-3',
-    md: 'max-w-sm p-4',;
-    lg: 'max-w-md p-6',;
+    md: 'max-w-sm p-4',
+    lg: 'max-w-md p-6',
     xl: 'max-w-lg p-8';
   };
-
   function getTransition() {
     switch (animation) {
       case 'fly':
         return fly;
       case 'scale':
-        return scale;
+        return scal;
       default:
-        return fade;
+        return fad;
     }
   }
-
   function getTransitionConfig() {
     switch (animation) {
       case 'fly':
         return {
-          y: side === 'top' ? 10 : side === 'bottom' ? -10 : 0,;
-          x: side === 'left' ? 10 : side === 'right' ? -10 : 0,;
+          y: side === 'top' ? 10 : side === 'bottom' ? -10 : 0,
+          x: side === 'left' ? 10 : side === 'right' ? -10 : 0,
           duration: 200;
         };
       case 'scale':
@@ -75,13 +67,11 @@
         return { duration: 200 };
     }
   }
-
   function handleOpenChange(newOpen: boolean) {
-    open = newOpen;
+    open = newOpe;
     dispatch('openChange', { open: newOpen });
   }
 </script>
-
 <BitsPopover.Root
   bind:open
   onOpenChange={handleOpenChange}
@@ -92,7 +82,6 @@
   <BitsPopover.Trigger asChild>
     {@render trigger?.()}
   </BitsPopover.Trigger>
-
   <BitsPopover.Portal>
     <BitsPopover.Content
       {side}
@@ -112,7 +101,6 @@
       transitionConfig={getTransitionConfig()}
     >
       {@render content?.()}
-
       {#if arrow}
         <BitsPopover.Arrow
           class={`
@@ -130,14 +118,12 @@
     </BitsPopover.Content>
   </BitsPopover.Portal>
 </BitsPopover.Root>
-
 <style>
   /* Gaming theme effects */
-  :global([data-bits-popover-content][data-theme="gaming"]) {;
+  :global([data-bits-popover-content][data-theme="gaming"]) {
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 20, 0, 0.95) 100%);
     animation: gaming-pulse 3s ease-in-out infinite alternate;
   }
-
   @keyframes gaming-pulse {
     from {
       box-shadow:
@@ -151,22 +137,18 @@
         inset 0 0 30px rgba(34, 197, 94, 0.15);
     }
   }
-
   /* Legal theme professional styling */
   :global([data-bits-popover-content][data-theme="legal"]) {
     backdrop-filter: blur(12px);
     background: rgba(255, 255, 255, 0.95);
   }
-
   :global(.dark [data-bits-popover-content][data-theme="legal"]) {
     background: rgba(30, 41, 59, 0.95);
   }
-
   /* Enhanced focus management */
   :global([data-bits-popover-content]) {
     transform-origin: var(--bits-popover-content-transform-origin);
   }
-
   /* Responsive adjustments */
   @media (max-width: 640px) {
     :global([data-bits-popover-content]) {

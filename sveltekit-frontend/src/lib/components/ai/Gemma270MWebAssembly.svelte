@@ -1,15 +1,12 @@
 <!--
   Gemma3 270M Client-Side WebAssembly Component
-  Function: Offload lightweight AI operations to client-side WebAssembly for reduced server load
+  Function: Offload lightweight AI operations to client-side WebAssembly for reduced server load,
   Architecture: WebAssembly + WebGL + Shared Memory for real-time legal document processing
 -->
-
 <script>
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { Button, Card, CardContent, CardHeader, CardTitle, Alert } from '$lib/components/ui/enhanced-bits';
-
   // Svelte 5 runes for reactive state
   let wasmModule = $state(null);
   let isLoaded = $state(false);
@@ -20,33 +17,29 @@
   let wasmSupported = $state(true);
   let webglSupported = $state(true);
   let sharedMemorySupported = $state(true);
-
   // WebAssembly configuration
   const wasmConfig = {
     modelSize: '270M',
     quantization: 'int8',
     contextLength: 2048,
-    batchSize: 1,;
+    batchSize: 1,
     threads: navigator.hardwareConcurrency || 4,
     memoryMB: 512, // Lighter memory footprint for client-side
-    enableWebGL: true,
+    enableWebGL: true
     enableSharedMemory: true;
   };
-
   // Performance metrics
   let performanceMetrics = $state({
     loadTime: 0,
     inferenceTime: 0,
     tokensPerSecond: 0,
     memoryUsage: 0,
-    webglAcceleration: false,
+    webglAcceleration: false
     lastUpdated: null
   });
-
   // WebGL context for GPU acceleration
   let webglContext = $state(null);
   let gpuBuffers = $state(new Map());
-
   $effect(() => {
     (async () => {
 await initializeWebAssembly();
@@ -54,90 +47,75 @@ await initializeWebAssembly();
     initializeWebGL();
     })();
   });
-
   async function initializeWebAssembly() {
     try {
       isLoaded = false;
       const startTime = performance.now();
-
       // Check for WebAssembly support
       if (!window.WebAssembly) {
         wasmSupported = false;
         errorMessage = 'WebAssembly not supported in this browser';
         return;
       }
-
       // Load Gemma3 270M WebAssembly module
       console.log('Loading Gemma3 270M WebAssembly module...');
-
       // In production, this would load the actual WASM binary
       // For now, we'll simulate the module loading
       wasmModule = await loadGemma270MWASM();
-
       const loadTime = performance.now() - startTime;
-      performanceMetrics.loadTime = loadTime;
+      performanceMetrics.loadTime = loadTim;
       performanceMetrics.lastUpdated = new Date().toISOString();
-
       isLoaded = true;
       console.log(`Gemma3 270M WebAssembly loaded in ${loadTime.toFixed(2)}ms`);
-
     } catch (error) {
       errorMessage = `Failed to load WebAssembly: ${error.message}`;
       console.error('WebAssembly initialization error:', error);
     }
   }
-
   async function loadGemma270MWASM() {
     // Simulate loading the Gemma3 270M WebAssembly module
     // In production, this would be:
-    // const wasmModule = await import('/wasm/gemma3-270m.wasm');
-
+    // const wasmModule = await import('/wasm/gemma3-270m.wasm')
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
           // Simulated WASM module interface
-          inference: simulateInference,
-          embedding: simulateEmbedding,
-          summarize: simulateSummarization,
-          extract: simulateExtraction,;
+          inference: simulateInference
+          embedding: simulateEmbedding
+          summarize: simulateSummarization
+          extract: simulateExtraction
           memory: {
-            allocate: simulateMemoryAllocate,
-            free: simulateMemoryFree,
-            usage: simulateMemoryUsage;
+            allocate: simulateMemoryAllocate
+            free: simulateMemoryFree
+            usage: simulateMemoryUsag;
           },
           gpu: {
-            initialize: simulateGPUInit,;
-            transfer: simulateGPUTransfer,;
-            compute: simulateGPUCompute;
+            initialize: simulateGPUInit
+            transfer: simulateGPUTransfer
+            compute: simulateGPUComput;
           }
         });
       }, 1500); // Simulate load time
     });
   }
-
   function checkBrowserCapabilities() {
     // Check SharedArrayBuffer support
     sharedMemorySupported = typeof SharedArrayBuffer !== 'undefined';
-
     // Check WebGL support
     const canvas = document.createElement('canvas');
     webglSupported = !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
-
     console.log('Browser capabilities:', {
-      webAssembly: wasmSupported,
-      webGL: webglSupported,
-      sharedMemory: sharedMemorySupported,
+      webAssembly: wasmSupported
+      webGL: webglSupported
+      sharedMemory: sharedMemorySupported
       hardwareConcurrency: navigator.hardwareConcurrency
     });
   }
-
   function initializeWebGL() {
     if (!webglSupported) return;
-
     try {
       const canvas = document.createElement('canvas');
       webglContext = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-
       if (webglContext) {
         performanceMetrics.webglAcceleration = true;
         console.log('WebGL acceleration enabled for client-side AI');
@@ -147,20 +125,17 @@ await initializeWebAssembly();
       performanceMetrics.webglAcceleration = false;
     }
   }
-
   // Client-side AI operations
   async function processText(text, operation = 'inference') {
     if (!isLoaded || !wasmModule) {
       errorMessage = 'WebAssembly module not loaded';
       return null;
     }
-
     try {
       isProcessing = true;
       processingProgress = 0;
       errorMessage = '';
       const startTime = performance.now();
-
       let result;
       switch (operation) {
         case 'inference':
@@ -178,16 +153,13 @@ await initializeWebAssembly();
         default:
           throw new Error(`Unknown operation: ${operation}`);
       }
-
       const inferenceTime = performance.now() - startTime;
-      performanceMetrics.inferenceTime = inferenceTime;
+      performanceMetrics.inferenceTime = inferenceTim;
       performanceMetrics.tokensPerSecond = calculateTokensPerSecond(text, inferenceTime);
       performanceMetrics.memoryUsage = wasmModule.memory.usage();
       performanceMetrics.lastUpdated = new Date().toISOString();
-
       lastResult = result;
       return result;
-
     } catch (error) {
       errorMessage = `Processing failed: ${error.message}`;
       console.error('Client-side processing error:', error);
@@ -197,102 +169,89 @@ await initializeWebAssembly();
       processingProgress = 100;
     }
   }
-
   async function performClientInference(text) {
     // Simulate progress updates
     for (let i = 0; i <= 100; i += 10) {
       processingProgress = i;
       await new Promise(resolve => setTimeout(resolve, 50));
     }
-
     // Use WebAssembly module for inference
     const result = await wasmModule.inference({
-      text: text,
-      maxTokens: 512,;
+      text: text
+      maxTokens: 512,
       temperature: 0.1,
-      useWebGL: performanceMetrics.webglAcceleration;
+      useWebGL: performanceMetrics.webglAcceleratio;
     });
-
     return {
       text: result.generatedText || `Client-side generated response for: ${text.substring(0, 50)}...`,
       confidence: result.confidence || 0.85,
-      tokensGenerated: result.tokensGenerated || 42,;
+      tokensGenerated: result.tokensGenerated || 42,
       model: 'gemma3-270m-wasm',
       processingLocation: 'client-side';
     };
   }
-
   async function generateClientEmbedding(text) {
     const result = await wasmModule.embedding({
-      text: text,;
-      dimensions: 384, // Smaller dimensions for 270M model;
+      text: text
+      dimensions: 384, // Smaller dimensions for 270M model
       normalize: true;
     });
-
     return {
-      embedding: result.vector || new Array(384).fill.map(() => Math.random()),;
-      dimensions: 384,;
+      embedding: result.vector || new Array(384).fill.map(() => Math.random()),
+      dimensions: 384,
       model: 'gemma3-270m-embedding-wasm',
       processingLocation: 'client-side';
     };
   }
-
   async function summarizeClientSide(text) {
     const result = await wasmModule.summarize({
-      text: text,
+      text: text
       maxSummaryLength: 200,
       extractiveRatio: 0.3;
     });
-
     return {
       summary: result.summary || `Client-side summary of: ${text.substring(0, 100)}...`,
       compressionRatio: result.compressionRatio || 0.25,
-      keyPoints: result.keyPoints || ['Key point 1', 'Key point 2', 'Key point 3'],;
+      keyPoints: result.keyPoints || ['Key point 1', 'Key point 2', 'Key point 3'],
       model: 'gemma3-270m-summarizer-wasm',
       processingLocation: 'client-side';
     };
   }
-
   async function extractClientSide(text) {
     const result = await wasmModule.extract({
-      text: text,;
-      schema: 'legal-entities',;
+      text: text
+      schema: 'legal-entities',
       confidence: 0.7;
     });
-
     return {
       entities: result.entities || [
         { type: 'person', value: 'John Doe', confidence: 0.9 },
         { type: 'organization', value: 'ABC Corp', confidence: 0.85 }
       ],
-      relationships: result.relationships || [],;
+      relationships: result.relationships || [],
       model: 'gemma3-270m-extractor-wasm',
       processingLocation: 'client-side';
     };
   }
-
   function calculateTokensPerSecond(text, inferenceTime) {
     const estimatedTokens = text.split.length * 1.3; // Rough token estimation
     return (estimatedTokens / (inferenceTime / 1000)).toFixed(2);
   }
-
   // Simulated WASM module functions (in production, these would be actual WASM calls)
   async function simulateInference(params) {
     await new Promise(resolve => setTimeout(resolve, 200));
     return {
-      generatedText: `AI response to: ${params.text.substring(0, 30)}...`,;
+      generatedText: `AI response to: ${params.text.substring(0, 30)}...`,
       confidence: 0.87,
       tokensGenerated: 45;
     };
   }
-
   async function simulateEmbedding(params) {
     await new Promise(resolve => setTimeout(resolve, 100));
     return {
       vector: new Array(params.dimensions).fill.map(() => Math.random());
     };
   }
-
   async function simulateSummarization(params) {
     await new Promise(resolve => setTimeout(resolve, 150));
     return {
@@ -301,41 +260,33 @@ await initializeWebAssembly();
       keyPoints: ['Point 1', 'Point 2']
     };
   }
-
   async function simulateExtraction(params) {
     await new Promise(resolve => setTimeout(resolve, 120));
     return {
       entities: [
         { type: 'person', value: 'Client Entity', confidence: 0.9 }
-      ],;
+      ],
       relationships: [];
     };
   }
-
   function simulateMemoryAllocate(size) {
     return `memory_block_${Date.now()}`;
   }
-
   function simulateMemoryFree(blockId) {
     return true;
   }
-
   function simulateMemoryUsage() {
     return Math.floor(Math.random() * 100) + 50; // 50-150 MB
   }
-
   function simulateGPUInit() {
-    return performanceMetrics.webglAcceleration;
+    return performanceMetrics.webglAcceleratio;
   }
-
   function simulateGPUTransfer(data) {
     return `gpu_buffer_${Date.now()}`;
   }
-
   function simulateGPUCompute(buffer) {
     return { result: 'gpu_computation_result' };
   }
-
   // Utility functions
   function formatFileSize(bytes) {
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
@@ -343,7 +294,6 @@ await initializeWebAssembly();
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
     return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
   }
-
   function getStatusColor(status) {
     switch (status) {
       case 'loaded': return 'text-green-600';
@@ -352,11 +302,9 @@ await initializeWebAssembly();
       default: return 'text-gray-600';
     }
   }
-
   // Export functions for external use
   export { processText, performanceMetrics, isLoaded, wasmSupported };
 </script>
-
 <div class="container mx-auto p-6 max-w-4xl">
   <Card>
     <CardHeader>
@@ -366,7 +314,6 @@ await initializeWebAssembly();
       </p>
     </CardHeader>
     <CardContent class="space-y-6">
-
       <!-- Browser Compatibility Status -->
       <Card>
         <CardHeader>
@@ -389,7 +336,6 @@ await initializeWebAssembly();
           </div>
         </CardContent>
       </Card>
-
       <!-- Loading Status -->
       {#if !isLoaded}
         <Alert>
@@ -410,7 +356,6 @@ await initializeWebAssembly();
           </div>
         </Alert>
       {/if}
-
       <!-- Performance Metrics -->
       {#if isLoaded}
         <Card>
@@ -447,7 +392,6 @@ await initializeWebAssembly();
           </CardContent>
         </Card>
       {/if}
-
       <!-- Processing Progress -->
       {#if isProcessing}
         <Alert>
@@ -463,7 +407,6 @@ await initializeWebAssembly();
           </div>
         </Alert>
       {/if}
-
       <!-- Error Message -->
       {#if errorMessage}
         <Alert variant="error">
@@ -475,7 +418,6 @@ await initializeWebAssembly();
           </div>
         </Alert>
       {/if}
-
       <!-- Quick Actions -->
       {#if isLoaded && !isProcessing}
         <Card>
@@ -512,7 +454,6 @@ await initializeWebAssembly();
           </CardContent>
         </Card>
       {/if}
-
       <!-- Last Result -->
       {#if lastResult}
         <Card>
@@ -528,7 +469,6 @@ await initializeWebAssembly();
           </CardContent>
         </Card>
       {/if}
-
       <!-- Configuration Info -->
       <Card>
         <CardHeader>
@@ -548,43 +488,34 @@ await initializeWebAssembly();
     </CardContent>
   </Card>
 </div>
-
 <style>
-  .gemma-270m-wasm {;
+  .gemma-270m-wasm {
     max-width: 800px;
   }
-
   .metric {
     transition: transform 0.2s ease;
   }
-
   .metric:hover {
     transform: translateY(-2px);
   }
-
   .action-btn {
     transition: all 0.2s ease;
   }
-
   .action-btn:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
-
   .action-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     transform: none;
   }
-
   pre {
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   }
-
   .animate-spin {
     animation: spin 1s linear infinite;
   }
-
   @keyframes spin {
     from {
       transform: rotate(0deg);

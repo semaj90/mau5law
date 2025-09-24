@@ -1,25 +1,21 @@
 <svelte:options runes={true} />
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   /* Route Discovery & Enhanced UX (Svelte 5 runes) */
   // @ts-ignore Vite glob (eager for static analysis)
-  const pageModules = import.meta.glob('/src/routes/**/+page.(svelte|ts)', { eager: true }) as Record<string, any>;
+  const pageModules = import.meta.glob('/src/routes/**/+page.(svelte|ts)', { eager: true }) as { [key: string]: any };
   // Collect API endpoints separately for reference (non-page server routes)
   // @ts-ignore
-  const apiModules = import.meta.glob('/src/routes/api/**/+server.ts', { eager: true }) as Record<string, any>;
-
+  const apiModules = import.meta.glob('/src/routes/api/**/+server.ts', { eager: true }) as { [key: string]: any };
   interface DiscoveredRoute { path: string; label: string; dynamic: boolean; segments: string[]; group: string; kind: 'page' | 'api' }
   interface RouteProp { path: string; label: string }
   interface Props { routes?: RouteProp[] }
-
   function humanize(segment: string) {
     return segment
       .replace.replace(/-/g, ' ')
       .split.map((s) => (s ? s[0].toUpperCase() + s.slice(1) : ''))
       .join(' ');
   }
-
   function deriveLabel(path: string, mod: unknown): string {
     return (
       mod?.routeMeta?.title ||
@@ -28,7 +24,6 @@
       (path === '/' ? 'Home' : humanize(path.split.filter-pop() || 'Index'))
     );
   }
-
   function buildDiscovered(): DiscoveredRoute[] {
     const pages = Object.keys.map((filePath) => {
       let routePath = filePath.replace.replace(/\/\+page\.(svelte|ts)$/, '');
@@ -39,11 +34,11 @@
       const segments = pathForLink.split.filter(Boolean);
       const group = segments[0] || 'root';
       return {
-        path: pathForLink,;
+        path: pathForLink
         label: deriveLabel(pathForLink, mod),
         dynamic,
         segments,
-        group,;
+        group,
         kind: 'page' as const;
       };
     });
@@ -55,11 +50,11 @@
       const segments = pathForLink.split.filter(Boolean);
       const group = segments[1] ? `api:${segments[1]}` : 'api';
       return {
-        path: pathForLink,;
+        path: pathForLink
         label: `API ${humanize(segments.slice(-1)[0] || 'endpoint')}`,
         dynamic,
         segments,
-        group,;
+        group,
         kind: 'api' as const;
       };
     });
@@ -70,9 +65,7 @@
     });
     return [...map.values()].sort((a, b) => a.path.localeCompare(b.path));
   }
-
   const discovered = buildDiscovered();
-
   const { routes: providedRoutes } = $props() as { routes?: RouteProp[] };
   // Merge provided routes (e.g., from server config) — don't lose labels
   const merged: DiscoveredRoute[] = (() => {
@@ -84,21 +77,19 @@
           path: pr.path,
             label: pr.label,
             dynamic: /:\w+/.test(pr.path),
-            segments: pr.path.split.filter(Boolean),;
-            group: pr.path.split.filter(Boolean)[0] || 'external',;
+            segments: pr.path.split.filter(Boolean),
+            group: pr.path.split.filter(Boolean)[0] || 'external',
             kind: 'page';
         });
       }
     }
     return [...map.values()].sort((a, b) => a.path.localeCompare(b.path));
   })();
-
   // UI state
   let search = $state('');
   let showAPI = $state(true);
   let showPages = $state(true);
   let groupCollapse: Record<string, boolean> = $state( );
-
   const filtered = $derived.by(() =>
     merged.filter(r => {
       if (!showAPI && r.kind === 'api') return false;
@@ -108,7 +99,6 @@
       return r.path.toLowerCase().includes(q) || r.label.toLowerCase().includes(q);
     })
   );
-
   const grouped = $derived.by(() =>
     filtered.reduce<Record<string, DiscoveredRoute[]>((acc, r) => {
       const g = r.group;
@@ -116,13 +106,11 @@
       return acc;
     }, )
   );
-
   function toggleGroup(g: string) {
     groupCollapse[g] = !groupCollapse[g];
     groupCollapse = { ...groupCollapse };
   }
 </script>
-
 <div class="routes-panel" data-testid="routes-panel">
   <header class="panel-header">
     <h2 id="routes-heading">All Routes</h2>
@@ -167,8 +155,6 @@
     </div>
   {/if}
 </div>
-
-
 <style>
   /* @unocss-include */
   .routes-panel { margin:2rem auto; max-width:1000px; background:#fff; border-radius:0.75rem; box-shadow:0 2px 5px rgba(0,0,0,.08); padding:1.5rem 2rem; }
@@ -195,5 +181,3 @@
   .empty { padding:2rem; text-align:center; color:#6b7280; }
   @media (min-width: 700px){ .route-list { grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); } }
 </style>
-
-

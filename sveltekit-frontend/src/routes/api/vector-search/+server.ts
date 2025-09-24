@@ -2,18 +2,15 @@
  * Vector Search API with pgvector integration
  * Semantic similarity search across documents, cases, and chunks
  */
-
 import { json, type RequestHandler } from '@sveltejs/kit'
 import { db } from '$lib/server/db'
 import { documents, document_chunks, cases, vectors } from '$lib/server/schema/documents'
 import { eq, desc, and, gt, sql } from 'drizzle-orm'
 import { createEmbedding } from '$lib/services/embedding-service'
 import { cache, getCachedSearchResults, cacheSearchResults } from '$lib/server/cache/redis'
-
 const CACHE_TTL = 180; // 3 minutes for vector search results
 const DEFAULT_SIMILARITY_THRESHOLD = 0.7
 const DEFAULT_LIMIT = 10
-
 interface VectorSearchRequest {
   query: string
   threshold?: number
@@ -36,11 +33,10 @@ interface VectorSearchRequest {
     summary?: number
   }
 }
-
 interface VectorSearchResult {
   id: string
   entity_type: 'document' | 'chunk' | 'case'
-  vector_type: 'content' | 'title' | 'summary'
+  vector_type: 'content' | 'title' | 'summary',
   similarity: number
   boosted_score?: number
   title: string
@@ -56,16 +52,13 @@ interface VectorSearchResult {
     created_at: string
   }
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const searchRequest: VectorSearchRequest = await request.json()
-
     // Validate request
     if (!searchRequest.query || searchRequest.query.trim().length === 0) {
       return json({ error: 'Query is required and cannot be empty' }, { status: 400 })
     }
-
     const {
       query,
       threshold = DEFAULT_SIMILARITY_THRESHOLD,
@@ -76,10 +69,8 @@ export const POST: RequestHandler = async ({ request }) => {
       include_content = false,
       boost_factors = { title: 1.2, content: 1.0, summary: 0.9 }
     } = searchRequest
-
     // Build cache key
     const cacheKey = `vector_search:${Buffer.from(JSON.stringify(searchRequest)).toString('base64')}`
-
     // Try cache first
     const cached = await getCachedSearchResults(query, 'vector-api', {
       threshold,
@@ -92,7 +83,6 @@ export const POST: RequestHandler = async ({ request }) => {
       const payload = typeof cached === 'string' ? JSON.parse(cached) : cached
       return json(payload)
     }
-
     // Generate query embedding
     let queryEmbedding: number[]
     try {
@@ -101,10 +91,8 @@ export const POST: RequestHandler = async ({ request }) => {
       console.error('Failed to generate query embedding:', error)
       return json({ error: 'Failed to generate embedding for query' }, { status: 500 })
     }
-
     // Search across different entity types
     const searchPromises = []
-
     // 1. Search documents
     if (entity_types.includes('document')) {
       const documentSearches = vector_types
@@ -120,15 +108,12 @@ export const POST: RequestHandler = async ({ request }) => {
             default:
               vectorColumn = documents.embedding
           }
-
           if (!vectorColumn) return null
-
           const conditions = [
             eq(documents.is_active, true),
             eq(documents.is_indexed, true),
             sql`${vectorColumn} IS NOT NULL`
           ]
-
           // Apply filters
           if (filters.case_id) {
             conditions.push(eq(documents.case_id, filters.case_id)
@@ -151,7 +136,6 @@ export const POST: RequestHandler = async ({ request }) => {
           if (filters.created_before) {
             conditions.push(sql`${documents.created_at} <= ${filters.created_before}`)
           }
-
           return db
             .select({
               id: documents.id,
@@ -178,10 +162,8 @@ export const POST: RequestHandler = async ({ request }) => {
             .limit(limit)
         })
         .filter(Boolean)
-
       searchPromises.push(...documentSearches)
     }
-
     // 2. Search document chunks
     if (entity_types.includes('chunk')) {
       const chunkSearch = db
@@ -210,10 +192,8 @@ export const POST: RequestHandler = async ({ request }) => {
         )
         .orderBy(sql`similarity DESC`)
         .limit(limit)
-
       searchPromises.push(chunkSearch)
     }
-
     // 3. Search cases
     if (entity_types.includes('case')) {
       const caseSearch = db
@@ -240,26 +220,22 @@ export const POST: RequestHandler = async ({ request }) => {
         )
         .orderBy(sql`similarity DESC`)
         .limit(limit)
-
       searchPromises.push(caseSearch)
     }
-
     // Execute all searches in parallel
     const searchResults = await Promise.all(searchPromises)
-
     // Flatten and process results
     const allResults: VectorSearchResult[] = searchResults.flat().map((result: any) => {
       const similarity = Number((result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).similarity)
       const vectorType = (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).vector_type as keyof typeof boost_factors
       const boostFactor = boost_factors[vectorType] || 1.0
       const boostedScore = similarity * boostFactor
-
       return {
         id: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).id,
         entity_type: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).entity_type,
         vector_type: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).vector_type,
         similarity,
-        boosted_score: boostedScore,
+        boosted_score: boostedScore
         title: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).title || 'Untitled',
         content: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).content,
         summary: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).summary,
@@ -274,27 +250,24 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       }
     })
-
     // Sort by boosted score and limit results
     const sortedResults = allResults
       .sort((a, b) => (b.boosted_score || b.similarity) - (a.boosted_score || a.similarity)
       .slice(0, limit)
-
     // Prepare response
     const response = {
       query,
-      results: sortedResults,
+      results: sortedResults
       metadata: {
         total_found: sortedResults.length,
-        threshold_used: threshold,
+        threshold_used: threshold
         embedding_model: 'nomic-embed-text',
         search_time_ms: Date.now(), // Will be calculated by client
-        entity_types_searched: entity_types,
-        vector_types_searched: vector_types,
+        entity_types_searched: entity_types
+        vector_types_searched: vector_types
         boost_factors_applied: boost_factors
       }
     }
-
     // Cache results
     await cacheSearchResults(query, 'vector-api', (response as { results?: any }).results, {
       threshold,
@@ -303,7 +276,6 @@ export const POST: RequestHandler = async ({ request }) => {
       vector_types,
       filters
     })
-
     return json(response)
   } catch (error) {
     console.error('Vector search error:', error)
@@ -316,14 +288,12 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const query = url.searchParams.get('q') || url.searchParams.get('query')
     if (!query) {
       return json({ error: 'Query parameter "q" or "query" is required' }, { status: 400 })
     }
-
     // Convert URL params to POST request format
     const searchRequest: VectorSearchRequest = {
       query,
@@ -334,9 +304,8 @@ export const GET: RequestHandler = async ({ url }) => {
       entity_types: (url.searchParams.get('entity_types')?.split(',') as any) || ['document'],
       vector_types: (url.searchParams.get('vector_types')?.split(',') as any) || ['content'],
       include_content: url.searchParams.get('include_content') === 'true',
-      filters: Record<string, any>
+      filters: { [key: string]: any }
     }
-
     // Add filters from URL params
     const filterParams = [
       'case_id',
@@ -353,12 +322,10 @@ export const GET: RequestHandler = async ({ url }) => {
         (searchRequest.filters as any)[param] = value
       }
     })
-
     // Create a fake request object to reuse POST logic
     const fakeRequest = {
       json: async () => searchRequest
     }
-
     return await exports.POST({ request: fakeRequest as any, url } as any)
   } catch (error) {
     console.error('Vector search GET error:', error)

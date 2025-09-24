@@ -3,7 +3,6 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared -->
 <!--
   SSR QLoRA Chat Interface - Revolutionary legal AI chat with instant SSR hydration
-  
   Features:
   - Server-side rendered for instant loading
   - User dictionary learning with QLoRA fine-tuning
@@ -12,12 +11,9 @@ https://svelte.dev/e/js_parse_error -->
   - Real-time streaming with neural sprite visualization
   - XState machine integration for reliable state management
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   let { userId, sessionId = '', preloadedData: any = null, ssrContext: any = null  }: { userId, sessionId = '', preloadedData: any = null, ssrContext: any = null : any } = $props();
-
   import { onMount,   } from "svelte";
   import { writable, derived } from 'svelte/store';
   import { browser } from '$app/environment';
@@ -36,19 +32,14 @@ https://svelte.dev/e/js_parse_error -->
     CardContent
   } from '$lib/components/ui/enhanced-bits';
   // Props
-  
-  
-  
-  
   // Dispatcher
-  
   // XState machine
   const { state, send } = useMachine(chatMachine, {
     context: {
       userId,
-      sessionId,;
+      sessionId,
       messages: [],
-      userDictionary: ssrContext?.userDictionary || ,
+      userDictionary: ssrContext?.userDictionary ||
       systemStatus: ssrContext?.systemStatus || }
   });
   // Reactive state
@@ -65,9 +56,9 @@ https://svelte.dev/e/js_parse_error -->
   );
   const statusIndicator = derived(systemStatus, ($status) => ({
     nes: $status.nesMemoryReady ? '🟢' : '🔴',
-    gpu: $status.gpuCacheReady ? '🟢' : '🔴', 
-    qlora: $status.qloraReady ? '🟢' : '🟡',;
-    wasm: $status.wasmBridgeReady ? '🟢' : '🔴',;
+    gpu: $status.gpuCacheReady ? '🟢' : '🔴',
+    qlora: $status.qloraReady ? '🟢' : '🟡',
+    wasm: $status.wasmBridgeReady ? '🟢' : '🔴',
     ollama: $status.ollamaReady ? '🟢' : '🔴';
   }));
   // Event source for streaming
@@ -76,7 +67,6 @@ https://svelte.dev/e/js_parse_error -->
   let messageInput: HTMLInputElement;
   $effect(() => {
     if (!browser) return;
-
     (async () => {
       // Initialize session if not provided
       if (!sessionId) {
@@ -115,8 +105,8 @@ https://svelte.dev/e/js_parse_error -->
     const userMessage = {
       id: `msg_${Date.now()}`,
       role: 'user',
-      content: message,;
-      timestamp: new Date(),;
+      content: message
+      timestamp: new Date(),
       processed: false;
     };
     messages.update(msgs => [...msgs, userMessage]);
@@ -130,12 +120,12 @@ https://svelte.dev/e/js_parse_error -->
       // Create AI response placeholder
       const aiMessage = {
         id: `ai_${Date.now()}`,
-        role: 'assistant', 
+        role: 'assistant',
         content: '',
         timestamp: new Date(),
-        streaming: true,;
+        streaming: true
         chunks: [],
-        neuralSprite: null,;
+        neuralSprite: null
         source: 'qlora';
       };
       messages.update(msgs => [...msgs, aiMessage]);
@@ -147,8 +137,8 @@ https://svelte.dev/e/js_parse_error -->
       messages.update(msgs => [...msgs, {
         id: `error_${Date.now()}`,
         role: 'system',
-        content: 'Sorry, I encountered an error. Please try again.',;
-        timestamp: new Date(),;
+        content: 'Sorry, I encountered an error. Please try again.',
+        timestamp: new Date(),
         error: true;
       }]);
       send({ type: 'ERROR', error: error.message });
@@ -167,8 +157,8 @@ https://svelte.dev/e/js_parse_error -->
     });
     // Use fetch with streaming instead
     const response = await fetch('/api/chat/ssr-qlora', {
-      method: 'POST',;
-      headers: { 'Content-Type': 'application/json' },;
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(toISOString)();
         }
       })
@@ -245,8 +235,8 @@ https://svelte.dev/e/js_parse_error -->
   function provideFeedback(messageId: string, feedback: number) {
     // Send feedback to server
     fetch('/api/chat/ssr-qlora', {
-      method: 'PUT',;
-      headers: { 'Content-Type': 'application/json' },;
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(toISOString)();
       })
     });
@@ -267,7 +257,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <div class="ssr-qlora-chat-interface nes-retro-ui">
   <!-- System Status Bar -->
   <div class="system-status-bar">
@@ -278,7 +267,6 @@ https://svelte.dev/e/js_parse_error -->
       <span title="WASM Bridge">{$statusIndicator.wasm}</span>
       <span title="Ollama">{$statusIndicator.ollama}</span>
     </div>
-    
     <div class="user-info">
       <span class="domain-expertise">
         {$userDictionary.domainExpertise?.join(', ') || 'General Legal'}
@@ -288,7 +276,6 @@ https://svelte.dev/e/js_parse_error -->
       </span>
     </div>
   </div>
-
   <!-- Chat Messages Container -->
   <div class="chat-container" bind:this={chatContainer}>
     {#each $messages as message (message.id)}
@@ -296,22 +283,18 @@ https://svelte.dev/e/js_parse_error -->
         <div class="message-content">
           <div class="message-text">
             {message.content}
-            
             {#if message.streaming}
               <span class="typing-indicator">▋</span>
             {/if}
           </div>
-          
           {#if message.source}
             <div class="message-metadata">
               <span class="source-badge source-{message.source}">
                 {message.source}
               </span>
-              
               {#if message.instant}
                 <span class="instant-badge">⚡</span>
               {/if}
-              
               {#if message.similarity}
                 <span class="similarity-badge">
                   {Math.round(message.similarity * 100)}%
@@ -319,17 +302,16 @@ https://svelte.dev/e/js_parse_error -->
               {/if}
             </div>
           {/if}
-          
           {#if message.role === 'assistant' && !message.streaming}
             <div class="feedback-buttons">
-              <button 
+              <button
                 class="feedback-btn positive"
                 onclick={() => provideFeedback(message.id, 1)}
                 title="Good response"
               >
                 👍
               </button>
-              <button 
+              <button
                 class="feedback-btn negative"
                 onclick={() => provideFeedback(message.id, -1)}
                 title="Poor response"
@@ -339,28 +321,25 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           {/if}
         </div>
-        
         <!-- Neural Sprite Visualization -->
         {#if message.neuralSprite}
           <div class="neural-sprite-container">
-            <NeuralSpriteRenderer 
+            <NeuralSpriteRenderer
               spriteData={message.neuralSprite}
               size="small"
             />
           </div>
         {/if}
-        
         <div class="message-timestamp">
           {message.timestamp.toLocaleTimeString()}
         </div>
       </div>
     {/each}
   </div>
-
   <!-- Input Area -->
   <div class="chat-input-area">
     <div class="input-container">
-      <input 
+      <input
         bind:this={messageInput}
         bind:value={$currentMessage}
         onkeypress={handleKeyPress}
@@ -368,8 +347,7 @@ https://svelte.dev/e/js_parse_error -->
         disabled={$isStreaming}
         class="message-input nes-input"
       />
-      
-      <Button 
+      <Button
         onclick={sendMessage}
         disabled={!$canSend}
         class="send-button bits-btn bits-btn"
@@ -380,17 +358,14 @@ https://svelte.dev/e/js_parse_error -->
         {:else}
           Send
         {/if}
-
-      <Button 
+      <Button
         onclick={clearChat}
         variant="ghost"
         size="sm"
         class="clear-button bits-btn bits-btn"
       >
 Clear
-
     </div>
-    
     {#if $isStreaming}
       <div class="processing-status">
         <div class="processing-indicator">
@@ -400,9 +375,8 @@ Clear
     {/if}
   </div>
 </div>
-
 <style>
-  .ssr-qlora-chat-interface {;
+  .ssr-qlora-chat-interface {
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -412,55 +386,46 @@ Clear
     color: #e0e6ed;
     font-family: 'Courier New', monospace;
   }
-
   .system-status-bar {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 0.5rem 1rem;
     background: rgba(0, 0, 0, 0.3);
     border-bottom: 2px solid #0f3460;
     font-size: 0.8rem;
   }
-
   .status-indicators span {
     margin-right: 0.5rem;
     font-size: 1rem;
   }
-
   .user-info {
     display: flex;
     gap: 1rem;
     font-size: 0.75rem;
     opacity: 0.8;
   }
-
   .domain-expertise {
     color: #64ffda;
     font-weight: bold;
   }
-
   .chat-container {
     flex: 1;
     overflow-y: auto;
     padding: 1rem;
     scroll-behavior: smooth;
   }
-
   .message {
     margin-bottom: 1.5rem;
     animation: messageSlideIn 0.3s ease-out;
   }
-
   .message-user {
     align-self: flex-end;
     text-align: right;
   }
-
   .message-assistant {
     align-self: flex-start;
   }
-
   .message-content {
     position: relative;
     background: rgba(15, 52, 96, 0.6);
@@ -469,97 +434,81 @@ Clear
     border: 1px solid #0f3460;
     max-width: 80%;
   }
-
   .message-user .message-content {
     background: rgba(100, 255, 218, 0.1);
     border-color: #64ffda;
     margin-left: auto;
   }
-
   .message-text {
     line-height: 1.5;
     word-wrap: break-word;
   }
-
   .typing-indicator {
     animation: blink 1s infinite;
     color: #64ffda;
   }
-
   .message-metadata {
     display: flex;
     gap: 0.5rem;
     margin-top: 0.5rem;
     font-size: 0.7rem;
   }
-
   .source-badge {
     padding: 0.2rem 0.4rem;
     border-radius: 4px;
     font-weight: bold;
     text-transform: uppercase;
   }
-
   .source-nes_memory { background: #ff6b6b; }
   .source-gpu_cache { background: #4ecdc4; }
   .source-qlora { background: #45b7d1; }
-
   .instant-badge {
     color: #ffd93d;
     font-weight: bold;
   }
-
   .similarity-badge {
     background: rgba(100, 255, 218, 0.2);
     color: #64ffda;
     padding: 0.2rem 0.4rem;
     border-radius: 4px;
   }
-
   .feedback-buttons {
     display: flex;
     gap: 0.5rem;
     margin-top: 0.5rem;
   }
-
   .feedback-btn {
     background: none;
     border: none;
     font-size: 1rem;
     cursor: pointer;
     opacity: 0.6;
-    transition: opacity 0.2s;
+    transition: opacity 0.2;
   }
-
   .feedback-btn:hover {
     opacity: 1;
   }
-
   .neural-sprite-container {
     margin-top: 0.5rem;
     height: 100px;
     border-radius: 4px;
     overflow: hidden;
   }
-
   .message-timestamp {
     font-size: 0.6rem;
     opacity: 0.5;
     margin-top: 0.5rem;
   }
-
   .chat-input-area {
     padding: 1rem;
     background: rgba(0, 0, 0, 0.3);
     border-top: 2px solid #0f3460;
   }
-
   .input-container {
     display: flex;
     gap: 0.5rem;
     align-items: center;
   }
-
   .message-input {
     flex: 1;
     padding: 0.75rem;
@@ -569,17 +518,14 @@ Clear
     color: #e0e6ed;
     font-family: inherit;
   }
-
   .message-input:focus {
     outline: none;
     border-color: #64ffda;
     box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.2);
   }
-
   .send-button, .clear-button {
     min-width: 80px;
   }
-
   .loading-spinner {
     width: 16px;
     height: 16px;
@@ -588,18 +534,15 @@ Clear
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-
   .processing-status {
     margin-top: 0.5rem;
     text-align: center;
     font-size: 0.8rem;
     opacity: 0.7;
   }
-
   .processing-indicator {
     animation: pulse 2s infinite;
   }
-
   /* Animations */
   @keyframes messageSlideIn {
     from {
@@ -611,27 +554,22 @@ Clear
       transform: translateY(0);
     }
   }
-
   @keyframes blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
   }
-
   @keyframes spin {
     to { transform: rotate(360deg); }
   }
-
   @keyframes pulse {
     0%, 100% { opacity: 0.7; }
     50% { opacity: 1; }
   }
-
   /* Responsive design */
   @media (max-width: 768px) {
     .message-content {
       max-width: 90%;
     }
-    
     .system-status-bar {
       flex-direction: column;
       gap: 0.5rem;

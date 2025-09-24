@@ -1,10 +1,8 @@
 import type { RequestHandler } from './$types.js'
-
 /*
  * Upload Completion Webhook - MinIO → Ingestion Pipeline Trigger
  * Triggers document processing workflow after successful upload
  */
-
 import { json } from '@sveltejs/kit'
 import { redisService } from '$lib/server/redis-service'
 import { minioService } from '$lib/server/storage/minio-service'
@@ -13,7 +11,6 @@ import { evidence, documents } from '$lib/db/schema'
 import crypto from 'crypto'
 import { URL } from 'url'
 }
-
 export interface WebhookEvent {
   eventName: string
   bucket: string
@@ -22,9 +19,8 @@ export interface WebhookEvent {
   contentType: string
   uploadId?: string
   caseId?: string
-  metadata?: Record<string, any>
+  metadata?: { [key: string]: any }
 }
-
 export interface IngestionJob {
   id: string
   uploadId: string
@@ -35,11 +31,10 @@ export interface IngestionJob {
   contentLength: number
   caseId?: string
   evidenceType?: string
-  status: 'queued' | 'processing' | 'completed' | 'failed'
+  status: 'queued' | 'processing' | 'completed' | 'failed',
   createdAt: string
-  metadata?: Record<string, any>
+  metadata?: { [key: string]: any }
 }
-
 // Local helper to safely parse values that may be strings or already-parsed objects
 function parseMaybeString<T = any>(val: unknown): T {
   if (typeof val === 'string') {
@@ -51,43 +46,36 @@ function parseMaybeString<T = any>(val: unknown): T {
   }
   return (val as T)
 }
-
 // POST /api/v1/upload/webhook - Handle MinIO upload completion
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   try {
     console.log('📥 POST /api/v1/upload/webhook - Processing upload completion')
-
     const webhookEvent: WebhookEvent = await request.json()
-
     // Validate webhook event
     if (!webhookEvent.bucket || !webhookEvent.objectName) {
       return json({
-          success: false,
+          success: false
           error: 'Invalid webhook payload'
         },)
         { status: 400 }
       )
     }
-
     console.log(
       `📋 Webhook received: ${webhookEvent.eventName} - ${webhookEvent.bucket}/${webhookEvent.objectName}`
     )
-
     // Only process object creation events
     if (
       webhookEvent.eventName !== 's3:ObjectCreated:Put' &&
       webhookEvent.eventName !== 's3:ObjectCreated:Post'
     ) {
       return json({
-        success: true,
+        success: true
         message: 'Event ignored - not an object creation event'
       })
     }
-
     // Extract upload metadata from object name or Redis
     let uploadMetadata = null
     let uploadId = webhookEvent.uploadId
-
     // Try to extract upload ID from object name if not provided
     if (!uploadId) {
       const pathParts = webhookEvent.objectName.split('/')
@@ -97,7 +85,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       for (const key of keys) {
         const data = await redisService.get(key)
         if (data) {
-          const metadata = parseMaybeString<Record<string, any>(data)
+          const metadata = parseMaybeString<{ [key: string]: any }(data)
           if (metadata?.objectName === webhookEvent.objectName) {
             uploadId = metadata.uploadId
             uploadMetadata = metadata
@@ -110,10 +98,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       const uploadKey = `upload:${uploadId}`
       const data = await redisService.get(uploadKey)
       if (data) {
-        uploadMetadata = parseMaybeString<Record<string, any>(data)
+        uploadMetadata = parseMaybeString<{ [key: string]: any }(data)
       }
     }
-
     if (!uploadMetadata) {
       console.warn(`⚠️ No upload metadata found for ${webhookEvent.objectName}`)
       uploadMetadata = {
@@ -125,11 +112,10 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         status: 'processing'
       }
     }
-
     // Create ingestion job
     const jobId = `job_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     const ingestionJob: IngestionJob = {
-      id: jobId,
+      id: jobId
       uploadId: uploadId || crypto.randomUUID(),
       bucket: webhookEvent.bucket,
       objectName: webhookEvent.objectName,
@@ -146,14 +132,11 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         webhookEvent: webhookEvent.eventName
       }
     }
-
     // Store job in Redis for tracking
     const jobKey = `ingestion:${jobId}`
     await (redisService as any).setex(jobKey, 86400, JSON.stringify(ingestionJob); // keep cast: setex not on typed interface
-
     // Add to ingestion queue
     await (redisService as any).lpush('ingestion:queue', JSON.stringify(ingestionJob)
-
     // Update upload status if we have the upload metadata
     if (uploadId && uploadMetadata) {
       const uploadKey = `upload:${uploadId}`
@@ -162,7 +145,6 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       uploadMetadata.webhookReceivedAt = new Date().toISOString()
       await (redisService as any).setex(uploadKey, 3600, JSON.stringify(uploadMetadata)
     }
-
     // If this is a case-related upload, create evidence entry
     if (uploadMetadata.caseId) {
       try {
@@ -181,25 +163,22 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
             metadata: {
               bucket: webhookEvent.bucket,
               objectName: webhookEvent.objectName,
-              ingestionJobId: jobId,
+              ingestionJobId: jobId
               uploadId: uploadId
             }
           })
           .returning()
-
         // Update job with evidence ID
         ingestionJob.metadata = {
           ...ingestionJob.metadata,
           evidenceId: evidenceEntry.id
         }
         await (redisService as any).setex(jobKey, 86400, JSON.stringify(ingestionJob)
-
         console.log(`📋 Evidence entry created: ${evidenceEntry.id}`)
       } catch (dbError) {
         console.error('❌ Failed to create evidence entry:', dbError)
       }
     }
-
     // Publish events
     await (redisService as any).publish(
       'upload:completed',
@@ -213,7 +192,6 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         timestamp: Date.now()
       })
     )
-
     await (redisService as any).publish(
       'ingestion:job_created',
       JSON.stringify({
@@ -224,9 +202,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         timestamp: Date.now()
       })
     )
-
     const response = {
-      success: true,
+      success: true
       data: {
         jobId,
         uploadId,
@@ -241,14 +218,13 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         webhookEvent: webhookEvent.eventName
       }
     }
-
     console.log(`✅ Ingestion job created: ${jobId} for ${uploadMetadata.fileName}`)
     return json(response)
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error('Unknown error')
     console.error('❌ POST /api/v1/upload/webhook error:', err)
     return json({
-        success: false,
+        success: false
         error: err.message
       },)
       { status: 500 }
@@ -259,17 +235,13 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 export const GET: RequestHandler = async ({ url, getClientAddress }) => {
   try {
     console.log('📋 GET /api/v1/upload/webhook/jobs - Listing ingestion jobs')
-
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 100)
     const status = url.searchParams.get('status')
     const caseId = url.searchParams.get('caseId')
-
     // Get jobs from queue and completed jobs (defensive casts)
     const queuedJobs = await (redisService as any).lrange('ingestion:queue', 0, limit - 1)
     const allJobKeys = await redisService.keys('ingestion:*')
-
     const jobs: any[] = []
-
     // Add queued jobs
     for (const jobData of queuedJobs || []) {
       try {
@@ -281,11 +253,9 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         console.warn('Failed to parse queued job:', parseError)
       }
     }
-
     // Add stored jobs (completed, failed, etc.)
     for (const jobKey of (allJobKeys || []).filter((k: string) => k.startsWith('ingestion:job_'))) {
       if (jobs.length >= limit) break
-
       try {
               const jobData = await redisService.get(jobKey)
         if (jobData) {
@@ -301,12 +271,10 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         console.warn('Failed to parse stored job:', parseError)
       }
     }
-
     // Sort by creation time (newest first)
     jobs.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-
     const response = {
-      success: true,
+      success: true
       data: {
         jobs: jobs.slice(0, limit),
         count: jobs.length,
@@ -317,14 +285,13 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         clientAddress: getClientAddress()
       }
     }
-
     console.log(`✅ Retrieved ${jobs.length} ingestion jobs`)
     return json(response)
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error('Unknown error')
     console.error('❌ GET /api/v1/upload/webhook/jobs error:', err)
     return json({
-        success: false,
+        success: false
         error: err.message
       },)
       { status: 500 }

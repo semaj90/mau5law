@@ -4,18 +4,13 @@ import { caseActivities, cases, evidence } from "$lib/server/db/index"
 import { eq } from "drizzle-orm"
 import { QdrantClient } from "@qdrant/js-client-rest"
 import type { RequestHandler } from './$types.js'
-
-
 // Environment variables fallback
 const env = process.env || {}
-
 const QDRANT_URL = env.QDRANT_URL || "http://localhost:6333"
 const NLP_SERVICE_URL = env.LLM_SERVICE_URL || "http://localhost:8000"
 const OPENAI_API_KEY = env.OPENAI_API_KEY
 const GEMINI_API_KEY = env.GEMINI_API_KEY; // For future use
-
 const qdrantClient = new QdrantClient({ url: QDRANT_URL })
-
 export const POST: RequestHandler = async ({ params, locals, request }) => {
   if (!locals.user) {
     return json({ error: "Not authenticated" }, { status: 401 })
@@ -29,11 +24,9 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
     enableMultiLLM,
     complexityLevel = 3
   } = await request.json()
-
   if (!queryText) {
     return json({ error: "Query text is required" }, { status: 400 })
   }
-
   try {
     // --- RAG: RETRIEVAL ---
     const currentCaseResults = await db
@@ -44,16 +37,13 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
     if (!currentCaseResults.length) {
       return json({ error: "Case not found" }, { status: 404 })
     }
-
     const currentCase = currentCaseResults[0]
-
     const recentActivities = await db
       .select()
       .from(caseActivities)
       .where(eq(caseActivities.caseId, caseId)
       .orderBy((activities) => activities.createdAt)
       .limit(5)
-
     // Get recent evidence files
     const recentEvidence = await db
       .select()
@@ -61,49 +51,43 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
       .where(eq(evidence.caseId, caseId)
       .orderBy((evidenceTable) => evidenceTable.uploadedAt)
       .limit(10)
-
     const embeddingResponse = await fetch(`${NLP_SERVICE_URL}/embed`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text: queryText })
     })
-
     if (!embeddingResponse.ok) {
       throw new Error("Failed to get embedding from NLP service")
     }
     const queryEmbedding = (await embeddingResponse.json()).embedding
-
     // Retrieve from two Qdrant collections in parallel
     const [qdrantFragmentResults, qdrantEvidenceResults] =
       await Promise.allSettled([
         qdrantClient.search("prosecutor_text_fragments", {
-          vector: queryEmbedding,
+          vector: queryEmbedding
           limit: 3,
           filter: { must: [{ key: "caseId", match: { value: caseId } }] },
           with_payload: true
         }),
         qdrantClient.search("prosecutor_evidence", {
-          vector: queryEmbedding,
+          vector: queryEmbedding
           limit: 3,
           filter: { must: [{ key: "caseId", match: { value: caseId } }] },
           with_payload: true
         })
       ])
-
     const relevantFragments =
       qdrantFragmentResults.status === "fulfilled"
         ? qdrantFragmentResults.value
             .map((hit) => hit.payload?.content)
             .join("\n\n")
         : ""
-
     const relevantEvidenceSummaries =
       qdrantEvidenceResults.status === "fulfilled"
         ? qdrantEvidenceResults.value
             .map((hit) => hit.payload?.aiSummary)
             .join("\n\n")
         : ""
-
     // --- RAG: AUGMENTATION ---
     const ragContext = `
             Case Title: ${currentCase.title}
@@ -113,7 +97,6 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
             Relevant Case Fragments: ${relevantFragments || "None"}
             Relevant Evidence Summaries: ${relevantEvidenceSummaries || "None"}
         `.trim()
-
     const basePrompt = `
             Analyze the following query in the context of a legal case. Provide actionable insights and recommendations.
             CONTEXT:
@@ -123,7 +106,6 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
             USER QUERY: "${queryText}"
             ANALYSIS:
         `.trim()
-
     // Define a GBNF grammar to force the local LLM to return a specific JSON structure.
     // This grammar defines an object with a "summary" (string) and "recommendations" (array of strings).
     const jsonGrammar = String.raw`
@@ -138,15 +120,13 @@ string ::= "\"" (
 number ::= ("-")? ([0-9] | [1-9] [0-9]*) ("." [0-9]+)? ([eE] [-+]? [0-9]+)?
 ws ::= ([ \t\n]*)
 `.trim()
-
     // --- MULTI-LLM INFERENCE ---
     const promises: Promise<any>[] = []
-
     // 1. Local LLM (The Firm's AI)
     promises.push(fetch(`${NLP_SERVICE_URL}/generate-with-local-llm`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           prompt:
             basePrompt +
             '\n\nReturn your analysis as a valid JSON object with "summary" and "recommendations" keys.',
@@ -157,7 +137,6 @@ ws ::= ([ \t\n]*)
         res.json().then((data) => ({ source: "firm_ai", data, ok: res.ok })
       )
     )
-
     // 2. OpenAI (if enabled and key exists)
     if (enableMultiLLM && OPENAI_API_KEY) {
       promises.push(fetch("https://api.openai.com/v1/chat/completions", {
@@ -166,7 +145,7 @@ ws ::= ([ \t\n]*)
             "Content-Type": "application/json",
             Authorization: `Bearer ${OPENAI_API_KEY}`
           },
-          body: JSON.stringify({
+          body: JSON.stringify({,
             model: "gpt-3.5-turbo",
             messages: [{ role: "user", content: basePrompt }],
             max_tokens: 512
@@ -177,9 +156,8 @@ ws ::= ([ \t\n]*)
       )
     }
     const settledResults = await Promise.allSettled(promises)
-
     // --- SYNTHESIS & RESPONSE ---
-    const analysisResults: Record<string, any> = {}
+    const analysisResults: { [key: string]: any } = {}
     settledResults.forEach((result) => {
       if ((result as { status?: any; value?: any; reason?: any }).status === "fulfilled" && (result as { status?: any; value?: any; reason?: any }).value.ok) {
         const { source, data } = (result as { status?: any; value?: any; reason?: any }).value
@@ -188,7 +166,7 @@ ws ::= ([ \t\n]*)
             // The output should be valid JSON because of the grammar
             const parsedResponse = JSON.parse((data as { response?: any; choices?: any; detail?: any }).response)
             analysisResults.firm_ai = {
-              output: parsedResponse,
+              output: parsedResponse
               source: "Local LLM (JSON)"
             }
           } catch (e: any) {
@@ -217,7 +195,6 @@ ws ::= ([ \t\n]*)
         console.error("Fetch failed:", (result as { status?: any; value?: any; reason?: any }).reason)
       }
     })
-
     return json({ success: true, analysisResults })
   } catch (error: any) {
     console.error("Error in deep analysis endpoint:", error)

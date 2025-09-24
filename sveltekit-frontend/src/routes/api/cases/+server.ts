@@ -5,12 +5,9 @@ import type { Case } from '$lib/server/db/schema-postgres'
 import { createClient } from 'redis'
 import type { RequestHandler } from './$types.js'
 import { URL } from "url"
-
-
 // Redis client for worker communication
 let redisClient: ReturnType<typeof createClient> | null = null
 let redisUnavailable = false
-
 async function getRedisClient(): Promise<any> {
   if (redisUnavailable) return null
   if (!redisClient) {
@@ -28,7 +25,6 @@ async function getRedisClient(): Promise<any> {
   }
   return redisClient
 }
-
 // Worker trigger function
 async function triggerWorkerProcessing(caseId: string, options: {
   priority: string
@@ -40,16 +36,15 @@ async function triggerWorkerProcessing(caseId: string, options: {
   const redis = await getRedisClient()
   if (!redis) return; // silently skip if unavailable in dev
   const correlationId = `case-${caseId}-${Date.now()}`
-
   // Create Redis stream event for worker
   const eventData = {
-    id: correlationId,
+    id: correlationId
     type: 'case_created',
     action: 'process',
-    caseId: caseId,
+    caseId: caseId
     evidenceId: '',
     documentId: '',
-    metadata: JSON.stringify({
+    metadata: JSON.stringify({,
       priority: options.priority,
       caseType: options.caseType,
       userId: options.userId,
@@ -60,14 +55,11 @@ async function triggerWorkerProcessing(caseId: string, options: {
     retry: '0',
     timestamp: Date.now().toString()
   }
-
   // Add to Redis stream for worker consumption
   const streamName = 'autotag:requests'
   await redis.xAdd(streamName, '*', eventData)
-
   console.log(`📡 Worker event sent: ${streamName} -> ${correlationId}`)
 }
-
 // Enhanced case schemas with comprehensive validation
 const createCaseSchema = z.object({
   title: z.string().min(1, "Case title is required").max(500, "Case title too long"),
@@ -78,13 +70,12 @@ const createCaseSchema = z.object({
   location: z.string().optional(),
   jurisdiction: z.string().optional()
 })
-
 const searchCasesSchema = z.object({
   query: z.string().optional(),
   status: z.array(z.string()).optional(),
   priority: z.array(z.string()).optional(),
   assignedTo: z.string().optional(),
-  dateRange: z.object({
+  dateRange: z.object({,
     start: z.string().datetime().transform(str => new Date(str)),
     end: z.string().datetime().transform(str => new Date(str)
   }).optional(),
@@ -92,7 +83,6 @@ const searchCasesSchema = z.object({
   limit: z.number().min(1).max(100).default(50),
   useVectorSearch: z.boolean().default(true)
 })
-
 // GET - List cases with advanced search and filtering
 export const GET: RequestHandler = async (event: any) => {
   return withApiHandler(async ({ url, locals }) => {
@@ -106,42 +96,36 @@ export const GET: RequestHandler = async (event: any) => {
       }
       throw CommonErrors.Unauthorized('User authentication required')
     }
-
     // Parse and validate query parameters
     const searchParams = {
       query: url.searchParams.get('query') || undefined,
       status: url.searchParams.get('status')?.split(',').filter(Boolean) || undefined,
       priority: url.searchParams.get('priority')?.split(',').filter(Boolean) || undefined,
       assignedTo: url.searchParams.get('assignedTo') || undefined,
-      dateRange: url.searchParams.get('dateStart') && url.searchParams.get('dateEnd') ? {
+      dateRange: url.searchParams.get('dateStart') && url.searchParams.get('dateEnd') ? {,
         start: new Date(url.searchParams.get('dateStart')!),
         end: new Date(url.searchParams.get('dateEnd')!)
-      } : undefined,
+      } : undefined
       page: parseInt(url.searchParams.get('page') || '1'),
       limit: Math.min(parseInt(url.searchParams.get('limit') || '50'), 100),
       useVectorSearch: url.searchParams.get('useVectorSearch') !== 'false'
     }
-
     // Validate search parameters
     try {
       const validatedParams = searchCasesSchema.parse(searchParams)
-
       // Calculate offset from page
       const offset = (validatedParams.page - 1) * validatedParams.limit
-
       // Perform case search
       const { cases: caseResults, total } = await CaseOperations.search({
         ...validatedParams,
         offset
       })
-
       // Create pagination info
       const pagination = createPagination(validatedParams.page, validatedParams.limit, total)
-
       return {
-        cases: caseResults,
+        cases: caseResults
         pagination,
-        search: validatedParams.query ? {
+        search: validatedParams.query ? {,
           term: validatedParams.query,
           resultsCount: caseResults.length,
           vectorSearchUsed: validatedParams.useVectorSearch
@@ -155,7 +139,6 @@ export const GET: RequestHandler = async (event: any) => {
     }
   }, event)
 }
-
 // POST - Create new case
 export const POST: RequestHandler = async (event: any) => {
   return withApiHandler(async ({ request, locals }) => {
@@ -164,19 +147,15 @@ export const POST: RequestHandler = async (event: any) => {
     if (!user) {
       throw CommonErrors.Unauthorized('User authentication required')
     }
-
     // Parse and validate request body
     const caseData = await parseRequestBody(request, createCaseSchema)
-
     try {
       // Create case using enhanced operations
       const newCase = await CaseOperations.create({
         ...caseData,
         createdBy: user.id
       })
-
       console.log(`✅ Case created successfully: ${newCase.caseNumber} by user ${user.id}`)
-
       // Trigger PostgreSQL-first worker for auto-tagging and processing
       try {
         await triggerWorkerProcessing(newCase.id, {
@@ -197,12 +176,11 @@ export const POST: RequestHandler = async (event: any) => {
         console.warn(`⚠️ Worker trigger failed for case ${newCase.id}:`, workerError)
         // Don't fail the case creation if worker trigger fails
       }
-
       return {
-        case: newCase,
+        case: newCase
         message: `Case ${newCase.caseNumber} created successfully`,
         metadata: {
-          workerTriggered: true,
+          workerTriggered: true
           timestamp: new Date().toISOString()
         }
       }
@@ -214,9 +192,7 @@ export const POST: RequestHandler = async (event: any) => {
     }
   }, event)
 }
-
 // Additional endpoints
-
 // PUT - Update existing case
 export const PUT: RequestHandler = async (event: any) => {
   return withApiHandler(async ({ request, url, locals }) => {
@@ -224,21 +200,17 @@ export const PUT: RequestHandler = async (event: any) => {
     if (!user) {
       throw CommonErrors.Unauthorized('User authentication required')
     }
-
     const caseId = url.searchParams.get('id')
     if (!caseId) {
       throw CommonErrors.BadRequest('Case ID is required')
     }
-
     // Parse and validate update data
     const updateSchema = createCaseSchema.partial().omit({ status: true })
     const updates = await parseRequestBody(request, updateSchema)
-
     try {
       const updatedCase = await CaseOperations.update(caseId, updates, user.id)
-
       return {
-        case: updatedCase,
+        case: updatedCase
         message: 'Case updated successfully'
       }
     } catch (error: any) {
@@ -249,7 +221,6 @@ export const PUT: RequestHandler = async (event: any) => {
     }
   }, event)
 }
-
 // OPTIONS - CORS preflight
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {

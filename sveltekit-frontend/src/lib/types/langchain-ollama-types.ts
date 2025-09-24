@@ -3,8 +3,7 @@
  * Comprehensive TypeScript Types for LangChain-Ollama Integration
  * Production-ready types for legal AI system with advanced features
  */
-
-// Core AI Model Types;
+// Core AI Model Types
 export interface AIModel {
   id: string;
   name: string;
@@ -15,7 +14,6 @@ export interface AIModel {
   capabilities: ModelCapabilities;
   metadata: ModelMetadata;
 }
-
 export interface ModelParameters {
   temperature: number;
   topP: number;
@@ -36,7 +34,6 @@ export interface ModelParameters {
   useMlock?: boolean;
   numThread?: number;
 }
-
 export interface ModelCapabilities {
   supportsStreaming: boolean;
   supportsChat: boolean;
@@ -47,7 +44,6 @@ export interface ModelCapabilities {
   languagesSupported: string[];
   specializations: string[];
 }
-
 export interface ModelMetadata {
   size: number;
   parametersCount: string;
@@ -59,21 +55,18 @@ export interface ModelMetadata {
   updated: string;
   tags: string[];
 }
-
-// Embedding Types;
+// Embedding Types
 export interface EmbeddingModel extends AIModel {
   dimensions: number;
   normalization: boolean;
   similarity: 'cosine' | 'euclidean' | 'dot_product';
   batchSize: number;
 }
-
 export interface EmbeddingVector {
   id: string;
   vector: number[];
   metadata: EmbeddingMetadata;
 }
-
 export interface EmbeddingMetadata {
   source: string;
   sourceType: 'document' | 'chunk' | 'query' | 'knowledge_base';
@@ -85,7 +78,6 @@ export interface EmbeddingMetadata {
   tags: string[];
   [key: string]: unknown;
 }
-
 export interface SimilarityResult {
   id: string;
   score: number;
@@ -93,8 +85,7 @@ export interface SimilarityResult {
   content: string;
   vector?: number[];
 }
-
-// Vector Database Types;
+// Vector Database Types
 export interface VectorDatabase {
   type: 'pgvector' | 'qdrant' | 'pinecone' | 'weaviate' | 'chroma';
   connection: VectorDBConnection;
@@ -102,7 +93,6 @@ export interface VectorDatabase {
   indices: VectorIndex[];
   config: VectorDBConfig;
 }
-
 export interface VectorDBConnection {
   host: string;
   port: number;
@@ -113,33 +103,29 @@ export interface VectorDBConnection {
   poolSize?: number;
   timeout?: number;
 }
-
 export interface VectorCollection {
   name: string;
   dimensions: number;
   metric: 'cosine' | 'euclidean' | 'dot_product';
   vectorCount: number;
   indexType: 'ivfflat' | 'hnsw' | 'exact';
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
   created: string;
   updated: string;
 }
-
 export interface VectorIndex {
   name: string;
   collection: string;
   type: 'ivfflat' | 'hnsw' | 'exact';
-  parameters: Record<string, any>;
+  parameters: { [key: string]: any };
   performance: IndexPerformance;
 }
-
 export interface IndexPerformance {
   queryTime: number;
   accuracy: number;
   memoryUsage: number;
   buildTime: number;
 }
-
 export interface VectorDBConfig {
   maxConnections: number;
   connectionTimeout: number;
@@ -150,8 +136,7 @@ export interface VectorDBConfig {
   indexingStrategy: 'eager' | 'lazy' | 'batch';
   replicationFactor: number;
 }
-
-// LangChain Integration Types;
+// LangChain Integration Types
 export interface LangChainChain {
   id: string;
   name: string;
@@ -162,7 +147,6 @@ export interface LangChainChain {
   tools: ChainTool[];
   status: ChainStatus;
 }
-
 export type ChainType =
   | 'conversation'
   | 'qa'
@@ -173,17 +157,15 @@ export type ChainType =
   | 'workflow'
   | 'custom';
 }
-
 export interface ChainComponent {
   id: string;
   type: 'llm' | 'prompt' | 'memory' | 'tool' | 'parser' | 'retriever';
   name: string;
-  config: Record<string, any>;
+  config: { [key: string]: any };
   inputs: string[];
   outputs: string[];
   dependencies: string[];
 }
-
 export interface ChainConfig {
   temperature: number;
   maxTokens: number;
@@ -194,7 +176,6 @@ export interface ChainConfig {
   timeout: number;
   retryOptions: RetryOptions;
 }
-
 export interface ChainMemory {
   type: 'buffer' | 'summary' | 'vector' | 'knowledge_graph' | 'entity';
   maxTokens: number;
@@ -204,9 +185,8 @@ export interface ChainMemory {
   memoryKey: string;
   aiPrefix: string;
   humanPrefix: string;
-  config: Record<string, any>;
+  config: { [key: string]: any };
 }
-
 export interface ChainTool {
   name: string;
   description: string;
@@ -216,13 +196,11 @@ export interface ChainTool {
   timeout: number;
   retries: number;
 }
-
 export interface ToolParameters {
   type: 'object';
   properties: Record<string, ParameterProperty>;
   required: string[];
 }
-
 export interface ParameterProperty {
   type: string;
   description: string;
@@ -232,18 +210,15 @@ export interface ParameterProperty {
   maximum?: number;
   pattern?: string;
 }
-
 export type ChainStatus = 'idle' | 'running' | 'completed' | 'error' | 'cancelled';
 }
-
 export interface RetryOptions {
   maxRetries: number;
   backoffMultiplier: number;
   maxBackoffTime: number;
   retryableErrors: string[];
 }
-
-// Legal AI Specific Types;
+// Legal AI Specific Types
 export interface LegalDocument {
   id: string;
   title: string;
@@ -255,7 +230,6 @@ export interface LegalDocument {
   analysis: LegalAnalysis;
   relationships: DocumentRelationship[];
 }
-
 export type DocumentType =
   | 'contract'
   | 'case_law'
@@ -268,7 +242,6 @@ export type DocumentType =
   | 'transcript'
   | 'report';
 }
-
 export interface DocumentClassification {
   confidentiality: 'public' | 'confidential' | 'attorney_client' | 'work_product';
   sensitivity: 'low' | 'medium' | 'high' | 'critical';
@@ -276,7 +249,6 @@ export interface DocumentClassification {
   restrictions: string[];
   retentionPeriod: number;
 }
-
 export interface LegalDocumentMetadata {
   jurisdiction: string;
   court?: string;
@@ -290,14 +262,12 @@ export interface LegalDocumentMetadata {
   statutes: StatuteReference[];
   rules: RuleReference[];
 }
-
 export interface Party {
   name: string;
   role: 'plaintiff' | 'defendant' | 'petitioner' | 'respondent' | 'appellant' | 'appellee' | 'intervenor';
   type: 'individual' | 'corporation' | 'government' | 'organization';
   representation: Attorney[];
 }
-
 export interface Attorney {
   name: string;
   barNumber: string;
@@ -305,13 +275,11 @@ export interface Attorney {
   role: 'lead' | 'associate' | 'co-counsel' | 'pro_se';
   contact: ContactInfo;
 }
-
 export interface ContactInfo {
   email: string;
   phone: string;
   address: Address;
 }
-
 export interface Address {
   street: string;
   city: string;
@@ -319,7 +287,6 @@ export interface Address {
   zipCode: string;
   country: string;
 }
-
 export interface ImportantDates {
   filed?: string;
   served?: string;
@@ -328,7 +295,6 @@ export interface ImportantDates {
   hearings: Hearing[];
   statutes_of_limitations: StatuteOfLimitation[];
 }
-
 export interface Deadline {
   type: string;
   date: string;
@@ -336,7 +302,6 @@ export interface Deadline {
   completed: boolean;
   priority: 'low' | 'medium' | 'high' | 'critical';
 }
-
 export interface Hearing {
   type: string;
   date: string;
@@ -346,14 +311,12 @@ export interface Hearing {
   purpose: string;
   status: 'scheduled' | 'completed' | 'cancelled' | 'postponed';
 }
-
 export interface StatuteOfLimitation {
   claim: string;
   deadline: string;
   remaining: number;
   status: 'active' | 'expired' | 'tolled';
 }
-
 export interface Citation {
   type: 'case' | 'statute' | 'regulation' | 'article' | 'book';
   citation: string;
@@ -364,7 +327,6 @@ export interface Citation {
   relevance: number;
   context: string;
 }
-
 export interface Precedent {
   case: string;
   citation: string;
@@ -377,7 +339,6 @@ export interface Precedent {
   distinguishable: boolean;
   notes: string;
 }
-
 export interface StatuteReference {
   title: string;
   section: string;
@@ -387,7 +348,6 @@ export interface StatuteReference {
   relevance: number;
   applicationNotes: string;
 }
-
 export interface RuleReference {
   type: 'civil' | 'criminal' | 'evidence' | 'appellate' | 'local';
   rule: string;
@@ -396,7 +356,6 @@ export interface RuleReference {
   relevance: number;
   applicationNotes: string;
 }
-
 export interface DocumentProcessing {
   status: ProcessingStatus;
   extractedText: string;
@@ -407,10 +366,8 @@ export interface DocumentProcessing {
   indexingStatus: IndexingStatus;
   errors: ProcessingError[];
 }
-
 export type ProcessingStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'retry';
 }
-
 export interface DocumentChunk {
   id: string;
   index: number;
@@ -422,7 +379,6 @@ export interface DocumentChunk {
   metadata: ChunkMetadata;
   embedding?: EmbeddingVector;
 }
-
 export interface ChunkMetadata {
   pageNumber?: number;
   section?: string;
@@ -432,16 +388,14 @@ export interface ChunkMetadata {
   namedEntities: NamedEntity[];
   relationships: ChunkRelationship[];
 }
-
 export interface NamedEntity {
   text: string;
   label: EntityLabel;
   confidence: number;
   startChar: number;
   endChar: number;
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
 }
-
 export type EntityLabel =
   | 'PERSON'
   | 'ORGANIZATION'
@@ -457,14 +411,12 @@ export type EntityLabel =
   | 'CONTRACT_TERM'
   | 'LEGAL_CONCEPT';
 }
-
 export interface ChunkRelationship {
   type: 'reference' | 'contradiction' | 'support' | 'elaboration' | 'example';
   targetChunkId: string;
   confidence: number;
   description: string;
 }
-
 export interface IndexingStatus {
   vectorized: boolean;
   indexed: boolean;
@@ -473,16 +425,14 @@ export interface IndexingStatus {
   version: number;
   indexType: string;
 }
-
 export interface ProcessingError {
   type: 'extraction' | 'parsing' | 'embedding' | 'indexing' | 'analysis';
   message: string;
   code: string;
   timestamp: string;
-  context: Record<string, any>;
+  context: { [key: string]: any };
   resolved: boolean;
 }
-
 export interface LegalAnalysis {
   summary: string;
   keyFindings: KeyFinding[];
@@ -496,7 +446,6 @@ export interface LegalAnalysis {
   lastAnalyzed: string;
   analyzer: string;
 }
-
 export interface KeyFinding {
   id: string;
   category: FindingCategory;
@@ -507,7 +456,6 @@ export interface KeyFinding {
   implications: string[];
   relatedFindings: string[];
 }
-
 export type FindingCategory =
   | 'fact'
   | 'legal_principle'
@@ -521,7 +469,6 @@ export type FindingCategory =
   | 'breach'
   | 'defense';
 }
-
 export interface EvidenceReference {
   documentId: string;
   chunkId?: string;
@@ -530,7 +477,6 @@ export interface EvidenceReference {
   relevance: number;
   credibility: number;
 }
-
 export interface LegalIssue {
   id: string;
   description: string;
@@ -543,7 +489,6 @@ export interface LegalIssue {
   precedents: Precedent[];
   counterarguments: Counterargument[];
 }
-
 export type IssueCategory =
   | 'constitutional'
   | 'contract'
@@ -558,7 +503,6 @@ export type IssueCategory =
   | 'environmental'
   | 'tax';
 }
-
 export interface ApplicableLaw {
   type: 'statute' | 'regulation' | 'case_law' | 'constitutional' | 'administrative';
   citation: string;
@@ -567,7 +511,6 @@ export interface ApplicableLaw {
   relevance: number;
   jurisdiction: string;
 }
-
 export interface LegalElement {
   name: string;
   description: string;
@@ -576,10 +519,8 @@ export interface LegalElement {
   analysis: string;
   strength: number;
 }
-
 export type IssueStrength = 'weak' | 'moderate' | 'strong' | 'very_strong';
 }
-
 export interface Counterargument {
   description: string;
   strength: number;
@@ -587,7 +528,6 @@ export interface Counterargument {
   precedents: Precedent[];
   evidence: EvidenceReference[];
 }
-
 export interface RiskAssessment {
   overall: RiskLevel;
   categories: RiskCategory[];
@@ -595,10 +535,8 @@ export interface RiskAssessment {
   contingencies: Contingency[];
   probabilityAnalysis: ProbabilityAnalysis;
 }
-
 export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
 }
-
 export interface RiskCategory {
   type: RiskType;
   level: RiskLevel;
@@ -608,7 +546,6 @@ export interface RiskCategory {
   factors: RiskFactor[];
   timeline: string;
 }
-
 export type RiskType =
   | 'liability'
   | 'financial'
@@ -618,7 +555,6 @@ export type RiskType =
   | 'strategic'
   | 'procedural';
 }
-
 export interface RiskFactor {
   name: string;
   impact: number;
@@ -626,7 +562,6 @@ export interface RiskFactor {
   description: string;
   mitigations: string[];
 }
-
 export interface MitigationStrategy {
   risk: string;
   strategy: string;
@@ -636,7 +571,6 @@ export interface MitigationStrategy {
   responsibility: string;
   success_metrics: string[];
 }
-
 export interface CostEstimate {
   low: number;
   high: number;
@@ -644,7 +578,6 @@ export interface CostEstimate {
   timeframe: string;
   assumptions: string[];
 }
-
 export interface Contingency {
   scenario: string;
   probability: number;
@@ -653,7 +586,6 @@ export interface Contingency {
   triggers: string[];
   resources: string[];
 }
-
 export interface ProbabilityAnalysis {
   winProbability: number;
   settlementProbability: number;
@@ -662,14 +594,12 @@ export interface ProbabilityAnalysis {
   methodology: string;
   confidence: number;
 }
-
 export interface ProbabilityFactor {
   factor: string;
   weight: number;
   impact: number;
   rationale: string;
 }
-
 export interface Recommendation {
   id: string;
   category: RecommendationCategory;
@@ -684,7 +614,6 @@ export interface Recommendation {
   benefits: string[];
   alternatives: Alternative[];
 }
-
 export type RecommendationCategory =
   | 'strategy'
   | 'discovery'
@@ -695,10 +624,8 @@ export type RecommendationCategory =
   | 'documentation'
   | 'expert_witness'
   | 'investigation';
-
 export type Priority = 'low' | 'medium' | 'high' | 'urgent' | 'critical';
 }
-
 export interface ActionStep {
   order: number;
   description: string;
@@ -708,10 +635,8 @@ export interface ActionStep {
   deliverables: string[];
   status: ActionStatus;
 }
-
 export type ActionStatus = 'not_started' | 'in_progress' | 'completed' | 'blocked' | 'cancelled';
 }
-
 export interface RequiredResource {
   type: 'person' | 'document' | 'expert' | 'technology' | 'funding';
   description: string;
@@ -719,7 +644,6 @@ export interface RequiredResource {
   availability: string;
   cost: CostEstimate;
 }
-
 export interface Alternative {
   description: string;
   pros: string[];
@@ -728,7 +652,6 @@ export interface Alternative {
   timeline: string;
   viability: number;
 }
-
 export interface PrecedentAnalysis {
   relevantCases: AnalyzedPrecedent[];
   trends: LegalTrend[];
@@ -736,7 +659,6 @@ export interface PrecedentAnalysis {
   evolutionAnalysis: EvolutionAnalysis;
   predictiveInsights: PredictiveInsight[];
 }
-
 export interface AnalyzedPrecedent extends Precedent {
   factualSimilarity: number;
   legalSimilarity: number;
@@ -747,7 +669,6 @@ export interface AnalyzedPrecedent extends Precedent {
   keyQuotes: KeyQuote[];
   distinguishingFactors: string[];
 }
-
 export interface KeyQuote {
   text: string;
   page: number;
@@ -755,7 +676,6 @@ export interface KeyQuote {
   relevance: number;
   legal_principle: string;
 }
-
 export interface LegalTrend {
   area: string;
   direction: 'favorable' | 'unfavorable' | 'neutral' | 'evolving';
@@ -764,7 +684,6 @@ export interface LegalTrend {
   supportingCases: string[];
   implications: string[];
 }
-
 export interface JurisdictionalDifference {
   jurisdiction1: string;
   jurisdiction2: string;
@@ -773,7 +692,6 @@ export interface JurisdictionalDifference {
   cases: string[];
   implications: string[];
 }
-
 export interface EvolutionAnalysis {
   timespan: string;
   changes: LegalChange[];
@@ -781,7 +699,6 @@ export interface EvolutionAnalysis {
   predictability: number;
   drivingFactors: string[];
 }
-
 export interface LegalChange {
   date: string;
   change: string;
@@ -789,10 +706,8 @@ export interface LegalChange {
   impact: number;
   cases: string[];
 }
-
 export type ChangeReason = 'legislation' | 'judicial_decision' | 'social_change' | 'technology' | 'economic';
 }
-
 export interface PredictiveInsight {
   prediction: string;
   confidence: number;
@@ -801,7 +716,6 @@ export interface PredictiveInsight {
   methodology: string;
   limitations: string[];
 }
-
 export interface AnalysisTimeline {
   date: string;
   event: string;
@@ -811,7 +725,6 @@ export interface AnalysisTimeline {
   related_documents: string[];
   legal_implications: string[];
 }
-
 export type TimelineCategory =
   | 'filing'
   | 'discovery'
@@ -823,7 +736,6 @@ export type TimelineCategory =
   | 'compliance'
   | 'deadline';
 }
-
 export interface DocumentRelationship {
   type: RelationshipType;
   targetDocumentId: string;
@@ -835,7 +747,6 @@ export interface DocumentRelationship {
   verifiedBy?: string;
   verifiedAt?: string;
 }
-
 export type RelationshipType =
   | 'amendment'
   | 'exhibits'
@@ -847,8 +758,7 @@ export type RelationshipType =
   | 'clarifies'
   | 'response_to'
   | 'related_matter';
-
-// System Performance Types;
+// System Performance Types
 export interface SystemMetrics {
   performance: PerformanceMetrics;
   resources: ResourceMetrics;
@@ -856,14 +766,12 @@ export interface SystemMetrics {
   usage: UsageMetrics;
   health: HealthMetrics;
 }
-
 export interface PerformanceMetrics {
   responseTime: TimeMetrics;
   throughput: ThroughputMetrics;
   latency: LatencyMetrics;
   efficiency: EfficiencyMetrics;
 }
-
 export interface TimeMetrics {
   avg: number;
   min: number;
@@ -873,14 +781,12 @@ export interface TimeMetrics {
   p99: number;
   unit: 'ms' | 's' | 'min';
 }
-
 export interface ThroughputMetrics {
   requestsPerSecond: number;
   tokensPerSecond: number;
   embeddingsPerSecond: number;
   documentsPerSecond: number;
 }
-
 export interface LatencyMetrics {
   network: number;
   processing: number;
@@ -888,14 +794,12 @@ export interface LatencyMetrics {
   ai_model: number;
   total: number;
 }
-
 export interface EfficiencyMetrics {
   cacheHitRate: number;
   resourceUtilization: number;
   tokenEfficiency: number;
   costPerRequest: number;
 }
-
 export interface ResourceMetrics {
   cpu: ResourceUsage;
   memory: ResourceUsage;
@@ -903,7 +807,6 @@ export interface ResourceMetrics {
   storage: StorageMetrics;
   network: NetworkMetrics;
 }
-
 export interface ResourceUsage {
   current: number;
   average: number;
@@ -911,7 +814,6 @@ export interface ResourceUsage {
   limit: number;
   unit: string;
 }
-
 export interface GPUMetrics extends ResourceUsage {
   temperature: number;
   powerUsage: number;
@@ -919,7 +821,6 @@ export interface GPUMetrics extends ResourceUsage {
   memoryBandwidth: number;
   clockSpeed: number;
 }
-
 export interface StorageMetrics {
   used: number;
   available: number;
@@ -928,7 +829,6 @@ export interface StorageMetrics {
   throughput: number;
   unit: string;
 }
-
 export interface NetworkMetrics {
   bandwidth: number;
   latency: number;
@@ -936,7 +836,6 @@ export interface NetworkMetrics {
   connections: number;
   throughput: number;
 }
-
 export interface ErrorMetrics {
   total: number;
   rate: number;
@@ -944,17 +843,15 @@ export interface ErrorMetrics {
   byService: Record<string, number>;
   recent: ErrorEvent[];
 }
-
 export interface ErrorEvent {
   timestamp: string;
   type: string;
   service: string;
   message: string;
   stack?: string;
-  context: Record<string, any>;
+  context: { [key: string]: any };
   resolved: boolean;
 }
-
 export interface UsageMetrics {
   activeUsers: number;
   sessions: number;
@@ -964,17 +861,14 @@ export interface UsageMetrics {
   storage: number;
   apiCalls: number;
 }
-
 export interface HealthMetrics {
   overall: HealthStatus;
   services: Record<string, ServiceHealth>;
   dependencies: Record<string, DependencyHealth>;
   alerts: Alert[];
 }
-
 export type HealthStatus = 'healthy' | 'degraded' | 'unhealthy' | 'critical';
 }
-
 export interface ServiceHealth {
   status: HealthStatus;
   uptime: number;
@@ -983,7 +877,6 @@ export interface ServiceHealth {
   lastCheck: string;
   issues: string[];
 }
-
 export interface DependencyHealth {
   name: string;
   status: HealthStatus;
@@ -992,7 +885,6 @@ export interface DependencyHealth {
   availability: number;
   lastCheck: string;
 }
-
 export interface Alert {
   id: string;
   severity: AlertSeverity;
@@ -1001,12 +893,10 @@ export interface Alert {
   timestamp: string;
   acknowledged: boolean;
   resolved: boolean;
-  details: Record<string, any>;
+  details: { [key: string]: any };
 }
-
 export type AlertSeverity = 'info' | 'warning' | 'error' | 'critical';
-
-// Configuration Types;
+// Configuration Types
 export interface SystemConfiguration {
   ai: AIConfiguration;
   database: DatabaseConfiguration;
@@ -1015,7 +905,6 @@ export interface SystemConfiguration {
   monitoring: MonitoringConfiguration;
   deployment: DeploymentConfiguration;
 }
-
 export interface AIConfiguration {
   defaultModel: string;
   models: Record<string, ModelConfiguration>;
@@ -1023,7 +912,6 @@ export interface AIConfiguration {
   langchain: LangChainConfiguration;
   performance: AIPerformanceConfiguration;
 }
-
 export interface ModelConfiguration {
   enabled: boolean;
   parameters: ModelParameters;
@@ -1032,7 +920,6 @@ export interface ModelConfiguration {
   caching: CachingPolicy;
   monitoring: MonitoringPolicy;
 }
-
 export interface EmbeddingConfiguration {
   defaultModel: string;
   batchSize: number;
@@ -1041,53 +928,46 @@ export interface EmbeddingConfiguration {
   normalization: boolean;
   caching: CachingPolicy;
 }
-
 export interface LangChainConfiguration {
   chains: Record<string, ChainConfiguration>;
   memory: MemoryConfiguration;
   tools: ToolConfiguration[];
   callbacks: CallbackConfiguration[];
 }
-
 export interface ChainConfiguration {
   enabled: boolean;
   model: string;
   prompt: string;
   memory: string;
   tools: string[];
-  config: Record<string, any>;
+  config: { [key: string]: any };
 }
-
 export interface MemoryConfiguration {
   type: string;
   maxTokens: number;
   persistence: boolean;
   compression: boolean;
-  config: Record<string, any>;
+  config: { [key: string]: any };
 }
-
 export interface ToolConfiguration {
   name: string;
   enabled: boolean;
-  config: Record<string, any>;
+  config: { [key: string]: any };
   permissions: string[];
   rateLimits: RateLimit[];
 }
-
 export interface CallbackConfiguration {
   name: string;
   enabled: boolean;
   events: string[];
-  config: Record<string, any>;
+  config: { [key: string]: any };
 }
-
 export interface AIPerformanceConfiguration {
   gpu: GPUConfiguration;
   cuda: CUDAConfiguration;
   optimization: OptimizationConfiguration;
   scaling: ScalingConfiguration;
 }
-
 export interface GPUConfiguration {
   enabled: boolean;
   deviceId: number;
@@ -1095,7 +975,6 @@ export interface GPUConfiguration {
   enableTensorCores: boolean;
   enableMixedPrecision: boolean;
 }
-
 export interface CUDAConfiguration {
   version: string;
   computeCapability: string;
@@ -1103,7 +982,6 @@ export interface CUDAConfiguration {
   enableCublas: boolean;
   optimizationLevel: number;
 }
-
 export interface OptimizationConfiguration {
   enableBatching: boolean;
   enableCaching: boolean;
@@ -1111,7 +989,6 @@ export interface OptimizationConfiguration {
   enablePruning: boolean;
   enableDistillation: boolean;
 }
-
 export interface ScalingConfiguration {
   autoScaling: boolean;
   minInstances: number;
@@ -1120,7 +997,6 @@ export interface ScalingConfiguration {
   scaleUpCooldown: number;
   scaleDownCooldown: number;
 }
-
 export interface DatabaseConfiguration {
   primary: DatabaseConnection;
   replicas: DatabaseConnection[];
@@ -1128,7 +1004,6 @@ export interface DatabaseConfiguration {
   caching: DatabaseCacheConfiguration;
   backup: BackupConfiguration;
 }
-
 export interface DatabaseConnection {
   type: 'postgresql' | 'mysql' | 'sqlite' | 'mongodb';
   host: string;
@@ -1140,7 +1015,6 @@ export interface DatabaseConnection {
   pool: PoolConfiguration;
   timeout: number;
 }
-
 export interface PoolConfiguration {
   min: number;
   max: number;
@@ -1148,7 +1022,6 @@ export interface PoolConfiguration {
   acquire: number;
   evict: number;
 }
-
 export interface VectorDBConfiguration {
   enabled: boolean;
   type: 'pgvector' | 'qdrant' | 'pinecone' | 'weaviate';
@@ -1156,7 +1029,6 @@ export interface VectorDBConfiguration {
   indexing: IndexingConfiguration;
   performance: VectorPerformanceConfiguration;
 }
-
 export interface IndexingConfiguration {
   strategy: 'eager' | 'lazy' | 'batch';
   batchSize: number;
@@ -1164,13 +1036,11 @@ export interface IndexingConfiguration {
   compression: boolean;
   quantization: QuantizationConfig;
 }
-
 export interface QuantizationConfig {
   enabled: boolean;
   bits: 8 | 16 | 32;
   method: 'scalar' | 'product' | 'binary';
 }
-
 export interface VectorPerformanceConfiguration {
   caching: boolean;
   prefetching: boolean;
@@ -1178,14 +1048,12 @@ export interface VectorPerformanceConfiguration {
   memoryMapping: boolean;
   approximation: ApproximationConfig;
 }
-
 export interface ApproximationConfig {
   enabled: boolean;
   algorithm: 'lsh' | 'pca' | 'ivf' | 'hnsw';
   accuracy: number;
   speed: number;
 }
-
 export interface DatabaseCacheConfiguration {
   enabled: boolean;
   type: 'redis' | 'memcached' | 'memory';
@@ -1193,7 +1061,6 @@ export interface DatabaseCacheConfiguration {
   maxSize: number;
   evictionPolicy: 'lru' | 'lfu' | 'fifo';
 }
-
 export interface BackupConfiguration {
   enabled: boolean;
   schedule: string;
@@ -1202,20 +1069,17 @@ export interface BackupConfiguration {
   encryption: boolean;
   destination: BackupDestination[];
 }
-
 export interface BackupDestination {
   type: 's3' | 'gcs' | 'azure' | 'local';
-  config: Record<string, any>;
+  config: { [key: string]: any };
   priority: number;
 }
-
 export interface CacheConfiguration {
   layers: CacheLayerConfig[];
   strategies: CacheStrategyConfig[];
   policies: CachePolicyConfig;
   monitoring: CacheMonitoringConfig;
 }
-
 export interface CacheLayerConfig {
   name: string;
   type: 'memory' | 'disk' | 'distributed';
@@ -1226,7 +1090,6 @@ export interface CacheLayerConfig {
   compression: boolean;
   encryption: boolean;
 }
-
 export interface CacheStrategyConfig {
   name: string;
   layers: string[];
@@ -1235,7 +1098,6 @@ export interface CacheStrategyConfig {
   consistency: 'strong' | 'eventual' | 'weak';
   replication: number;
 }
-
 export interface CachePolicyConfig {
   defaultTTL: number;
   maxSize: number;
@@ -1243,35 +1105,30 @@ export interface CachePolicyConfig {
   prefetch: boolean;
   invalidation: InvalidationPolicy;
 }
-
 export interface InvalidationPolicy {
   strategy: 'manual' | 'ttl' | 'event' | 'dependency';
   events: string[];
   dependencies: string[];
   cascade: boolean;
 }
-
 export interface CacheMonitoringConfig {
   enabled: boolean;
   metrics: string[];
   alerts: CacheAlert[];
   reporting: ReportingConfig;
 }
-
 export interface CacheAlert {
   metric: string;
   threshold: number;
   condition: 'above' | 'below' | 'equal';
   action: string;
 }
-
 export interface ReportingConfig {
   enabled: boolean;
   interval: number;
   format: 'json' | 'csv' | 'html';
   destinations: string[];
 }
-
 export interface SecurityConfiguration {
   authentication: AuthenticationConfig;
   authorization: AuthorizationConfig;
@@ -1279,22 +1136,19 @@ export interface SecurityConfiguration {
   audit: AuditConfig;
   compliance: ComplianceConfig;
 }
-
 export interface AuthenticationConfig {
   providers: AuthProvider[];
   session: SessionConfig;
   mfa: MFAConfig;
   passwordPolicy: PasswordPolicy;
 }
-
 export interface AuthProvider {
   name: string;
   type: 'local' | 'oauth' | 'saml' | 'ldap';
   enabled: boolean;
-  config: Record<string, any>;
+  config: { [key: string]: any };
   priority: number;
 }
-
 export interface SessionConfig {
   duration: number;
   renewal: boolean;
@@ -1302,20 +1156,17 @@ export interface SessionConfig {
   secure: boolean;
   sameSite: 'strict' | 'lax' | 'none';
 }
-
 export interface MFAConfig {
   enabled: boolean;
   required: boolean;
   methods: MFAMethod[];
   gracePeriod: number;
 }
-
 export interface MFAMethod {
   type: 'totp' | 'sms' | 'email' | 'hardware';
   enabled: boolean;
-  config: Record<string, any>;
+  config: { [key: string]: any };
 }
-
 export interface PasswordPolicy {
   minLength: number;
   requireUppercase: boolean;
@@ -1325,14 +1176,12 @@ export interface PasswordPolicy {
   maxAge: number;
   history: number;
 }
-
 export interface AuthorizationConfig {
   model: 'rbac' | 'abac' | 'custom';
   roles: Role[];
   permissions: Permission[];
   policies: Policy[];
 }
-
 export interface Role {
   name: string;
   description: string;
@@ -1340,40 +1189,34 @@ export interface Role {
   inherits: string[];
   conditions: Condition[];
 }
-
 export interface Permission {
   name: string;
   resource: string;
   actions: string[];
   conditions: Condition[];
 }
-
 export interface Policy {
   name: string;
   description: string;
   rules: PolicyRule[];
   effect: 'allow' | 'deny';
 }
-
 export interface PolicyRule {
   subject: string;
   resource: string;
   action: string;
   conditions: Condition[];
 }
-
 export interface Condition {
   attribute: string;
   operator: 'eq' | 'ne' | 'in' | 'nin' | 'gt' | 'lt' | 'gte' | 'lte';
   value: any;
 }
-
 export interface EncryptionConfig {
   atRest: EncryptionSettings;
   inTransit: EncryptionSettings;
   keys: KeyManagementConfig;
 }
-
 export interface EncryptionSettings {
   enabled: boolean;
   algorithm: string;
@@ -1381,14 +1224,12 @@ export interface EncryptionSettings {
   mode: string;
   padding: string;
 }
-
 export interface KeyManagementConfig {
   provider: 'local' | 'aws_kms' | 'azure_keyvault' | 'gcp_kms';
   rotation: boolean;
   rotationInterval: number;
-  config: Record<string, any>;
+  config: { [key: string]: any };
 }
-
 export interface AuditConfig {
   enabled: boolean;
   events: AuditEvent[];
@@ -1396,41 +1237,35 @@ export interface AuditConfig {
   retention: number;
   anonymization: boolean;
 }
-
 export interface AuditEvent {
   category: string;
   level: 'info' | 'warning' | 'error';
   include: string[];
   exclude: string[];
 }
-
 export interface AuditStorage {
   type: 'database' | 'file' | 'external';
   encryption: boolean;
   compression: boolean;
-  config: Record<string, any>;
+  config: { [key: string]: any };
 }
-
 export interface ComplianceConfig {
   standards: ComplianceStandard[];
   reports: ComplianceReport[];
   validation: ValidationRule[];
 }
-
 export interface ComplianceStandard {
   name: string;
   version: string;
   requirements: Requirement[];
   controls: Control[];
 }
-
 export interface Requirement {
   id: string;
   description: string;
   mandatory: boolean;
   controls: string[];
 }
-
 export interface Control {
   id: string;
   description: string;
@@ -1438,7 +1273,6 @@ export interface Control {
   testing: string;
   evidence: string[];
 }
-
 export interface ComplianceReport {
   name: string;
   standard: string;
@@ -1446,7 +1280,6 @@ export interface ComplianceReport {
   format: string;
   recipients: string[];
 }
-
 export interface ValidationRule {
   name: string;
   description: string;
@@ -1454,14 +1287,12 @@ export interface ValidationRule {
   rule: string;
   severity: 'info' | 'warning' | 'error' | 'critical';
 }
-
 export interface MonitoringConfiguration {
   metrics: MetricsConfig;
   logging: LoggingConfig;
   alerting: AlertingConfig;
   dashboards: DashboardConfig[];
 }
-
 export interface MetricsConfig {
   enabled: boolean;
   collector: 'prometheus' | 'influxdb' | 'datadog' | 'custom';
@@ -1469,53 +1300,45 @@ export interface MetricsConfig {
   retention: number;
   labels: Record<string, string>;
 }
-
 export interface LoggingConfig {
   level: 'debug' | 'info' | 'warning' | 'error';
   format: 'json' | 'text' | 'structured';
   outputs: LogOutput[];
   sampling: SamplingConfig;
 }
-
 export interface LogOutput {
   type: 'console' | 'file' | 'syslog' | 'elasticsearch' | 'external';
-  config: Record<string, any>;
+  config: { [key: string]: any };
   filters: LogFilter[];
 }
-
 export interface LogFilter {
   field: string;
   operator: string;
   value: any;
   action: 'include' | 'exclude' | 'mask';
 }
-
 export interface SamplingConfig {
   enabled: boolean;
   rate: number;
   rules: SamplingRule[];
 }
-
 export interface SamplingRule {
   condition: string;
   rate: number;
   priority: number;
 }
-
 export interface AlertingConfig {
   enabled: boolean;
   channels: AlertChannel[];
   rules: AlertRule[];
   escalation: EscalationPolicy[];
 }
-
 export interface AlertChannel {
   name: string;
   type: 'email' | 'slack' | 'webhook' | 'sms' | 'pagerduty';
-  config: Record<string, any>;
+  config: { [key: string]: any };
   enabled: boolean;
 }
-
 export interface AlertRule {
   name: string;
   description: string;
@@ -1526,20 +1349,17 @@ export interface AlertRule {
   channels: string[];
   conditions: Condition[];
 }
-
 export interface EscalationPolicy {
   name: string;
   levels: EscalationLevel[];
   timeout: number;
 }
-
 export interface EscalationLevel {
   level: number;
   channels: string[];
   delay: number;
   conditions: Condition[];
 }
-
 export interface DashboardConfig {
   name: string;
   description: string;
@@ -1547,22 +1367,19 @@ export interface DashboardConfig {
   refresh: number;
   variables: DashboardVariable[];
 }
-
 export interface DashboardPanel {
   title: string;
   type: 'graph' | 'table' | 'stat' | 'gauge' | 'heatmap';
   query: string;
   position: PanelPosition;
-  config: Record<string, any>;
+  config: { [key: string]: any };
 }
-
 export interface PanelPosition {
   x: number;
   y: number;
   width: number;
   height: number;
 }
-
 export interface DashboardVariable {
   name: string;
   type: 'query' | 'constant' | 'interval' | 'datasource';
@@ -1570,13 +1387,11 @@ export interface DashboardVariable {
   value?: unknown;
   options?: VariableOption[];
 }
-
 export interface VariableOption {
   text: string;
   value: any;
   selected: boolean;
 }
-
 export interface DeploymentConfiguration {
   environment: 'development' | 'staging' | 'production';
   infrastructure: InfrastructureConfig;
@@ -1584,7 +1399,6 @@ export interface DeploymentConfiguration {
   networking: NetworkingConfig;
   storage: StorageConfig;
 }
-
 export interface InfrastructureConfig {
   provider: 'aws' | 'gcp' | 'azure' | 'kubernetes' | 'docker' | 'bare_metal';
   region: string;
@@ -1592,7 +1406,6 @@ export interface InfrastructureConfig {
   instances: InstanceConfig[];
   loadBalancer: LoadBalancerConfig;
 }
-
 export interface InstanceConfig {
   type: string;
   size: string;
@@ -1601,7 +1414,6 @@ export interface InstanceConfig {
   network: NetworkInterface[];
   tags: Record<string, string>;
 }
-
 export interface InstanceStorage {
   type: 'ebs' | 'ssd' | 'hdd' | 'nfs';
   size: number;
@@ -1609,7 +1421,6 @@ export interface InstanceStorage {
   encrypted: boolean;
   backup: boolean;
 }
-
 export interface NetworkInterface {
   type: 'public' | 'private' | 'internal';
   subnet: string;
@@ -1617,7 +1428,6 @@ export interface NetworkInterface {
   elasticIP: boolean;
   bandwidth: number;
 }
-
 export interface LoadBalancerConfig {
   type: 'application' | 'network' | 'classic';
   scheme: 'internet-facing' | 'internal';
@@ -1625,21 +1435,18 @@ export interface LoadBalancerConfig {
   healthCheck: HealthCheck;
   ssl: SSLConfig;
 }
-
 export interface Listener {
   port: number;
   protocol: 'http' | 'https' | 'tcp' | 'udp';
   targetGroup: string;
   rules: RoutingRule[];
 }
-
 export interface RoutingRule {
   condition: string;
   action: string;
   priority: number;
   target: string;
 }
-
 export interface HealthCheck {
   protocol: 'http' | 'https' | 'tcp';
   path: string;
@@ -1648,7 +1455,6 @@ export interface HealthCheck {
   timeout: number;
   threshold: number;
 }
-
 export interface SSLConfig {
   enabled: boolean;
   certificate: string;
@@ -1656,13 +1462,11 @@ export interface SSLConfig {
   ciphers: string[];
   hsts: boolean;
 }
-
 export interface ScalingConfig {
   horizontal: HorizontalScalingConfig;
   vertical: VerticalScalingConfig;
   predictive: PredictiveScalingConfig;
 }
-
 export interface HorizontalScalingConfig {
   enabled: boolean;
   minInstances: number;
@@ -1673,14 +1477,12 @@ export interface HorizontalScalingConfig {
   scaleDownCooldown: number;
   metrics: ScalingMetric[];
 }
-
 export interface ScalingMetric {
   name: string;
   target: number;
   type: 'average' | 'total';
   window: number;
 }
-
 export interface VerticalScalingConfig {
   enabled: boolean;
   minResources: ResourceLimits;
@@ -1688,14 +1490,12 @@ export interface VerticalScalingConfig {
   recommendations: boolean;
   automatic: boolean;
 }
-
 export interface ResourceLimits {
   cpu: string;
   memory: string;
   storage: string;
   gpu?: string;
 }
-
 export interface PredictiveScalingConfig {
   enabled: boolean;
   model: string;
@@ -1703,7 +1503,6 @@ export interface PredictiveScalingConfig {
   accuracy: number;
   bufferTime: number;
 }
-
 export interface NetworkingConfig {
   vpc: VPCConfig;
   subnets: SubnetConfig[];
@@ -1711,7 +1510,6 @@ export interface NetworkingConfig {
   cdn: CDNConfig;
   dns: DNSConfig;
 }
-
 export interface VPCConfig {
   cidr: string;
   enableDnsHostnames: boolean;
@@ -1719,7 +1517,6 @@ export interface VPCConfig {
   tenancy: 'default' | 'dedicated' | 'host';
   tags: Record<string, string>;
 }
-
 export interface SubnetConfig {
   name: string;
   cidr: string;
@@ -1728,14 +1525,12 @@ export interface SubnetConfig {
   routeTable: string;
   nacl: string;
 }
-
 export interface NetworkSecurityConfig {
   securityGroups: SecurityGroup[];
   networkAcls: NetworkACL[];
   waf: WAFConfig;
   ddos: DDoSProtectionConfig;
 }
-
 export interface SecurityGroup {
   name: string;
   description: string;
@@ -1744,21 +1539,18 @@ export interface SecurityGroup {
   outboundRules: SecurityRule[];
   tags: Record<string, string>;
 }
-
 export interface SecurityRule {
   protocol: 'tcp' | 'udp' | 'icmp' | 'all';
   port: number | string;
   source: string;
   description: string;
 }
-
 export interface NetworkACL {
   name: string;
   vpc: string;
   rules: ACLRule[];
   associations: string[];
 }
-
 export interface ACLRule {
   number: number;
   protocol: string;
@@ -1766,35 +1558,30 @@ export interface ACLRule {
   cidr: string;
   port: number | string;
 }
-
 export interface WAFConfig {
   enabled: boolean;
   rules: WAFRule[];
   defaultAction: 'allow' | 'block';
   logging: boolean;
 }
-
 export interface WAFRule {
   name: string;
   priority: number;
   action: 'allow' | 'block' | 'count';
   conditions: WAFCondition[];
 }
-
 export interface WAFCondition {
   type: 'ip' | 'geo' | 'size' | 'sql_injection' | 'xss' | 'rate_limit';
   field: string;
   operator: string;
   value: any;
 }
-
 export interface DDoSProtectionConfig {
   enabled: boolean;
   level: 'basic' | 'advanced';
   notifications: boolean;
   responseTeam: string[];
 }
-
 export interface CDNConfig {
   enabled: boolean;
   provider: 'cloudfront' | 'cloudflare' | 'fastly' | 'akamai';
@@ -1802,7 +1589,6 @@ export interface CDNConfig {
   behaviors: CDNBehavior[];
   security: CDNSecurityConfig;
 }
-
 export interface CDNOrigin {
   id: string;
   domain: string;
@@ -1810,7 +1596,6 @@ export interface CDNOrigin {
   protocol: 'http' | 'https' | 'match';
   headers: Record<string, string>;
 }
-
 export interface CDNBehavior {
   pathPattern: string;
   origin: string;
@@ -1818,28 +1603,24 @@ export interface CDNBehavior {
   compression: boolean;
   methods: string[];
 }
-
 export interface CachingBehavior {
   ttl: number;
   headers: string[];
   queryStrings: boolean;
   cookies: string[];
 }
-
 export interface CDNSecurityConfig {
   originAccess: boolean;
   waf: boolean;
   https: HTTPSConfig;
   headers: SecurityHeaders;
 }
-
 export interface HTTPSConfig {
   required: boolean;
   certificate: string;
   protocols: string[];
   ciphers: string[];
 }
-
 export interface SecurityHeaders {
   hsts: boolean;
   csp: string;
@@ -1847,14 +1628,12 @@ export interface SecurityHeaders {
   xss: string;
   contentType: boolean;
 }
-
 export interface DNSConfig {
   provider: 'route53' | 'cloudflare' | 'google' | 'custom';
   zone: string;
   records: DNSRecord[];
   healthChecks: DNSHealthCheck[];
 }
-
 export interface DNSRecord {
   name: string;
   type: 'A' | 'AAAA' | 'CNAME' | 'MX' | 'TXT' | 'SRV';
@@ -1863,7 +1642,6 @@ export interface DNSRecord {
   weight?: number;
   priority?: number;
 }
-
 export interface DNSHealthCheck {
   name: string;
   type: 'http' | 'https' | 'tcp';
@@ -1872,14 +1650,12 @@ export interface DNSHealthCheck {
   timeout: number;
   threshold: number;
 }
-
 export interface StorageConfig {
   types: StorageTypeConfig[];
   backup: StorageBackupConfig;
   archival: ArchivalConfig;
   encryption: StorageEncryptionConfig;
 }
-
 export interface StorageTypeConfig {
   name: string;
   type: 'block' | 'object' | 'file' | 'database';
@@ -1888,21 +1664,18 @@ export interface StorageTypeConfig {
   performance: StoragePerformanceConfig;
   redundancy: RedundancyConfig;
 }
-
 export interface StoragePerformanceConfig {
   iops: number;
   throughput: number;
   latency: number;
   tier: 'hot' | 'warm' | 'cold' | 'archive';
 }
-
 export interface RedundancyConfig {
   level: 'none' | 'local' | 'zone' | 'region' | 'geo';
   copies: number;
   checksum: boolean;
   repair: boolean;
 }
-
 export interface StorageBackupConfig {
   enabled: boolean;
   frequency: string;
@@ -1911,14 +1684,12 @@ export interface StorageBackupConfig {
   encryption: boolean;
   destinations: BackupDestination[];
 }
-
 export interface RetentionPolicy {
   daily: number;
   weekly: number;
   monthly: number;
   yearly: number;
 }
-
 export interface ArchivalConfig {
   enabled: boolean;
   criteria: ArchivalCriteria[];
@@ -1927,13 +1698,11 @@ export interface ArchivalConfig {
   encryption: boolean;
   indexing: boolean;
 }
-
 export interface ArchivalCriteria {
   type: 'age' | 'size' | 'access' | 'custom';
   value: any;
   action: 'archive' | 'delete';
 }
-
 export interface StorageEncryptionConfig {
   atRest: boolean;
   inTransit: boolean;
@@ -1941,8 +1710,7 @@ export interface StorageEncryptionConfig {
   algorithm: string;
   keyRotation: boolean;
 }
-
-// Utility Types;
+// Utility Types
 export interface RateLimit {
   requests: number;
   window: number;
@@ -1950,7 +1718,6 @@ export interface RateLimit {
   burst?: number;
   key?: string;
 }
-
 export interface CachingPolicy {
   enabled: boolean;
   ttl: number;
@@ -1959,7 +1726,6 @@ export interface CachingPolicy {
   compression: boolean;
   persistence: boolean;
 }
-
 export interface MonitoringPolicy {
   enabled: boolean;
   metrics: string[];
@@ -1967,24 +1733,21 @@ export interface MonitoringPolicy {
   sampling: number;
   retention: number;
 }
-
-// API Response Types;
+// API Response Types
 export interface APIResponse<T = any> {
   success: boolean;
   data?: T;
   error?: APIError;
   metadata?: ResponseMetadata;
 }
-
 export interface APIError {
   code: string;
   message: string;
-  details?: Record<string, any>;
+  details?: { [key: string]: any };
   timestamp: string;
   requestId: string;
   stack?: string;
 }
-
 export interface ResponseMetadata {
   requestId: string;
   timestamp: string;
@@ -1993,14 +1756,12 @@ export interface ResponseMetadata {
   rateLimit?: RateLimitInfo;
   pagination?: PaginationInfo;
 }
-
 export interface RateLimitInfo {
   limit: number;
   remaining: number;
   reset: number;
   retryAfter?: number;
 }
-
 export interface PaginationInfo {
   page: number;
   pageSize: number;
@@ -2009,8 +1770,7 @@ export interface PaginationInfo {
   hasNext: boolean;
   hasPrev: boolean;
 }
-
-// Search and Query Types;
+// Search and Query Types
 export interface SearchQuery {
   query: string;
   filters: SearchFilter[];
@@ -2019,27 +1779,23 @@ export interface SearchQuery {
   aggregations: AggregationOption[];
   highlight: HighlightOptions;
 }
-
 export interface SearchFilter {
   field: string;
   operator: 'eq' | 'ne' | 'in' | 'nin' | 'gt' | 'lt' | 'gte' | 'lte' | 'contains' | 'starts_with' | 'ends_with';
   value: any;
   boost?: number;
 }
-
 export interface SortOption {
   field: string;
   direction: 'asc' | 'desc';
   boost?: number;
 }
-
 export interface PaginationOptions {
   page: number;
   pageSize: number;
   offset?: number;
   cursor?: string;
 }
-
 export interface AggregationOption {
   name: string;
   type: 'terms' | 'histogram' | 'date_histogram' | 'range' | 'stats' | 'cardinality';
@@ -2048,13 +1804,11 @@ export interface AggregationOption {
   order?: SortOption;
   ranges?: Range[];
 }
-
 export interface Range {
   from?: number;
   to?: number;
   key?: string;
 }
-
 export interface HighlightOptions {
   enabled: boolean;
   fields: string[];
@@ -2063,7 +1817,6 @@ export interface HighlightOptions {
   preTag: string;
   postTag: string;
 }
-
 export interface SearchResult<T = any> {
   hits: SearchHit<T>[];
   total: number;
@@ -2072,7 +1825,6 @@ export interface SearchResult<T = any> {
   suggestions: Suggestion[];
   executionTime: number;
 }
-
 export interface SearchHit<T = any> {
   id: string;
   score: number;
@@ -2080,7 +1832,6 @@ export interface SearchHit<T = any> {
   highlight: Record<string, string[]>;
   explanation?: ScoreExplanation;
 }
-
 export interface AggregationResult {
   buckets: AggregationBucket[];
   sum?: number;
@@ -2089,33 +1840,28 @@ export interface AggregationResult {
   min?: number;
   max?: number;
 }
-
 export interface AggregationBucket {
   key: string;
   docCount: number;
   subAggregations: Record<string, AggregationResult>;
 }
-
 export interface Suggestion {
   text: string;
   score: number;
   frequency: number;
   options: SuggestionOption[];
 }
-
 export interface SuggestionOption {
   text: string;
   score: number;
   highlighted: string;
 }
-
 export interface ScoreExplanation {
   value: number;
   description: string;
   details: ScoreExplanation[];
 }
-
-// Workflow and Automation Types;
+// Workflow and Automation Types
 export interface Workflow {
   id: string;
   name: string;
@@ -2127,23 +1873,19 @@ export interface Workflow {
   config: WorkflowConfig;
   metadata: WorkflowMetadata;
 }
-
 export type WorkflowStatus = 'draft' | 'active' | 'paused' | 'deprecated' | 'error';
 }
-
 export interface WorkflowTrigger {
   type: 'manual' | 'schedule' | 'event' | 'webhook' | 'api';
   config: TriggerConfig;
   conditions: TriggerCondition[];
 }
-
 export interface TriggerConfig {
   schedule?: string;
   event?: string;
   webhook?: WebhookConfig;
   api?: APITriggerConfig;
 }
-
 export interface WebhookConfig {
   url: string;
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -2151,33 +1893,28 @@ export interface WebhookConfig {
   authentication: AuthenticationConfig;
   validation: ValidationConfig;
 }
-
 export interface APITriggerConfig {
   endpoint: string;
   method: string;
   authentication: AuthenticationConfig;
   rateLimiting: RateLimit;
 }
-
 export interface ValidationConfig {
   schema: string;
   required: boolean;
   signature: SignatureConfig;
 }
-
 export interface SignatureConfig {
   algorithm: string;
   secret: string;
   header: string;
 }
-
 export interface TriggerCondition {
   field: string;
   operator: string;
   value: any;
   required: boolean;
 }
-
 export interface WorkflowStep {
   id: string;
   name: string;
@@ -2189,7 +1926,6 @@ export interface WorkflowStep {
   retryPolicy: RetryPolicy;
   timeout: number;
 }
-
 export type StepType =
   | 'ai_analysis'
   | 'document_processing'
@@ -2204,20 +1940,17 @@ export type StepType =
   | 'file_operation'
   | 'notification';
 }
-
 export interface StepConfig {
   template?: string;
-  parameters: Record<string, any>;
+  parameters: { [key: string]: any };
   resources: ResourceRequirement[];
   permissions: string[];
 }
-
 export interface ResourceRequirement {
   type: 'cpu' | 'memory' | 'gpu' | 'storage' | 'network';
   amount: number;
   unit: string;
 }
-
 export interface StepInput {
   name: string;
   type: string;
@@ -2226,28 +1959,24 @@ export interface StepInput {
   transformation?: TransformationRule[];
   validation?: ValidationRule[];
 }
-
 export interface StepOutput {
   name: string;
   type: string;
   destination: 'variable' | 'database' | 'file' | 'api';
-  destinationConfig?: Record<string, any>;
+  destinationConfig?: { [key: string]: any };
   transformation?: TransformationRule[];
 }
-
 export interface TransformationRule {
   type: 'map' | 'filter' | 'reduce' | 'format' | 'validate';
-  config: Record<string, any>;
+  config: { [key: string]: any };
   script?: string;
 }
-
 export interface StepCondition {
   field: string;
   operator: string;
   value: any;
   action: 'continue' | 'skip' | 'retry' | 'fail';
 }
-
 export interface RetryPolicy {
   maxAttempts: number;
   backoffStrategy: 'fixed' | 'exponential' | 'linear';
@@ -2255,7 +1984,6 @@ export interface RetryPolicy {
   maxDelay: number;
   retryableErrors: string[];
 }
-
 export interface WorkflowConfig {
   maxExecutionTime: number;
   maxConcurrentExecutions: number;
@@ -2263,19 +1991,16 @@ export interface WorkflowConfig {
   logging: WorkflowLoggingConfig;
   notifications: NotificationConfig[];
 }
-
 export interface ErrorHandlingConfig {
   strategy: 'fail_fast' | 'continue' | 'retry' | 'rollback';
   rollbackSteps: string[];
   errorHandlers: ErrorHandler[];
 }
-
 export interface ErrorHandler {
   errorType: string;
   action: 'retry' | 'skip' | 'rollback' | 'notify' | 'custom';
-  config: Record<string, any>;
+  config: { [key: string]: any };
 }
-
 export interface WorkflowLoggingConfig {
   level: 'debug' | 'info' | 'warning' | 'error';
   includeInputs: boolean;
@@ -2283,14 +2008,12 @@ export interface WorkflowLoggingConfig {
   includeTiming: boolean;
   destination: string;
 }
-
 export interface NotificationConfig {
   trigger: 'start' | 'complete' | 'error' | 'step_complete' | 'step_error';
   channels: string[];
   template: string;
   conditions: Condition[];
 }
-
 export interface WorkflowMetadata {
   created: string;
   updated: string;
@@ -2303,7 +2026,6 @@ export interface WorkflowMetadata {
   estimatedDuration: number;
   dependencies: string[];
 }
-
 export interface WorkflowExecution {
   id: string;
   workflowId: string;
@@ -2316,70 +2038,61 @@ export interface WorkflowExecution {
   context: ExecutionContext;
   error?: ExecutionError;
 }
-
 export type ExecutionStatus = 'pending' | 'running' | 'completed' | 'failed' | 'cancelled' | 'timeout';
 }
-
 export interface ExecutionTrigger {
   type: string;
   source: string;
-  data: Record<string, any>;
+  data: { [key: string]: any };
   timestamp: string;
 }
-
 export interface StepExecution {
   stepId: string;
   status: ExecutionStatus;
   startTime: string;
   endTime?: string;
   duration?: number;
-  inputs: Record<string, any>;
-  outputs: Record<string, any>;
+  inputs: { [key: string]: any };
+  outputs: { [key: string]: any };
   error?: StepError;
   retries: number;
   logs: LogEntry[];
 }
-
 export interface StepError {
   type: string;
   message: string;
   code?: string;
-  details?: Record<string, any>;
+  details?: { [key: string]: any };
   stack?: string;
   recoverable: boolean;
 }
-
 export interface ExecutionContext {
-  variables: Record<string, any>;
+  variables: { [key: string]: any };
   environment: string;
   user?: string;
   permissions: string[];
   resources: ResourceAllocation[];
 }
-
 export interface ResourceAllocation {
   type: string;
   allocated: number;
   used: number;
   unit: string;
 }
-
 export interface ExecutionError {
   type: string;
   message: string;
   step?: string;
   code?: string;
-  details?: Record<string, any>;
+  details?: { [key: string]: any };
   stack?: string;
   timestamp: string;
 }
-
 export interface LogEntry {
   timestamp: string;
   level: string;
   message: string;
-  context: Record<string, any>;
+  context: { [key: string]: any };
   source: string;
 }
-
 // All types are already exported individually above - no namespace needed

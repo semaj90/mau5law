@@ -1,12 +1,9 @@
 import type { RequestHandler } from './$types.js'
-
 /*
  * PostgreSQL-First Worker Trigger API
  * Handles Redis events for auto-tagging and case processing
  */
-
 import { json, error } from '@sveltejs/kit'
-
 import { ensureError } from '$lib/utils/ensure-error'
 import { redisService } from '$lib/server/redis-service'
 import { z } from 'zod'
@@ -15,7 +12,6 @@ import { cases } from '$lib/server/db/schema-postgres'
 import { eq } from 'drizzle-orm'
 import stream from 'stream'
 import { EventEmitter } from 'events'
-
 // Validation schema for worker trigger requests
 const WorkerTriggerSchema = z.object({
   type: z.enum(['case_created', 'evidence_uploaded', 'document_processed', 'manual_trigger']),
@@ -36,9 +32,7 @@ const WorkerTriggerSchema = z.object({
   correlationId: z.string().optional(),
   retry: z.boolean().default(false)
 })
-
 type WorkerTriggerData = z.infer<typeof WorkerTriggerSchema>
-
 /*
  * POST /api/worker/autotag/trigger
  * Triggers PostgreSQL-first auto-tagging worker
@@ -46,15 +40,12 @@ type WorkerTriggerData = z.infer<typeof WorkerTriggerSchema>
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const body = await request.json()
-
     // Validate request data
     const triggerData = WorkerTriggerSchema.parse(body)
-
     // Generate correlation ID if not provided
     if (!triggerData.correlationId) {
       triggerData.correlationId = `trigger-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
     }
-
     // Add timestamp if not provided
     if (!triggerData.metadata?.timestamp) {
       triggerData.metadata = {
@@ -62,7 +53,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         timestamp: new Date().toISOString()
       }
     }
-
     // Validate case exists if caseId provided
     if (triggerData.caseId) {
       const caseExists = await db
@@ -70,15 +60,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         .from(cases)
         .where(eq(cases.id, triggerData.caseId))
         .limit(1)
-
       if (caseExists.length === 0) {
         return error(404, `Case not found: ${triggerData.caseId}`)
       }
     }
-
     // Ensure Redis connection (defensive cast to avoid ambient mismatches)
     await (redisService as any).initialize()
-
     // Create Redis stream event
     const eventData = {
       id: triggerData.correlationId,
@@ -91,18 +78,15 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       retry: triggerData.retry ? '1' : '0',
       timestamp: Date.now().toString()
     }
-
     // Add to Redis stream for worker consumption
     const streamName = 'autotag:requests'
     const streamId = await redisService.xAdd(streamName, '*', eventData)
-
     console.log(`🚀 Worker trigger sent to Redis stream: ${streamName}:${streamId}`, {
       type: triggerData.type,
       action: triggerData.action,
       caseId: triggerData.caseId,
       correlationId: triggerData.correlationId
     })
-
     // Optional: Send to PostgreSQL notification as well
     if (triggerData.type === 'case_created' && triggerData.caseId) {
       try {
@@ -123,9 +107,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         // Don't fail the request if PG notification fails
       }
     }
-
     return json({
-      success: true,
+      success: true
       data: {
         streamId,
         correlationId: triggerData.correlationId,
@@ -141,21 +124,18 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     })
   } catch (validationError) {
     console.error('❌ Worker trigger validation failed:', validationError)
-
     if (validationError instanceof z.ZodError) {
       return error(
         400,
         `Invalid trigger data: ${validationError.errors[0]?.message || 'Validation failed'}`
       )
     }
-
     return error(
       500,
       `Worker trigger failed: ${validationError instanceof Error ? validationError.message : 'Unknown error'}`
     )
   }
 }
-
 /*
  * GET /api/worker/autotag/trigger
  * Get worker trigger status and recent events
@@ -165,17 +145,14 @@ export const GET: RequestHandler = async ({ url }) => {
     // Ensure Redis connection
     await redisService.initialize()
     const streamName = 'autotag:requests'
-
     // Get stream info
     const streamInfo = await (redisService as any).xInfoStream(streamName).catch(() => null)
-
     // Get recent events (last 10)
     const recentEvents = await (redisService as any)
       .xRevRange(streamName, '+', '-', { COUNT: 10 })
       .catch(() => [])
-
     // Parse events
-    const events = (recentEvents as any[]).map((event: any) => ({
+    const events = (recentEvents as any[]).map((event: any) => ({,
       id: event.id,
       timestamp: new Date(parseInt(event.message.timestamp)).toISOString(),
       type: event.message.type,
@@ -186,9 +163,8 @@ export const GET: RequestHandler = async ({ url }) => {
       metadata: JSON.parse(event.message.metadata || '{}'),
       retry: event.message.retry === '1'
     })
-
     return json({
-      success: true,
+      success: true
       data: {
         streamInfo: streamInfo
           ? {
@@ -196,8 +172,8 @@ export const GET: RequestHandler = async ({ url }) => {
               firstEntry: streamInfo['first-entry'],
               lastEntry: streamInfo['last-entry']
             }
-          : null,
-        recentEvents: events,
+          : null
+        recentEvents: events
         workerStatus: 'active', // TODO: Implement actual worker health check
         lastProcessed: events.length > 0 ? events[0].timestamp : null
       },
@@ -209,10 +185,9 @@ export const GET: RequestHandler = async ({ url }) => {
     })
   } catch (error: any) {
     console.error('❌ Worker status check failed:', error)
-
     return json(
       {
-        success: false,
+        success: false
         error: {
           message: 'Worker status check failed',
           code: 'WORKER_STATUS_ERROR'
@@ -222,7 +197,6 @@ export const GET: RequestHandler = async ({ url }) => {
     )
   }
 }
-
 /*
  * DELETE /api/worker/autotag/trigger
  * Clear worker event stream (admin operation)
@@ -233,11 +207,9 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
     // if (!locals.user || locals.user.role !== 'admin') {
     //   return error(403, 'Admin access required')
     // }
-
     // Ensure Redis connection
     await redisService.initialize()
     const streamName = 'autotag:requests'
-
     // Get current stream info
     const streamInfo = await redisService.xInfoStream(streamName).catch(() => null)
     // xInfoStream can return various structures; ensure numeric fallback
@@ -248,16 +220,13 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
           typeof (streamInfo as any).length === 'number'
         ? (streamInfo as any).length
         : 0
-
     // Delete the entire stream
     await redisService.del(streamName)
-
     console.log(`🗑️ Worker event stream cleared: ${deletedCount} events deleted`)
-
     return json({
-      success: true,
+      success: true
       data: {
-        deletedEvents: deletedCount,
+        deletedEvents: deletedCount
         streamName,
         clearedAt: new Date().toISOString()
       },
@@ -269,10 +238,9 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
     })
   } catch (error: any) {
     console.error('❌ Worker stream clear failed:', error)
-
     return json(
       {
-        success: false,
+        success: false
         error: {
           message: 'Worker stream clear failed',
           code: 'STREAM_CLEAR_ERROR'
@@ -282,4 +250,3 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
     )
   }
 }
-

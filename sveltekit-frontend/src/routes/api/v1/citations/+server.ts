@@ -5,10 +5,8 @@
  * GET    /api/v1/citations - Get citations for a case
  * POST   /api/v1/citations - Add citation
  */
-
 import { json, error, type RequestHandler } from '@sveltejs/kit'
 import { z } from 'zod'
-
 // Citation schemas
 const CitationsQuerySchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),
@@ -18,7 +16,6 @@ const CitationsQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(100).default(20)
 })
-
 const CreateCitationSchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),
   citationType: z.enum(['case_law', 'statute', 'regulation', 'secondary_authority', 'legal_brief', 'court_document', 'expert_report', 'news_article', 'academic_paper', 'other']),
@@ -38,13 +35,11 @@ const CreateCitationSchema = z.object({
   court: z.string().optional(),
   tags: z.array(z.string()).default([])
 })
-
 /**
  * Citations Service
  */
 class CitationsService {
   constructor(private userId: string) {}
-
   async getCitations(query: z.infer<typeof CitationsQuerySchema>) {
     // Sample citations data - in production, query citations table
     const sampleCitations = [
@@ -61,7 +56,7 @@ class CitationsService {
         jurisdiction: 'Federal',
         court: 'U.S. Supreme Court',
         publicationDate: '1966-06-13T00:00:00Z',
-        verified: true,
+        verified: true
         relevantQuote: 'You have the right to remain silent...',
         contextNotes: 'Establishes Miranda rights precedent',
         tags: ['constitutional', 'criminal procedure'],
@@ -78,7 +73,7 @@ class CitationsService {
         relevanceScore: 8,
         citationPurpose: 'support',
         jurisdiction: 'Federal',
-        verified: true,
+        verified: true
         relevantQuote: 'Evidence having any tendency to make the existence of any fact...',
         contextNotes: 'Defines relevant evidence',
         tags: ['evidence', 'relevancy'],
@@ -86,31 +81,24 @@ class CitationsService {
         dateCreated: new Date().toISOString()
       }
     ]
-
     // Apply filters
     let filteredCitations = sampleCitations
-
     if (query.citationType) {
       filteredCitations = filteredCitations.filter(c => c.citationType === query.citationType)
     }
-
     if (query.verified !== undefined) {
       filteredCitations = filteredCitations.filter(c => c.verified === query.verified)
     }
-
     if (query.minRelevance) {
       filteredCitations = filteredCitations.filter(c => c.relevanceScore >= query.minRelevance)
     }
-
     // Sort by relevance score (highest first)
     filteredCitations.sort((a, b) => b.relevanceScore - a.relevanceScore)
-
     // Apply pagination
     const offset = (query.page - 1) * query.limit
     const paginatedCitations = filteredCitations.slice(offset, offset + query.limit)
-
     return {
-      data: paginatedCitations,
+      data: paginatedCitations
       pagination: {
         page: query.page,
         limit: query.limit,
@@ -121,33 +109,29 @@ class CitationsService {
       }
     }
   }
-
   async createCitation(data: z.infer<typeof CreateCitationSchema>) {
     // In production, insert into citations table
     const newCitation = {
       id: crypto.randomUUID(),
       ...data,
-      verified: false,
+      verified: false
       createdBy: this.userId,
       dateCreated: new Date().toISOString(),
       dateModified: new Date().toISOString()
     }
-
     return newCitation
   }
-
   async verifyCitation(citationId: string) {
     // In production, verify citation against legal databases
     // For now, return mock verification result
     return {
-      id: citationId,
-      verified: true,
+      id: citationId
+      verified: true
       verifiedDate: new Date().toISOString(),
       verificationNotes: 'Citation verified against legal database'
     }
   }
 }
-
 /**
  * GET /api/v1/citations
  * Get citations for a case
@@ -157,13 +141,10 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
     if (!locals.session || !locals.user) {
       return json({ success: false, message: 'Authentication required' }, { status: 401 })
     }
-
     const queryParams = Object.fromEntries(url.searchParams.entries()
     const validatedQuery = CitationsQuerySchema.parse(queryParams)
-
     const citationsService = new CitationsService(locals.user.id)
     const result = await citationsService.getCitations(validatedQuery)
-
     // Response validation
     const CitationItem = z.object({
       id: z.string(),
@@ -185,11 +166,10 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
       createdBy: z.string().optional(),
       dateCreated: z.string().optional()
     }).passthrough()
-
     const CitationsListResponse = z.object({
       success: z.literal(true),
       data: z.array(CitationItem),
-      pagination: z.object({
+      pagination: z.object({,
         page: z.number(),
         limit: z.number(),
         total: z.number(),
@@ -199,9 +179,8 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
       }),
       meta: z.record(z.any()).optional()
     }).passthrough()
-
     const payload = {
-      success: true,
+      success: true
       data: (result as { data?: any; pagination?: any }).data,
       pagination: (result as { data?: any; pagination?: any }).pagination,
       meta: {
@@ -210,26 +189,20 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
         timestamp: new Date().toISOString()
       }
     }
-
     const validated = CitationsListResponse.safeParse(payload)
     if (!validated.success) {
       console.error('Citations list response validation failed', validated.error)
       return error(500, { message: 'Invalid response shape' })
     }
-
     return json(payload)
-
   } catch (err: any) {
     console.error('Error fetching citations:', err)
-
     if (err instanceof z.ZodError) {
       return json({ success: false, message: 'Invalid query parameters', details: err.errors }, { status: 400 })
     }
-
     return json({ success: false, message: 'Failed to fetch citations', details: err.message }, { status: 500 })
   }
 }
-
 /**
  * POST /api/v1/citations
  * Add citation to case
@@ -239,49 +212,39 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (!locals.session || !locals.user) {
       return json({ success: false, message: 'Authentication required' }, { status: 401 })
     }
-
     const body = await request.json()
     const validatedData = CreateCitationSchema.parse(body)
-
     const citationsService = new CitationsService(locals.user.id)
     const newCitation = await citationsService.createCitation(validatedData)
-
     const CitationItem = z.object({
       id: z.string(),
       caseId: z.string().uuid(),
       citationType: z.string()
     }).passthrough()
-
     const CreateCitationResponse = z.object({
       success: z.literal(true),
-      data: CitationItem,
+      data: CitationItem
       meta: z.record(z.any()).optional()
     }).passthrough()
-
     const payload = {
-      success: true,
-      data: newCitation,
+      success: true
+      data: newCitation
       meta: {
         userId: locals.user.id,
         timestamp: new Date().toISOString()
       }
     }
-
     const validated = CreateCitationResponse.safeParse(payload)
     if (!validated.success) {
       console.error('Create citation response validation failed', validated.error)
       return error(500, { message: 'Invalid response shape' })
     }
-
     return json(payload, { status: 201 })
-
   } catch (err: any) {
     console.error('Error creating citation:', err)
-
     if (err instanceof z.ZodError) {
       return json({ success: false, message: 'Invalid citation data', details: err.errors }, { status: 400 })
     }
-
     return json({ success: false, message: 'Failed to create citation', details: err.message }, { status: 500 })
   }
 }

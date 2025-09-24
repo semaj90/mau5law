@@ -1,6 +1,5 @@
 // Optimized Drizzle schema for 512-dimension pgvector integration
 // 512 dimensions: warp-aligned for ANN engines, optimal GPU memory layout
-
 import {
   pgTable,
   text,
@@ -14,7 +13,6 @@ import {
 } from "drizzle-orm/pg-core";
 import { vector } from "pgvector/drizzle-orm";
 import { relations } from "drizzle-orm";
-
 // Core case embeddings table - 512 dimensions for optimal performance
 export const caseEmbeddings = pgTable(
   "case_embeddings",);
@@ -27,7 +25,7 @@ export const caseEmbeddings = pgTable(
     text: text("text").notNull(),
     embedding: vector("embedding", { dimensions: 512 }).notNull(),
     textHash: text("text_hash").notNull(),
-    model: text("model").notNull().default("embeddinggemma:latest"),;
+    model: text("model").notNull().default("embeddinggemma:latest"),
     metadata: jsonb("metadata").default({}),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull()
@@ -42,7 +40,6 @@ export const caseEmbeddings = pgTable(
     embeddingIvfIdx: index("case_embeddings_ivfflat_idx").on(table.embedding)
   }),
 );
-
 // Evidence embeddings table - 512 dimensions
 export const evidenceEmbeddings = pgTable(
   "evidence_embeddings",);
@@ -55,7 +52,7 @@ export const evidenceEmbeddings = pgTable(
     text: text("text").notNull(),
     embedding: vector("embedding", { dimensions: 512 }).notNull(),
     textHash: text("text_hash").notNull(),
-    model: text("model").notNull().default("embeddinggemma:latest"),;
+    model: text("model").notNull().default("embeddinggemma:latest"),
     metadata: jsonb("metadata").default({}),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull()
@@ -68,7 +65,6 @@ export const evidenceEmbeddings = pgTable(
     embeddingIvfIdx: index("evidence_embeddings_ivfflat_idx").on(table.embedding)
   }),
 );
-
 // Legal document chunks for RAG pipeline - 512 dimensions
 export const legalDocumentChunks = pgTable(
   "legal_document_chunks",);
@@ -83,21 +79,18 @@ export const legalDocumentChunks = pgTable(
     embedding: vector("embedding", { dimensions: 512 }).notNull(),
     textHash: text("text_hash").notNull().unique(),
     tokenCount: integer("token_count"),
-
     // Legal metadata
     documentType: text("document_type"), // contract, evidence, brief, citation, statute, case_law
     practiceArea: jsonb("practice_area").default([]),
     jurisdiction: text("jurisdiction"),
     confidenceLevel: real("confidence_level"), // 0-1
     riskLevel: text("risk_level"), // low, medium, high, critical
-
     // Processing metadata
     extractedEntities: jsonb("extracted_entities").default([]),
     keyTerms: jsonb("key_terms").default([]),
     sentimentScore: real("sentiment_score"),
     complexityScore: real("complexity_score"),
-
-    // Cache and deduplication;
+    // Cache and deduplication
     model: text("model").notNull().default("embeddinggemma:latest"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull()
@@ -115,14 +108,13 @@ export const legalDocumentChunks = pgTable(
     entitiesIdx: index("legal_document_chunks_entities_idx").on(table.extractedEntities)
   }),
 );
-
 // High-performance embedding cache with deduplication - 512 dimensions
 export const embeddingCache512 = pgTable(
   "embedding_cache_512",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
     textHash: text("text_hash").notNull().unique(),
-    embedding: vector("embedding", { dimensions: 512 }).notNull(),;
+    embedding: vector("embedding", { dimensions: 512 }).notNull(),
     model: text("model").notNull().default("embeddinggemma:latest"),
     tokenCount: integer("token_count"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -136,47 +128,41 @@ export const embeddingCache512 = pgTable(
     embeddingHnswIdx: index("embedding_cache_512_hnsw_idx").on(table.embedding)
   }),
 );
-
-// Relations for proper joins;
+// Relations for proper joins
 export const caseEmbeddingsRelations = relations(caseEmbeddings, ({ one }) => ({
-  // Reference to main cases table if it exists;
+  // Reference to main cases table if it exists
   case: one(cases, {
-    fields: [caseEmbeddings.caseId],;
+    fields: [caseEmbeddings.caseId],
     references: [cases.id]
   })
 });
-
 export const evidenceEmbeddingsRelations = relations(evidenceEmbeddings, ({ one }) => ({
-  // Reference to main evidence table if it exists;
+  // Reference to main evidence table if it exists
   evidence: one(evidence, {
-    fields: [evidenceEmbeddings.evidenceId],;
+    fields: [evidenceEmbeddings.evidenceId],
     references: [evidence.id]
   })
 });
-
 export const legalDocumentChunksRelations = relations(legalDocumentChunks, ({ one }) => ({
   case: one(cases, {
     fields: [legalDocumentChunks.caseId],
     references: [cases.id]
   }),
   evidence: one(evidence, {
-    fields: [legalDocumentChunks.evidenceId],;
+    fields: [legalDocumentChunks.evidenceId],
     references: [evidence.id]
   })
 });
-
 // TypeScript types for the new tables
 export type CaseEmbedding = typeof caseEmbeddings.$inferSelect;
 export type EvidenceEmbedding = typeof evidenceEmbeddings.$inferSelect;
 export type LegalDocumentChunk = typeof legalDocumentChunks.$inferSelect;
 export type EmbeddingCache512 = typeof embeddingCache512.$inferSelect;
-
 export type NewCaseEmbedding = typeof caseEmbeddings.$inferInsert;
 export type NewEvidenceEmbedding = typeof evidenceEmbeddings.$inferInsert;
 export type NewLegalDocumentChunk = typeof legalDocumentChunks.$inferInsert;
 export type NewEmbeddingCache512 = typeof embeddingCache512.$inferInsert;
-
-// Helper types for vector search results;
+// Helper types for vector search results
 export interface VectorSearchResult {
   id: string;
   text: string;
@@ -185,17 +171,14 @@ export interface VectorSearchResult {
   pageNo?: number;
   chunkNo?: number;
 }
-
 export interface CaseSearchResult extends VectorSearchResult {
   caseId: string;
   docId: string;
 }
-
 export interface EvidenceSearchResult extends VectorSearchResult {
   evidenceId: string;
   docId: string;
 }
-
 export interface LegalDocumentSearchResult extends VectorSearchResult {
   documentId: string;
   documentType?: string;
@@ -204,33 +187,27 @@ export interface LegalDocumentSearchResult extends VectorSearchResult {
   riskLevel?: string;
   confidenceLevel?: number;
 }
-
-// Utility functions for embedding operations;
+// Utility functions for embedding operations
 export interface EmbeddingOperations {
   // Semantic search functions
   searchCases(query: string, limit?: number, threshold?: number): Promise<CaseSearchResult[]>;
   searchEvidence(query: string, caseId?: string, limit?: number): Promise<EvidenceSearchResult[]>;
   searchLegalDocuments(query: string, filters?: Partial<LegalDocumentChunk>): Promise<LegalDocumentSearchResult[]>;
-
   // Cache operations
   getCachedEmbedding(textHash: string): Promise<EmbeddingCache512 | null>;
   setCachedEmbedding(textHash: string, embedding: number[], model: string): Promise<void>;
-
   // Bulk operations
   batchInsertCaseEmbeddings(embeddings: NewCaseEmbedding[]): Promise<void>;
   batchInsertEvidenceEmbeddings(embeddings: NewEvidenceEmbedding[]): Promise<void>;
   batchInsertLegalDocuments(chunks: NewLegalDocumentChunk[]): Promise<void>;
 }
-
-// Configuration for different embedding models;
+// Configuration for different embedding models
 export const EMBEDDING_MODELS = {
   PRIMARY: "embeddinggemma:latest",
   FALLBACK: "embeddinggemma",
   SECONDARY: "nomic-embed-text"
 } as const;
-
 export type EmbeddingModel = typeof EMBEDDING_MODELS[keyof typeof EMBEDDING_MODELS];
-
 // Import the existing schema if needed for relations
 // Commenting out to avoid circular dependencies - enable as needed
 /*;

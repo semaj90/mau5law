@@ -3,26 +3,19 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousemove) and new syntaxes for event handling is not allowed. Use only the onmousemove syntax -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { browser } from '$app/environment';
   import { autoTaggingMachine } from '$lib/stores/autoTaggingMachine';
   import { useMachine } from '@xstate/svelte';
-  import {  , onMount  } from "svelte";
-
-  
+  import { onMount  } from "svelte";
   const { snapshot, send } = useMachine(autoTaggingMachine);
-
   // Access state from snapshot
   let state = $derived($snapshot);
-
   let { caseId = $bindable(), readOnly = false } = $props();
   let canvas: HTMLCanvasElement = $state(undefined as any);
   let ctx: CanvasRenderingContext2D;
   let canvasContainer: HTMLDivElement;
-
   // Enhanced file nodes with connections
   let fileNodes = $state<any[]>([]) => []);
-
   // Node connections for relationship visualization
   let nodeConnections = $state<any[]>([]) => []);
   let selectedNodeId = $state<string | null>(null);
@@ -31,7 +24,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   let isConnecting = $state(false);
   let connectingFromId = $state<string | null>(null);
   let dragOffset = $state({ x: 0, y: 0 });
-
   // Enhanced canvas state with zoom and pan
   let canvasWidth = $state(800);
   let canvasHeight = $state(600);
@@ -41,77 +33,58 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   let panOffset = $state({ x: 0, y: 0 });
   let isPanning = $state(false);
   let lastPanPoint = $state({ x: 0, y: 0 });
-
   // Auto-save state
   let autoSaveTimer: ReturnType<typeof setInterval>;
   let isAutoSaving = $state(false);
-
   $effect(() => {
     if (!browser) return;
-
     ctx = canvas.getContext('2d')!;
     resizeCanvas();
     draw();
-
     // Setup event listeners
     window.addEventListener('resize', resizeCanvas);
-
     // Auto-save every 10 seconds
     autoSaveTimer = setInterval(autoSave, 10000);
-
     return () => {
       window.removeEventListener('resize', resizeCanvas);
       clearInterval(autoSaveTimer);
     };
   });
-
   function resizeCanvas() {
     if (!canvasContainer || !canvas) return;
-
     const rect = canvasContainer.getBoundingClientRect();
     canvasWidth = rect.width;
     canvasHeight = rect.height;
-
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
-
     draw();
   }
   function draw() {
     if (!ctx) return;
-
     // Clear canvas
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
     // Save context for transformations
     ctx.save();
-
     // Apply zoom and pan transformations
     ctx.translate(panOffset.x, panOffset.y);
     ctx.scale(zoomLevel, zoomLevel);
-
     // Set background
     ctx.fillStyle = '#f8fafc';
     ctx.fillRect(-panOffset.x / zoomLevel, -panOffset.y / zoomLevel, canvasWidth / zoomLevel, canvasHeight / zoomLevel);
-
     // Draw grid
     drawGrid();
-
     // Draw node connections first (behind nodes)
     drawConnections();
-
     // Draw file nodes
     fileNodes.forEach(node => {
       drawFileNode(node);
     });
-
     // Draw connection preview if connecting
     if (isConnecting && connectingFromId) {
       drawConnectionPreview();
   }
     // Restore context
     ctx.restore();
-
     // Draw UI overlay (zoom controls, etc.)
     drawUIOverlay();
   }
@@ -119,12 +92,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     const gridSize = 40;
     ctx.strokeStyle = '#e2e8f0';
     ctx.lineWidth = 1 / zoomLevel;
-
-    const startX = Math.floor((-panOffset.x / zoomLevel) / gridSize) * gridSize;
-    const startY = Math.floor((-panOffset.y / zoomLevel) / gridSize) * gridSize;
-    const endX = startX + (canvasWidth / zoomLevel) + gridSize;
-    const endY = startY + (canvasHeight / zoomLevel) + gridSize;
-
+    const startX = Math.floor((-panOffset.x / zoomLevel) / gridSize) * gridSiz;
+    const startY = Math.floor((-panOffset.y / zoomLevel) / gridSize) * gridSiz;
+    const endX = startX + (canvasWidth / zoomLevel) + gridSiz;
+    const endY = startY + (canvasHeight / zoomLevel) + gridSiz;
     // Vertical lines
     for (let x = startX; x < endX; x += gridSize) {
       ctx.beginPath();
@@ -144,32 +115,25 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     nodeConnections.forEach(connection => {
       const fromNode = fileNodes.find(n => n.id === connection.fromId);
       const toNode = fileNodes.find(n => n.id === connection.toId);
-
       if (!fromNode || !toNode) return;
-
       const fromX = fromNode.x + fromNode.width / 2;
       const fromY = fromNode.y + fromNode.height / 2;
       const toX = toNode.x + toNode.width / 2;
       const toY = toNode.y + toNode.height / 2;
-
       // Connection line
       ctx.strokeStyle = getConnectionColor(connection.type);
       ctx.lineWidth = Math.max(2, connection.strength * 4) / zoomLevel;
       ctx.setLineDash([]);
-
       ctx.beginPath();
       ctx.moveTo(fromX, fromY);
       ctx.lineTo(toX, toY);
       ctx.stroke();
-
       // Arrow head
       drawArrowHead(fromX, fromY, toX, toY);
-
       // Connection label
       if (connection.label) {
         const midX = (fromX + toX) / 2;
         const midY = (fromY + toY) / 2;
-
         ctx.fillStyle = '#374151';
         ctx.font = `${12 / zoomLevel}px -apple-system, BlinkMacSystemFont, sans-serif`;
         ctx.textAlign = 'center';
@@ -190,7 +154,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     const angle = Math.atan2(toY - fromY, toX - fromX);
     const arrowLength = 15 / zoomLevel;
     const arrowAngle = Math.PI / 6;
-
     ctx.beginPath();
     ctx.moveTo(toX, toY);
     ctx.lineTo(
@@ -211,10 +174,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   function drawFileNode(node: unknown) {
     const isSelected = selectedNodeId === node.id;
     const isHovered = hoveredNodeId === node.id;
-
     // Enhanced node styling with gradients and shadows
     const nodeGradient = ctx.createLinearGradient(node.x, node.y, node.x, node.y + node.height);
-
     if (isSelected) {
       nodeGradient.addColorStop(0, '#3b82f6');
       nodeGradient.addColorStop(1, '#1d4ed8');
@@ -230,34 +191,27 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     ctx.shadowBlur = 10 / zoomLevel;
     ctx.shadowOffsetX = 2 / zoomLevel;
     ctx.shadowOffsetY = 2 / zoomLevel;
-
     // Node background
     ctx.fillStyle = nodeGradient;
     ctx.strokeStyle = isSelected ? '#1d4ed8' : '#d1d5db';
     ctx.lineWidth = (isSelected ? 2 : 1) / zoomLevel;
-
     // Draw rounded rectangle
     roundRect(ctx, node.x, node.y, node.width, node.height, 8 / zoomLevel);
     ctx.fill();
     ctx.stroke();
-
     // Reset shadow
     ctx.shadowColor = 'transparent';
-
     // File type indicator bar
     const typeColor = getFileTypeColor(node.type);
     ctx.fillStyle = typeColor;
     ctx.fillRect(node.x, node.y, node.width, 4 / zoomLevel);
-
     // File icon
     const iconSize = 20 / zoomLevel;
     const iconX = node.x + 8 / zoomLevel;
     const iconY = node.y + 10 / zoomLevel;
-
     ctx.fillStyle = typeColor;
     ctx.font = `${iconSize}px Arial`;
     ctx.fillText(getFileIcon(node.type), iconX, iconY + iconSize);
-
     // File name
     ctx.fillStyle = isSelected ? '#ffffff' : '#1f2937';
     ctx.font = `${14 / zoomLevel}px -apple-system, BlinkMacSystemFont, sans-serif`;
@@ -267,7 +221,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       iconX + iconSize + 8 / zoomLevel,
       node.y + 24 / zoomLevel
     );
-
     // AI tags indicator with count
     if (node.aiTags && node.aiTags.tags?.length > 0) {
       const tagCount = node.aiTags.tags.length;
@@ -288,7 +241,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       { x: node.x + node.width / 2, y: node.y + node.height }, // Bottom
       { x: node.x, y: node.y + node.height / 2 } // Left
     ];
-
     ctx.fillStyle = '#3b82f6';
     points.forEach(point => {
       ctx.beginPath();
@@ -327,7 +279,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
   function truncateText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string {
     if (ctx.measureText.width <= maxWidth) return text;
-
     let truncated = text;
     while (ctx.measureText.width > maxWidth && truncated.length > 0) {
       truncated = truncated.slice(0, -1);
@@ -337,17 +288,13 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   function drawUIOverlay() {
     // Reset transformations for UI overlay
     ctx.resetTransform();
-
     // Zoom controls
     const controlsX = canvasWidth - 120;
     const controlsY = 20;
-
     // Zoom in button
     drawButton(ctx, controlsX, controlsY, 40, 30, '+', zoomLevel < maxZoom);
-
     // Zoom out button
     drawButton(ctx, controlsX + 50, controlsY, 40, 30, '-', zoomLevel > minZoom);
-
     // Zoom level display
     ctx.fillStyle = '#374151';
     ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
@@ -358,10 +305,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     ctx.fillStyle = enabled ? '#ffffff' : '#f3f4f6';
     ctx.strokeStyle = '#d1d5db';
     ctx.lineWidth = 1;
-
     ctx.fillRect(x, y, width, height);
     ctx.strokeRect(x, y, width, height);
-
     ctx.fillStyle = enabled ? '#374151' : '#9ca3af';
     ctx.font = '16px Arial';
     ctx.textAlign = 'center';
@@ -371,22 +316,18 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   async function handleDrop(event: DragEvent) {
     event.preventDefault();
     if (readOnly) return;
-
     const files = Array.from(event.dataTransfer?.files || []);
     const rect = canvas.getBoundingClientRect();
     const dropX = (event.clientX - rect.left - panOffset.x) / zoomLevel;
     const dropY = (event.clientY - rect.top - panOffset.y) / zoomLevel;
-
     for (const file of files) {
       await processDroppedFile(file, dropX, dropY);
   }
   }
   async function processDroppedFile(file: File, x: number, y: number) {
     const reader = new FileReader();
-
     reader.onload = async (e) => {
       const content = e.target?.result as string;
-
       const node = {
         id: crypto.randomUUID(),
         name: file.name,
@@ -396,49 +337,40 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         y: y - 25,
         width: 150,
         height: 80,
-        aiTags: null,;
-        metadata: null,;
+        aiTags: null
+        metadata: null
         connections: [];
       };
-
       fileNodes.push(node);
       draw();
-
       // Use XState machine for auto-tagging
       send({ type: 'DROP_FILE', node });
-
       // Auto-tag the file with enhanced processing
       await autoTagFileEnhanced(node);
     };
-
     reader.readAsDataURL(file);
   }
   async function autoTagFileEnhanced(node: unknown) {
     try {
       const response = await fetch('/api/ai/tag', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           content: node.content,
           fileName: node.name,
-          fileType: node.type,;
-          enhanced: true // Request enhanced analysis;
+          fileType: node.type,
+          enhanced: true // Request enhanced analysi
         })
       });
-
       if (response.ok) {
         const aiTags = await response.json();
-        node.aiTags = aiTags;
-
+        node.aiTags = aiTag;
         // Auto-create connections based on shared entities
         createSmartConnections(node);
-
         draw();
-
         // Dispatch events for other panels
         ondispatch?.({ node, aiTags });
         ondispatch?.(node);
-
         // Auto-save after tagging
         await autoSave();
   }
@@ -448,34 +380,28 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
   function createSmartConnections(newNode: unknown) {
     if (!newNode.aiTags) return;
-
-    const { people, locations, organizations } = newNode.aiTags;
-
+    const { people, locations, organizations } = newNode.aiTag;
     fileNodes.forEach(existingNode => {
       if (existingNode.id === newNode.id || !existingNode.aiTags) return;
-
       // Check for shared people
       const sharedPeople = people?.filter(person =>
         existingNode.aiTags.people?.includes(person)
       ) || [];
-
       // Check for shared locations
       const sharedLocations = locations?.filter(location =>
         existingNode.aiTags.locations?.includes(location)
       ) || [];
-
       // Check for shared organizations
       const sharedOrganizations = organizations?.filter(org =>
         existingNode.aiTags.organizations?.includes(org)
       ) || [];
-
       // Create connections based on shared entities
       if (sharedPeople.length > 0) {
         nodeConnections.push({
           fromId: newNode.id,
           toId: existingNode.id,
-          type: 'person',;
-          strength: sharedPeople.length / Math.max(people?.length || 1, 1),;
+          type: 'person',
+          strength: sharedPeople.length / Math.max(people?.length || 1, 1),
           label: sharedPeople[0];
         });
   }
@@ -483,8 +409,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         nodeConnections.push({
           fromId: newNode.id,
           toId: existingNode.id,
-          type: 'location',;
-          strength: sharedLocations.length / Math.max(locations?.length || 1, 1),;
+          type: 'location',
+          strength: sharedLocations.length / Math.max(locations?.length || 1, 1),
           label: sharedLocations[0];
         });
   }
@@ -492,8 +418,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         nodeConnections.push({
           fromId: newNode.id,
           toId: existingNode.id,
-          type: 'organization',;
-          strength: sharedOrganizations.length / Math.max(organizations?.length || 1, 1),;
+          type: 'organization',
+          strength: sharedOrganizations.length / Math.max(organizations?.length || 1, 1),
           label: sharedOrganizations[0];
         });
   }
@@ -502,17 +428,15 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   function getMousePosition(event: MouseEvent) {
     const rect = canvas.getBoundingClientRect();
     return {
-      x: (event.clientX - rect.left - panOffset.x) / zoomLevel,;
+      x: (event.clientX - rect.left - panOffset.x) / zoomLevel,
       y: (event.clientY - rect.top - panOffset.y) / zoomLevel;
     };
   }
   function handleCanvasClick(event: MouseEvent) {
     const mouse = getMousePosition(event);
-
     // Check for zoom control clicks first
     const controlsX = canvasWidth - 120;
     const controlsY = 20;
-
     if (event.clientX >= controlsX && event.clientX <= controlsX + 40 &&
         event.clientY >= controlsY && event.clientY <= controlsY + 30) {
       zoomIn();
@@ -528,7 +452,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       mouse.x >= node.x && mouse.x <= node.x + node.width &&
       mouse.y >= node.y && mouse.y <= node.y + node.height
     );
-
     if (clickedNode) {
       selectedNodeId = clickedNode.id;
       send({ type: 'SELECT_NODE', node: clickedNode });
@@ -541,7 +464,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
   function handleMouseDown(event: MouseEvent) {
     const mouse = getMousePosition(event);
-
     if (event.button === 1 || (event.button === 0 && event.ctrlKey)) {
       // Middle mouse or Ctrl+click for panning
       isPanning = true;
@@ -553,7 +475,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       mouse.x >= node.x && mouse.x <= node.x + node.width &&
       mouse.y >= node.y && mouse.y <= node.y + node.height
     );
-
     if (clickedNode && !readOnly) {
       if (event.shiftKey) {
         // Shift+click to start connecting
@@ -570,14 +491,11 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
   function handleMouseMove(event: MouseEvent) {
     const mouse = getMousePosition(event);
-
     if (isPanning) {
       const deltaX = event.clientX - lastPanPoint.x;
       const deltaY = event.clientY - lastPanPoint.y;
-
       panOffset.x += deltaX;
       panOffset.y += deltaY;
-
       lastPanPoint = { x: event.clientX, y: event.clientY };
       draw();
       return;
@@ -596,7 +514,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       mouse.x >= node.x && mouse.x <= node.x + node.width &&
       mouse.y >= node.y && mouse.y <= node.y + node.height
     );
-
     const newHoveredId = hoveredNode?.id || null;
     if (newHoveredId !== hoveredNodeId) {
       hoveredNodeId = newHoveredId;
@@ -608,7 +525,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     isPanning = false;
     isDragging = false;
     canvas.style.cursor = 'default';
-
     if (isDragging) {
       // Auto-save after moving nodes
       autoSave();
@@ -616,20 +532,16 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
   function handleWheel(event: WheelEvent) {
     event.preventDefault();
-
     const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1;
     const newZoom = Math.max(minZoom, Math.min(maxZoom, zoomLevel * zoomFactor));
-
     if (newZoom !== zoomLevel) {
       const rect = canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
-
       // Zoom towards mouse position
       const zoomRatio = newZoom / zoomLevel;
       panOffset.x = mouseX - (mouseX - panOffset.x) * zoomRatio;
       panOffset.y = mouseY - (mouseY - panOffset.y) * zoomRatio;
-
       zoomLevel = newZoom;
       draw();
   }
@@ -659,27 +571,24 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   // Auto-save functionality
   async function autoSave() {
     if (isAutoSaving) return;
-
     isAutoSaving = true;
     try {
       const canvasState = {
-        nodes: fileNodes,;
-        connections: nodeConnections,;
+        nodes: fileNodes
+        connections: nodeConnections
         viewport: { zoomLevel, panOffset },
         caseId,
         lastModified: new Date().toISOString()
       };
-
       // Save to API
       await fetch('/api/evidence/save-node', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'auto_save',;
+        body: JSON.stringify({,
+          action: 'auto_save',
           data: { canvasState, caseId }
         })
       });
-
       ondispatch?.(canvasState);
     } catch (error) {
       console.error('Auto-save failed:', error);
@@ -698,14 +607,13 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       y,
       width: 150,
       height: 80,
-      aiTags: null,;
-      metadata: null,;
+      aiTags: null
+      metadata: null
       connections: [];
     };
-
     fileNodes.push(node);
     draw();
-    return node;
+    return nod;
   }
   export function getSelectedNode() {
     return fileNodes.find(node => node.id === selectedNodeId) || null;
@@ -719,14 +627,14 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
   export function exportCanvasState() {
     return {
-      nodes: fileNodes,;
-      connections: nodeConnections,;
+      nodes: fileNodes
+      connections: nodeConnections
       viewport: { zoomLevel, panOffset }
     };
   }
   export function loadCanvasState(state: unknown) {
-    if (state.nodes) fileNodes = state.nodes;
-    if (state.connections) nodeConnections = state.connections;
+    if (state.nodes) fileNodes = state.node;
+    if (state.connections) nodeConnections = state.connection;
     if (state.viewport) {
       zoomLevel = state.viewport.zoomLevel || 1;
       panOffset = state.viewport.panOffset || { x: 0, y: 0 };
@@ -734,7 +642,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     draw();
   }
 </script>
-
 <div class="container mx-auto px-4 enhanced-canvas-editor" bind:this={canvasContainer}>
   <canvas
     bind:this={canvas as any}
@@ -747,7 +654,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     onmouseleave={wheel}
     on:contextmenu|preventDefault
   ></canvas>
-
   <!-- Enhanced drop zone overlay -->
   <div class="container mx-auto px-4">
     <div class="container mx-auto px-4">
@@ -757,7 +663,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       <div class="container mx-auto px-4">Shift+click to connect • Wheel to zoom • Ctrl+drag to pan</div>
     </div>
   </div>
-
   <!-- Auto-save indicator -->
   {#if isAutoSaving}
     <div class="container mx-auto px-4">
@@ -765,7 +670,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       Auto-saving...
     </div>
   {/if}
-
   <!-- XState status indicator -->
   {#if state && state.matches('processing')}
     <div class="container mx-auto px-4">
@@ -773,17 +677,15 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       AI analyzing evidence...
     </div>
   {/if}
-
   {#if state && state.matches('error')}
     <div class="container mx-auto px-4">
       AI analysis failed - Click to retry
     </div>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
-  .enhanced-canvas-editor {;
+  .enhanced-canvas-editor {
     background:
       radial-gradient(circle at 25% 25%, #f0f9ff 0%, transparent 50%),
       radial-gradient(circle at 75% 75%, #f0fdf4 0%, transparent 50%),
@@ -792,9 +694,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       linear-gradient(45deg, transparent 75%, #f8fafc 75%),
       linear-gradient(-45deg, transparent 75%, #f8fafc 75%);
     background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px, 40px 40px, 40px 40px;
-    background-position: 0 0, 0 0, 0 0, 0 20px, 20px -20px, -20px 0px;
+    background-position:  0, 0 0, 0 0, 0 20px, 20px -20px, -20px 0px;
 }
 </style>
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

@@ -1,29 +1,25 @@
 
 // Legal AI Form State Machines with XState
 // Advanced state management for legal document processing workflows
-
 import { createMachine, assign, fromPromise, type ActorRefFrom } from "xstate";
 import { z } from "zod";
-
 // ============================================================================
 // ZOD VALIDATION SCHEMAS
 // ============================================================================
-
 export const DocumentUploadSchema = z.object({
   title: z.string().min(1, 'Title is required').max(255, 'Title too long'),
   description: z.string().optional(),
   documentType: z.enum(['contract', 'motion', 'brief', 'evidence', 'correspondence', 'statute', 'regulation', 'case_law', 'other']),
   jurisdiction: z.enum(['federal', 'state', 'local', 'international']).optional(),
-  tags: z.array(z.string()).default([]),;
+  tags: z.array(z.string()).default([]),
   file: z.any().refine((file) => file instanceof File, 'File is required'),
-  aiProcessing: z.object({
+  aiProcessing: z.object({,
     generateSummary: z.boolean().default(true),
     extractEntities: z.boolean().default(true),
     riskAssessment: z.boolean().default(true),
     generateRecommendations: z.boolean().default(false)
   }).default({})
 });
-
 export const CaseCreationSchema = z.object({
   title: z.string().min(1, 'Case title is required').max(255, 'Title too long'),
   description: z.string().min(10, 'Description must be at least 10 characters').max(5000, 'Description too long'),
@@ -33,19 +29,18 @@ export const CaseCreationSchema = z.object({
   assignedTo: z.string().uuid().optional(),
   jurisdiction: z.enum(['federal', 'state', 'local', 'international']).optional(),
   tags: z.array(z.string()).default([]),
-  estimatedDuration: z.number().min(1).max(365).optional(), // days;
+  estimatedDuration: z.number().min(1).max(365).optional(), // days
   budget: z.number().min(0).optional()
 });
-
 export const SearchQuerySchema = z.object({
   query: z.string().min(1, 'Search query is required').max(500, 'Query too long'),
-  filters: z.object({
+  filters: z.object({,
     documentTypes: z.array(z.string()).default([]),
     jurisdictions: z.array(z.string()).default([]),
-    dateRange: z.object({
+    dateRange: z.object({,
       from: z.date().optional(),
       to: z.date().optional()
-    }).optional(),;
+    }).optional(),
     tags: z.array(z.string()).default([]),
     similarityThreshold: z.number().min(0).max(1).default(0.7),
     maxResults: z.number().min(1).max(100).default(20)
@@ -53,24 +48,21 @@ export const SearchQuerySchema = z.object({
   useAI: z.boolean().default(true),
   cacheResults: z.boolean().default(true)
 });
-
 export const AIAnalysisSchema = z.object({
   documentId: z.string().uuid(),
   analysisType: z.enum(['summary', 'entities', 'risk', 'recommendations', 'precedents', 'compliance']),
-  options: z.object({
-    model: z.string().default('gemma3-legal:latest'),;
+  options: z.object({,
+    model: z.string().default('gemma3-legal:latest'),
     temperature: z.number().min(0).max(2).default(0.7),
     maxTokens: z.number().min(100).max(8000).default(2000),
     includeConfidence: z.boolean().default(true),
     generateCitations: z.boolean().default(true)
   }).default({})
 });
-
 // ============================================================================
 // STATE MACHINE CONTEXTS
-// ============================================================================;
+// ============================================================================
 }
-
 export interface DocumentUploadContext {
   formData: z.infer<typeof DocumentUploadSchema> | null;
   validationErrors: Record<string, string[]>;
@@ -82,7 +74,6 @@ export interface DocumentUploadContext {
   retryCount: number;
   maxRetries: number;
 }
-
 export interface CaseCreationContext {
   formData: z.infer<typeof CaseCreationSchema> | null;
   validationErrors: Record<string, string[]>;
@@ -92,7 +83,6 @@ export interface CaseCreationContext {
   isAutoSaving: boolean;
   lastSaved: Date | null;
 }
-
 export interface SearchContext {
   query: z.infer<typeof SearchQuerySchema> | null;
   results: any[];
@@ -100,7 +90,7 @@ export interface SearchContext {
   isSearching: boolean;
   searchHistory: string[];
   filters: any;
-  pagination: {;
+  pagination: {
     page: number;
     pageSize: number;
     total: number;
@@ -112,7 +102,6 @@ export interface SearchContext {
   } | null;
   error: string | null;
 }
-
 export interface AIAnalysisContext {
   analysisData: z.infer<typeof AIAnalysisSchema> | null;
   validationErrors: Record<string, string[]>;
@@ -125,24 +114,22 @@ export interface AIAnalysisContext {
   isStreaming: boolean;
   streamedContent: string;
 }
-
 // ============================================================================
 // DOCUMENT UPLOAD STATE MACHINE
 // ============================================================================
-
 export const documentUploadMachine = createMachine();
   {
     /** @xstate-layout N4IgpgJg5mDOIC5QAoC2BDAxgCwJYDswBKAOhwRABtEJMAPVAQzAEsKwBiD3VAIwEcKAGwCuPAB4J4yHnT5cK8VBmwAlOvUQQAJBAAOEgBYJhIAB6JYugJYA2AEwAOSuYDsAGne0LLpWsun6gSCYoGDh4RCQUNAxEURBMFAAzMABrZFQpOXtZAGtUZCwsXDBwOXjMtOJyBBtEMzVLCyd9fXNzKe9fEECkELCIqJoFJEoKOOIU9MksHLzEotKyipq6hqam1vbOpOJOxBUXQdMlHWdpgx8-QOCQxEiqRFKKOKo1ZnXCwonc4rXYGOr6JQaKaqAy0cxOKb-YBBY4dCotZjHFZ3IhPTYvUQfXJ5JJ-f6A4F4sGeEG1OT+NqzZrwAImIA */
     id: 'documentUpload',
     initial: 'idle',
     context: {
-      formData: null,
-      validationErrors: Record<string, any>,
+      formData: null
+      validationErrors: { [key: string]: any },
       uploadProgress: 0,
-      uploadedFile: null,
+      uploadedFile: null
       processingProgress: 0,
-      aiResults: null,
-      error: null,
+      aiResults: null
+      error: null
       retryCount: 0,
       maxRetries: 3
     } as DocumentUploadContext,
@@ -151,7 +138,7 @@ export const documentUploadMachine = createMachine();
         on: {
           VALIDATE_FORM: {
             target: 'validating',
-            actions: assign({
+            actions: assign({,
               formData: ({ event }) => event.data
             })
           }
@@ -164,13 +151,13 @@ export const documentUploadMachine = createMachine();
           input: ({ context }) => context.formData,
           onDone: {
             target: 'valid',
-            actions: assign({
+            actions: assign({,
               validationErrors: () => ({})
             })
           },
           onError: {
             target: 'invalid',
-            actions: assign({
+            actions: assign({,
               validationErrors: ({ event }) => (event as any)?.error ?? {}
             })
           }
@@ -180,7 +167,7 @@ export const documentUploadMachine = createMachine();
         on: {
           VALIDATE_FORM: {
             target: 'validating',
-            actions: assign({
+            actions: assign({,
               formData: ({ event }) => event.data
             })
           },
@@ -192,7 +179,7 @@ export const documentUploadMachine = createMachine();
           UPLOAD: 'uploading',
           VALIDATE_FORM: {
             target: 'validating',
-            actions: assign({
+            actions: assign({,
               formData: ({ event }) => event.data
             })
           }
@@ -205,27 +192,27 @@ export const documentUploadMachine = createMachine();
           input: ({ context }) => context.formData,
           onDone: {
             target: 'uploaded',
-            actions: assign({
+            actions: assign({,
               uploadedFile: ({ event }) => (event.output as any) ?? null,
               uploadProgress: () => 100
             })
           },
           onError: {
             target: 'uploadError',
-            actions: assign({
+            actions: assign({,
               error: ({ event }) => (event as any)?.error?.message ?? String((event as any)?.error)
             })
           }
         },
         on: {
           UPLOAD_PROGRESS: {
-            actions: assign({
+            actions: assign({,
               uploadProgress: ({ event }) => event.progress
             })
           }
         }
       },
-      uploaded: {;
+      uploaded: {
         always: [;
           {
             target: 'processing',
@@ -247,33 +234,33 @@ export const documentUploadMachine = createMachine();
           }),
           onDone: {
             target: 'completed',
-            actions: assign({
+            actions: assign({,
               aiResults: ({ event }) => (event.output as any) ?? null,
               processingProgress: () => 100
             })
           },
           onError: {
             target: 'processingError',
-            actions: assign({
+            actions: assign({,
               error: ({ event }) => (event as any)?.error?.message ?? String((event as any)?.error)
             })
           }
         },
         on: {
           PROCESSING_PROGRESS: {
-            actions: assign({
+            actions: assign({,
               processingProgress: ({ event }) => event.progress
             })
           }
         }
       },
-      uploadError: {;
+      uploadError: {
         on: {
           RETRY: [;
             {
               target: 'uploading',
               guard: ({ context }) => context.retryCount < context.maxRetries,
-              actions: assign({
+              actions: assign({,
                 retryCount: ({ context }) => context.retryCount + 1,
                 error: () => null
               })
@@ -283,13 +270,13 @@ export const documentUploadMachine = createMachine();
           RESET: 'idle'
         }
       },
-      processingError: {;
+      processingError: {
         on: {
           RETRY: [;
             {
               target: 'processing',
               guard: ({ context }) => context.retryCount < context.maxRetries,
-              actions: assign({
+              actions: assign({,
                 retryCount: ({ context }) => context.retryCount + 1,
                 error: () => null
               })
@@ -313,7 +300,7 @@ export const documentUploadMachine = createMachine();
       }
     }
   },
-  {;
+  {
     actors: {
       validateDocumentForm: fromPromise(async ({ input }) => {
         try {
@@ -338,50 +325,43 @@ export const documentUploadMachine = createMachine();
             formData.append(key, String(value);
           }
         });
-
         const response = await fetch('/api/documents/upload', {
-          method: 'POST',;
+          method: 'POST',
           body: formData
         });
-
         if (!response.ok) {
           throw new Error(`Upload failed: ${response.statusText}`);
         }
-
         return await response.json();
       }),
       processDocument: fromPromise(async ({ input }) => {
         const response = await fetch('/api/ai/process-document', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },;
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(input)
         });
-
         if (!response.ok) {
           throw new Error(`Processing failed: ${response.statusText}`);
         }
-
         return await response.json();
       })
     }
   }
 );
-
 // ============================================================================
 // CASE CREATION STATE MACHINE
 // ============================================================================
-
 export const caseCreationMachine = createMachine();
   {
     id: 'caseCreation',
     initial: 'idle',
     context: {
-      formData: null,
-      validationErrors: Record<string, any>,
-      createdCase: null,
+      formData: null
+      validationErrors: { [key: string]: any },
+      createdCase: null
       relatedDocuments: [],
-      error: null,
-      isAutoSaving: false,
+      error: null
+      isAutoSaving: false
       lastSaved: null
     } as CaseCreationContext,
     states: {
@@ -397,7 +377,7 @@ export const caseCreationMachine = createMachine();
           src: 'loadDraft',
           onDone: {
             target: 'editing',
-            actions: assign({
+            actions: assign({,
               formData: ({ event }) => event.output
             })
           },
@@ -408,7 +388,7 @@ export const caseCreationMachine = createMachine();
         on: {
           UPDATE_FORM: {
             target: 'editing',
-            actions: assign({
+            actions: assign({,
               formData: ({ event }) => event.data
             })
           }
@@ -436,19 +416,19 @@ export const caseCreationMachine = createMachine();
           input: ({ context }) => context.formData,
           onDone: {
             target: 'editing',
-            actions: assign({
+            actions: assign({,
               lastSaved: () => new Date(),
               isAutoSaving: () => false
             })
           },
           onError: {
             target: 'editing',
-            actions: assign({
+            actions: assign({,
               isAutoSaving: () => false
             })
           }
         },
-        entry: assign({
+        entry: assign({,
           isAutoSaving: () => true
         })
       },
@@ -459,8 +439,8 @@ export const caseCreationMachine = createMachine();
           input: ({ context }) => context.formData,
           onDone: 'submitting',
           onError: {
-            target: 'editing',;
-            actions: assign({
+            target: 'editing',
+            actions: assign({,
               validationErrors: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'issues' in error) {
@@ -486,13 +466,13 @@ export const caseCreationMachine = createMachine();
           input: ({ context }) => context.formData,
           onDone: {
             target: 'completed',
-            actions: assign({
+            actions: assign({,
               createdCase: ({ event }) => event.output
             })
           },
           onError: {
             target: 'editing',
-            actions: assign({;
+            actions: assign({,
               error: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'message' in error) {
@@ -512,7 +492,7 @@ export const caseCreationMachine = createMachine();
       }
     }
   },
-  {;
+  {
     actors: {
       loadDraft: fromPromise(async () => {
         // Load draft from localStorage or API
@@ -538,41 +518,37 @@ export const caseCreationMachine = createMachine();
       createCase: fromPromise(async ({ input }) => {
         const response = await fetch('/api/cases', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },;
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(input)
         });
-
         if (!response.ok) {
           throw new Error(`Case creation failed: ${response.statusText}`);
         }
-
         return await response.json();
       })
     }
   }
 );
-
 // ============================================================================
 // SEARCH STATE MACHINE
 // ============================================================================
-
 export const searchMachine = createMachine();
   {
     id: 'search',
     initial: 'idle',
     context: {
-      query: null,
+      query: null
       results: [],
-      validationErrors: Record<string, any>,
-      isSearching: false,
+      validationErrors: { [key: string]: any },
+      isSearching: false
       searchHistory: [],
-      filters: Record<string, any>,
+      filters: { [key: string]: any },
       pagination: {
         page: 1,
         pageSize: 20,
         total: 0
       },
-      analytics: null,
+      analytics: null
       error: null
     } as SearchContext,
     states: {
@@ -588,7 +564,7 @@ export const searchMachine = createMachine();
           src: 'loadSearchHistory',
           onDone: {
             target: 'idle',
-            actions: assign({
+            actions: assign({,
               searchHistory: ({ event }) => event.output
             })
           },
@@ -602,8 +578,8 @@ export const searchMachine = createMachine();
           input: ({ context }) => context.query,
           onDone: 'searching',
           onError: {
-            target: 'idle',;
-            actions: assign({
+            target: 'idle',
+            actions: assign({,
               validationErrors: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'issues' in error) {
@@ -629,7 +605,7 @@ export const searchMachine = createMachine();
           input: ({ context }) => context.query,
           onDone: {
             target: 'results',
-            actions: assign({
+            actions: assign({,
               results: ({ event }) => event.output.results,
               analytics: ({ event }) => event.output.analytics,
               pagination: ({ event }) => event.output.pagination,
@@ -642,7 +618,7 @@ export const searchMachine = createMachine();
           },
           onError: {
             target: 'error',
-            actions: assign({;
+            actions: assign({,
               error: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'message' in error) {
@@ -653,11 +629,11 @@ export const searchMachine = createMachine();
             })
           }
         },
-        entry: assign({
+        entry: assign({,
           isSearching: () => true,
           results: () => []
         }),
-        exit: assign({
+        exit: assign({,
           isSearching: () => false
         })
       },
@@ -665,7 +641,7 @@ export const searchMachine = createMachine();
         on: {
           SEARCH: {
             target: 'validating',
-            actions: assign({
+            actions: assign({,
               query: ({ event }) => event.data
             })
           },
@@ -684,7 +660,7 @@ export const searchMachine = createMachine();
           }),
           onDone: {
             target: 'results',
-            actions: assign({
+            actions: assign({,
               results: ({ context, event }) => [...context.results, ...event.output.results],
               pagination: ({ event }) => event.output.pagination
             })
@@ -700,7 +676,7 @@ export const searchMachine = createMachine();
       }
     }
   },
-  {;
+  {
     actors: {
       loadSearchHistory: fromPromise(async () => {
         const history = localStorage.getItem('search-history');
@@ -721,21 +697,17 @@ export const searchMachine = createMachine();
         const query = input?.query || '';
         const response = await fetch('/api/search/vector', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },;
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(input)
         });
-
         if (!response.ok) {
           throw new Error(`Search failed: ${response.statusText}`);
         }
-
         const data = await response.json();
-
         // Save to history
         const history = JSON.parse(localStorage.getItem('search-history') || '[]');
         const updatedHistory = [query, ...history.filter((q: string) => q !== query)].slice(0, 10);
         localStorage.setItem('search-history', JSON.stringify(updatedHistory);
-
         return data;
       }),
       loadMoreResults: fromPromise(async ({ input }: { input: any }) => {
@@ -745,39 +717,35 @@ export const searchMachine = createMachine();
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            ...query,;
+            ...query,
             pagination: { page }
           })
         });
-
         if (!response.ok) {
           throw new Error(`Load more failed: ${response.statusText}`);
         }
-
         return await response.json();
       })
     }
   }
 );
-
 // ============================================================================
 // AI ANALYSIS STATE MACHINE
 // ============================================================================
-
 export const aiAnalysisMachine = createMachine();
   {
     id: 'aiAnalysis',
     initial: 'idle',
     context: {
-      analysisData: null,
-      validationErrors: Record<string, any>,
-      analysisResults: null,
+      analysisData: null
+      validationErrors: { [key: string]: any },
+      analysisResults: null
       confidence: 0,
       processingTime: 0,
       tokensUsed: 0,
       model: 'gemma3-legal:latest',
-      error: null,
-      isStreaming: false,
+      error: null
+      isStreaming: false
       streamedContent: ''
     } as AIAnalysisContext,
     states: {
@@ -793,8 +761,8 @@ export const aiAnalysisMachine = createMachine();
           input: ({ context }) => context.analysisData,
           onDone: 'analyzing',
           onError: {
-            target: 'idle',;
-            actions: assign({
+            target: 'idle',
+            actions: assign({,
               validationErrors: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'issues' in error) {
@@ -820,7 +788,7 @@ export const aiAnalysisMachine = createMachine();
           input: ({ context }) => context.analysisData,
           onDone: {
             target: 'completed',
-            actions: assign({
+            actions: assign({,
               analysisResults: ({ event }) => event.output.results,
               confidence: ({ event }) => event.output.confidence,
               processingTime: ({ event }) => event.output.processingTime,
@@ -829,7 +797,7 @@ export const aiAnalysisMachine = createMachine();
           },
           onError: {
             target: 'error',
-            actions: assign({;
+            actions: assign({,
               error: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'message' in error) {
@@ -842,7 +810,7 @@ export const aiAnalysisMachine = createMachine();
         },
         on: {
           STREAM_CONTENT: {
-            actions: assign({
+            actions: assign({,
               streamedContent: ({ context, event }) => context.streamedContent + event.content,
               isStreaming: () => true
             })
@@ -863,7 +831,7 @@ export const aiAnalysisMachine = createMachine();
       }
     }
   },
-  {;
+  {
     actors: {
       validateAnalysis: fromPromise(async ({ input }) => {
         try {
@@ -878,19 +846,15 @@ export const aiAnalysisMachine = createMachine();
       }),
       performAnalysis: fromPromise(async ({ input }) => {
         const startTime = Date.now();
-
         const response = await fetch('/api/ai/analyze', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },;
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(input)
         });
-
         if (!response.ok) {
           throw new Error(`Analysis failed: ${response.statusText}`);
         }
-
         const data = await response.json();
-
         return {
           ...data,
           processingTime: Date.now() - startTime
@@ -899,19 +863,15 @@ export const aiAnalysisMachine = createMachine();
     }
   }
 );
-
 // ============================================================================
 // TYPE EXPORTS
 // ============================================================================
-
 export type DocumentUploadMachine = typeof documentUploadMachine;
 export type CaseCreationMachine = typeof caseCreationMachine;
 export type SearchMachine = typeof searchMachine;
 export type AIAnalysisMachine = typeof aiAnalysisMachine;
-
 export type DocumentUploadActor = ActorRefFrom<DocumentUploadMachine>;
 export type CaseCreationActor = ActorRefFrom<CaseCreationMachine>;
 export type SearchActor = ActorRefFrom<SearchMachine>;
 export type AIAnalysisActor = ActorRefFrom<AIAnalysisMachine>;
-
 // Schemas are already exported above where they are defined

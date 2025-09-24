@@ -1,6 +1,5 @@
 import { writable, derived, type Writable } from 'svelte/store';
 }
-
 export interface TableState {
   id: string;
   sortColumn: string | null;
@@ -13,7 +12,6 @@ export interface TableState {
   columnWidths: Map<string, number>;
   expandedRows: Set<string | number>;
 }
-
 export interface TableNotification {
   id: string;
   type: 'info' | 'success' | 'warning' | 'error';
@@ -23,19 +21,16 @@ export interface TableNotification {
   duration?: number;
   persistent?: boolean;
 }
-
 class TableManager {
   private tables: Map<string, Writable<TableState> = new Map();
   private notifications = writable<TableNotification[]>([]);
-
   createTable(id: string, initialState?: Partial<TableState>): Writable<TableState> {
     if (this.tables.has(id)) {
       return this.tables.get(id)!;
     }
-
     const defaultState: TableState = {
       id,
-      sortColumn: null,
+      sortColumn: null
       sortDirection: 'asc',
       selectedRows: new Set(),
       currentPage: 1,
@@ -46,44 +41,35 @@ class TableManager {
       expandedRows: new Set(),
       ...initialState
     };
-
     const store = writable(defaultState);
     this.tables.set(id, store);
-    
     return store;
   }
-
   getTable(id: string): Writable<TableState> | null {
     return this.tables.get(id) || null;
   }
-
   deleteTable(id: string): void {
     this.tables.delete(id);
   }
-
-  // Table actions;
+  // Table actions
   updateSort(tableId: string, column: string, direction?: 'asc' | 'desc') {
     const table = this.getTable(tableId);
     if (!table) return;
-
     table.update(state => {
       const newDirection = direction || (state.sortColumn === column && state.sortDirection === 'asc' ? 'desc' : 'asc');
       return {
         ...state,
-        sortColumn: column,
-        sortDirection: newDirection,
+        sortColumn: column
+        sortDirection: newDirection
         currentPage: 1 // Reset to first page when sorting
       };
     });
   }
-
   updateSelection(tableId: string, rowIds: (string | number)[] | 'all' | 'none') {
     const table = this.getTable(tableId);
     if (!table) return;
-
     table.update(state => {
       let newSelection: Set<string | number>;
-      
       if (rowIds === 'all') {
         // This would need to be handled by the component with access to all row IDs
         newSelection = new Set(state.selectedRows);
@@ -92,18 +78,15 @@ class TableManager {
       } else {
         newSelection = new Set(rowIds);
       }
-
       return {
         ...state,
         selectedRows: newSelection
       };
     });
   }
-
   toggleRowSelection(tableId: string, rowId: string | number) {
     const table = this.getTable(tableId);
     if (!table) return;
-
     table.update(state => {
       const newSelection = new Set(state.selectedRows);
       if (newSelection.has(rowId)) {
@@ -111,29 +94,24 @@ class TableManager {
       } else {
         newSelection.add(rowId);
       }
-
       return {
         ...state,
         selectedRows: newSelection
       };
     });
   }
-
   updateSearch(tableId: string, query: string) {
     const table = this.getTable(tableId);
     if (!table) return;
-
     table.update(state => ({
       ...state,
-      searchQuery: query,
+      searchQuery: query
       currentPage: 1 // Reset to first page when searching
     });
   }
-
   updateFilter(tableId: string, column: string, filter: string) {
     const table = this.getTable(tableId);
     if (!table) return;
-
     table.update(state => {
       const newFilters = new Map(state.columnFilters);
       if (filter) {
@@ -141,30 +119,25 @@ class TableManager {
       } else {
         newFilters.delete(column);
       }
-
       return {
         ...state,
-        columnFilters: newFilters,
+        columnFilters: newFilters
         currentPage: 1 // Reset to first page when filtering
       };
     });
   }
-
   updatePagination(tableId: string, page: number, pageSize?: number) {
     const table = this.getTable(tableId);
     if (!table) return;
-
     table.update(state => ({
       ...state,
-      currentPage: page,
+      currentPage: page
       pageSize: pageSize || state.pageSize
     });
   }
-
   updateColumnWidth(tableId: string, column: string, width: number) {
     const table = this.getTable(tableId);
     if (!table) return;
-
     table.update(state => {
       const newWidths = new Map(state.columnWidths);
       newWidths.set(column, width);
@@ -174,11 +147,9 @@ class TableManager {
       };
     });
   }
-
   toggleRowExpansion(tableId: string, rowId: string | number) {
     const table = this.getTable(tableId);
     if (!table) return;
-
     table.update(state => {
       const newExpanded = new Set(state.expandedRows);
       if (newExpanded.has(rowId)) {
@@ -186,15 +157,13 @@ class TableManager {
       } else {
         newExpanded.add(rowId);
       }
-
       return {
         ...state,
         expandedRows: newExpanded
       };
     });
   }
-
-  // Notifications for table operations;
+  // Notifications for table operations
   addNotification(notification: Omit<TableNotification, 'id' | 'timestamp'>) {
     const id = `table_notification_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const fullNotification: TableNotification = {
@@ -202,89 +171,75 @@ class TableManager {
       id,
       timestamp: new Date()
     };
-
     this.notifications.update(notifications => [...notifications, fullNotification]);
-
-    // Auto-remove non-persistent notifications;
+    // Auto-remove non-persistent notifications
     if (!(notification as { persistent?: any; duration?: any }).persistent) {
       const duration = (notification as { persistent?: any; duration?: any }).duration || 5000;
       setTimeout(() => {
         this.removeNotification(id);
       }, duration);
     }
-
     return id;
   }
-
   removeNotification(id: string) {
-    this.notifications.update(notifications => 
+    this.notifications.update(notifications =>
       notifications.filter(n => n.id !== id)
     );
   }
-
   clearNotifications() {
     this.notifications.update(() => []);
   }
-
   get notificationsStore() {
     return this.notifications;
   }
-
-  // Legal AI specific table methods;
+  // Legal AI specific table methods
   caseTableUpdate(message: string, caseId?: string): string {
     return this.addNotification({
       type: 'info',
       title: caseId ? `Case ${caseId}` : 'Case Update',
-      message,;
+      message,
       duration: 7000
     });
   }
-
   evidenceTableUpdate(message: string, evidenceId?: string): string {
     return this.addNotification({
       type: 'success',
       title: evidenceId ? `Evidence ${evidenceId}` : 'Evidence Update',
-      message,;
+      message,
       duration: 6000
     });
   }
-
   tableError(message: string, title = 'Table Error'): string {
     return this.addNotification({
       type: 'error',
       title,
-      message,;
+      message,
       duration: 10000
     });
   }
-
   bulkOperationComplete(operation: string, count: number): string {
     return this.addNotification({
       type: 'success',
       title: 'Bulk Operation',
-      message: `${operation} completed for ${count} items`,;
+      message: `${operation} completed for ${count} items`,
       duration: 5000
     });
   }
-
   exportComplete(filename: string, rowCount: number): string {
     return this.addNotification({
       type: 'success',
       title: 'Export Complete',
-      message: `Exported ${rowCount} rows to ${filename}`,;
+      message: `Exported ${rowCount} rows to ${filename}`,
       duration: 8000
     });
   }
 }
-
 // Global table manager instance
 export const tableManager = new TableManager();
-;
-// Commonly used derived stores;
+// Commonly used derived stores
 export function createTableStats(tableId: string) {
   const table = tableManager.getTable(tableId);
   if (!table) return null;
-
   return derived(table, ($table) => ({
     totalSelected: $table.selectedRows.size,
     hasSelection: $table.selectedRows.size > 0,
@@ -296,11 +251,9 @@ export function createTableStats(tableId: string) {
     expandedCount: $table.expandedRows.size
   });
 }
-
 // Export types and utilities
 // TableState and TableNotification are already exported as interfaces above
-
-// Legal AI specific table configurations;
+// Legal AI specific table configurations
 export const legalAITableConfigs = {
   cases: {
     pageSize: 25,
@@ -316,7 +269,7 @@ export const legalAITableConfigs = {
     pageSize: 20,
     sortColumn: 'upload_date',
     sortDirection: 'desc' as const
-  },;
+  },
   users: {
     pageSize: 30,
     sortColumn: 'last_login',
@@ -328,8 +281,7 @@ export const legalAITableConfigs = {
     sortDirection: 'desc' as const
   }
 };
-
-// Utility functions;
+// Utility functions
 export function formatTableData(data: any[], columns: string[]): unknown[] {
   return (data as { map?: any; length?: any }).map(row => {
     const formatted: any = { id: row.id };
@@ -339,12 +291,10 @@ export function formatTableData(data: any[], columns: string[]): unknown[] {
     return formatted;
   });
 }
-
 export function exportTableData(data: any[], filename?: string): void {
   const csv = convertToCSV(data);
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement('a');
-  
   if (link.download !== undefined) {
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
@@ -355,13 +305,10 @@ export function exportTableData(data: any[], filename?: string): void {
     document.body.removeChild(link);
   }
 }
-
 function convertToCSV(data: any[]): string {
   if ((data as { map?: any; length?: any }).length === 0) return '';
-  
   const headers = Object.keys(data[0]);
   const csvHeaders = headers.join(',');
-  
   const csvRows = (data as { map?: any; length?: any }).map(row =>;
     headers.map(header => {
       const value = row[header];
@@ -371,6 +318,5 @@ function convertToCSV(data: any[]): string {
         : stringValue;
     }).join(',')
   );
-  
   return [csvHeaders, ...csvRows].join('\n');
 }

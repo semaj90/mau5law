@@ -1,10 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
 import { within, userEvent, expect } from '@storybook/test';
 import YoRHaCommandCenter from './YoRHaCommandCenter.svelte.js';
-
 const meta = {
   title: 'YoRHa/CommandCenter',
-  component: YoRHaCommandCenter,
+  component: YoRHaCommandCenter
   parameters: {
     layout: 'fullscreen',
     docs: {
@@ -18,18 +17,16 @@ const meta = {
     systemData: {
       control: 'object',
       description: 'System metrics and status data',
-      table: {;
+      table: {
         type: { summary: 'SystemData' },
         defaultValue: { summary: 'Default system data with zeros' }
       }
     }
   }
 } satisfies Meta<YoRHaCommandCenter>;
-
 export default meta;
 type Story = StoryObj<typeof meta>;
-
-// Default story with baseline system data;
+// Default story with baseline system data
 export const Default: Story = {
   args: {
     systemData: {
@@ -44,8 +41,7 @@ export const Default: Story = {
     }
   }
 };
-
-// High load scenario;
+// High load scenario
 export const HighLoad: Story = {
   args: {
     systemData: {
@@ -61,14 +57,13 @@ export const HighLoad: Story = {
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Command Center under high system load - shows warning indicators'
       }
     }
   }
 };
-
-// Critical system state;
+// Critical system state
 export const Critical: Story = {
   args: {
     systemData: {
@@ -84,14 +79,13 @@ export const Critical: Story = {
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Critical system state - all metrics in red zone'
       }
     }
   }
 };
-
-// Low activity scenario;
+// Low activity scenario
 export const LowActivity: Story = {
   args: {
     systemData: {
@@ -107,14 +101,13 @@ export const LowActivity: Story = {
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Low activity scenario - minimal system usage'
       }
     }
   }
 };
-
-// Empty state;
+// Empty state
 export const EmptyState: Story = {
   args: {
     systemData: {
@@ -130,14 +123,13 @@ export const EmptyState: Story = {
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Empty state - fresh system with no active cases or data'
       }
     }
   }
 };
-
-// Interactive demo with actions;
+// Interactive demo with actions
 export const Interactive: Story = {
   args: {
     systemData: {
@@ -157,14 +149,12 @@ export const Interactive: Story = {
         story: 'Interactive demo - test all quick actions and modal interactions'
       }
     }
-  },;
+  },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    
     await step('Click new case action', async () => {
       const newCaseButton = canvas.getByText('Create New Case');
       await userEvent.click(newCaseButton);
-      
       // Modal should appear
       await expect(canvas.getByText('CREATE NEW CASE')).toBeInTheDocument();
     });

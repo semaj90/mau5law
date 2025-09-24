@@ -1,26 +1,21 @@
 import type { RequestHandler } from './$types.js'
-
 // Simplified and type-safe evidence processing endpoint with an in-memory processing service
 // POST: start processing -> returns sessionId and jobId
 // GET:  ?jobId=... -> returns processing status
 // DELETE: ?jobId=... -> cancels job
-
 import { db } from '$lib/server/db'
 import { evidence } from '$lib/server/db/schema-postgres'
 import { eq } from 'drizzle-orm'
 import crypto from "crypto"
 import { URL } from "url"
-
 // Type definitions for evidence processing
 type StepName = 'ocr' | 'embedding' | 'analysis' | 'classification' | 'entity_extraction' | 'similarity' | 'indexing'
 }
-
 export interface ProcessingRequest {
   evidenceId: string
   steps: StepName[]
   options?: ProcessingOptions
 }
-
 export interface ProcessingResult {
   sessionId?: string
   jobId: string
@@ -29,14 +24,13 @@ export interface ProcessingResult {
   steps?: StepName[]
   currentStep?: StepName | null
   stepProgress?: number
-  results?: Record<string, any> | null
+  results?: { [key: string]: any } | null
   error?: string | null
   startTime?: Date
   endTime?: Date
   processingTime?: number
   gpuAccelerated?: boolean
 }
-
 export interface ProcessingOptions {
   useGPUAcceleration?: boolean
   priority?: 'low' | 'medium' | 'high' | 'normal'
@@ -44,7 +38,6 @@ export interface ProcessingOptions {
   saveIntermediateResults?: boolean
   overrideExisting?: boolean
 }
-
 export interface EvidenceData {
   id: string
   caseId?: string
@@ -58,41 +51,34 @@ export interface EvidenceData {
   location?: string | null
   uploadedAt?: string | Date | null
 }
-
 class EvidenceProcessingService {
   private static instance: EvidenceProcessingService | null = null
   private processingJobs: Map<string, ProcessingResult> = new Map()
-
   private constructor() { }
-
   static getInstance(): EvidenceProcessingService {
     if (!EvidenceProcessingService.instance) {
       EvidenceProcessingService.instance = new EvidenceProcessingService()
     }
     return EvidenceProcessingService.instance
   }
-
   async startProcessing(request: ProcessingRequest): Promise<any> {
     const sessionId = crypto.randomUUID()
     const jobId = crypto.randomUUID()
-
     const processingResult: ProcessingResult = {
       sessionId,
       jobId,
       status: 'processing',
       progress: 0,
       steps: request.steps,
-      currentStep: request.steps.length > 0 ? request.steps[0] : null,
+      currentStep: request.steps.length > 0 ? request.steps[0] : null
       stepProgress: 0,
-      results: Record<string, any>,
-      error: null,
+      results: { [key: string]: any },
+      error: null
       startTime: new Date(),
       processingTime: 0,
       gpuAccelerated: !!request.options?.useGPUAcceleration
     }
-
     this.processingJobs.set(jobId, processingResult)
-
     // Background processing (non-blocking)
     this.processEvidence(sessionId, jobId, request).catch((err) => {
       console.error('Processing background error:', err)
@@ -105,14 +91,11 @@ class EvidenceProcessingService {
         this.processingJobs.set(jobId, r)
       }
     })
-
     return { sessionId, jobId }
   }
-
   private async processEvidence(sessionId: string, jobId: string, request: ProcessingRequest): Promise<void> {
     const result = this.processingJobs.get(jobId)
     if (!result) return
-
     try {
       // Attempt to load evidence (best-effort; if not found, proceed with minimal metadata)
       let evidenceData: EvidenceData | null = null
@@ -127,16 +110,14 @@ class EvidenceProcessingService {
       if (!evidenceData) {
         evidenceData = { id: request.evidenceId, title: undefined, description: undefined }
       }
-
       const totalSteps = Math.max(1, request.steps.length)
-      const results: Record<string, any> = {}
+      const results: { [key: string]: any } = {}
       for (let i = 0; i < request.steps.length; i++) {
         const step = request.steps[i]
         (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).currentStep = step
         (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).stepProgress = 0
         (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).progress = Math.floor((i / totalSteps) * 100)
         this.processingJobs.set(jobId, result)
-
         // simple simulated work per step
         let stepResult: any = null
         switch (step) {
@@ -164,19 +145,16 @@ class EvidenceProcessingService {
           default:
             stepResult = { error: 'unknown_step' }
         }
-
         results[step] = stepResult
         (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).stepProgress = 100
         (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).progress = Math.floor(((i + 1) / totalSteps) * 100)
         this.processingJobs.set(jobId, result)
       }
-
       (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).status = 'completed'
       (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).results = results
       (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).endTime = new Date()
       (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).processingTime = (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).startTime ? Date.now() - (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).startTime.getTime() : 0
       this.processingJobs.set(jobId, result)
-
       // Best-effort persist results
       await this.updateEvidenceWithResults(request.evidenceId, results).catch((e: any) => {
         console.warn('Failed to persist results:', e)
@@ -189,20 +167,17 @@ class EvidenceProcessingService {
       this.processingJobs.set(jobId, result)
     }
   }
-
   private async performOCR(evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<any> {
     // stubbed OCR result
     await new Promise((r) => setTimeout(r, 100)
     return { text: evidenceData.description || evidenceData.title || '', confidence: 0.9 }
   }
-
   private async generateEmbedding(evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<any> {
     await new Promise((r) => setTimeout(r, 100)
     const text = `${evidenceData.title || ''} ${evidenceData.description || ''}`.trim()
     const embedding = Array.from({ length: 8 }, (_, i) => (text.length + i) % 10 / 10)
     return { embedding, model: 'stub-embed', dimensions: embedding.length }
   }
-
   private async performAnalysis(evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<any> {
     await new Promise((r) => setTimeout(r, 120)
     return {
@@ -211,7 +186,6 @@ class EvidenceProcessingService {
       confidence: 0.8
     }
   }
-
   private async performClassification(_evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<any> {
     await new Promise((r) => setTimeout(r, 80)
     return {
@@ -222,23 +196,19 @@ class EvidenceProcessingService {
       categories: []
     }
   }
-
   private async extractEntities(evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<any> {
     await new Promise((r) => setTimeout(r, 60)
     const text = `${evidenceData.title || ''} ${evidenceData.description || ''}`
     return { entities: text ? [{ text: text.slice(0, 30), type: 'text', confidence: 0.5 }] : [], method: 'stub' }
   }
-
   private async findSimilarEvidence(_evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<any> {
     await new Promise((r) => setTimeout(r, 60)
     return { similarEvidence: [], totalFound: 0 }
   }
-
   private async indexEvidence(_evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<any> {
     await new Promise((r) => setTimeout(r, 60)
     return { indexed: true, vectorId: crypto.randomUUID(), collection: 'evidence' }
   }
-
   private async updateEvidenceWithResults(evidenceId: string, results: any): Promise<void> {
     const updateData: any = { updatedAt: new Date() }
     if (results.analysis) {
@@ -256,11 +226,9 @@ class EvidenceProcessingService {
       console.warn('DB update failed:', e)
     }
   }
-
   getProcessingStatus(jobId: string): ProcessingResult | null {
     return this.processingJobs.get(jobId) ?? null
   }
-
   cancelProcessing(jobId: string): boolean {
     const r = this.processingJobs.get(jobId)
     if (r && r.status === 'processing') {
@@ -274,22 +242,18 @@ class EvidenceProcessingService {
     return false
   }
 }
-
 const processingService = EvidenceProcessingService.getInstance()
-
 // POST endpoint: start processing
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json()
     const { evidenceId, steps, options = {} } = body ?? {}
-
     if (!evidenceId || !steps || !Array.isArray(steps)) {
       return json({ error: 'evidenceId and steps array are required' }, { status: 400 })
     }
-
     const processingRequest: ProcessingRequest = {
       evidenceId,
-      steps: steps as StepName[],
+      steps: steps as StepName[]
       options: {
         useGPUAcceleration: !!options.useGPUAcceleration,
         priority: options.priority ?? 'normal',
@@ -298,9 +262,7 @@ export const POST: RequestHandler = async ({ request }) => {
         overrideExisting: !!options.overrideExisting
       }
     }
-
     const { sessionId, jobId } = await processingService.startProcessing(processingRequest)
-
     return json({
       sessionId,
       jobId,
@@ -313,7 +275,6 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ error: (err as any)?.message ?? 'Processing request failed' }, { status: 500 })
   }
 }
-
 // GET endpoint: get status
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -321,7 +282,6 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!jobId) {
       return json({ error: 'jobId is required' }, { status: 400 })
     }
-
     const status = processingService.getProcessingStatus(jobId)
     if (!status) {
       return json({ error: 'Job not found' }, { status: 404 })
@@ -332,7 +292,6 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({ error: 'Failed to get status' }, { status: 500 })
   }
 }
-
 // DELETE endpoint: cancel job
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
@@ -340,7 +299,6 @@ export const DELETE: RequestHandler = async ({ url }) => {
     if (!jobId) {
       return json({ error: 'jobId is required' }, { status: 400 })
     }
-
     const cancelled = processingService.cancelProcessing(jobId)
     return json({
       cancelled,

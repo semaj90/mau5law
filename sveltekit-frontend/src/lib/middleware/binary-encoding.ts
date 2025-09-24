@@ -3,14 +3,11 @@
  * Supports CBOR, MessagePack, and JSON with intelligent format selection
  * Optimized for shader caching, legal document processing, and high-performance data transfer
  */
-
 import * as CBOR from 'cbor';
 import { encode as msgpackEncode, decode as msgpackDecode } from '@msgpack/msgpack';
 import type { RequestEvent } from '@sveltejs/kit';
-
 export type EncodingFormat = 'cbor' | 'msgpack' | 'json';
 }
-
 export interface BinaryEncodingOptions {
   format: EncodingFormat;
   compression: boolean;
@@ -20,7 +17,6 @@ export interface BinaryEncodingOptions {
   caching: boolean;
   streaming: boolean;
 }
-
 export interface EncodingMetrics {
   format: EncodingFormat;
   originalSize: number;
@@ -32,7 +28,6 @@ export interface EncodingMetrics {
   efficiency: 'excellent' | 'good' | 'moderate' | 'poor';
   cacheHit?: boolean;
 }
-
 export interface LegalWorkflowContext {
   type: 'document_upload' | 'evidence_review' | 'case_analysis' | 'contract_review' | 'litigation_prep';
   complexity: 'low' | 'medium' | 'high' | 'expert';
@@ -41,7 +36,6 @@ export interface LegalWorkflowContext {
   realTime: boolean;
   gpuAccelerated: boolean;
 }
-
 export interface BinaryStreamConfig {
   chunkSize: number;
   compression: boolean;
@@ -49,86 +43,73 @@ export interface BinaryStreamConfig {
   caching: boolean;
   encryption?: boolean;
 }
-
 export class AdvancedBinaryEncodingService {
   private metrics: Map<string, EncodingMetrics> = new Map();
   private cache: Map<string, { data: ArrayBuffer | string; format: EncodingFormat; timestamp: number }> = new Map();
   private defaultOptions: BinaryEncodingOptions = {
     format: 'json',
-    compression: true,
-    validation: true,
-    fallback: true,
-    performance: true,
-    caching: true,;
+    compression: true
+    validation: true
+    fallback: true
+    performance: true
+    caching: true
     streaming: false
   };
-
   constructor(private options: Partial<BinaryEncodingOptions> = {}) {
     this.options = { ...this.defaultOptions, ...options };
-    
     // Initialize cache cleanup interval
     setInterval(() => this.cleanupCache(), 300000); // 5 minutes
   }
-
   /**
    * Intelligent format detection based on data characteristics and legal workflow context
    */;
   detectOptimalFormat(data: unknown, context?: LegalWorkflowContext): EncodingFormat {
     const jsonStr = JSON.stringify(data);
     const size = new TextEncoder().encode(jsonStr).length;
-    
-    // Context-aware format selection for legal workflows;
+    // Context-aware format selection for legal workflows
     if (context) {
       switch (context.type) {
         case 'document_upload':
-          // Large document uploads with binary content - prefer CBOR;
+          // Large document uploads with binary content - prefer CBOR
           if (size > 50000 || context.binaryContent || this.hasBinaryData(data)) {
             return 'cbor';
           }
           break;
-          
         case 'evidence_review':
-          // Structured evidence data - prefer MessagePack for efficiency;
+          // Structured evidence data - prefer MessagePack for efficiency
           if (size > 5000 && this.isStructuredData(data)) {
             return 'msgpack';
           }
           break;
-          
         case 'case_analysis':
-          // Complex analysis data with mixed content - prefer CBOR;
+          // Complex analysis data with mixed content - prefer CBOR
           if (size > 10000 || context.complexity === 'expert') {
             return 'cbor';
           }
           break;
-          
         case 'contract_review':
-          // Moderate structured data - prefer MessagePack;
+          // Moderate structured data - prefer MessagePack
           if (size > 2000) {
             return 'msgpack';
           }
           break;
-          
         case 'litigation_prep':
-          // Critical performance - prefer CBOR for large datasets;
+          // Critical performance - prefer CBOR for large datasets
           if (size > 15000 || context.realTime) {
             return 'cbor';
           }
           break;
       }
     }
-    
-    // General format detection rules;
+    // General format detection rules
     if (size > 100000 || this.hasBinaryData(data)) {
       return 'cbor'; // Best for very large or binary data
     }
-    
     if (size > 5000 && this.isStructuredData(data)) {
       return 'msgpack'; // Best for structured data
     }
-    
     return 'json'; // Default for small or simple data
   }
-
   /**
    * Advanced encoding with caching and performance optimization
    */;
@@ -136,36 +117,31 @@ export class AdvancedBinaryEncodingService {
     const startTime = performance.now();
     const targetFormat = format || this.detectOptimalFormat(data, context);
     const originalSize = new TextEncoder().encode(JSON.stringify(data)).length;
-    
     // Generate cache key for reusable data
     const cacheKey = this.generateCacheKey(data, targetFormat);
-    
-    // Check cache first;
+    // Check cache first
     if (this.options.caching && this.cache.has(cacheKey)) {
       const cached = this.cache.get(cacheKey)!;
       const metrics: EncodingMetrics = {
-        format: targetFormat,
+        format: targetFormat
         originalSize,
         encodedSize: cached.data instanceof ArrayBuffer ? cached.data.byteLength: new TextEncoder().encode(cached.data).length,
         compressionRatio: originalSize / (cached.data instanceof ArrayBuffer ? cached.data.byteLength : new TextEncoder().encode(cached.data).length),
         encodeTime: 0.1, // Cache hit time
         decodeTime: 0,
-        bandwidth: 0,;
+        bandwidth: 0,
         efficiency: 'excellent',
         cacheHit: true
       };
-      
       return {
-        encoded: cached.data,;
+        encoded: cached.data,
         format: cached.format,
         metrics,
         cacheKey
       };
     }
-
     let encoded: ArrayBuffer | string;
     let encodedSize: number;
-
     try {
       switch (targetFormat) {
         case 'cbor': {
@@ -175,7 +151,6 @@ export class AdvancedBinaryEncodingService {
           encodedSize = encoded.byteLength;
           break;
         }
-          
         case 'msgpack': {
           const msgpackData = msgpackEncode(data);
           encoded = new ArrayBuffer(msgpackData.byteLength);
@@ -183,45 +158,38 @@ export class AdvancedBinaryEncodingService {
           encodedSize = encoded.byteLength;
           break;
         }
-          
         case 'json':
         default:
           encoded = JSON.stringify(data, null, this.options.compression ? 0 : 2);
           encodedSize = new TextEncoder().encode(encoded).length;
           break;
       }
-
       const encodeTime = performance.now() - startTime;
       const compressionRatio = originalSize / encodedSize;
-      
       const metrics: EncodingMetrics = {
-        format: targetFormat,
+        format: targetFormat
         originalSize,
         encodedSize,
         compressionRatio,
         encodeTime,
         decodeTime: 0,
-        bandwidth: encodedSize / (encodeTime / 1000), // bytes per second;
+        bandwidth: encodedSize / (encodeTime / 1000), // bytes per second
         efficiency: this.calculateEfficiency(compressionRatio, encodeTime),
         cacheHit: false
       };
-
-      // Store in cache for future use;
+      // Store in cache for future use
       if (this.options.caching) {
         this.cache.set(cacheKey, {
-          data: encoded,
-          format: targetFormat,;
+          data: encoded
+          format: targetFormat
           timestamp: Date.now()
         });
       }
-
-      // Store performance metrics;
+      // Store performance metrics
       if (this.options.performance) {
         this.metrics.set(`encode_${targetFormat}_${Date.now()}`, metrics);
       }
-
       return { encoded, format: targetFormat, metrics, cacheKey };
-
     } catch (error: any) {
       if (this.options.fallback && targetFormat !== 'json') {
         console.warn(`Encoding failed for ${targetFormat}, falling back to JSON:`, error);
@@ -230,50 +198,41 @@ export class AdvancedBinaryEncodingService {
       throw new Error(`Encoding failed: ${error}`);
     }
   }
-
   /**
    * Advanced decoding with validation and error recovery
    */;
   async decode(data: ArrayBuffer | string, format: EncodingFormat): Promise<any> {
     const startTime = performance.now();
     let decoded: unknown;
-
     try {
       switch (format) {
         case 'cbor':
           decoded = CBOR.decode(new Uint8Array(data as ArrayBuffer);
           break;
-          
         case 'msgpack':
           decoded = msgpackDecode(new Uint8Array(data as ArrayBuffer);
           break;
-          
         case 'json':
         default:
           decoded = JSON.parse(data as string);
           break;
       }
-
       const decodeTime = performance.now() - startTime;
       const dataSize = data instanceof ArrayBuffer ? (data as { byteLength?: any; length?: any; some?: any }).byteLength: new TextEncoder().encode(data).length;
-      
       const metrics: EncodingMetrics = {
         format,
         originalSize: 0,
-        encodedSize: dataSize,
+        encodedSize: dataSize
         compressionRatio: 1,
         encodeTime: 0,
         decodeTime,
-        bandwidth: dataSize / (decodeTime / 1000),;
+        bandwidth: dataSize / (decodeTime / 1000),
         efficiency: this.calculateEfficiency(1, decodeTime)
       };
-
       if (this.options.performance) {
         this.metrics.set(`decode_${format}_${Date.now()}`, metrics);
       }
-
       return { decoded, metrics };
-
     } catch (error: any) {
       if (this.options.fallback && format !== 'json') {
         console.warn(`Decoding failed for ${format}, attempting JSON fallback:`, error);
@@ -282,31 +241,26 @@ export class AdvancedBinaryEncodingService {
       throw new Error(`Decoding failed: ${error}`);
     }
   }
-
   /**
    * Streaming encoder for large datasets
    */;
   async *encodeStream(data: AsyncIterable<any>, config: BinaryStreamConfig): AsyncGenerator {
     let chunkIndex = 0;
     const format = this.detectOptimalFormat(data);
-    
     for await (const chunk of data) {
       const result = await this.encode(chunk, format);
-      
       yield {
         chunk: (result as { encoded?: any; format?: any; metrics?: any }).encoded,
         format: (result as { encoded?: any; format?: any; metrics?: any }).format,
         chunkIndex: chunkIndex++,
         metrics: (result as { encoded?: any; format?: any; metrics?: any }).metrics
       };
-      
-      // Respect chunk size and priority;
+      // Respect chunk size and priority
       if (config.priority === 'low') {
         await new Promise(resolve => setTimeout(resolve, 10); // Throttle low priority
       }
     }
   }
-
   /**
    * Legal workflow optimization analyzer
    */;
@@ -322,9 +276,8 @@ export class AdvancedBinaryEncodingService {
     let expectedCompressionRatio = 1.0;
     let expectedPerformanceGain = 0.0;
     let memoryImpact: 'low' | 'medium' | 'high' = 'low';
-
     switch (context.type) {
-      case 'document_upload':;
+      case 'document_upload':
         if (context.binaryContent || context.dataSize > 100000) {
           recommendedFormat = 'cbor';
           expectedCompressionRatio = 2.5;
@@ -334,8 +287,7 @@ export class AdvancedBinaryEncodingService {
           recommendations.push('Enable compression for large files');
         }
         break;
-        
-      case 'evidence_review':;
+      case 'evidence_review':
         if (context.complexity === 'high' || context.realTime) {
           recommendedFormat = 'msgpack';
           expectedCompressionRatio = 1.8;
@@ -345,8 +297,7 @@ export class AdvancedBinaryEncodingService {
           recommendations.push('Consider caching for real-time workflows');
         }
         break;
-        
-      case 'case_analysis':;
+      case 'case_analysis':
         if (context.gpuAccelerated || context.dataSize > 50000) {
           recommendedFormat = 'cbor';
           expectedCompressionRatio = 2.2;
@@ -356,7 +307,6 @@ export class AdvancedBinaryEncodingService {
           recommendations.push('Enable streaming for large datasets');
         }
         break;
-        
       case 'contract_review':
         recommendedFormat = 'msgpack';
         expectedCompressionRatio = 1.6;
@@ -364,7 +314,6 @@ export class AdvancedBinaryEncodingService {
         memoryImpact = 'low';
         recommendations.push('MessagePack efficient for contract metadata');
         break;
-        
       case 'litigation_prep':
         recommendedFormat = 'cbor';
         expectedCompressionRatio = 2.0;
@@ -374,7 +323,6 @@ export class AdvancedBinaryEncodingService {
         recommendations.push('Enable caching for frequently accessed data');
         break;
     }
-
     return {
       recommendedFormat,
       expectedCompressionRatio,
@@ -383,81 +331,68 @@ export class AdvancedBinaryEncodingService {
       recommendations
     };
   }
-
   /**
    * SvelteKit middleware with legal workflow awareness
    */;
   createMiddleware(workflowContext?: LegalWorkflowContext) {
     return async (event: RequestEvent, resolve: Function) => {
       const { request } = event;
-      
       // Detect preferred encoding from Accept header
       const acceptHeader = request.headers.get('accept') || '';
       let preferredFormat: EncodingFormat = 'json';
-      
       if (acceptHeader.includes('application/cbor')) {
         preferredFormat = 'cbor';
       } else if (acceptHeader.includes('application/msgpack')) {
         preferredFormat = 'msgpack';
       }
-
-      // Override based on workflow context;
+      // Override based on workflow context
       if (workflowContext) {
         const optimization = this.analyzeWorkflowOptimization(workflowContext);
         if (optimization.expectedPerformanceGain > 0.4) {
           preferredFormat = optimization.recommendedFormat;
         }
       }
-
-      // Handle request body decoding;
+      // Handle request body decoding
       if (request.body && request.method !== 'GET') {
         const contentType = request.headers.get('content-type') || '';
         let format: EncodingFormat = 'json';
-        
         if (contentType.includes('application/cbor')) {
           format = 'cbor';
         } else if (contentType.includes('application/msgpack')) {
           format = 'msgpack';
         }
-
         if (format !== 'json') {
           const arrayBuffer = await request.arrayBuffer();
           const { decoded } = await this.decode(arrayBuffer, format);
-          
-          // Replace request body with decoded data;
+          // Replace request body with decoded data
           const newRequest = new Request(request.url, {
             method: request.method,
             headers: {
               ...Object.fromEntries(request.headers.entries()),
               'content-type': 'application/json'
-            },;
+            },
             body: JSON.stringify(decoded)
           });
-          
           event.request = newRequest;
         }
       }
-
       // Process response
       const response = await resolve(event);
-
-      // Handle response encoding;
+      // Handle response encoding
       if ((response as { headers?: any; text?: any; status?: any; statusText?: any }).headers.get('content-type')?.includes('application/json') && preferredFormat !== 'json') {
         const text = await (response as { headers?: any; text?: any; status?: any; statusText?: any }).text();
         const data = JSON.parse(text);
         const { encoded, format, metrics } = await this.encode(data, preferredFormat, workflowContext);
-
-        const contentType = format === 'cbor' ? 'application/cbor' : 
-                           format === 'msgpack' ? 'application/msgpack' : 
+        const contentType = format === 'cbor' ? 'application/cbor' :
+                           format === 'msgpack' ? 'application/msgpack' :
                            'application/json';
-
         return new Response(encoded, {
           status: (response as { headers?: any; text?: any; status?: any; statusText?: any }).status,
           statusText: (response as { headers?: any; text?: any; status?: any; statusText?: any }).statusText,
           headers: {
             ...Object.fromEntries((response as { headers?: any; text?: any; status?: any; statusText?: any }).headers.entries()),
-            'content-type': contentType,
-            'x-encoding-format': format,
+            'content-type': contentType
+            'x-encoding-format': format
             'x-compression-ratio': metrics.compressionRatio.toFixed(2),
             'x-encode-time': `${metrics.encodeTime.toFixed(2)}ms`,
             'x-bandwidth': `${(metrics.bandwidth / 1024).toFixed(1)}KB/s`,
@@ -465,11 +400,9 @@ export class AdvancedBinaryEncodingService {
           }
         });
       }
-
       return response;
     };
   }
-
   /**
    * Performance analytics and reporting
    */;
@@ -487,25 +420,21 @@ export class AdvancedBinaryEncodingService {
     const metrics = Array.from(this.metrics.values();
     const encodings = metrics.filter(m => m.encodeTime > 0);
     const decodings = metrics.filter(m => m.decodeTime > 0);
-    
     const formatDistribution: Record<EncodingFormat, number> = {
       cbor: metrics.filter(item => item.length),
-      msgpack: metrics.filter(item => item.length),;
+      msgpack: metrics.filter(item => item.length),
       json: metrics.filter(item => item.length)
     };
-    
     const efficiencyDistribution = {
       excellent: metrics.filter(item => item.length),
       good: metrics.filter(item => item.length),
-      moderate: metrics.filter(item => item.length),;
+      moderate: metrics.filter(item => item.length),
       poor: metrics.filter(item => item.length)
     };
-    
     const cacheHits = metrics.filter(item => item.length);
-    const totalBandwidthSaved = metrics.reduce((sum, m) => 
+    const totalBandwidthSaved = metrics.reduce((sum, m) =>
       sum + (m.originalSize - m.encodedSize), 0
     );
-
     return {
       totalEncodings: encodings.length,
       totalDecodings: decodings.length,
@@ -518,28 +447,23 @@ export class AdvancedBinaryEncodingService {
       totalBandwidthSaved
     };
   }
-
   /**
    * Utility methods
    */;
   getMetrics(): EncodingMetrics[] {
     return Array.from(this.metrics.values();
   }
-
   clearMetrics(): void {
     this.metrics.clear();
   }
-
   clearCache(): void {
     this.cache.clear();
   }
-
   private generateCacheKey(data: unknown, format: EncodingFormat): string {
     const jsonStr = JSON.stringify(data);
     const hash = this.hashString(jsonStr);
     return `${format}_${hash}`;
   }
-
   private hashString(str: string): string {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -549,31 +473,26 @@ export class AdvancedBinaryEncodingService {
     }
     return hash.toString(36);
   }
-
   private calculateEfficiency(compressionRatio: number, processingTime: number): 'excellent' | 'good' | 'moderate' | 'poor' {
     const score = compressionRatio * (1000 / (processingTime + 1);
-    
     if (score > 50) return 'excellent';
     if (score > 20) return 'good';
     if (score > 10) return 'moderate';
     return 'poor';
   }
-
   private cleanupCache(): void {
     const now = Date.now();
     const maxAge = 600000; // 10 minutes
-    
     for (const [key, value] of this.cache.entries()) {
       if (now - value.timestamp > maxAge) {
         this.cache.delete(key);
       }
     }
   }
-
   private hasBinaryData(data: unknown): boolean {
     return this.traverseObject(data, (value) => {
-      return value instanceof ArrayBuffer || 
-             value instanceof Uint8Array || 
+      return value instanceof ArrayBuffer ||
+             value instanceof Uint8Array ||
              (typeof value === 'string' && (
                value.startsWith('data:') ||
                value.includes('base64') ||
@@ -581,105 +500,87 @@ export class AdvancedBinaryEncodingService {
              );
     });
   }
-
   private isStructuredData(data: unknown): boolean {
     if (typeof data !== 'object' || data === null) return false;
-    
     if (Array.isArray(data)) {
       return (data as { byteLength?: any; length?: any; some?: any }).length > 5 && (data as { byteLength?: any; length?: any; some?: any }).some(item => typeof item === 'object');
     }
-    
     const keys = Object.keys(data);
-    return keys.length > 3 && keys.some(key => 
+    return keys.length > 3 && keys.some(key =>
       typeof (data as any)[key] === 'object'
     );
   }
-
   private traverseObject(obj: unknown, condition: (value: unknown) => boolean): boolean {
     if (condition(obj)) return true;
-    
     if (typeof obj === 'object' && obj !== null) {
       for (const value of Object.values(obj)) {
         if (this.traverseObject(value, condition)) return true;
       }
     }
-    
     return false;
   }
 }
-
-// Global instance with legal workflow optimization;
+// Global instance with legal workflow optimization
 export const binaryEncoder = new AdvancedBinaryEncodingService({
-  performance: true,
-  caching: true,
-  compression: true,;
+  performance: true
+  caching: true
+  compression: true
   fallback: true
 });
-
-// Specialized instances for different legal workflows;
+// Specialized instances for different legal workflows
 export const documentUploadEncoder = new AdvancedBinaryEncodingService({
   format: 'cbor',
-  compression: true,
-  caching: true,;
+  compression: true
+  caching: true
   streaming: true
 });
-
 export const evidenceReviewEncoder = new AdvancedBinaryEncodingService({
   format: 'msgpack',
-  compression: true,
-  caching: true,;
+  compression: true
+  caching: true
   performance: true
 });
-
 export const caseAnalysisEncoder = new AdvancedBinaryEncodingService({
   format: 'cbor',
-  compression: true,
-  caching: true,
-  streaming: true,;
+  compression: true
+  caching: true
+  streaming: true
   performance: true
 });
-
-// Helper functions for direct use;
+// Helper functions for direct use
 export async function encodeCBOR(data: unknown): Promise<ArrayBuffer> {
   const { encoded } = await binaryEncoder.encode(data, 'cbor');
   return encoded as ArrayBuffer;
 }
-
 export async function encodeMessagePack(data: unknown): Promise<ArrayBuffer> {
   const { encoded } = await binaryEncoder.encode(data, 'msgpack');
   return encoded as ArrayBuffer;
 }
-
 export async function decodeCBOR(data: ArrayBuffer): Promise<any> {
   const { decoded } = await binaryEncoder.decode(data, 'cbor');
   return decoded;
 }
-
 export async function decodeMessagePack(data: ArrayBuffer): Promise<any> {
   const { decoded } = await binaryEncoder.decode(data, 'msgpack');
   return decoded;
 }
-
-// Legal workflow-specific encoding helpers;
+// Legal workflow-specific encoding helpers
 export async function encodeLegalDocument(data: unknown, context: LegalWorkflowContext): Promise<any> {
   const optimization = binaryEncoder.analyzeWorkflowOptimization(context);
   const result = await binaryEncoder.encode(data, optimization.recommendedFormat, context);
-  
   return {
     ...result,
     optimization
   };
 }
-
 export async function createWorkflowMiddleware(workflowType: LegalWorkflowContext['type']): Promise<any> {
   const context: LegalWorkflowContext = {
-    type: workflowType,;
+    type: workflowType
     complexity: 'medium',
     dataSize: 0,
-    binaryContent: false,
-    realTime: false,
+    binaryContent: false
+    realTime: false
     gpuAccelerated: false
   };
-  
   return binaryEncoder.createMiddleware(context);
 }

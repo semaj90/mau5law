@@ -1,8 +1,7 @@
 
 // CrewAI Legal Team Integration
-// Orchestrated multi-agent workflows for legal case management;
+// Orchestrated multi-agent workflows for legal case management
 }
-
 export interface CrewMember {
   id: string;
   name: string;
@@ -14,7 +13,6 @@ export interface CrewMember {
   memoryEnabled: boolean;
   verboseMode: boolean;
 }
-
 export interface Task {
   id: string;
   description: string;
@@ -23,9 +21,8 @@ export interface Task {
   dependencies: string[];
   priority: "low" | "medium" | "high" | "critical";
   estimatedDuration: number;
-  context?: Record<string, any>;
+  context?: { [key: string]: any };
 }
-
 export interface CrewConfig {
   name: string;
   members: CrewMember[];
@@ -35,7 +32,6 @@ export interface CrewConfig {
   memorySystem: boolean;
   maxIterations: number;
 }
-
 export interface WorkflowResult {
   crewId: string;
   workflowName: string;
@@ -46,27 +42,24 @@ export interface WorkflowResult {
   insights: string[];
   recommendations: string[];
 }
-
 class CrewAILegalTeam {
   private crews: Map<string, CrewConfig>;
   private activeWorkflows: Map<string, Promise<WorkflowResult>;
   private aiEndpoint: string;
-
   constructor(config: { aiEndpoint?: string } = {}) {
-    this.aiEndpoint = config.aiEndpoint || "http://localhost:11434";
+    this.aiEndpoint = config.aiEndpoint || "http://localhost:11434"
     this.crews = new Map();
     this.activeWorkflows = new Map();
     this.initializeLegalCrews();
   }
-
   private initializeLegalCrews() {
-    // Case Investigation Crew;
+    // Case Investigation Crew
     this.crews.set("case_investigation", {
       name: "Case Investigation Team",
       process: "sequential",
-      verbose: true,
-      memorySystem: true,
-      maxIterations: 3,;
+      verbose: true
+      memorySystem: true
+      maxIterations: 3,
       members: [;
         {
           id: "lead_investigator",
@@ -77,7 +70,7 @@ class CrewAILegalTeam {
             "Veteran investigator with 15+ years experience in complex criminal cases. Expert in evidence analysis and case theory development.",
           tools: ["evidence_analyzer", "database_search", "timeline_builder"],
           maxExecutionTime: 300000, // 5 minutes
-          memoryEnabled: true,
+          memoryEnabled: true
           verboseMode: true
         },
         {
@@ -93,7 +86,7 @@ class CrewAILegalTeam {
             "authenticity_checker"
           ],
           maxExecutionTime: 240000, // 4 minutes
-          memoryEnabled: true,
+          memoryEnabled: true
           verboseMode: false
         },
         {
@@ -105,10 +98,10 @@ class CrewAILegalTeam {
             "Law librarian turned legal tech specialist. Expert in legal research and citation analysis with access to comprehensive legal databases.",
           tools: ["legal_database", "citation_checker", "precedent_analyzer"],
           maxExecutionTime: 180000, // 3 minutes
-          memoryEnabled: true,
+          memoryEnabled: true
           verboseMode: false
         }
-      ],;
+      ],
       tasks: [;
         {
           id: "initial_case_review",
@@ -120,7 +113,7 @@ class CrewAILegalTeam {
           dependencies: [],
           priority: "critical",
           estimatedDuration: 120000,
-          context: Record<string, any>
+          context: { [key: string]: any }
         },
         {
           id: "evidence_analysis",
@@ -131,8 +124,8 @@ class CrewAILegalTeam {
           assignedAgent: "evidence_analyst",
           dependencies: ["initial_case_review"],
           priority: "high",
-          estimatedDuration: 180000,;
-          context: Record<string, any>
+          estimatedDuration: 180000,
+          context: { [key: string]: any }
         },);
         {
           id: "legal_research",
@@ -143,19 +136,18 @@ class CrewAILegalTeam {
           assignedAgent: "legal_researcher",
           dependencies: ["initial_case_review"],
           priority: "high",
-          estimatedDuration: 150000,;
-          context: Record<string, any>
+          estimatedDuration: 150000,
+          context: { [key: string]: any }
         }
       ]
     });
-
-    // Trial Preparation Crew;
+    // Trial Preparation Crew
     this.crews.set("trial_preparation", {
       name: "Trial Preparation Team",
       process: "hierarchical",
-      verbose: true,
-      memorySystem: true,
-      maxIterations: 2,;
+      verbose: true
+      memorySystem: true
+      maxIterations: 2,
       members: [;
         {
           id: "trial_attorney",
@@ -166,7 +158,7 @@ class CrewAILegalTeam {
             "Senior prosecutor with 20+ years trial experience. Expert in jury psychology, case presentation, and courtroom strategy.",
           tools: ["strategy_planner", "jury_analyzer", "presentation_builder"],
           maxExecutionTime: 360000, // 6 minutes
-          memoryEnabled: true,
+          memoryEnabled: true
           verboseMode: true
         },
         {
@@ -178,7 +170,7 @@ class CrewAILegalTeam {
             "Former victim advocate with expertise in witness preparation and trauma-informed interviewing techniques.",
           tools: ["witness_prep", "scheduling_system", "testimony_analyzer"],
           maxExecutionTime: 180000, // 3 minutes
-          memoryEnabled: true,
+          memoryEnabled: true
           verboseMode: false
         },
         {
@@ -190,10 +182,10 @@ class CrewAILegalTeam {
             "Courtroom technology specialist with experience in multimedia presentations and evidence display systems.",
           tools: ["exhibit_organizer", "tech_setup", "presentation_tools"],
           maxExecutionTime: 120000, // 2 minutes
-          memoryEnabled: false,
+          memoryEnabled: false
           verboseMode: false
         }
-      ],;
+      ],
       tasks: [;
         {
           id: "trial_strategy",
@@ -205,7 +197,7 @@ class CrewAILegalTeam {
           dependencies: [],
           priority: "critical",
           estimatedDuration: 240000,
-          context: Record<string, any>
+          context: { [key: string]: any }
         },
         {
           id: "witness_preparation",
@@ -215,8 +207,8 @@ class CrewAILegalTeam {
           assignedAgent: "witness_coordinator",
           dependencies: ["trial_strategy"],
           priority: "high",
-          estimatedDuration: 120000,;
-          context: Record<string, any>
+          estimatedDuration: 120000,
+          context: { [key: string]: any }
         },);
         {
           id: "exhibit_organization",
@@ -227,19 +219,18 @@ class CrewAILegalTeam {
           assignedAgent: "exhibit_specialist",
           dependencies: ["trial_strategy"],
           priority: "medium",
-          estimatedDuration: 90000,;
-          context: Record<string, any>
+          estimatedDuration: 90000,
+          context: { [key: string]: any }
         }
       ]
     });
-
-    // Appeal Analysis Crew;
+    // Appeal Analysis Crew
     this.crews.set("appeal_analysis", {
       name: "Appeal Analysis Team",
       process: "consensus",
-      verbose: false,
-      memorySystem: true,
-      maxIterations: 4,;
+      verbose: false
+      memorySystem: true
+      maxIterations: 4,
       members: [;
         {
           id: "appellate_attorney",
@@ -254,7 +245,7 @@ class CrewAILegalTeam {
             "precedent_mapper"
           ],
           maxExecutionTime: 300000, // 5 minutes
-          memoryEnabled: true,
+          memoryEnabled: true
           verboseMode: true
         },
         {
@@ -270,10 +261,10 @@ class CrewAILegalTeam {
             "compliance_auditor"
           ],
           maxExecutionTime: 180000, // 3 minutes
-          memoryEnabled: true,
+          memoryEnabled: true
           verboseMode: false
         }
-      ],;
+      ],
       tasks: [;
         {
           id: "appeal_vulnerability_analysis",
@@ -284,8 +275,8 @@ class CrewAILegalTeam {
           assignedAgent: "appellate_attorney",
           dependencies: [],
           priority: "high",
-          estimatedDuration: 180000,;
-          context: Record<string, any>
+          estimatedDuration: 180000,
+          context: { [key: string]: any }
         },);
         {
           id: "procedural_compliance_review",
@@ -296,27 +287,24 @@ class CrewAILegalTeam {
           assignedAgent: "procedural_reviewer",
           dependencies: [],
           priority: "high",
-          estimatedDuration: 120000,;
-          context: Record<string, any>
+          estimatedDuration: 120000,
+          context: { [key: string]: any }
         }
       ]
     });
   }
-
   async executeWorkflow(
-    crewName: string,
-    context: Record<string, any>,;
+    crewName: string
+    context: { [key: string]: any },
     priority: "low" | "medium" | "high" | "critical" = "medium",
   ): Promise<WorkflowResult> {
     const workflowId = `${crewName}_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
     const startTime = Date.now();
-
     try {
       const crew = this.crews.get(crewName);
       if (!crew) {
         throw new Error(`Crew '${crewName}' not found`);
       }
-
       // Create workflow promise with proper typing
       const workflowPromise = this.runCrewWorkflow(
         crew,
@@ -324,15 +312,13 @@ class CrewAILegalTeam {
         workflowId,
       ).then((result) => ({
         ...result,
-        crewId: workflowId,
-        workflowName: crewName,
+        crewId: workflowId
+        workflowName: crewName
         totalTime: Date.now() - startTime
       });
       this.activeWorkflows.set(workflowId, workflowPromise);
-
       const result = await workflowPromise;
       this.activeWorkflows.delete(workflowId);
-
       return result;
     } catch (error: any) {
       this.activeWorkflows.delete(workflowId);
@@ -340,18 +326,16 @@ class CrewAILegalTeam {
       throw error;
     }
   }
-
   private async runCrewWorkflow(
-    crew: CrewConfig,;
-    context: Record<string, any>,
-    workflowId: string,
+    crew: CrewConfig
+    context: { [key: string]: any },
+    workflowId: string
   ): Promise<Omit<WorkflowResult, "crewId" | "workflowName" | "totalTime"> {
     const results: WorkflowResult["results"] = [];
     const insights: string[] = [];
     const recommendations: string[] = [];
-
     try {
-      // Execute tasks based on crew process type;
+      // Execute tasks based on crew process type
       switch (crew.process) {
         case "sequential":
           await this.executeSequentialTasks(crew, context, results);
@@ -363,25 +347,22 @@ class CrewAILegalTeam {
           await this.executeConsensusTasks(crew, context, results);
           break;
       }
-
       // Generate final deliverable by combining all results
       const finalDeliverable = await this.synthesizeResults(
         crew,
         results,
         context,
       );
-
-      // Extract insights and recommendations;
+      // Extract insights and recommendations
       for (const result of results) {
         insights.push(...this.extractInsights((result as { output?: any }).output);
         recommendations.push(...this.extractRecommendations((result as { output?: any }).output);
       }
-
       return {
         status: "completed",
         results,
         finalDeliverable,
-        insights: [...new Set(insights)], // Remove duplicates;
+        insights: [...new Set(insights)], // Remove duplicates
         recommendations: [...new Set(recommendations)], // Remove duplicates
       };
     } catch (error: any) {
@@ -395,15 +376,13 @@ class CrewAILegalTeam {
       };
     }
   }
-
   private async executeSequentialTasks(
-    crew: CrewConfig,
-    context: Record<string, any>,;
+    crew: CrewConfig
+    context: { [key: string]: any },
     results: WorkflowResult["results"],
   ): Promise<void> {
     // Sort tasks by dependencies and priority
     const sortedTasks = this.sortTasksByDependencies(crew.tasks);
-
     for (const task of sortedTasks) {
       const agent = crew.members.find((m) => m.id === task.assignedAgent);
       if (!agent) {
@@ -411,22 +390,18 @@ class CrewAILegalTeam {
           `Agent ${task.assignedAgent} not found for task ${task.id}`,
         );
       }
-
       const startTime = Date.now();
-
-      // Build task context including previous results;
+      // Build task context including previous results
       const taskContext = {
         ...context,
-        previousResults: results.map((r) => ({
+        previousResults: results.map((r) => ({,
           taskId: r.taskId,
           output: r.output
-        })),;
+        })),
         task: task
       };
-
       const output = await this.executeAgentTask(agent, task, taskContext);
       const executionTime = Date.now() - startTime;
-
       results.push({
         taskId: task.id,
         agentId: agent.id,
@@ -440,17 +415,15 @@ class CrewAILegalTeam {
       });
     }
   }
-
   private async executeHierarchicalTasks(
-    crew: CrewConfig,
-    context: Record<string, any>,;
+    crew: CrewConfig
+    context: { [key: string]: any },
     results: WorkflowResult["results"],
   ): Promise<void> {
     // Find manager (first agent) and subordinates
     const manager = crew.members[0];
     const subordinates = crew.members.slice(1);
-
-    // Manager creates work plan;
+    // Manager creates work plan
     const planningTask: Task = {
       id: "work_planning",
       description:
@@ -458,17 +431,15 @@ class CrewAILegalTeam {
       expectedOutput:
         "Comprehensive work plan with task assignments and priorities",
       assignedAgent: manager.id,
-      dependencies: [],;
+      dependencies: [],
       priority: "critical",
       estimatedDuration: 60000
     };
-
     const workPlan = await this.executeAgentTask(
       manager,
       planningTask,
       context,
     );
-
     // Execute subordinate tasks in parallel
     const subordinateTasks = crew.tasks.filter(
       (t) => t.assignedAgent !== manager.id,
@@ -476,11 +447,9 @@ class CrewAILegalTeam {
     const taskPromises = subordinateTasks.map(async (task) => {
       const agent = subordinates.find((a) => a.id === task.assignedAgent);
       if (!agent) return null;
-
       const startTime = Date.now();
       const taskContext = { ...context, workPlan, task };
       const output = await this.executeAgentTask(agent, task, taskContext);
-
       return {
         taskId: task.id,
         agentId: agent.id,
@@ -493,47 +462,41 @@ class CrewAILegalTeam {
         )
       };
     });
-
     const subordinateResults = (await Promise.all(taskPromises)).filter(
       (r) => r !== null,
     );
     results.push(...(subordinateResults as WorkflowResult["results"]);
-
-    // Manager reviews and synthesizes;
+    // Manager reviews and synthesizes
     const reviewTask: Task = {
       id: "final_review",
       description: "Review team outputs and provide final synthesis",
       expectedOutput: "Final integrated analysis with quality review",
       assignedAgent: manager.id,
-      dependencies: subordinateTasks.map((t) => t.id),;
+      dependencies: subordinateTasks.map((t) => t.id),
       priority: "critical",
       estimatedDuration: 90000
     };
-
     const finalReview = await this.executeAgentTask(manager, reviewTask, {
       ...context,
       subordinateResults: subordinateResults
     });
-
     results.push({
       taskId: reviewTask.id,
       agentId: manager.id,
-      output: finalReview,
-      executionTime: Date.now() - Date.now(),;
+      output: finalReview
+      executionTime: Date.now() - Date.now(),
       confidence: 0.9
     });
   }
-
   private async executeConsensusTasks(
-    crew: CrewConfig,
-    context: Record<string, any>,;
+    crew: CrewConfig
+    context: { [key: string]: any },
     results: WorkflowResult["results"],
   ): Promise<void> {
-    // All agents work on the same tasks and reach consensus;
+    // All agents work on the same tasks and reach consensus
     for (const task of crew.tasks) {
       const agentOutputs: Array<any> = [];
-
-      // Get output from each agent;
+      // Get output from each agent
       for (const agent of crew.members) {
         const startTime = Date.now();
         const output = await this.executeAgentTask(agent, task, context);
@@ -543,49 +506,43 @@ class CrewAILegalTeam {
           executionTime,
           task.estimatedDuration,
         );
-
         agentOutputs.push({ agentId: agent.id, output, confidence });
       }
-
       // Reach consensus (use highest confidence output as base, incorporate others)
       const bestOutput = agentOutputs.reduce((best, current) =>
-        current.confidence > best.confidence ? current : best,
+        current.confidence > best.confidence ? current : best
       );
-
       const consensusOutput = await this.buildConsensus(
         agentOutputs,
         task,
         context,
       );
-
       results.push({
         taskId: task.id,
         agentId: "consensus",
-        output: consensusOutput,
-        executionTime: 0,;
+        output: consensusOutput
+        executionTime: 0,
         confidence:
           agentOutputs.reduce((sum, out) => sum + out.confidence, 0) /
           agentOutputs.length
       });
     }
   }
-
   private async executeAgentTask(
-    agent: CrewMember,
-    task: Task,;
-    context: Record<string, any>,
+    agent: CrewMember
+    task: Task
+    context: { [key: string]: any },
   ): Promise<string> {
     const prompt = this.buildAgentPrompt(agent, task, context);
-
     try {
       const response = await fetch(`${this.aiEndpoint}/api/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           model: "gemma3-legal",
           prompt,
-          stream: false,
-          options: {;
+          stream: false
+          options: {
             temperature: 0.3,
             num_predict: 2048,
             num_ctx: 8192,
@@ -594,11 +551,9 @@ class CrewAILegalTeam {
           }
         })
       });
-
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`AI request failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
-
       const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
       return (data as { response?: any }).response;
     } catch (error: any) {
@@ -606,42 +561,30 @@ class CrewAILegalTeam {
       throw error;
     }
   }
-
   private buildAgentPrompt(
-    agent: CrewMember,
-    task: Task,;
-    context: Record<string, any>,
+    agent: CrewMember
+    task: Task
+    context: { [key: string]: any },
   ): string {
     return `You are ${agent.name}, a ${agent.role}.
-
 GOAL: ${agent.goal}
-
 BACKSTORY: ${agent.backstory}
-
 CURRENT TASK: ${task.description}
-
 EXPECTED OUTPUT: ${task.expectedOutput}
-
 CONTEXT:
 ${JSON.stringify(context, null, 2)}
-
 AVAILABLE TOOLS: ${agent.tools.join(", ")}
-
 Please complete this task according to your role and expertise. Provide detailed, actionable output that meets the expected deliverable. Be thorough but concise.
-
 Your response:`;
   }
-
   private async synthesizeResults(
-    crew: CrewConfig,
-    results: WorkflowResult["results"],;
-    context: Record<string, any>,
+    crew: CrewConfig
+    results: WorkflowResult["results"],
+    context: { [key: string]: any },
   ): Promise<string> {
     const synthesisPrompt = `As a legal team coordinator, synthesize the following team outputs into a comprehensive final deliverable:
-
 CREW: ${crew.name}
 CONTEXT: ${JSON.stringify(context, null, 2)}
-
 TEAM OUTPUTS:
 ${results
   .map(
@@ -652,25 +595,22 @@ ${r.output}
 `,
   )
   .join("\n")}
-
 Please provide a comprehensive synthesis that:
 1. Integrates all team findings
 2. Identifies key insights and patterns
 3. Provides clear recommendations
 4. Highlights any concerns or risks
 5. Suggests next steps
-
 Final synthesis:`;
-
     try {
       const response = await fetch(`${this.aiEndpoint}/api/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           model: "gemma3-legal",
-          prompt: synthesisPrompt,
-          stream: false,
-          options: {;
+          prompt: synthesisPrompt
+          stream: false
+          options: {
             temperature: 0.2,
             num_predict: 3072,
             num_ctx: 16384,
@@ -678,7 +618,6 @@ Final synthesis:`;
           }
         })
       });
-
       const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
       return (data as { response?: any }).response;
     } catch (error: any) {
@@ -686,16 +625,13 @@ Final synthesis:`;
       return `Synthesis failed: ${error}. Individual results available above.`;
     }
   }
-
   private sortTasksByDependencies(tasks: Task[]): Task[] {
     const sorted: Task[] = [];
     const remaining = [...tasks];
-
     while (remaining.length > 0) {
       const canExecute = remaining.filter((task) =>
         task.dependencies.every((dep) => sorted.some((s) => s.id === dep)),
       );
-
       if (canExecute.length === 0) {
         // Circular dependency or missing dependency
         console.warn(
@@ -704,28 +640,23 @@ Final synthesis:`;
         sorted.push(...remaining);
         break;
       }
-
-      // Sort by priority within executable tasks;
+      // Sort by priority within executable tasks
       canExecute.sort((a, b) => {
         const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
         return priorityOrder[b.priority] - priorityOrder[a.priority];
       });
-
       const next = canExecute[0];
       sorted.push(next);
       remaining.splice(remaining.indexOf(next), 1);
     }
-
     return sorted;
   }
-
   private async buildConsensus(
-    agentOutputs: Array<any>,
-    task: Task,;
-    context: Record<string, any>,
+    agentOutputs: Array<any>
+    task: Task
+    context: { [key: string]: any },
   ): Promise<string> {
     const consensusPrompt = `Build consensus from the following agent outputs for task: ${task.description}
-
 AGENT OUTPUTS:
 ${agentOutputs
   .map(
@@ -736,74 +667,63 @@ ${out.output}
 `,
   )
   .join("\n")}
-
 Please create a consensus output that:
 1. Incorporates the best elements from each agent
 2. Resolves any conflicts or contradictions
 3. Maintains high quality and accuracy
 4. Reflects the collective expertise
-
 Consensus output:`;
-
     try {
       const response = await fetch(`${this.aiEndpoint}/api/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           model: "gemma3-legal",
-          prompt: consensusPrompt,
-          stream: false,
-          options: {;
+          prompt: consensusPrompt
+          stream: false
+          options: {
             temperature: 0.25,
             num_predict: 2048,
             gpu_layers: -1
           }
         })
       });
-
       const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
       return (data as { response?: any }).response;
     } catch (error: any) {
       console.error("Consensus building failed:", error);
       // Fallback to highest confidence output
       return agentOutputs.reduce((best, current) =>
-        current.confidence > best.confidence ? current : best,
+        current.confidence > best.confidence ? current : best
       ).output;
     }
   }
-
   private calculateConfidence(
-    output: string,
-    actualTime: number,
-    estimatedTime: number,
+    output: string
+    actualTime: number
+    estimatedTime: number
   ): number {
     let confidence = 0.5; // Base confidence
-
     // Adjust based on output length and completeness
     if (output.length > 500) confidence += 0.2;
     if (output.length > 1000) confidence += 0.1;
-
     // Adjust based on timing
     const timeRatio = actualTime / estimatedTime;
     if (timeRatio > 0.5 && timeRatio < 1.5) confidence += 0.15; // Good timing
     if (timeRatio > 2) confidence -= 0.1; // Too slow
-
     // Check for key indicators
     if (output.includes("recommend") || output.includes("suggest")
       confidence += 0.05;
     if (output.includes("analysis") || output.includes("conclusion")
       confidence += 0.05;
-
     return Math.min(Math.max(confidence, 0.1), 0.95); // Clamp between 0.1 and 0.95
   }
-
   private extractInsights(output: string): string[] {
     const insightPatterns = [
       /(?:insight|finding|discovery):\s*(.+?)(?:\n|$)/gi,
       /(?:importantly|notably|significantly),?\s*(.+?)(?:\n|$)/gi,
       /(?:revealed|shows|indicates)\s+(?:that\s+)?(.+?)(?:\n|$)/gi
     ];
-
     const insights: string[] = [];
     for (const pattern of insightPatterns) {
       const matches = output.matchAll(pattern);
@@ -813,17 +733,14 @@ Consensus output:`;
         }
       }
     }
-
     return insights.slice(0, 5); // Limit to top 5 insights
   }
-
   private extractRecommendations(output: string): string[] {
     const recommendationPatterns = [
       /(?:recommend|suggest|should|propose):\s*(.+?)(?:\n|$)/gi,
       /(?:recommendation|suggestion):\s*(.+?)(?:\n|$)/gi,
       /(?:next step|action item):\s*(.+?)(?:\n|$)/gi
     ];
-
     const recommendations: string[] = [];
     for (const pattern of recommendationPatterns) {
       const matches = output.matchAll(pattern);
@@ -833,23 +750,18 @@ Consensus output:`;
         }
       }
     }
-
     return recommendations.slice(0, 8); // Limit to top 8 recommendations
   }
-
-  // Public methods for crew management;
+  // Public methods for crew management
   getCrews(): string[] {
     return Array.from(this.crews.keys();
   }
-
   getCrewConfig(crewName: string): CrewConfig | undefined {
     return this.crews.get(crewName);
   }
-
   getActiveWorkflows(): string[] {
     return Array.from(this.activeWorkflows.keys();
   }
-
   async cancelWorkflow(workflowId: string): Promise<boolean> {
     if (this.activeWorkflows.has(workflowId)) {
       // Note: In a real implementation, you'd need proper cancellation logic
@@ -859,7 +771,6 @@ Consensus output:`;
     return false;
   }
 }
-
 export {
   CrewAILegalTeam
 };

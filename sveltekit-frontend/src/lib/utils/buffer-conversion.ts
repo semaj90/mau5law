@@ -1,12 +1,10 @@
 /**
  * Buffer Conversion Utilities
- * 
+ *
  * Fixes Float32Array/ArrayBuffer mismatches in GPU pipeline.
  * Provides safe, type-aware conversions between different buffer types.
  */
-
 export type BufferLike = ArrayBuffer | Float32Array | Uint8Array | Int32Array | Uint32Array | number[];
-
 /**
  * Safe conversion from ArrayBuffer to Float32Array
  * Handles edge cases and provides proper typing
@@ -15,7 +13,6 @@ export function arrayBufferToFloat32Array(buffer: ArrayBuffer, offset = 0, lengt
   if (!buffer || buffer.byteLength === 0) {
     return new Float32Array(0);
   }
-  
   // Ensure proper alignment for Float32Array (4-byte aligned)
   if (offset % 4 !== 0) {
     console.warn('ArrayBuffer offset not 4-byte aligned, copying to aligned buffer');
@@ -23,12 +20,10 @@ export function arrayBufferToFloat32Array(buffer: ArrayBuffer, offset = 0, lengt
     new Uint8Array(alignedBuffer).set(new Uint8Array(buffer));
     return new Float32Array(alignedBuffer, 0, length);
   }
-  
-  return length !== undefined 
+  return length !== undefined
     ? new Float32Array(buffer, offset, length)
     : new Float32Array(buffer, offset);
 }
-
 /**
  * Safe conversion from Float32Array to ArrayBuffer
  * Returns the underlying buffer with proper boundaries
@@ -37,14 +32,12 @@ export function float32ArrayToArrayBuffer(array: Float32Array): ArrayBuffer {
   if (!array || array.length === 0) {
     return new ArrayBuffer(0);
   }
-  
   // If the Float32Array is a view of a larger buffer, slice it
   if (array.byteOffset !== 0 || array.byteLength !== array.buffer.byteLength) {
     const newBuffer = new ArrayBuffer(array.byteLength);
     new Uint8Array(newBuffer).set(new Uint8Array(array.buffer, array.byteOffset, array.byteLength));
     return newBuffer;
   }
-  
   // Ensure we return an ArrayBuffer, not ArrayBufferLike
   if (array.buffer instanceof ArrayBuffer) {
     return array.buffer;
@@ -55,7 +48,6 @@ export function float32ArrayToArrayBuffer(array: Float32Array): ArrayBuffer {
     return newBuffer;
   }
 }
-
 /**
  * Convert any BufferLike to Float32Array safely
  */
@@ -63,11 +55,9 @@ export function toFloat32Array(data: BufferLike): Float32Array {
   if (data instanceof Float32Array) {
     return data;
   }
-  
   if (data instanceof ArrayBuffer) {
     return arrayBufferToFloat32Array(data);
   }
-  
   if (data instanceof Uint8Array) {
     // Convert bytes to float32 values (normalized 0-1)
     const float32 = new Float32Array(data.length);
@@ -76,18 +66,14 @@ export function toFloat32Array(data: BufferLike): Float32Array {
     }
     return float32;
   }
-  
   if (data instanceof Int32Array || data instanceof Uint32Array) {
     return new Float32Array(data);
   }
-  
   if (Array.isArray(data)) {
     return new Float32Array(data);
   }
-  
   throw new Error(`Unsupported buffer type: ${(data as any)?.constructor?.name || typeof data}`);
 }
-
 /**
  * Convert any BufferLike to ArrayBuffer safely
  */
@@ -95,22 +81,18 @@ export function toArrayBuffer(data: BufferLike): ArrayBuffer {
   if (data instanceof ArrayBuffer) {
     return data;
   }
-  
   if (data instanceof Float32Array ||
       data instanceof Uint8Array ||
       data instanceof Int32Array ||
       data instanceof Uint32Array) {
     return float32ArrayToArrayBuffer(data as Float32Array);
   }
-  
   if (Array.isArray(data)) {
     const float32Array = new Float32Array(data);
     return float32ArrayToArrayBuffer(float32Array);
   }
-  
   throw new Error(`Unsupported buffer type: ${(data as any)?.constructor?.name || typeof data}`);
 }
-
 /**
  * Create a properly aligned buffer for WebGPU operations
  * WebGPU requires 4-byte alignment for most operations
@@ -119,25 +101,21 @@ export function createAlignedBuffer(sizeInBytes: number): ArrayBuffer {
   const alignedSize = Math.ceil(sizeInBytes / 4) * 4; // Round up to nearest 4 bytes
   return new ArrayBuffer(alignedSize);
 }
-
 /**
  * Copy data between buffers with proper alignment
  */
 export function copyBufferAligned(
-  source: BufferLike,;
-  target: ArrayBuffer,
+  source: BufferLike
+  target: ArrayBuffer
   targetOffset = 0
 ): void {
   const sourceUint8 = new Uint8Array(toArrayBuffer(source));
   const targetUint8 = new Uint8Array(target, targetOffset);
-  
   if (targetUint8.length < sourceUint8.length) {
     throw new Error('Target buffer too small');
   }
-  
   targetUint8.set(sourceUint8);
 }
-
 /**
  * WebGPU-specific buffer creation utilities
  */
@@ -152,7 +130,6 @@ export class WebGPUBufferUtils {
     new Uint8Array(copy).set(new Uint8Array(mappedRange));
     return arrayBufferToFloat32Array(copy);
   }
-  
   /**
    * Prepare data for WebGPU buffer upload
    */
@@ -164,10 +141,8 @@ export class WebGPUBufferUtils {
     const buffer = toArrayBuffer(data);
     const byteLength = buffer.byteLength;
     const elementCount = data instanceof Float32Array ? data.length : byteLength / 4;
-    
     return { buffer, byteLength, elementCount };
   }
-  
   /**
    * Calculate proper buffer size with padding for WebGPU
    */
@@ -177,7 +152,6 @@ export class WebGPUBufferUtils {
     return Math.ceil(baseSize / 4) * 4;
   }
 }
-
 /**
  * Type guards for buffer types
  */
@@ -194,7 +168,6 @@ export const BufferTypeGuards = {
     return data instanceof ArrayBuffer || BufferTypeGuards.isTypedArray(data);
   }
 };
-
 /**
  * Debug utilities for buffer inspection
  */
@@ -212,7 +185,6 @@ export const BufferDebugUtils = {
     const type = data.constructor.name;
     let byteLength: number;
     let elementCount: number | undefined;
-    
     if (data instanceof ArrayBuffer) {
       byteLength = data.byteLength;
     } else if (Array.isArray(data)) {
@@ -224,9 +196,7 @@ export const BufferDebugUtils = {
       byteLength = data.byteLength;
       elementCount = data.length;
     }
-    
     const alignment = byteLength % 4;
-    
     return {
       type,
       byteLength,
@@ -235,7 +205,6 @@ export const BufferDebugUtils = {
       isAligned: alignment === 0
     };
   },
-  
   /**
    * Log buffer info for debugging
    */
@@ -243,13 +212,12 @@ export const BufferDebugUtils = {
     const info = this.inspectBuffer(data);
     console.log(`${label}:`, {
       ...info,
-      preview: data instanceof Float32Array 
+      preview: data instanceof Float32Array
         ? `[${Array.from(data.slice(0, 5)).map(n => n.toFixed(3)).join(', ')}...]`
         : `${info.byteLength} bytes`
     });
   }
 };
-
 /**
  * Extended WebGPU Buffer Utilities with Quantization Support
  */
@@ -258,7 +226,7 @@ export class WebGPUBufferUtils_Advanced {
    * Create a Float32Array from WebGPU mapped buffer with quantization awareness
    */
   static createFloat32ArrayFromMappedRangeWithQuantization(
-    mappedRange: ArrayBuffer,
+    mappedRange: ArrayBuffer
     originalQuantization?: 'fp32' | 'fp16' | 'int8'
   ): Float32Array {
     // For now, treat all as Float32Array - quantization handling is in typed-array-quantization.ts
@@ -266,12 +234,11 @@ export class WebGPUBufferUtils_Advanced {
     new Uint8Array(copy).set(new Uint8Array(mappedRange));
     return arrayBufferToFloat32Array(copy);
   }
-
   /**
    * Enhanced buffer preparation that considers quantization needs
    */
   static prepareForUploadAdvanced(
-    data: BufferLike,;
+    data: BufferLike
     options: {
       alignment?: number;
       quantizationHint?: 'precision' | 'performance' | 'storage';
@@ -285,20 +252,16 @@ export class WebGPUBufferUtils_Advanced {
     const buffer = toArrayBuffer(data);
     const byteLength = buffer.byteLength;
     const elementCount = data instanceof Float32Array ? data.length : byteLength / 4;
-    
     // Recommend quantization based on size and hint
     let recommendedQuantization: 'fp32' | 'fp16' | 'int8_symmetric' = 'fp32';
-    
     if (options.quantizationHint === 'storage' || byteLength > 10 * 1024 * 1024) {
       recommendedQuantization = 'int8_symmetric';
     } else if (options.quantizationHint === 'performance' || byteLength > 1024 * 1024) {
       recommendedQuantization = 'fp16';
     }
-    
     return { buffer, byteLength, elementCount, recommendedQuantization };
   }
 }
-
 export default {
   arrayBufferToFloat32Array,
   float32ArrayToArrayBuffer,

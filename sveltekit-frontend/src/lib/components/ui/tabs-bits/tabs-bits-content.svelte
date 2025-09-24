@@ -2,16 +2,14 @@
 <script>
 	import { Tabs as TabsPrimitive } from 'bits-ui';
 	import { cn } from '$lib/utils';
-
 	let {
 		value,
 		forceMount = false,
 		class: className = undefined,
 		children = undefined,
-		...restProps;
+		...restProp;
 	} = $props();
 </script>
-
 <TabsPrimitive.Content
 	{value}
 	{forceMount}

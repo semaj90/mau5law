@@ -3,7 +3,6 @@
  * Type definitions for N64, NES, and retro gaming components
  */;
 }
-
 export interface GamingComponentProps {
   variant?: 'primary' | 'secondary' | 'accent' | 'ghost' | 'outline';
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -13,7 +12,6 @@ export interface GamingComponentProps {
   style?: string;
   [key: string]: any;
 }
-
 export interface N64RenderingOptions {
   textureQuality: 'low' | 'medium' | 'high' | 'ultra';
   enableBilinearFiltering: boolean;
@@ -25,10 +23,8 @@ export interface N64RenderingOptions {
   enableReflections: boolean;
   shadowMapSize: 256 | 512 | 1024 | 2048;
 }
-
 export type GamingEra = 'nes' | 'snes' | 'n64' | 'ps1' | 'dreamcast' | 'modern' | '8bit' | '16bit';
 }
-
 export interface NESColorPalette {
   background: string[];
   sprites: string[];
@@ -43,7 +39,6 @@ export interface NESColorPalette {
   green?: string;
   yellow?: string;
 }
-
 export interface SNESColorPalette {
   background: string[];
   sprites: string[];
@@ -69,7 +64,6 @@ export interface SNESColorPalette {
   primaryGradient?: string[];
   secondaryGradient?: string[];
 }
-
 export interface N64ButtonConfig {
   texture: 'plastic' | 'rubber' | 'metal';
   shape: 'round' | 'square' | 'dpad' | 'analog';
@@ -77,7 +71,6 @@ export interface N64ButtonConfig {
   pressDepth: number;
   springTension: number;
 }
-
 export interface GamepadState {
   connected: boolean;
   id: string;
@@ -85,7 +78,6 @@ export interface GamepadState {
   axes: number[];
   timestamp: number;
 }
-
 export interface GamingThemeState {
   era: GamingEra;
   currentEra?: GamingEra;
@@ -98,7 +90,6 @@ export interface GamingThemeState {
   isTransitioning?: boolean;
   transitionDuration?: number;
 }
-
 export interface RetroEffect {
   name: string;
   type: 'visual' | 'audio' | 'haptic';
@@ -106,7 +97,6 @@ export interface RetroEffect {
   duration: number;
   easing: 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'bounce';
 }
-
 export interface GamingAudioConfig {
   enableSpatialAudio: boolean;
   masterVolume: number;
@@ -115,7 +105,6 @@ export interface GamingAudioConfig {
   audioContext?: AudioContext;
   reverbLevel: number;
 }
-
 export interface ProgressiveGamingConfig {
   autoDetectPerformance: boolean;
   fallbackToLowQuality: boolean;

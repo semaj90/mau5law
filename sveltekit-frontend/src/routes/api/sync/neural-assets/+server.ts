@@ -2,7 +2,6 @@
  * Neural Topology Assets API
  * Manages predictive asset cache, bitmap sprite states, and CHR-ROM manifest operations
  */
-
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from '@sveltejs/kit'
 import { mockDataGenerators } from '$lib/server/sync/mock-api-sync-simple'
@@ -11,22 +10,19 @@ import { mockDataGenerators } from '$lib/server/sync/mock-api-sync-simple'
 // import { db } from '$lib/server/db/drizzle'
 // import { vectorEmbeddings, legalDocuments } from '$lib/server/db/schema-postgres'
 import { cosineDistance, desc, sql, eq } from 'drizzle-orm'
-
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'assets'
   const count = parseInt(url.searchParams.get('count') || '20')
   const cacheType = url.searchParams.get('cacheType')
   const assetType = url.searchParams.get('assetType')
-
   try {
     switch (action) {
       case 'assets':
         // Generate predictive asset cache samples
         const assetPredictions = mockDataGenerators.generateMockAssetPredictions(count)
-
         return json({
           action: 'neural_assets',
-          assets: assetPredictions,
+          assets: assetPredictions
           count: assetPredictions.length,
           aggregateMetrics: {
             avgConfidence:
@@ -47,11 +43,9 @@ export const GET: RequestHandler = async ({ url }) => {
           },
           timestamp: new Date().toISOString()
         })
-
       case 'bitmap_sprites':
         // Generate bitmap sprite cache states
         const spriteStates = mockDataGenerators.generateMockEmbeddingShards(count)
-
         const bitmapSprites = spriteStates.map((shard) => ({
           shardId: shard.shardId,
           spriteMatrix: Array.from({ length: 8 }, () =>
@@ -65,10 +59,9 @@ export const GET: RequestHandler = async ({ url }) => {
           hitCount: Math.floor(Math.random() * 1000),
           mockData: true
         })
-
         return json({
           action: 'bitmap_sprites',
-          sprites: bitmapSprites,
+          sprites: bitmapSprites
           count: bitmapSprites.length,
           cacheStats: {
             totalHits: bitmapSprites.reduce((sum, s) => sum + s.hitCount, 0),
@@ -79,14 +72,12 @@ export const GET: RequestHandler = async ({ url }) => {
           },
           timestamp: new Date().toISOString()
         })
-
       case 'chr_manifests':
         // Generate CHR-ROM manifest data
         const chrManifests = mockDataGenerators.generateMockCHRManifests(count)
-
         return json({
           action: 'chr_manifests',
-          manifests: chrManifests,
+          manifests: chrManifests
           count: chrManifests.length,
           systemMetrics: {
             totalBanks: chrManifests.reduce((sum, m) => sum + m.bankCount, 0),
@@ -99,7 +90,6 @@ export const GET: RequestHandler = async ({ url }) => {
           },
           timestamp: new Date().toISOString()
         })
-
       case 'predictive_cache':
         // Get predictive cache performance data
         const mockCacheData = {
@@ -118,13 +108,11 @@ export const GET: RequestHandler = async ({ url }) => {
             timestamp: new Date(Date.now() - Math.random() * 3600000).toISOString()
           }))
         }
-
         return json({
           action: 'predictive_cache',
-          cache: mockCacheData,
+          cache: mockCacheData
           timestamp: new Date().toISOString()
         })
-
       case 'vector_similarity':
         // Get vector similarity analysis for neural assets
         // Mock embeddings data
@@ -136,17 +124,13 @@ export const GET: RequestHandler = async ({ url }) => {
           metadata: { mockData: true },
           createdAt: new Date(Date.now() - Math.random() * 86400000)
         })
-
         const similarityMatrix = []
-
         for (let i = 0; i < recentEmbeddings.length; i++) {
           for (let j = i + 1; j < recentEmbeddings.length; j++) {
             const emb1 = recentEmbeddings[i]
             const emb2 = recentEmbeddings[j]
-
             // Mock similarity calculation (in real implementation, use cosine distance)
             const similarity = 0.5 + Math.random() * 0.5
-
             similarityMatrix.push({
               embedding1Id: emb1.id,
               embedding2Id: emb2.id,
@@ -159,10 +143,9 @@ export const GET: RequestHandler = async ({ url }) => {
             })
           }
         }
-
         return json({
           action: 'vector_similarity',
-          similarities: similarityMatrix,
+          similarities: similarityMatrix
           count: similarityMatrix.length,
           embeddingStats: {
             totalEmbeddings: recentEmbeddings.length,
@@ -173,7 +156,6 @@ export const GET: RequestHandler = async ({ url }) => {
           },
           timestamp: new Date().toISOString()
         })
-
       case 'cache_health':
         // Comprehensive cache health metrics
         const healthMetrics = {
@@ -207,13 +189,11 @@ export const GET: RequestHandler = async ({ url }) => {
                   ? 'warning'
                   : 'critical'
         }
-
         return json({
           action: 'cache_health',
-          health: healthMetrics,
+          health: healthMetrics
           timestamp: new Date().toISOString()
         })
-
       default:
         return json()
           {
@@ -243,17 +223,14 @@ export const GET: RequestHandler = async ({ url }) => {
     )
   }
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json()
     const { action, params = {} } = body
-
     switch (action) {
       case 'optimize_cache':
         // Mock cache optimization
         const { cacheType, targetEfficiency = 0.9 } = params
-
         const optimizationResult = {
           cacheType,
           targetEfficiency,
@@ -280,26 +257,22 @@ export const POST: RequestHandler = async ({ request }) => {
           },
           mockOptimization: true
         }
-
         return json({
           action: 'optimize_cache',
-          result: optimizationResult,
+          result: optimizationResult
           timestamp: new Date().toISOString()
         })
-
       case 'generate_sprites':
         // Generate new bitmap sprites based on document patterns
         const { documentIds, spriteCount = 10, compressionLevel = 3 } = params
-
         if (!documentIds || !Array.isArray(documentIds)) {
           return json({ error: 'documentIds array required' }, { status: 400 })
         }
-
         const generatedSprites = Array.from({ length: spriteCount }, (_, i) => {
           const docId = documentIds[i % documentIds.length]
           return {
             spriteId: `sprite_${Date.now()}_${i}`,
-            documentId: docId,
+            documentId: docId
             matrix: Array.from({ length: 8 }, () =>
               Array.from({ length: 8 }, () => Math.floor(Math.random() * 4)
             ),
@@ -315,23 +288,19 @@ export const POST: RequestHandler = async ({ request }) => {
             mockGeneration: true
           }
         })
-
         return json({
           action: 'generate_sprites',
-          sprites: generatedSprites,
+          sprites: generatedSprites
           count: generatedSprites.length,
           parameters: { documentIds, spriteCount, compressionLevel },
           timestamp: new Date().toISOString()
         })
-
       case 'update_chr_manifest':
         // Update CHR-ROM manifest with new sprite data
         const { manifestId, newSprites, optimizationLevel = 2 } = params
-
         if (!manifestId) {
           return json({ error: 'manifestId required' }, { status: 400 })
         }
-
         const updateResult = {
           manifestId,
           operation: 'chr_manifest_update',
@@ -355,17 +324,14 @@ export const POST: RequestHandler = async ({ request }) => {
           ],
           mockUpdate: true
         }
-
         return json({
           action: 'update_chr_manifest',
-          result: updateResult,
+          result: updateResult
           timestamp: new Date().toISOString()
         })
-
       case 'predict_asset_usage':
         // Predict future asset usage patterns
         const { timeHorizon = 3600, assetTypes, userContext } = params
-
         const predictions = Array.from()
           { length: Math.min(assetTypes?.length || 5, 10) },
           (_, i) => {
@@ -380,7 +346,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 cacheRecommendation: Math.random() > 0.5 ? 'preload' : 'lazy_load',
                 confidenceScore: 0.6 + Math.random() * 0.3
               },
-              userContext: userContext || {
+              userContext: userContext || {,
                 sessionType: 'analysis',
                 focusIntensity: Math.random()
               },
@@ -388,7 +354,6 @@ export const POST: RequestHandler = async ({ request }) => {
             }
           }
         )
-
         return json({
           action: 'predict_asset_usage',
           predictions,
@@ -404,7 +369,6 @@ export const POST: RequestHandler = async ({ request }) => {
           },
           timestamp: new Date().toISOString()
         })
-
       default:
         return json()
           {

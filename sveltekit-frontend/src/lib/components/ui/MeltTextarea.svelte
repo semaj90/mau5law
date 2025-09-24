@@ -1,12 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   	import { cva, type VariantProps } from 'class-variance-authority';
   	import { cn } from '$lib/utils';
-
   	const textareaVariants = cva(
   		'flex min-h-[80px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-950 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus-visible:ring-gray-800',
   		{
@@ -25,12 +23,11 @@ https://svelte.dev/e/js_parse_error -->
   				}
   			},
   			defaultVariants: {
-  				variant: 'default',;
+  				variant: 'default',
   				size: 'default';
   			}
   		}
   	);
-
   	interface Props {
   		value?: string;
   		placeholder?: string;
@@ -79,10 +76,10 @@ https://svelte.dev/e/js_parse_error -->
   		name,
   		id,
   		form,
-  		'aria-label': ariaLabel,
-  		'aria-labelledby': ariaLabelledBy,
-  		'aria-describedby': ariaDescribedBy,
-  		'data-testid': testId,
+  		'aria-label': ariaLabel
+  		'aria-labelledby': ariaLabelledBy
+  		'aria-describedby': ariaDescribedBy
+  		'data-testid': testId
   		oninput,
   		onchange,
   		onfocus,
@@ -91,9 +88,8 @@ https://svelte.dev/e/js_parse_error -->
   		onkeyup;
   	}: Props = $props();
   	let textareaClass = $derived(cn(textareaVariants({ variant, size }), class));
-  	type $$Props = Props;
+  	type $$Props = Prop;
 </script>
-
 <textarea
 	bind:value
 	{placeholder}

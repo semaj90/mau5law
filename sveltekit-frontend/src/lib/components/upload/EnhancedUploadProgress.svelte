@@ -5,125 +5,120 @@
   import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/button';
   import { CheckCircle, AlertCircle, Clock, Zap, Database, Network, Cpu, Brain, Eye } from 'lucide-svelte';
-
   // Reactive state from enhanced upload machine
   let uploadState = $state<EnhancedUploadState>();
-
   // Subscribe to the enhanced upload store
   enhancedUploadStore.subscribe((state) => {
-    uploadState = state;
+    uploadState = stat;
   });
-
   // Progress stages with icons and descriptions
   const progressStages = [
     {
       id: 'idle',
       name: 'Ready to Upload',
-      icon: Clock,
+      icon: Clock
       description: 'Waiting for files to be selected',
       color: 'bg-gray-500';
     },
     {
       id: 'requesting_presign',
       name: 'Preparing Upload',
-      icon: Network,
+      icon: Network
       description: 'Generating secure upload URLs with MinIO',
       color: 'bg-blue-500';
     },
     {
       id: 'uploading',
       name: 'File Upload',
-      icon: Zap,
+      icon: Zap
       description: 'Uploading chunks to secure storage',
       color: 'bg-purple-500';
     },
     {
       id: 'rabbitmq_queue',
       name: 'Queue Processing',
-      icon: Network,
+      icon: Network
       description: 'Adding to RabbitMQ processing queue',
       color: 'bg-orange-500';
     },
     {
       id: 'ocr_extraction',
       name: 'OCR Analysis',
-      icon: Eye,
+      icon: Eye
       description: 'Extracting text from images and PDFs',
       color: 'bg-cyan-500';
     },
     {
       id: 'text_extraction',
       name: 'Document Parsing',
-      icon: Database,
+      icon: Database
       description: 'Advanced text extraction and preprocessing',
       color: 'bg-green-500';
     },
     {
       id: 'gemma3_embedding',
       name: 'Gemma3 Embeddings',
-      icon: Brain,
+      icon: Brain
       description: 'Generating semantic embeddings with Gemma3',
       color: 'bg-pink-500';
     },
     {
       id: 'ai_analysis',
       name: 'AI Legal Analysis',
-      icon: Brain,
+      icon: Brain
       description: 'Deep legal analysis with AI assistant',
       color: 'bg-indigo-500';
     },
     {
       id: 'neo4j_storage',
       name: 'Graph Storage',
-      icon: Network,
+      icon: Network
       description: 'Storing relationships in Neo4j graph database',
       color: 'bg-emerald-500';
     },
     {
       id: 'postgresql_storage',
       name: 'Document Storage',
-      icon: Database,
+      icon: Database
       description: 'Saving to PostgreSQL with JSONB optimization',
       color: 'bg-teal-500';
     },
     {
       id: 'pgvector_indexing',
       name: 'Vector Indexing',
-      icon: Cpu,
+      icon: Cpu
       description: 'Creating pgvector HNSW index for fast search',
       color: 'bg-violet-500';
     },
     {
       id: 'rag_integration',
       name: 'RAG Integration',
-      icon: Brain,
+      icon: Brain
       description: 'Integrating with RAG retrieval system',
       color: 'bg-rose-500';
     },
     {
       id: 'tensor_processing',
       name: 'GPU Processing',
-      icon: Zap,
+      icon: Zap
       description: 'Final tensor processing and clustering',
       color: 'bg-amber-500';
     },
     {
       id: 'completed',
       name: 'Complete',
-      icon: CheckCircle,;
-      description: 'All processing completed successfully',;
+      icon: CheckCircle
+      description: 'All processing completed successfully',
       color: 'bg-green-600';
     }
   ];
-
   // Get current stage info
   let currentStage = $derived(getCurrentStage(uploadState?.value));
   let stageIndex = $derived(progressStages.findIndex(s => s.id === currentStage));
   let overallProgress = $derived(stageIndex >= 0 ? Math.round((stageIndex / (progressStages.length - 1)) * 100) : 0);
-
   function getCurrentStage(stateValue: any): string {
     if (!stateValue) return 'idle';
-    if (typeof stateValue === 'string') return stateValue;
+    if (typeof stateValue === 'string') return stateValu;
     if (typeof stateValue === 'object') {
       if (stateValue.processing) {
         return Object.keys(stateValue.processing)[0] || 'processing';
@@ -132,28 +127,23 @@
     }
     return 'idle';
   }
-
   function getStageStatus(stage: typeof progressStages[0], index: number): 'completed' | 'current' | 'pending' | 'error' {
     if (uploadState?.context?.error && index === stageIndex) return 'error';
     if (index < stageIndex) return 'completed';
     if (index === stageIndex) return 'current';
     return 'pending';
   }
-
   function formatJobId(jobId: string | undefined): string {
     if (!jobId) return 'N/A';
     return jobId.length > 8 ? `${jobId.substring(0, 8)}...` : jobId;
   }
-
   function retryUpload() {
     enhancedUploadStore.send({ type: 'RETRY' });
   }
-
   function resetUpload() {
     enhancedUploadStore.send({ type: 'RESET' });
   }
 </script>
-
 <div class="space-y-6">
   <!-- Overall Progress -->
   <Card>
@@ -170,7 +160,6 @@
           <span class="text-sm text-muted-foreground">{overallProgress}%</span>
         </div>
         <Progress value={overallProgress} class="h-2" />
-
         {#if uploadState?.context?.error}
           <div class="flex items-center gap-2 text-red-600">
             <AlertCircle class="h-4 w-4" />
@@ -188,7 +177,6 @@
       </div>
     </CardContent>
   </Card>
-
   <!-- Stage Progress -->
   <Card>
     <CardHeader>
@@ -199,7 +187,6 @@
         {#each progressStages as stage, index}
           {@const status = getStageStatus(stage, index)}
           {@const IconComponent = stage.icon}
-
           <div class="flex items-start gap-4 p-3 rounded-lg border {
             status === 'current' ? 'border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950' :
             status === 'completed' ? 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950' :
@@ -222,7 +209,6 @@
                 {/if}
               </div>
             </div>
-
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2">
                 <h3 class="font-medium text-sm">{stage.name}</h3>
@@ -238,7 +224,6 @@
                 </Badge>
               </div>
               <p class="text-xs text-muted-foreground mt-1">{stage.description}</p>
-
               {#if status === 'current' && uploadState?.context?.progress}
                 <Progress value={uploadState.context.progress} class="h-1 mt-2" />
               {/if}
@@ -248,7 +233,6 @@
       </div>
     </CardContent>
   </Card>
-
   <!-- Job IDs and Results -->
   {#if uploadState?.context?.jobIds && Object.keys(uploadState.context.jobIds).length > 0}
     <Card>
@@ -271,7 +255,6 @@
       </CardContent>
     </Card>
   {/if}
-
   <!-- AI Results Summary -->
   {#if uploadState?.context?.results || uploadState?.context?.aiAssistant?.analysis}
     <Card>
@@ -288,7 +271,6 @@
             </div>
           </div>
         {/if}
-
         {#if uploadState.context.aiAssistant?.analysis}
           <div>
             <h4 class="font-medium text-sm mb-2">AI Analysis</h4>
@@ -297,7 +279,6 @@
             </p>
           </div>
         {/if}
-
         {#if uploadState.context.results?.neo4jNodes?.length}
           <div>
             <h4 class="font-medium text-sm mb-2">Graph Entities</h4>
@@ -313,7 +294,6 @@
             </div>
           </div>
         {/if}
-
         {#if uploadState.context.results?.ragKeyPoints?.length}
           <div>
             <h4 class="font-medium text-sm mb-2">Key Points</h4>
@@ -330,7 +310,6 @@
       </CardContent>
     </Card>
   {/if}
-
   <!-- RabbitMQ Status -->
   {#if uploadState?.context?.rabbitMQ?.queueName}
     <Card>
@@ -359,9 +338,8 @@
     </Card>
   {/if}
 </div>
-
 <style>
-  .line-clamp-3 {;
+  .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;

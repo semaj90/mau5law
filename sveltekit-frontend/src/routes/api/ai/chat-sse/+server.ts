@@ -1,34 +1,31 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: chat-sse
  * Category: aggressive
  * Memory Bank: CHR_ROM
  * Priority: 180
  * Redis Type: aiChat
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: aggressive
  * - Memory Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 import type { RequestHandler } from './$types.js'
 import { apiError, getRequestId, withErrorHandling } from '$lib/server/api/standard-response'
 import { ollamaService } from '$lib/server/services/OllamaService.js'
 import { logger } from '$lib/server/production-logger.js'
 import { conversationService } from '$lib/server/services/conversation-service'
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-
 interface StreamLine {
   response?: string
   done?: boolean
   [k: string]: any
 }
-
 const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
   const requestId = getRequestId(event)
   const body = await event.request.json().catch(() => ({})
@@ -41,10 +38,8 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
     caseId,
     useRAG = true
   } = body
-
   if (!message || !message.trim()
     return apiError('Message is required', 400, 'INVALID_INPUT', undefined, requestId)
-
   if (!(await ollamaService.isHealthy())
     return apiError(
       'AI service is currently unavailable',
@@ -53,7 +48,6 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
       undefined,
       requestId
     )
-
   let currentConversationId = conversationId
   if (!currentConversationId) {
     const title = message.length > 50 ? message.slice(0, 47) + '...' : message
@@ -65,14 +59,12 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
     })
     currentConversationId = created.id
   }
-
   await conversationService.addMessage({
-    conversationId: currentConversationId,
+    conversationId: currentConversationId
     role: 'user',
-    content: message,
+    content: message
     metadata: { requestId, useRAG }
   })
-
   let prompt = `You are an expert legal AI assistant. Provide accurate, professional legal information.\n\nUser question: ${message}`
   if (useRAG) {
     try {
@@ -96,7 +88,6 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
       )
     }
   }
-
   const stream = new ReadableStream({
     async start(controller) {
       const encoder = new TextEncoder()
@@ -104,14 +95,13 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
       let buffer = ''
       let tokens = 0
       let finished = false
-
       const persist = async (incomplete = false) => {
         if (!buffer) return
         try {
           await conversationService.addMessage({
             conversationId: currentConversationId!,
             role: 'assistant',
-            content: buffer,
+            content: buffer
             metadata: { requestId, model, temperature, tokenCount: tokens, useRAG, incomplete }
           })
         } catch (e) {
@@ -120,14 +110,12 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
           )
         }
       }
-
       send({
         type: 'connection',
-        conversationId: currentConversationId,
+        conversationId: currentConversationId
         requestId,
         timestamp: new Date().toISOString()
       })
-
       try {
         const resp = await fetch('http://localhost:11436/api/generate', {
           method: 'POST',
@@ -135,7 +123,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
           body: JSON.stringify({
             model,
             prompt,
-            stream: true,
+            stream: true
             options: { temperature, num_predict: 2048, top_k: 40, top_p: 0.9, repeat_penalty: 1.1 }
           })
         })
@@ -161,7 +149,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
                 send({
                   type: 'token',
                   content: data.response,
-                  fullResponse: buffer,
+                  fullResponse: buffer
                   tokenCount: tokens
                 })
               }
@@ -170,9 +158,9 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
                 await persist(false)
                 send({
                   type: 'complete',
-                  fullResponse: buffer,
-                  tokenCount: tokens,
-                  conversationId: currentConversationId,
+                  fullResponse: buffer
+                  tokenCount: tokens
+                  conversationId: currentConversationId
                   timestamp: new Date().toISOString()
                 })
               }
@@ -201,7 +189,6 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
       }
     }
   })
-
   return new Response(stream, {
     headers: {
       'Content-Type': 'text/event-stream',
@@ -211,7 +198,6 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
     }
   })
 })
-
 export const OPTIONS: RequestHandler = async () =>
   new Response(null, {
     status: 200,
@@ -221,6 +207,4 @@ export const OPTIONS: RequestHandler = async () =>
       'Access-Control-Allow-Headers': 'Content-Type'
     }
   })
-
-
 export const POST = redisOptimized.aiChat(originalPOSTHandler)

@@ -1,20 +1,15 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { accessibilityService } from '$lib/services/accessibility-service';
   import { Settings, Eye, Type } from 'lucide-svelte';
   import Button from '$lib/components/ui/bits/button';
-
   // Props (runes style)
   let { isOpen = $bindable(false) } = $props();
-
   // Local reactive state wrapper of service config
   let config = $state(accessibilityService.getConfig());
-
   function refresh() {
     config = accessibilityService.getConfig();
   }
-
   function updateFontSize(size: typeof config.fontSize) {
     accessibilityService.setFontSize(size);
     refresh();
@@ -32,7 +27,6 @@
     refresh();
   }
 </script>
-
 {#if isOpen}
   <div
     class="accessibility-settings fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
@@ -60,7 +54,6 @@ isOpen = false}
           ×
         </Button>
       </div>
-
       <!-- Content -->
       <div class="p-6 space-y-6">
         <!-- Visual Settings -->
@@ -69,7 +62,6 @@ isOpen = false}
             <Eye class="w-5 h-5" />
             Visual Settings
           </h3>
-
           <div class="space-y-4">
             <!-- Font Size -->
             <div>
@@ -92,7 +84,6 @@ isOpen = false}
                 {/each}
               </div>
             </div>
-
             <!-- High Contrast -->
             <div class="flex items-center justify-between">
               <label for="high-contrast" class="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -113,7 +104,6 @@ isOpen = false}
                 ></span>
               </div>
             </div>
-
             <!-- Reduced Motion -->
             <div class="flex items-center justify-between">
               <label for="reduced-motion" class="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -136,14 +126,12 @@ isOpen = false}
             </div>
           </div>
         </section>
-
         <!-- Navigation Settings -->
         <section>
           <h3 class="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
             <Keyboard class="w-5 h-5" />
             Navigation Settings
           </h3>
-
           <div class="space-y-4">
             <!-- Keyboard Navigation -->
             <div class="flex items-center justify-between">
@@ -165,7 +153,6 @@ isOpen = false}
                 ></span>
               </button>
             </div>
-
             <!-- Focus Management -->
             <div class="flex items-center justify-between">
               <label for="focus-management" class="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -188,14 +175,12 @@ isOpen = false}
             </div>
           </div>
         </section>
-
         <!-- Screen Reader Settings -->
         <section>
           <h3 class="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
             <Volume2 class="w-5 h-5" />
             Screen Reader Settings
           </h3>
-
           <div class="space-y-4">
             <!-- Screen Reader Announcements -->
             <div class="flex items-center justify-between">
@@ -219,7 +204,6 @@ isOpen = false}
             </div>
           </div>
         </section>
-
         <!-- Keyboard Shortcuts -->
         <section>
           <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
@@ -247,7 +231,6 @@ isOpen = false}
           </div>
         </section>
       </div>
-
       <!-- Footer -->
       <div class="flex justify-end gap-3 p-6 border-t border-gray-200 dark:border-gray-700">
         <Button variant="ghost" onclick={() => isOpen = false}>
@@ -257,9 +240,8 @@ isOpen = false}
     </div>
   </div>
 {/if}
-
 <style>
-  .accessibility-settings {;
+  .accessibility-settings {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
       'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   }

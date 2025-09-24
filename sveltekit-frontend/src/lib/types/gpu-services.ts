@@ -1,25 +1,22 @@
 // GPU Services Type Definitions for Legal AI Platform
 // TypeScript interfaces for Go GPU Orchestrator integration
-
-export type GPUTaskType = 
-	| 'embedding' 
-	| 'similarity' 
-	| 'autoindex' 
-	| 'som_train' 
-	| 'matrix_multiply' 
+export type GPUTaskType =
+	| 'embedding'
+	| 'similarity'
+	| 'autoindex'
+	| 'som_train'
+	| 'matrix_multiply'
 	| 'batch_process';
 }
-
 export interface GPUTask {
 	id?: string;
 	type: GPUTaskType;
 	data: number[];
-	metadata?: Record<string, any>;
+	metadata?: { [key: string]: any };
 	priority?: number;
 	timestamp?: string;
 	service_origin?: string;
 }
-
 export interface GPUResult {
 	task_id: string;
 	type: GPUTaskType;
@@ -29,7 +26,6 @@ export interface GPUResult {
 	error?: string;
 	timestamp: string;
 }
-
 export interface GPUStatus {
 	orchestrator_status: 'running' | 'stopped' | 'error';
 	workers_active: number;
@@ -40,7 +36,6 @@ export interface GPUStatus {
 	load_balancer: boolean;
 	services_managed: number;
 }
-
 export interface GPUMetrics {
 	total_tasks: number;
 	completed_tasks: number;
@@ -53,7 +48,6 @@ export interface GPUMetrics {
 	start_time: string;
 	last_update: string;
 }
-
 export interface WorkerStatus {
 	id: number;
 	busy: boolean;
@@ -61,7 +55,6 @@ export interface WorkerStatus {
 	last_activity: string;
 	current_task?: string;
 }
-
 export interface ServiceInfo {
 	name: string;
 	port: number;
@@ -71,11 +64,9 @@ export interface ServiceInfo {
 	last_health_check: string;
 	protocols: string[];
 }
-
 export interface ServiceRegistry {
 	services: Record<string, ServiceInfo>;
 }
-
 export interface GPUHealth {
 	status: 'healthy' | 'unhealthy' | 'degraded';
 	timestamp: number;
@@ -84,34 +75,29 @@ export interface GPUHealth {
 	workers: number;
 	queue_size: number;
 }
-
 export interface LoadBalancerStatus {
 	enabled: boolean;
 	status: 'active' | 'inactive' | 'error';
 	services_managed: number;
 }
-
 export interface RouteRequest {
 	service: string;
 	method: 'GET' | 'POST' | 'PUT' | 'DELETE';
 	path: string;
-	data?: Record<string, any>;
+	data?: { [key: string]: any };
 }
-
 export interface BatchGPUTask {
 	tasks: GPUTask[];
 	max_concurrent?: number;
 	priority?: number;
 }
-
 export interface BatchGPUResult {
 	total: number;
 	successful: number;
 	failed: number;
 	results: GPUResult[];
 	errors: Array<any>
-
-// Legal AI Specific Types;
+// Legal AI Specific Types
 export interface LegalEmbeddingTask extends GPUTask {
 	type: 'embedding';
 	metadata: {
@@ -122,7 +108,6 @@ export interface LegalEmbeddingTask extends GPUTask {
 		chunk_index?: number;
 	};
 }
-
 export interface LegalSimilarityTask extends GPUTask {
 	type: 'similarity';
 	metadata: {
@@ -132,7 +117,6 @@ export interface LegalSimilarityTask extends GPUTask {
 		practice_area: string;
 	};
 }
-
 export interface LegalDocumentProcessingPipeline {
 	document_id: string;
 	tasks: (LegalEmbeddingTask | LegalSimilarityTask)[];
@@ -140,8 +124,7 @@ export interface LegalDocumentProcessingPipeline {
 	practice_area: string;
 	estimated_completion_time?: number;
 }
-
-// Service Integration Types;
+// Service Integration Types
 export interface ServiceProtocolConfig {
 	http: {
 		base_url: string;
@@ -161,7 +144,6 @@ export interface ServiceProtocolConfig {
 		reconnect_attempts: number;
 	};
 }
-
 export interface GPUServiceClient {
 	submitTask: (task: GPUTask) => Promise<GPUResult>;
 	submitBatch: (batch: BatchGPUTask) => Promise<BatchGPUResult>;
@@ -171,8 +153,7 @@ export interface GPUServiceClient {
 	getWorkers: () => Promise<WorkerStatus[]>;
 	getServices: () => Promise<ServiceRegistry>;
 }
-
-// Performance Monitoring Types;
+// Performance Monitoring Types
 export interface GPUPerformanceMetrics {
 	throughput: {
 		tasks_per_second: number;
@@ -197,8 +178,7 @@ export interface GPUPerformanceMetrics {
 		timeout_rate: number;
 	};
 }
-
-// Configuration Types;
+// Configuration Types
 export interface GPUOrchestratorConfig {
 	port: string;
 	redis_addr: string;
@@ -208,12 +188,11 @@ export interface GPUOrchestratorConfig {
 	health_check_interval: number;
 	load_balancer_enabled: boolean;
 }
-
-// Error Types;
+// Error Types
 export interface GPUServiceError {
 	code: 'GPU_UNAVAILABLE' | 'QUEUE_FULL' | 'TASK_TIMEOUT' | 'WORKER_ERROR' | 'SERVICE_DOWN';
 	message: string;
-	details?: Record<string, any>;
+	details?: { [key: string]: any };
 	timestamp: string;
 	retry_after?: number;
 }

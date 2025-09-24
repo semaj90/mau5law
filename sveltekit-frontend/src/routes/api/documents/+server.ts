@@ -3,7 +3,6 @@
  * Documents API with pgvector integration
  * Handles document CRUD operations with vector embeddings
  */
-
 import { json, type RequestHandler } from '@sveltejs/kit'
 import { db } from '$lib/server/db/connection'
 import { documents, document_chunks, cases } from '$lib/server/schema/documents'
@@ -11,9 +10,7 @@ import { eq, desc, and, like, sql } from 'drizzle-orm'
 import { createEmbedding } from '$lib/services/embedding-service'
 import { redis } from '$lib/server/redis'
 import type { Document, NewDocument } from '$lib/server/schema/documents'
-
 const CACHE_TTL = 300; // 5 minutes
-
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const searchParams = url.searchParams
@@ -23,21 +20,16 @@ export const GET: RequestHandler = async ({ url }) => {
     const caseId = searchParams.get('case_id')
     const documentType = searchParams.get('document_type')
     const riskLevel = searchParams.get('risk_level')
-    
     const offset = (page - 1) * limit
-    
     // Build cache key
     const cacheKey = `documents:${JSON.stringify({ page, limit, search, caseId, documentType, riskLevel })}`
-    
     // Try cache first
     const cached = await redis.get(cacheKey)
     if (cached) {
       return json(JSON.parse(cached)
     }
-    
     // Build query conditions
     const conditions = []
-    
     if (search) {
       conditions.push(
         sql`(
@@ -46,21 +38,16 @@ export const GET: RequestHandler = async ({ url }) => {
         )`
       )
     }
-    
     if (caseId) {
       conditions.push(eq(documents.case_id, caseId)
     }
-    
     if (documentType) {
       conditions.push(eq(documents.document_type, documentType)
     }
-    
     if (riskLevel) {
       conditions.push(eq(documents.risk_level, riskLevel)
     }
-    
     conditions.push(eq(documents.is_active, true)
-    
     // Execute query with relations
     const query = db
       .select({
@@ -95,20 +82,16 @@ export const GET: RequestHandler = async ({ url }) => {
       .orderBy(desc(documents.created_at)
       .limit(limit)
       .offset(offset)
-    
     const results = await query
-    
     // Get total count for pagination
     const totalQuery = db
       .select({ count: sql`count(*)` })
       .from(documents)
       .where(conditions.length > 0 ? and(...conditions) : undefined)
-    
     const totalResult = await totalQuery
     const total = Number(totalResult[0].count)
-    
     const response = {
-      documents: results,
+      documents: results
       pagination: {
         page,
         limit,
@@ -118,12 +101,9 @@ export const GET: RequestHandler = async ({ url }) => {
         hasPrev: page > 1
       }
     }
-    
     // Cache results
     await redis.setex(cacheKey, CACHE_TTL, JSON.stringify(response)
-    
     return json(response)
-    
   } catch (error) {
     console.error('Error fetching documents:', error)
     return json()
@@ -132,7 +112,6 @@ export const GET: RequestHandler = async ({ url }) => {
     )
   }
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const data = await request.json() as Partial<NewDocument> & {
@@ -140,7 +119,6 @@ export const POST: RequestHandler = async ({ request }) => {
       extract_entities?: boolean
       generate_summary?: boolean
     }
-    
     // Validate required fields
     if (!data.title || !data.content) {
       return json(
@@ -148,20 +126,16 @@ export const POST: RequestHandler = async ({ request }) => {
         { status: 400 }
       )
     }
-    
     // Generate embeddings if requested
     let embedding: number[] | undefined
     let titleEmbedding: number[] | undefined
     let summaryEmbedding: number[] | undefined
-    
     if (data.auto_embed !== false) {
       try {
         // Generate content embedding
         embedding = await createEmbedding(data.content)
-        
         // Generate title embedding
         titleEmbedding = await createEmbedding(data.title)
-        
         // Generate summary embedding if we have AI summary
         if (data.ai_summary) {
           summaryEmbedding = await createEmbedding(data.ai_summary)
@@ -171,7 +145,6 @@ export const POST: RequestHandler = async ({ request }) => {
         // Continue without embeddings rather than failing
       }
     }
-    
     // Prepare document data
     const documentData: NewDocument = {
       title: data.title,
@@ -197,17 +170,14 @@ export const POST: RequestHandler = async ({ request }) => {
       is_public: data.is_public || false,
       is_indexed: data.is_indexed || false
     }
-    
     // Insert document
     const [newDocument] = await db
       .insert(documents)
       .values(documentData)
       .returning()
-    
     // Update with embeddings if generated
     if (embedding || titleEmbedding || summaryEmbedding) {
       const updates: Partial<Document> = {}
-      
       if (embedding) {
         updates.embedding = sql`${JSON.stringify(embedding)}::vector`
       }
@@ -217,31 +187,26 @@ export const POST: RequestHandler = async ({ request }) => {
       if (summaryEmbedding) {
         updates.summary_embedding = sql`${JSON.stringify(summaryEmbedding)}::vector`
       }
-      
       if (Object.keys(updates).length > 0) {
         updates.is_indexed = true
         updates.processed_at = new Date()
-        
         await db
           .update(documents)
           .set(updates)
           .where(eq(documents.id, newDocument.id)
       }
     }
-    
     // Clear relevant caches
     const cachePattern = 'documents:*'
     const keys = await redis.keys(cachePattern)
     if (keys.length > 0) {
       await redis.del(...keys)
     }
-    
     return json({
-      document: newDocument,
+      document: newDocument
       embeddings_generated: !!(embedding || titleEmbedding || summaryEmbedding),
       message: 'Document created successfully'
     }, { status: 201 })
-    
   } catch (error) {
     console.error('Error creating document:', error)
     return json()
@@ -250,54 +215,44 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 export const PUT: RequestHandler = async ({ request, url }) => {
   try {
     const documentId = url.searchParams.get('id')
     if (!documentId) {
       return json({ error: 'Document ID is required' }, { status: 400 })
     }
-    
     const data = await request.json() as Partial<Document> & {
       auto_embed?: boolean
     }
-    
     // Check if document exists
     const existingDocument = await db
       .select()
       .from(documents)
       .where(eq(documents.id, documentId)
       .limit(1)
-    
     if (existingDocument.length === 0) {
       return json({ error: 'Document not found' }, { status: 404 })
     }
-    
     // Generate new embeddings if content changed and auto_embed is enabled
     let embedding: number[] | undefined
     let titleEmbedding: number[] | undefined
     let summaryEmbedding: number[] | undefined
-    
     if (data.auto_embed !== false) {
       if (data.content && data.content !== existingDocument[0].content) {
         embedding = await createEmbedding(data.content)
       }
-      
       if (data.title && data.title !== existingDocument[0].title) {
         titleEmbedding = await createEmbedding(data.title)
       }
-      
       if (data.ai_summary && data.ai_summary !== existingDocument[0].ai_summary) {
         summaryEmbedding = await createEmbedding(data.ai_summary)
       }
     }
-    
     // Prepare update data
     const updateData: Partial<Document> = {
       ...data,
       updated_at: new Date()
     }
-    
     // Add embeddings if generated
     if (embedding) {
       updateData.embedding = sql`${JSON.stringify(embedding)}::vector`
@@ -310,31 +265,26 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     if (summaryEmbedding) {
       updateData.summary_embedding = sql`${JSON.stringify(summaryEmbedding)}::vector`
     }
-    
     // Remove fields that shouldn't be updated directly
     delete updateData.auto_embed
     delete updateData.id
     delete updateData.created_at
-    
     const [updatedDocument] = await db
       .update(documents)
       .set(updateData)
       .where(eq(documents.id, documentId)
       .returning()
-    
     // Clear relevant caches
     const cachePattern = 'documents:*'
     const keys = await redis.keys(cachePattern)
     if (keys.length > 0) {
       await redis.del(...keys)
     }
-    
     return json({
-      document: updatedDocument,
+      document: updatedDocument
       embeddings_updated: !!(embedding || titleEmbedding || summaryEmbedding),
       message: 'Document updated successfully'
     })
-    
   } catch (error) {
     console.error('Error updating document:', error)
     return json()
@@ -343,40 +293,34 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     )
   }
 }
-
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const documentId = url.searchParams.get('id')
     if (!documentId) {
       return json({ error: 'Document ID is required' }, { status: 400 })
     }
-    
     // Soft delete - mark as inactive
     const [deletedDocument] = await db
       .update(documents)
-      .set({ 
-        is_active: false, 
-        updated_at: new Date() 
+      .set({
+        is_active: false
+        updated_at: new Date()
       })
       .where(eq(documents.id, documentId)
       .returning()
-    
     if (!deletedDocument) {
       return json({ error: 'Document not found' }, { status: 404 })
     }
-    
     // Clear relevant caches
     const cachePattern = 'documents:*'
     const keys = await redis.keys(cachePattern)
     if (keys.length > 0) {
       await redis.del(...keys)
     }
-    
     return json({
       message: 'Document deleted successfully',
       document_id: documentId
     })
-    
   } catch (error) {
     console.error('Error deleting document:', error)
     return json()

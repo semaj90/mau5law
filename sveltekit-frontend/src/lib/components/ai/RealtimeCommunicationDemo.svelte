@@ -4,7 +4,6 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Real-time Communication Demo Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import {
     realtimeComm,
@@ -27,21 +26,18 @@ https://svelte.dev/e/js_parse_error -->
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-
   // Reactive state using Svelte 5 runes
   let status = $state($connectionStatus);
   let messageList = $state<RealtimeMessage[]>([]);
   let streamingList = $state(new Map();
   let isInitialized = $state(false);
   let isInitializing = $state(false);
-
   // Demo state
   let testMessage = $state('Hello from Legal AI platform!');
   let selectedMessageType = $state<RealtimeMessage['type']>('ai_response');
   let selectedPriority = $state<RealtimeMessage['priority']>('normal');
   let streamingRequestType = $state<StreamingResponse['type']>('ai_chat');
   let streamingData = $state('Analyze this legal document for contract violations...');
-
   // Performance metrics
   let performanceMetrics = $state({
     messagesPerSecond: 0,
@@ -54,22 +50,17 @@ https://svelte.dev/e/js_parse_error -->
     messageList = $messages.slice(-50); // Keep last 50 messages for display
     streamingList = new Map($streamingResponses);
   });
-
   /**
    * Initialize real-time communication
    */
   async function initializeConnection() {
     isInitializing = true;
-
     try {
       const userId = `user_${Date.now()}`;
       const sessionId = `session_${Math.random.toString-substr(2, 9)}`;
-
       await realtimeComm.initialize(userId, sessionId);
-
       // Set up message handlers
       setupMessageHandlers();
-
       isInitialized = true;
       startPerformanceTracking();
     } catch (error) {
@@ -78,7 +69,6 @@ https://svelte.dev/e/js_parse_error -->
       isInitializing = false;
     }
   }
-
   /**
    * Set up message handlers for different types
    */
@@ -86,59 +76,49 @@ https://svelte.dev/e/js_parse_error -->
     realtimeComm.onMessage('ai_response', (message) => {
       console.log('AI Response received:', message);
     });
-
     realtimeComm.onMessage('document_analysis', (message) => {
       console.log('Document analysis update:', message);
     });
-
     realtimeComm.onMessage('semantic_update', (message) => {
       console.log('Semantic analysis update:', message);
     });
-
     realtimeComm.onMessage('system_notification', (message) => {
       if (message.data.type !== 'heartbeat') {
         console.log('System notification:', message);
       }
     });
   }
-
   /**
    * Send test message
    */
   async function sendTestMessage() {
     if (!isInitialized) return;
-
     try {
       await realtimeComm.sendMessage.toISOString(),
-          metadata: {;
+          metadata: {
             source: 'demo',
-            userAgent: navigator.userAgent,;
+            userAgent: navigator.userAgent,
           },
         },
         selectedPriority
       );
-
       console.log('Test message sent successfully');
     } catch (error) {
       console.error('Failed to send test message:', error);
     }
   }
-
   /**
    * Start streaming request
    */
   async function startStreamingRequest() {
     if (!isInitialized) return;
-
     try {
       const requestId = await realtimeComm.sendStreamingRequest(streamingRequestType, {
-        prompt: streamingData,
-        maxTokens: 500,;
-        temperature: 0.7,;
+        prompt: streamingData
+        maxTokens: 500,
+        temperature: 0.7,
       });
-
       console.log(`Streaming request started: ${requestId}`);
-
       // Set up stream handler
       realtimeComm.onStream(requestId, (response) => {
         console.log(`Stream ${requestId} update:`, response);
@@ -147,44 +127,36 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Failed to start streaming request:', error);
     }
   }
-
   /**
    * Test connection performance
    */
   async function testPerformance() {
     if (!isInitialized) return;
-
     const startTime = performance.now();
     const messageCount = 100;
-
     console.log(`Starting performance test: ${messageCount} messages`);
-
     for (let i = 0; i < messageCount; i++) {
       await realtimeComm.sendMessage(
         'system_notification',
         {
-          testIndex: i,
-          timestamp: performance.now(),;
+          testIndex: i
+          timestamp: performance.now(),
         },
         'low'
       );
     }
-
     const endTime = performance.now();
     const duration = endTime - startTime;
     const messagesPerSecond = (messageCount / duration) * 1000;
-
     console.log(`Performance test completed: ${messagesPerSecond.toFixed(2)} messages/second`);
     performanceMetrics.messagesPerSecond = messagesPerSecond;
   }
-
   /**
    * Start performance tracking
    */
   function startPerformanceTracking() {
     metricsInterval = window.setInterval(() => {
       performanceMetrics.totalMessages = messageList.length;
-
       // Calculate average latency from recent messages
       const recentMessages = messageList.slice(-10);
       if (recentMessages.length > 0) {
@@ -195,29 +167,24 @@ https://svelte.dev/e/js_parse_error -->
             return received - sent;
           })
           .filter((latency) => latency > 0 && latency < 10000); // Filter out unrealistic values
-
         if (latencies.length > 0) {
           performanceMetrics.avgLatency =
             latencies.reduce((sum, lat) => sum + lat, 0) / latencies.length;
         }
       }
-
       performanceMetrics.connectionUptime += 1; // Increment uptime counter
     }, 1000);
   }
-
   /**
    * Disconnect all connections
    */
   function disconnect() {
     realtimeComm.disconnect();
     isInitialized = false;
-
     if (metricsInterval) {
       clearInterval(metricsInterval);
     }
   }
-
   /**
    * Get connection status color
    */
@@ -235,7 +202,6 @@ https://svelte.dev/e/js_parse_error -->
         return 'text-gray-500';
     }
   }
-
   /**
    * Get connection status icon
    */
@@ -253,14 +219,12 @@ https://svelte.dev/e/js_parse_error -->
         return '?';
     }
   }
-
   /**
    * Format message timestamp
    */
   function formatTimestamp(date: Date): string {
     return date.toLocaleTimeString();
   }
-
   /**
    * Get message type color
    */
@@ -276,11 +240,9 @@ https://svelte.dev/e/js_parse_error -->
     };
     return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   }
-
   $effect(() => {
     console.log('Real-time communication demo mounted');
   });
-
   onDestroy(() => {
     if (metricsInterval) {
       clearInterval(metricsInterval);
@@ -290,7 +252,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 </script>
-
 <div class="realtime-demo p-6 max-w-6xl mx-auto space-y-6">
   <!-- Header -->
   <div class="header text-center">
@@ -299,7 +260,6 @@ https://svelte.dev/e/js_parse_error -->
       WebSocket, SSE, and WebRTC with intelligent failover for legal AI platform
     </p>
   </div>
-
   <!-- Connection Status -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -308,11 +268,9 @@ https://svelte.dev/e/js_parse_error -->
         {#if !isInitialized}
           <Button onclick={initializeConnection} disabled={isInitializing} class="px-4 py-2 bits-btn bits-btn">
 {isInitializing ? 'Initializing...' : 'Connect'}
-
         {:else}
           <Button onclick={disconnect} class="px-4 py-2 bg-red-600 hover:bg-red-700 bits-btn bits-btn">
 Disconnect
-
         {/if}
       </h3>
     </div>
@@ -332,7 +290,6 @@ Disconnect
           </div>
           <div class="text-xs text-gray-500 mt-1">Best for: Bidirectional messaging</div>
         </div>
-
         <!-- Server-Sent Events -->
         <div class="connection-item p-4 border rounded-lg">
           <div class="flex items-center justify-between mb-2">
@@ -346,7 +303,6 @@ Disconnect
           </div>
           <div class="text-xs text-gray-500 mt-1">Best for: Streaming AI responses</div>
         </div>
-
         <!-- WebRTC -->
         <div class="connection-item p-4 border rounded-lg">
           <div class="flex items-center justify-between mb-2">
@@ -361,7 +317,6 @@ Disconnect
           <div class="text-xs text-gray-500 mt-1">Best for: Low-latency data</div>
         </div>
       </div>
-
       {#if status.primaryChannel}
         <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <div class="text-blue-800 text-sm">
@@ -372,7 +327,6 @@ Disconnect
       {/if}
     </div>
   </div>
-
   {#if isInitialized}
     <!-- Demo Controls -->
     <div class="demo-controls grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -390,7 +344,6 @@ Disconnect
                 class="w-full p-2 border border-gray-300 rounded-lg"
                 placeholder="Enter test message..."></textarea>
             </div>
-
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2" for="-message-type-"> Message Type </label><select id="-message-type-"
@@ -405,7 +358,6 @@ Disconnect
                   <option value="semantic_update">Semantic Update</option>
                 </select>
               </div>
-
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2" for="-priority-"> Priority </label><select id="-priority-"
                   bind:value={selectedPriority}
@@ -417,14 +369,11 @@ Disconnect
                 </select>
               </div>
             </div>
-
             <Button onclick={sendTestMessage} class="w-full bits-btn bits-btn">
 Send Message
-
           </div>
         </div>
       </div>
-
       <!-- Streaming Testing -->
       <div class="nes-container">
         <div class="yorha-panel-header">
@@ -441,7 +390,6 @@ Send Message
                 class="w-full p-2 border border-gray-300 rounded-lg"
                 placeholder="Enter streaming request data..."></textarea>
             </div>
-
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2" for="-stream-type-"> Stream Type </label><select id="-stream-type-"
                 bind:value={streamingRequestType}
@@ -452,15 +400,12 @@ Send Message
                 <option value="semantic_analysis">Semantic Analysis</option>
               </select>
             </div>
-
             <Button onclick={startStreamingRequest} class="w-full bits-btn bits-btn">
 Start Stream
-
           </div>
         </div>
       </div>
     </div>
-
     <!-- Performance Metrics -->
     <div class="nes-container">
       <div class="yorha-panel-header">
@@ -468,7 +413,6 @@ Start Stream
           <span>Performance Metrics</span>
           <Button onclick={testPerformance} class="text-sm px-3 py-1 bits-btn bits-btn">
 Run Performance Test
-
         </h3>
       </div>
       <div class="yorha-panel-content">
@@ -479,21 +423,18 @@ Run Performance Test
             </div>
             <div class="text-sm text-blue-800">Messages/Second</div>
           </div>
-
           <div class="metric-item text-center p-4 bg-green-50 rounded-lg">
             <div class="text-2xl font-bold text-green-600">
               {performanceMetrics.avgLatency.toFixed(0)}ms
             </div>
             <div class="text-sm text-green-800">Average Latency</div>
           </div>
-
           <div class="metric-item text-center p-4 bg-purple-50 rounded-lg">
             <div class="text-2xl font-bold text-purple-600">
               {performanceMetrics.totalMessages}
             </div>
             <div class="text-sm text-purple-800">Total Messages</div>
           </div>
-
           <div class="metric-item text-center p-4 bg-orange-50 rounded-lg">
             <div class="text-2xl font-bold text-orange-600">
               {performanceMetrics.connectionUptime}s
@@ -503,7 +444,6 @@ Run Performance Test
         </div>
       </div>
     </div>
-
     <!-- Message Log -->
     <div class="nes-container">
       <div class="yorha-panel-header">
@@ -539,7 +479,6 @@ Run Performance Test
               </div>
             </div>
           {/each}
-
           {#if messageList.length === 0}
             <div class="text-center text-gray-500 py-8">
               No messages yet. Send a test message to see it appear here.
@@ -548,7 +487,6 @@ Run Performance Test
         </div>
       </div>
     </div>
-
     <!-- Streaming Responses -->
     {#if streamingList.size > 0}
       <div class="nes-container">
@@ -569,17 +507,14 @@ Run Performance Test
                   </div>
                   <span class="text-xs text-gray-500">{requestId}</span>
                 </div>
-
                 <div class="text-sm text-gray-600 mb-2">
                   Chunks received: {response.chunks.length}
                 </div>
-
                 {#if response.chunks.length > 0}
                   <div class="bg-gray-50 p-2 rounded text-xs font-mono max-h-32 overflow-y-auto">
                     {response.chunks.join('')}
                   </div>
                 {/if}
-
                 {#if response.metadata}
                   <div class="mt-2 text-xs text-gray-500">
                     {#if response.metadata.totalTokens}
@@ -600,53 +535,43 @@ Run Performance Test
       </div>
     {/if}
 </div>
-
 <style>
-  .realtime-demo {;
+  .realtime-demo {
     font-family:
       system-ui,
       -apple-system,
       sans-serif;
   }
-
   .connection-item,
   .message-item,
   .stream-item {
     transition: all 0.2s ease;
   }
-
-  .connection-item:hover,
-  .message-item:hover,
+  .connection-item: hover
+  .message-item: hover
   .stream-item:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
-
   .message-log {
-    scrollbar-width: thin;
+    scrollbar-width: thi;
     scrollbar-color: #d1d5db #f9fafb;
   }
-
   .message-log::-webkit-scrollbar {
     width: 6px;
   }
-
   .message-log::-webkit-scrollbar-track {
     background: #f9fafb;
   }
-
   .message-log::-webkit-scrollbar-thumb {
     background: #d1d5db;
     border-radius: 3px;
   }
-
   .metric-item {
     transition: transform 0.2s ease;
   }
-
   .metric-item:hover {
     transform: translateY(-2px);
   }
-
   @media (max-width: 768px) {
     .demo-controls,
     .connection-grid,
@@ -655,6 +580,3 @@ Run Performance Test
     }
   }
 </style>
-
-
-

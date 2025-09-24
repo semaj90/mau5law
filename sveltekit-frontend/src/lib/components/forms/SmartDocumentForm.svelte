@@ -1,57 +1,47 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Smart Document Form with OCR Auto-Population -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import {  , onMount  } from "svelte";
+  import { onMount  } from "svelte";
   	// Updated to use melt-ui components
   	import Button from '$lib/components/ui/Button.svelte';
   	import Card from '$lib/components/ui/MeltCard.svelte';
-
   	// TODO: Replace with melt-ui equivalents when available
-  	// import { CardContent, CardHeader, CardTitle } from 'bits-ui';
-  	// import { Badge } from 'bits-ui';
-  	// import { Progress } from 'bits-ui';
-  	// import { Input } from 'bits-ui';
-  	// import { Textarea } from 'bits-ui';
-  	// import { Label } from 'bits-ui';
+  	// import { CardContent, CardHeader, CardTitle } from 'bits-ui'
+  	// import { Badge } from 'bits-ui'
+  	// import { Progress } from 'bits-ui'
+  	// import { Input } from 'bits-ui'
+  	// import { Textarea } from 'bits-ui'
+  	// import { Label } from 'bits-ui'
   	import { ocrService, type ExtractedField, type FormField, type FieldType } from '$lib/services/ocrService';
   	import { enhancedRAG } from '$lib/services/enhancedRAG';
   	import { fade, fly, scale } from 'svelte/transition';
   	import { writable } from 'svelte/store';
-
-  	let { title = $bindable()  }: { title = $bindable() : unknown } = $props(); // "Smart Document Form";
-  	let { description = $bindable()  }: { description = $bindable() : unknown } = $props(); // "Upload a document for automatic field extraction and population";
-  	let { formSchema = $bindable()  }: { formSchema = $bindable() : unknown } = $props(); // FormField[] = [];
-  	let { enableOCR = $bindable()  }: { enableOCR = $bindable() : unknown } = $props(); // true;
-  	let { enableSmartSuggestions = $bindable()  }: { enableSmartSuggestions = $bindable() : unknown } = $props(); // true;
-  	let { documentTypes = $bindable()  }: { documentTypes = $bindable() : unknown } = $props(); // string[] = ['legal_document', 'contract', 'form'];
-
-  	
-
+  	let { title = $bindable()  }: { title = $bindable() : unknown } = $props(); // "Smart Document Form"
+  	let { description = $bindable()  }: { description = $bindable() : unknown } = $props(); // "Upload a document for automatic field extraction and population"
+  	let { formSchema = $bindable()  }: { formSchema = $bindable() : unknown } = $props(); // FormField[] = []
+  	let { enableOCR = $bindable()  }: { enableOCR = $bindable() : unknown } = $props(); // true
+  	let { enableSmartSuggestions = $bindable()  }: { enableSmartSuggestions = $bindable() : unknown } = $props(); // true
+  	let { documentTypes = $bindable()  }: { documentTypes = $bindable() : unknown } = $props(); // string[] = ['legal_document', 'contract', 'form']
   	// Component state
   let fileInput = $state<HTMLInputElementlet uploadedFile: File  | null>(null); const data = null);
   let populatedFields = $state<FormField[] >([...formSchema]);
   let isProcessing = $state(false);
   let showPreview = $state(false);
   let selectedDocumentType = $state('auto');
-
   	// OCR stores
   	let processing = $derived(ocrService.processing$);
   	let progress = $derived(ocrService.progress$);
   	let ocrResult = $derived(ocrService.currentResult$);
   	let extractedFields = $derived(ocrService.extractedFields$);
-
   	// Form validation
   	const formErrors = writable<Record<string, string>( );
   let isFormValid = $state(false);
-
   	// Smart suggestions
   let activeSuggestions = $state<Record<string, string[]>([]) >( );
   let suggestionLoading = $state<Record<string, boolean>(false) >( );
-
   	// Default form schema if none provided
   	$effect(() => {
   				{ name: 'case_number', type: 'case_number', label: 'Case Number', required: false },
@@ -64,38 +54,30 @@ https://svelte.dev/e/js_parse_error -->
   			];
   		}
   	});
-
   	// Handle file upload
   	const handleFileUpload = async () => {
   		if (!uploadedFile || !enableOCR) return;
-
   		try {
   			isProcessing = true;
-
   			const result = await ocrService.processDocument(uploadedFile, {
-  				documentType: selectedDocumentType as any,
-  				extractFields: true,
+  				documentType: selectedDocumentType as any
+  				extractFields: true
   				qualityEnhancement: true
   			});
-
   			// Auto-populate form fields
   			populatedFields = ocrService.autoPopulateForm($extractedFields, populatedFields);
-
   			// Generate smart suggestions for incomplete fields
   			if (enableSmartSuggestions) {
   				await generateSmartSuggestions((result as { text?: unknown }).text);
   			}
-
   			showPreview = true;
   			ondispatch?.({ result, extractedFields: $extractedFields });
-
   		} catch (error) {
   			console.error('OCR processing failed:', error);
   		} finally {
   			isProcessing = false;
   		}
   	};
-
   	// Generate smart suggestions for incomplete fields
   	const generateSmartSuggestions = async (documentText: string) => {
   		for (const field of populatedFields) {
@@ -103,7 +85,7 @@ https://svelte.dev/e/js_parse_error -->
   				try {
   					suggestionLoading[field.name] = true;
   					const suggestions = await ocrService.getSuggestions(field.name, field.type, documentText);
-  					activeSuggestions[field.name] = suggestions;
+  					activeSuggestions[field.name] = suggestion;
   				} catch (error) {
   					console.warn(`Failed to generate suggestions for ${field.name}:`, error);
   				} finally {
@@ -113,37 +95,29 @@ https://svelte.dev/e/js_parse_error -->
   		}
   		activeSuggestions = { ...activeSuggestions }; // Trigger reactivity
   	};
-
   	// Handle field value changes
   	const handleFieldChange = (fieldName: string, value: string, confidence?: number) => {
   		const fieldIndex = populatedFields.findIndex(f => f.name === fieldName);
   		if (fieldIndex !== -1) {
-  			populatedFields[fieldIndex].value = value;
-  			populatedFields[fieldIndex].confidence = confidence;
-
+  			populatedFields[fieldIndex].value = valu;
+  			populatedFields[fieldIndex].confidence = confidenc;
   			// Clear suggestions once user makes a selection
   			delete activeSuggestions[fieldName];
   			activeSuggestions = { ...activeSuggestions };
   		}
-
   		// Validate field
   		validateField(fieldName, value);
-
   		ondispatch?.({ fieldName, value, confidence });
   	};
-
   	// Apply suggestion to field
   	const applySuggestion = (fieldName: string, suggestion: string) => {
   		handleFieldChange(fieldName, suggestion, 0.8);
   	};
-
   	// Field validation
   	const validateField = (fieldName: string, value: string) => {
   		const field = populatedFields.find(f => f.name === fieldName);
   		if (!field) return;
-
   		const errors = { ...$formErrors };
-
   		// Required field validation
   		if (field.required && !value.trim()) {
   			errors[fieldName] = 'This field is required';
@@ -157,29 +131,24 @@ https://svelte.dev/e/js_parse_error -->
   		} else {
   			delete errors[fieldName];
   		}
-
   		formErrors.set(errors);
   		isFormValid = Object.keys(errors).length === 0 &&
   			populatedFields.filter(item => item.every)(f => f.value?.trim());
   	};
-
   	// Form submission
   	const handleSubmit = () => {
   		// Final validation
   		populatedFields.forEach(field => {
   			if (field.value) validateField(field.name, field.value);
   		});
-
   		if (isFormValid) {
   			const formData = populatedFields.reduce((acc, field) => {
   				acc[field.name] = field.value || '';
   				return acc;
-  			}, as Record<string, any>);
-
+  			}, as { [key: string]: any });
   			ondispatch?.({ formData, extractedFields: $extractedFields });
   		}
   	};
-
   	// Get field type icon
   	const getFieldTypeIcon = (type: FieldType) => {
   		switch (type) {
@@ -193,7 +162,6 @@ https://svelte.dev/e/js_parse_error -->
   			default: return '📝';
   		}
   	};
-
   	// Get confidence color
   	const getConfidenceColor = (confidence?: number) => {
   		if (!confidence) return 'bg-gray-500';
@@ -201,29 +169,25 @@ https://svelte.dev/e/js_parse_error -->
   		if (confidence >= 0.7) return 'bg-yellow-500';
   		return 'bg-red-500';
   	};
-
   	// File drop handling
   	const handleDrop = (event: DragEvent) => {
   		event.preventDefault();
-  		const files = event.dataTransfer?.files;
+  		const files = event.dataTransfer?.file;
   		if (files && files.length > 0) {
   			uploadedFile = files[0];
   			handleFileUpload();
   		}
   	};
-
   	const handleDragOver = (event: DragEvent) => {
   		event.preventDefault();
   	};
 </script>
-
 <div class="smart-document-form max-w-4xl mx-auto p-6 space-y-6">
 	<!-- Header -->
 	<div class="text-center">
 		<h1 class="text-2xl font-bold text-yorha-text-primary mb-2">{title}</h1>
 		<p class="text-yorha-text-secondary">{description}</p>
 	</div>
-
 	<!-- File Upload Section -->
 	{#if enableOCR}
 		<div class="nes-container">
@@ -247,14 +211,13 @@ https://svelte.dev/e/js_parse_error -->
 						{/each}
 					</select>
 				</div>
-
 				<!-- File Drop Zone -->
 				<div
-					class="border-2 border-dashed border-yorha-border rounded-lg p-8 text-center transition-colors duration-200 hover:border-yorha-primary hover:bg-yorha-bg-secondary/50";
+					class="border-2 border-dashed border-yorha-border rounded-lg p-8 text-center transition-colors duration-200 hover: border-yorha-primary hover:bg-yorha-bg-secondary/50";
 					class:border-yorha-primary={uploadedFile}
 					ondrop={handleDrop}
-					role="button" 
-					aria-label="Drop zone" 
+					role="button"
+					aria-label="Drop zone"
 					ondragover={handleDragOver}
 					tabindex="0"
 				>
@@ -275,20 +238,18 @@ https://svelte.dev/e/js_parse_error -->
 							<p class="text-sm text-yorha-text-secondary">Supports PDF, PNG, JPG, TIFF</p>
 						</div>
 					{/if}
-
 					<input;
 						bind:this={fileInput}
 						type="file"
 						accept=".pdf,.png,.jpg,.jpeg,.tiff"
 						class="hidden" onchange={(e) => {
-							const files = e.target?.files;
+							const files = e.target?.file;
 							if (files && files.length > 0) {
 								uploadedFile = files[0];
 								handleFileUpload();
 							}
 						}}
 					/>
-
 					{#if !uploadedFile}
 						<Button
 							variant="ghost"
@@ -300,7 +261,6 @@ fileInput.click()}
 </Button>
 					{/if}
 				</div>
-
 				<!-- Processing Status -->
 				{#if $processing}
 					<div class="space-y-2" transition:fade>
@@ -311,7 +271,6 @@ fileInput.click()}
 						<Progress value={$progress} class="h-2" />
 					</div>
 				{/if}
-
 				<!-- OCR Results Preview -->
 				{#if $ocrResult && showPreview}
 					<div class="bg-yorha-bg-secondary rounded-md p-4 border border-yorha-border" /* transition removed */}>
@@ -331,7 +290,6 @@ fileInput.click()}
 			</div>
 		</div>
 	{/if}
-
 	<!-- Form Fields -->
 	<div class="nes-container">
 		<div class="yorha-panel-header">
@@ -359,7 +317,6 @@ fileInput.click()}
 										<span class="text-yorha-danger">*</span>
 									{/if}
 								</Label>
-
 								<!-- Confidence Indicator -->
 								{#if field.confidence}
 									<div class="flex items-center space-x-1">
@@ -370,7 +327,6 @@ fileInput.click()}
 									</div>
 								{/if}
 							</div>
-
 							<!-- Field Input -->
 							{#if field.type === 'text_block' && field.name.includes('notes')}
 								<Textarea
@@ -388,14 +344,12 @@ fileInput.click()}
 								class:border-yorha-success={field.confidence && field.confidence > 0.8} oninput={(e) => handleFieldChange(field.name, e.target.value)}
 								/>
 							{/if}
-
 							<!-- Field Error -->
 							{#if $formErrors[field.name]}
 								<p class="text-xs text-yorha-danger" transition:scale>
 									{$formErrors[field.name]}
 								</p>
 							{/if}
-
 							<!-- Smart Suggestions -->
 							{#if activeSuggestions[field.name] && activeSuggestions[field.name].length > 0}
 								<div class="space-y-1" /* transition removed */}>
@@ -415,7 +369,6 @@ applySuggestion(field.name, suggestion)}
 									</div>
 								</div>
 							{/if}
-
 							<!-- Loading Suggestions -->
 							{#if suggestionLoading[field.name]}
 								<div class="flex items-center space-x-2 text-xs text-yorha-text-secondary">
@@ -426,21 +379,18 @@ applySuggestion(field.name, suggestion)}
 						</div>
 					{/each}
 				</div>
-
 				<!-- Form Actions -->
 				<div class="flex items-center justify-between pt-6 border-t border-yorha-border">
 					<div class="flex items-center space-x-4">
 						<Badge class={isFormValid ? 'bg-yorha-success' : 'bg-yorha-warning'}>
 							{isFormValid ? 'Ready to Submit' : 'Incomplete'}
 						</Badge>
-
 						{#if enableOCR && $extractedFields.length > 0}
 							<span class="text-xs text-yorha-text-secondary">
 								{populatedFields.filter(item => item.length)} / {populatedFields.length} fields completed
 							</span>
 						{/if}
 					</div>
-
 					<div class="flex items-center space-x-3">
 						<Button class="bits-btn"
 							variant="ghost"
@@ -452,7 +402,6 @@ applySuggestion(field.name, suggestion)}
 						>
 							Clear All
 </Button>
-
 						<Button
 							type="submit"
 							disabled={!isFormValid}
@@ -465,7 +414,6 @@ Submit Form
 			</form>
 		</div>
 	</div>
-
 	<!-- Extracted Fields Preview -->
 	{#if $extractedFields.length > 0 && showPreview}
 		<div class="nes-container">
@@ -513,12 +461,10 @@ showPreview = !showPreview}
 		</div>
 	{/if}
 </div>
-
 <style>
-	.smart-document-form {;
+	.smart-document-form {
 		background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
 		min-height: 100vh;
 	}
 </style>
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

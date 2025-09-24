@@ -1,9 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils/cn';
-
   interface GoldenRatioGridProps {
     /** Grid layout variant */
     variant?: 'sidebar' | 'dashboard' | 'split' | 'content' | 'legal-document';
@@ -36,7 +34,6 @@
     /** Secondary content */
     secondary?: import('svelte').Snippet;
   }
-
   let {
     variant = 'dashboard',
     direction = 'horizontal',
@@ -54,11 +51,9 @@
     footer,
     secondary;
   }: GoldenRatioGridProps = $props();
-
   // Golden ratio constant (φ ≈ 1.618)
   const PHI = 1.618033988749;
   const INVERSE_PHI = 0.618033988749; // 1/φ
-
   // Reactive grid classes using $derived
   let gridClasses = $derived(cn(
     'golden-ratio-grid',
@@ -82,16 +77,15 @@
       'gap-6': gap === 'md',
       'gap-8': gap === 'lg',
       'gap-12': gap === 'xl',
-      'golden-responsive': responsive,
-      'nier-golden-grid': legal,
-      'yorha-evidence-grid': evidenceLayout,
-      'yorha-case-grid': caseLayout,
-      'ai-analysis-grid': aiPanels,
+      'golden-responsive': responsive
+      'nier-golden-grid': legal
+      'yorha-evidence-grid': evidenceLayout
+      'yorha-case-grid': caseLayout
+      'ai-analysis-grid': aiPanels
       'min-h-screen': size === 'full'
     },
   classNameVar
   ));
-
   // Calculate golden ratio proportions
   let goldenProportions = $derived(
     direction === 'horizontal' ? {
@@ -102,12 +96,11 @@
       secondary: '1fr';
     } : {
       primary: `${PHI}fr`,
-      secondary: '1fr',;
+      secondary: '1fr',
       tertiary: `${INVERSE_PHI}fr`
     }
   );
 </script>
-
 <div
   class={gridClasses}
   style="
@@ -129,30 +122,25 @@
       {@render header()}
     </header>
   {/if}
-
   {#if sidebar}
     <aside class="golden-sidebar">
       {@render sidebar()}
     </aside>
   {/if}
-
   <main class="golden-main">
     {@render children?.()}
   </main>
-
   {#if secondary}
     <section class="golden-secondary">
       {@render secondary()}
     </section>
   {/if}
-
   {#if footer}
     <footer class="golden-footer">
       {@render footer()}
     </footer>
   {/if}
 </div>
-
 <style>/* @unocss-include */ /* Base Golden Ratio Grid */ :global(.golden-ratio-grid) {
     display: grid;
     width: 100%;
@@ -192,26 +180,22 @@ grid-template-areas: "header header header" "sidebar main secondary" "sidebar fo
     align-items: center;
     min-height: calc(var(--inverse-golden-ratio) * 5rem);
   }
-
   :global(.golden-sidebar) {
     grid-area: sidebar;
     overflow-y: auto;
     min-width: 0;
   }
-
   :global(.golden-main) {
-    grid-area: main;
+    grid-area: mai;
     overflow-y: auto;
     min-width: 0;
     min-height: 0;
   }
-
   :global(.golden-secondary) {
     grid-area: secondary;
     overflow-y: auto;
     min-width: 0;
   }
-
   :global(.golden-footer) {
     grid-area: footer;
     display: flex;
@@ -222,17 +206,14 @@ grid-template-areas: "header header header" "sidebar main secondary" "sidebar fo
 background: linear-gradient( 135deg, var(--color-nier-bg-primary) 0%, var(--color-nier-bg-secondary) 100% );
     border: 1px solid var(--color-nier-border-primary);
   }
-
   :global(.nier-golden-grid .golden-header) {
 background: linear-gradient( 90deg, var(--color-nier-accent-warm), var(--color-nier-accent-cool) );
     border-bottom: 2px solid var(--color-nier-border-primary);
   }
-
   :global(.nier-golden-grid .golden-sidebar) {
     background: rgba(var(--color-nier-bg-primary-rgb), 0.8);
     border-right: 1px solid var(--color-nier-border-secondary);
   }
-
   :global(.nier-golden-grid .golden-footer) {
     background: var(--color-nier-bg-tertiary);
     border-top: 1px solid var(--color-nier-border-secondary);
@@ -240,14 +221,12 @@ background: linear-gradient( 90deg, var(--color-nier-accent-warm), var(--color-n
 /* Evidence Analysis Layout */ :global(.yorha-evidence-grid) {
 background-image: linear-gradient(45deg, transparent 25%, rgba(0,0,0,0.02) 25%), linear-gradient(-45deg, transparent 25%, rgba(0,0,0,0.02) 25%), linear-gradient(45deg, rgba(0,0,0,0.02) 75%, transparent 75%), linear-gradient(-45deg, rgba(0,0,0,0.02) 75%, transparent 75%);
     background-size: 20px 20px;
-    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    background-position:  0, 0 10px, 10px -10px, -10px 0px;
   }
-
   :global(.yorha-evidence-grid .golden-main) {
     position: relative;
   }
-
-  :global(.yorha-evidence-grid .golden-main::before) {
+  :global($1) {
     content: '';
     position: absolute;
     top: 0;
@@ -260,7 +239,6 @@ background: linear-gradient( 90deg, var(--color-nier-accent-cool), var(--color-n
 /* Case Management Layout */ :global(.yorha-case-grid .golden-sidebar) {
     border-left: 4px solid var(--color-nier-accent-warm);
   }
-
   :global(.yorha-case-grid .golden-secondary) {
     border-right: 4px solid var(--color-nier-accent-cool);
   }
@@ -268,7 +246,6 @@ background: linear-gradient( 90deg, var(--color-nier-accent-cool), var(--color-n
 background: linear-gradient( 135deg, rgba(59, 130, 246, 0.03) 0%, rgba(16, 185, 129, 0.03) 100% );
     border: 1px solid rgba(59, 130, 246, 0.1);
   }
-
   :global(.ai-analysis-grid .golden-secondary) {
 background: linear-gradient( 135deg, rgba(16, 185, 129, 0.03) 0%, rgba(245, 158, 11, 0.03) 100% );
     border: 1px solid rgba(16, 185, 129, 0.1);
@@ -279,20 +256,17 @@ grid-template-areas: "header" "main" "sidebar" "footer";
       grid-template-columns: 1fr;
       grid-template-rows: auto var(--primary-proportion) var(--secondary-proportion) auto;
     }
-
     :global(.golden-responsive.grid-template-areas-dashboard) {
 grid-template-areas: "header" "main" "secondary" "sidebar" "footer";
       grid-template-columns: 1fr;
       grid-template-rows: auto var(--primary-proportion) var(--secondary-proportion) var(--tertiary-proportion) auto;
     }
-
     :global(.golden-responsive.grid-template-areas-split) {
 grid-template-areas: "header" "main" "secondary" "footer";
       grid-template-columns: 1fr;
       grid-template-rows: auto var(--primary-proportion) var(--secondary-proportion) auto;
     }
   }
-
   @media (max-width: 480px) {
     :global(.golden-responsive) {
       gap: 0.5rem;
@@ -312,7 +286,6 @@ grid-template-areas: "header" "main" "secondary" "footer";
 grid-template-areas: "header" "main" "secondary" "footer" !important;
       grid-template-columns: 1fr !important;
     }
-
     :global(.golden-sidebar) {
       display: none !important;
     }
@@ -332,5 +305,3 @@ grid-template-areas: "header" "main" "secondary" "footer" !important;
     }
   }
 </style>
-
-

@@ -1,48 +1,40 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	/**
 	 * Enhanced MCP Integration Demo Page
 	 * Demonstrates cluster system, MCP tools, and Context7 integration with SvelteKit
 	 */
-
 	import { onMount } from 'svelte';
 	import EnhancedMCPIntegration from '$lib/components/ai/EnhancedMCPIntegration.svelte';
 	import { page } from '$app/stores';
 	import { writable } from 'svelte/store';
-
 	// Page state
 	const integrationStatus = writable({
-		mcpServerRunning: false,
-		vsCodeExtensionActive: false,
-		clusterSystemOnline: false,
-		ollamaModelsLoaded: false,
+		mcpServerRunning: false
+		vsCodeExtensionActive: false
+		clusterSystemOnline: false
+		ollamaModelsLoaded: false
 		contextualAnalysisReady: false
 	});
-
 	type SystemLog = { timestamp: Date; level: 'info'|'success'|'warning'|'error'; message: string; source: string };
 	const systemLogs = writable<SystemLog[]>([]);
-
 	let selectedCaseId = $state('demo-case-001');
 	let enableRealtimeUpdates = $state(true);
 	let showMetrics = $state(true);
 	let enableClusterMode = $state(true);
-
 	$effect(() => {
 		checkSystemStatus();
 		startSystemMonitoring();
 		logMessage('info', 'Enhanced MCP Integration Demo loaded', 'system');
 	});
-
 	async function checkSystemStatus() {
 		logMessage('info', 'Checking system status...', 'health-check');
-
 		// Check MCP Server
 		try {
-			const mcpResponse = await fetch('http://localhost:40000/health');
+			const mcpResponse = await fetch('http://localhost:40000/health')
 			if (mcpResponse.ok) {
 				integrationStatus.update(status => ({ ...status, mcpServerRunning: true }));
 				logMessage('success', 'Context7 MCP Server is online', 'mcp-server');
@@ -50,7 +42,6 @@ https://svelte.dev/e/js_parse_error -->
 		} catch (error) {
 			logMessage('error', 'Context7 MCP Server is offline', 'mcp-server');
 		}
-
 		// Check cluster performance results
 		try {
 			const clusterResponse = await fetch('/cluster-performance-simple.json');
@@ -64,10 +55,9 @@ https://svelte.dev/e/js_parse_error -->
 		} catch (error) {
 			logMessage('warning', 'Cluster performance data not available', 'cluster');
 		}
-
 		// Check Ollama models
 		try {
-			const ollamaResponse = await fetch('http://localhost:11434/api/tags');
+			const ollamaResponse = await fetch('http://localhost:11434/api/tags')
 			if (ollamaResponse.ok) {
 				const models = await ollamaResponse.json();
 				if (models.models && models.models.length > 0) {
@@ -78,7 +68,6 @@ https://svelte.dev/e/js_parse_error -->
 		} catch (error) {
 			logMessage('warning', 'Ollama service not available', 'ollama');
 		}
-
 		// Check VS Code extension (simulated)
 		const hasVSCodeExtension = Math.random() > 0.3; // Simulate extension check
 		if (hasVSCodeExtension) {
@@ -87,20 +76,18 @@ https://svelte.dev/e/js_parse_error -->
 		} else {
 			logMessage('info', 'VS Code extension not detected (running in browser)', 'vscode');
 		}
-
 		// All systems check
-		const allSystemsReady = $integrationStatus.mcpServerRunning && $integrationStatus.clusterSystemOnline;
+		const allSystemsReady = $integrationStatus.mcpServerRunning && $integrationStatus.clusterSystemOnli;
 		if (allSystemsReady) {
 			integrationStatus.update(status => ({ ...status, contextualAnalysisReady: true }));
 			logMessage('success', 'Enhanced MCP Integration fully operational!', 'system');
 		}
 	}
-
 	function startSystemMonitoring() {
 		setInterval(async () => {
 			// Periodic health checks
 			try {
-				const healthResponse = await fetch('http://localhost:40000/health');
+				const healthResponse = await fetch('http://localhost:40000/health')
 				if (healthResponse.ok) {
 					const healthData = await healthResponse.json();
 					if (healthData.metrics && healthData.metrics.totalRequests > 0) {
@@ -112,32 +99,29 @@ https://svelte.dev/e/js_parse_error -->
 			}
 		}, 30000); // Every 30 seconds
 	}
-
 	function logMessage(level: 'info' | 'success' | 'warning' | 'error', message: string, source: string) {
 			systemLogs.update((logs) => ([
 				{ timestamp: new Date(), level, message, source },
 				...logs.slice(0, 49)
 			])); // Keep last 50 logs
 	}
-
 	async function runSystemDiagnostics() {
 		logMessage('info', 'Running comprehensive system diagnostics...', 'diagnostics');
-
 		const diagnostics = [
 			{
-				name: 'MCP Server Health',;
+				name: 'MCP Server Health',
 				test: async () => {
-					const response = await fetch('http://localhost:40000/health');
+					const response = await fetch('http://localhost:40000/health')
 					return response.ok;
 				}
 			},
 			{
-				name: 'Enhanced RAG Query',;
+				name: 'Enhanced RAG Query',
 				test: async () => {
 					const response = await fetch('http://localhost:40000/mcp/enhanced-rag/query', {
-						method: 'POST',;
+						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({;
+						body: JSON.stringify({,
 							query: 'System diagnostic test query',
 							caseId: 'diagnostic-test',
 							maxResults: 1;
@@ -147,22 +131,22 @@ https://svelte.dev/e/js_parse_error -->
 				}
 			},
 			{
-				name: 'Memory Graph Operations',;
+				name: 'Memory Graph Operations',
 				test: async () => {
 					const response = await fetch('http://localhost:40000/mcp/memory/read-graph', {
-						method: 'POST',;
-						headers: { 'Content-Type': 'application/json' },;
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify( );
 					});
 					return response.ok;
 				}
 			},
 			{
-				name: 'Context7 Documentation',;
+				name: 'Context7 Documentation',
 				test: async () => {
 					const response = await fetch('http://localhost:40000/mcp/context7/resolve-library-id', {
-						method: 'POST',;
-						headers: { 'Content-Type': 'application/json' },;
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify({ libraryName: 'sveltekit' })
 					});
 					return response.ok;
@@ -183,21 +167,17 @@ let passedTests = $state(0);
 				logMessage('error', `❌ ${diagnostic.name} - ERROR: ${error.message}`, 'diagnostics');
 			}
 		}
-
 		logMessage('info', `Diagnostics complete: ${passedTests}/${diagnostics.length} tests passed`, 'diagnostics');
 	}
-
 	function clearLogs() {
 		systemLogs.set([]);
 		logMessage('info', 'System logs cleared', 'system');
 	}
 </script>
-
 <svelte:head>
 	<title>Enhanced MCP Integration - Legal AI System</title>
 	<meta name="description" content="Comprehensive MCP integration with cluster system, Context7 documentation, and real-time AI orchestration" />
 </svelte:head>
-
 <div class="enhanced-mcp-demo">
 	<header class="demo-header">
 		<h1>🤖 Enhanced MCP Integration Demo</h1>
@@ -206,7 +186,6 @@ let passedTests = $state(0);
 			and multi-agent orchestration for legal AI workflows
 		</p>
 	</header>
-
 	<div class="system-status">
 		<h2>🔍 System Status Overview</h2>
 		<div class="status-grid">
@@ -219,7 +198,6 @@ let passedTests = $state(0);
 					</div>
 				</div>
 			</div>
-
 			<div class="status-nier-bits-card status-{$integrationStatus.clusterSystemOnline ? 'online' : 'offline'}">
 				<div class="status-icon">⚡</div>
 				<div class="status-info">
@@ -229,7 +207,6 @@ let passedTests = $state(0);
 					</div>
 				</div>
 			</div>
-
 			<div class="status-nier-bits-card status-{$integrationStatus.ollamaModelsLoaded ? 'online' : 'offline'}">
 				<div class="status-icon">🧠</div>
 				<div class="status-info">
@@ -239,7 +216,6 @@ let passedTests = $state(0);
 					</div>
 				</div>
 			</div>
-
 			<div class="status-nier-bits-card status-{$integrationStatus.vsCodeExtensionActive ? 'online' : 'offline'}">
 				<div class="status-icon">💻</div>
 				<div class="status-info">
@@ -249,7 +225,6 @@ let passedTests = $state(0);
 					</div>
 				</div>
 			</div>
-
 			<div class="status-nier-bits-card status-{$integrationStatus.contextualAnalysisReady ? 'online' : 'offline'}">
 				<div class="status-icon">🎯</div>
 				<div class="status-info">
@@ -261,7 +236,6 @@ let passedTests = $state(0);
 			</div>
 		</div>
 	</div>
-
 	<div class="demo-controls">
 		<h2>⚙️ Integration Controls</h2>
 		<div class="controls-grid">
@@ -273,21 +247,18 @@ let passedTests = $state(0);
 					<option value="complex-case-003">Complex Case 003</option>
 				</select>
 			</div>
-
 			<div class="control-group">
 				<label>
 					<input type="checkbox" bind:checked={enableRealtimeUpdates} />
 					Enable Real-time Updates
 				</label>
 			</div>
-
 			<div class="control-group">
 				<label>
 					<input type="checkbox" bind:checked={showMetrics} />
 					Show Performance Metrics
 				</label>
 			</div>
-
 			<div class="control-group">
 				<label>
 					<input type="checkbox" bind:checked={enableClusterMode} />
@@ -295,7 +266,6 @@ let passedTests = $state(0);
 				</label>
 			</div>
 		</div>
-
 		<div class="action-buttons">
 			<button onclick={runSystemDiagnostics} class="diagnostic-button">
 				🔬 Run System Diagnostics
@@ -305,7 +275,6 @@ let passedTests = $state(0);
 			</button>
 		</div>
 	</div>
-
 	<div class="main-integration">
 		<EnhancedMCPIntegration
 			caseId={selectedCaseId}
@@ -314,7 +283,6 @@ let passedTests = $state(0);
 			enableClusterMode={enableClusterMode}
 		/>
 	</div>
-
 	<div class="system-logs">
 		<h2>📋 System Activity Logs</h2>
 		<div class="logs-container">
@@ -325,13 +293,11 @@ let passedTests = $state(0);
 					<span class="log-message">{log.message}</span>
 				</div>
 			{/each}
-
 			{#if $systemLogs.length === 0}
 				<div class="no-logs">No system logs available</div>
 			{/if}
 		</div>
 	</div>
-
 	<div class="integration-features">
 		<h2>✨ Enhanced Integration Features</h2>
 		<div class="features-grid">
@@ -342,7 +308,6 @@ let passedTests = $state(0);
 					Multi-worker cluster system with load balancing and performance monitoring
 				</div>
 			</div>
-
 			<div class="feature-nier-bits-card">
 				<div class="feature-icon">🤖</div>
 				<div class="feature-title">Multi-Agent Orchestration</div>
@@ -350,7 +315,6 @@ let passedTests = $state(0);
 					Claude, CrewAI, and AutoGen agents with intelligent routing and coordination
 				</div>
 			</div>
-
 			<div class="feature-nier-bits-card">
 				<div class="feature-icon">🧠</div>
 				<div class="feature-title">Enhanced RAG System</div>
@@ -358,7 +322,6 @@ let passedTests = $state(0);
 					Semantic search with Context7 integration and intelligent caching
 				</div>
 			</div>
-
 			<div class="feature-nier-bits-card">
 				<div class="feature-icon">📚</div>
 				<div class="feature-title">Context7 Documentation</div>
@@ -366,7 +329,6 @@ let passedTests = $state(0);
 					Real-time access to library documentation and best practices
 				</div>
 			</div>
-
 			<div class="feature-nier-bits-card">
 				<div class="feature-icon">🕸️</div>
 				<div class="feature-title">Memory Graph</div>
@@ -374,7 +336,6 @@ let passedTests = $state(0);
 					Knowledge graph with entity relations and contextual memory
 				</div>
 			</div>
-
 			<div class="feature-nier-bits-card">
 				<div class="feature-icon">📡</div>
 				<div class="feature-title">Real-time WebSocket</div>
@@ -385,7 +346,6 @@ let passedTests = $state(0);
 		</div>
 	</div>
 </div>
-
 <style>
 	.enhanced-mcp-demo {
 		min-height: 100vh;
@@ -394,7 +354,6 @@ let passedTests = $state(0);
 		font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
 		padding: 2rem;
 	}
-
 	.demo-header {
 		text-align: center;
 		margin-bottom: 3rem;
@@ -403,7 +362,6 @@ let passedTests = $state(0);
 		border-radius: 16px;
 		backdrop-filter: blur(10px);
 	}
-
 	.demo-header h1 {
 		font-size: 2.5rem;
 		font-weight: 700;
@@ -413,7 +371,6 @@ let passedTests = $state(0);
 		-webkit-text-fill-color: transparent;
 		background-clip: text;
 	}
-
 	.demo-subtitle {
 		font-size: 1.125rem;
 		color: #9ca3af;
@@ -421,24 +378,20 @@ let passedTests = $state(0);
 		margin: 0 auto;
 		line-height: 1.6;
 	}
-
 	.system-status {
 		margin-bottom: 3rem;
 	}
-
 	.system-status h2 {
 		font-size: 1.5rem;
 		font-weight: 600;
 		margin-bottom: 1rem;
 		color: #f3f4f6;
 	}
-
 	.status-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 		gap: 1rem;
 	}
-
 	.status-card {
 		background: rgba(255, 255, 255, 0.05);
 		border-radius: 12px;
@@ -449,69 +402,57 @@ let passedTests = $state(0);
 		transition: all 0.3s ease;
 		border: 1px solid rgba(255, 255, 255, 0.1);
 	}
-
 	.status-card:hover {
 		transform: translateY(-2px);
 		box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 	}
-
 	.status-online {
 		border-left: 4px solid #10b981;
 		background: rgba(16, 185, 129, 0.1);
 	}
-
 	.status-offline {
 		border-left: 4px solid #ef4444;
 		background: rgba(239, 68, 68, 0.1);
 	}
-
 	.status-icon {
 		font-size: 2rem;
 	}
-
 	.status-title {
 		font-weight: 600;
 		margin-bottom: 0.25rem;
 	}
-
 	.status-subtitle {
 		font-size: 0.875rem;
 		color: #9ca3af;
 	}
-
 	.demo-controls {
 		margin-bottom: 3rem;
 		background: rgba(255, 255, 255, 0.05);
 		border-radius: 12px;
 		padding: 1.5rem;
 	}
-
 	.demo-controls h2 {
 		font-size: 1.5rem;
 		font-weight: 600;
 		margin-bottom: 1rem;
 		color: #f3f4f6;
 	}
-
 	.controls-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 		gap: 1rem;
 		margin-bottom: 1rem;
 	}
-
 	.control-group {
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
 	}
-
 	.control-group label {
 		font-size: 0.875rem;
 		font-weight: 500;
 		color: #d1d5db;
 	}
-
 	.control-group select,
 	.control-group input[type="checkbox"] {
 		background: rgba(255, 255, 255, 0.1);
@@ -521,13 +462,11 @@ let passedTests = $state(0);
 		color: #e5e7eb;
 		font-size: 0.875rem;
 	}
-
 	.action-buttons {
 		display: flex;
 		gap: 1rem;
 		flex-wrap: wrap;
 	}
-
 	.diagnostic-button,
 	.clear-logs-button {
 		background: linear-gradient(135deg, #3b82f6, #1d4ed8);
@@ -537,38 +476,32 @@ let passedTests = $state(0);
 		color: white;
 		font-weight: 500;
 		cursor: pointer;
-		transition: all 0.2s;
+		transition: all 0.2;
 		font-size: 0.875rem;
 	}
-
 	.clear-logs-button {
 		background: linear-gradient(135deg, #6b7280, #4b5563);
 	}
-
-	.diagnostic-button:hover,
+	.diagnostic-button: hover
 	.clear-logs-button:hover {
 		transform: translateY(-1px);
 		box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 	}
-
 	.main-integration {
 		margin-bottom: 3rem;
 	}
-
 	.system-logs {
 		margin-bottom: 3rem;
 		background: rgba(255, 255, 255, 0.05);
 		border-radius: 12px;
 		padding: 1.5rem;
 	}
-
 	.system-logs h2 {
 		font-size: 1.5rem;
 		font-weight: 600;
 		margin-bottom: 1rem;
 		color: #f3f4f6;
 	}
-
 	.logs-container {
 		max-height: 300px;
 		overflow-y: auto;
@@ -576,7 +509,6 @@ let passedTests = $state(0);
 		border-radius: 8px;
 		padding: 1rem;
 	}
-
 	.log-entry {
 		display: flex;
 		gap: 0.75rem;
@@ -585,43 +517,35 @@ let passedTests = $state(0);
 		font-family: 'SF Mono', 'Monaco', monospace;
 		font-size: 0.875rem;
 	}
-
 	.log-entry:last-child {
 		border-bottom: none;
 	}
-
 	.log-timestamp {
 		color: #9ca3af;
 		min-width: 80px;
 	}
-
 	.log-source {
 		color: #60a5fa;
 		min-width: 120px;
 	}
-
 	.log-message {
 		flex: 1;
 	}
-
 	.log-info .log-message { color: #e5e7eb; }
 	.log-success .log-message { color: #10b981; }
 	.log-warning .log-message { color: #f59e0b; }
 	.log-error .log-message { color: #ef4444; }
-
 	.no-logs {
 		text-align: center;
 		color: #9ca3af;
 		padding: 2rem;
 		font-style: italic;
 	}
-
 	.integration-features {
 		background: rgba(255, 255, 255, 0.05);
 		border-radius: 12px;
 		padding: 1.5rem;
 	}
-
 	.integration-features h2 {
 		font-size: 1.5rem;
 		font-weight: 600;
@@ -629,13 +553,11 @@ let passedTests = $state(0);
 		color: #f3f4f6;
 		text-align: center;
 	}
-
 	.features-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 		gap: 1rem;
 	}
-
 	.feature-card {
 		background: rgba(255, 255, 255, 0.05);
 		border-radius: 8px;
@@ -644,24 +566,20 @@ let passedTests = $state(0);
 		transition: all 0.3s ease;
 		border: 1px solid rgba(255, 255, 255, 0.1);
 	}
-
 	.feature-card:hover {
 		transform: translateY(-2px);
 		box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 		background: rgba(255, 255, 255, 0.1);
 	}
-
 	.feature-icon {
 		font-size: 2.5rem;
 		margin-bottom: 1rem;
 	}
-
 	.feature-title {
 		font-weight: 600;
 		margin-bottom: 0.5rem;
 		color: #f3f4f6;
 	}
-
 	.feature-description {
 		font-size: 0.875rem;
 		color: #9ca3af;

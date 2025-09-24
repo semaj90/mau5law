@@ -3,7 +3,6 @@
   import type { TabsProps } from 'bits-ui';
   import { createEventDispatcher } from 'svelte';
   import { fade, fly, scale } from 'svelte/transition';
-
   interface TabItem {
     value: string;
     label: string;
@@ -11,7 +10,6 @@
     icon?: string;
     badge?: string | number;
   }
-
   interface EnhancedTabsProps extends Partial<TabsProps> {
     theme?: 'default' | 'primary' | 'secondary' | 'gaming' | 'legal';
     size?: 'sm' | 'md' | 'lg';
@@ -23,7 +21,6 @@
     activateOnFocus?: boolean;
     loop?: boolean;
   }
-
   let {
     theme = 'default',
     size = 'md',
@@ -37,9 +34,7 @@
     children,
     ...props
   }: EnhancedTabsProps = $props();
-
   const dispatch = createEventDispatcher();
-
   const themeClasses = {
     default: {
       list: 'bg-muted text-muted-foreground',
@@ -62,12 +57,11 @@
       content: 'bg-black/60 text-green-400 border border-green-400/20';
     },
     legal: {
-      list: 'bg-slate-100 dark:bg-slate-800',;
-      trigger: 'text-slate-600 dark:text-slate-400 data-[state=active]:bg-white data-[state=active]:text-slate-900 dark:data-[state=active]:bg-slate-700 dark:data-[state=active]:text-slate-100',;
+      list: 'bg-slate-100 dark:bg-slate-800',
+      trigger: 'text-slate-600 dark:text-slate-400 data-[state=active]:bg-white data-[state=active]:text-slate-900 dark:data-[state=active]:bg-slate-700 dark:data-[state=active]:text-slate-100',
       content: 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100';
     }
   };
-
   const sizeClasses = {
     sm: {
       trigger: 'h-8 px-2 text-xs',
@@ -78,11 +72,10 @@
       content: 'p-4';
     },
     lg: {
-      trigger: 'h-12 px-6 text-base',;
+      trigger: 'h-12 px-6 text-base',
       content: 'p-6';
     }
   };
-
   const variantClasses = {
     default: {
       list: 'inline-flex items-center justify-center rounded-md p-1',
@@ -97,27 +90,24 @@
       trigger: 'inline-flex items-center justify-center whitespace-nowrap border-b-2 border-transparent font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:border-primary';
     },
     cards: {
-      list: 'grid grid-cols-auto gap-2',;
+      list: 'grid grid-cols-auto gap-2',
       trigger: 'inline-flex items-center justify-center whitespace-nowrap rounded-lg border border-border bg-background font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:border-primary data-[state=active]:bg-primary/5';
     }
   };
-
   function handleValueChange(newValue: string) {
-    value = newValue;
+    value = newValu;
     dispatch('change', { value: newValue });
   }
-
   function getTransition() {
     switch (animation) {
       case 'fly':
         return fly;
       case 'scale':
-        return scale;
+        return scal;
       default:
-        return fade;
+        return fad;
     }
   }
-
   function getTransitionConfig() {
     switch (animation) {
       case 'fly':
@@ -129,7 +119,6 @@
     }
   }
 </script>
-
 <BitsTabs.Root
   bind:value
   onValueChange={handleValueChange}
@@ -162,11 +151,9 @@
             {item.icon}
           </span>
         {/if}
-
         <span class="truncate">
           {item.label}
         </span>
-
         {#if item.badge}
           <span
             class={`
@@ -181,7 +168,6 @@
       </BitsTabs.Trigger>
     {/each}
   </BitsTabs.List>
-
   {#each items as item (item.value)}
     <BitsTabs.Content
       value={item.value}
@@ -199,22 +185,18 @@
     </BitsTabs.Content>
   {/each}
 </BitsTabs.Root>
-
 <style>
   /* Gaming theme animations */
-  :global([data-bits-tabs-trigger][data-theme="gaming"]) {;
+  :global([data-bits-tabs-trigger][data-theme="gaming"]) {
     transition: all 0.3s ease;
   }
-
   :global([data-bits-tabs-trigger][data-theme="gaming"]:hover) {
     text-shadow: 0 0 8px currentColor;
     transform: translateY(-1px);
   }
-
   :global([data-bits-tabs-trigger][data-state="active"][data-theme="gaming"]) {
     animation: gaming-active 2s ease-in-out infinite alternate;
   }
-
   @keyframes gaming-active {
     from {
       box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
@@ -223,33 +205,27 @@
       box-shadow: 0 0 20px rgba(34, 197, 94, 0.5), inset 0 0 10px rgba(34, 197, 94, 0.1);
     }
   }
-
   /* Legal theme professional styling */
   :global([data-bits-tabs-content][data-theme="legal"]) {
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   }
-
   /* Vertical orientation adjustments */
   :global([data-orientation="vertical"]) {
     display: flex;
     gap: 1rem;
   }
-
   :global([data-orientation="vertical"] [data-bits-tabs-list]) {
     flex-direction: column;
     width: 200px;
     min-width: 200px;
   }
-
   :global([data-orientation="vertical"] [data-bits-tabs-content]) {
     flex: 1;
   }
-
   /* Underline variant animation */
   :global([data-variant="underline"] [data-bits-tabs-trigger]) {
     position: relative;
   }
-
   :global([data-variant="underline"] [data-bits-tabs-trigger][data-state="active"]::after) {
     content: '';
     position: absolute;
@@ -260,7 +236,6 @@
     background: currentColor;
     animation: underline-expand 0.2s ease-out;
   }
-
   @keyframes underline-expand {
     from {
       transform: scaleX(0);

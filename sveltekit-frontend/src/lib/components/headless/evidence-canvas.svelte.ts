@@ -2,10 +2,8 @@
  * Legal Evidence Canvas Component
  * Svelte 5 component for interactive evidence visualization
  */
-
 import { useLegalTextureStreaming } from './texture-streaming.svelte';
 }
-
 export interface EvidenceItem {
 	id: string;
 	type: 'photo' | 'document' | 'physical' | 'digital';
@@ -14,10 +12,9 @@ export interface EvidenceItem {
 	rotation: number;
 	scale: number;
 	textureId?: string;
-	metadata: Record<string, any>;
+	metadata: { [key: string]: any };
 	connections: string[];
 }
-
 export interface CanvasState {
 	zoom: number;
 	pan: { x: number; y: number };
@@ -26,7 +23,6 @@ export interface CanvasState {
 	showConnections: boolean;
 	filter: 'all' | 'photos' | 'documents' | 'physical' | 'digital';
 }
-
 /**
  * Headless evidence canvas component using Svelte 5 runes
  */;
@@ -35,30 +31,25 @@ export function useEvidenceCanvas() {
 	let evidenceItems = $state<Map<string, EvidenceItem>(new Map();
 	let selectedItems = $state<Set<string>(new Set();
 	let hoveredItem = $state<string | null>(null);
-
-	// Canvas state;
+	// Canvas state
 	let canvasState = $state<CanvasState>({
 		zoom: 1.0,
 		pan: { x: 0, y: 0 },
 		selectedItems: [],
 		mode: 'view',
-		showConnections: true,;
+		showConnections: true
 		filter: 'all'
 	});
-
 	// Interaction state
 	let isDragging = $state(false);
 	let dragStartPos = $state<{ x: number; y: number } | null>(null);
 	let draggedItems = $state<Set<string>(new Set();
-
 	// Canvas dimensions
 	let canvasSize = $state({ width: 1024, height: 768 });
 	let viewport = $state({ width: 800, height: 600 });
-
 	// History for undo/redo
 	let history = $state<CanvasState[]>([]);
 	let historyIndex = $state(-1);
-
 	/**
 	 * Add evidence item to canvas
 	 */;
@@ -69,16 +60,13 @@ export function useEvidenceCanvas() {
 			id,
 			position: item.position || { x: canvasSize.width / 2, y: canvasSize.height / 2 },
 			rotation: item.rotation || 0,
-			scale: item.scale || 1.0,;
+			scale: item.scale || 1.0,
 			connections: item.connections || []
 		};
-
 		evidenceItems.set(id, evidenceItem);
 		saveToHistory();
-
 		return id;
 	}
-
 	/**
 	 * Remove evidence item from canvas
 	 */;
@@ -86,30 +74,25 @@ export function useEvidenceCanvas() {
 		evidenceItems.delete(itemId);
 		selectedItems.delete(itemId);
 		draggedItems.delete(itemId);
-
-		// Remove connections to this item;
+		// Remove connections to this item
 		for (const [id, item] of evidenceItems) {
 			if (item.connections.includes(itemId)) {
 				item.connections = item.connections.filter(connId => connId !== itemId);
 				evidenceItems.set(id, { ...item });
 			}
 		}
-
 		saveToHistory();
 	}
-
 	/**
 	 * Update evidence item
 	 */;
 	function updateEvidenceItem(itemId: string, updates: Partial<EvidenceItem>) {
 		const item = evidenceItems.get(itemId);
 		if (!item) return;
-
 		const updatedItem = { ...item, ...updates };
 		evidenceItems.set(itemId, updatedItem);
 		saveToHistory();
 	}
-
 	/**
 	 * Select evidence items
 	 */;
@@ -117,16 +100,13 @@ export function useEvidenceCanvas() {
 		if (!addToSelection) {
 			selectedItems.clear();
 		}
-
 		itemIds.forEach(id => {
 			if (evidenceItems.has(id)) {
 				selectedItems.add(id);
 			}
 		});
-
 		canvasState.selectedItems = Array.from(selectedItems);
 	}
-
 	/**
 	 * Clear selection
 	 */;
@@ -134,49 +114,38 @@ export function useEvidenceCanvas() {
 		selectedItems.clear();
 		canvasState.selectedItems = [];
 	}
-
 	/**
 	 * Create connection between evidence items
 	 */;
 	function createConnection(fromId: string, toId: string) {
 		const fromItem = evidenceItems.get(fromId);
 		const toItem = evidenceItems.get(toId);
-
 		if (!fromItem || !toItem || fromId === toId) return;
-
-		// Add bidirectional connection;
+		// Add bidirectional connection
 		if (!fromItem.connections.includes(toId)) {
 			fromItem.connections.push(toId);
 			evidenceItems.set(fromId, { ...fromItem });
 		}
-
 		if (!toItem.connections.includes(fromId)) {
 			toItem.connections.push(fromId);
 			evidenceItems.set(toId, { ...toItem });
 		}
-
 		saveToHistory();
 	}
-
 	/**
 	 * Remove connection between evidence items
 	 */;
 	function removeConnection(fromId: string, toId: string) {
 		const fromItem = evidenceItems.get(fromId);
 		const toItem = evidenceItems.get(toId);
-
 		if (!fromItem || !toItem) return;
-
 		// Remove bidirectional connection
 		fromItem.connections = fromItem.connections.filter(id => id !== toId);
 		toItem.connections = toItem.connections.filter(id => id !== fromId);
-
 		evidenceItems.set(fromId, { ...fromItem });
 		evidenceItems.set(toId, { ...toItem });
-
 		saveToHistory();
 	}
-
 	/**
 	 * Pan canvas
 	 */;
@@ -184,50 +153,40 @@ export function useEvidenceCanvas() {
 		canvasState.pan.x += deltaX;
 		canvasState.pan.y += deltaY;
 	}
-
 	/**
 	 * Zoom canvas
 	 */;
 	function zoomCanvas(delta: number, centerX?: number, centerY?: number) {
 		const oldZoom = canvasState.zoom;
 		const newZoom = Math.max(0.1, Math.min(5.0, oldZoom + delta);
-
 		if (centerX !== undefined && centerY !== undefined) {
 			// Zoom towards point
 			const zoomRatio = newZoom / oldZoom;
 			canvasState.pan.x = centerX - (centerX - canvasState.pan.x) * zoomRatio;
 			canvasState.pan.y = centerY - (centerY - canvasState.pan.y) * zoomRatio;
 		}
-
 		canvasState.zoom = newZoom;
 	}
-
 	/**
 	 * Fit canvas to show all evidence
 	 */;
 	function fitToContent() {
 		if (evidenceItems.size === 0) return;
-
 		let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-
 		for (const item of evidenceItems.values()) {
 			minX = Math.min(minX, item.position.x);
 			minY = Math.min(minY, item.position.y);
 			maxX = Math.max(maxX, item.position.x);
 			maxY = Math.max(maxY, item.position.y);
 		}
-
 		const contentWidth = maxX - minX + 200; // Add padding
 		const contentHeight = maxY - minY + 200;
-
 		const zoomX = viewport.width / contentWidth;
 		const zoomY = viewport.height / contentHeight;
 		canvasState.zoom = Math.min(zoomX, zoomY, 1.0);
-
 		canvasState.pan.x = -minX + (viewport.width - contentWidth * canvasState.zoom) / 2;
 		canvasState.pan.y = -minY + (viewport.height - contentHeight * canvasState.zoom) / 2;
 	}
-
 	/**
 	 * Set canvas mode
 	 */;
@@ -237,27 +196,23 @@ export function useEvidenceCanvas() {
 			fitToContent();
 		}
 	}
-
 	/**
 	 * Set filter
 	 */;
 	function setFilter(filter: CanvasState['filter']) {
 		canvasState.filter = filter;
 	}
-
 	/**
 	 * Toggle connections visibility
 	 */;
 	function toggleConnections() {
 		canvasState.showConnections = !canvasState.showConnections;
 	}
-
 	/**
 	 * Handle mouse/pointer events
 	 */;
 	function handlePointerDown(x: number, y: number, itemId?: string) {
 		dragStartPos = { x, y };
-
 		if (itemId) {
 			if (!selectedItems.has(itemId)) {
 				selectItems([itemId]);
@@ -266,24 +221,20 @@ export function useEvidenceCanvas() {
 		} else {
 			clearSelection();
 		}
-
 		isDragging = true;
 	}
-
 	function handlePointerMove(x: number, y: number) {
 		if (!isDragging || !dragStartPos) return;
-
 		const deltaX = x - dragStartPos.x;
 		const deltaY = y - dragStartPos.y;
-
 		if (draggedItems.size > 0) {
-			// Drag selected items;
+			// Drag selected items
 			for (const itemId of draggedItems) {
 				const item = evidenceItems.get(itemId);
 				if (item) {
 					updateEvidenceItem(itemId, {
 						position: {
-							x: item.position.x + deltaX / canvasState.zoom,;
+							x: item.position.x + deltaX / canvasState.zoom,
 							y: item.position.y + deltaY / canvasState.zoom
 						}
 					});
@@ -293,20 +244,16 @@ export function useEvidenceCanvas() {
 			// Pan canvas
 			panCanvas(deltaX, deltaY);
 		}
-
 		dragStartPos = { x, y };
 	}
-
 	function handlePointerUp() {
 		isDragging = false;
 		dragStartPos = null;
 		draggedItems.clear();
-
 		if (draggedItems.size > 0) {
 			saveToHistory();
 		}
 	}
-
 	/**
 	 * Handle wheel events for zooming
 	 */;
@@ -314,27 +261,23 @@ export function useEvidenceCanvas() {
 		const zoomDelta = -deltaY * 0.001;
 		zoomCanvas(zoomDelta, x, y);
 	}
-
 	/**
 	 * Save current state to history
 	 */;
 	function saveToHistory() {
-		// Remove future history if we're not at the end;
+		// Remove future history if we're not at the end
 		if (historyIndex < history.length - 1) {
 			history.splice(historyIndex + 1);
 		}
-
 		// Add current state
 		history.push(JSON.parse(JSON.stringify(canvasState));
 		historyIndex = history.length - 1;
-
-		// Limit history size;
+		// Limit history size
 		if (history.length > 50) {
 			history.shift();
 			historyIndex--;
 		}
 	}
-
 	/**
 	 * Undo last action
 	 */;
@@ -344,7 +287,6 @@ export function useEvidenceCanvas() {
 			canvasState = JSON.parse(JSON.stringify(history[historyIndex]);
 		}
 	}
-
 	/**
 	 * Redo last undone action
 	 */;
@@ -354,7 +296,6 @@ export function useEvidenceCanvas() {
 			canvasState = JSON.parse(JSON.stringify(history[historyIndex]);
 		}
 	}
-
 	/**
 	 * Export canvas data
 	 */;
@@ -366,7 +307,6 @@ export function useEvidenceCanvas() {
 			timestamp: new Date().toISOString()
 		};
 	}
-
 	/**
 	 * Import canvas data
 	 */;
@@ -376,26 +316,22 @@ export function useEvidenceCanvas() {
 			data.evidenceItems.forEach(([id, item]: [string, EvidenceItem]) => {
 				evidenceItems.set(id, item);
 			});
-
 			canvasState = { ...canvasState, ...data.canvasState };
 			if (data.canvasSize) {
 				canvasSize = data.canvasSize;
 			}
-
 			clearSelection();
 			saveToHistory();
 		} catch (error) {
 			console.error('Failed to import canvas data:', error);
 		}
 	}
-
-	// Derived states;
+	// Derived states
 	const visibleItems = $derived(() => {
 		const items = Array.from(evidenceItems.values();
 		if (canvasState.filter === 'all') return items;
 		return items.filter(item => item.type === canvasState.filter);
 	});
-
 	const hasSelection = $derived(selectedItems.size > 0);
 	const canUndo = $derived(historyIndex > 0);
 	const canRedo = $derived(historyIndex < history.length - 1);
@@ -407,7 +343,6 @@ export function useEvidenceCanvas() {
 		}
 		return count / 2; // Bidirectional connections counted twice
 	});
-
 	return {
 		// State getters
 		getEvidenceItems: () => new Map(evidenceItems),
@@ -416,7 +351,6 @@ export function useEvidenceCanvas() {
 		getCanvasState: () => ({ ...canvasState }),
 		getCanvasSize: () => ({ ...canvasSize }),
 		getViewport: () => ({ ...viewport }),
-
 		// Derived state
 		visibleItems: () => visibleItems,
 		hasSelection: () => hasSelection,
@@ -424,7 +358,6 @@ export function useEvidenceCanvas() {
 		canRedo: () => canRedo,
 		itemCount: () => itemCount,
 		connectionCount: () => connectionCount,
-
 		// Actions
 		addEvidenceItem,
 		removeEvidenceItem,
@@ -439,21 +372,17 @@ export function useEvidenceCanvas() {
 		setMode,
 		setFilter,
 		toggleConnections,
-
 		// Event handlers
 		handlePointerDown,
 		handlePointerMove,
 		handlePointerUp,
 		handleWheel,
-
 		// History
 		undo,
 		redo,
-
 		// Data management
 		exportCanvas,
 		importCanvas,
-
 		// Setters
 		setHoveredItem: (itemId: string | null) => { hoveredItem = itemId; },
 		setCanvasSize: (size: { width: number; height: number }) => { canvasSize = size; },

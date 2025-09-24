@@ -1,10 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { vectorSearchIndex, type SearchQuery, type VectorSearchResult } from '$lib/services/vector-search-index';
-  import ModernButton from '$lib/components/ui/button/Button.svelte';
-  
+  import ModernButton from '$lib/components/ui/Button.svelte';
   let searchQuery = $state('');
   let isSearching = $state(false);
   let searchResults: VectorSearchResult[] = $state([]);
@@ -17,7 +15,6 @@
   });
   let rankingStrategy = $state<SearchQuery['rankingStrategy']>('similarity');
   let showFilters = $state(false);
-
   const documentTypes = ['contract', 'evidence', 'brief', 'citation', 'regulation', 'case_law'];
   const jurisdictions = ['federal', 'state', 'municipal', 'international'];
   const riskLevels = ['low', 'medium', 'high', 'critical'];
@@ -27,7 +24,6 @@
     { value: 'citation_weighted', label: 'Citation Weighted' },
     { value: 'risk_prioritized', label: 'Risk Prioritized' }
   ];
-
   $effect(() => {
     (async () => {
 try {
@@ -37,27 +33,23 @@ try {
     }
     })();
   });
-
   async function performSearch() {
     if (!searchQuery.trim()) return;
-    
     isSearching = true;
-    
     try {
       const query: SearchQuery = {
-        text: searchQuery,
+        text: searchQuery
         rankingStrategy,
-        includeChunks: true,
+        includeChunks: true
         limit: 20,
-        threshold: 0.1,;
+        threshold: 0.1,
         filters: {
-          documentType: selectedFilters.documentType.length > 0 ? selectedFilters.documentType: undefined,;
-          jurisdiction: selectedFilters.jurisdiction.length > 0 ? selectedFilters.jurisdiction : undefined,
-          riskLevel: selectedFilters.riskLevel.length > 0 ? selectedFilters.riskLevel : undefined,
-          minimumConfidence: selectedFilters.minimumConfidence;
+          documentType: selectedFilters.documentType.length > 0 ? selectedFilters.documentType: undefined
+          jurisdiction: selectedFilters.jurisdiction.length > 0 ? selectedFilters.jurisdiction : undefined
+          riskLevel: selectedFilters.riskLevel.length > 0 ? selectedFilters.riskLevel : undefined
+          minimumConfidence: selectedFilters.minimumConfidenc;
         }
       };
-      
       searchResults = await vectorSearchIndex.search(query);
     } catch (error) {
       console.error('Search failed:', error);
@@ -66,14 +58,12 @@ try {
       isSearching = false;
     }
   }
-
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       performSearch();
     }
   }
-
   function toggleFilter(type: 'documentType' | 'jurisdiction' | 'riskLevel', value: string) {
     const current = selectedFilters[type];
     if (current.includes(value)) {
@@ -82,22 +72,19 @@ try {
       selectedFilters[type] = [...current, value];
     }
   }
-
   function getRiskLevelClass(riskLevel: string): string {
     const classes = {
       low: 'bg-green-500/20 text-green-400 border-green-500/30',
-      medium: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',;
-      high: 'bg-orange-500/20 text-orange-400 border-orange-500/30',;
+      medium: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+      high: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
       critical: 'bg-red-500/20 text-red-400 border-red-500/30';
     };
     return classes[riskLevel as keyof typeof classes] || classes.medium;
   }
-
   function formatScore(score: number): string {
     return (score * 100).toFixed(1) + '%';
   }
 </script>
-
 <!-- Vector Search Interface -->
 <div class="border-2 border-cyan-400/20 rounded-lg bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 p-6 text-gray-200 font-mono">
   <!-- Header -->
@@ -111,7 +98,6 @@ try {
       </div>
     {/if}
   </div>
-
   <!-- Search Input -->
   <div class="mb-6">
     <div class="flex gap-4">
@@ -133,7 +119,6 @@ try {
       </ModernButton>
     </div>
   </div>
-
   <!-- Search Options -->
   <div class="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
     <!-- Ranking Strategy -->
@@ -147,7 +132,6 @@ try {
         {/each}
       </select>
     </div>
-
     <!-- Filter Toggle -->
     <div class="flex items-end">
       <ModernButton
@@ -159,12 +143,10 @@ try {
       </ModernButton>
     </div>
   </div>
-
   <!-- Advanced Filters -->
   {#if showFilters}
     <div class="mb-6 p-4 bg-gray-800/30 border border-cyan-400/20 rounded-lg">
       <h3 class="text-lg font-semibold text-cyan-400 mb-4">Advanced Filters</h3>
-      
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- Document Types -->
         <div>
@@ -183,7 +165,6 @@ try {
             {/each}
           </div>
         </div>
-
         <!-- Jurisdictions -->
         <div>
           <label class="block text-sm font-medium text-gray-300 mb-2">Jurisdictions</label>
@@ -201,7 +182,6 @@ try {
             {/each}
           </div>
         </div>
-
         <!-- Risk Levels -->
         <div>
           <label class="block text-sm font-medium text-gray-300 mb-2">Risk Levels</label>
@@ -219,7 +199,6 @@ try {
             {/each}
           </div>
         </div>
-
         <!-- Confidence Threshold -->
         <div>
           <label class="block text-sm font-medium text-gray-300 mb-2" for="-min-confidence-sele">
@@ -236,14 +215,12 @@ try {
       </div>
     </div>
   {/if}
-
   <!-- Search Results -->
   {#if searchResults.length > 0}
     <div class="space-y-4">
       <h3 class="text-xl font-semibold text-cyan-400 border-b border-cyan-400/30 pb-2">
         Search Results ({searchResults.length})
       </h3>
-      
       {#each searchResults as result, index}
         <div class="bg-gray-800/40 border border-gray-600/30 rounded-lg p-4 hover:border-cyan-400/30 transition-colors">
           <!-- Result Header -->
@@ -271,7 +248,6 @@ try {
               </div>
             </div>
           </div>
-
           <!-- Metadata -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3 text-sm">
             {#if result.metadata.legalEntities.length > 0}
@@ -287,7 +263,6 @@ try {
               </div>
             {/if}
           </div>
-
           <!-- Text Chunks Preview -->
           {#if result.chunks && result.chunks.length > 0}
             <div class="mt-3 p-3 bg-gray-900/50 rounded border border-gray-700/50">
@@ -299,7 +274,6 @@ try {
               {/each}
             </div>
           {/if}
-
           <!-- Actions -->
           <div class="flex items-center justify-between mt-4 pt-3 border-t border-gray-700/50">
             <div class="text-xs text-gray-500">
@@ -365,9 +339,8 @@ try {
     </div>
   {/if}
 </div>
-
 <style>
-  .line-clamp-3 {;
+  .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;

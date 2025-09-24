@@ -2,11 +2,9 @@
  * Thread-Safe PostgreSQL Integration (Simplified Implementation)
  * Basic implementation to fix import errors while maintaining functionality
  */
-
 import postgres from 'postgres';
 import { dev } from '$app/environment';
-
-// Simple PostgreSQL connection using postgres.js;
+// Simple PostgreSQL connection using postgres.js
 const sql = postgres({
   host: 'localhost',
   port: 5432,
@@ -15,10 +13,9 @@ const sql = postgres({
   database: 'legal_ai_db',
   max: 20,
   idle_timeout: 30,
-  connect_timeout: 10,;
+  connect_timeout: 10,
   debug: dev
 });
-
 export interface ThreadSafePostgres {
   query: typeof sql;
   close: () => Promise<void>;
@@ -28,9 +25,8 @@ export interface ThreadSafePostgres {
   storeJsonbDocument?: (table: string, doc: any) => Promise<void>;
   healthCheck?: () => Promise<boolean>;
 }
-
 export const threadSafePostgres: ThreadSafePostgres = {
-  query: sql,;
+  query: sql
   close: async () => {
     await sql.end();
   },
@@ -72,7 +68,6 @@ export const threadSafePostgres: ThreadSafePostgres = {
     return threadSafePostgres.health();
   }
 };
-
 // Export for compatibility
 export { sql };
 export default threadSafePostgres;

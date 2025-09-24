@@ -1,43 +1,34 @@
 // Redis caching service for embeddings, shader modules, and search results
 import { gzipSync, gunzipSync } from 'zlib';
-
 // In-memory L1 cache fallback
 const memoryCache = new Map<string, any>();
 const MEMORY_CACHE_MAX_SIZE = 1000;
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour default
-
 export interface CacheItem<T> {
   data: T;
   timestamp: number;
   ttl: number;
 }
-
 class CacheService {
   private redisClient: any = null;
   private useRedis = false;
-
   constructor() {
     void this.initializeRedis();
   }
-
-  // Expose raw client for advanced usage (enqueue, streams);
+  // Expose raw client for advanced usage (enqueue, streams)
   get client() {
     return this.redisClient;
   }
-
-  // Back-compat helper for callers expecting a function;
+  // Back-compat helper for callers expecting a function
   getClient() {
     return this.redisClient;
   }
-
   private async initializeRedis() {
     const password = process.env.REDIS_PASSWORD;
     const host = process.env.REDIS_HOST || '127.0.0.1';
     const port = process.env.REDIS_PORT || '6379';
-
     const url =
-      process.env.REDIS_URL || (password ? `redis://:${password}@${host}:${port}` : `redis://${host}:${port}`);
-
+      process.env.REDIS_URL || (password ? `redis://:${password}@${host}:${port}` : `redis://${host}:${port}`)
     try {
       // Dynamic import so builds don’t fail if ioredis is missing in some environments
       const { default: Redis } = await import('ioredis');
@@ -68,19 +59,18 @@ class CacheService {
       this.useRedis = false;
     }
   }
-
   async get<T>(key: string): Promise<T | null> {
     try {
       if (this.useRedis && this.redisClient) {
         const result = await this.redisClient.get(key);
         if (!result) return null;
-        // Try base64-gzipped JSON first;
+        // Try base64-gzipped JSON first
         try {
           const buf = Buffer.from(result, 'base64');
           const json = gunzipSync(buf).toString('utf8');
           return JSON.parse(json) as T;
         } catch {
-          // Fallback to plain JSON;
+          // Fallback to plain JSON
           try {
             return JSON.parse(result) as T;
           } catch {
@@ -94,14 +84,12 @@ class CacheService {
       return null;
     }
   }
-
   async set<T>(key: string, value: T, ttlMs: number = CACHE_TTL): Promise<void> {
     try {
-      // Accept small second TTLs for back-compat;
+      // Accept small second TTLs for back-compat
       if (typeof ttlMs === 'number' && Number.isInteger(ttlMs) && ttlMs > 0 && ttlMs <= 86400) {
         ttlMs = ttlMs * 1000;
       }
-
       const payload = gzipSync(JSON.stringify(value)).toString('base64');
       if (this.useRedis && this.redisClient) {
         const seconds = Math.max(1, Math.floor(ttlMs / 1000));
@@ -130,13 +118,11 @@ class CacheService {
       this.setInMemory(key, value, ttlMs);
     }
   }
-
-  // Convenience: accept seconds TTL and rely on internal gzip/base64 storage;
+  // Convenience: accept seconds TTL and rely on internal gzip/base64 storage
   async setCompressed<T>(key: string, value: T, ttlSeconds: number): Promise<void> {
     const ttl = Number.isFinite(ttlSeconds) ? Math.max(1, Math.floor(ttlSeconds)) : 3600;
     return this.set(key, value, ttl);
   }
-
   async del(key: string): Promise<void> {
     try {
       if (this.useRedis && this.redisClient) {
@@ -148,7 +134,6 @@ class CacheService {
       console.warn('Cache delete error:', (e as Error).message || e);
     }
   }
-
   async incr(key: string): Promise<number> {
     try {
       if (this.useRedis && this.redisClient) {
@@ -165,18 +150,16 @@ class CacheService {
       return 1; // Default fallback
     }
   }
-
   async expire(key: string, seconds: number): Promise<void> {
     try {
       if (this.useRedis && this.redisClient) {
         await this.redisClient.expire(key, seconds);
       }
-      // Memory cache doesn't support separate expiration, handled by TTL in set;
+      // Memory cache doesn't support separate expiration, handled by TTL in set
     } catch (e) {
       console.warn('Cache expire error:', (e as Error).message || e);
     }
   }
-
   async publish(channel: string, message: unknown): Promise<void> {
     try {
       if (this.useRedis && this.redisClient && typeof this.redisClient.publish === 'function') {
@@ -187,8 +170,7 @@ class CacheService {
       console.warn('Cache publish error:', (e as Error).message || e);
     }
   }
-
-  // Simple list queue helpers;
+  // Simple list queue helpers
   async rpush(listKey: string, value: string): Promise<number> {
     try {
       if (this.useRedis && this.redisClient && typeof this.redisClient.rpush === 'function') {
@@ -199,7 +181,6 @@ class CacheService {
     }
     return 0;
   }
-
   async blpop(listKey: string, timeoutSec = 0): Promise<[string, string] | null> {
     try {
       if (this.useRedis && this.redisClient && typeof this.redisClient.blpop === 'function') {
@@ -212,8 +193,7 @@ class CacheService {
     }
     return null;
   }
-
-  // Hash operations for complex caching;
+  // Hash operations for complex caching
   async hget(key: string, field: string): Promise<string | null> {
     try {
       if (this.useRedis && this.redisClient && typeof this.redisClient.hget === 'function') {
@@ -228,7 +208,6 @@ class CacheService {
       return null;
     }
   }
-
   async hset(key: string, field: string, value: any): Promise<void> {
     try {
       if (this.useRedis && this.redisClient && typeof this.redisClient.hset === 'function') {
@@ -246,8 +225,7 @@ class CacheService {
       this.setInMemory(compoundKey, value, CACHE_TTL);
     }
   }
-
-  // Batch operations;
+  // Batch operations
   async mget(keys: string[]): Promise<(any | null)[]> {
     try {
       if (this.useRedis && this.redisClient && typeof this.redisClient.mget === 'function') {
@@ -274,8 +252,7 @@ class CacheService {
       return keys.map(() => null);
     }
   }
-
-  // Embeddings;
+  // Embeddings
   async getEmbedding(text: string, model: string = 'openai'): Promise<number[] | null> {
     const key = `embedding:${model}:${this.hashString(text)}`;
     return this.get<number[]>(key);
@@ -284,7 +261,6 @@ class CacheService {
     const key = `embedding:${model}:${this.hashString(text)}`;
     await this.set(key, embedding, 24 * 60 * 60 * 1000);
   }
-
   // Search results
   async getSearchResults(query: string, searchType: string, filters: any = {}): Promise<any[] | null> {
     const key = `search:${searchType}:${this.hashString(query)}:${this.hashString(JSON.stringify(filters))}`;
@@ -294,8 +270,7 @@ class CacheService {
     const key = `search:${searchType}:${this.hashString(query)}:${this.hashString(JSON.stringify(filters))}`;
     await this.set(key, results, 5 * 60 * 1000);
   }
-
-  // Compute shader/modules;
+  // Compute shader/modules
   async getShader(key: string): Promise<string | null> {
     const cacheKey = `shader:${this.hashString(key)}`;
     return this.get<string>(cacheKey);
@@ -304,8 +279,7 @@ class CacheService {
     const cacheKey = `shader:${this.hashString(key)}`;
     await this.set(cacheKey, compiledWGSL, ttlMs);
   }
-
-  // Internals;
+  // Internals
   private getFromMemory<T>(key: string): T | null {
     const item = memoryCache.get(key) as CacheItem<T> | undefined;
     if (!item) return null;
@@ -320,7 +294,6 @@ class CacheService {
     }
     return (item as { timestamp?: any; ttl?: any; data?: any }).data;
   }
-
   private setInMemory<T>(key: string, value: T, ttlMs: number): void {
     if (memoryCache.size >= MEMORY_CACHE_MAX_SIZE) {
       const firstKey = memoryCache.keys().next().value;
@@ -328,7 +301,6 @@ class CacheService {
     }
     memoryCache.set(key, { data: value, timestamp: Date.now(), ttl: ttlMs });
   }
-
   private hashString(str: string): string {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -338,26 +310,23 @@ class CacheService {
     }
     return String(hash);
   }
-
   async close(): Promise<void> {
     try {
       if (this.redisClient) await this.redisClient.quit();
-    } catch {}
+    } catch (error) {}
   }
 }
-
 // Singleton instance
 export const cache = new CacheService();
 export const redis = cache; // compatibility alias
-
 // Helper functions
 export const cacheEmbedding = (text: string, embedding: number[], model?: string) =>
   cache.setEmbedding(text, embedding, model);
 export const getCachedEmbedding = (text: string, model?: string) => cache.getEmbedding(text, model);
 export const cacheSearchResults = (
-  query: string,
-  searchType: string,;
-  results: any[],
+  query: string
+  searchType: string
+  results: any[]
   filters?: unknown
 ) => cache.setSearchResults(query, searchType, results, filters as any);
 export const getCachedSearchResults = (query: string, searchType: string, filters?: unknown) =>

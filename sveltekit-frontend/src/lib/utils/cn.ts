@@ -1,5 +1,4 @@
 import { clsx, type ClassValue } from "clsx";
-
 /**
  * Utility function to merge CSS classes
  * Using UnoCSS instead of Tailwind, so no merge deduplication needed
@@ -7,7 +6,6 @@ import { clsx, type ClassValue } from "clsx";
 export function cn(...inputs: ClassValue[]) {
 	return clsx(inputs);
 }
-
 /**
  * Legal-specific class name utility with YoRHa theme integration
  */
@@ -15,7 +13,6 @@ export function legalCn(...inputs: ClassValue[]) {
   const baseClasses = 'font-mono text-yorha-text-primary';
   return clsx(baseClasses, inputs);
 }
-
 /**
  * Generate confidence-based styling classes
  */
@@ -26,7 +23,6 @@ export function confidenceClass(confidence: number): string {
   if (confidence >= 30) return 'text-orange-400 bg-orange-500/10 border-orange-500/30';
   return 'text-red-400 bg-red-500/10 border-red-500/30';
 }
-
 /**
  * Generate priority-based styling classes
  */

@@ -4,15 +4,12 @@
     message: { role: string; content: string; timestamp?: string; references?: unknown[] };
     showReferences?: boolean;
   }
-
   let {
     message,
     showReferences = false
   }: Props = $props();
-
   let isUser = message.role === 'user';
 </script>
-
 <div class="flex gap-2 items-start mb-2" class:justify-end={isUser}>
   <div class="rounded-lg px-4 py-2 max-w-xl shadow text-sm"
     class:bg-blue-100={isUser}

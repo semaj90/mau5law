@@ -1,8 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { tick } from 'svelte';
-
   interface HeadlessDialogProps {
     open?: boolean;
     initialFocus?: (() => HTMLElement | null) | null;
@@ -14,7 +12,6 @@
     onOpen?: () => void;
     onClose?: () => void;
   }
-
   let { title, children, footer,
     open = $bindable(),
     initialFocus = null,
@@ -26,17 +23,14 @@
     onOpen,
     onClose
    }: HeadlessDialogProps = $props();
-
   let container = $state<HTMLElement | null>(null);
   let previousActive = $state<HTMLElement | null>(null);
   let mounted = $state(false);
-
   function setOpen(v: boolean) {
     open = v;
     if (v && onOpen) onOpen();
     if (!v && onClose) onClose();
   }
-
   function handleKey(e: KeyboardEvent) {
     if (!open) return;
     if (e.key === 'Escape' && closeOnEsc) {
@@ -45,20 +39,15 @@
       setOpen(false);
     }
   }
-
   function handleTabKey(e: KeyboardEvent) {
     if (!open || !container) return;
     if (e.key !== 'Tab') return;
-
     const focusableElements = container.querySelectorAll<HTMLElement>(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
     );
-
     const firstElement = focusableElements[0];
     const lastElement = focusableElements[focusableElements.length - 1];
-
     if (!firstElement) return;
-
     if (e.shiftKey) {
       if (document.activeElement === firstElement) {
         e.preventDefault();
@@ -71,49 +60,38 @@
       }
     }
   }
-
   async function trapFocus() {
     if (!open || !container || !mounted) return;
     await tick();
-
     const target = initialFocus?.()
       || container.querySelector<HTMLElement>('[data-autofocus]')
       || container.querySelector<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-
     target?.focus();
   }
-
   // Handle dialog open/close effects
   $effect(() => {
     if (!mounted) return;
-
     if (open) {
       // Store current focus
       previousActive = document.activeElement as HTMLElement;
-
       // Add event listeners
       document.addEventListener('keydown', handleKey, true);
       document.addEventListener('keydown', handleTabKey, true);
-
       // Prevent body scroll
       document.body.style.overflow = 'hidden';
-
       // Focus management
       trapFocus();
     } else {
       // Remove event listeners
       document.removeEventListener('keydown', handleKey, true);
       document.removeEventListener('keydown', handleTabKey, true);
-
       // Restore body scroll
       document.body.style.overflow = '';
-
       // Restore focus
       if (restoreFocus && previousActive) {
         previousActive.focus();
       }
     }
-
     // Cleanup function
     return () => {
       document.removeEventListener('keydown', handleKey, true);
@@ -121,7 +99,6 @@
       document.body.style.overflow = '';
     };
   });
-
   // Mount effect
   $effect(() => {
     mounted = true;
@@ -129,20 +106,17 @@
       mounted = false;
     };
   });
-
   function backdropClick(e: MouseEvent) {
     if (!closeOnBackdrop) return;
     if (e.target === container) {
       setOpen(false);
     }
   }
-
   function handleContentClick(e: MouseEvent) {
     // Prevent backdrop click when clicking inside dialog content
     e.stopPropagation();
   }
 </script>
-
 {#if open && mounted}
   <!-- Portal to body for proper z-index stacking -->
   <div
@@ -169,17 +143,14 @@
         <div class="px-6 pt-6">
           {@render title?.()}
         </div>
-
         <!-- Dialog content -->
         <div class="px-6 py-4">
           {@render children?.()}
         </div>
-
         <!-- Dialog footer -->
         <div class="px-6 pb-6">
           {@render footer?.()}
         </div>
-
         <!-- Close button -->
         <button
           type="button"
@@ -195,13 +166,11 @@
     </div>
   </div>
 {/if}
-
 <style>
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
   }
-
   @keyframes slideIn {
     from {
       opacity: 0;

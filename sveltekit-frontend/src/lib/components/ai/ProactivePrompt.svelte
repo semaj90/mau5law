@@ -1,16 +1,12 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   // Export prop callbacks for Svelte consumers
-  export let onaccept: (event?: unknown) => void = () => {};
-  export let ondismiss: (event?: unknown) => void = () => {};
-  export let onquickResponse: (event?: unknown) => void = () => {};
-
+  let { onaccept } = $props(): (event?: unknown) => void = () => {};
+  let { ondismiss } = $props(): (event?: unknown) => void = () => {};
+  let { onquickResponse } = $props(): (event?: unknown) => void = () => {};
   // Use native buttons here to avoid strict typed component event typings
   import aiPersonality from "$lib/stores/chatStore";
   import { Clock, Lightbulb, MessageCircle, Sparkles, X } from "lucide-svelte";
-
   // Array of proactive prompts based on context
   const proactivePrompts = [
     "Would you like me to help clarify anything we've discussed?",
@@ -22,15 +18,12 @@
     "Would you like some additional resources on this subject?",
     "Is there a particular aspect you'd like to dive deeper into?",
   ];
-
   // Get a random proactive prompt
   const randomPrompt =
     proactivePrompts[Math.floor(Math.random() * proactivePrompts.length)];
-
   // Derive a safe display name from the store without relying on a specific ChatContext shape
   let displayName: string = 'Assistant';
   const displayName = $derived(( ($aiPersonality as any)?.name ?? ($aiPersonality as any)?.displayName ?? 'Assistant' ));
-
   function handleAccept() {
     onaccept?.();
   }
@@ -41,7 +34,6 @@
     onquickResponse?.();
   }
 </script>
-
 <div class="space-y-4">
   <!-- Header -->
   <div class="space-y-4">
@@ -54,7 +46,6 @@
         <!-- Pulse ring -->
         <div class="space-y-4"></div>
       </div>
-
       <!-- Content -->
       <div class="space-y-4">
         <!-- Header -->
@@ -62,10 +53,8 @@
           <Clock class="space-y-4" />
           <span class="space-y-4">{displayName} here!</span>
         </div>
-
         <!-- Message -->
         <p class="space-y-4">{randomPrompt}</p>
-
         <!-- Actions -->
         <div class="space-y-4">
           <!-- Accept Button (native to avoid typed component event issues) -->
@@ -77,7 +66,6 @@
             <MessageCircle class="space-y-4" />
             Yes, help me
           </button>
-
           <!-- Quick responses -->
           <button
             type="button"
@@ -87,7 +75,6 @@
             <Lightbulb class="space-y-4" />
             Summarize
           </button>
-
           <!-- Dismiss Button -->
           <button
             type="button"
@@ -102,13 +89,11 @@
       </div>
     </div>
   </div>
-
   <!-- Subtle progress indicator -->
   <div class="space-y-4">
     <div class="space-y-4"></div>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   @keyframes slide-in-from-bottom {
@@ -121,17 +106,13 @@
       opacity: 1;
     }
   }
-
   .animate-in {
     animation-fill-mode: both;
   }
-
   .slide-in-from-bottom {
     animation-name: slide-in-from-bottom;
   }
-
   .duration-300 {
-    animation-duration: 300ms;
+    animation-duration: 300m;
   }
 </style>
-

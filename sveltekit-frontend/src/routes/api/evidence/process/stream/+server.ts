@@ -4,7 +4,6 @@ import {
   evidenceProcessingMachine,
   type EvidenceProcessingContext
 } from '$lib/state/evidence-processing-machine.js'
-
 // Active processing sessions (no longer store controllers; GET opens SSE connections on demand)
 const activeSessions = new Map<string, { actor: any; startTime: number }>()
 // POST starts or updates a processing session (no SSE here)
@@ -12,7 +11,6 @@ export const POST: RequestHandler = async ({ request }) => {
   const body = await request.json().catch(() => ({})
   let { evidenceId, file, neuralSpriteConfig } = body
   if (!evidenceId) evidenceId = `evidence_${Date.now()}_${Math.floor(Math.random() * 1000)}`
-
   let session = activeSessions.get(evidenceId)
   if (!session) {
     const actor = createActor(evidenceProcessingMachine, {
@@ -28,7 +26,6 @@ export const POST: RequestHandler = async ({ request }) => {
     session = { actor, startTime: Date.now() }
     activeSessions.set(evidenceId, session)
   }
-
   // If file provided, send event (can support multiple POSTs)
   if (file) {
     try {
@@ -43,11 +40,9 @@ export const POST: RequestHandler = async ({ request }) => {
       })
     }
   }
-
   if (neuralSpriteConfig) {
     session.actor.send({ type: 'CONFIGURE_NEURAL_SPRITE', config: neuralSpriteConfig })
   }
-
   return new Response(JSON.stringify({
       evidenceId,
       status: 'started',
@@ -56,12 +51,10 @@ export const POST: RequestHandler = async ({ request }) => {
     { headers: { 'Content-Type': 'application/json' } }
   )
 }
-
 // Control endpoint for sending events to active sessions
 export const PUT: RequestHandler = async ({ request }) => {
   const body = await request.json()
   const { evidenceId, event } = body
-
   const session = activeSessions.get(evidenceId)
   if (!session) {
     return new Response(JSON.stringify({ error: 'No active session found' }), {
@@ -69,13 +62,11 @@ export const PUT: RequestHandler = async ({ request }) => {
       headers: { 'Content-Type': 'application/json' }
     })
   }
-
   try {
     // Send event to xState machine
     session.actor.send(event)
-
     return new Response(JSON.stringify({
-        success: true,
+        success: true
         message: `Event ${event.type} sent to session ${evidenceId}`
       }),
       {
@@ -93,7 +84,6 @@ export const PUT: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 // GET opens SSE stream for a given evidenceId
 export const GET: RequestHandler = async ({ url }) => {
   const evidenceId = url.searchParams.get('evidenceId')
@@ -110,16 +100,13 @@ export const GET: RequestHandler = async ({ url }) => {
       headers: { 'Content-Type': 'application/json' }
     })
   }
-
   const encoder = new TextEncoder()
   const stream = new ReadableStream({
     start(controller) {
       const send = (obj: unknown) =>
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(obj)}\n\n`)
-
       // initial event
       send({ type: 'connection_established', evidenceId, timestamp: Date.now() })
-
       const sub = session.actor.subscribe((state: any) => {
         const update = {
           evidenceId,
@@ -141,7 +128,6 @@ export const GET: RequestHandler = async ({ url }) => {
           }, 800)
         }
       })
-
       (controller as any).onCancel = () => {
         sub.unsubscribe?.()
       }
@@ -150,7 +136,6 @@ export const GET: RequestHandler = async ({ url }) => {
       // subscription cleaned in onCancel
     }
   })
-
   return new Response(stream, {
     headers: {
       'Content-Type': 'text/event-stream',
@@ -160,26 +145,22 @@ export const GET: RequestHandler = async ({ url }) => {
     }
   })
 }
-
 // Delete/cancel session
 export const DELETE: RequestHandler = async ({ url }) => {
   const evidenceId = url.searchParams.get('evidenceId')
-
   if (!evidenceId) {
     return new Response(JSON.stringify({ error: 'evidenceId is required' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' }
     })
   }
-
   const session = activeSessions.get(evidenceId)
   if (session) {
     session.actor.send({ type: 'CANCEL_PROCESSING' })
     session.actor.stop()
     activeSessions.delete(evidenceId)
-
     return new Response(JSON.stringify({
-        success: true,
+        success: true
         message: `Session ${evidenceId} cancelled and removed`
       }),
       {
@@ -197,16 +178,13 @@ export const DELETE: RequestHandler = async ({ url }) => {
     )
   }
 }
-
 // Helper functions
 function getAvailableTransitions(state: any): string[] {
   return Object.keys(state.nextEvents || {})
 }
-
 function getOverallProgress(context: EvidenceProcessingContext): number {
   const steps = ['upload', 'analysis', 'glyph_generation', 'png_embedding', 'minio_storage']
   let totalProgress = 0
-
   for (const step of steps) {
     const stepUpdate = context.streamingUpdates.find((update) => update.step === step)
     if (stepUpdate) {
@@ -217,17 +195,13 @@ function getOverallProgress(context: EvidenceProcessingContext): number {
       }
     }
   }
-
   return Math.min(100, Math.round(totalProgress)
 }
-
 function getCurrentStepInfo(context: EvidenceProcessingContext) {
   const inProgressUpdate = context.streamingUpdates.find(
     (update) => update.status === 'in_progress'
   )
-
   const lastUpdate = context.streamingUpdates[context.streamingUpdates.length - 1]
-
   return {
     step: inProgressUpdate?.step || 'idle',
     progress: inProgressUpdate?.progress || 0,

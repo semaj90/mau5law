@@ -1,34 +1,30 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: document-drafting\templates
  * Category: minimal
  * Memory Bank: SAVE_RAM
  * Priority: 120
  * Redis Type: documentProcessing
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: minimal
  * - Memory Bank: SAVE_RAM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 /**
  * Document Templates API
  * GET /api/ai/document-drafting/templates - Get available document templates
  */
-
 import { json } from '@sveltejs/kit'
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 import type { RequestHandler } from './$types.js'
-
 const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
     const documentType = url.searchParams.get('type')
-    
     const allTemplates = [
       {
         id: 'motion_suppress_standard',
@@ -37,41 +33,25 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         description: 'Standard format motion to suppress evidence based on Fourth Amendment violations',
         content: `IN THE UNITED STATES DISTRICT COURT
 FOR THE {{DISTRICT}}
-
 UNITED STATES OF AMERICA,
                                     Plaintiff,
 v.                                    Case No. {{CASE_NUMBER}}
 {{DEFENDANT_NAME}},
                                     Defendant.
-
 MOTION TO SUPPRESS EVIDENCE
-
 TO THE HONORABLE COURT:
-
 Defendant {{DEFENDANT_NAME}}, by and through undersigned counsel, respectfully moves this Honorable Court to suppress evidence obtained in violation of the Fourth Amendment to the United States Constitution.
-
 I. INTRODUCTION
-
 {{CASE_CONTEXT}}
-
 II. FACTUAL BACKGROUND
-
 {{FACTUAL_BACKGROUND}}
-
 III. LEGAL STANDARD
-
 {{LEGAL_STANDARD}}
-
 IV. ARGUMENT
-
 {{ARGUMENT_SECTIONS}}
-
 V. CONCLUSION
-
 For the foregoing reasons, Defendant respectfully requests that this Honorable Court grant this Motion to Suppress Evidence.
-
 Respectfully submitted,
-
 {{ATTORNEY_SIGNATURE}}`,
         variables: [
           { name: 'DISTRICT', type: 'text', required: true, description: 'Court district' },
@@ -92,34 +72,20 @@ Respectfully submitted,
         documentTypeId: 'plea_agreement',
         description: 'Comprehensive plea agreement template with standard terms',
         content: `PLEA AGREEMENT
-
 Case No. {{CASE_NUMBER}}
 United States v. {{DEFENDANT_NAME}}
-
 The United States of America, by and through its attorney, {{PROSECUTOR_NAME}}, and the defendant, {{DEFENDANT_NAME}}, by and through defense counsel, {{DEFENSE_ATTORNEY}}, hereby enter into the following plea agreement:
-
 1. CHARGES AND PLEA
-
 {{CHARGES_SECTION}}
-
 2. SENTENCING GUIDELINES
-
 {{GUIDELINES_SECTION}}
-
 3. COOPERATION
-
 {{COOPERATION_TERMS}}
-
 4. WAIVERS
-
 {{WAIVER_PROVISIONS}}
-
 5. BREACH PROVISIONS
-
 {{BREACH_TERMS}}
-
 AGREED TO AND ACCEPTED:
-
 {{SIGNATURE_BLOCK}}`,
         variables: [
           { name: 'CASE_NUMBER', type: 'text', required: true, description: 'Case number' },
@@ -141,39 +107,24 @@ AGREED TO AND ACCEPTED:
         name: 'Standard Discovery Request',
         documentTypeId: 'discovery_request',
         description: 'Comprehensive discovery request for criminal cases',
-        content: `DISCOVERY REQUEST
-
+        content: `DISCOVERY REQUEST,
 TO: {{PROSECUTOR_NAME}}
 FROM: {{DEFENSE_ATTORNEY}}
 RE: {{CASE_TITLE}}
 DATE: {{DATE}}
-
 Pursuant to Federal Rule of Criminal Procedure 16 and Brady v. Maryland, the defense hereby requests the following discovery:
-
 I. RULE 16 MATERIALS
-
 {{RULE_16_REQUESTS}}
-
 II. BRADY MATERIALS
-
 {{BRADY_REQUESTS}}
-
 III. GIGLIO MATERIALS
-
 {{GIGLIO_REQUESTS}}
-
 IV. EXPERT WITNESS MATERIALS
-
 {{EXPERT_REQUESTS}}
-
 V. ELECTRONIC EVIDENCE
-
 {{ELECTRONIC_REQUESTS}}
-
 Please provide the requested materials within 30 days of this request.
-
 Respectfully submitted,
-
 {{ATTORNEY_SIGNATURE}}`,
         variables: [
           { name: 'PROSECUTOR_NAME', type: 'text', required: true, description: 'Prosecutor name' },
@@ -195,35 +146,21 @@ Respectfully submitted,
         name: 'Criminal Opening Statement',
         documentTypeId: 'opening_statement',
         description: 'Opening statement template for criminal defense',
-        content: `OPENING STATEMENT
-
+        content: `OPENING STATEMENT,
 Case: {{CASE_TITLE}}
 Defendant: {{DEFENDANT_NAME}}
-
 May it please the Court, counsel, and members of the jury:
-
 {{INTRODUCTION}}
-
 I. CASE THEME
-
 {{CASE_THEME}}
-
 II. WHAT THE EVIDENCE WILL SHOW
-
 {{EVIDENCE_PREVIEW}}
-
 III. THE GOVERNMENT'S BURDEN
-
 {{BURDEN_DISCUSSION}}
-
 IV. KEY FACTS
-
 {{KEY_FACTS}}
-
 V. CONCLUSION
-
 {{CONCLUSION}}
-
 Thank you for your attention.`,
         variables: [
           { name: 'CASE_TITLE', type: 'text', required: true, description: 'Case title' },
@@ -244,43 +181,25 @@ Thank you for your attention.`,
         documentTypeId: 'sentencing_memo',
         description: 'Sentencing memorandum focused on mitigation factors',
         content: `SENTENCING MEMORANDUM
-
 Case No. {{CASE_NUMBER}}
 United States v. {{DEFENDANT_NAME}}
-
 TO THE HONORABLE COURT:
-
 Defense respectfully submits this sentencing memorandum on behalf of {{DEFENDANT_NAME}}.
-
 I. INTRODUCTION
-
 {{INTRODUCTION}}
-
 II. OFFENSE CONDUCT
-
 {{OFFENSE_CONDUCT}}
-
 III. PERSONAL HISTORY AND CHARACTERISTICS
-
 {{PERSONAL_HISTORY}}
-
 IV. MITIGATION FACTORS
-
 {{MITIGATION_FACTORS}}
-
 V. SENTENCING FACTORS (18 U.S.C. § 3553(a)
 {{SENTENCING_FACTORS}}
-
 VI. REQUEST FOR DEPARTURE
-
 {{DEPARTURE_REQUEST}}
-
 VII. CONCLUSION
-
 {{CONCLUSION}}
-
 Respectfully submitted,
-
 {{ATTORNEY_SIGNATURE}}`,
         variables: [
           { name: 'CASE_NUMBER', type: 'text', required: true, description: 'Case number' },
@@ -298,25 +217,22 @@ Respectfully submitted,
         usage_count: 94
       }
     ]
-
     // Filter by document type if specified
-    const templates = documentType 
+    const templates = documentType
       ? allTemplates.filter(template => template.documentTypeId === documentType)
       : allTemplates
-
     return json({
-      success: true,
+      success: true
       templates,
       meta: {
         total: templates.length,
         totalUsage: templates.reduce((sum, t) => sum + t.usage_count, 0),
-        lastUpdated: templates.reduce((latest, t) => 
-          new Date(t.lastUpdated) > new Date(latest) ? t.lastUpdated: latest,
+        lastUpdated: templates.reduce((latest, t) =>
+          new Date(t.lastUpdated) > new Date(latest) ? t.lastUpdated: latest
           templates[0]?.lastUpdated || new Date().toISOString()
         )
       }
     })
-
   } catch (error) {
     console.error('Error fetching document templates:', error)
     return json(
@@ -325,5 +241,4 @@ Respectfully submitted,
     )
   }
 }
-
 export const GET = redisOptimized.documentProcessing(originalGETHandler)

@@ -4,12 +4,12 @@ export interface SearchResult {
   id: string;
   score: number;
   payload?: unknown;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 }
 export interface VectorSearchOptions {
   limit?: number;
   threshold?: number;
-  filter?: Record<string, any>;
+  filter?: { [key: string]: any };
 }
 export interface EmbeddingOptions {
   model?: "openai" | "local";
@@ -19,7 +19,7 @@ export interface EmbeddingOptions {
 export interface VectorPoint {
   id: string;
   vector: number[];
-  payload?: Record<string, any>;
+  payload?: { [key: string]: any };
 }
 export interface QdrantSearchParams {
   collection_name: string;
@@ -32,7 +32,7 @@ export interface QdrantSearchParams {
 export interface QdrantSearchResult {
   id: string;
   score: number;
-  payload?: Record<string, any>;
+  payload?: { [key: string]: any };
   vector?: number[];
 }
 export interface QdrantResponse {
@@ -40,7 +40,7 @@ export interface QdrantResponse {
   status: string;
   time: number;
 }
-// AI service types;
+// AI service types
 export interface AIResponse {
   content: string;
   model: string;

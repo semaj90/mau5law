@@ -1,10 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>`, `<svelte:boundary` or `<Component>`
+<!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>`, `<svelte:boundary` or `<Component>`,
 https://svelte.dev/e/const_tag_invalid_placement -->
 <!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>` or `<Component>` -->
 <!-- Chain of Custody Tracker for Legal AI App -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { Shield, User, Calendar, MapPin, FileCheck, AlertTriangle, Lock, Unlock } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   export interface CustodyTransfer {
@@ -21,7 +20,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     notes?: string;
     verified: boolean;
   }
-
   export interface EvidenceItem {
     id: string;
     itemNumber: string;
@@ -37,7 +35,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     compromised: boolean;
     compromisedReason?: string;
   }
-
   export interface ChainOfCustodyProps {
     evidence: EvidenceItem;
     showFullHistory?: boolean;
@@ -46,7 +43,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     onViewDetails?: (transfer: CustodyTransfer) => void;
     class?: string;
   }
-
   let {
     evidence,
     showFullHistory = true,
@@ -55,46 +51,40 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     onViewDetails,
     class: className = '';
   }: ChainOfCustodyProps = $props();
-
   // Sort transfers by date (newest first)
   let sortedTransfers = $derived(() => {
-    return [...evidence.chainOfCustody].sort((a, b) => 
+    return [...evidence.chainOfCustody].sort((a, b) =>
       b.timestamp.getTime() - a.timestamp.getTime()
     );
   });
-
   // Get the most recent transfer
   let latestTransfer = $derived(() => sortedTransfers[0]);
-
   // Evidence category configurations
   const categoryConfig = {
     physical: { icon: Shield, color: 'text-blue-400', bg: 'bg-blue-500/10' },
     digital: { icon: FileCheck, color: 'text-green-400', bg: 'bg-green-500/10' },
     document: { icon: FileCheck, color: 'text-yellow-400', bg: 'bg-yellow-500/10' },
     biological: { icon: Shield, color: 'text-red-400', bg: 'bg-red-500/10' },
-    chemical: { icon: Shield, color: 'text-purple-400', bg: 'bg-purple-500/10' },;
+    chemical: { icon: Shield, color: 'text-purple-400', bg: 'bg-purple-500/10' },
     other: { icon: Shield, color: 'text-gray-400', bg: 'bg-gray-500/10' }
   };
-
   // Condition configurations
   const conditionConfig = {
     excellent: { label: 'Excellent', class: 'bg-green-500/20 text-green-400' },
     good: { label: 'Good', class: 'bg-blue-500/20 text-blue-400' },
     fair: { label: 'Fair', class: 'bg-yellow-500/20 text-yellow-400' },
-    poor: { label: 'Poor', class: 'bg-orange-500/20 text-orange-400' },;
+    poor: { label: 'Poor', class: 'bg-orange-500/20 text-orange-400' },
     damaged: { label: 'Damaged', class: 'bg-red-500/20 text-red-400' }
   };
-
   function formatDateTime(date: Date): string {
     return date.toLocaleString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric',;
-      hour: '2-digit',;
+      day: 'numeric',
+      hour: '2-digit',
       minute: '2-digit';
     });
   }
-
   function getTimeSince(date: Date): string {
     const now = new Date());
     const diffTime = now.getTime() - date.getTime();
@@ -109,7 +99,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     }
   }
 </script>
-
 <div className={cn('chain-of-custody w-full space-y-4', className)}>
   <!-- Evidence Header -->
   <div class={cn(
@@ -120,11 +109,9 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       <div class="flex items-center gap-3">
         {@const config = categoryConfig[evidence.category]}
         {@const IconComponent = config.icon}
-        
         <div class={cn('p-2 rounded-md', config.bg)}>
           <IconComponent class={cn('w-5 h-5', config.color)} />
         </div>
-        
         <div>
           <h3 class="text-lg font-semibold text-yorha-text-primary font-mono">
             Evidence #{evidence.itemNumber}
@@ -134,7 +121,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
           </p>
         </div>
       </div>
-
       <!-- Evidence Status -->
       <div class="flex items-center gap-2">
         {#if evidence.sealed}
@@ -148,7 +134,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             <span class="text-xs font-mono">UNSEALED</span>
           </div>
         {/if}
-
         {#if evidence.compromised}
           <div class="flex items-center gap-1 text-red-400">
             <AlertTriangle class="w-4 h-4" />
@@ -157,7 +142,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {/if}
       </div>
     </div>
-
     <!-- Current Status Grid -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm font-mono">
       <div>
@@ -182,7 +166,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         <div class="text-yorha-text-primary font-medium capitalize">{evidence.category}</div>
       </div>
     </div>
-
     <!-- Compromised Warning -->
     {#if evidence.compromised}
       <div class="mt-3 p-3 bg-red-500/10 border border-red-500/20 rounded text-sm font-mono">
@@ -195,7 +178,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         </p>
       </div>
     {/if}
-
     <!-- Transfer Action -->
     {#if interactive && onTransferEvidence}
       <div class="mt-3 flex justify-end">
@@ -208,7 +190,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       </div>
     {/if}
   </div>
-
   <!-- Chain of Custody History -->
   <div class="bg-yorha-bg-secondary border border-yorha-border rounded-lg p-4">
     <div class="flex items-center justify-between mb-4">
@@ -219,7 +200,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {evidence.chainOfCustody.length} transfer{evidence.chainOfCustody.length !== 1 ? 's' : ''}
       </span>
     </div>
-
     {#if evidence.chainOfCustody.length === 0}
       <div class="text-center py-8 text-yorha-text-secondary font-mono">
         <Shield class="w-12 h-12 mx-auto mb-4 opacity-50" />
@@ -230,10 +210,9 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       <div class="relative">
         <!-- Timeline Line -->
         <div class="absolute left-6 top-0 bottom-0 w-px bg-yorha-border"></div>
-
         <div class="space-y-4">
           {#each showFullHistory ? sortedTransfers : sortedTransfers.slice(0, 3) as transfer, index (transfer.id)}
-            <div 
+            <div
               class={cn(
                 'relative flex items-start gap-4',
                 interactive && 'cursor-pointer group'
@@ -252,7 +231,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                   <AlertTriangle class="w-5 h-5 text-yellow-400" />
                 {/if}
               </div>
-
               <!-- Transfer Content -->
               <div class="flex-1 min-w-0">
                 <div class={cn(
@@ -275,18 +253,16 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                         <span>{getTimeSince(transfer.timestamp)}</span>
                       </div>
                     </div>
-
                     <!-- Verification Status -->
                     <span class={cn(
                       'px-2 py-1 text-xs font-mono rounded border',
-                      transfer.verified 
+                      transfer.verified
                         ? 'bg-green-500/20 text-green-400 border-green-500/30'
                         : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
                     )}>
                       {transfer.verified ? 'VERIFIED' : 'UNVERIFIED'}
                     </span>
                   </div>
-
                   <!-- Transfer Details -->
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
                     <div>
@@ -319,7 +295,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                       </div>
                     </div>
                   </div>
-
                   <!-- Notes -->
                   {#if transfer.notes}
                     <div class="mt-3 p-2 bg-yorha-bg-primary rounded text-xs font-mono">
@@ -332,11 +307,10 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             </div>
           {/each}
         </div>
-
         <!-- Show More Button -->
         {#if !showFullHistory && sortedTransfers.length > 3}
           <div class="text-center mt-4">
-            <button 
+            <button
               onclick={() => showFullHistory = true}
               class="text-sm font-mono text-yorha-primary hover:text-yorha-accent transition-colors"
             >
@@ -348,9 +322,8 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     {/if}
   </div>
 </div>
-
 <style>
-  .chain-of-custody {;
+  .chain-of-custody {
     --custody-line-color: rgb(var(--yorha-border));
   }
 </style>

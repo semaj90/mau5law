@@ -1,12 +1,10 @@
 import type { PageServerLoad } from './$types.js';
-
 type EndpointStatus = {
   name: string;
   path: string;
   healthy: boolean;
   message?: string;
 };
-
 export const load: PageServerLoad = async () => {
   // Static endpoint configuration (client-side health checks to avoid CORS)
   const endpoints: EndpointStatus[] = [
@@ -19,6 +17,5 @@ export const load: PageServerLoad = async () => {
     { name: 'Enhanced RAG Demo', path: '/demo/enhanced-rag-semantic', healthy: true, message: 'Available' },
     { name: 'GPU Worker', path: 'http://localhost:8094', healthy: true, message: 'RTX 3060 Ti active' }
   ];
-
   return { endpoints };
 };

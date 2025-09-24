@@ -1,9 +1,8 @@
 <!-- AI Chat Test Page - Showcasing Svelte 5 + bits-ui + Docker Ollama Integration -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import {
     Card,
     CardHeader,
@@ -24,18 +23,14 @@
     Server,
     HardDrive,
   } from 'lucide-svelte';
-
   // State using Svelte 5 runes
   let systemStatus = $state(null);
-
   let chatOpen = $state(false);
   let isLoading = $state(true);
-
   // Check system status on mount
   $effect(() => {
     checkSystemStatus();
   });
-
   async function checkSystemStatus() {
     try {
       isLoading = true;
@@ -44,14 +39,13 @@
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       const data = await response.json();
-
       // Normalize the response structure for compatibility
       systemStatus = {
         services: data.services,
         environment: data.environment,
-        // Legacy compatibility;
-        ollama: data.services?.ollama || data.ollama,;
-        database: data.services?.database || data.database,;
+        // Legacy compatibility
+        ollama: data.services?.ollama || data.ollama,
+        database: data.services?.database || data.database,
       };
     } catch (error) {
       console.error('Failed to check system status:', error);
@@ -62,26 +56,24 @@
         },
         environment: { ollamaUrl: 'unknown' },
         // Legacy compatibility
-        ollama: { status: 'error', error: 'Failed to connect' },;
+        ollama: { status: 'error', error: 'Failed to connect' },
         database: { status: 'error', error: 'Failed to connect' },
       };
     } finally {
       isLoading = false;
     }
   }
-
   function getStatusIcon(status: string) {
     switch (status) {
       case 'connected':
-        return CheckCircle;
+        return CheckCircl;
       case 'error':
       case 'disconnected':
-        return XCircle;
+        return XCircl;
       default:
         return Loader2;
     }
   }
-
   function getStatusColor(status: string) {
     switch (status) {
       case 'connected':
@@ -93,7 +85,6 @@
         return 'text-yellow-500';
     }
   }
-
   function getStatusText(status: string) {
     switch (status) {
       case 'connected':
@@ -107,14 +98,12 @@
     }
   }
 </script>
-
 <svelte:head>
   <title>AI Chat Assistant Test - Deeds Legal AI</title>
   <meta
     name="description"
     content="Test page for the enhanced AI chat assistant with Docker Ollama integration" />
 </svelte:head>
-
 <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
   <div class="container mx-auto px-4 py-8">
     <!-- Header -->
@@ -125,7 +114,6 @@
         Ollama, and Svelte 5 + bits-ui integration
       </p>
     </div>
-
     <!-- System Status Cards -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
       <!-- Ollama Service Status -->
@@ -139,7 +127,6 @@
             <p class="text-sm text-gray-500">Local AI Model Server</p>
           </div>
         </div>
-
         {#if isLoading}
           <div class="flex items-center gap-2 text-yellow-600">
             <Loader2 class="h-4 w-4 animate-spin" />
@@ -151,18 +138,15 @@
             <StatusIcon class="h-4 w-4" />
             <span>{getStatusText(systemStatus.ollama.status)}</span>
           </div>
-
           {#if systemStatus.ollama.version}
             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">v{systemStatus.ollama.version}</span>
           {/if}
-
           {#if systemStatus.ollama.error}
             <p class="text-sm text-red-600 mt-2">
               {systemStatus.ollama.error}
             </p>
           {/if}
       </div>
-
       <!-- Database Status -->
       <div class="p-6 nes-container">
         <div class="flex items-center gap-3 mb-4">
@@ -174,7 +158,6 @@
             <p class="text-sm text-gray-500">PostgreSQL with pgvector</p>
           </div>
         </div>
-
         {#if isLoading}
           <div class="flex items-center gap-2 text-yellow-600">
             <Loader2 class="h-4 w-4 animate-spin" />
@@ -186,14 +169,12 @@
             <StatusIcon class="h-4 w-4" />
             <span>{getStatusText(systemStatus.database.status)}</span>
           </div>
-
           {#if systemStatus.database.error}
             <p class="text-sm text-red-600 mt-2">
               {systemStatus.database.error}
             </p>
           {/if}
       </div>
-
       <!-- GPU/Hardware Status -->
       <div class="p-6 nes-container">
         <div class="flex items-center gap-3 mb-4">
@@ -205,19 +186,16 @@
             <p class="text-sm text-gray-500">GPU Acceleration</p>
           </div>
         </div>
-
         <div class="flex items-center gap-2 text-green-600">
           <CheckCircle class="h-4 w-4" />
           <span>RTX 3060 Ti Ready</span>
         </div>
-
         <div class="flex gap-2 mt-2">
           <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">CUDA 12.9</span>
           <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">8GB VRAM</span>
         </div>
       </div>
     </div>
-
     <!-- Features Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       <div class="p-4 text-center nes-container">
@@ -225,26 +203,22 @@
         <h4 class="font-semibold text-gray-900 mb-1">Real-time Chat</h4>
         <p class="text-sm text-gray-600">Streaming responses with GPU acceleration</p>
       </div>
-
       <div class="p-4 text-center nes-container">
         <HardDrive class="h-8 w-8 text-green-600 mx-auto mb-2" />
         <h4 class="font-semibold text-gray-900 mb-1">Local Processing</h4>
         <p class="text-sm text-gray-600">No data sent to external servers</p>
       </div>
-
       <div class="p-4 text-center nes-container">
         <Zap class="h-8 w-8 text-yellow-600 mx-auto mb-2" />
         <h4 class="font-semibold text-gray-900 mb-1">Legal Specialized</h4>
         <p class="text-sm text-gray-600">Fine-tuned for legal applications</p>
       </div>
-
       <div class="p-4 text-center nes-container">
         <Server class="h-8 w-8 text-purple-600 mx-auto mb-2" />
         <h4 class="font-semibold text-gray-900 mb-1">Docker Integrated</h4>
         <p class="text-sm text-gray-600">Containerized for easy deployment</p>
       </div>
     </div>
-
     <!-- Chat Interface -->
     <div class="text-center mb-8">
       <div class="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
@@ -253,15 +227,12 @@
           Click below to open the enhanced chat interface and start a conversation with your local
           AI legal assistant.
         </p>
-
         <EnhancedAIChatTest bind:open={chatOpen} caseId="TEST-CASE-001" />
-
         <div class="mt-4 text-sm text-gray-500">
           <p>💡 Try asking about legal concepts, case analysis, or document review</p>
         </div>
       </div>
     </div>
-
     <!-- Technical Details -->
     <div class="p-6 nes-container">
       <h3 class="text-xl font-bold text-gray-900 mb-4">Technical Implementation</h3>
@@ -287,7 +258,6 @@
           </ul>
         </div>
       </div>
-
       {#if systemStatus}
         <div class="mt-4 p-4 bg-gray-50 rounded-lg">
           <h4 class="font-semibold text-gray-900 mb-2">Connection Details</h4>
@@ -298,7 +268,6 @@
         </div>
       {/if}
     </div>
-
     <!-- Refresh Button -->
     <div class="text-center mt-8">
   <Button variant="ghost" onclick={checkSystemStatus} disabled={isLoading} class="gap-2 bits-btn bits-btn">
@@ -308,14 +277,12 @@
           <Server class="h-4 w-4" />
         {/if}
         Refresh System Status
-
     </div>
   </div>
 </div>
-
 <style>
   /* Custom styles for enhanced appearance */
-  :global(body) {;
+  :global(body) {
     font-family:
       'Inter',
       -apple-system,
@@ -323,9 +290,7 @@
       'Segoe UI',
       sans-serif;
   }
-
   :global(code) {
     font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
   }
 </style>
-

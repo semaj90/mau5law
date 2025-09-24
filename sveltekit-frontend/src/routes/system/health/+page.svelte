@@ -1,15 +1,13 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   	import { onMount, onDestroy } from 'svelte';
   	import { writable } from 'svelte/store';
   	import { coordinatorStatus, masterServiceCoordinator } from '$lib/services/master-service-coordinator.js';
   	import { errorResolutionEngine } from '$lib/services/error-resolution-engine.js';
   	import type { ServiceStatus } from '$lib/services/master-service-coordinator.js';
-
   	interface ServiceHealth {
   		name: string;
   		url: string;
@@ -18,7 +16,6 @@ https://svelte.dev/e/js_parse_error -->
   		lastCheck: number;
   		details?: unknown;
   	}
-
   	interface HealthData {
   		timestamp: number;
   		overall_status: 'healthy' | 'degraded' | 'critical';
@@ -39,7 +36,6 @@ https://svelte.dev/e/js_parse_error -->
   		};
   		recommendations: string[];
   	}
-
   	// Enhanced dashboard state
   	const healthData = writable<HealthData | null>(null);
   	const loading = writable(true);
@@ -53,7 +49,6 @@ https://svelte.dev/e/js_parse_error -->
   	let systemStatus = $derived($coordinatorStatus);
   	let errorStats = $derived(errorResolutionEngine.recoveryStats);
   	let systemMetrics = $derived(errorResolutionEngine.systemMetrics);
-
   	const fetchHealth = async () => {
   		try {
   			loading.set(true);
@@ -80,25 +75,24 @@ https://svelte.dev/e/js_parse_error -->
   			loading.set(false);
   		}
   	};
-
   	const mergeHealthData = (legacy: unknown, coordinator: unknown): HealthData => {
   		const now = Date.now();
   		// Use coordinator data if available, fallback to legacy
   		if (coordinator?.success && coordinator.data) {
   			const data = coordinator.data;
   			return {
-  				timestamp: now,
+  				timestamp: now
   				overall_status: mapHealthStatus(data.systemHealth),
   				health_percentage: Math.round((data.healthyServices / data.totalServices) * 100),
   				services_online: data.healthyServices,
-  				services_total: data.totalServices,;
+  				services_total: data.totalServices,
   				cuda: {
   					service_available: data.performance?.cudaUtilization > 0,
-  					worker_available: true,
+  					worker_available: true
   					gpu_ready: data.performance?.cudaUtilization > 0,
   					response_time: data.performance?.avgResponseTime || null
   				},
-  				services: mapServicesToHealthFormat(systemStatus.services),;
+  				services: mapServicesToHealthFormat(systemStatus.services),
   				summary: {
   					critical_services: systemStatus.errors.filter(item => item.map)(e => e.description),
   					degraded_services: Array.from(systemStatus.services.entries())
@@ -119,27 +113,26 @@ https://svelte.dev/e/js_parse_error -->
   		}
   		// Fallback to legacy data format
   		return legacy || {
-  			timestamp: now,
+  			timestamp: now
   			overall_status: 'critical',
   			health_percentage: 0,
   			services_online: 0,
-  			services_total: 38,;
+  			services_total: 38,
   			cuda: {
-  				service_available: false,
-  				worker_available: false,
-  				gpu_ready: false,
+  				service_available: false
+  				worker_available: false
+  				gpu_ready: false
   				response_time: null
   			},
-  			services: [],;
+  			services: [],
   			summary: {
   				critical_services: ['Coordinator not available'],
   				degraded_services: [],
   				offline_services: []
-  			},;
+  			},
   			recommendations: ['Start the Master Service Coordinator'];
   		};
   	};
-
   	const mapHealthStatus = (health: string): 'healthy' | 'degraded' | 'critical' => {
   		switch (health) {
   			case 'excellent':
@@ -153,28 +146,26 @@ https://svelte.dev/e/js_parse_error -->
   				return 'critical';
   		}
   	};
-
   	const mapServicesToHealthFormat = (services: Map<string, ServiceStatus>): ServiceHealth[] => {
   		return Array.from(services.entries()).map(([id, status]) => {
   			const service = masterServiceCoordinator.services.find(s => s.id === id);
   			return {
-  				name: service?.displayName || id,;
+  				name: service?.displayName || id,
   				url: service ? `http://localhost:${service.port}` : '',
   				status: mapServiceStatus(status.status),
   				responseTime: status.responseTime,
-  				lastCheck: status.lastCheck,;
+  				lastCheck: status.lastCheck,
   				details: {
   					tier: service?.tier,
-  					protocol: service?.protocol,;
+  					protocol: service?.protocol,
   					critical: service?.critical,
   					cudaAccelerated: service?.cudaAccelerated,
-  					errorCount: status.errorCount,;
+  					errorCount: status.errorCount,
   					uptime: status.uptime;
   				}
   			};
   		});
   	};
-
   	const mapServiceStatus = (status: string): 'online' | 'offline' | 'degraded' => {
   		switch (status) {
   			case 'healthy':
@@ -187,7 +178,6 @@ https://svelte.dev/e/js_parse_error -->
   				return 'offline';
   		}
   	};
-
   	const generateRecommendations = (): string[] => {
   		const recommendations: string[] = [];
   		if (systemStatus.summary.criticalErrors > 0) {
@@ -199,9 +189,8 @@ https://svelte.dev/e/js_parse_error -->
   		if (systemStatus.metrics.avgResponseTime > 5000) {
   			recommendations.push('npm run coordinator:optimize - Optimize service performance');
   		}
-  		return recommendations;
+  		return recommendation;
   	};
-
   	const getStatusColor = (status: string) => {
   		switch (status) {
   			case 'online':
@@ -216,7 +205,6 @@ https://svelte.dev/e/js_parse_error -->
   				return 'text-gray-600 bg-gray-50 border-gray-200';
   		}
   	};
-
   	const getStatusIcon = (status: string) => {
   		switch (status) {
   			case 'online':
@@ -231,24 +219,21 @@ https://svelte.dev/e/js_parse_error -->
   				return '🔍';
   		}
   	};
-
   	const formatTimestamp = (timestamp: number) => {
   		return new Date(timestamp).toLocaleString();
   	};
-
   	const formatResponseTime = (time?: number) => {
   		if (!time) return 'N/A';
   		return `${time}ms`;
   	};
-
   	// Service actions
   	async function restartService(serviceId: string) {
   		try {
   			const response = await fetch('/api/v1/coordinator', {
-  				method: 'POST',;
+  				method: 'POST',
   				headers: { 'Content-Type': 'application/json' },
-  				body: JSON.stringify({
-  					action: 'restart_service',;
+  				body: JSON.stringify({,
+  					action: 'restart_service',
   					target: serviceId;
   				})
   			});
@@ -260,12 +245,11 @@ https://svelte.dev/e/js_parse_error -->
   			console.error(`Failed to restart ${serviceId}:`, error);
   		}
   	}
-
   	async function startAllServices() {
   		try {
   			const response = await fetch('/api/v1/coordinator', {
-  				method: 'POST',;
-  				headers: { 'Content-Type': 'application/json' },;
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
   				body: JSON.stringify({ action: 'start_all' })
   			});
   			if (response.ok) {
@@ -276,12 +260,11 @@ https://svelte.dev/e/js_parse_error -->
   			console.error('Failed to start all services:', error);
   		}
   	}
-
   	async function forceHealthCheck() {
   		try {
   			const response = await fetch('/api/v1/coordinator', {
-  				method: 'POST',;
-  				headers: { 'Content-Type': 'application/json' },;
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
   				body: JSON.stringify({ action: 'force_health_check' })
   			});
   			if (response.ok) {
@@ -292,7 +275,6 @@ https://svelte.dev/e/js_parse_error -->
   			console.error('Failed to force health check:', error);
   		}
   	}
-
   	// Toggle auto-refresh
   	function toggleAutoRefresh() {
   		autoRefresh = !autoRefresh;
@@ -302,40 +284,34 @@ https://svelte.dev/e/js_parse_error -->
   			clearInterval(refreshInterval);
   		}
   	}
-
   	// Computed values for enhanced UI
-  	let healthPercentage = $derived(systemStatus.summary.totalServices > 0 
-  		? Math.round((systemStatus.summary.healthyServices / systemStatus.summary.totalServices) * 100) 
+  	let healthPercentage = $derived(systemStatus.summary.totalServices > 0
+  		? Math.round((systemStatus.summary.healthyServices / systemStatus.summary.totalServices) * 100)
   		: 0);
-
-  	let tierServices = $derived(selectedTier === 'all' 
+  	let tierServices = $derived(selectedTier === 'all'
   		? Array.from(systemStatus.services.entries())
   		: Array.from(systemStatus.services.entries()).filter(([id]) => {
   			const service = masterServiceCoordinator.services.find(s => s.id === id);
   			return service?.tier === parseInt(selectedTier);
   		});
-  	let filteredServices = $derived(showOnlyIssues 
+  	let filteredServices = $derived(showOnlyIssues
   		? tierServices.filter(([_, status]) => status.status !== 'healthy')
   		: tierServices);
-
   	$effect(() => {
   		fetchHealth();
   		if (autoRefresh) {
   			refreshInterval = setInterval(fetchHealth, refreshRate);
   		}
   	});
-
   	onDestroy(() => {
   		if (refreshInterval) {
   			clearInterval(refreshInterval);
   		}
   	});
 </script>
-
 <svelte:head>
 	<title>System Health Dashboard - Legal AI Platform</title>
 </svelte:head>
-
 <div class="container mx-auto p-6 max-w-7xl">
 	<div class="flex justify-between items-center mb-8">
 		<div>
@@ -355,7 +331,6 @@ https://svelte.dev/e/js_parse_error -->
 			Refresh
 		</button>
 	</div>
-
 	{#if $error}
 		<div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
 			<div class="flex items-center gap-2">
@@ -367,7 +342,6 @@ https://svelte.dev/e/js_parse_error -->
 			</div>
 		</div>
 	{/if}
-
 	{#if $healthData}
 		<!-- Overall Status -->
 		<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -380,7 +354,6 @@ https://svelte.dev/e/js_parse_error -->
 					</div>
 				</div>
 			</div>
-			
 			<div class="p-6 rounded-lg border-2 border-blue-200 bg-blue-50">
 				<div class="flex items-center gap-3">
 					<span class="text-3xl">📊</span>
@@ -390,7 +363,6 @@ https://svelte.dev/e/js_parse_error -->
 					</div>
 				</div>
 			</div>
-
 			<div class={`p-6 rounded-lg border-2 ${$healthData.cuda.gpu_ready ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}>
 				<div class="flex items-center gap-3">
 					<span class="text-3xl">🎯</span>
@@ -405,7 +377,6 @@ https://svelte.dev/e/js_parse_error -->
 				</div>
 			</div>
 		</div>
-
 		<!-- CUDA Service Details -->
 		<div class="mb-8">
 			<h2 class="text-2xl font-semibold mb-4 flex items-center gap-2">
@@ -442,7 +413,6 @@ https://svelte.dev/e/js_parse_error -->
 				</div>
 			</div>
 		</div>
-
 		<!-- Services Grid -->
 		<div class="mb-8">
 			<h2 class="text-2xl font-semibold mb-4 flex items-center gap-2">
@@ -472,7 +442,6 @@ https://svelte.dev/e/js_parse_error -->
 				{/each}
 			</div>
 		</div>
-
 		<!-- Recommendations -->
 		{#if $healthData.recommendations.length > 0}
 			<div class="mb-8">
@@ -491,7 +460,6 @@ https://svelte.dev/e/js_parse_error -->
 				</div>
 			</div>
 		{/if}
-
 		<!-- Summary -->
 		<div class="bg-gray-50 rounded-lg p-4">
 			<h3 class="font-semibold mb-2">Summary</h3>
@@ -538,12 +506,10 @@ https://svelte.dev/e/js_parse_error -->
 		</div>
 	{/if}
 </div>
-
 <style>
-	.container {;
+	.container {
 		font-family: 'Inter', system-ui, -apple-system, sans-serif;
 	}
-	
 	pre {
 		white-space: pre-wrap;
 		word-break: break-all;

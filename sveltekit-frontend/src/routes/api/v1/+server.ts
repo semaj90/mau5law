@@ -9,7 +9,6 @@ import { dev } from '$app/environment'
 import { ensureError } from '$lib/utils/ensure-error'
 import type { APIResponse } from '$lib/types/index'
 import type { HealthCheckResult } from '$lib/types/api'
-
 // Production Service Configuration - Windows Native
 // NOTE: Using Partial<ServiceEndpoints> shape to avoid requiring full 37-service map
 // Only actively configured services are declared here; others may be added over time.
@@ -34,7 +33,6 @@ const PRODUCTION_ENDPOINTS = {
     health: '/api/health',
     status: 'active'
   },
-
   // AI Enhancement Services (Tier 2)
   advancedCUDA: {
     http: 'http://localhost:8095',
@@ -48,7 +46,6 @@ const PRODUCTION_ENDPOINTS = {
     health: '/health',
     status: 'experimental'
   },
-
   // Multi-Core Ollama Cluster
   ollama: {
     primary: 'http://localhost:11434',
@@ -57,7 +54,6 @@ const PRODUCTION_ENDPOINTS = {
     health: '/api/tags',
     status: 'active'
   },
-
   // Database Services
   postgresql: {
     host: 'localhost',
@@ -75,7 +71,6 @@ const PRODUCTION_ENDPOINTS = {
     health: '/health',
     status: 'active'
   },
-
   // Messaging & State Management
   nats: {
     server: 'nats://localhost:4225',
@@ -89,7 +84,6 @@ const PRODUCTION_ENDPOINTS = {
     health: '/health',
     status: 'active'
   },
-
   // Infrastructure Services
   clusterManager: {
     http: 'http://localhost:8213',
@@ -101,7 +95,6 @@ const PRODUCTION_ENDPOINTS = {
     health: '/health',
     status: 'active'
   },
-
   // Development & Monitoring
   sveltekit: {
     http: 'http://localhost:5173',
@@ -109,24 +102,20 @@ const PRODUCTION_ENDPOINTS = {
     status: 'active'
   }
 } as const
-
 /*
  * Protocol-aware request handler with automatic failover
  */
 async function makeServiceRequest(
-  service: keyof typeof PRODUCTION_ENDPOINTS,
-  endpoint: string,
+  service: keyof typeof PRODUCTION_ENDPOINTS
+  endpoint: string
   options: RequestInit = {}
 ): Promise<Response> {
   const serviceConfig = PRODUCTION_ENDPOINTS[service]
-
   if (!serviceConfig) {
     throw new Error(`Service ${service} not configured`)
   }
-
   // Determine optimal protocol based on service tier
   let baseUrl: string
-
   if ('tier' in serviceConfig && serviceConfig.tier === 'ULTRA_FAST' && 'quic' in serviceConfig) {
     // Attempt QUIC first for ultra-fast services
     baseUrl = `http://${serviceConfig.quic}`
@@ -142,9 +131,7 @@ async function makeServiceRequest(
   } else {
     throw new Error(`No valid endpoint for service ${service}`)
   }
-
   const fullUrl = `${baseUrl}${endpoint}`
-
   try {
     const response = await fetch(fullUrl, {
       ...options,
@@ -154,7 +141,6 @@ async function makeServiceRequest(
         ...options.headers
       }
     })
-
     return response
   } catch (fetchError) {
     // Failover logic for multi-protocol services
@@ -162,18 +148,15 @@ async function makeServiceRequest(
       console.warn(`Service ${service} failover: ${baseUrl} → ${serviceConfig.http}`)
       return fetch(`${serviceConfig.http}${endpoint}`, options)
     }
-
     throw fetchError
   }
 }
-
 /*
  * GET /api/v1 - API Discovery & Health Overview
  */
 export const GET: RequestHandler = async ({ url }) => {
   const query = url.searchParams.get('action')
   const started = Date.now()
-
   try {
     switch (query) {
       case 'health':
@@ -205,7 +188,7 @@ export const GET: RequestHandler = async ({ url }) => {
           status: 'production'
         }
         return json({
-          success: true,
+          success: true
           data,
           metadata: {
             timestamp: new Date().toISOString(),
@@ -218,7 +201,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const e = ensureError(err)
     console.error('API v1 Error:', e)
     return json({
-      success: false,
+      success: false
       error: {
         code: 'INTERNAL_ERROR',
         message: dev ? e.message: 'Service temporarily unavailable'
@@ -230,7 +213,6 @@ export const GET: RequestHandler = async ({ url }) => {
     } satisfies APIResponse<any>, { status: 500 })
   }
 }
-
 /*
  * Comprehensive health check across all services
  */
@@ -238,11 +220,9 @@ async function handleHealthCheck(): Promise<Response> {
   const started = Date.now()
   const healthChecks: Record<string, HealthCheckResult> = {}
   const checkPromises: Promise<void>[] = []
-
   // Core services health check
   for (const [serviceName, config] of Object.entries(PRODUCTION_ENDPOINTS)) {
     if (config.status !== 'active') continue
-
     checkPromises.push((async () => {
         try {
           const healthEndpoint = 'health' in config ? config.health || '/health' : '/health'
@@ -252,11 +232,10 @@ async function handleHealthCheck(): Promise<Response> {
             healthEndpoint,)
             { method: 'GET' }
           )
-
           healthChecks[serviceName] = {
             status: response.ok ? 'healthy' : 'unhealthy',
             responseTime: (performance.now?.() ?? Date.now()) - reqStarted,
-            endpoint: healthEndpoint,
+            endpoint: healthEndpoint
             lastCheck: new Date().toISOString()
           }
         } catch (error: any) {
@@ -269,27 +248,24 @@ async function handleHealthCheck(): Promise<Response> {
       })()
     )
   }
-
   await Promise.allSettled(checkPromises)
-
   const totalServices = Object.keys(healthChecks).length
   const healthyServices = Object.values(healthChecks).filter(item => item.length)
   const healthScore = totalServices > 0 ? Math.round((healthyServices / totalServices) * 100) : 0
-
   const data = {
     overall: healthScore >= 80 ? 'healthy' : healthScore >= 50 ? 'degraded' : 'unhealthy',
     healthScore,
-    services: healthChecks,
+    services: healthChecks
     summary: {
-      total: totalServices,
-      healthy: healthyServices,
+      total: totalServices
+      healthy: healthyServices
       unhealthy: totalServices - healthyServices
     },
     timestamp: new Date().toISOString(),
     deployment: 'Windows Native'
   }
   return json({
-    success: true,
+    success: true
     data,
     metadata: {
       timestamp: new Date().toISOString(),
@@ -297,7 +273,6 @@ async function handleHealthCheck(): Promise<Response> {
     }
   } satisfies APIResponse<typeof data>)
 }
-
 /*
  * Service discovery endpoint
  */
@@ -322,12 +297,11 @@ async function handleServiceDiscovery(): Promise<Response> {
     }
   }
   return json({
-    success: true,
+    success: true
     data,
     metadata: { timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started }
   } satisfies APIResponse<typeof data>)
 }
-
 /*
  * Performance metrics endpoint
  */
@@ -356,12 +330,11 @@ async function handleMetrics(): Promise<Response> {
     timestamp: new Date().toISOString()
   }
   return json({
-    success: true,
+    success: true
     data,
     metadata: { timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started }
   } satisfies APIResponse<typeof data>)
 }
-
 /*
  * Cluster status with Windows-native process monitoring
  */
@@ -385,22 +358,19 @@ async function handleClusterStatus(): Promise<Response> {
     timestamp: new Date().toISOString()
   }
   return json({
-    success: true,
+    success: true
     data,
     metadata: { timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started }
   } satisfies APIResponse<typeof data>)
 }
-
 /*
  * Helper function to determine service protocols
  */
 function getServiceProtocols(config: any): string[] {
   const protocols: string[] = []
-
   if ('http' in config || 'primary' in config) protocols.push('HTTP')
   if ('grpc' in config) protocols.push('gRPC')
   if ('quic' in config) protocols.push('QUIC')
   if ('websocket' in config) protocols.push('WebSocket')
-
   return protocols
 }

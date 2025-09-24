@@ -4,17 +4,16 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   // Enhanced-Bits orchestrated components
-  import { 
-    Button, 
-    Card, 
+  import {
+    Button,
+    Card,
     Input,
     Badge
   } from '$lib/components/ui/enhanced-bits';
-  import { 
+  import {
     OrchestratedCard,
     OrchestratedButton,
     type VectorSearchResult as SearchResult,
@@ -22,8 +21,8 @@
   } from '$lib/components/ui/orchestrated';
   import * as Tabs from '$lib/components/ui/tabs';
   // Icons
-  import { 
-    Search, Sparkles, Filter, Zap, FileText, 
+  import {
+    Search, Sparkles, Filter, Zap, FileText,
     Brain, Target, Clock, TrendingUp, Eye,
     ChevronRight, Lightbulb, Database, Settings,
     BookOpen, Scale, AlertCircle, CheckCircle
@@ -70,7 +69,7 @@
   // Search suggestions for different legal domains
   const searchSuggestions = [
     'Contract breach and damages analysis',
-    'Intellectual property infringement precedents', 
+    'Intellectual property infringement precedents',
     'Employment law termination cases',
     'Personal injury liability determination',
     'Corporate merger compliance requirements',
@@ -96,22 +95,22 @@
     try {
       const requestBody = {
         query: query.trim(),
-        mode: searchMode,;
+        mode: searchMode
         filters: {
           document_types: Array.from(selectedTypes),
-          similarity_threshold: similarityThreshold,
+          similarity_threshold: similarityThreshold
           limit: 20;
-        },;
+        },
         options: {
-          include_highlights: true,
-          include_metadata: true,
+          include_highlights: true
+          include_metadata: true
           boost_recent: true
         }
       };
       console.log('Vector search request:', requestBody);
       const response = await fetch('/api/unified/search', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody);
       });
       if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
@@ -121,7 +120,7 @@
       if (!(data as { success?: unknown; results?: unknown; query_info?: unknown; suggestions?: unknown }).success) {
         throw new Error('Search request failed');
       }
-      results = (data as { success?: unknown; results?: unknown; query_info?: unknown; suggestions?: unknown }).results;
+      results = (data as { success?: unknown; results?: unknown; query_info?: unknown; suggestions?: unknown }).result;
       searchInfo = (data as { success?: unknown; results?: unknown; query_info?: unknown; suggestions?: unknown }).query_info;
       suggestions = (data as { success?: unknown; results?: unknown; query_info?: unknown; suggestions?: unknown }).suggestions || [];
       console.log('Vector search results:', data);
@@ -138,7 +137,7 @@
     }
   }
   function setSuggestionQuery(suggestion: string) {
-    query = suggestion;
+    query = suggestio;
     performSearch();
   }
   function toggleDocumentType(type: string) {
@@ -173,11 +172,9 @@
     }
   });
 </script>
-
 <svelte:head>
   <title>Vector Search - Legal AI Dashboard</title>
 </svelte:head>
-
 <div class="space-y-6">
   <!-- Header -->
   <div class="flex items-center justify-between">
@@ -196,10 +193,8 @@
       <Button class="bits-btn" variant="ghost" size="sm">
 <Settings class="w-4 h-4 mr-2" />
         Settings
-
     </div>
   </div>
-  
   <!-- Search Interface - Enhanced-Bits orchestrated -->
   <OrchestratedCard.Analysis>
     <div.Content class="p-6 nes-container">
@@ -228,7 +223,6 @@
             {/if}
           </OrchestratedButton.SearchSimilar>
         </div>
-        
         <!-- Search Mode Tabs -->
         <Tabs.Root bind:value={searchMode} class="w-full">
           <Tabs.List class="grid w-full grid-cols-3">
@@ -246,27 +240,23 @@
             </Tabs.Trigger>
           </Tabs.List>
         </Tabs.Root>
-        
         <!-- Filters -->
         <div class="flex flex-wrap gap-4 items-center">
           <div class="flex items-center gap-2">
             <Filter class="w-4 h-4 text-nier-text-muted" />
             <span class="text-sm text-nier-text-muted">Document Types:</span>
           </div>
-          
           {#each documentTypes as docType}
             <button
               onclick={() => toggleDocumentType(docType.value)}
               class="flex items-center gap-2 px-3 py-1 rounded-full border transition-all
-                     {selectedTypes.has(docType.value) 
-                       ? 'border-nier-accent-warm bg-nier-accent-warm text-nier-bg-primary' 
+                     {selectedTypes.has(docType.value)
+                       ? 'border-nier-accent-warm bg-nier-accent-warm text-nier-bg-primary'
                        : 'border-nier-border-muted hover:border-nier-accent-warm'}"
             >
               {@render docType.icon({ class: "w-3 h-3" })}
               <span class="text-xs">{docType.label}</span>
-
           {/each}
-          
           <div class="ml-auto flex items-center gap-2">
             <span class="text-xs text-nier-text-muted">Similarity:</span>
             <input
@@ -283,7 +273,6 @@
       </div>
     </div.Content>
   </OrchestratedCard.Analysis>
-  
   <!-- Search Results -->
   {#if searchInfo}
     <OrchestratedCard.Evidence>
@@ -302,7 +291,6 @@
           Query: "{searchInfo.processed_query}" • Total: {searchInfo.total_results} matches
         </div.Description>
       </div.Header>
-      
       <div.Content class="space-y-4 nes-container">
         {#if loading}
           <div class="text-center py-8">
@@ -315,7 +303,6 @@
             <p class="text-red-600">{error}</p>
             <Button onclick={performSearch} variant="ghost" size="sm" class="mt-2 bits-btn">
 Retry Search
-
           </div>
         {:else if results.length === 0}
           <div class="text-center py-8">
@@ -346,7 +333,6 @@ Retry Search
                     </div>
                   </div>
                 </div>
-                
                 <div class="flex items-center gap-2">
                   <Badge class="text-xs {getSimilarityColor((result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).similarity_score)}">
                     {getSimilarityLabel((result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).similarity_score)}
@@ -356,11 +342,9 @@ Retry Search
                   </span>
                 </div>
               </div>
-              
               <p class="text-sm text-nier-text-secondary leading-relaxed mb-3">
                 {(result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).content_preview}
               </p>
-              
               {#if (result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).highlights && (result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).highlights.length > 0}
                 <div class="mb-3">
                   <h4 class="text-xs font-medium text-nier-text-muted mb-2">Key Highlights:</h4>
@@ -373,7 +357,6 @@ Retry Search
                   </div>
                 </div>
               {/if}
-              
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-4 text-xs text-nier-text-muted">
                   {#if (result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).metadata.upload_date}
@@ -389,15 +372,12 @@ Retry Search
                     </div>
                   {/if}
                 </div>
-                
                 <div class="flex items-center gap-2">
                   <Button class="bits-btn" variant="ghost" size="sm">
 <Eye class="w-4 h-4 mr-1" />
                     View
-
                   <Button class="bits-btn" variant="ghost" size="sm">
 <ChevronRight class="w-4 h-4" />
-
                 </div>
               </div>
             </div>
@@ -406,7 +386,6 @@ Retry Search
       </div.Content>
     </OrchestratedCard.Evidence>
   {/if}
-  
   <!-- Search Suggestions -->
   <div.Root class="nes-container">
     <div.Header class="nes-container">
@@ -423,7 +402,7 @@ Retry Search
         {#each searchSuggestions as suggestion}
           <button
             onclick={() => setSuggestionQuery(suggestion)}
-            class="text-left p-3 text-sm bg-nier-bg-tertiary hover:bg-nier-accent-warm/10 
+            class="text-left p-3 text-sm bg-nier-bg-tertiary hover:bg-nier-accent-warm/10
                    rounded-lg transition-colors border border-transparent hover:border-nier-accent-warm/20"
             disabled={loading}
           >
@@ -431,12 +410,10 @@ Retry Search
               <span>{suggestion}</span>
               <ChevronRight class="w-4 h-4 text-nier-text-muted" />
             </div>
-
         {/each}
       </div>
     </div.Content>
   </div.Root>
-  
   <!-- Performance Metrics -->
   {#if searchInfo}
     <div.Root class="nes-container">

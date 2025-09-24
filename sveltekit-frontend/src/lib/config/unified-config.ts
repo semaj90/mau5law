@@ -4,20 +4,18 @@ import os from "os";
  * Production-ready configuration management for Legal AI Platform
  * Supports Windows-native deployment with environment-based configuration
  */
-
 const dev = import.meta.env.NODE_ENV === 'development';
 const browser = false; // Server-side config
-
 // Configuration interfaces for type safety
 export interface DatabaseConfig {
-  postgres: {;
+  postgres: {
     url: string;
     maxConnections: number;
     ssl: boolean;
     timeout: number;
     retryAttempts: number;
   };
-  redis: {;
+  redis: {
     url: string;
     fallbackUrl?: string;
     maxRetries: number;
@@ -32,7 +30,7 @@ export interface DatabaseConfig {
     maxConnectionPoolSize: number;
     connectionTimeout: number;
   };
-  qdrant: {;
+  qdrant: {
     url: string;
     apiKey?: string;
     timeout: number;
@@ -40,11 +38,10 @@ export interface DatabaseConfig {
     windowsOptimized: boolean;
   };
 }
-
 export interface AIConfig {
   ollama: {
     baseUrl: string;
-    models: {;
+    models: {
       legal: string;
       embedding: string;
       chat: string;
@@ -58,13 +55,12 @@ export interface AIConfig {
     model: string;
     maxTokens: number;
   };
-  embedding: {;
+  embedding: {
     dimensions: number;
     batchSize: number;
     cacheEnabled: boolean;
   };
 }
-
 export interface ServiceConfig {
   enhancedRAG: {
     url: string;
@@ -80,7 +76,7 @@ export interface ServiceConfig {
   };
   clusterManager: {
     url: string;
-    workers: {;
+    workers: {
       legal: number;
       ai: number;
       vector: number;
@@ -95,7 +91,6 @@ export interface ServiceConfig {
     };
   };
 }
-
 export interface WindowsConfig {
   platform: 'win32' | 'linux' | 'darwin';
   gpuAcceleration: boolean;
@@ -113,15 +108,14 @@ export interface WindowsConfig {
     networkKeepAlive: number;
   };
 }
-
 export interface SecurityConfig {
-  cors: {;
+  cors: {
     origins: string[];
     credentials: boolean;
   };
   rateLimit: {
     windowSec: number;
-    limits: {;
+    limits: {
       free: number;
       premium: number;
       enterprise: number;
@@ -135,7 +129,6 @@ export interface SecurityConfig {
     bcryptRounds: number;
   };
 }
-
 export interface LoggingConfig {
   level: 'debug' | 'info' | 'warn' | 'error';
   format: 'json' | 'text';
@@ -149,7 +142,6 @@ export interface LoggingConfig {
   structured: boolean;
   includeStack: boolean;
 }
-
 // Main unified configuration interface
 export interface UnifiedConfig {
   environment: 'development' | 'staging' | 'production';
@@ -159,39 +151,33 @@ export interface UnifiedConfig {
   windows: WindowsConfig;
   security: SecurityConfig;
   logging: LoggingConfig;
-  monitoring: {;
+  monitoring: {
     enabled: boolean;
     metricsPort: number;
     healthCheckInterval: number;
-    alerting: {;
+    alerting: {
       enabled: boolean;
       webhookUrl?: string;
       channels: string[];
     };
   };
 }
-
-// Configuration loading and validation;
+// Configuration loading and validation
 class ConfigManager {
   private config: UnifiedConfig | null = null;
   private configOverrides: Partial<UnifiedConfig> = {};
-
   constructor() {
     this.loadConfiguration();
   }
-
   private loadConfiguration(): void {
     // Detect Windows environment
-    const isWindows = typeof process !== 'undefined' 
-      ? process.platform === 'win32' 
+    const isWindows = typeof process !== 'undefined'
+      ? process.platform === 'win32'
       : navigator?.platform?.toLowerCase().includes('win') || false;
-
     // Get environment variables with fallbacks
     const env = this.getEnvironmentVariables();
-    
     this.config = {
       environment: (env.NODE_ENV as any) || 'development',
-      
       database: {
         postgres: {
           url: env.DATABASE_URL || env.POSTGRES_URL || 'postgresql://localhost:5433/legal_ai_db',
@@ -223,7 +209,6 @@ class ConfigManager {
           windowsOptimized: isWindows
         }
       },
-
       ai: {
         ollama: {
           baseUrl: env.OLLAMA_BASE_URL || 'http://localhost:11434',
@@ -236,18 +221,17 @@ class ConfigManager {
           maxConcurrent: parseInt(env.OLLAMA_MAX_CONCURRENT) || (isWindows ? 2 : 4),
           gpuLayers: parseInt(env.OLLAMA_GPU_LAYERS) || (isWindows ? 35 : 30)
         },
-        openai: env.OPENAI_API_KEY ? {
+        openai: env.OPENAI_API_KEY ? {,
           apiKey: env.OPENAI_API_KEY,
           model: env.OPENAI_MODEL || 'gpt-4',
           maxTokens: parseInt(env.OPENAI_MAX_TOKENS) || 4000
-        } : undefined,
+        } : undefined
         embedding: {
           dimensions: parseInt(env.EMBEDDING_DIMENSIONS) || 384,
           batchSize: parseInt(env.EMBEDDING_BATCH_SIZE) || (isWindows ? 16 : 32),
           cacheEnabled: env.EMBEDDING_CACHE !== 'false'
         }
       },
-
       services: {
         enhancedRAG: {
           url: env.ENHANCED_RAG_URL || 'http://localhost:8094',
@@ -278,7 +262,6 @@ class ConfigManager {
           }
         }
       },
-
       windows: {
         platform: isWindows ? 'win32' : (process?.platform as any) || 'linux',
         gpuAcceleration: env.GPU_ACCELERATION !== 'false' && isWindows,
@@ -296,7 +279,6 @@ class ConfigManager {
           networkKeepAlive: parseInt(env.NETWORK_KEEP_ALIVE) || (isWindows ? 30000 : 0)
         }
       },
-
       security: {
         cors: {
           origins: (env.CORS_ORIGINS || 'http://localhost:5173').split(','),
@@ -318,47 +300,41 @@ class ConfigManager {
           bcryptRounds: parseInt(env.BCRYPT_ROUNDS) || 12
         }
       },
-
       logging: {
         level: (env.LOG_LEVEL as any) || (dev ? 'debug' : 'info'),
         format: (env.LOG_FORMAT as any) || 'json',
         outputs: (env.LOG_OUTPUTS || 'console').split(',') as any,
-        file: env.LOG_FILE_PATH ? {
+        file: env.LOG_FILE_PATH ? {,
           path: env.LOG_FILE_PATH,
           maxSize: env.LOG_MAX_SIZE || '10M',
           maxFiles: parseInt(env.LOG_MAX_FILES) || 5,
           rotate: env.LOG_ROTATE !== 'false'
-        } : undefined,
+        } : undefined
         structured: env.LOG_STRUCTURED !== 'false',
         includeStack: env.LOG_INCLUDE_STACK === 'true' || dev
       },
-
       monitoring: {
         enabled: env.MONITORING_ENABLED !== 'false',
         metricsPort: parseInt(env.METRICS_PORT) || 9090,
         healthCheckInterval: parseInt(env.HEALTH_CHECK_INTERVAL) || 30000,
         alerting: {
           enabled: env.ALERTING_ENABLED === 'true',
-          webhookUrl: env.ALERTING_WEBHOOK_URL,;
+          webhookUrl: env.ALERTING_WEBHOOK_URL,
           channels: (env.ALERTING_CHANNELS || '').split(',').filter(Boolean)
         }
       }
     };
-
-    // Apply any runtime overrides;
+    // Apply any runtime overrides
     if (Object.keys(this.configOverrides).length > 0) {
       this.config = this.mergeDeep(this.config, this.configOverrides);
     }
-
     // Validate configuration
     this.validateConfiguration();
   }
-
   private getEnvironmentVariables(): Record<string, string> {
     // Always use process.env in server-side config
     return process.env as any;
   }
-
   private getCPUCores(): number {
     try {
       if (!browser && typeof process !== 'undefined') {
@@ -370,13 +346,11 @@ class ConfigManager {
       return 4; // Safe fallback
     }
   }
-
   private generateSecretKey(): string {
-    // Generate a secure secret key for JWT;
+    // Generate a secure secret key for JWT
     if (!browser && typeof process !== 'undefined' && import.meta.env.NODE_ENV === 'development') {
       return 'dev-secret-key-change-in-production';
     }
-    
     // In production, this should come from environment variables
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
@@ -385,10 +359,8 @@ class ConfigManager {
     }
     return result;
   }
-
   private mergeDeep(target: any, source: any): any {
     const result = { ...target };
-    
     for (const key in source) {
       if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
         result[key] = this.mergeDeep(target[key] || {}, source[key]);
@@ -396,35 +368,27 @@ class ConfigManager {
         result[key] = source[key];
       }
     }
-    
     return result;
   }
-
   private validateConfiguration(): void {
     if (!this.config) {
       throw new Error('Configuration not loaded');
     }
-
     const errors: string[] = [];
-
-    // Validate required configurations;
+    // Validate required configurations
     if (!this.config.database.postgres.url) {
       errors.push('PostgreSQL URL is required');
     }
-
     if (!this.config.database.redis.url) {
       errors.push('Redis URL is required');
     }
-
     if (!this.config.ai.ollama.baseUrl) {
       errors.push('Ollama base URL is required');
     }
-
     if (!this.config.security.auth.jwtSecret) {
       errors.push('JWT secret is required');
     }
-
-    // Windows-specific validations;
+    // Windows-specific validations
     if (this.config.windows.platform === 'win32') {
       if (this.config.windows.serviceInstallation.useWindowsServices) {
         if (!this.config.windows.serviceInstallation.serviceUser) {
@@ -432,89 +396,73 @@ class ConfigManager {
         }
       }
     }
-
-    // Production-specific validations;
+    // Production-specific validations
     if (this.config.environment === 'production') {
       if (this.config.security.auth.jwtSecret.includes('dev-secret')) {
         errors.push('Production JWT secret must be changed from development default');
       }
-
       if (this.config.logging.level === 'debug') {
         console.warn('WARNING: Debug logging enabled in production');
       }
     }
-
     if (errors.length > 0) {
       throw new Error(`Configuration validation failed:\n${errors.join('\n')}`);
     }
   }
-
-  // Public API methods;
+  // Public API methods
   public getConfig(): UnifiedConfig {
     if (!this.config) {
       throw new Error('Configuration not initialized');
     }
     return { ...this.config };
   }
-
   public get<T extends keyof UnifiedConfig>(section: T): UnifiedConfig[T] {
     if (!this.config) {
       throw new Error('Configuration not initialized');
     }
     return this.config[section];
   }
-
   public override(overrides: Partial<UnifiedConfig>): void {
     this.configOverrides = { ...this.configOverrides, ...overrides };
     this.loadConfiguration(); // Reload with overrides
   }
-
   public isDevelopment(): boolean {
     return this.config?.environment === 'development' || dev;
   }
-
   public isProduction(): boolean {
     return this.config?.environment === 'production';
   }
-
   public isWindows(): boolean {
     return this.config?.windows.platform === 'win32';
   }
-
   public hasGPUAcceleration(): boolean {
     return this.config?.windows.gpuAcceleration || false;
   }
-
   public getServiceUrl(service: keyof ServiceConfig): string {
     if (!this.config) {
       throw new Error('Configuration not initialized');
     }
     return this.config.services[service].url;
   }
-
   public getDatabaseUrl(database: keyof DatabaseConfig): string {
     if (!this.config) {
       throw new Error('Configuration not initialized');
     }
     return (this.config.database[database] as any).url;
   }
-
-  // Health check for configuration;
+  // Health check for configuration
   public async healthCheck(): Promise<any> {
     const checks: Record<string, boolean> = {};
-    
     try {
       // Check if configuration is loaded
       checks.configLoaded = !!this.config;
-      
       // Check required environment variables
       checks.requiredEnvVars = !!(
         this.config?.database.postgres.url &&
         this.config?.database.redis.url &&
         this.config?.ai.ollama.baseUrl
       );
-      
-      // Check Windows-specific configurations;
+      // Check Windows-specific configurations
       if (this.isWindows()) {
         checks.windowsConfig = !!(
           this.config?.windows.performance.maxMemoryMB &&
@@ -523,37 +471,31 @@ class ConfigManager {
       } else {
         checks.windowsConfig = true; // N/A for non-Windows
       }
-      
       // Check security configuration
       checks.securityConfig = !!(
         this.config?.security.auth.jwtSecret &&
         !this.config?.security.auth.jwtSecret.includes('dev-secret') || this.isDevelopment()
       );
-
       const allHealthy = Object.values(checks).every(Boolean);
       const status = allHealthy ? 'healthy' : 'degraded';
-
       return {
         status,
         checks,
         timestamp: new Date().toISOString()
       };
-
     } catch (error: any) {
       return {
         status: 'unhealthy',
-        checks,;
+        checks,
         timestamp: new Date().toISOString()
       };
     }
   }
-
-  // Export configuration for debugging (development only);
+  // Export configuration for debugging (development only)
   public exportConfig(): any {
     if (!this.isDevelopment()) {
       throw new Error('Configuration export is only available in development');
     }
-    
     // Redact sensitive information
     const exportConfig = { ...this.config };
     if (exportConfig?.security?.auth?.jwtSecret) {
@@ -565,34 +507,26 @@ class ConfigManager {
     if (exportConfig?.ai?.openai?.apiKey) {
       exportConfig.ai.openai.apiKey = '[REDACTED]';
     }
-    
     return exportConfig;
   }
 }
-
 // Export singleton instance
 export const config = new ConfigManager();
-;
-// Export utility functions;
+// Export utility functions
 export function getConfig(): UnifiedConfig {
   return config.getConfig();
 }
-
 export function getConfigSection<T extends keyof UnifiedConfig>(section: T): UnifiedConfig[T] {
   return config.get(section);
 }
-
 export function isWindows(): boolean {
   return config.isWindows();
 }
-
 export function isDevelopment(): boolean {
   return config.isDevelopment();
 }
-
 export function isProduction(): boolean {
   return config.isProduction();
 }
-
 // Default export
 export default config;

@@ -1,73 +1,60 @@
 // Simple in-memory rate limiting utility
-// For production, consider using Redis or a proper rate limiting service;
+// For production, consider using Redis or a proper rate limiting service
 }
-
 export interface RateLimitConfig {
   windowMs: number;
   max: number;
   message?: string;
 }
-
 export interface RateLimitResult {
   allowed: boolean;
   remaining: number;
   resetTime: number;
   retryAfter?: number;
 }
-
 class InMemoryRateLimiter {
   private requests = new Map<string, { count: number; resetTime: number }>();
   private config: RateLimitConfig;
-
   constructor(config: RateLimitConfig) {
     this.config = config;
-    
     // Clean up expired entries every 10 minutes
     setInterval(() => this.cleanup(), 10 * 60 * 1000);
   }
-
   async check(key: string): Promise<RateLimitResult> {
     const now = Date.now();
     const windowStart = now - this.config.windowMs;
-    
     // Get or create request tracking
     let requestData = this.requests.get(key);
-    
     if (!requestData || requestData.resetTime <= now) {
-      // New window;
+      // New window
       requestData = {
         count: 1,
         resetTime: now + this.config.windowMs
       };
       this.requests.set(key, requestData);
-      
       return {
-        allowed: true,;
+        allowed: true
         remaining: this.config.max - 1,
         resetTime: requestData.resetTime
       };
     }
-    
-    // Within existing window;
+    // Within existing window
     if (requestData.count >= this.config.max) {
       return {
-        allowed: false,;
+        allowed: false
         remaining: 0,
         resetTime: requestData.resetTime,
         retryAfter: Math.ceil((requestData.resetTime - now) / 1000)
       };
     }
-    
     // Increment count
     requestData.count++;
-    
     return {
-      allowed: true,;
+      allowed: true
       remaining: this.config.max - requestData.count,
       resetTime: requestData.resetTime
     };
   }
-
   private cleanup() {
     const now = Date.now();
     for (const [key, data] of this.requests.entries()) {
@@ -77,7 +64,6 @@ class InMemoryRateLimiter {
     }
   }
 }
-
 export function rateLimit(config: RateLimitConfig) {
   return new InMemoryRateLimiter(config);
 }

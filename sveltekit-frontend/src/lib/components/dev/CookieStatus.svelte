@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { browser } from '$app/environment';
   import { onMount } from 'svelte';
   let cookiesEnabled = $state(false);
@@ -10,7 +9,7 @@
   let sessionInfo = $state('');
   $effect(() => {
     if (!browser) return;
-    devMode = window.location.hostname === 'localhost' || 
+    devMode = window.location.hostname === 'localhost' ||
               window.location.hostname === '127.0.0.1';
     // Test cookie support
     try {
@@ -42,7 +41,7 @@
     if (sessionCookie) {
       sessionInfo = `Active session: ${sessionCookie.split('=')[1].substring(0, 8)}...`;
     } else if (localStorageEnabled) {
-      const devSession = localStorage.getItem('dev_session') || 
+      const devSession = localStorage.getItem('dev_session') ||
                         (() => {
                           const id = `dev_${Date.now()}_${Math.random.toString-substr(2, 9)}`;
                           localStorage.setItem('dev_session', id);
@@ -54,13 +53,11 @@
     }
   });
 </script>
-
 {#if devMode}
   <div class="fixed bottom-4 right-4 bg-gray-900 text-white text-xs p-3 rounded-lg shadow-lg max-w-xs z-50">
     <div class="font-bold mb-2 flex items-center">
       🧪 Development Session Status
     </div>
-    
     <div class="space-y-1">
       <div class="flex justify-between">
         <span>Cookies:</span>
@@ -68,33 +65,27 @@
           {cookiesEnabled ? '✓' : '✗'}
         </span>
       </div>
-      
       <div class="flex justify-between">
         <span>localStorage:</span>
         <span class={localStorageEnabled ? 'text-green-400' : 'text-red-400'}>
           {localStorageEnabled ? '✓' : '✗'}
         </span>
       </div>
-      
       <div class="flex justify-between">
         <span>sessionStorage:</span>
         <span class={sessionStorageEnabled ? 'text-green-400' : 'text-red-400'}>
           {sessionStorageEnabled ? '✓' : '✗'}
         </span>
       </div>
-      
       <hr class="border-gray-600 my-2">
-      
       <div class="text-xs text-gray-300">
         {sessionInfo}
       </div>
-      
       {#if !cookiesEnabled && (localStorageEnabled || sessionStorageEnabled)}
         <div class="text-yellow-400 text-xs mt-2">
           ⚠️ Using storage fallback
         </div>
       {/if}
-      
       {#if !cookiesEnabled && !localStorageEnabled && !sessionStorageEnabled}
         <div class="text-red-400 text-xs mt-2">
           ❌ No session storage available

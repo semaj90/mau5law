@@ -2,7 +2,6 @@
  * Type definitions for vector operations and API interfaces
  */;
 }
-
 export interface VectorSimilarityRequest {
   operation: 'cosine' | 'euclidean' | 'dot' | 'manhattan' | 'batch';
   vectorA: Float32Array | number[];
@@ -12,11 +11,10 @@ export interface VectorSimilarityRequest {
   useCUDA?: boolean;
   parallel?: boolean;
 }
-
 export interface VectorSimilarityResponse {
   success: boolean;
   result: number | number[];
-  metadata: {;
+  metadata: {
     operation: string;
     vectorDimensions: number;
     vectorCount: number;
@@ -27,7 +25,6 @@ export interface VectorSimilarityResponse {
     timestamp: string;
   };
 }
-
 export interface EmbeddingRequest {
   texts: string[];
   model?: string;
@@ -38,7 +35,6 @@ export interface EmbeddingRequest {
   batchSize?: number;
   minioUrl?: string; // For large document processing
 }
-
 export interface EmbeddingResponse {
   success: boolean;
   embeddings: number[][];
@@ -52,7 +48,6 @@ export interface EmbeddingResponse {
     parallelWorkers: number;
   };
 }
-
 export interface MatrixOperation {
   operation: 'multiply' | 'transpose' | 'inverse' | 'eigenvalues' | 'svd' | 'qr' | 'cholesky';
   matrixA: number[][];
@@ -65,7 +60,6 @@ export interface MatrixOperation {
     workers?: number;
   };
 }
-
 export interface MatrixBatchOperation {
   operation: 'batch_multiply' | 'batch_similarity' | 'batch_normalize' | 'batch_transform';
   matrices: number[][][];
@@ -77,11 +71,10 @@ export interface MatrixBatchOperation {
     chunkSize?: number;
   };
 }
-
 export interface MatrixResponse {
   success: boolean;
   result: number[][] | number[][][] | number[];
-  metadata: {;
+  metadata: {
     operation: string;
     inputShape: number[];
     outputShape: number[];
@@ -92,7 +85,6 @@ export interface MatrixResponse {
     flops?: number; // Floating point operations count
   };
 }
-
 export interface VectorSearchRequest {
   query: string;
   embedding?: number[];
@@ -110,7 +102,6 @@ export interface VectorSearchRequest {
   useCUDA?: boolean;
   rerank?: boolean;
 }
-
 export interface SearchResult {
   id: string;
   content: string;
@@ -118,7 +109,6 @@ export interface SearchResult {
   metadata?: any;
   embedding?: number[];
 }
-
 export interface VectorSearchResponse {
   success: boolean;
   results: SearchResult[];
@@ -129,13 +119,12 @@ export interface VectorSearchResponse {
     cudaTime?: number;
     rerankTime?: number;
   };
-  query: {;
+  query: {
     original: string;
     embedding?: number[];
     filters: any;
   };
 }
-
 export interface ChunkingRequest {
   text: string;
   chunkSize?: number;
@@ -143,7 +132,6 @@ export interface ChunkingRequest {
   preserveParagraphs?: boolean;
   extractMetadata?: boolean;
 }
-
 export interface ChunkingResponse {
   success: boolean;
   chunks: string[];
@@ -156,7 +144,6 @@ export interface ChunkingResponse {
     chunkOverlap: number;
   };
 }
-
 export interface RAGChunkingOptions {
   chunkSize: number;
   chunkOverlap: number;
@@ -166,12 +153,11 @@ export interface RAGChunkingOptions {
   minChunkSize?: number;
   maxChunkSize?: number;
 }
-
 export interface LegalDocumentMetadata {
-  case: {;
+  case: {
     id: string;
     jurisdiction: string;
-    parties: Array<{;
+    parties: Array<{
       role: string;
       name: string;
       type: string;
@@ -192,17 +178,16 @@ export interface LegalDocumentMetadata {
     complexity: number;
   };
 }
-
 export interface CUDAConfig {
   url: string;
-  endpoints: {;
+  endpoints: {
     health: string;
     search: string;
     submit: string;
     workers: string;
     metrics: string;
   };
-  gpu: {;
+  gpu: {
     model: string;
     cudaCores: number;
     tensorCores: number;
@@ -210,7 +195,6 @@ export interface CUDAConfig {
     computeCapability: string;
   };
 }
-
 export interface PerformanceMetrics {
   totalTime: number;
   cudaTime?: number;
@@ -221,7 +205,6 @@ export interface PerformanceMetrics {
   flops?: number;
   throughput?: number; // operations per second
 }
-
 export interface VectorOperationResult<T = any> {
   success: boolean;
   result: T;
@@ -229,7 +212,6 @@ export interface VectorOperationResult<T = any> {
   performance: PerformanceMetrics;
   metadata?: any;
 }
-
 export interface WasmVectorModule {
   memory: WebAssembly.Memory;
   cosineSimJS: (aPtr: number, bPtr: number, length: number) => number;
@@ -244,7 +226,6 @@ export interface WasmVectorModule {
   getMemoryStats: () => number;
   benchmarkOperation: (operation: number, dataSize: number, iterations: number) => number;
 }
-
 export type VectorOperation = 'similarity' | 'embedding' | 'search' | 'matrix' | 'chunk';
 export type SimilarityAlgorithm = 'cosine' | 'euclidean' | 'dot' | 'manhattan';
 export type MatrixOperationType = 'multiply' | 'transpose' | 'inverse' | 'eigenvalues' | 'svd' | 'qr' | 'cholesky';

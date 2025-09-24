@@ -1,39 +1,35 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa Navigation Sidebar Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import type { Props } from "$lib/types/global";
   import { page } from "$app/state";
   import { goto } from "$app/navigation";
   import { onMount } from 'svelte';
   // Props
-  let { routes, collapsed, currentPage } = $props;
+  let { routes, collapsed, currentPage } = $prop;
     currentPage: string;
   }>();
-
   // Navigation state
   let expandedSections = $state(new Set(['main', 'demo', 'admin']);
   let searchQuery = $state('');
   let filteredRoutes = $state(routes);
   let hoveredRoute = $state<string | null>(null);
-
   // Organize routes into sections
   let organizedRoutes = $derived(() => {
     const sections = {
-      main: routes.filter(r => 
+      main: routes.filter(r =>
         ['command-center', 'cases', 'evidence', 'persons', 'ai-assistant', 'search', 'documents', 'reports', 'memory', 'chat'].includes(r.id)
-      ),;
-      demo: routes.filter(r => r.id.startsWith('demo-') || r.id === 'enhanced-rag' || r.id === 'context7'),;
-      admin: routes.filter(r => 
+      ),
+      demo: routes.filter(r => r.id.startsWith('demo-') || r.id === 'enhanced-rag' || r.id === 'context7'),
+      admin: routes.filter(r =>
         ['dev-tools', 'security', 'settings', 'profile', 'help'].includes(r.id)
       );
     };
-    return sections;
+    return section;
   });
-
   // Filter routes based on search
   $effect(() => {
     if (searchQuery.trim()) {
@@ -41,16 +37,14 @@ https://svelte.dev/e/js_parse_error -->
         route.id.toLowerCase().includes(searchQuery.toLowerCase())
       );
     } else {
-      filteredRoutes = routes;
+      filteredRoutes = route;
     }
   });
-
   function navigateToRoute(route: string) {
     if (route !== page.url.pathname) {
       goto(route);
     }
   }
-
   function toggleSection(sectionId: string) {
     if (expandedSections.has(sectionId)) {
       expandedSections.delete(sectionId);
@@ -59,11 +53,9 @@ https://svelte.dev/e/js_parse_error -->
     }
     expandedSections = new Set(expandedSections);
   }
-
   function isRouteActive(route: string): boolean {
-    return page.url.pathname === route;
+    return page.url.pathname === rout;
   }
-
   function getSectionIcon(sectionId: string): string {
     switch (sectionId) {
       case 'main': return '⚡';
@@ -71,7 +63,6 @@ https://svelte.dev/e/js_parse_error -->
       case 'admin': return '⚙️';
     }
   }
-
   function getSectionTitle(sectionId: string): string {
     switch (sectionId) {
       case 'main': return 'CORE OPERATIONS';
@@ -79,7 +70,6 @@ https://svelte.dev/e/js_parse_error -->
       case 'admin': return 'SYSTEM ADMINISTRATION';
     }
   }
-
   // Auto-scroll to active route
   $effect(() => {
     const activeElement = document.querySelector.active');
@@ -88,10 +78,8 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 </script>
-
 <!-- Navigation Container -->
 <div class="yorha-3d-panel nes-legal-container h-full flex flex-col">
-  
   <!-- Search Bar (when not collapsed) -->
   {#if !collapsed}
     <div class="nes-search-section neural-sprite-loading">
@@ -105,7 +93,6 @@ https://svelte.dev/e/js_parse_error -->
           🔍
         </div>
       </div>
-      
       {#if searchQuery}
         <div class="nes-legal-priority-low mt-2 text-xs">
           Found {filteredRoutes.length} operation{filteredRoutes.length !== 1 ? 's' : ''}
@@ -113,10 +100,8 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
     </div>
   {/if}
-
   <!-- Navigation Content -->
   <div class="nes-nav-content neural-sprite-active flex-1 overflow-y-auto custom-scrollbar">
-    
     {#if searchQuery}
       <!-- Search Results -->
       <div class="search-results p-2">
@@ -141,7 +126,6 @@ https://svelte.dev/e/js_parse_error -->
       <div class="organized-nav p-2">
         {#each Object.entries(organizedRoutes) as [sectionId, sectionRoutes]}
           <div class="nav-section mb-4">
-            
             <!-- Section Header -->
             <button
               class="section-header w-full flex items-center justify-between p-2 rounded hover:bg-yorha-accent-warm/10 transition-colors duration-200"
@@ -161,7 +145,6 @@ https://svelte.dev/e/js_parse_error -->
                 </span>
               {/if}
             </button>
-
             <!-- Section Routes -->
             {#if expandedSections.has(sectionId) || collapsed}
               <div class="section-routes ml-2 mt-1">
@@ -185,7 +168,6 @@ https://svelte.dev/e/js_parse_error -->
                         </div>
                       {/if}
                     </div>
-                    
                     <!-- Active indicator -->
                     {#if isRouteActive(route.route)}
                       <div class="absolute right-2 top-1/2 transform -translate-y-1/2">
@@ -201,7 +183,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     {/if}
   </div>
-
   <!-- Footer Info (when not collapsed) -->
   {#if !collapsed}
     <div class="nav-footer p-4 border-t border-yorha-accent-warm/30 bg-yorha-darker">
@@ -224,9 +205,8 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
-
 <style>
-  .yorha-navigation {;
+  .yorha-navigation {
     --yorha-primary: #c4b49a;
     --yorha-secondary: #b5a48a;
     --yorha-accent-warm: #4a4a4a;
@@ -236,51 +216,41 @@ https://svelte.dev/e/js_parse_error -->
     --yorha-dark: #aca08a;
     --yorha-darker: #b8ad98;
   }
-
   .nav-item {
     position: relative;
     cursor: pointer;
     font-family: 'JetBrains Mono', monospace;
   }
-
   .nav-.active {
     box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
   }
-
   .nav-item:hover {
     transform: translateX(2px);
   }
-
   .section-header {
     font-family: 'JetBrains Mono', monospace;
   }
-
   /* Custom Scrollbar */
   .custom-scrollbar::-webkit-scrollbar {
     width: 8px;
   }
-
   .custom-scrollbar::-webkit-scrollbar-track {
     background: var(--yorha-darker);
     border-radius: 4px;
   }
-
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, var(--yorha-accent-warm) 0%, #b8941f 100%);
     border-radius: 4px;
     border: 1px solid var(--yorha-accent-warm);
   }
-
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(180deg, var(--yorha-accent-cool) 0%, #6bb8e6 100%);
   }
-
   /* Smooth animations */
   .nav-item,
   .section-header {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
-
   /* Glow effect for active items */
   .nav-.active::before {
     content: '';
@@ -294,24 +264,17 @@ https://svelte.dev/e/js_parse_error -->
     opacity: 0;
     animation: glow 2s ease-in-out infinite alternate;
   }
-
   @keyframes glow {
     from { opacity: 0.3; }
     to { opacity: 0.7; }
   }
-
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .nav-item {
       padding: 12px;
     }
-    
     .section-header {
       padding: 8px;
     }
   }
 </style>
-
-
-
-

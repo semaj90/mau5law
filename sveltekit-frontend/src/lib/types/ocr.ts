@@ -1,16 +1,14 @@
-// Shared OCR types to be used across frontend services;
+// Shared OCR types to be used across frontend services
 export interface OCRResult {
   text: string;
   confidence: number;
   processing_time?: number;
   pages?: Array<any>;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 }
-
 export interface OCRWord {
   text: string;
   confidence?: number;
   boundingBox?: { x: number; y: number; width: number; height: number };
 }
-
 export default OCRResult;

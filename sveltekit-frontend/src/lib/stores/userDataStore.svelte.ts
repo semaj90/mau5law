@@ -3,13 +3,10 @@
  * Manages all user-specific data: AI assistant history, reports, citations, cases, evidence, etc.
  * Integrates with session store and provides drizzle-orm ready structure
  */
-
 import { sessionState, sessionActions } from './sessionStore.svelte';
 import { browser } from '$app/environment';
 import { formatRelativeTime, formatDetailedTimestamp } from '$lib/utils/formatting';
-
 // ===== TYPES =====
-
 export interface UserCase {
   id: string;
   title: string;
@@ -25,7 +22,6 @@ export interface UserCase {
   citationCount: number;
   reportCount: number;
 }
-
 export interface UserEvidence {
   id: string;
   caseId: string;
@@ -37,10 +33,9 @@ export interface UserEvidence {
   uploadedAt: Date;
   tags: string[];
   notes?: string;
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
   aiAnalysisStatus: 'pending' | 'processing' | 'completed' | 'failed';
 }
-
 export interface UserCitation {
   id: string;
   userId: string;
@@ -56,7 +51,6 @@ export interface UserCitation {
   updatedAt: Date;
   isFavorite: boolean;
 }
-
 export interface UserReport {
   id: string;
   userId: string;
@@ -71,7 +65,6 @@ export interface UserReport {
   wordCount: number;
   tags: string[];
 }
-
 export interface AIAssistantMessage {
   id: string;
   userId: string;
@@ -84,7 +77,6 @@ export interface AIAssistantMessage {
   tokens?: number;
   model?: string;
 }
-
 export interface AIConversation {
   id: string;
   userId: string;
@@ -97,19 +89,17 @@ export interface AIConversation {
   isArchived: boolean;
   tags: string[];
 }
-
 export interface UserActivity {
   id: string;
   userId: string;
   action: string;
   resourceType: 'case' | 'evidence' | 'citation' | 'report' | 'ai_chat' | 'system';
   resourceId?: string;
-  details: Record<string, any>;
+  details: { [key: string]: any };
   timestamp: Date;
   ipAddress?: string;
   userAgent?: string;
 }
-
 export interface UserDataState {
   cases: UserCase[];
   evidence: UserEvidence[];
@@ -121,46 +111,38 @@ export interface UserDataState {
   lastSyncAt: number;
   cachedAt: number;
 }
-
 // ===== STORE IMPLEMENTATION =====
-
 // Create reactive user data state using Svelte 5 runes
 export const userDataState = $state<UserDataState>({
   cases: [],
   evidence: [],
-  citations: [],;
+  citations: [],
   reports: [],
   aiConversations: [],
   recentActivity: [],
-  isLoading: false,
+  isLoading: false
   lastSyncAt: 0,
   cachedAt: 0
 });
-
 // Derived stores for convenience
 export const userCases = $derived(userDataState.cases);
 export const userEvidence = $derived(userDataState.evidence);
 export const userCitations = $derived(userDataState.citations);
 export const userReports = $derived(userDataState.reports);
 export const userAIConversations = $derived(userDataState.aiConversations);
-
 // Filtered derived stores
 export const activeCases = $derived(
   userDataState.cases.filter(c => c.status === 'open' || c.status === 'pending')
 );
-
 export const recentEvidence = $derived(
   userDataState.evidence.slice(0, 10).sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime())
 );
-
 export const favoriteCitations = $derived(
   userDataState.citations.filter(c => c.isFavorite)
 );
-
 export const draftReports = $derived(
   userDataState.reports.filter(r => r.status === 'draft')
 );
-
 // Statistics derived stores
 export const userStats = $derived({
   totalCases: userDataState.cases.length,
@@ -171,7 +153,6 @@ export const userStats = $derived({
   aiConversations: userDataState.aiConversations.length,
   lastSyncAt: userDataState.lastSyncAt
 });
-
 // User data management actions
 export const userDataActions = {
   // Initialize user data when session is established
@@ -180,13 +161,10 @@ export const userDataActions = {
       this.clear();
       return;
     }
-
     userDataState.isLoading = true;
-
     try {
       // Try to load from cache first
       await loadFromCache(userId);
-
       // Then sync with server
       await syncWithServer(userId);
     } catch (error) {
@@ -194,7 +172,6 @@ export const userDataActions = {
       userDataState.isLoading = false;
     }
   },
-
   // Sync specific data types
   async syncCases(userId: string) {
     try {
@@ -208,7 +185,6 @@ export const userDataActions = {
       console.error('Failed to sync cases:', error);
     }
   },
-
   async syncEvidence(userId: string, caseId?: string) {
     try {
       const url = caseId
@@ -224,7 +200,6 @@ export const userDataActions = {
       console.error('Failed to sync evidence:', error);
     }
   },
-
   async syncCitations(userId: string) {
     try {
       const response = await fetch(`/api/user/${userId}/citations`);
@@ -237,7 +212,6 @@ export const userDataActions = {
       console.error('Failed to sync citations:', error);
     }
   },
-
   async syncReports(userId: string) {
     try {
       const response = await fetch(`/api/user/${userId}/reports`);
@@ -250,7 +224,6 @@ export const userDataActions = {
       console.error('Failed to sync reports:', error);
     }
   },
-
   async syncAIConversations(userId: string) {
     try {
       const response = await fetch(`/api/user/${userId}/ai-conversations`);
@@ -263,38 +236,32 @@ export const userDataActions = {
       console.error('Failed to sync AI conversations:', error);
     }
   },
-
   // Add new items
   addCase(newCase: UserCase) {
     userDataState.cases = [newCase, ...userDataState.cases];
     userDataState.lastSyncAt = Date.now();
     saveToCache();
   },
-
   addEvidence(evidence: UserEvidence) {
     userDataState.evidence = [evidence, ...userDataState.evidence];
     userDataState.lastSyncAt = Date.now();
     saveToCache();
   },
-
   addCitation(citation: UserCitation) {
     userDataState.citations = [citation, ...userDataState.citations];
     userDataState.lastSyncAt = Date.now();
     saveToCache();
   },
-
   addReport(report: UserReport) {
     userDataState.reports = [report, ...userDataState.reports];
     userDataState.lastSyncAt = Date.now();
     saveToCache();
   },
-
   addAIConversation(conversation: AIConversation) {
     userDataState.aiConversations = [conversation, ...userDataState.aiConversations];
     userDataState.lastSyncAt = Date.now();
     saveToCache();
   },
-
   // Update items
   updateCase(caseId: string, updates: Partial<UserCase>) {
     userDataState.cases = userDataState.cases.map(c =>
@@ -303,7 +270,6 @@ export const userDataActions = {
     userDataState.lastSyncAt = Date.now();
     saveToCache();
   },
-
   updateCitation(citationId: string, updates: Partial<UserCitation>) {
     userDataState.citations = userDataState.citations.map(c =>
       c.id === citationId ? { ...c, ...updates, updatedAt: new Date() } : c
@@ -311,7 +277,6 @@ export const userDataActions = {
     userDataState.lastSyncAt = Date.now();
     saveToCache();
   },
-
   updateReport(reportId: string, updates: Partial<UserReport>) {
     userDataState.reports = userDataState.reports.map(r =>
       r.id === reportId ? { ...r, ...updates, updatedAt: new Date() } : r
@@ -319,26 +284,22 @@ export const userDataActions = {
     userDataState.lastSyncAt = Date.now();
     saveToCache();
   },
-
   // Delete items
   deleteCase(caseId: string) {
     userDataState.cases = userDataState.cases.filter(c => c.id !== caseId);
     userDataState.lastSyncAt = Date.now();
     saveToCache();
   },
-
   deleteCitation(citationId: string) {
     userDataState.citations = userDataState.citations.filter(c => c.id !== citationId);
     userDataState.lastSyncAt = Date.now();
     saveToCache();
   },
-
   deleteReport(reportId: string) {
     userDataState.reports = userDataState.reports.filter(r => r.id !== reportId);
     userDataState.lastSyncAt = Date.now();
     saveToCache();
   },
-
   // Clear all data (logout)
   clear() {
     userDataState.cases = [];
@@ -350,7 +311,6 @@ export const userDataActions = {
     userDataState.isLoading = false;
     userDataState.lastSyncAt = 0;
     userDataState.cachedAt = 0;
-
     if (browser) {
       try {
         localStorage.removeItem('legal_ai_user_data_cache');
@@ -360,23 +320,20 @@ export const userDataActions = {
     }
   }
 };
-
 // Helper functions
 async function loadFromCache(userId: string) {
   if (!browser) return;
-
   try {
     const cached = localStorage.getItem('legal_ai_user_data_cache');
     if (cached) {
       const parsedCache = JSON.parse(cached);
       if (parsedCache.userId === userId && parsedCache.data) {
         const cacheAge = Date.now() - (parsedCache.cachedAt || 0);
-
         // Use cache if less than 10 minutes old
         if (cacheAge < 10 * 60 * 1000) {
           Object.assign(userDataState, {
             ...parsedCache.data,
-            isLoading: false,
+            isLoading: false
             cachedAt: parsedCache.cachedAt
           });
           return true;
@@ -388,7 +345,6 @@ async function loadFromCache(userId: string) {
   }
   return false;
 }
-
 async function syncWithServer(userId: string) {
   try {
     // Sync all data types in parallel
@@ -399,9 +355,7 @@ async function syncWithServer(userId: string) {
       fetch(`/api/user/${userId}/reports`),
       fetch(`/api/user/${userId}/ai-conversations`)
     ]);
-
     const syncedData: Partial<UserDataState> = {};
-
     if (casesRes.status === 'fulfilled' && casesRes.value.ok) {
       syncedData.cases = await casesRes.value.json();
     }
@@ -417,29 +371,25 @@ async function syncWithServer(userId: string) {
     if (conversationsRes.status === 'fulfilled' && conversationsRes.value.ok) {
       syncedData.aiConversations = await conversationsRes.value.json();
     }
-
     Object.assign(userDataState, {
       ...syncedData,
-      isLoading: false,
+      isLoading: false
       lastSyncAt: Date.now()
     });
-
     saveToCache();
   } catch (error) {
     console.error('Failed to sync with server:', error);
     userDataState.isLoading = false;
   }
 }
-
 function saveToCache() {
   if (!browser) return;
-
   try {
     const currentUser = sessionActions.getCurrentUser();
     if (currentUser?.id) {
       localStorage.setItem('legal_ai_user_data_cache', JSON.stringify({
         userId: currentUser.id,
-        data: userDataState,
+        data: userDataState
         cachedAt: Date.now()
       }));
     }
@@ -447,7 +397,6 @@ function saveToCache() {
     console.warn('Failed to save user data to cache:', error);
   }
 }
-
 // Auto-sync when session changes using Svelte 5 effect
 $effect(() => {
   if (sessionState.user?.id && !sessionState.isLoading) {
@@ -456,7 +405,6 @@ $effect(() => {
     userDataActions.clear();
   }
 });
-
 // Legacy exports for backward compatibility
 export const userDataStore = {
   subscribe: (fn: (value: UserDataState) => void) => {

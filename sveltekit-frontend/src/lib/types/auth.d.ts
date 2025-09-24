@@ -1,4 +1,4 @@
-// Lucia authentication types;
+// Lucia authentication types
 declare module 'lucia' {
   export interface CookieAttributes {
     httpOnly?: boolean;
@@ -8,27 +8,23 @@ declare module 'lucia' {
     maxAge?: number;
     expires?: Date;
   }
-
   export interface SessionCookieAttributesOptions {
     sameSite?: 'strict' | 'lax' | 'none';
     httpOnly?: boolean;
     secure?: boolean;
     path?: string;
   }
-
   export interface SessionCookie {
     name: string;
     value: string;
     attributes: CookieAttributes & { path: string };
   }
-
   export class Lucia {
     createSessionCookie(sessionId: string): SessionCookie;
     createBlankSessionCookie(): SessionCookie;
   }
 }
-
-// SvelteKit cookie types compatibility;
+// SvelteKit cookie types compatibility
 declare module '@sveltejs/kit' {
   export interface CookieSerializeOptions {
     path?: string;

@@ -1,7 +1,6 @@
 <!-- Comprehensive CRUD Dashboard showing all entities working together -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { notifications } from "$lib/stores/notification";
   import {
     Activity,
@@ -15,7 +14,6 @@
     TrendingUp,
   } from "lucide-svelte";
   import { onMount } from "svelte";
-
   // Data stores for all entities
   let cases: any[] = $state([]);
   let evidence: any[] = $state([]);
@@ -23,17 +21,15 @@
   let criminals = $state<any[] >([]);
   let activities: any[] = $state([]);
   let users_list = $state<any[] >([]);
-
   // Loading states
   let loading = $state({
-    cases: false,
-    evidence: false,
-    reports: false,
-    criminals: false,;
-    activities: false,;
-    users: false,;
+    cases: false
+    evidence: false
+    reports: false
+    criminals: false
+    activities: false
+    users: false
   });
-
   // Statistics
   let stats = $state({
     totalCases: 0,
@@ -43,23 +39,19 @@
     urgentActivities: 0,
     recentActivity: 0,
   });
-
   // Search and filter states
   let searchTerms = $state({
     cases: "",
     evidence: "",
-    reports: "",;
-    criminals: "",;
-    activities: "",;
+    reports: "",
+    criminals: "",
+    activities: "",
   });
-
   let refreshing = $state(false);
-
   // Fetch all data
   async function fetchAllData() {
     if (refreshing) return;
     refreshing = true;
-
     try {
       await Promise.all([
         fetchCases(),
@@ -69,19 +61,17 @@
         fetchActivities(),
         fetchUsers(),
       ]);
-
       calculateStats();
-
       notifications.add({
-        type: "success",;
-        title: "Data Refreshed",;
-        message: "All data has been successfully updated",;
+        type: "success",
+        title: "Data Refreshed",
+        message: "All data has been successfully updated",
       });
     } catch (error) {
       console.error("Error refreshing data:", error);
       notifications.add({
-        type: "error",;
-        title: "Refresh Failed",;
+        type: "error",
+        title: "Refresh Failed",
         message: "Failed to refresh some (data as { cases?: any; evidence?: any; reports?: any; criminals?: any; activities?: any; users?: any }). Please try again.",
       });
     } finally {
@@ -239,7 +229,6 @@
     fetchAllData();
   });
 </script>
-
 <div class="crud-dashboard container mx-auto px-4">
   <!-- Header -->
   <div class="space-y-4">
@@ -248,7 +237,6 @@
         <h1>CRUD Dashboard</h1>
         <p>Comprehensive view of all database entities and operations</p>
       </div>
-
       <div class="space-y-4">
         <button
           class="space-y-4"
@@ -261,7 +249,6 @@
         </button>
       </div>
     </div>
-
     <!-- Statistics Cards -->
     <div class="space-y-4">
       <div class="space-y-4">
@@ -274,7 +261,6 @@
           <div class="space-y-4">{stats.activeCases} active</div>
         </div>
       </div>
-
       <div class="space-y-4">
         <div class="space-y-4">
           <Camera size={24} />
@@ -285,7 +271,6 @@
           <div class="space-y-4">All formats</div>
         </div>
       </div>
-
       <div class="space-y-4">
         <div class="space-y-4">
           <FileText size={24} />
@@ -296,7 +281,6 @@
           <div class="space-y-4">Generated</div>
         </div>
       </div>
-
       <div class="space-y-4">
         <div class="space-y-4">
           <Activity size={24} />
@@ -309,7 +293,6 @@
       </div>
     </div>
   </div>
-
   <!-- Main Content Grid -->
   <div class="space-y-4">
     <!-- Cases Section -->
@@ -333,7 +316,6 @@
           </button>
         </div>
       </div>
-
       <div class="space-y-4">
         {#if loading.cases}
           <div class="space-y-4">Loading cases...</div>
@@ -359,14 +341,12 @@
           {/each}
         {/if}
       </div>
-
       <div class="space-y-4">
         <button class="space-y-4" onclick={() => viewAll("cases")}>
           View All Cases
         </button>
       </div>
     </div>
-
     <!-- Evidence Section -->
     <div class="space-y-4">
       <div class="space-y-4">
@@ -388,7 +368,6 @@
           </button>
         </div>
       </div>
-
       <div class="space-y-4">
         {#if loading.evidence}
           <div class="space-y-4">Loading evidence...</div>
@@ -418,14 +397,12 @@
           {/each}
         {/if}
       </div>
-
       <div class="space-y-4">
         <button class="space-y-4" onclick={() => viewAll("evidence")}>
           View All Evidence
         </button>
       </div>
     </div>
-
     <!-- Reports Section -->
     <div class="space-y-4">
       <div class="space-y-4">
@@ -447,7 +424,6 @@
           </button>
         </div>
       </div>
-
       <div class="space-y-4">
         {#if loading.reports}
           <div class="space-y-4">Loading reports...</div>
@@ -475,14 +451,12 @@
           {/each}
         {/if}
       </div>
-
       <div class="space-y-4">
         <button class="space-y-4" onclick={() => viewAll("reports")}>
           View All Reports
         </button>
       </div>
     </div>
-
     <!-- Activities Section -->
     <div class="space-y-4">
       <div class="space-y-4">
@@ -504,7 +478,6 @@
           </button>
         </div>
       </div>
-
       <div class="space-y-4">
         {#if loading.activities}
           <div class="space-y-4">Loading activities...</div>
@@ -530,14 +503,12 @@
           {/each}
         {/if}
       </div>
-
       <div class="space-y-4">
         <button class="space-y-4" onclick={() => viewAll("activities")}>
           View All Activities
         </button>
       </div>
     </div>
-
     <!-- Quick Actions Panel -->
     <div class="space-y-4">
       <div class="space-y-4">
@@ -546,29 +517,24 @@
           Quick Actions
         </h2>
       </div>
-
       <div class="space-y-4">
         <button class="space-y-4" onclick={() => createNew("cases")}>
           <FileText size={24} />
           <span>New Case</span>
         </button>
-
         <button class="space-y-4" onclick={() => createNew("evidence")}>
           <Camera size={24} />
           <span>Add Evidence</span>
         </button>
-
         <button class="space-y-4" onclick={() => createNew("reports")}>
           <FileText size={24} />
           <span>Create Report</span>
         </button>
-
         <button class="space-y-4" onclick={() => viewAll("activities")}>
           <Clock size={24} />
           <span>View Tasks</span>
         </button>
       </div>
-
       <!-- System Status -->
       <div class="space-y-4">
         <h3>System Status</h3>
@@ -590,10 +556,9 @@
     </div>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
-  .crud-dashboard {;
+  .crud-dashboard {
     padding: 2rem;
     background: #f8fafc;
     min-height: 100vh;
@@ -643,6 +608,3 @@
     }
   }
 </style>
-
-
-

@@ -1,26 +1,21 @@
 /*
  * RabbitMQ Message Publishing API Endpoint
- * 
+ *
  * Handles publishing messages to RabbitMQ queues for NLP processing pipeline
  */
-
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const { exchange, routingKey, message, headers } = await request.json()
-
 		// Validate required fields
 		if (!exchange || !routingKey || !message) {
 			return json({
 				error: 'Missing required fields: exchange, routingKey, message'
 			}, { status: 400 })
 		}
-
 		// In a real implementation, this would publish to actual RabbitMQ
 		// For development, we'll simulate the publish operation and log it
-		
 		const messageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 		const publishResult = {
 			messageId,
@@ -31,7 +26,6 @@ export const POST: RequestHandler = async ({ request }) => {
 			messageSize: JSON.stringify(message).length,
 			headers: headers || {}
 		}
-
 		// Log the message for debugging
 		console.log('📤 RabbitMQ Message Published:', {
 			messageId,
@@ -40,7 +34,6 @@ export const POST: RequestHandler = async ({ request }) => {
 			messageType: headers?.messageType,
 			messageSize: publishResult.messageSize
 		})
-
 		// Simulate different processing flows based on routing key
 		switch (routingKey) {
 			case 'document':
@@ -55,22 +48,18 @@ export const POST: RequestHandler = async ({ request }) => {
 			default:
 				console.log('📝 Generic message published to:', routingKey)
 		}
-
 		// In a real system, you might want to store this in a database
 		// or forward it to an actual RabbitMQ instance
-
 		return json(publishResult, {
 			status: 201,
 			headers: {
-				'X-Message-ID': messageId,
-				'X-Exchange': exchange,
+				'X-Message-ID': messageId
+				'X-Exchange': exchange
 				'X-Routing-Key': routingKey
 			}
 		})
-
 	} catch (error) {
 		console.error('Failed to publish RabbitMQ message:', error)
-		
 		return json({
 			error: 'Failed to publish message',
 			details: error instanceof Error ? error.message: 'Unknown error',
@@ -78,7 +67,6 @@ export const POST: RequestHandler = async ({ request }) => {
 		}, { status: 500 })
 	}
 }
-
 export const GET: RequestHandler = async () => {
 	// Return publish statistics
 	const stats = {
@@ -125,6 +113,5 @@ export const GET: RequestHandler = async () => {
 			}
 		}
 	}
-
 	return json(stats)
 }

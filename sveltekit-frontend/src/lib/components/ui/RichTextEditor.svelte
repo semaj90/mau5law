@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     content?: unknown;
     placeholder?: unknown;
@@ -20,7 +19,6 @@ https://svelte.dev/e/js_parse_error -->
     autoSave = false,
     autoSaveDelay = 2000
   }: Props = $props();
-
   import { Editor } from "@tiptap/core";
   import Image from "@tiptap/extension-image";
   import Placeholder from "@tiptap/extension-placeholder";
@@ -33,28 +31,23 @@ https://svelte.dev/e/js_parse_error -->
     ListOrdered,
     Save,
   } from "lucide-svelte";
-  import {  , onDestroy, onMount  } from "svelte";
-
-  
-
+  import { onDestroy, onMount  } from "svelte";
   let element: HTMLElement;
   let editor: Editor;
   let isReady = $state(false);
   let autoSaveTimer: NodeJS.Timeout;
-
   // Toolbar state
   let isBold = $state(false);
   let isItalic = $state(false);
   let isBulletList = $state(false);
   let isOrderedList = $state(false);
-
   $effect(() => {
         }),
         Image.configure({
-          inline: true,
-          allowBase64: true,
-          HTMLAttributes: {;
-            class: "max-w-full h-auto rounded-lg",;
+          inline: true
+          allowBase64: true
+          HTMLAttributes: {
+            class: "max-w-full h-auto rounded-lg",
           },
         }),
         Placeholder.configure({
@@ -76,17 +69,14 @@ https://svelte.dev/e/js_parse_error -->
       },
     });
   });
-
   onDestroy(() => {
     if (autoSaveTimer) {
       clearTimeout(autoSaveTimer);
   }
     editor?.destroy();
   });
-
   function updateToolbarState() {
     if (!editor || !isReady) return;
-
     isBold = editor.isActive("bold");
     isItalic = editor.isActive("italic");
     isBulletList = editor.isActive("bulletList");
@@ -94,15 +84,11 @@ https://svelte.dev/e/js_parse_error -->
   }
   function handleContentChange() {
     if (!editor || !isReady) return;
-
     const html = editor.getHTML();
     const json = editor.getJSON();
-
     // Convert to markdown (simple conversion)
     const markdown = htmlToMarkdown(html);
-
     ondispatch?.({ html, markdown, json });
-
     if (autoSave) {
       if (autoSaveTimer) {
         clearTimeout(autoSaveTimer);
@@ -164,29 +150,24 @@ https://svelte.dev/e/js_parse_error -->
   }}
   function saveContent() {
     if (!editor || !isReady) return;
-
     const html = editor.getHTML();
     const json = editor.getJSON();
     const markdown = htmlToMarkdown(html);
-
     ondispatch?.({ html, markdown, json });
   }
   // Public methods
   export function getContent() {
     if (!editor || !isReady) return { html: "", markdown: "", json: null };
-
     const html = editor.getHTML();
     const json = editor.getJSON();
     const markdown = htmlToMarkdown(html);
-
     return { html, markdown, json };
   }
   export function setContent(;
-    newContent: string,
+    newContent: string
     format: "html" | "json" = "html"
   ) {
     if (!editor || !isReady) return;
-
     if (format === "json") {
       editor.commands.setContent(JSON.parse(newContent));
     } else {
@@ -199,7 +180,6 @@ https://svelte.dev/e/js_parse_error -->
     editor?.commands.clearContent();
   }
 </script>
-
 {#if showToolbar && editable}
   <div
     class="space-y-4"
@@ -214,9 +194,7 @@ https://svelte.dev/e/js_parse_error -->
       <option value="2">Heading 2</option>
       <option value="3">Heading 3</option>
     </select>
-
     <div class="space-y-4"></div>
-
     <!-- Text Formatting -->
     <button
       type="button"
@@ -226,7 +204,6 @@ https://svelte.dev/e/js_parse_error -->
     >
       <Bold class="space-y-4" />
     </button>
-
     <button
       type="button"
       class="space-y-4"
@@ -235,9 +212,7 @@ https://svelte.dev/e/js_parse_error -->
     >
       <Italic class="space-y-4" />
     </button>
-
     <div class="space-y-4"></div>
-
     <!-- Lists -->
     <button
       type="button"
@@ -247,7 +222,6 @@ https://svelte.dev/e/js_parse_error -->
     >
       <List class="space-y-4" />
     </button>
-
     <button
       type="button"
       class="space-y-4"
@@ -256,9 +230,7 @@ https://svelte.dev/e/js_parse_error -->
     >
       <ListOrdered class="space-y-4" />
     </button>
-
     <div class="space-y-4"></div>
-
     <!-- Image -->
     <button
       type="button"
@@ -268,9 +240,7 @@ https://svelte.dev/e/js_parse_error -->
     >
       <ImageIcon class="space-y-4" />
     </button>
-
     <div class="space-y-4"></div>
-
     <!-- Save Button -->
     <button
       type="button"
@@ -283,19 +253,17 @@ https://svelte.dev/e/js_parse_error -->
     </button>
   </div>
 {/if}
-
 <div
   bind:this={element}
   class="space-y-4"
 ></div>
-
 <style>
   /* @unocss-include */
-  :global(.ProseMirror) {;
+  :global(.ProseMirror) {
     outline: none;
     min-height: 200px;
 }
-  :global(.ProseMirror p.is-editor-empty:first-child::before) {
+  :global($1) {
     content: attr(data-placeholder);
     float: left;
     color: #9ca3af;
@@ -340,4 +308,3 @@ https://svelte.dev/e/js_parse_error -->
     font-style: italic;
 }
 </style>
-

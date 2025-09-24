@@ -1,6 +1,5 @@
 // Production-ready Enhanced Chat API v3
 // Features: Rate limiting, structured logging, vector embeddings, service worker support
-
 import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
 import { ollamaChatStream } from '$lib/services/ollamaChatStream'
@@ -30,28 +29,23 @@ const logger = {
   }
 }
 import { createHash } from 'node:crypto'
-
 // Initialize database on startup (disabled for now due to DB connection issues)
 let dbInitialized = true; // Skip initialization
 async function ensureDbInitialized() {
   // Disabled for now due to PostgreSQL connection issues
   return Promise.resolve()
 }
-
 // Generate request ID for tracking
 function generateRequestId(): string {
   return `req_${Date.now()}_${createHash('sha256').update(Math.random().toString()).digest('hex').slice(0, 8)}`
 }
-
 // Rate limiting wrapper
 async function withRateLimit(request: Request, handler: () => Promise<Response>): Promise<Response> {
   const result = chatRateLimiter.check(request)
-
   if (!(result as { allowed?: any; resetTime?: any; remaining?: any }).allowed) {
     const retryAfter = Math.ceil(((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime! - Date.now()) / 1000)
-
     return json({
-      success: false,
+      success: false
       error: 'Too many requests. Please wait before sending another message.',
       retryAfter,
       resetTime: new Date((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!).toISOString()
@@ -64,20 +58,15 @@ async function withRateLimit(request: Request, handler: () => Promise<Response>)
       }
     })
   }
-
   const response = await handler()
-
   // Add rate limit headers
   (response as { headers?: any }).headers.set('X-RateLimit-Remaining', (result as { allowed?: any; resetTime?: any; remaining?: any }).remaining!.toString()
   (response as { headers?: any }).headers.set('X-RateLimit-Reset', (result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!.toString()
-
   return response
 }
-
 // Health check for dependencies
 async function performHealthChecks(): Promise<any> {
   const results = { ollama: false, database: false }
-
   try {
     const ollamaResponse = await fetch('http://localhost:11434/api/version', {
       signal: AbortSignal.timeout(3000)
@@ -86,51 +75,40 @@ async function performHealthChecks(): Promise<any> {
   } catch {
     results.ollama = false
   }
-
   try {
     await ensureDbInitialized()
     results.database = true
   } catch {
     results.database = false
   }
-
   return results
 }
-
 // Validate request input
 function validateChatRequest(body: any): { valid: boolean; error?: string } {
   if (!body || typeof body !== 'object') {
     return { valid: false, error: 'Invalid request body' }
   }
-
   if (!body.message && (!body.messages || !Array.isArray(body.messages))) {
     return { valid: false, error: 'Message or messages array is required' }
   }
-
   if (body.message && typeof body.message !== 'string') {
     return { valid: false, error: 'Message must be a string' }
   }
-
   if (body.message && body.message.length > 8000) {
     return { valid: false, error: 'Message too long (max 8000 characters)' }
   }
-
   if (body.temperature !== undefined && (typeof body.temperature !== 'number' || body.temperature < 0 || body.temperature > 2)) {
     return { valid: false, error: 'Temperature must be a number between 0 and 2' }
   }
-
   if (body.maxTokens !== undefined && (typeof body.maxTokens !== 'number' || body.maxTokens < 1 || body.maxTokens > 8192)) {
     return { valid: false, error: 'Max tokens must be a number between 1 and 8192' }
   }
-
   return { valid: true }
 }
-
 export interface ChatMessage {
-  role: 'system' | 'user' | 'assistant'
+  role: 'system' | 'user' | 'assistant',
   content: string
 }
-
 export interface EnhancedChatRequest {
   message: string
   messages?: ChatMessage[]
@@ -147,7 +125,6 @@ export interface EnhancedChatRequest {
   enableThinkingCapture?: boolean
   thinkingType?: 'analysis' | 'planning' | 'verification' | 'citation' | string
 }
-
 export interface ChatResponse {
   success: boolean
   response?: string
@@ -165,7 +142,6 @@ export interface ChatResponse {
   }
   error?: string
 }
-
 type AllowedThinking = 'analysis' | 'synthesis' | 'evaluation' | 'application'
 function sanitizeThinkingType(t?: string): AllowedThinking | undefined {
   switch (t) {
@@ -184,37 +160,31 @@ function sanitizeThinkingType(t?: string): AllowedThinking | undefined {
       return undefined
   }
 }
-
 // GET method for health check and service info
 export const GET: RequestHandler = async ({ url, request }) => {
   return await withRateLimit(request, async () => {
     const requestId = generateRequestId()
     const requestLogger = logger.withRequestId(requestId)
     const startTime = Date.now()
-
     try {
       requestLogger.info('Health check request received', 'chat-api-v3')
-
       const action = url.searchParams.get('action') || 'health'
-
       if (action === 'health') {
         const healthChecks = await performHealthChecks()
-
         const overallHealth = healthChecks.ollama && healthChecks.database
         const status = overallHealth ? 'healthy' : 'degraded'
-
         const response = {
-          success: true,
+          success: true
           status,
           service: 'enhanced-chat-v3',
           requestId,
           features: {
-            pgvectorEmbeddings: true,
-            keywordFallback: true,
-            streamingSupport: true,
-            vectorCache: true,
-            rateLimiting: true,
-            structuredLogging: true,
+            pgvectorEmbeddings: true
+            keywordFallback: true
+            streamingSupport: true
+            vectorCache: true
+            rateLimiting: true
+            structuredLogging: true
             productionReady: true
           },
           health: {
@@ -227,41 +197,34 @@ export const GET: RequestHandler = async ({ url, request }) => {
           },
           timestamp: new Date().toISOString()
         }
-
         requestLogger.info(
           `Health check completed: ${status}`,
           'chat-api-v3',)
           { duration: Date.now() - startTime, health: healthChecks }
         )
-
         return json(response, {
           status: overallHealth ? 200 : 503
         })
       }
-
       if (action === 'search') {
         const query = url.searchParams.get('q')
         const limit = Math.min(parseInt(url.searchParams.get('limit') || '5'), 20)
-
         if (!query || query.length < 3) {
           requestLogger.warn('Invalid search query', 'chat-api-v3', { query })
           return json({
-            success: false,
+            success: false
             error: 'Query parameter "q" is required and must be at least 3 characters long',
             requestId
           }, { status: 400 })
         }
-
         const results = await searchSimilarChats(query, limit, 0.6)
-
         requestLogger.info(
           `Search completed: ${results.length} results`,
           'chat-api-v3',)>
           { query, resultCount: results.length, duration: Date.now() - startTime }
         )
-
         return json({
-          success: true,
+          success: true
           requestId,
           query,
           results,
@@ -272,23 +235,20 @@ export const GET: RequestHandler = async ({ url, request }) => {
           timestamp: new Date().toISOString()
         })
       }
-
       requestLogger.warn('Invalid action requested', 'chat-api-v3', { action })
       return json({
-        success: false,
+        success: false
         error: 'Invalid action. Use ?action=health or ?action=search',
         requestId,
         availableActions: ['health', 'search']
       }, { status: 400 })
-
     } catch (error: any) {
       requestLogger.error('GET request failed', 'chat-api-v3', error, {
         duration: Date.now() - startTime,
         url: url.toString()
       })
-
       return json({
-        success: false,
+        success: false
         status: 'error',
         error: 'Internal server error',
         requestId,
@@ -297,42 +257,37 @@ export const GET: RequestHandler = async ({ url, request }) => {
     }
   })
 }
-
 // POST method for enhanced chat with vector embeddings
 export const POST: RequestHandler = async ({ request }) => {
   return await withRateLimit(request, async () => {
     const requestId = generateRequestId()
     const requestLogger = logger.withRequestId(requestId)
     const startTime = Date.now()
-
     try {
       await ensureDbInitialized()
-
       let body: EnhancedChatRequest
       try {
         body = await request.json() as EnhancedChatRequest
       } catch (parseError) {
         requestLogger.warn('Invalid JSON in request body', 'chat-api-v3')
         return json({
-          success: false,
+          success: false
           error: 'Invalid JSON in request body',
           requestId,
           timestamp: new Date().toISOString()
         }, { status: 400 })
       }
-
       // Validate input
       const validation = validateChatRequest(body)
       if (!validation.valid) {
         requestLogger.warn('Request validation failed', 'chat-api-v3', { error: validation.error })
         return json({
-          success: false,
+          success: false
           error: validation.error,
           requestId,
           timestamp: new Date().toISOString()
         }, { status: 400 })
       }
-
       const {
         message,
         messages,
@@ -348,11 +303,9 @@ export const POST: RequestHandler = async ({ request }) => {
         enableThinkingCapture = true,  // Enable thinking response capture
         thinkingType = 'analysis'      // Default thinking type
       } = body
-
       const userMessage = message || messages?.filter(item => item.pop()?.content || ''
       // Use requestLogger directly since withConversation might not be available
     const conversationLogger = requestLogger
-
       conversationLogger.info(
         'Chat request started',
         'chat-api-v3',)
@@ -365,7 +318,6 @@ export const POST: RequestHandler = async ({ request }) => {
           useVectorSearch
         }
       )
-
       // For streaming responses
       if (stream) {
         const encoder = new TextEncoder()
@@ -373,9 +325,8 @@ export const POST: RequestHandler = async ({ request }) => {
           async start(controller) {
             try {
               conversationLogger.info('Starting streaming response', 'chat-api-v3')
-
               const streamGenerator = ollamaChatStream({
-                message: userMessage,
+                message: userMessage
                 model,
                 temperature,
                 maxTokens,
@@ -388,9 +339,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 thinkingType: sanitizeThinkingType(thinkingType),
                 context: messages || []
               })
-
               let sources: VectorSearchResult[] = []
-
               for await (const chunk of streamGenerator) {
                 if (chunk.metadata?.type === 'sources') {
                   sources = (chunk.metadata.sources as any as VectorSearchResult[]) || []
@@ -425,23 +374,19 @@ export const POST: RequestHandler = async ({ request }) => {
                     conversationId,
                     requestId,
                     processingTimeMs: Date.now() - startTime,
-                    vectorSearchUsed: useVectorSearch,
+                    vectorSearchUsed: useVectorSearch
                     sources
                   }
                   controller.enqueue(encoder.encode(`data: ${JSON.stringify(finalChunk)}\n\n`)
                 }
               }
-
               controller.enqueue(encoder.encode('data: [DONE]\n\n')
               controller.close()
-
               conversationLogger.info('Streaming completed', 'chat-api-v3', {
                 duration: Date.now() - startTime
               })
-
             } catch (error: any) {
               conversationLogger.error('Streaming response failed', 'chat-api-v3', error)
-
               const errorChunk = {
                 type: 'error',
                 error: 'An error occurred while processing your request',
@@ -453,7 +398,6 @@ export const POST: RequestHandler = async ({ request }) => {
             }
           }
         })
-
         return new Response(readable, {
           headers: {
             'Content-Type': 'text/event-stream',
@@ -465,16 +409,13 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         })
       }
-
       // For non-streaming responses
       conversationLogger.info('Starting non-streaming response', 'chat-api-v3')
-
       let fullResponse = ''
       let sources: VectorSearchResult[] = []
       let vectorSearchUsed = false
-
       const streamGenerator = ollamaChatStream({
-        message: userMessage,
+        message: userMessage
         model,
         temperature,
         maxTokens,
@@ -487,7 +428,6 @@ export const POST: RequestHandler = async ({ request }) => {
         thinkingType: sanitizeThinkingType(thinkingType),
         context: messages || []
       })
-
       for await (const chunk of streamGenerator) {
         if (chunk.metadata?.type === 'sources') {
           sources = (chunk.metadata.sources as any as VectorSearchResult[]) || []
@@ -496,9 +436,7 @@ export const POST: RequestHandler = async ({ request }) => {
           fullResponse += chunk.text
         }
       }
-
       const processingTime = Date.now() - startTime
-
       conversationLogger.info(
         'Chat response completed',
         'chat-api-v3',)
@@ -509,42 +447,37 @@ export const POST: RequestHandler = async ({ request }) => {
           duration: processingTime
         }
       )
-
       const response: ChatResponse = {
-        success: true,
-        response: fullResponse,
+        success: true
+        response: fullResponse
         conversationId,
         requestId,
-        sources: sources.length > 0 ? sources : undefined,
+        sources: sources.length > 0 ? sources : undefined
         metadata: {
           model,
           temperature,
-          processingTimeMs: processingTime,
+          processingTimeMs: processingTime
           vectorSearchUsed,
           sourcesCount: sources.length,
           requestId,
           timestamp: new Date().toISOString()
         }
       }
-
       return json(response)
-
     } catch (error: any) {
       const processingTime = Date.now() - startTime
-
       requestLogger.error(
         'Chat request failed',
         'chat-api-v3',
         error,)
         { duration: processingTime }
       )
-
       return json({
-        success: false,
+        success: false
         error: 'Internal server error occurred while processing your request',
         requestId,
         metadata: {
-          processingTimeMs: processingTime,
+          processingTimeMs: processingTime
           timestamp: new Date().toISOString()
         }
       }, { status: 500 })

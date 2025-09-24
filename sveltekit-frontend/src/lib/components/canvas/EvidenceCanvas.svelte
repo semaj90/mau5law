@@ -2,7 +2,6 @@
   // Enhanced Evidence Canvas with NES.css styling and interactive features
   import { onMount } from 'svelte';
   import type { Snippet } from 'svelte';
-
   // Enhanced CaseFile interface for legal evidence
   interface CaseFile {
     id: string;
@@ -16,7 +15,6 @@
     chainOfCustody?: boolean;
     confidentialityLevel?: 'public' | 'restricted' | 'confidential' | 'classified';
   }
-
   interface Props {
     caseFiles?: CaseFile[];
     interactive?: boolean;
@@ -26,7 +24,6 @@
     onFileHover?: (file: CaseFile | null) => void;
     children?: Snippet;
   }
-
   let {
     caseFiles = [],
     interactive = true,
@@ -36,14 +33,12 @@
     onFileHover,
     children
   }: Props = $props();
-
   let canvas: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D | null = null;
   let hoveredFile: CaseFile | null = $state(null);
   let selectedFile: CaseFile | null = $state(null);
   let mousePos = $state({ x: 0, y: 0 });
   let animationFrame = 0;
-
   // Theme configurations
   const themes = {
     dark: {
@@ -69,32 +64,26 @@
       text: '#e0e0e0',
       accent: '#ffd700',
       success: '#00ff41',
-      warning: '#ff6b35',;
-      danger: '#ff0041',;
+      warning: '#ff6b35',
+      danger: '#ff0041',
       border: '#b0b0b0';
     }
   };
-
   const currentTheme = $derived(themes[theme]);
-
   onMount(() => {
     if (!canvas) return;
     ctx = canvas.getContext('2d');
     if (!ctx) return;
-
     setupCanvas();
     startAnimationLoop();
-
     return () => {
       if (animationFrame) {
         cancelAnimationFrame(animationFrame);
       }
     };
   });
-
   function setupCanvas() {
     if (!canvas || !ctx) return;
-
     // High DPI support
     const devicePixelRatio = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
@@ -104,7 +93,6 @@
     canvas.style.height = `${rect.height}px`;
     ctx.scale(devicePixelRatio, devicePixelRatio);
   }
-
   function startAnimationLoop() {
     function animate() {
       renderScene();
@@ -112,18 +100,14 @@
     }
     animate();
   }
-
   function calculateRiskScore(file: CaseFile): number {
     let risk = 0;
-
     // Base risk from title content
     if (file.title?.toLowerCase().includes('confidential')) risk += 30;
     if (file.title?.toLowerCase().includes('classified')) risk += 50;
     if (file.title?.toLowerCase().includes('sensitive')) risk += 25;
-
     // Risk from file size
     if ((file.fileSize || 0) > 10000000) risk += 20;
-
     // Risk from confidentiality level
     switch (file.confidentialityLevel) {
       case 'classified': risk += 40; break;
@@ -131,10 +115,8 @@
       case 'restricted': risk += 15; break;
       default: risk += 0;
     }
-
     // Risk from chain of custody issues
     if (!file.chainOfCustody) risk += 30;
-
     // Risk from evidence type
     switch (file.evidenceType) {
       case 'digital': risk += 10; break;
@@ -142,13 +124,11 @@
       case 'forensic': risk += 5; break;
       default: risk += 0;
     }
-
     return Math.min(risk + Math.random() * 15, 100);
   }
-
   function getEvidenceColor(evidenceType: string): string {
     switch (evidenceType) {
-      case 'forensic': return currentTheme.success;
+      case 'forensic': return currentTheme.succes;
       case 'document': return currentTheme.accent;
       case 'witness': return currentTheme.warning;
       case 'digital': return '#00ccff';
@@ -156,50 +136,39 @@
       default: return currentTheme.text;
     }
   }
-
   function getStatusColor(status: string): string {
     switch (status) {
-      case 'verified': return currentTheme.success;
+      case 'verified': return currentTheme.succes;
       case 'pending': return currentTheme.warning;
       case 'disputed': return currentTheme.danger;
       case 'archived': return currentTheme.border;
       default: return currentTheme.text;
     }
   }
-
   function renderScene() {
     if (!ctx || !canvas) return;
-
     const rect = canvas.getBoundingClientRect();
-
     // Clear canvas
     ctx.fillStyle = currentTheme.background;
     ctx.fillRect(0, 0, rect.width, rect.height);
-
     // Draw grid background
     drawGrid(rect.width, rect.height);
-
     // Draw evidence files
     drawEvidenceFiles(rect.width, rect.height);
-
     // Draw hover tooltip
     if (hoveredFile && interactive) {
       drawTooltip();
     }
-
     // Draw file count and stats
     if (showDetails) {
       drawStatistics(rect.width, rect.height);
     }
   }
-
   function drawGrid(width: number, height: number) {
     if (!ctx) return;
-
     ctx.strokeStyle = currentTheme.border + '20';
     ctx.lineWidth = 1;
     const gridSize = 25;
-
     // Vertical lines
     for (let x = 0; x <= width; x += gridSize) {
       ctx.beginPath();
@@ -207,7 +176,6 @@
       ctx.lineTo(x, height);
       ctx.stroke();
     }
-
     // Horizontal lines
     for (let y = 0; y <= height; y += gridSize) {
       ctx.beginPath();
@@ -216,63 +184,49 @@
       ctx.stroke();
     }
   }
-
   function drawEvidenceFiles(width: number, height: number) {
     if (!ctx) return;
-
     const itemHeight = 80;
     const padding = 10;
     const startY = 20;
-
     caseFiles.forEach((file, idx) => {
       const y = startY + idx * itemHeight;
       const risk = file.riskScore || calculateRiskScore(file);
       const isHovered = hoveredFile?.id === file.id;
       const isSelected = selectedFile?.id === file.id;
-
       // File container background
       const bgAlpha = isHovered ? '40' : (isSelected ? '30' : '20');
       ctx.fillStyle = currentTheme.accent + bgAlpha;
       ctx.fillRect(padding, y, width - padding * 2, itemHeight - 5);
-
       // Risk indicator bar
       const riskWidth = ((width - padding * 2) * risk) / 100;
-      let riskColor = currentTheme.success;
+      let riskColor = currentTheme.succes;
       if (risk > 75) riskColor = currentTheme.danger;
       else if (risk > 50) riskColor = currentTheme.warning;
-
       ctx.fillStyle = riskColor + '60';
       ctx.fillRect(padding, y, riskWidth, 8);
-
       // Evidence type indicator
       ctx.fillStyle = getEvidenceColor(file.evidenceType || 'document');
       ctx.fillRect(padding, y + 10, 6, itemHeight - 20);
-
       // File title
       ctx.fillStyle = currentTheme.text;
       ctx.font = 'bold 14px "Press Start 2P", monospace';
       ctx.fillText(file.title.substring(0, 40), padding + 15, y + 25);
-
       // File details
       ctx.font = '10px "Press Start 2P", monospace';
       ctx.fillStyle = currentTheme.text + 'CC';
-
       let detailY = y + 40;
       ctx.fillText(`Type: ${file.evidenceType || 'Unknown'}`, padding + 15, detailY);
       detailY += 12;
-
       ctx.fillText(`Risk: ${Math.round(risk)}%`, padding + 15, detailY);
-
       // Status indicator
       ctx.fillStyle = getStatusColor(file.status || 'pending');
       ctx.fillText(`Status: ${file.status || 'Pending'}`, padding + 150, detailY);
-
       // Chain of custody indicator
       if (file.chainOfCustody !== undefined) {
         ctx.fillStyle = file.chainOfCustody ? currentTheme.success : currentTheme.danger;
         ctx.fillText(file.chainOfCustody ? '✓ CoC' : '✗ CoC', padding + 280, detailY);
       }
-
       // Selection border
       if (isSelected) {
         ctx.strokeStyle = currentTheme.accent;
@@ -281,7 +235,6 @@
         ctx.strokeRect(padding, y, width - padding * 2, itemHeight - 5);
         ctx.setLineDash([]);
       }
-
       // Hover border
       if (isHovered) {
         ctx.strokeStyle = currentTheme.accent + '80';
@@ -290,154 +243,118 @@
       }
     });
   }
-
   function drawTooltip() {
     if (!ctx || !hoveredFile) return;
-
     const tooltipWidth = 300;
     const tooltipHeight = 120;
     let tooltipX = mousePos.x + 15;
     let tooltipY = mousePos.y - tooltipHeight - 10;
-
     // Keep tooltip in bounds
     const rect = canvas.getBoundingClientRect();
     if (tooltipX + tooltipWidth > rect.width) tooltipX = mousePos.x - tooltipWidth - 15;
     if (tooltipY < 0) tooltipY = mousePos.y + 15;
-
     // Tooltip background
     ctx.fillStyle = currentTheme.background + 'F0';
     ctx.fillRect(tooltipX, tooltipY, tooltipWidth, tooltipHeight);
-
     // Tooltip border
     ctx.strokeStyle = currentTheme.accent;
     ctx.lineWidth = 2;
     ctx.strokeRect(tooltipX, tooltipY, tooltipWidth, tooltipHeight);
-
     // Tooltip content
     ctx.fillStyle = currentTheme.text;
     ctx.font = 'bold 12px "Press Start 2P", monospace';
     ctx.fillText(hoveredFile.title, tooltipX + 10, tooltipY + 20);
-
     ctx.font = '8px "Press Start 2P", monospace';
     let textY = tooltipY + 35;
-
     ctx.fillText(`ID: ${hoveredFile.id}`, tooltipX + 10, textY);
     textY += 12;
-
     ctx.fillText(`Type: ${hoveredFile.evidenceType || 'Unknown'}`, tooltipX + 10, textY);
     textY += 12;
-
     ctx.fillText(`Status: ${hoveredFile.status || 'Pending'}`, tooltipX + 10, textY);
     textY += 12;
-
     ctx.fillText(`Confidentiality: ${hoveredFile.confidentialityLevel || 'Public'}`, tooltipX + 10, textY);
     textY += 12;
-
     if (hoveredFile.fileSize) {
       ctx.fillText(`Size: ${(hoveredFile.fileSize / 1024 / 1024).toFixed(2)} MB`, tooltipX + 10, textY);
       textY += 12;
     }
-
     if (hoveredFile.createdAt) {
       ctx.fillText(`Created: ${hoveredFile.createdAt.toLocaleDateString()}`, tooltipX + 10, textY);
     }
   }
-
   function drawStatistics(width: number, height: number) {
     if (!ctx) return;
-
     const stats = {
       total: caseFiles.length,
-      verified: caseFiles.filter(f => f.status === 'verified').length,;
-      pending: caseFiles.filter(f => f.status === 'pending').length,;
+      verified: caseFiles.filter(f => f.status === 'verified').length,
+      pending: caseFiles.filter(f => f.status === 'pending').length,
       disputed: caseFiles.filter(f => f.status === 'disputed').length,
       highRisk: caseFiles.filter(f => (f.riskScore || calculateRiskScore(f)) > 75).length,
       chainOfCustody: caseFiles.filter(f => f.chainOfCustody).length;
     };
-
     // Stats background
     ctx.fillStyle = currentTheme.background + 'E0';
     ctx.fillRect(width - 200, 10, 190, 130);
-
     ctx.strokeStyle = currentTheme.border;
     ctx.lineWidth = 2;
     ctx.strokeRect(width - 200, 10, 190, 130);
-
     // Stats content
     ctx.fillStyle = currentTheme.text;
     ctx.font = 'bold 10px "Press Start 2P", monospace';
     ctx.fillText('EVIDENCE STATS', width - 190, 30);
-
     ctx.font = '8px "Press Start 2P", monospace';
     let statsY = 45;
-
     ctx.fillText(`Total Files: ${stats.total}`, width - 190, statsY);
     statsY += 12;
-
-    ctx.fillStyle = currentTheme.success;
+    ctx.fillStyle = currentTheme.succes;
     ctx.fillText(`Verified: ${stats.verified}`, width - 190, statsY);
     statsY += 12;
-
     ctx.fillStyle = currentTheme.warning;
     ctx.fillText(`Pending: ${stats.pending}`, width - 190, statsY);
     statsY += 12;
-
     ctx.fillStyle = currentTheme.danger;
     ctx.fillText(`Disputed: ${stats.disputed}`, width - 190, statsY);
     statsY += 12;
-
     ctx.fillText(`High Risk: ${stats.highRisk}`, width - 190, statsY);
     statsY += 12;
-
-    ctx.fillStyle = currentTheme.success;
+    ctx.fillStyle = currentTheme.succes;
     ctx.fillText(`Chain CoC: ${stats.chainOfCustody}`, width - 190, statsY);
   }
-
   function getFileAtPosition(x: number, y: number): CaseFile | null {
     const itemHeight = 80;
     const padding = 10;
     const startY = 20;
-
     const rect = canvas.getBoundingClientRect();
     if (x < padding || x > rect.width - padding) return null;
-
     const fileIndex = Math.floor((y - startY) / itemHeight);
     return caseFiles[fileIndex] || null;
   }
-
   function handleMouseMove(event: MouseEvent) {
     if (!canvas || !interactive) return;
-
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-
     mousePos = { x, y };
-
     const file = getFileAtPosition(x, y);
     if (file !== hoveredFile) {
-      hoveredFile = file;
+      hoveredFile = fil;
       onFileHover?.(file);
       canvas.style.cursor = file ? 'pointer' : 'default';
     }
   }
-
   function handleMouseClick(event: MouseEvent) {
     if (!canvas || !interactive) return;
-
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-
     const file = getFileAtPosition(x, y);
     if (file) {
-      selectedFile = file;
+      selectedFile = fil;
       onFileClick?.(file);
     } else {
       selectedFile = null;
     }
   }
-
   function handleMouseLeave() {
     hoveredFile = null;
     onFileHover?.(null);
@@ -445,7 +362,6 @@
       canvas.style.cursor = 'default';
     }
   }
-
   // Generate sample data if none provided
   $effect(() => {
     if (caseFiles.length === 0) {
@@ -456,7 +372,7 @@
           evidenceType: 'forensic',
           status: 'verified',
           riskScore: 25,
-          chainOfCustody: true,
+          chainOfCustody: true
           confidentialityLevel: 'restricted',
           fileSize: 15728640,
           createdAt: new Date('2024-01-15');
@@ -467,10 +383,10 @@
           evidenceType: 'witness',
           status: 'pending',
           riskScore: 45,
-          chainOfCustody: true,
+          chainOfCustody: true
           confidentialityLevel: 'confidential',
           fileSize: 2097152,
-          createdAt: new Date('2024-01-16');
+          createdAt: new Date('2024-01-16'),
         },
         {
           id: 'EV003',
@@ -478,27 +394,26 @@
           evidenceType: 'digital',
           status: 'disputed',
           riskScore: 75,
-          chainOfCustody: false,
+          chainOfCustody: false
           confidentialityLevel: 'classified',
           fileSize: 52428800,
-          createdAt: new Date('2024-01-17');
+          createdAt: new Date('2024-01-17'),
         },
         {
-          id: 'EV004',;
+          id: 'EV004',
           title: 'Contract Agreement Document',
-          evidenceType: 'document',;
+          evidenceType: 'document',
           status: 'verified',
           riskScore: 35,
-          chainOfCustody: true,
+          chainOfCustody: true
           confidentialityLevel: 'public',
           fileSize: 1048576,
-          createdAt: new Date('2024-01-18');
+          createdAt: new Date('2024-01-18'),
         }
       ];
-      caseFiles = sampleFiles;
+      caseFiles = sampleFile;
     }
   });
-
   // Update canvas size when dimensions change
   $effect(() => {
     if (canvas) {
@@ -506,10 +421,8 @@
     }
   });
 </script>
-
 <div class="evidence-canvas-container nes-container with-title" role="region" aria-label="Enhanced evidence visualization system">
   <p class="title">Evidence Management Canvas</p>
-
   <div class="canvas-wrapper">
     <canvas
       bind:this={canvas}
@@ -521,7 +434,6 @@
       class="evidence-canvas"
     ></canvas>
   </div>
-
   <div class="controls-panel">
     <div class="nes-field">
       <label for="theme-select">Theme:</label>
@@ -533,18 +445,15 @@
         </select>
       </div>
     </div>
-
     <label class="nes-field">
       <input type="checkbox" class="nes-checkbox" bind:checked={interactive}>
       <span>Interactive Mode</span>
     </label>
-
     <label class="nes-field">
       <input type="checkbox" class="nes-checkbox" bind:checked={showDetails}>
       <span>Show Statistics</span>
     </label>
   </div>
-
   {#if selectedFile}
     <div class="file-details nes-container">
       <h4>Selected Evidence: {selectedFile.title}</h4>
@@ -564,22 +473,19 @@
       </div>
     </div>
   {/if}
-
   {#if children}
     <div class="additional-content">
       {@render children()}
     </div>
   {/if}
 </div>
-
 <style>
-  .evidence-canvas-container {;
+  .evidence-canvas-container {
     margin: 1rem;
     padding: 1rem;
     background: var(--yorha-bg-secondary);
     border: 2px solid var(--yorha-text-muted);
   }
-
   .canvas-wrapper {
     position: relative;
     display: inline-block;
@@ -587,16 +493,14 @@
     background: var(--yorha-bg-primary);
     margin-bottom: 1rem;
   }
-
   .evidence-canvas {
     display: block;
     background: transparent;
     cursor: default;
     image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
+    image-rendering: -moz-crisp-edge;
+    image-rendering: crisp-edge;
   }
-
   .controls-panel {
     display: flex;
     gap: 1rem;
@@ -604,31 +508,26 @@
     flex-wrap: wrap;
     margin-bottom: 1rem;
   }
-
   .nes-field {
     margin: 0;
   }
-
   .nes-field label {
     font-family: 'Press Start 2P', monospace;
     font-size: 10px;
     color: var(--yorha-text-accent);
     margin-right: 0.5rem;
   }
-
   .file-details {
     padding: 1rem;
     background: var(--yorha-bg-tertiary);
     border: 2px solid var(--yorha-accent);
   }
-
   .file-details h4 {
     margin: 0 0 1rem 0;
     color: var(--yorha-text-accent);
     font-family: 'Press Start 2P', monospace;
     font-size: 12px;
   }
-
   .details-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -637,25 +536,21 @@
     font-size: 8px;
     color: var(--yorha-text-primary);
   }
-
   .details-grid div {
     padding: 0.25rem;
     background: var(--yorha-bg-primary);
     border: 1px solid var(--yorha-text-muted);
   }
-
   .additional-content {
     margin-top: 1rem;
     padding: 1rem;
     background: var(--yorha-bg-tertiary);
     border: 1px solid var(--yorha-text-muted);
   }
-
   /* Animation for canvas */
   .canvas-wrapper {
     animation: borderGlow 4s ease-in-out infinite alternate;
   }
-
   @keyframes borderGlow {
     from {
       box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
@@ -664,19 +559,16 @@
       box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
     }
   }
-
   /* Responsive design */
   @media (max-width: 768px) {
     .controls-panel {
       flex-direction: column;
       align-items: flex-start;
     }
-
     .evidence-canvas {
       max-width: 100%;
       height: auto;
     }
-
     .details-grid {
       grid-template-columns: 1fr;
     }

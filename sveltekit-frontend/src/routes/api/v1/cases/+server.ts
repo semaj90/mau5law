@@ -3,7 +3,6 @@
  * GET /api/v1/cases - List user's cases (with pagination)
  * POST /api/v1/cases - Create new case
  */
-
 import { json, error, type RequestHandler } from '@sveltejs/kit'
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
 import {
@@ -13,7 +12,6 @@ import {
 } from '$lib/server/services/user-scoped-crud'
 import { queueCaseSynthesis } from '$lib/server/services/background-job-queue'
 import { z } from 'zod'
-
 // Query parameters schema for GET requests
 const CasesQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
@@ -23,7 +21,6 @@ const CasesQuerySchema = z.object({
   status: z.enum(['open', 'closed', 'pending', 'archived']).optional(),
   priority: z.enum(['low', 'medium', 'high', 'urgent']).optional()
 })
-
 /*
  * GET /api/v1/cases
  * List user's cases with pagination and filtering
@@ -37,16 +34,12 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
       )
     }
-
     // Parse query parameters
     const url = new URL(request.url)
     const queryParams = Object.fromEntries(url.searchParams.entries()
-
     const validatedQuery = CasesQuerySchema.parse(queryParams)
-
     // Create service instance
     const casesService = new CasesCRUDService(locals.user.id)
-
     // Get cases with pagination
     const result = await casesService.list({
       page: validatedQuery.page,
@@ -54,7 +47,6 @@ export const GET: RequestHandler = async ({ request, locals }) => {
       sortBy: validatedQuery.sortBy,
       sortOrder: validatedQuery.sortOrder
     })
-
     // Map service ListResult<T> => route payload shape
     // Validate response shape with zod before returning
     const CaseItemSchema = z
@@ -69,12 +61,11 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         updatedAt: z.string().optional()
       })
       .passthrough()
-
     const CasesListResponse = z
       .object({
         success: z.literal(true),
         data: z.array(CaseItemSchema),
-        pagination: z.object({
+        pagination: z.object({,
           page: z.number(),
           limit: z.number(),
           total: z.number(),
@@ -85,9 +76,8 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         meta: z.record(z.any()).optional()
       })
       .passthrough()
-
     const payload = {
-      success: true,
+      success: true
       data: (result as { items?: any; pagination?: any }).items,
       pagination: {
         page: (result as { items?: any; pagination?: any }).pagination.page,
@@ -102,7 +92,6 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         timestamp: new Date().toISOString()
       }
     }
-
     const validated = CasesListResponse.safeParse(payload)
     if (!validated.success) {
       console.error('Cases list response validation failed', validated.error)
@@ -114,11 +103,9 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         })
       )
     }
-
     return json(payload)
   } catch (err: any) {
     console.error('Error fetching cases:', err)
-
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -129,7 +116,6 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         })
       )
     }
-
     return error(
       500,
       makeHttpErrorPayload({
@@ -140,7 +126,6 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     )
   }
 }
-
 /*
  * POST /api/v1/cases
  * Create a new case
@@ -154,20 +139,15 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
       )
     }
-
     // Parse request body
     const body = await request.json()
     const validatedData = CreateCaseSchema.parse(body) as CreateCaseData
-
     // Create service instance
     const casesService = new CasesCRUDService(locals.user.id)
-
     // Create case
     const caseId = await casesService.create(validatedData)
-
     // Get the created case details
     const createdCase = await casesService.getById(caseId)
-
     // Queue background synthesis
     try {
       const jobId = await queueCaseSynthesis(caseId, locals.user.id)
@@ -176,11 +156,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       console.error('Failed to queue case synthesis:', queueError)
       // Don't fail the request, just log the error
     }
-
     return json()
       {
-        success: true,
-        data: createdCase,
+        success: true
+        data: createdCase
         meta: {
           caseId,
           userId: locals.user.id,
@@ -192,7 +171,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     )
   } catch (err: any) {
     console.error('Error creating case:', err)
-
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -203,11 +181,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         })
       )
     }
-
     if (err.message.includes('not found') || err.message.includes('access denied')) {
       return error(403, makeHttpErrorPayload({ message: err.message, code: 'ACCESS_DENIED' })
     }
-
     return error(
       500,
       makeHttpErrorPayload({

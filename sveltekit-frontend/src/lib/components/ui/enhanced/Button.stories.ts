@@ -1,9 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
 import Button from './Button.svelte.js';
-
 const meta = {
   title: 'UI/Enhanced/Button',
-  component: Button,
+  component: Button
   parameters: {
     layout: 'centered',
     docs: {
@@ -32,20 +31,17 @@ const meta = {
       control: { type: 'boolean' },
       description: 'Make button full width'
     }
-  },;
+  },
   tags: ['autodocs']
 } satisfies Meta<Button>;
-
 export default meta;
 type Story = StoryObj<typeof meta>;
-
 export const Default: Story = {
   args: {
-    children: 'Button',;
+    children: 'Button',
     variant: 'default'
   }
 };
-
 export const Legal: Story = {
   args: {
     children: 'Legal Action',
@@ -53,13 +49,12 @@ export const Legal: Story = {
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Legal-themed button variant for law-related actions'
       }
     }
   }
 };
-
 export const Evidence: Story = {
   args: {
     children: 'Add Evidence',
@@ -67,13 +62,12 @@ export const Evidence: Story = {
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Evidence-themed button for evidence management'
       }
     }
   }
 };
-
 export const Case: Story = {
   args: {
     children: 'Create Case',
@@ -81,13 +75,12 @@ export const Case: Story = {
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Case-themed button for case management'
       }
     }
   }
 };
-
 export const Loading: Story = {
   args: {
     children: 'Processing...',
@@ -95,55 +88,48 @@ export const Loading: Story = {
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Button with loading state and spinner'
       }
     }
   }
 };
-
 export const Disabled: Story = {
   args: {
-    children: 'Disabled',;
+    children: 'Disabled',
     disabled: true
   }
 };
-
 export const Large: Story = {
   args: {
-    children: 'Large Button',;
+    children: 'Large Button',
     size: 'lg'
   }
 };
-
 export const ExtraLarge: Story = {
   args: {
-    children: 'Extra Large',;
+    children: 'Extra Large',
     size: 'xl'
   }
 };
-
 export const Small: Story = {
   args: {
-    children: 'Small',;
+    children: 'Small',
     size: 'sm'
   }
 };
-
 export const Outline: Story = {
   args: {
-    children: 'Outline',;
+    children: 'Outline',
     variant: 'outline'
   }
 };
-
 export const Ghost: Story = {
   args: {
-    children: 'Ghost',;
+    children: 'Ghost',
     variant: 'ghost'
   }
 };
-
 export const Destructive: Story = {
   args: {
     children: 'Delete',
@@ -151,13 +137,12 @@ export const Destructive: Story = {
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Destructive button for dangerous actions'
       }
     }
   }
 };
-
 export const FullWidth: Story = {
   args: {
     children: 'Full Width Button',
@@ -165,7 +150,7 @@ export const FullWidth: Story = {
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Button that takes full width of container'
       }
     }

@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import Button from './Button.svelte';
   import Input from './Input.svelte';
   import Card from './Card.svelte';
@@ -18,7 +17,6 @@
     Hash,
     Clock
   } from 'lucide-svelte';
-
   // Types for Gemma API integration
   interface GemmaEmbeddingResult {
     success: boolean;
@@ -28,7 +26,6 @@
     responseTime?: string;
     timestamp?: string;
   }
-
   interface EmbeddingSearchResult {
     id: string;
     content: string;
@@ -36,12 +33,10 @@
     metadata?: any;
     createdAt: string;
   }
-
   // Form validation schema
   const embeddingFormSchema = z.object({
-    content: z.string().min(1, "Content is required").max(10000, "Content too long"),;
+    content: z.string().min(1, "Content is required").max(10000, "Content too long"),
   });
-
   interface Props {
     onSuccess?: (result: any) => void;
     onError?: (error: string) => void;
@@ -49,7 +44,6 @@
     showSearch?: boolean;
     useWorker?: boolean; // Use WASM worker vs API
   }
-
   let {
     onSuccess,
     onError,
@@ -57,7 +51,6 @@
     showSearch = true,
     useWorker = false // WASM as fallback only
   }: Props = $props();
-
   // Component state using Svelte 5 runes
   let content = $state('');
   let searchQuery = $state('');
@@ -72,148 +65,130 @@
     avgResponseTime: '0ms',
     lastUpdate: new Date().toISOString()
   });
-
   // Web Worker for client-side processing
   let embeddingWorker: Worker | null = null;
-
   // Initialize worker if requested
   $effect(() => {
     if (useWorker && typeof Worker !== 'undefined') {
       try {
         embeddingWorker = new Worker('/lib/workers/embeddings-worker.js');
-        embeddingWorker.onmessage = handleWorkerMessage;
+        embeddingWorker.onmessage = handleWorkerMessag;
         embeddingWorker.onerror = handleWorkerError;
       } catch (err) {
         console.warn('Could not initialize embeddings worker:', err);
         useWorker = false;
       }
     }
-
     return () => {
       if (embeddingWorker) {
         embeddingWorker.terminate();
       }
     };
   });
-
   function handleWorkerMessage(event: MessageEvent) {
     const { type, data, error: workerError } = event.data;
-
     if (type === 'embedding_result') {
       if (workerError) {
         error = workerError;
       } else {
         result = {
-          success: true,
-          embedding: Array.from(data.embedding),;
+          success: true
+          embedding: Array.from(data.embedding),
           metadata: {
             dimensions: data.embedding.length,
             processingTime: data.processingTime,
             source: 'wasm_worker';
           },
-          responseTime: `${data.processingTime}ms`,;
+          responseTime: `${data.processingTime}ms`,
           timestamp: new Date().toISOString();
         };
       }
       isGenerating = false;
     }
   }
-
   function handleWorkerError(event: ErrorEvent) {
     error = `Worker error: ${event.message}`;
     isGenerating = false;
   }
-
   // Validate form data
   function validateForm(): boolean {
     validationErrors = {};
-
     try {
       embeddingFormSchema.parse({ content });
       return true;
     } catch (err) {
       if (err instanceof z.ZodError) {
         err.errors.forEach(error => {
-          validationErrors[error.path[0] as string] = error.message;
+          validationErrors[error.path[0] as string] = error.messag;
         });
       }
       return false;
     }
   }
-
   // Generate embedding with Gemma API primary, WASM fallback
   async function generateEmbedding() {
     if (!validateForm()) {
       return;
     }
-
     isGenerating = true;
     error = '';
     result = null;
-
     try {
       // Always try Gemma API first
       const response = await fetch('/api/embeddings/gemma?action=generate', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: content,;
+        body: JSON.stringify({,
+          text: content
           metadata: {
-            timestamp: new Date().toISOString(),;
+            timestamp: new Date().toISOString(),
             length: content.length,
-            variant,;
+            variant,
             source: 'enhanced_bits_demo';
           }
         }),
       });
-
       if (!response.ok) {
         throw new Error(`Gemma API failed: ${response.status}`);
       }
-
       const data: GemmaEmbeddingResult = await response.json();
-
       if (data.success && data.embedding) {
         result = {
           ...data,
           metadata: {
             ...data.metadata,
-            source: 'gemma_api',;
+            source: 'gemma_api',
             dimensions: data.embedding.length;
           }
         };
-
         // Store in enhanced database
         try {
           await fetch('/api/embeddings/enhanced', {
-            method: 'POST',;
+            method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               content,
-              embedding: data.embedding,;
-              metadata: result.metadata,;
+              embedding: data.embedding,
+              metadata: result.metadata,
               source: 'gemma_api';
             }),
           });
         } catch (storeError) {
           console.warn('Failed to store in enhanced database:', storeError);
         }
-
         content = ''; // Clear form
         onSuccess?.(data);
       } else {
         throw new Error(data.error || 'Gemma API returned no embedding');
       }
-
     } catch (gemmaError: any) {
       console.warn('Gemma API failed, trying WASM fallback:', gemmaError.message);
-
       // Fallback to WASM worker if available
       if (embeddingWorker) {
         error = 'Server unavailable, using client-side processing...';
         embeddingWorker.postMessage({
-          type: 'generate_embedding',;
-          text: content,;
+          type: 'generate_embedding',
+          text: content
           options: { variant }
         });
         return; // Worker will handle completion
@@ -229,35 +204,28 @@
       }
     }
   }
-
   // Search similar embeddings
   async function searchEmbeddings() {
     if (!searchQuery.trim()) return;
-
     isSearching = true;
     searchResults = [];
-
     try {
       // First generate embedding for search query
       const embeddingResponse = await fetch('/api/embeddings/gemma?action=generate', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: searchQuery,;
+        body: JSON.stringify({,
+          text: searchQuery
           metadata: { source: 'search_query' }
         }),
       });
-
       const embeddingData = await embeddingResponse.json();
-
       if (embeddingData.success && embeddingData.embedding) {
         // Search for similar embeddings
         const searchResponse = await fetch(
           `/api/embeddings/enhanced?action=search&query=${encodeURIComponent(searchQuery)}&embedding=${encodeURIComponent(JSON.stringify(embeddingData.embedding))}&limit=5&threshold=0.7`
         );
-
         const searchData = await searchResponse.json();
-
         if (searchData.success) {
           searchResults = searchData.data;
         } else {
@@ -272,13 +240,11 @@
       isSearching = false;
     }
   }
-
   // Load system stats
   async function loadStats() {
     try {
       const response = await fetch('/api/embeddings/enhanced?action=health');
       const data = await response.json();
-
       if (data.success) {
         stats = {
           totalEmbeddings: data.count || 0,
@@ -290,18 +256,15 @@
       console.warn('Failed to load stats:', err);
     }
   }
-
   // Load stats on mount
   $effect(() => {
     loadStats();
   });
-
   // Reactive validation
   let isValid = $derived(content.length > 0 && content.length <= 10000);
   let hasValidationErrors = $derived(Object.keys(validationErrors).length > 0);
   let canSearch = $derived(searchQuery.trim().length > 0);
 </script>
-
 <div class="gemma-demo-container">
   <!-- Header -->
   <Card
@@ -315,7 +278,6 @@
           <Brain class="inline-icon" />
           Real-time legal AI embeddings with Gemma 512-dimensional vectors
         </p>
-
         <div class="stats-bar">
           <div class="stat">
             <Database class="inline-icon" />
@@ -335,7 +297,6 @@
       </div>
     {/snippet}
   </Card>
-
   <!-- Generation Form -->
   <Card
     title="Generate Embedding"
@@ -349,7 +310,6 @@
             <Hash class="inline-icon" />
             Legal Content:
           </label>
-
           <textarea
             id="content-input"
             bind:value={content}
@@ -359,21 +319,18 @@
             disabled={isGenerating}
             maxlength="10000"
           ></textarea>
-
           {#if validationErrors.content}
             <p class="nes-text is-error error-message">
               <AlertCircle class="inline-icon" />
               {validationErrors.content}
             </p>
           {/if}
-
           <div class="char-counter">
             <span class="nes-text {content.length > 9000 ? 'is-warning' : 'is-primary'}">
               {content.length}/10,000 characters
             </span>
           </div>
         </div>
-
         <div class="form-actions">
           <Button
             variant="legal"
@@ -390,7 +347,6 @@
               Generate 512D Embedding
             {/if}
           </Button>
-
           <label class="nes-text worker-toggle">
             <input
               type="checkbox"
@@ -402,7 +358,6 @@
           </label>
         </div>
       </form>
-
       {#if result}
         <div class="result-display">
           <div class="nes-container is-rounded is-dark">
@@ -419,7 +374,6 @@
           </div>
         </div>
       {/if}
-
       {#if error}
         <div class="error-display">
           <div class="nes-container is-rounded">
@@ -432,7 +386,6 @@
       {/if}
     {/snippet}
   </Card>
-
   <!-- Search Section -->
   {#if showSearch}
     <Card
@@ -451,7 +404,6 @@
               variant="legal"
               onsearch={searchEmbeddings}
             />
-
             <Button
               variant="primary"
               nesStyle={true}
@@ -468,7 +420,6 @@
               {/if}
             </Button>
           </div>
-
           {#if searchResults.length > 0}
             <div class="search-results">
               <h4 class="nes-text">Search Results:</h4>
@@ -500,9 +451,8 @@
     </Card>
   {/if}
 </div>
-
 <style>
-  .gemma-demo-container {;
+  .gemma-demo-container {
     max-width: 1000px;
     margin: 0 auto;
     padding: 1rem;
@@ -510,50 +460,42 @@
     flex-direction: column;
     gap: 2rem;
   }
-
   .demo-header {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .stats-bar {
     display: flex;
     gap: 2rem;
     justify-content: center;
     flex-wrap: wrap;
   }
-
   .stat {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
-
   .generation-form {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
-
   .form-group {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .form-group label {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-weight: bold;
   }
-
   .char-counter {
     text-align: right;
     margin-top: 0.25rem;
   }
-
   .form-actions {
     display: flex;
     justify-content: center;
@@ -562,25 +504,21 @@
     margin: 1rem 0;
     flex-wrap: wrap;
   }
-
   .worker-toggle {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
-
   .result-display,
   .error-display {
     margin-top: 1rem;
   }
-
   .result-details {
     margin-top: 1rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .result-details code {
     background: rgba(255, 255, 255, 0.1);
     padding: 0.2rem 0.4rem;
@@ -588,68 +526,57 @@
     font-family: 'Courier New', monospace;
     font-size: 0.9rem;
   }
-
   .search-section {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
-
   .search-form {
     display: flex;
     gap: 1rem;
     align-items: end;
     flex-wrap: wrap;
   }
-
   .search-form > :first-child {
     flex: 1;
     min-width: 300px;
   }
-
   .search-results {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .search-result-item {
     border: 1px solid #666;
     padding: 1rem;
     border-radius: 4px;
     background: rgba(255, 255, 255, 0.05);
   }
-
   .result-content {
     margin-bottom: 0.5rem;
   }
-
   .result-meta {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     font-size: 0.8rem;
     flex-wrap: wrap;
     gap: 0.5rem;
   }
-
   .inline-icon {
     width: 1rem;
     height: 1rem;
-    display: inline;
+    display: inli;
     vertical-align: text-bottom;
   }
-
   .error-message {
     margin-top: 0.5rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
-
   .animate-spin {
     animation: spin 1s linear infinite;
   }
-
   @keyframes spin {
     from {
       transform: rotate(0deg);
@@ -658,27 +585,22 @@
       transform: rotate(360deg);
     }
   }
-
   /* NES.css overrides */
   .nes-textarea {
     min-height: 120px;
     resize: vertical;
   }
-
   .nes-textarea.is-error {
     border-color: #ce372b;
   }
-
   @media (max-width: 768px) {
     .stats-bar {
       flex-direction: column;
       align-items: center;
     }
-
     .search-form {
       flex-direction: column;
     }
-
     .search-form > :first-child {
       min-width: auto;
     }

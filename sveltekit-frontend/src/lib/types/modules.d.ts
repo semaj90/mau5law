@@ -2,7 +2,6 @@
 /**
  * Module declarations for packages without proper TypeScript types
  */
-
 declare module "fuse.js" {
   interface FuseOptions<T> {
     keys?: string[] | { name: string; weight?: number }[];
@@ -17,13 +16,11 @@ declare module "fuse.js" {
     ignoreLocation?: boolean;
     ignoreFieldNorm?: boolean;
   }
-
   interface FuseResult<T> {
     item: T;
     score?: number;
     matches?: Array<any>;
   }
-
   class Fuse<T> {
     constructor(list: T[], options?: FuseOptions<T>);
     search(query: string): FuseResult<T>[];
@@ -31,10 +28,8 @@ declare module "fuse.js" {
     add(item: T): void;
     remove(predicate: (item: T, index: number) => boolean): T[];
   }
-
   export default Fuse;
 }
-
 declare module "lokijs" {
   interface LokiOptions {
     autosave?: boolean;
@@ -47,7 +42,6 @@ declare module "lokijs" {
     persistenceMethod?: string;
     env?: string;
   }
-
   interface CollectionOptions<T = any> {
     indices?: string | string[];
     unique?: string | string[];
@@ -64,7 +58,6 @@ declare module "lokijs" {
     ttlInterval?: number;
     transforms?: unknown;
   }
-
   interface Collection<T = any> {
     insert(doc: T): T;
     find(query?: unknown): T[];
@@ -84,7 +77,6 @@ declare module "lokijs" {
     clear(): void;
     where(filter: (obj: T) => boolean): T[];
   }
-
   export default class Loki {
     constructor(filename?: string, options?: LokiOptions);
     addCollection<T = any>(name: string, options?: CollectionOptions<T>): Collection<T>;
@@ -96,40 +88,36 @@ declare module "lokijs" {
     listCollections(): Array<any>;
   }
 }
-
-// Tauri API module declarations (optional dependencies);
+// Tauri API module declarations (optional dependencies)
 declare module "@tauri-apps/api/tauri" {
   export function invoke<T = any>(
-    cmd: string,
-    args?: Record<string, any>
+    cmd: string
+    args?: { [key: string]: any }
   ): Promise<T>;
   export const convertFileSrc: (filePath: string, protocol?: string) => string;
 }
-
 declare module "@tauri-apps/api/fs" {
   export interface FileEntry {
     path: string;
     name?: string;
     children?: FileEntry[];
   }
-
   export function readTextFile(filePath: string): Promise<string>;
   export function writeTextFile(filePath: string, data: string): Promise<void>;
   export function readDir(
-    dir: string,
+    dir: string
     options?: { recursive?: boolean }
   ): Promise<FileEntry[]>;
   export function createDir(
-    dir: string,
+    dir: string
     options?: { recursive?: boolean }
   ): Promise<void>;
   export function removeFile(file: string): Promise<void>;
   export function exists(path: string): Promise<boolean>;
 }
-
 declare module "@tauri-apps/api/core" {
   export function invoke<T = any>(
-    cmd: string,
-    args?: Record<string, any>
+    cmd: string
+    args?: { [key: string]: any }
   ): Promise<T>;
 }

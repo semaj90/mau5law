@@ -4,7 +4,6 @@ Showcases the service worker-based AI orchestration system
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits';
   import {
@@ -28,24 +27,21 @@ Showcases the service worker-based AI orchestration system
     Users,
     Workflow
   } from 'lucide-svelte';
-
   import MultiLLMOrchestrator from '$lib/components/ai/MultiLLMOrchestrator.svelte';
   import LLMSelector from '$lib/components/ai/LLMSelector.svelte';
   import { aiWorkerManager, createGenerationTask, createAnalysisTask } from '$lib/services/ai-worker-manager.js';
   import type { AITask, LLMModel } from '$lib/types/ai-worker.js';
-
   // Demo state
   let selectedModel: LLMModel | undefined = $state();
   let userPrompt = $state('Analyze the following legal document for key terms, potential issues, and recommendations...');
   let isProcessing = $state(false);
   let demoResults = $state<any[]>([]) => []);
-
   // Demo scenarios
   const demoScenarios = [
     {
       name: 'Legal Document Analysis',
       description: 'Parallel analysis across multiple AI models',
-      prompt: 'Analyze this contract for potential legal issues, key terms, and compliance requirements.',;
+      prompt: 'Analyze this contract for potential legal issues, key terms, and compliance requirements.',
       tasks: [
         { provider: 'ollama', model: 'gemma3-legal', focus: 'Legal compliance analysis' },
         { provider: 'vllm', model: 'vllm-gemma3-legal', focus: 'Risk assessment' },
@@ -55,7 +51,7 @@ Showcases the service worker-based AI orchestration system
     {
       name: 'Evidence Processing',
       description: 'Multi-stage evidence analysis pipeline',
-      prompt: 'Process and categorize evidence files for case preparation.',;
+      prompt: 'Process and categorize evidence files for case preparation.',
       tasks: [
         { provider: 'ollama', model: 'nomic-embed-text', focus: 'Text embedding generation' },
         { provider: 'ollama', model: 'gemma3-legal', focus: 'Content classification' },
@@ -64,8 +60,8 @@ Showcases the service worker-based AI orchestration system
     },
     {
       name: 'Case Research',
-      description: 'Comprehensive legal research workflow',;
-      prompt: 'Research relevant case law and statutes for this legal matter.',;
+      description: 'Comprehensive legal research workflow',
+      prompt: 'Research relevant case law and statutes for this legal matter.',
       tasks: [
         { provider: 'autogen', model: 'autogen-agents', focus: 'Legal research coordination' },
         { provider: 'crewai', model: 'crewai-agents', focus: 'Case law analysis' },
@@ -73,20 +69,16 @@ Showcases the service worker-based AI orchestration system
       ]
     }
   ];
-
   $effect(() => {
-        capabilities: ['legal-analysis', 'case-research', 'document-review'],;
-        endpoint: 'http://localhost:11434';
+        capabilities: ['legal-analysis', 'case-research', 'document-review'],
+        endpoint: 'http://localhost:11434'
       };
     }
   });
-
   async function runDemoScenario(scenario: unknown) {
     if (!selectedModel) return;
-
     isProcessing = true;
     demoResults = [];
-
     try {
       // Create tasks for the scenario
       const tasks = scenario.tasks.map((taskConfig: unknown) =>
@@ -96,27 +88,23 @@ Showcases the service worker-based AI orchestration system
           taskConfig.model,
           taskConfig.provider,
           {
-            priority: 'high',;
+            priority: 'high',
             temperature: 0.1,
             maxTokens: 512;
           }
         )
       );
-
       // Submit all tasks in parallel
       const taskPromises = tasks.map(async (task) => {
         try {
           demoResults = [...demoResults, { task }];
-
           const taskId = await aiWorkerManager.submitTask(task);
           const result = await aiWorkerManager.waitForTask(taskId);
-
           // Update result
           const index = demoResults.findIndex(r => r.task.taskId === task.taskId);
           if (index >= 0) {
             demoResults[index] = { task, response: result };
           }
-
           return result;
         } catch (error) {
           console.error('Task failed:', error);
@@ -126,7 +114,6 @@ Showcases the service worker-based AI orchestration system
           }
         }
       });
-
       await Promise.all(taskPromises);
       console.log(`Demo scenario "${scenario.name}" completed`);
     } catch (error) {
@@ -135,29 +122,23 @@ Showcases the service worker-based AI orchestration system
       isProcessing = false;
     }
   }
-
   async function submitCustomTask() {
     if (!selectedModel || !userPrompt.trim()) return;
-
     isProcessing = true;
-
     try {
       const task = createGenerationTask(
         userPrompt,
         selectedModel.name,
         selectedModel.provider,
         {
-          priority: 'high',;
+          priority: 'high',
           temperature: 0.1,
           maxTokens: 1024;
         }
       );
-
       demoResults = [{ task }];
-
       const taskId = await aiWorkerManager.submitTask(task);
       const result = await aiWorkerManager.waitForTask(taskId);
-
       demoResults = [{ task, response: result }];
       console.log('Custom task completed:', result);
     } catch (error) {
@@ -167,34 +148,28 @@ Showcases the service worker-based AI orchestration system
       isProcessing = false;
     }
   }
-
   function clearResults() {
     demoResults = [];
   }
-
   function getProviderIcon(providerId: string) {
     switch (providerId) {
       case 'ollama': return Cpu;
       case 'vllm': return Zap;
-      case 'autogen': return Brain;
-      case 'crewai': return Database;
+      case 'autogen': return Brai;
+      case 'crewai': return Databa;
       default: return Activity;
     }
   }
-
   function formatDuration(ms: number): string {
     if (ms < 1000) return `${ms}ms`;
     if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
     return `${(ms / 60000).toFixed(1)}m`;
   }
 </script>
-
 <svelte:head>
   <title>Multi-LLM Orchestrator - Legal AI System</title>
 </svelte:head>
-
 <div class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-
   <!-- Header Section -->
   <div class="bg-white dark:bg-gray-800 shadow-sm border-b">
     <div class="max-w-7xl mx-auto px-6 py-8">
@@ -225,7 +200,6 @@ Showcases the service worker-based AI orchestration system
             </Badge>
           </div>
         </div>
-
         <div class="text-right">
           <p class="text-sm text-gray-500 dark:text-gray-400">Phase 2 Implementation</p>
           <p class="text-lg font-semibold text-gray-800 dark:text-gray-200">Service Worker Multi-threading</p>
@@ -233,9 +207,7 @@ Showcases the service worker-based AI orchestration system
       </div>
     </div>
   </div>
-
   <div class="max-w-7xl mx-auto px-6 py-8 space-y-8">
-
     <!-- Quick Demo Section -->
     <div class="nes-container">
       <div class="yorha-panel-header">
@@ -278,13 +250,11 @@ runDemoScenario(scenario)}
                   <Play class="h-4 w-4 mr-2" />
                   Run Demo
                 {/if}
-
             </div>
           {/each}
         </div>
       </div>
     </div>
-
     <!-- Custom Task Section -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <div class="nes-container">
@@ -303,17 +273,15 @@ runDemoScenario(scenario)}
               filterBy="all"
             />
           </div>
-
           <div>
             <label class="block text-sm font-medium mb-2">Task Prompt</label>
-            <Textarea;
+            <Textarease;
               bind:value={userPrompt}
               placeholder="Enter your AI task prompt..."
               rows={4}
               class="w-full"
             />
           </div>
-
           <div class="flex gap-2">
             <Button
               onclick={submitCustomTask}
@@ -327,14 +295,11 @@ runDemoScenario(scenario)}
                 <Play class="h-4 w-4 mr-2" />
                 Submit Task
               {/if}
-
             <Button class="bits-btn" variant="ghost" onclick={clearResults}>
 <RotateCcw class="h-4 w-4" />
-
           </div>
         </div>
       </div>
-
       <!-- Results Section -->
       <div class="nes-container">
         <div class="yorha-panel-header">
@@ -346,7 +311,6 @@ runDemoScenario(scenario)}
             {#if demoResults.length > 0}
               <Button class="bits-btn" variant="ghost" size="sm" onclick={clearResults}>
 Clear
-
             {/if}
           </h3>
         </div>
@@ -371,7 +335,6 @@ Clear
                       </span>
                       <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { task?: unknown; error?: unknown; response?: unknown }).task.type}</span>
                     </div>
-
                     {#if (result as { task?: unknown; error?: unknown; response?: unknown }).response}
                       <Badge class="bg-green-100 text-green-800 text-xs">
                         Completed
@@ -386,11 +349,9 @@ Clear
                       </Badge>
                     {/if}
                   </div>
-
                   <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">
                     {(result as { task?: unknown; error?: unknown; response?: unknown }).task.prompt.substring(0, 100)}...
                   </p>
-
                   {#if (result as { task?: unknown; error?: unknown; response?: unknown }).response}
                     <div class="mt-2 p-2 bg-white dark:bg-gray-800 rounded text-xs">
                       <p class="font-medium mb-1">Response:</p>
@@ -422,7 +383,6 @@ Clear
         </div>
       </div>
     </div>
-
     <!-- Main Orchestrator Component -->
     <MultiLLMOrchestrator
       autoStart={true}
@@ -430,7 +390,6 @@ Clear
       maxConcurrenttasks={3}
       enabledProviders={['ollama', 'vllm', 'autogen', 'crewai']}
     />
-
     <!-- Architecture Information -->
     <div class="nes-container">
       <div class="yorha-panel-header">
@@ -462,7 +421,6 @@ Clear
               </li>
             </ul>
           </div>
-
           <div>
             <h3 class="font-semibold mb-3">Supported Providers</h3>
             <ul class="space-y-2 text-sm">
@@ -481,7 +439,6 @@ Clear
             </ul>
           </div>
         </div>
-
         <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
           <p class="text-sm text-blue-800 dark:text-blue-300">
             <strong>Phase 2 Complete:</strong> Service worker infrastructure enables true multi-threading for AI tasks,
@@ -493,7 +450,6 @@ Clear
     </div>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
 </style>

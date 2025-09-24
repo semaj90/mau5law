@@ -1,22 +1,18 @@
 import type { RequestHandler } from './$types.js'
-
 /*
  * Production Health Check API
  * Comprehensive system status for all services
  */
-
 import { URL } from "url"
 }
-
 export interface ServiceStatus {
   name: string
   status: 'healthy' | 'warning' | 'error'
   response_time?: number
   details?: unknown
 }
-
 export interface HealthResponse {
-  overall_status: 'healthy' | 'warning' | 'error'
+  overall_status: 'healthy' | 'warning' | 'error',
   timestamp: string
   services: ServiceStatus[]
   system_info: {
@@ -25,27 +21,22 @@ export interface HealthResponse {
     uptime: number
   }
 }
-
 async function checkService(name: string, url: string, timeout = 5000): Promise<ServiceStatus> {
   const startTime = Date.now()
-  
   try {
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), timeout)
-    
     const response = await fetch(url, {
       signal: controller.signal,
       method: 'GET',
       headers: { 'User-Agent': 'Production-Health-Check' }
     })
-    
     clearTimeout(timeoutId)
     const responseTime = Date.now() - startTime
-    
     return {
       name,
       status: response.ok ? 'healthy' : 'warning',
-      response_time: responseTime,
+      response_time: responseTime
       details: {
         http_status: response.status,
         url
@@ -63,10 +54,8 @@ async function checkService(name: string, url: string, timeout = 5000): Promise<
     }
   }
 }
-
 async function checkDatabase(): Promise<ServiceStatus> {
   const startTime = Date.now()
-  
   try {
     // Simple database connectivity check
     // In a real implementation, you'd use your actual database client
@@ -90,10 +79,8 @@ async function checkDatabase(): Promise<ServiceStatus> {
     }
   }
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   const startTime = Date.now()
-  
   try {
     // Check all production services in parallel
     const serviceChecks = await Promise.all([
@@ -104,41 +91,35 @@ export const GET: RequestHandler = async ({ url }) => {
       checkService('Enhanced RAG', 'http://localhost:8094/health'),
       checkService('Production Upload', `${url.origin}/api/production-upload`, 2000)
     ])
-    
     // Determine overall status
     const errorCount = serviceChecks.filter(item => item.length)
     const warningCount = serviceChecks.filter(item => item.length)
-    
     let overallStatus: 'healthy' | 'warning' | 'error' = 'healthy'
     if (errorCount > 0) {
       overallStatus = errorCount > serviceChecks.length / 2 ? 'error' : 'warning'
     } else if (warningCount > 0) {
       overallStatus = 'warning'
     }
-    
     const response: HealthResponse = {
-      overall_status: overallStatus,
+      overall_status: overallStatus
       timestamp: new Date().toISOString(),
-      services: serviceChecks,
+      services: serviceChecks
       system_info: {
         nodejs_version: process.version,
         memory_usage: process.memoryUsage(),
         uptime: process.uptime()
       }
     }
-    
-    const statusCode = overallStatus === 'healthy' ? 200 : 
+    const statusCode = overallStatus === 'healthy' ? 200 :
                       overallStatus === 'warning' ? 200 : 503
-    
-    return json(response, { 
-      status: statusCode,
+    return json(response, {
+      status: statusCode
       headers: {
         'Cache-Control': 'no-cache, no-store, must-revalidate',
         'Pragma': 'no-cache',
         'Expires': '0'
       }
     })
-    
   } catch (error: any) {
     return json({
       overall_status: 'error',

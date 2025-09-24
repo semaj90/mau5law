@@ -4,52 +4,41 @@
  * This demonstrates the full workflow using your existing infrastructure:
  * 1. Create case → 2. Upload evidence → 3. Canvas positioning → 4. Timeline reconstruction → 5. RAG chat
  */
-
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { db, cases, evidence, caseActivities, userDocuments } from '$lib/server/index.js'
 import { sharedWorkerPool } from '$lib/server/ingest/worker-pool-simple.js'
 import { embedText } from '$lib/server/ingest/embed.js'
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action, data } = await request.json()
-
     switch (action) {
       case 'create_case':
         return await createLegalCase(data)
-
       case 'upload_evidence':
         return await uploadEvidenceToCase(data)
-
       case 'update_canvas_positions':
         return await updateCanvasPositions(data)
-
       case 'generate_timeline':
         return await generateTimeline(data)
-
       case 'chat_with_case':
         return await chatWithCase(data)
-
       default:
         throw new Error('Unknown action')
     }
   } catch (err) {
     console.error('Workflow demo error:', err)
     return json({
-      success: false,
+      success: false
       error: err instanceof Error ? err.message: String(err)
     }, { status: 500 })
   }
 }
-
 async function createLegalCase(data: any) {
   console.log('🏛️ Step 1: Creating legal case...')
-
   // Generate embeddings for case title and description
   const titleEmbedding = await embedText(data.title)
   const descriptionEmbedding = data.description ? await embedText(data.description) : null
-
   // Create the case in database
   const [newCase] = await db.insert(cases).values({
     title: data.title,
@@ -58,9 +47,9 @@ async function createLegalCase(data: any) {
     status: 'active',
     priority: data.priority || 'medium',
     category: data.category || 'criminal',
-    titleEmbedding: titleEmbedding.success ? JSON.stringify(titleEmbedding.embedding) : null,
-    descriptionEmbedding: descriptionEmbedding?.success ? JSON.stringify(descriptionEmbedding.embedding) : null,
-    metadata: JSON.stringify({
+    titleEmbedding: titleEmbedding.success ? JSON.stringify(titleEmbedding.embedding) : null
+    descriptionEmbedding: descriptionEmbedding?.success ? JSON.stringify(descriptionEmbedding.embedding) : null
+    metadata: JSON.stringify({,
       createdBy: data.userId,
       workflow: 'demo',
       jurisdiction: data.jurisdiction || 'Local Court'
@@ -68,48 +57,39 @@ async function createLegalCase(data: any) {
     createdAt: new Date(),
     updatedAt: new Date()
   }).returning()
-
   // Create initial timeline entry
   await db.insert(caseActivities).values({
     caseId: newCase.id,
     activityType: 'case_created',
     description: `Case "${data.title}" created`,
     performedBy: data.userId,
-    metadata: JSON.stringify({
+    metadata: JSON.stringify({,
       action: 'create_case',
       caseId: newCase.id
     }),
     createdAt: new Date()
   })
-
   console.log('✅ Case created:', newCase.caseNumber)
-
   return json({
-    success: true,
+    success: true
     step: 1,
     action: 'case_created',
-    case: newCase,
+    case: newCase
     message: `Legal case "${data.title}" created successfully!`,
     nextStep: 'Upload evidence files using the drag-drop canvas'
   })
 }
-
 async function uploadEvidenceToCase(data: any) {
   console.log('📄 Step 2: Processing evidence upload...')
-
   const { caseId, files, canvasPositions } = data
-
   const results = []
-
   for (let i = 0; i < files.length; i++) {
     const file = files[i]
     const position = canvasPositions[i] || { x: 100 + i * 150, y: 100 + i * 100 }
-
     // Create ingestion job for multimodal processing
     const jobId = `evidence_${Date.now()}_${Math.random().toString(36).slice(2)}`
-
     const job = {
-      id: jobId,
+      id: jobId
       fileBuffer: Buffer.from(file.content, 'base64'), // Demo: assuming base64 content
       filename: file.name,
       userId: data.userId,
@@ -117,22 +97,20 @@ async function uploadEvidenceToCase(data: any) {
       metadata: {
         caseId,
         evidenceType: detectEvidenceType(file.type),
-        canvasPosition: position,
+        canvasPosition: position
         uploadedAt: new Date().toISOString(),
         priority: 'evidence'
       }
     }
-
     // Queue for worker processing (OCR, embeddings, etc.)
     sharedWorkerPool.push(job)
-
     // Create timeline entry
     await db.insert(caseActivities).values({
       caseId,
       activityType: 'evidence_uploaded',
       description: `Evidence "${file.name}" uploaded and queued for processing`,
       performedBy: data.userId,
-      metadata: JSON.stringify({
+      metadata: JSON.stringify({,
         action: 'upload_evidence',
         filename: file.name,
         jobId,
@@ -140,7 +118,6 @@ async function uploadEvidenceToCase(data: any) {
       }),
       createdAt: new Date()
     })
-
     results.push({
       filename: file.name,
       jobId,
@@ -148,11 +125,9 @@ async function uploadEvidenceToCase(data: any) {
       canvasPosition: position
     })
   }
-
   console.log('✅ Evidence uploaded and queued for processing')
-
   return json({
-    success: true,
+    success: true
     step: 2,
     action: 'evidence_uploaded',
     results,
@@ -160,12 +135,9 @@ async function uploadEvidenceToCase(data: any) {
     nextStep: 'Position evidence on canvas and wait for AI analysis'
   })
 }
-
 async function updateCanvasPositions(data: any) {
   console.log('🎨 Step 3: Updating canvas positions...')
-
   const { caseId, evidencePositions } = data
-
   // Update evidence positions in metadata
   for (const [evidenceId, position] of Object.entries(evidencePositions)) {
     try {
@@ -176,14 +148,13 @@ async function updateCanvasPositions(data: any) {
           updatedAt: new Date()
         })
         .where(eq(userDocuments.source, `evidence:${evidenceId}`)
-
       // Create timeline entry for position update
       await db.insert(caseActivities).values({
         caseId,
         activityType: 'evidence_repositioned',
         description: `Evidence repositioned on canvas`,
         performedBy: data.userId,
-        metadata: JSON.stringify({
+        metadata: JSON.stringify({,
           action: 'update_position',
           evidenceId,
           newPosition: position
@@ -194,11 +165,9 @@ async function updateCanvasPositions(data: any) {
       console.warn(`Failed to update position for evidence ${evidenceId}:`, error)
     }
   }
-
   console.log('✅ Canvas positions updated')
-
   return json({
-    success: true,
+    success: true
     step: 3,
     action: 'positions_updated',
     updated: Object.keys(evidencePositions).length,
@@ -206,33 +175,27 @@ async function updateCanvasPositions(data: any) {
     nextStep: 'Generate timeline from evidence and activities'
   })
 }
-
 async function generateTimeline(data: any) {
   console.log('⏱️ Step 4: Generating case timeline...')
-
   const { caseId } = data
-
   // Get all case activities
   const activities = await db
     .select()
     .from(caseActivities)
     .where(eq(caseActivities.caseId, caseId)
     .orderBy(caseActivities.createdAt)
-
   // Get processed evidence with metadata
   const evidenceDocuments = await db
     .select()
     .from(userDocuments)
     .where(like(userDocuments.source, `evidence:%`)
     .orderBy(userDocuments.createdAt)
-
   // Reconstruct timeline with AI insights
   const timeline = activities.map(activity => {
     let metadata = {}
     try {
       metadata = JSON.parse(activity.metadata || '{}')
-    } catch {}
-
+    } catch (error) {}
     return {
       timestamp: activity.createdAt,
       type: activity.activityType,
@@ -242,14 +205,12 @@ async function generateTimeline(data: any) {
       category: getTimelineCategory(activity.activityType)
     }
   })
-
   // Add evidence processing events
   evidenceDocuments.forEach(doc => {
     let metadata = {}
     try {
       metadata = JSON.parse(doc.metadata || '{}')
-    } catch {}
-
+    } catch (error) {}
     timeline.push({
       timestamp: doc.createdAt,
       type: 'evidence_processed',
@@ -263,14 +224,11 @@ async function generateTimeline(data: any) {
       category: 'evidence'
     })
   })
-
   // Sort chronologically
   timeline.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-
   console.log('✅ Timeline generated with', timeline.length, 'events')
-
   return json({
-    success: true,
+    success: true
     step: 4,
     action: 'timeline_generated',
     timeline,
@@ -278,25 +236,19 @@ async function generateTimeline(data: any) {
     nextStep: 'Chat with case using RAG to get insights'
   })
 }
-
 async function chatWithCase(data: any) {
   console.log('💬 Step 5: RAG chat with case context...')
-
   const { caseId, query } = data
-
   // Get case details with embeddings
   const caseDetails = await db
     .select()
     .from(cases)
     .where(eq(cases.id, caseId)
     .limit(1)
-
   if (caseDetails.length === 0) {
     throw new Error('Case not found')
   }
-
   const caseData = caseDetails[0]
-
   // Get all related evidence documents with embeddings
   const relatedDocuments = await db
     .select({
@@ -308,11 +260,9 @@ async function chatWithCase(data: any) {
     .from(userDocuments)
     .where(like(userDocuments.source, `evidence:%`)
     .limit(10)
-
   // Generate query embedding for similarity search
   const queryEmbedding = await embedText(query)
   let similarDocuments = []
-
   if (queryEmbedding.success && relatedDocuments.length > 0) {
     // In production, this would use pgvector similarity search
     // For demo, we'll use the first few documents
@@ -320,8 +270,7 @@ async function chatWithCase(data: any) {
       let metadata = {}
       try {
         metadata = JSON.parse(doc.metadata || '{}')
-      } catch {}
-
+      } catch (error) {}
       return {
         content: doc.content?.substring(0, 500) + '...', // Truncate for demo
         metadata,
@@ -329,7 +278,6 @@ async function chatWithCase(data: any) {
       }
     })
   }
-
   // Construct RAG context
   const ragContext = {
     case: {
@@ -338,20 +286,18 @@ async function chatWithCase(data: any) {
       caseNumber: caseData.caseNumber,
       status: caseData.status
     },
-    evidence: similarDocuments,
+    evidence: similarDocuments
     query
   }
-
   // Simulate AI response (in production, this would call your LLM)
   const aiResponse = generateMockLegalResponse(ragContext)
-
   // Log the chat interaction
   await db.insert(caseActivities).values({
     caseId,
     activityType: 'ai_consultation',
     description: `AI chat query: "${query.substring(0, 100)}..."`,
     performedBy: data.userId,
-    metadata: JSON.stringify({
+    metadata: JSON.stringify({,
       action: 'rag_chat',
       query,
       responseLength: aiResponse.length,
@@ -359,23 +305,20 @@ async function chatWithCase(data: any) {
     }),
     createdAt: new Date()
   })
-
   console.log('✅ RAG chat completed')
-
   return json({
-    success: true,
+    success: true
     step: 5,
     action: 'rag_chat_completed',
-    response: aiResponse,
+    response: aiResponse
     context: {
       documentsAnalyzed: similarDocuments.length,
-      caseContext: true,
+      caseContext: true
       embeddingSearch: queryEmbedding.success
     },
     message: 'AI analysis complete using case evidence and context!'
   })
 }
-
 function detectEvidenceType(mimeType: string): string {
   if (mimeType.startsWith('image/')) return 'photograph'
   if (mimeType.startsWith('video/')) return 'video_recording'
@@ -383,7 +326,6 @@ function detectEvidenceType(mimeType: string): string {
   if (mimeType.includes('pdf')) return 'document'
   return 'digital_evidence'
 }
-
 function getTimelineCategory(activityType: string): string {
   const categories: Record<string, string> = {
     case_created: 'case_management',
@@ -393,37 +335,27 @@ function getTimelineCategory(activityType: string): string {
   }
   return categories[activityType] || 'general'
 }
-
 function generateMockLegalResponse(context: any): string {
   const { case: caseData, evidence, query } = context
-
   return `Based on my analysis of Case ${caseData.caseNumber} "${caseData.title}" and ${evidence.length} pieces of evidence:
-
 **Case Overview:**
 ${caseData.description}
-
 **Evidence Analysis:**
 I've analyzed ${evidence.length} documents with an average relevance score of ${evidence.reduce((sum: number, doc: any) => sum + doc.relevance, 0) / evidence.length * 100}%.
-
 **Key Findings:**
 • Evidence processing shows multimodal content (images, documents, audio/video)
 • Timeline reconstruction reveals chronological sequence of events
 • Pattern analysis suggests strong case correlation
-
 **Legal Recommendations:**
 1. The evidence chain appears complete and properly documented
 2. AI-generated embeddings enable cross-modal evidence correlation
 3. Consider timeline visualization for court presentation
-
 **Query Response:**
 Regarding "${query}" - Based on the processed evidence and case context, this appears to be a ${caseData.status} case with ${caseData.priority} priority. The embedded evidence provides strong support for the case theory.
-
 *This analysis was generated using RAG (Retrieval Augmented Generation) with pgvector similarity search and Gemma embeddings.*`
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   const demo = url.searchParams.get('demo')
-
   if (demo === 'info') {
     return json({
       workflow: 'Legal AI Case Management Demo',
@@ -482,6 +414,5 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     })
   }
-
   return json({ error: 'Use ?demo=info for documentation' })
 }

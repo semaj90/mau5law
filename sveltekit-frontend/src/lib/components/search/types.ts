@@ -1,6 +1,5 @@
-// Types for legal search components;
+// Types for legal search components
 }
-
 export interface SearchResult {
   id: string;
   title: string;
@@ -19,7 +18,6 @@ export interface SearchResult {
   highlights?: string[];
   createdAt?: string;
 }
-
 export interface SearchOptions {
   categories: Array<'cases' | 'evidence' | 'precedents' | 'statutes' | 'criminals' | 'documents'>;
   enableVectorSearch: boolean;
@@ -28,7 +26,6 @@ export interface SearchOptions {
   similarityThreshold: number;
   includeMetadata: boolean;
 }
-
 export interface SearchMetadata {
   query: string;
   categories: string[];
@@ -37,13 +34,11 @@ export interface SearchMetadata {
   vectorSearchUsed: boolean;
   aiEnhanced: boolean;
 }
-
 export interface SearchFilter {
   field: string;
   operator: 'equals' | 'contains' | 'startsWith' | 'endsWith' | 'gt' | 'lt' | 'in';
   value: string | number | string[];
 }
-
 export interface SearchSuggestion {
   text: string;
   category: string;

@@ -2,14 +2,11 @@
  * Enhanced API Route Example for Bits UI SSR
  * Demonstrates proper data extraction and serialization patterns
  */
-
 import type { RequestHandler } from './$types.js'
 import { createSSRResponse, withSSRHandler, batchSSRRequests } from '$lib/server/api-ssr-helpers'
 import type { DashboardStats, SystemHealth, RecentActivity } from '$lib/types/api-schemas'
-
 export const GET: RequestHandler = withSSRHandler(async ({ url, locals }) => {
   const dataType = url.searchParams.get('type') || 'dashboard'
-
   switch (dataType) {
     case 'dashboard':
       return getDashboardData(locals)
@@ -23,7 +20,6 @@ export const GET: RequestHandler = withSSRHandler(async ({ url, locals }) => {
       return createSSRResponse({ message: 'Invalid data type requested' }, { status: 400 })
   }
 })
-
 async function getDashboardData(locals: any) {
   const dashboardStats: DashboardStats = {
     activeCases: 42,
@@ -39,10 +35,8 @@ async function getDashboardData(locals: any) {
       timestamp: new Date().toISOString()
     }
   }
-
   return createSSRResponse(dashboardStats)
 }
-
 async function getSystemHealth(): Promise<Response> {
   const systemHealth: SystemHealth = {
     overall: {
@@ -88,10 +82,8 @@ async function getSystemHealth(): Promise<Response> {
       features: ['Vector Search', 'AI Analysis', 'Real-time Chat', 'Document Processing']
     }
   }
-
   return createSSRResponse(systemHealth)
 }
-
 async function getRecentActivities(locals: any): Promise<Response> {
   const activities: RecentActivity[] = [
     {
@@ -123,10 +115,8 @@ async function getRecentActivities(locals: any): Promise<Response> {
       priority: 'medium'
     }
   ]
-
   return createSSRResponse({ activities, total: activities.length })
 }
-
 async function getBatchData(locals: any): Promise<Response> {
   // Demonstrate batch loading for efficient SSR
   const batchedData = await batchSSRRequests({
@@ -134,27 +124,23 @@ async function getBatchData(locals: any): Promise<Response> {
     health: () => getSystemHealth().then(r => r.json()),
     activities: () => getRecentActivities(locals).then(r => r.json()
   })
-
   return createSSRResponse({
     ...batchedData,
     meta: {
-      batchLoaded: true,
+      batchLoaded: true
       loadTime: new Date().toISOString()
     }
   })
 }
-
 // POST handler for Bits UI form submissions
 export const POST: RequestHandler = withSSRHandler(async ({ request, locals }) => {
   const data = await request.json()
-  
   // Process form data with proper serialization
   const processedData = {
-    received: data,
+    received: data
     processedAt: new Date().toISOString(),
     userId: locals.user?.id,
     status: 'processed'
   }
-
   return createSSRResponse(processedData, { status: 201 })
 })

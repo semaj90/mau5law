@@ -5,15 +5,13 @@ declare global {
   interface Window {
     fs?: unknown;
   }
-
   namespace svelteHTML {
     interface HTMLAttributes<T> {
       'data-testid'?: string;
     }
   }
 }
-
-// Extend module declarations for better type safety;
+// Extend module declarations for better type safety
 declare module '@qdrant/js-client-rest' {
   export interface QdrantClient {
     upsert(collection: string, options: any): Promise<any>;
@@ -22,18 +20,15 @@ declare module '@qdrant/js-client-rest' {
     getCollection(name: string): Promise<any>;
     createCollection(name: string, options: any): Promise<any>;
   }
-
   export interface PointStruct {
     id: string;
     vector: number[];
-    payload?: Record<string, any>;
+    payload?: { [key: string]: any };
   }
-
   export interface Filter {
-    must?: Array<Record<string, any>>;
-    should?: Array<Record<string, any>>;
+    must?: Array<{ [key: string]: any }>;
+    should?: Array<{ [key: string]: any }>;
   }
-
   export interface SearchRequest {
     vector: number[];
     limit?: number;
@@ -42,4 +37,3 @@ declare module '@qdrant/js-client-rest' {
     filter?: Filter;
   }
 }
-

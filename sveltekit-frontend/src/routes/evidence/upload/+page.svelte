@@ -4,19 +4,16 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { superForm } from 'sveltekit-superforms/client';
   import { zod } from 'sveltekit-superforms/adapters';
   import { evidenceUploadSchema, validateFileSize, validateFileType, getFileTypeFromMime, generateMetadataFromFile } from '$lib/schemas/evidence-upload.js';
   import type { PageData } from './$types.js';
-  
   const { data }: { data: PageData } = $props();
-  
   // Initialize Superform with Zod validation
   const { form, errors, enhance, submitting, message } = superForm(data.form, {
     validators: zod(evidenceUploadSchema),
-    resetForm: false,
-    invalidateAll: true,
+    resetForm: false
+    invalidateAll: true
     onError: ({ result, message }) => {
       // Show fallback notice on upload failure
       const notice = document.createElement('div');
@@ -24,11 +21,9 @@
       notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 5000);
-
       console.log('Upload failed, using mock fallback:', result);
     }
   });
-  
   // File upload state
   let selectedFile: File | null = $state(null);
   let filePreview: string | null = $state(null);
@@ -36,38 +31,32 @@
   let uploading = $state(false);
   let progressPercent = $state(0);
   let metadata = $state<any>(null);
-  
   // Handle file selection
   async function handleFileSelect(file: File) {
-    selectedFile = file;
-    
+    selectedFile = fil;
     // Validate file size
     if (!validateFileSize(file)) {
       $errors.file = ['File size exceeds 100MB limit'];
       selectedFile = null;
       return;
     }
-    
     // Auto-detect evidence type from file
     const detectedType = getFileTypeFromMime(file.type);
     if (detectedType !== 'UNKNOWN') {
       $form.evidence_type = detectedType as any;
     }
-    
     // Validate file type against evidence type
     if (!validateFileType(file, $form.evidence_type)) {
       $errors.file = [`File type ${file.type} not supported for ${$form.evidence_type} evidence`];
       selectedFile = null;
       return;
     }
-    
     // Generate file preview for images
     if (file.type.startsWith('image/')) {
       filePreview = URL.createObjectURL(file);
     } else {
       filePreview = null;
     }
-    
     // Generate metadata preview with fallback
     try {
       metadata = await generateMetadataFromFile(file, $form.evidence_type);
@@ -75,7 +64,7 @@
       console.warn('Failed to generate metadata preview:', error);
       // Provide mock metadata as fallback
       metadata = {
-        mockData: true,
+        mockData: true
         error: 'failure default to mock',
         fallbackMetadata: {
           fileName: file.name,
@@ -88,14 +77,12 @@
         }
       };
     }
-    
     // Clear any file errors
     if ($errors.file) {
-      delete $errors.file;
-      $errors = $errors;
+      delete $errors.fil;
+      $errors = $error;
     }
   }
-  
   // File input change handler
   function onFileChange(event: Event) {
     const target = event.target as HTMLInputElement;
@@ -104,28 +91,23 @@
       handleFileSelect(file);
     }
   }
-  
   // Drag and drop handlers
   function onDragOver(event: DragEvent) {
     event.preventDefault();
     dragOver = true;
   }
-  
   function onDragLeave(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
   }
-  
   function onDrop(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
-    
     const file = event.dataTransfer?.files?.[0];
     if (file) {
       handleFileSelect(file);
     }
   }
-  
   // Evidence type change handler
   function onEvidenceTypeChange() {
     if (selectedFile) {
@@ -133,12 +115,11 @@
       if (!validateFileType(selectedFile, $form.evidence_type)) {
         $errors.file = [`File type ${selectedFile.type} not supported for ${$form.evidence_type} evidence`];
       } else if ($errors.file) {
-        delete $errors.file;
-        $errors = $errors;
+        delete $errors.fil;
+        $errors = $error;
       }
     }
   }
-  
   // Format file size for display
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 B';
@@ -148,22 +129,18 @@
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 </script>
-
 <svelte:head>
   <title>Upload Evidence - Legal AI Platform</title>
 </svelte:head>
-
 <div class="nes-container with-title is-centered" style="margin: 20px;">
   <p class="title">Legal AI Evidence Upload</p>
-  
   <div class="nes-container is-rounded" style="margin: 20px 0;">
     <h1 class="title">📁 Upload Evidence</h1>
     <p>Add new evidence to your case with automatic metadata extraction and AI processing.</p>
-    
     <!-- Service Status Indicator -->
     <div class="service-status" style="margin: 15px 0; padding: 10px; border: 1px solid #ccc; background: #f9f9f9; border-radius: 4px;">
       <p style="margin: 0; font-size: 0.9em;">
-        🔧 <strong>Processing Services:</strong> 
+        🔧 <strong>Processing Services:</strong>
         <span style="color: #28a745;">✅ Go Upload Service (Connected)</span> |
         <span style="color: #28a745;">✅ Local OCR Processing</span> |
         <span style="color: #28a745;">✅ Database Storage</span>
@@ -172,15 +149,12 @@
         Your files will be processed by multiple AI services for enhanced analysis.
       </p>
     </div>
-      
       {#if $message}
         <div class="nes-container {$message.type === 'success' ? 'is-success' : 'is-error'}" style="margin: 10px 0;">
           <p>{$message.text}</p>
         </div>
       {/if}
-      
       <form method="POST" action="?/upload" enctype="multipart/form-data" use:enhance class="space-y-6">
-        
         <!-- Case Selection -->
         <div class="nes-field" style="margin: 15px 0;">
           <label for="case_id">⚖️ Select Case *</label>
@@ -205,7 +179,6 @@
             <p class="nes-text is-error">{$errors.case_id}</p>
           {/if}
         </div>
-        
         <!-- Evidence Title -->
         <div class="nes-field" style="margin: 15px 0;">
           <label for="title">📝 Evidence Title *</label>
@@ -223,7 +196,6 @@
             <p class="nes-text is-error">{$errors.title}</p>
           {/if}
         </div>
-        
         <!-- Evidence Description -->
         <div class="nes-field" style="margin: 15px 0;">
           <label for="description">📄 Description</label>
@@ -237,7 +209,6 @@
             placeholder="Brief description of the evidence..."
           ></textarea>
         </div>
-        
         <!-- Evidence Type -->
         <div class="nes-field" style="margin: 15px 0;">
           <label for="evidence_type">🗂️ Evidence Type</label>
@@ -261,12 +232,10 @@
             <p class="nes-text is-error">{$errors.evidence_type}</p>
           {/if}
         </div>
-        
         <!-- File Upload Area -->
         {#if $form.evidence_type !== 'LINK'}
           <div class="nes-field" style="margin: 15px 0;">
             <label>📎 File Upload *</label>
-            
             <!-- Drag and Drop Zone -->
             <div
               class="nes-container {dragOver ? 'is-success' : ''} {$errors.file ? 'is-error' : ''}"
@@ -286,12 +255,10 @@
                       </svg>
                     </div>
                   {/if}
-                  
                   <div>
                     <p class="font-medium text-gray-900">{selectedFile.name}</p>
                     <p class="text-sm text-gray-500">{formatFileSize(selectedFile.size)} • {selectedFile.type}</p>
                   </div>
-                  
                   <button
                     type="button"
                     onclick={() => { selectedFile = null; filePreview = null; metadata = null; }}
@@ -324,13 +291,11 @@
                 </div>
               {/if}
             </div>
-            
             {#if $errors.file}
               <p class="mt-1 text-sm text-red-600">{$errors.file}</p>
             {/if}
           </div>
         {/if}
-        
         <!-- Link URL (for LINK type evidence) -->
         {#if $form.evidence_type === 'LINK'}
           <div>
@@ -352,7 +317,6 @@
             {/if}
           </div>
         {/if}
-        
         <!-- Enhanced Evidence Fields -->
         <div class="space-y-4">
           <!-- Tags -->
@@ -373,7 +337,6 @@
               <p class="mt-1 text-sm text-red-600">{$errors.tags}</p>
             {/if}
           </div>
-
           <!-- Confidentiality Level -->
           <div>
             <label for="confidentialityLevel" class="block text-sm font-medium text-gray-700 mb-2">
@@ -393,7 +356,6 @@
               <option value="restricted">Restricted</option>
             </select>
           </div>
-
           <!-- Chain of Custody Information -->
           <div>
             <label for="collectedBy" class="block text-sm font-medium text-gray-700 mb-2">
@@ -409,7 +371,6 @@
               placeholder="Officer/person who collected the evidence"
             />
           </div>
-
           <div>
             <label for="location" class="block text-sm font-medium text-gray-700 mb-2">
               Collection Location
@@ -424,7 +385,6 @@
               placeholder="Where the evidence was collected"
             />
           </div>
-
           <div>
             <label for="collectedAt" class="block text-sm font-medium text-gray-700 mb-2">
               Collection Date & Time
@@ -438,7 +398,6 @@
               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
-
           <!-- Evidence Admissibility -->
           <div class="flex items-center">
             <input
@@ -453,7 +412,6 @@
               Evidence is admissible in court
             </label>
           </div>
-
           <!-- AI Processing Options -->
           <div class="border-t pt-4">
             <h3 class="text-sm font-medium text-gray-900 mb-3">AI Processing Options</h3>
@@ -471,7 +429,6 @@
                   Enable OCR (text extraction from PDFs and images)
                 </label>
               </div>
-
               <div class="flex items-center">
                 <input
                   type="checkbox"
@@ -485,7 +442,6 @@
                   Enable AI analysis and legal concept extraction
                 </label>
               </div>
-
               <div class="flex items-center">
                 <input
                   type="checkbox"
@@ -499,7 +455,6 @@
                   Generate vector embeddings for semantic search
                 </label>
               </div>
-
               <div class="flex items-center">
                 <input
                   type="checkbox"
@@ -516,7 +471,6 @@
             </div>
           </div>
         </div>
-
         <!-- Metadata Preview -->
         {#if metadata}
           <div class="bg-gray-50 rounded-lg p-4">
@@ -526,7 +480,6 @@
             </div>
           </div>
         {/if}
-        
         <!-- Submit Button -->
         <div style="text-align: center; margin: 20px 0;">
           <button
@@ -537,7 +490,6 @@
           >
             ← Cancel
           </button>
-          
           <button
             type="submit"
             disabled={$submitting || (!selectedFile && $form.evidence_type !== 'LINK') || !$form.case_id || !$form.title}

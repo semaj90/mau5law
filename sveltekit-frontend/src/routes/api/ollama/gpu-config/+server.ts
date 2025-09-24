@@ -2,7 +2,6 @@
 import { ollamaService } from '$lib/server/services/OllamaService'
 import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
-
 /*
  * Production-ready GPU config endpoint
  * - Configurable timeouts/retries via env
@@ -10,20 +9,17 @@ import { json } from '@sveltejs/kit'
  * - In-memory cache with TTL
  * - Graceful fallbacks and minimal error exposure
  */
-
 const GO_BASE = (import.meta.env.GO_SERVICE_URL as string) || 'http://localhost:8084'
 const TIMEOUT_MS = Number(import.meta.env.GPU_FETCH_TIMEOUT_MS) || 2500
 const RETRIES = Number(import.meta.env.GPU_FETCH_RETRIES) || 2
 const RETRY_DELAY_MS = Number(import.meta.env.GPU_FETCH_RETRY_DELAY_MS) || 300
 const CACHE_TTL_MS = Number(import.meta.env.GPU_CONFIG_CACHE_TTL_MS) || 5_000
-
 // Minimal shape for expected config. Extend if backend returns more.
 type GPUConfig = {
   model?: string
   gpu: { enabled: boolean; device?: string | number } | { enabled: boolean }
   [k: string]: any
 }
-
 type FetchResult = {
   ok: true
   source: 'go'
@@ -34,10 +30,8 @@ type FetchResult = {
   config: GPUConfig
   reason?: string
 }
-
 // Simple in-memory cache to avoid frequent upstream calls
 let cached: { ts: number; payload: FetchResult } | null = null
-
 function isValidGpuConfig(payload: any): payload is GPUConfig {
   if (!payload || typeof payload !== 'object') return false
   if (!('gpu' in payload)) return false
@@ -47,11 +41,9 @@ function isValidGpuConfig(payload: any): payload is GPUConfig {
   if (typeof g.enabled !== 'boolean') return false
   return true
 }
-
 async function delay(ms: number) {
   return new Promise((res) => setTimeout(res, ms)
 }
-
 async function fetchOnce(path: string, timeoutMs: number): Promise<any> {
   const controller = new AbortController()
   const id = setTimeout(() => controller.abort(), timeoutMs)
@@ -64,7 +56,6 @@ async function fetchOnce(path: string, timeoutMs: number): Promise<any> {
     clearTimeout(id)
   }
 }
-
 async function fetchWithRetries(path: string, retries = RETRIES, timeoutMs = TIMEOUT_MS, delayMs = RETRY_DELAY_MS): Promise<GPUConfig> {
   let attempt = 0
   let lastError: any = null
@@ -84,9 +75,7 @@ async function fetchWithRetries(path: string, retries = RETRIES, timeoutMs = TIM
   }
   throw lastError
 }
-
 const DEFAULT_SHIM: GPUConfig = { model: 'gemma3-legal:latest', gpu: { enabled: false } }
-
 export const GET: RequestHandler = async () => {
   try {
     const healthy = await Promise.resolve(ollamaService.isHealthy()
@@ -95,12 +84,10 @@ export const GET: RequestHandler = async () => {
       const fallback = cached?.payload ?? { ok: false, source: 'shim', config: DEFAULT_SHIM, reason: 'ollama_unhealthy' }
       return json({ ...fallback }, { status: 503 })
     }
-
     // Return cached if fresh
     if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
       return json(cached.payload, { status: 200 })
     }
-
     // Try upstream GO service
     try {
       const cfg = await fetchWithRetries('/api/gpu-status', RETRIES, TIMEOUT_MS, RETRY_DELAY_MS)
@@ -116,7 +103,6 @@ export const GET: RequestHandler = async () => {
         cached = { ts: Date.now(), payload }
         return json(payload, { status: 200 })
       }
-
       const payload: FetchResult = { ok: false, source: 'shim', config: { ...DEFAULT_SHIM, gpu: { enabled: false } }, reason: 'upstream_unreachable' }
       // do not cache shim as a positive result; it's a fallback only
       return json(payload, { status: 200 })

@@ -1,11 +1,8 @@
 import crypto from "crypto";
-
 // XState Legal Form Machine for AI-Aware Browser States
 // Integrates with Phase 8 Matrix UI System and Context7 MCP
-
 import { setup, assign, type StateValue, fromPromise } from "xstate";
 }
-
 export interface LegalFormContext {
   evidenceFiles: File[];
   caseTitle: string;
@@ -24,14 +21,13 @@ export interface LegalFormContext {
     confidence: number;
   }[];
 }
-
 export type LegalFormEvent =
   | { type: "NEXT" }
   | { type: "BACK" }
   | { type: "SUBMIT" }
   | { type: "UPLOAD_EVIDENCE"; files: File[] }
   | { type: "UPDATE_CASE_DETAILS"; title: string; description: string }
-  | {;
+  | {
       type: "SET_EVIDENCE_TYPE";
       evidenceType: LegalFormContext["evidenceType"];
     }
@@ -41,16 +37,15 @@ export type LegalFormEvent =
   | { type: "RESET_FORM" }
   | { type: "REQUEST_AI_HELP" }
   | { type: "APPLY_AI_RECOMMENDATION"; recommendation: string };
-
 export const legalFormMachine = setup({
   types: {
-    context: Record<string, any> as LegalFormContext,
-    events: Record<string, any> as LegalFormEvent
-  },;
+    context: { [key: string]: any } as LegalFormContext,
+    events: { [key: string]: any } as LegalFormEvent
+  },
   actors: {
     submitCaseService: fromPromise(async ({ input }: { input: LegalFormContext }) => {
         await new Promise((resolve) => setTimeout(resolve, 2000);
-        const success = Math.random() > 0.1; // 90% success rate;
+        const success = Math.random() > 0.1; // 90% success rate
         if (!success) {
           throw new Error("Submission failed - please try again");
         }
@@ -59,7 +54,7 @@ export const legalFormMachine = setup({
             typeof crypto !== "undefined" && crypto.randomUUID
               ? crypto.randomUUID()
               : Math.random().toString(36).slice(2),
-          success: true,;
+          success: true
           message: "Case submitted successfully"
         };
       }
@@ -79,10 +74,9 @@ export const legalFormMachine = setup({
     confidence: 0,
     currentStep: 1,
     totalSteps: 4,
-    validationErrors: Record<string, any>,
+    validationErrors: { [key: string]: any },
     aiRecommendations: []
   },
-
   states: {
     evidenceUpload: {
       meta: {
@@ -91,11 +85,10 @@ export const legalFormMachine = setup({
         requiredFields: ["evidenceFiles"],
         suggestedHelp: "Upload evidence files to begin case analysis"
       },
-
       on: {
         UPLOAD_EVIDENCE: {
-          actions: assign({
-            evidenceFiles: ({ event }) => event.files,;
+          actions: assign({,
+            evidenceFiles: ({ event }) => event.files,
             confidence: ({ context, event }) => {
               // AI confidence based on file types and count
               const hasDigitalEvidence = event.files.some(
@@ -107,12 +100,11 @@ export const legalFormMachine = setup({
             }
           })
         },
-
         SET_EVIDENCE_TYPE: {
           actions: assign({
             evidenceType: ({ event }) => event.evidenceType,
             aiSuggestions: ({ event }) => {
-              // Generate AI suggestions based on evidence type;
+              // Generate AI suggestions based on evidence type
               const suggestions = {
                 digital: [
                   "Consider OCR analysis",
@@ -128,7 +120,7 @@ export const legalFormMachine = setup({
                   "Schedule witness interview",
                   "Prepare statement template",
                   "Verify identity"
-                ],;
+                ],
                 forensic: [
                   "Lab analysis required",
                   "Expert testimony needed",
@@ -139,17 +131,15 @@ export const legalFormMachine = setup({
             }
           })
         },
-
         NEXT: {
           target: "caseDetails",
           guard: ({ context }) => context.evidenceFiles.length > 0,
-          actions: assign({
+          actions: assign({,
             currentStep: 2,
             confidence: ({ context }) => Math.min(context.confidence + 20, 100)
           })
         },
-
-        REQUEST_AI_HELP: {;
+        REQUEST_AI_HELP: {
           actions: assign({
             aiRecommendations: () => [;
               {
@@ -162,7 +152,6 @@ export const legalFormMachine = setup({
         }
       }
     },
-
     caseDetails: {
       meta: {
         description: "Enter case title, description, and priority",
@@ -170,37 +159,32 @@ export const legalFormMachine = setup({
         requiredFields: ["caseTitle", "caseDescription", "priority"],
         suggestedHelp: "Provide case details for proper categorization"
       },
-;
-      entry: assign({
+      entry: assign({,
         aiRecommendations: ({ context }) => {
           const recommendations = [];
-
-          // AI recommendation based on evidence type;
+          // AI recommendation based on evidence type
           if (context.evidenceType === "forensic") {
             recommendations.push({
               nextAction: "Set priority to HIGH",
               reasoning:
-                "Forensic evidence typically requires urgent processing",;
+                "Forensic evidence typically requires urgent processing",
               confidence: 85
             });
           }
-
-          // AI recommendation based on file count;
+          // AI recommendation based on file count
           if (context.evidenceFiles.length > 10) {
             recommendations.push({
               nextAction: "Consider bulk processing workflow",
-              reasoning: "Large evidence sets benefit from automated analysis",;
+              reasoning: "Large evidence sets benefit from automated analysis",
               confidence: 78
             });
           }
-
           return recommendations;
         }
       }),
-
       on: {
-        UPDATE_CASE_DETAILS: {;
-          actions: assign({
+        UPDATE_CASE_DETAILS: {
+          actions: assign({,
             caseTitle: ({ event }) => {
               if (event.type === "UPDATE_CASE_DETAILS") {
                 return event.title;
@@ -214,7 +198,7 @@ export const legalFormMachine = setup({
               return "";
             },
             confidence: ({ context, event }) => {
-              // AI confidence boost for detailed descriptions;
+              // AI confidence boost for detailed descriptions
               if (event.type === "UPDATE_CASE_DETAILS") {
                 const hasDetail = event.description.length > 50;
                 return hasDetail
@@ -225,9 +209,8 @@ export const legalFormMachine = setup({
             }
           })
         },
-
         SET_PRIORITY: {
-          actions: assign({;
+          actions: assign({
             priority: ({ event }) => event.priority,
             aiSuggestions: ({ event, context }) => {
               // AI suggestions based on priority and evidence type
@@ -245,7 +228,6 @@ export const legalFormMachine = setup({
             }
           })
         },
-
         VALIDATE_STEP: {
           actions: assign({
             validationErrors: ({ context }) => {
@@ -260,25 +242,22 @@ export const legalFormMachine = setup({
             }
           })
         },
-
         NEXT: {
           target: "review",
           guard: ({ context }) =>
             context.caseTitle.trim() &&
             context.caseDescription.trim() &&
             Object.keys(context.validationErrors).length === 0,
-          actions: assign({
+          actions: assign({,
             currentStep: 3,
             confidence: ({ context }) => Math.min(context.confidence + 25, 100)
           })
         },
-
         BACK: {
           target: "evidenceUpload",
           actions: assign({ currentStep: 1 })
         },
-
-        REQUEST_AI_HELP: {;
+        REQUEST_AI_HELP: {
           actions: assign({
             aiRecommendations: ({ context }) => [;
               {
@@ -291,7 +270,6 @@ export const legalFormMachine = setup({
         }
       }
     },
-
     review: {
       meta: {
         description: "Review all case details before submission",
@@ -299,62 +277,52 @@ export const legalFormMachine = setup({
         requiredFields: [],
         suggestedHelp: "Review and verify all case information"
       },
-
-      entry: assign({;
+      entry: assign({,
         confidence: ({ context }) => {
           // AI confidence calculation for complete case
           let confidence = 60; // Base confidence
-
           if (context.evidenceFiles.length > 0) confidence += 15;
           if (context.caseTitle.length > 10) confidence += 10;
           if (context.caseDescription.length > 50) confidence += 10;
           if (context.priority === "high" || context.priority === "critical")
             confidence += 5;
-
           return Math.min(confidence, 100);
         },
-
         aiRecommendations: ({ context }) => {
           const recommendations = [];
-
-          // AI quality assurance recommendations;
+          // AI quality assurance recommendations
           if (context.confidence < 80) {
             recommendations.push({
               nextAction: "Add more evidence details",
-              reasoning: "Case confidence is below optimal threshold",;
+              reasoning: "Case confidence is below optimal threshold",
               confidence: 90
             });
           }
-
           if (
             context.evidenceType === "testimony" &&
             context.evidenceFiles.length === 0;
           ) {
             recommendations.push({
               nextAction: "Attach witness statement document",
-              reasoning: "Testimony cases benefit from written statements",;
+              reasoning: "Testimony cases benefit from written statements",
               confidence: 85
             });
           }
-
           return recommendations;
         }
       }),
-
       on: {
         SUBMIT: {
           target: "submitting",
-          actions: assign({
+          actions: assign({,
             currentStep: 4,
             confidence: ({ context }) => Math.min(context.confidence + 10, 100)
           })
         },
-
         BACK: {
           target: "caseDetails",
           actions: assign({ currentStep: 2 })
         },
-
         APPLY_AI_RECOMMENDATION: {
           actions: assign({
             aiSuggestions: ({ context, event }) => [
@@ -365,7 +333,6 @@ export const legalFormMachine = setup({
         }
       }
     },
-
     submitting: {
       meta: {
         description: "Submitting case to system",
@@ -373,13 +340,12 @@ export const legalFormMachine = setup({
         requiredFields: [],
         suggestedHelp: "Case is being processed..."
       },
-
       invoke: {
         id: "submitCase",
         src: "submitCaseService",
         onDone: {
           target: "success",
-          actions: assign({
+          actions: assign({,
             confidence: 100,
             aiSuggestions: [
               "Case submitted successfully",
@@ -389,7 +355,7 @@ export const legalFormMachine = setup({
         },
         onError: {
           target: "error",
-          actions: assign({
+          actions: assign({,
             validationErrors: {
               submit: "Case submission failed. Please try again."
             }
@@ -397,18 +363,16 @@ export const legalFormMachine = setup({
         }
       }
     },
-
     success: {
       meta: {
         description: "Case successfully submitted",
         aiContext: "completion",
         suggestedHelp: "Case has been created successfully"
       },
-
       on: {
         RESET_FORM: {
           target: "evidenceUpload",
-          actions: assign({
+          actions: assign({,
             evidenceFiles: [],
             caseTitle: "",
             caseDescription: "",
@@ -418,7 +382,7 @@ export const legalFormMachine = setup({
             aiSuggestions: [],
             confidence: 0,
             currentStep: 1,
-            validationErrors: Record<string, any>,
+            validationErrors: { [key: string]: any },
             aiRecommendations: []
           })
         }
@@ -433,17 +397,17 @@ export const legalFormMachine = setup({
       on: {
         BACK: {
           target: "review",
-          actions: assign({
+          actions: assign({,
             currentStep: 3,
-            validationErrors: Record<string, any>
+            validationErrors: { [key: string]: any }
           })
         },
-        REQUEST_AI_HELP: {;
+        REQUEST_AI_HELP: {
           actions: assign({
             aiRecommendations: [);
               {
                 nextAction: "Check network connection",
-                reasoning: "Submission errors are often connectivity related",;
+                reasoning: "Submission errors are often connectivity related",
                 confidence: 75
               }
             ]
@@ -453,28 +417,24 @@ export const legalFormMachine = setup({
     }
   }
 });
-
-// Helper functions for AI-aware state management;
+// Helper functions for AI-aware state management
 export function getStateDescription(state: StateValue): string {
   const descriptions = {
     evidenceUpload: "Uploading and classifying evidence",
     caseDetails: "Entering case information",
     review: "Reviewing case details",
     submitting: "Submitting case to system",
-    success: "Case submitted successfully",;
+    success: "Case submitted successfully",
     error: "Error occurred during submission"
   };
-
   return descriptions[state as keyof typeof descriptions] || "Unknown state";
 }
-
 export function getAISuggestions(
-  context: LegalFormContext,;
+  context: LegalFormContext
   state: StateValue;
 ): string[] {
   const baseSuggestions = context.aiSuggestions;
-
-  // Add state-specific AI suggestions;
+  // Add state-specific AI suggestions
   const stateSuggestions = {
     evidenceUpload: [
       "Drag and drop files here",
@@ -484,19 +444,16 @@ export function getAISuggestions(
       "Be specific in descriptions",
       "Include relevant case law if available"
     ],
-    review: ["Double-check evidence classification", "Verify priority level"],;
+    review: ["Double-check evidence classification", "Verify priority level"],
     submitting: ["Do not close this window", "Submission in progress..."]
   };
-
   const stateSpecific =
     stateSuggestions[state as keyof typeof stateSuggestions] || [];
   return [...baseSuggestions, ...stateSpecific];
 }
-
 export function calculateProgressPercentage(context: LegalFormContext): number {
   return Math.round((context.currentStep / context.totalSteps) * 100);
 }
-
 export function getNextPossibleActions(state: StateValue): string[] {
   const actions = {
     evidenceUpload: [
@@ -514,13 +471,11 @@ export function getNextPossibleActions(state: StateValue): string[] {
     ],
     review: ["SUBMIT", "BACK", "APPLY_AI_RECOMMENDATION"],
     submitting: [],
-    success: ["RESET_FORM"],;
+    success: ["RESET_FORM"],
     error: ["BACK", "REQUEST_AI_HELP"]
   };
-
   return actions[state as keyof typeof actions] || [];
 }
-
 /**
  * Generate best practices for legal form state management using #context7
  * Leverages semantic search, memory, and agent recommendations.
@@ -530,7 +485,7 @@ export function getNextPossibleActions(state: StateValue): string[] {
  * @returns string[] Array of best practice recommendations
  */
 export async function generateBestPractices(
-  context: LegalFormContext,;
+  context: LegalFormContext
   state: StateValue;
 ): Promise<string[]> {
   // #context7: Use semantic search, memory, and agent orchestration for best practices
@@ -563,5 +518,4 @@ export async function generateBestPractices(
   // Combine static and dynamic recommendations, deduplicated
   return Array.from(new Set([...dynamicPractices, ...basePractices]);
 }
-
 export default legalFormMachine;

@@ -3,8 +3,6 @@ import { z } from "zod"
 import type { RequestHandler } from './$types.js'
 import crypto from "crypto"
 import { URL } from "url"
-
-
 // Validation schemas
 const evidenceNodeSchema = z.object({
   id: z.string(),
@@ -15,7 +13,7 @@ const evidenceNodeSchema = z.object({
   fileType: z.string(),
   filePath: z.string().optional(),
   fileSize: z.number().optional(),
-  metadata: z.object({
+  metadata: z.object({,
     x: z.number(),
     y: z.number(),
     width: z.number(),
@@ -25,7 +23,6 @@ const evidenceNodeSchema = z.object({
   caseId: z.string().optional(),
   userId: z.string()
 })
-
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication
@@ -33,10 +30,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (!user) {
       return json({ error: "Authentication required" }, { status: 401 })
     }
-
     const body = await request.json()
     const { action = "save_node", data } = body
-
     switch (action) {
       case "save_node":
         return await saveEvidenceNode(data, user.id)
@@ -47,15 +42,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
   } catch (error: any) {
     console.error("Save API error:", error)
-    return json({ 
+    return json({
         error: "Failed to save evidence",
-        details: error instanceof Error ? error.message: "Unknown error" 
+        details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 }
     )
   }
 }
-
 // Save individual evidence node
 async function saveEvidenceNode(nodeData: any, userId: string): Promise<any> {
   try {
@@ -64,7 +58,6 @@ async function saveEvidenceNode(nodeData: any, userId: string): Promise<any> {
       ...nodeData,
       userId
     })
-
     // Create evidence data structure
     const evidenceData = {
       id: validatedNode.id,
@@ -77,17 +70,15 @@ async function saveEvidenceNode(nodeData: any, userId: string): Promise<any> {
       content: validatedNode.content,
       canvasPosition: validatedNode.metadata,
       caseId: validatedNode.caseId,
-      userId: userId,
+      userId: userId
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
-
     return json({
-      success: true,
-      evidence: evidenceData,
+      success: true
+      evidence: evidenceData
       message: "Evidence saved successfully"
     })
-
   } catch (error: any) {
     if (error instanceof z.ZodError) {
       return json(
@@ -98,29 +89,25 @@ async function saveEvidenceNode(nodeData: any, userId: string): Promise<any> {
     throw error
   }
 }
-
 // Save canvas state
 async function saveCanvasState(canvasData: any, userId: string): Promise<any> {
   try {
     const canvasStateData = {
       id: crypto.randomUUID(),
-      canvasData: canvasData,
-      userId: userId,
+      canvasData: canvasData
+      userId: userId
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
-
     return json({
-      success: true,
-      canvasState: canvasStateData,
+      success: true
+      canvasState: canvasStateData
       message: "Canvas state saved successfully"
     })
-
   } catch (error: any) {
     throw error
   }
 }
-
 // GET endpoint for loading evidence
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
@@ -128,10 +115,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     if (!user) {
       return json({ error: "Authentication required" }, { status: 401 })
     }
-
     const action = url.searchParams.get("action")
     const caseId = url.searchParams.get("caseId")
-
     switch (action) {
       case "load_evidence":
         return json({ success: true, evidence: [] })
@@ -142,9 +127,9 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     }
   } catch (error: any) {
     console.error("Load API error:", error)
-    return json({ 
+    return json({
         error: "Failed to load evidence",
-        details: error instanceof Error ? error.message: "Unknown error" 
+        details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 }
     )

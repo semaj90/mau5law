@@ -4,10 +4,8 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { apiClient } from '$lib/services/enhanced-api-client';
   import { toast } from 'svelte-sonner';
-
   // State using Svelte 5 runes
   let cases = $state<any[]>([]);
   let evidence = $state<any[]>([]);
@@ -27,10 +25,9 @@
     pendingAnalysis: 0,
     recentActivity: 0
   });
-
   // Real-time processing status
   let systemHealth = $state({
-    api: 'unknown',;
+    api: 'unknown',
     database: 'unknown',
     aiServices: 'unknown',
     jobQueue: 'unknown';
@@ -44,13 +41,11 @@
     { id: 'persons', label: 'Persons', icon: '👤' },
     { id: 'processing', label: 'Processing', icon: '⚙️' }
   ];
-
   // Load dashboard data
   const loadDashboardData = async () => {
     try {
       loading = true;
       error = null;
-
       // Load all data in parallel
       const [casesResponse, evidenceResponse, reportsResponse, personsResponse] = await Promise.all([
         (apiClient as any).getCases?.({ limit: 10, sortBy: 'updated_at', sortOrder: 'desc' }) || { data: [], total: 0 },
@@ -58,13 +53,11 @@
         (apiClient as any).getReports?.({ limit: 10, sortBy: 'updated_at', sortOrder: 'desc' }) || { data: [], total: 0 },
         (apiClient as any).getPersonsOfInterest?.({ limit: 10, sortBy: 'updated_at', sortOrder: 'desc' }) || { data: [], total: 0 }
       ]);
-
       // Update state with proper fallbacks
       cases = Array.isArray(casesResponse.data) ? casesResponse.data: [];
       evidence = Array.isArray(evidenceResponse.data) ? evidenceResponse.data: [];
       reports = Array.isArray(reportsResponse.data) ? reportsResponse.data: [];
       personsOfInterest = Array.isArray(personsResponse.data) ? personsResponse.data: [];
-
       // Calculate statistics
       stats = {
         totalCases: casesResponse.total || 0,
@@ -79,7 +72,6 @@
           return new Date(c.updatedAt) > dayAgo;
         }).length
       };
-
       // Load system health
       await loadSystemHealth();
     } catch (err: any) {
@@ -90,13 +82,12 @@
       loading = false;
     }
   };
-
   // Load system health status
   const loadSystemHealth = async () => {
     try {
       const healthResponse = await (apiClient as any).getHealthStatus?.() || {};
       systemHealth = {
-        api: healthResponse?.status === 'healthy' ? 'healthy' : healthResponse?.status === 'error' ? 'error' : 'warning',;
+        api: healthResponse?.status === 'healthy' ? 'healthy' : healthResponse?.status === 'error' ? 'error' : 'warning',
         database: healthResponse.services?.database || 'unknown',
         aiServices: healthResponse.services?.aiServices || 'unknown',
         jobQueue: healthResponse.services?.jobQueue || 'unknown';
@@ -104,25 +95,22 @@
     } catch (err: any) {
       console.error('Health check failed:', err);
       systemHealth = {
-        api: 'error',;
+        api: 'error',
         database: 'unknown',
         aiServices: 'unknown',
         jobQueue: 'unknown';
       };
     }
   };
-
   const createQuickCase = async () => {
     try {
       const caseData = {
         title: `New Case - ${new Date().toLocaleDateString()}`,
-        description: 'Quick case created from dashboard',;
-        status: 'open' as const,;
+        description: 'Quick case created from dashboard',
+        status: 'open' as const,
         priority: 'medium' as const;
       };
-
       const response = await (apiClient as any).createCase?.(caseData) || { success: false };
-
       if (response?.success) {
         toast.success('Case created successfully!');
         await loadDashboardData(); // Refresh data
@@ -132,16 +120,14 @@
       toast.error('Failed to create case');
     }
   };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       month: 'short',
-      day: 'numeric',;
-      hour: '2-digit',;
+      day: 'numeric',
+      hour: '2-digit',
       minute: '2-digit';
     });
   };
-
   // Priority and status colors
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -152,7 +138,6 @@
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'open': return 'bg-blue-100 text-blue-800 border-blue-200';
@@ -162,7 +147,6 @@
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
-
   const getHealthColor = (status: string) => {
     switch (status) {
       case 'healthy': return 'text-green-600';
@@ -171,14 +155,11 @@
       default: return 'text-gray-400';
     }
   };
-
   // Lifecycle
   $effect(() => {
     loadDashboardData();
-
     // Set up auto-refresh every 30 seconds
     refreshInterval = setInterval(loadDashboardData, 30000);
-
     // Cleanup function
     return () => {
       if (refreshInterval) {
@@ -187,7 +168,6 @@
       }
     };
   });
-
 </script>
 <div class="min-h-screen bg-gray-50">
   <!-- Header -->
@@ -212,7 +192,6 @@
             </div>
           </div>
         </div>
-
         <div class="flex items-center space-x-4">
           <button
             onclick={loadDashboardData}
@@ -224,7 +203,6 @@
             </svg>
             Refresh
           </button>
-
           <button
             onclick={createQuickCase}
             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -238,7 +216,6 @@
       </div>
     </div>
   </header>
-
   <!-- Navigation Tabs -->
   <nav class="bg-white border-b border-gray-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -260,7 +237,6 @@
       </div>
     </div>
   </nav>
-
   <!-- Main Content -->
   <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
     {#if loading && !cases.length}
@@ -308,7 +284,6 @@
                 </div>
               </div>
             </div>
-
             <div class="bg-white overflow-hidden shadow rounded-lg">
               <div class="p-5">
                 <div class="flex items-center">
@@ -326,7 +301,6 @@
                 </div>
               </div>
             </div>
-
             <div class="bg-white overflow-hidden shadow rounded-lg">
               <div class="p-5">
                 <div class="flex items-center">
@@ -344,7 +318,6 @@
                 </div>
               </div>
             </div>
-
             <div class="bg-white overflow-hidden shadow rounded-lg">
               <div class="p-5">
                 <div class="flex items-center">
@@ -363,7 +336,6 @@
               </div>
             </div>
           </div>
-
           <!-- Recent Activity -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Recent Cases -->
@@ -394,7 +366,6 @@
                 </div>
               </div>
             </div>
-
             <!-- Recent Evidence -->
             <div class="bg-white shadow rounded-lg">
               <div class="px-4 py-5 sm:p-6">
@@ -439,7 +410,6 @@
             </div>
           </div>
         </div>
-
       <!-- Cases Tab -->
       {:else if selectedTab === 'cases'}
         <div class="bg-white shadow rounded-lg">
@@ -488,7 +458,6 @@
             </div>
           </div>
         </div>
-
       <!-- Evidence Tab -->
       {:else if selectedTab === 'evidence'}
         <div class="bg-white shadow rounded-lg">
@@ -532,7 +501,6 @@
             </div>
           </div>
         </div>
-
       <!-- Processing Tab -->
       {:else if selectedTab === 'processing'}
         <div class="space-y-6">
@@ -572,7 +540,6 @@
               </div>
             </div>
           </div>
-
           <!-- Background Jobs Notice -->
           <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <div class="flex">
@@ -595,7 +562,6 @@
             </div>
           </div>
         </div>
-
       <!-- Other tabs - placeholder -->
       {:else}
         <div class="bg-white shadow rounded-lg">
@@ -612,12 +578,10 @@
     {/if}
   </main>
 </div>
-
 <style>
-  .animate-spin {;
+  .animate-spin {
     animation: spin 1s linear infinite;
   }
-
   @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
