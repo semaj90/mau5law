@@ -131,7 +131,7 @@ export class HybridGemmaBitmapEngine {
    * Main prediction method combining semantic + behavioral intelligence
    */
   async predictWithContext(
-    query: string,
+    query: string,;
     context: LegalContext;
   ): Promise<HybridPredictionResult> {
     const startTime = Date.now();
@@ -177,7 +177,7 @@ export class HybridGemmaBitmapEngine {
         nextStates: behavioralResults.nextStates,
         recommendedAssets: behavioralResults.recommendedAssets
       },
-      fusedInsights,
+      fusedInsights,;
       performance: {
         semanticQueryTime: semanticResults.queryTime,
         behavioralPredictionTime: behavioralResults.predictionTime,
@@ -198,7 +198,7 @@ export class HybridGemmaBitmapEngine {
    * Semantic search using Gemma embeddings
    */
   private async performSemanticSearch(
-    query: string,
+    query: string,;
     context: LegalContext;
   ): Promise<{ matches: any[]; queryTime: number }> {
     const startTime = Date.now();
@@ -242,7 +242,7 @@ export class HybridGemmaBitmapEngine {
 
       const matches = result.rows.map(row => ({
         contentId: row.id,
-        content: row.content_text,
+        content: row.content_text,;
         similarity: row.similarity,
         legalDomain: row.legal_domain,
         embeddingVector: row.gemma_embedding
@@ -274,12 +274,12 @@ export class HybridGemmaBitmapEngine {
       stateId: state.state.id,
       action: state.state.userAction,
       probability: state.probability,
-      timeEstimate: state.timeEstimate,
+      timeEstimate: state.timeEstimate,;
       confidence: state.state.confidence
     });
 
     const recommendedAssets = prediction.recommendedAssets.map((asset: any) => ({
-      type: asset.type,
+      type: asset.type,;
       priority: asset.priority,
       cacheKey: asset.cacheKey,
       preloadStrategy: this.determinePreloadStrategy(asset.priority, context)
@@ -297,7 +297,7 @@ export class HybridGemmaBitmapEngine {
    */
   private async fusionIntelligence(
     semanticResults: any,
-    behavioralResults: any,
+    behavioralResults: any,;
     context: LegalContext;
   ): Promise<any> {
     const semanticConfidence = semanticResults.matches[0]?.similarity || 0;
@@ -359,7 +359,7 @@ export class HybridGemmaBitmapEngine {
         try {
           const response = await fetch('http://localhost:11434/api/embeddings', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' },;
             body: JSON.stringify({ model, prompt: text })
           });
 
@@ -444,7 +444,7 @@ export class HybridGemmaBitmapEngine {
       intake: 0.3,
       analysis: 0.7,
       research: 0.8,
-      drafting: 0.5,
+      drafting: 0.5,;
       review: 0.6
     };
     return stageWeights[context.workflowStage] || 0.5;
@@ -456,7 +456,7 @@ export class HybridGemmaBitmapEngine {
       intake: 0.7,
       analysis: 0.3,
       research: 0.2,
-      drafting: 0.5,
+      drafting: 0.5,;
       review: 0.4
     };
     return stageWeights[context.workflowStage] || 0.5;
@@ -464,7 +464,7 @@ export class HybridGemmaBitmapEngine {
 
   private generateCognitiveReasoning(
     semantic: any,
-    behavioral: any,
+    behavioral: any,;
     context: LegalContext;
   ): string[] {
     const reasoning = [];
@@ -490,7 +490,7 @@ export class HybridGemmaBitmapEngine {
   }
 
   private determineAdaptiveStrategy(
-    confidence: number,
+    confidence: number,;
     metrics: { fps: number; memoryUsage: number }
   ): 'aggressive' | 'conservative' | 'balanced' {
     if (confidence > 85 && metrics.fps > 55 && metrics.memoryUsage < 70) {
@@ -503,7 +503,7 @@ export class HybridGemmaBitmapEngine {
 
   private synthesizePrimaryRecommendation(
     semantic: any,
-    behavioral: any,
+    behavioral: any,;
     context: LegalContext;
   ): string {
     const semanticAction = semantic.matches[0]?.legalDomain || 'document analysis';
@@ -513,7 +513,7 @@ export class HybridGemmaBitmapEngine {
   }
 
   private determinePreloadStrategy(
-    priority: number,
+    priority: number,;
     context: LegalContext;
   ): 'immediate' | 'background' | 'ondemand' {
     if (priority > 80 && context.systemMetrics.fps > 55) {
@@ -549,7 +549,7 @@ export class HybridGemmaBitmapEngine {
 
   private async cacheHybridResult(
     query: string,
-    context: LegalContext,
+    context: LegalContext,;
     result: HybridPredictionResult;
   ): Promise<void> {
     const cacheKey = `hybrid:${this.hashQuery(query)}:${context.sessionId}`;
@@ -593,7 +593,7 @@ export class HybridGemmaBitmapEngine {
         fusionIntelligence: 'Cognitive reasoning combining both approaches',
         adaptiveQuality: 'CHR-ROM patterns with dynamic quality scaling',
         predictiveCache: 'Asset preloading before user requests'
-      },
+      },;
       performance: this.performanceMetrics,
       revolutionaryAdvantages: [
         'Predicts user needs before explicit requests',
@@ -610,14 +610,14 @@ export class HybridGemmaBitmapEngine {
    */
   async trainWithFeedback(
     actualOutcome: string,
-    prediction: HybridPredictionResult,
+    prediction: HybridPredictionResult,;
     context: LegalContext;
   ): Promise<void> {
     // Update behavioral model;
     await this.bitmapPredictor.reinforcementLearning(actualOutcome, {
       nextStates: prediction.behavioralPrediction.nextStates,
       recommendedAssets: prediction.behavioralPrediction.recommendedAssets,
-      confidence: prediction.fusedInsights.confidenceScore,
+      confidence: prediction.fusedInsights.confidenceScore,;
       reasoning: prediction.fusedInsights.cognitiveReasoning
     });
 

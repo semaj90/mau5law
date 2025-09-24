@@ -72,7 +72,7 @@ class MultidimensionalRoutingMatrix {
         cost: 0.08, 
         latency: 200, 
         quality: 0.97,
-        throughput: 200,
+        throughput: 200,;
         reliability: 0.99
       }
     ]);
@@ -100,7 +100,7 @@ class MultidimensionalRoutingMatrix {
         cost: 0.02,
         latency: 30,
         quality: 0.85,
-        throughput: 800,
+        throughput: 800,;
         reliability: 0.98
       }
     ]);
@@ -128,7 +128,7 @@ class MultidimensionalRoutingMatrix {
         cost: 0.15,
         latency: 800,
         quality: 0.98,
-        throughput: 200,
+        throughput: 200,;
         reliability: 0.99
       }
     ]);
@@ -148,7 +148,7 @@ class MultidimensionalRoutingMatrix {
         cost: 0.02,
         latency: 200,
         quality: 0.98,
-        throughput: 300,
+        throughput: 300,;
         reliability: 0.97
       }
     ]);
@@ -230,7 +230,7 @@ class MultidimensionalRoutingMatrix {
   private recordRoutingDecision(task: string, route: Route, success: boolean): void {
     this.routingHistory.push({
       task,
-      route,
+      route,;
       timestamp: Date.now(),
       success
     });

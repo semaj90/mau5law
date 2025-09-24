@@ -96,7 +96,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         const edgeCount = Math.floor(Math.random() * 15) + 1;
         
         return {
-          nodes: nodeCount,
+          nodes: nodeCount,;
           edges: edgeCount,
           executionTime: Math.floor(Math.random() * 10) + 1
         };
@@ -105,13 +105,13 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       recommend: (nodeId: string, nodeType: string) => {
         // Simulate recommendation algorithm;
         return {
-          recommendations: Math.floor(Math.random() * 5) + 1,
+          recommendations: Math.floor(Math.random() * 5) + 1,;
           confidence: Math.random()
         };
       },
       
       memory: () => ({
-        used: Math.floor(Math.random() * 1000000) + 500000, // bytes
+        used: Math.floor(Math.random() * 1000000) + 500000, // bytes;
         allocated: 2000000
       })
     };
@@ -132,7 +132,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         return {
           ...cached,
           metadata: {
-            ...cached.metadata,
+            ...cached.metadata,;
             source: 'cache',
             queryTime: Date.now() - startTime
           }
@@ -151,7 +151,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         return {
           ...result,
           metadata: {
-            ...result.metadata,
+            ...result.metadata,;
             source: 'wasm',
             queryTime: Date.now() - startTime
           }
@@ -165,7 +165,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       return {
         ...remoteResult,
         metadata: {
-          ...remoteResult.metadata,
+          ...remoteResult.metadata,;
           source: 'remote',
           queryTime: Date.now() - startTime
         }
@@ -189,7 +189,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         label: `Node ${i}`,
         type: ['Case', 'Evidence', 'Person', 'Document'][Math.floor(Math.random() * 4)] as any,
         properties: {
-          created: new Date().toISOString(),
+          created: new Date().toISOString(),;
           source: 'wasm'
         }
       });
@@ -203,7 +203,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         target: nodes[i + 1].id,
         label: 'RELATED_TO',
         properties: {
-          weight: Math.random(),
+          weight: Math.random(),;
           created: new Date().toISOString()
         }
       });
@@ -214,7 +214,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       edges,
       metadata: {
         queryTime: wasmResult.executionTime,
-        resultCount: nodes.length + edges.length,
+        resultCount: nodes.length + edges.length,;
         source: 'wasm'
       }
     };
@@ -237,7 +237,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       edges: [],
       metadata: {
         queryTime: 75,
-        resultCount: 1,
+        resultCount: 1,;
         source: 'remote'
       }
     };
@@ -266,7 +266,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
           label: `Recommendation ${i + 1}`,
           type: nodeType as any,
           properties: {
-            confidence: wasmResult.confidence,
+            confidence: wasmResult.confidence,;
             source: 'wasm_recommendation',
             basedOn: nodeId
           }
@@ -333,7 +333,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       edges: storedResult.edges || [],
       metadata: {
         queryTime: storedResult.queryTime || 0,
-        resultCount: (storedResult.nodes?.length || 0) + (storedResult.edges?.length || 0),
+        resultCount: (storedResult.nodes?.length || 0) + (storedResult.edges?.length || 0),;
         source: 'cache'
       }
     };

@@ -30,10 +30,10 @@
 
   // Real-time processing status
   let systemHealth = $state({
-    api: 'unknown',
+    api: 'unknown',;
     database: 'unknown',
     aiServices: 'unknown',
-    jobQueue: 'unknown'
+    jobQueue: 'unknown';
   });
   // Tabs configuration
   const tabs = [
@@ -96,18 +96,18 @@
     try {
       const healthResponse = await (apiClient as any).getHealthStatus?.() || {};
       systemHealth = {
-        api: healthResponse?.status === 'healthy' ? 'healthy' : healthResponse?.status === 'error' ? 'error' : 'warning',
+        api: healthResponse?.status === 'healthy' ? 'healthy' : healthResponse?.status === 'error' ? 'error' : 'warning',;
         database: healthResponse.services?.database || 'unknown',
         aiServices: healthResponse.services?.aiServices || 'unknown',
-        jobQueue: healthResponse.services?.jobQueue || 'unknown'
+        jobQueue: healthResponse.services?.jobQueue || 'unknown';
       };
     } catch (err: any) {
       console.error('Health check failed:', err);
       systemHealth = {
-        api: 'error',
+        api: 'error',;
         database: 'unknown',
         aiServices: 'unknown',
-        jobQueue: 'unknown'
+        jobQueue: 'unknown';
       };
     }
   };
@@ -116,9 +116,9 @@
     try {
       const caseData = {
         title: `New Case - ${new Date().toLocaleDateString()}`,
-        description: 'Quick case created from dashboard',
-        status: 'open' as const,
-        priority: 'medium' as const
+        description: 'Quick case created from dashboard',;
+        status: 'open' as const,;
+        priority: 'medium' as const;
       };
 
       const response = await (apiClient as any).createCase?.(caseData) || { success: false };
@@ -136,9 +136,9 @@
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      day: 'numeric',;
+      hour: '2-digit',;
+      minute: '2-digit';
     });
   };
 
@@ -614,7 +614,7 @@
 </div>
 
 <style>
-  .animate-spin {
+  .animate-spin {;
     animation: spin 1s linear infinite;
   }
 

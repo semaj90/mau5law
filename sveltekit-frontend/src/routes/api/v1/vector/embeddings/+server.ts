@@ -3,66 +3,66 @@
  * Handles text embedding, batch processing, and document chunking for legal AI
  */
 
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { PGVECTOR_CONFIG, getCudaServiceUrl, getEmbeddingModel } from '$lib/config/pgvector-gpu-config.js';
-import { MinIOService } from '$lib/server/minio-service';
+import { json, error } from '@sveltejs/kit'
+import type { RequestHandler } from './$types'
+import { PGVECTOR_CONFIG, getCudaServiceUrl, getEmbeddingModel } from '$lib/config/pgvector-gpu-config.js'
+import { MinIOService } from '$lib/server/minio-service'
 
 interface EmbeddingRequest {
-  texts: string[];
-  model?: string;
-  normalize?: boolean;
-  useCUDA?: boolean;
-  chunkSize?: number;
-  chunkOverlap?: number;
-  batchSize?: number;
+  texts: string[]
+  model?: string
+  normalize?: boolean
+  useCUDA?: boolean
+  chunkSize?: number
+  chunkOverlap?: number
+  batchSize?: number
   minioUrl?: string; // For large document processing
 }
 
 interface ChunkingRequest {
-  text: string;
-  chunkSize?: number;
-  chunkOverlap?: number;
-  preserveParagraphs?: boolean;
-  extractMetadata?: boolean;
+  text: string
+  chunkSize?: number
+  chunkOverlap?: number
+  preserveParagraphs?: boolean
+  extractMetadata?: boolean
 }
 
 interface EmbeddingResponse {
-  embeddings: number[][];
-  chunks?: string[];
-  metadata?: any;
+  embeddings: number[][]
+  chunks?: string[]
+  metadata?: any
   performance: {
-    totalTime: number;
-    cudaTime?: number;
-    chunksProcessed: number;
-    tokensProcessed: number;
-    parallelWorkers: number;
-  };
+    totalTime: number
+    cudaTime?: number
+    chunksProcessed: number
+    tokensProcessed: number
+    parallelWorkers: number
+  }
 }
 
 export const POST: RequestHandler = async ({ request, url }) => {
-  const startTime = performance.now();
-  const requestId = `emb_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const startTime = performance.now()
+  const requestId = `emb_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
   try {
-    const endpoint = url.pathname.split('/').pop();
+    const endpoint = url.pathname.split('/').pop()
 
     if (endpoint === 'embeddings') {
-      return await handleEmbeddings(request, requestId, startTime);
+      return await handleEmbeddings(request, requestId, startTime)
     } else if (endpoint === 'chunk') {
-      return await handleChunking(request, requestId, startTime);
+      return await handleChunking(request, requestId, startTime)
     } else {
-      throw error(404, 'Unknown embedding endpoint');
+      throw error(404, 'Unknown embedding endpoint')
     }
   } catch (err) {
-    console.error('Embedding API error:', err);
-    throw error(500, `Embedding operation failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
+    console.error('Embedding API error:', err)
+    throw error(500, `Embedding operation failed: ${err instanceof Error ? err.message: 'Unknown error'}`)
   }
-};
+}
 
 async function handleEmbeddings(request: Request, requestId: string, apiStartTime: number): Promise<Response> {
-  const startTime = Date.now();
-  const body: EmbeddingRequest = await request.json();
+  const startTime = Date.now()
+  const body: EmbeddingRequest = await request.json()
 
   const {
     texts,
@@ -73,91 +73,91 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
     chunkOverlap = 50,
     batchSize = PGVECTOR_CONFIG.performance.batchSize,
     minioUrl
-  } = body;
+  } = body
 
   if (!texts || texts.length === 0) {
-    throw error(400, 'texts array is required and cannot be empty');
+    throw error(400, 'texts array is required and cannot be empty')
   }
 
-  let processedTexts = texts;
-  let chunks: string[] = [];
-  let metadata: any = {};
+  let processedTexts = texts
+  let chunks: string[] = []
+  let metadata: any = {}
 
-  // Handle MinIO document processing;
+  // Handle MinIO document processing
   if (minioUrl) {
-    const documentResult = await MinIOService.getTextContent(minioUrl);
+    const documentResult = await MinIOService.getTextContent(minioUrl)
     const chunkedResult = await chunkText(documentResult.content, {
       chunkSize,
       chunkOverlap,
       preserveParagraphs: true,
       extractMetadata: true
-    });
+    })
 
-    processedTexts = chunkedResult.chunks;
-    chunks = chunkedResult.chunks;
+    processedTexts = chunkedResult.chunks
+    chunks = chunkedResult.chunks
     metadata = {
       ...documentResult.metadata,
       ...chunkedResult.metadata,
       originalUrl: minioUrl
-    };
+    }
   } else {
     // Chunk provided texts if they're large
-    const largeTexts = texts.filter(text => text.length > chunkSize);
+    const largeTexts = texts.filter(text => text.length > chunkSize)
     if (largeTexts.length > 0) {
-      const chunkedTexts: string[] = [];
+      const chunkedTexts: string[] = []
       for (const text of texts) {
         if (text.length > chunkSize) {
-          const chunked = await chunkText(text, { chunkSize, chunkOverlap });
-          chunkedTexts.push(...chunked.chunks);
+          const chunked = await chunkText(text, { chunkSize, chunkOverlap })
+          chunkedTexts.push(...chunked.chunks)
         } else {
-          chunkedTexts.push(text);
+          chunkedTexts.push(text)
         }
       }
-      processedTexts = chunkedTexts;
-      chunks = chunkedTexts;
+      processedTexts = chunkedTexts
+      chunks = chunkedTexts
     }
   }
 
-  let embeddings: number[][];
-  let cudaTime = 0;
-  let parallelWorkers = 1;
+  let embeddings: number[][]
+  let cudaTime = 0
+  let parallelWorkers = 1
 
   // Enhanced routing with WebGPU/WebGL2 client hints
-  const textComplexity = calculateTextComplexity(processedTexts);
+  const textComplexity = calculateTextComplexity(processedTexts)
   const shouldUseCUDA = useCUDA && (
     processedTexts.length > 10 ||
     textComplexity > 75 ||
     processedTexts.some(text => text.length > 2000)
-  );
+  )
 
   if (shouldUseCUDA) {
-    // Route to CUDA service for GPU-accelerated embedding;
+    // Route to CUDA service for GPU-accelerated embedding
     const cudaResult = await processCUDAEmbeddings({
       texts: processedTexts,
       model,
       normalize,
       batchSize,
       requestId
-    });
+    })
 
-    embeddings = cudaResult.embeddings;
-    cudaTime = cudaResult.gpuTime;
-    parallelWorkers = cudaResult.parallelWorkers;
+    embeddings = cudaResult.embeddings
+    cudaTime = cudaResult.gpuTime
+    parallelWorkers = cudaResult.parallelWorkers
   } else {
-    // Fallback to CPU/Ollama processing;
+    // Fallback to CPU/Ollama processing
     embeddings = await processOllamaEmbeddings({
       texts: processedTexts,
       model,
       normalize,
       batchSize
-    });
+    })
   }
 
-  const totalTime = Date.now() - startTime;
-  const tokensProcessed = processedTexts.reduce((acc, text) => acc + estimateTokens(text), 0);
+  const totalTime = Date.now() - startTime
+  const tokensProcessed = processedTexts.reduce((acc, text) => acc + estimateTokens(text), 0)
 
-  const clientHints = generateEmbeddingClientHints(processedTexts, textComplexity);
-  const totalApiTime = performance.now() - apiStartTime;
+  const clientHints = generateEmbeddingClientHints(processedTexts, textComplexity)
+  const totalApiTime = performance.now() - apiStartTime
 
   return json({
     success: true,
@@ -193,11 +193,11 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
         attentionPatternCaching: processedTexts.some(t => t.length > 512)
       }
     }
-  });
+  })
 }
 
 async function handleChunking(request: Request, requestId: string, apiStartTime: number): Promise<Response> {
-  const body: ChunkingRequest = await request.json();
+  const body: ChunkingRequest = await request.json()
 
   const {
     text,
@@ -205,10 +205,10 @@ async function handleChunking(request: Request, requestId: string, apiStartTime:
     chunkOverlap = 50,
     preserveParagraphs = true,
     extractMetadata = false
-  } = body;
+  } = body
 
   if (!text || text.length === 0) {
-    throw error(400, 'text is required and cannot be empty');
+    throw error(400, 'text is required and cannot be empty')
   }
 
   const result = await chunkText(text, {
@@ -216,26 +216,26 @@ async function handleChunking(request: Request, requestId: string, apiStartTime:
     chunkOverlap,
     preserveParagraphs,
     extractMetadata
-  });
+  })
 
   return json({
     success: true,
     ...result
-  });
+  })
 }
 
 async function processCUDAEmbeddings(params: {
-  texts: string[];
-  model: string;
-  normalize: boolean;
-  batchSize: number;
-  requestId: string;
+  texts: string[]
+  model: string
+  normalize: boolean
+  batchSize: number
+  requestId: string
 }): Promise<{ embeddings: number[][]; gpuTime: number; parallelWorkers: number }> {
-  const { texts, model, normalize, batchSize, requestId } = params;
+  const { texts, model, normalize, batchSize, requestId } = params
 
-  const cudaUrl = getCudaServiceUrl('submit');
+  const cudaUrl = getCudaServiceUrl('submit')
 
-  // CHR-ROM optimized embedding payload;
+  // CHR-ROM optimized embedding payload
   const payload = {
     type: 'embedding_batch',
     request_id: requestId,
@@ -266,7 +266,7 @@ async function processCUDAEmbeddings(params: {
       batch_coherence: 'document_sections',
       cache_strategy: 'embedding_reuse'
     }
-  };
+  }
 
   const response = await fetch(cudaUrl, {
     method: 'POST',
@@ -274,35 +274,35 @@ async function processCUDAEmbeddings(params: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(payload)
-  });
+  })
 
   if (!response.ok) {
-    throw new Error(`CUDA embedding service error: ${response.statusText}`);
+    throw new Error(`CUDA embedding service error: ${response.statusText}`)
   }
 
-  const result = await response.json();
+  const result = await response.json()
 
   return {
     embeddings: result.embeddings || [],
     gpuTime: result.gpu_time || 0,
     parallelWorkers: result.parallel_workers || 1
-  };
+  }
 }
 
 async function processOllamaEmbeddings(params: {
-  texts: string[];
-  model: string;
-  normalize: boolean;
-  batchSize: number;
+  texts: string[]
+  model: string
+  normalize: boolean
+  batchSize: number
 }): Promise<number[][]> {
-  const { texts, model, batchSize } = params;
-  const ollamaUrl = PGVECTOR_CONFIG.ollama.url;
+  const { texts, model, batchSize } = params
+  const ollamaUrl = PGVECTOR_CONFIG.ollama.url
 
-  const embeddings: number[][] = [];
+  const embeddings: number[][] = []
 
-  // Process in batches to avoid memory issues;
+  // Process in batches to avoid memory issues
   for (let i = 0; i < texts.length; i += batchSize) {
-    const batch = texts.slice(i, i + batchSize);
+    const batch = texts.slice(i, i + batchSize)
 
     const batchPromises = batch.map(async (text) => {
       const response = await fetch(`${ollamaUrl}/api/embeddings`, {
@@ -314,53 +314,53 @@ async function processOllamaEmbeddings(params: {
           model,
           prompt: text
         })
-      });
+      })
 
       if (!response.ok) {
-        throw new Error(`Ollama embedding failed: ${response.statusText}`);
+        throw new Error(`Ollama embedding failed: ${response.statusText}`)
       }
 
-      const result = await response.json();
-      return result.embedding as number[];
-    });
+      const result = await response.json()
+      return result.embedding as number[]
+    })
 
-    const batchEmbeddings = await Promise.all(batchPromises);
-    embeddings.push(...batchEmbeddings);
+    const batchEmbeddings = await Promise.all(batchPromises)
+    embeddings.push(...batchEmbeddings)
   }
 
-  return embeddings;
+  return embeddings
 }
 
 async function chunkText(text: string, options: {
-  chunkSize: number;
-  chunkOverlap: number;
-  preserveParagraphs?: boolean;
-  extractMetadata?: boolean;
+  chunkSize: number
+  chunkOverlap: number
+  preserveParagraphs?: boolean
+  extractMetadata?: boolean
 }): Promise<{
-  chunks: string[];
-  metadata?: any;
+  chunks: string[]
+  metadata?: any
 }> {
-  const { chunkSize, chunkOverlap, preserveParagraphs = true, extractMetadata = false } = options;
+  const { chunkSize, chunkOverlap, preserveParagraphs = true, extractMetadata = false } = options
 
-  let chunks: string[] = [];
-  let metadata: any = {};
+  let chunks: string[] = []
+  let metadata: any = {}
 
   if (preserveParagraphs) {
     // Split by paragraphs first, then chunk if needed
-    const paragraphs = text.split(/\n\s*\n/).filter(item => item.length > 0);
+    const paragraphs = text.split(/\n\s*\n/).filter(item => item.length > 0)
 
     for (const paragraph of paragraphs) {
       if (paragraph.length <= chunkSize) {
-        chunks.push(paragraph.trim());
+        chunks.push(paragraph.trim())
       } else {
         // Chunk large paragraphs
-        const subChunks = chunkBySize(paragraph, chunkSize, chunkOverlap);
-        chunks.push(...subChunks);
+        const subChunks = chunkBySize(paragraph, chunkSize, chunkOverlap)
+        chunks.push(...subChunks)
       }
     }
   } else {
     // Simple size-based chunking
-    chunks = chunkBySize(text, chunkSize, chunkOverlap);
+    chunks = chunkBySize(text, chunkSize, chunkOverlap)
   }
 
   if (extractMetadata) {
@@ -371,79 +371,79 @@ async function chunkText(text: string, options: {
       chunkingMethod: preserveParagraphs ? 'paragraph-aware' : 'size-based',
       chunkSize,
       chunkOverlap
-    };
+    }
   }
 
-  return { chunks, metadata };
+  return { chunks, metadata }
 }
 
 function chunkBySize(text: string, chunkSize: number, overlap: number): string[] {
-  const chunks: string[] = [];
-  const step = chunkSize - overlap;
+  const chunks: string[] = []
+  const step = chunkSize - overlap
 
   for (let i = 0; i < text.length; i += step) {
-    const end = Math.min(i + chunkSize, text.length);
-    const chunk = text.slice(i, end).trim();
+    const end = Math.min(i + chunkSize, text.length)
+    const chunk = text.slice(i, end).trim()
 
     if (chunk.length > 0) {
-      chunks.push(chunk);
+      chunks.push(chunk)
     }
 
-    if (end >= text.length) break;
+    if (end >= text.length) break
   }
 
-  return chunks;
+  return chunks
 }
 
 function estimateTokens(text: string): number {
   // Rough estimate: 1 token ≈ 4 characters for English text
-  return Math.ceil(text.length / 4);
+  return Math.ceil(text.length / 4)
 }
 
-// Enhanced text complexity analysis for legal documents;
+// Enhanced text complexity analysis for legal documents
 function calculateTextComplexity(texts: string[]): number {
-  let totalComplexity = 0;
+  let totalComplexity = 0
 
   for (const text of texts) {
-    let complexity = 0;
+    let complexity = 0
 
     // Length-based complexity
-    const lengthScore = Math.min(50, Math.log2(text.length + 1) * 5);
+    const lengthScore = Math.min(50, Math.log2(text.length + 1) * 5)
 
     // Legal terminology density
     const legalTerms = [
       'whereas', 'heretofore', 'pursuant', 'jurisdiction', 'statute',
       'defendant', 'plaintiff', 'respondent', 'appellant', 'precedent',
       'liability', 'negligence', 'damages', 'injunction', 'subpoena'
-    ];
+    ]
 
     const legalTermCount = legalTerms.reduce((count, term) =>
-      count + (text.toLowerCase().includes(term) ? 1 : 0), 0);
+      count + (text.toLowerCase().includes(term) ? 1 : 0), 0)
 
-    const legalTermScore = Math.min(25, legalTermCount * 2);
+    const legalTermScore = Math.min(25, legalTermCount * 2)
 
     // Citation complexity
-    const citationPattern = /\b\d{1,3}\s+[A-Z]\.\s*\d+d?\s+\d+/g;
-    const citationCount = (text.match(citationPattern) || []).length;
-    const citationScore = Math.min(15, citationCount * 3);
+    const citationPattern = /\b\d{1,3}\s+[A-Z]\.\s*\d+d?\s+\d+/g
+    const citationCount = (text.match(citationPattern) || []).length
+    const citationScore = Math.min(15, citationCount * 3)
 
     // Sentence structure complexity
-    const sentences = text.split(/[.!?]+/).filter(item => item.length > 10);
+    const sentences = text.split(/[.!?]+/).filter(item => item.length > 10)
     const avgSentenceLength = sentences.length > 0 ?
-      text.length / sentences.length : 0;
-    const structureScore = Math.min(10, avgSentenceLength / 10);
+      text.length / sentences.length : 0
+    const structureScore = Math.min(10, avgSentenceLength / 10)
 
-    complexity = lengthScore + legalTermScore + citationScore + structureScore;
-    totalComplexity += complexity;
+    complexity = lengthScore + legalTermScore + citationScore + structureScore
+    totalComplexity += complexity
   }
 
-  return Math.min(100, totalComplexity / texts.length);
+  return Math.min(100, totalComplexity / texts.length)
 }
 
-// WebGPU/WebGL2 client optimization hints for embeddings;
+// WebGPU/WebGL2 client optimization hints for embeddings
 function generateEmbeddingClientHints(texts: string[], complexity: number) {
-  const totalTextLength = texts.reduce((acc, text) => acc + text.length, 0);
-  const avgTextLength = totalTextLength / texts.length;
+  const totalTextLength = texts.reduce((acc, text) => acc + text.length, 0)
+  const avgTextLength = totalTextLength / texts.length
 
   return {
     prefer_webgpu: texts.length < 5 && avgTextLength < 1000 && complexity < 50,
@@ -459,5 +459,5 @@ function generateEmbeddingClientHints(texts: string[], complexity: number) {
     },
     shader_workgroup_size: Math.min(256, Math.max(32, Math.floor(avgTextLength / 10))),
     precision_requirements: complexity > 75 ? 'high' : 'medium'
-  };
+  }
 }

@@ -58,7 +58,7 @@ function generateVectorKey(query: string, options: any = {}): string {
   const keyData = {
     query: query.trim().toLowerCase(),
     limit: options.limit || 10,
-    metric: options.metric || 'cosine',
+    metric: options.metric || 'cosine',;
     threshold: options.threshold || 1,
     documentType: options.documentType,
     includeContent: options.includeContent
@@ -161,7 +161,7 @@ export async function getVectorCache(query: string, options: any = {}): Promise<
 export async function setVectorCache(
   query: string, 
   results: any[], 
-  metadata: VectorCacheEntry['metadata'],
+  metadata: VectorCacheEntry['metadata'],;
   options: any = {}
 ): Promise<void> {
   const key = generateVectorKey(query, options);
@@ -170,7 +170,7 @@ export async function setVectorCache(
   const entry: VectorCacheEntry = {
     results,
     query,
-    metadata,
+    metadata,;
     ts: now,
     lastAccess: now,
     ttlMs: VECTOR_TTL_MS
@@ -238,7 +238,7 @@ export async function getEmbeddingCache(text: string, model: string = 'default')
  */
 export async function setEmbeddingCache(
   text: string, 
-  embedding: number[], 
+  embedding: number[], ;
   model: string = 'default';
 ): Promise<void> {
   const key = generateEmbeddingKey(text, model);
@@ -248,7 +248,7 @@ export async function setEmbeddingCache(
     embedding,
     text,
     model,
-    dimensions: embedding.length,
+    dimensions: embedding.length,;
     ts: now,
     lastAccess: now,
     ttlMs: EMBEDDING_TTL_MS
@@ -303,7 +303,7 @@ export function getVectorCacheStats() {
       vectorEntries: vectorCache.size,
       embeddingEntries: embeddingCache.size,
       maxItems: VECTOR_CACHE_MAX_ITEMS
-    },
+    },;
     config: {
       vectorTtlMs: VECTOR_TTL_MS,
       embeddingTtlMs: EMBEDDING_TTL_MS,

@@ -1,35 +1,35 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { legal } from '../../../../proto/legal_api_pb.js';
+import { json, error } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { legal } from '../../../../proto/legal_api_pb.js'
 
-// Protobuf authentication endpoint;
+// Protobuf authentication endpoint
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const contentType = request.headers.get('content-type');
+    const contentType = request.headers.get('content-type')
 
-    // Handle both protobuf and JSON for gradual migration;
+    // Handle both protobuf and JSON for gradual migration
     if (contentType?.includes('application/x-protobuf')) {
       // Protobuf handling
-      const buffer = await request.arrayBuffer();
-      const authRequest = legal.api.AuthRequest.decode(new Uint8Array(buffer);
+      const buffer = await request.arrayBuffer()
+      const authRequest = legal.api.AuthRequest.decode(new Uint8Array(buffer)
 
       // Mock authentication logic
-      const isValid = authRequest.email && authRequest.password;
+      const isValid = authRequest.email && authRequest.password
 
       if (!isValid) {
         const errorResponse = legal.api.AuthResponse.create({
           success: false,
           errorMessage: 'Invalid credentials'
-        });
+        })
 
-        const encoded = legal.api.AuthResponse.encode(errorResponse).finish();
+        const encoded = legal.api.AuthResponse.encode(errorResponse).finish()
         return new Response(Buffer.from(encoded), {
           status: 401,
           headers: { 'Content-Type': 'application/x-protobuf' }
-        });
+        })
       }
 
-      // Success response;
+      // Success response
       const user = legal.api.User.create({
         id: 'user_123',
         email: authRequest.email,
@@ -43,16 +43,16 @@ export const POST: RequestHandler = async ({ request }) => {
           notificationsEnabled: true,
           analyticsOptIn: false
         }
-      });
+      })
 
       const authResponse = legal.api.AuthResponse.create({
         success: true,
         token: 'jwt_token_here',
         user: user,
         expiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
-      });
+      })
 
-      const encoded = legal.api.AuthResponse.encode(authResponse).finish();
+      const encoded = legal.api.AuthResponse.encode(authResponse).finish()
       return new Response(Buffer.from(encoded), {
         status: 200,
         headers: {
@@ -60,13 +60,13 @@ export const POST: RequestHandler = async ({ request }) => {
           'X-Protocol-Version': '1.0',
           'X-Performance-Mode': 'protobuf'
         }
-      });
+      })
     } else {
       // JSON fallback for compatibility
-      const { email, password, remember_me } = await request.json();
+      const { email, password, remember_me } = await request.json()
 
       if (!email || !password) {
-        return error(401, 'Invalid credentials');
+        return error(401, 'Invalid credentials')
       }
 
       return json({
@@ -87,15 +87,15 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         },
         expires_at: Date.now() + (24 * 60 * 60 * 1000)
-      });
+      })
     }
   } catch (err) {
-    console.error('Auth endpoint error:', err);
-    return error(500, 'Authentication failed');
+    console.error('Auth endpoint error:', err)
+    return error(500, 'Authentication failed')
   }
-};
+}
 
-// Health check for protobuf support;
+// Health check for protobuf support
 export const GET: RequestHandler = async () => {
   return json({
     status: 'operational',
@@ -103,5 +103,5 @@ export const GET: RequestHandler = async () => {
     fallback_json: true,
     version: '1.0.0',
     timestamp: new Date().toISOString()
-  });
-};
+  })
+}

@@ -140,7 +140,7 @@ export const N64_PERFORMANCE_PRESETS = {
     enableReflections: true,
     enableParticles: true,
     enableSpatialAudio: true,
-    glowIntensity: 0.8,
+    glowIntensity: 0.8,;
     perspective: 1200
   },
 
@@ -153,7 +153,7 @@ export const N64_PERFORMANCE_PRESETS = {
     enableReflections: false,
     enableParticles: false,
     enableSpatialAudio: true,
-    glowIntensity: 0.4,
+    glowIntensity: 0.4,;
     perspective: 1000
   },
 
@@ -166,7 +166,7 @@ export const N64_PERFORMANCE_PRESETS = {
     enableReflections: false,
     enableParticles: false,
     enableSpatialAudio: false,
-    glowIntensity: 0.2,
+    glowIntensity: 0.2,;
     perspective: 800
   }
 };
@@ -180,28 +180,28 @@ export const N64_THEME_VARIANTS = {
   // Classic N64 controller inspired;
   classic: {
     primary: { base: '#4a90e2', highlight: '#6bb3ff', shadow: '#2d5aa0' },
-    secondary: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' },
+    secondary: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' },;
     accent: { base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00' }
   },
 
   // Dark cyberpunk theme;
   cyberpunk: {
     primary: { base: '#00ff88', highlight: '#33ffaa', shadow: '#00cc66' },
-    secondary: { base: '#ff0080', highlight: '#ff33aa', shadow: '#cc0066' },
+    secondary: { base: '#ff0080', highlight: '#ff33aa', shadow: '#cc0066' },;
     accent: { base: '#0088ff', highlight: '#33aaff', shadow: '#0066cc' }
   },
 
   // Retro arcade theme;
   arcade: {
     primary: { base: '#ff6b35', highlight: '#ff8c66', shadow: '#cc5529' },
-    secondary: { base: '#f7931e', highlight: '#ffaa4d', shadow: '#c5741a' },
+    secondary: { base: '#f7931e', highlight: '#ffaa4d', shadow: '#c5741a' },;
     accent: { base: '#c5299b', highlight: '#d14daa', shadow: '#9e2179' }
   },
 
   // Military/tactical theme;
   military: {
     primary: { base: '#4a5c2a', highlight: '#6b8039', shadow: '#3a4620' },
-    secondary: { base: '#8b4513', highlight: '#a0611a', shadow: '#6d3410' },
+    secondary: { base: '#8b4513', highlight: '#a0611a', shadow: '#6d3410' },;
     accent: { base: '#cd853f', highlight: '#d4a374', shadow: '#a36a32' }
   }
 };
@@ -252,7 +252,7 @@ export const N64_UTILS = {
     const result = /^#?([a-f\d]{2}) => [a-f\d]{2}) => [a-f\d]{2})$/i.exec(hex);
     return result ? {
       r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
+      g: parseInt(result[2], 16),;
       b: parseInt(result[3], 16)
     } : null;
   },
@@ -364,6 +364,6 @@ export default {
   presets: N64_PERFORMANCE_PRESETS,
   themes: N64_THEME_VARIANTS,
   utils: N64_UTILS,
-  a11y: N64_A11Y_HELPERS,
+  a11y: N64_A11Y_HELPERS,;
   css: N64_CSS_GENERATORS
 };

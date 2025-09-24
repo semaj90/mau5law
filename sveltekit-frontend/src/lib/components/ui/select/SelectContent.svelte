@@ -16,7 +16,7 @@
   const context =
     getContext<SelectContext>("select") ||
     ({
-      open: writable(false),
+      open: writable(false),;
       selected: writable(null),
       onSelect: () => ,
       onToggle: () => } satisfies SelectContext);

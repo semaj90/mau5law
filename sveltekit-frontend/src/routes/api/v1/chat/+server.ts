@@ -1,22 +1,22 @@
-import { json } from '@sveltejs/kit';
-import { orchestrator } from '$lib/services/unified-legal-orchestrator';
-import { contextualMemoryChatService } from '$lib/services/contextual-memory-chat-service';
-import { parallelOrchestrationMaster } from '$lib/services/parallel-orchestration-master';
-import type { ParallelRequest } from '$lib/services/parallel-orchestration-master';
-import { natsQuicSearchService } from '$lib/server/search/nats-quic-search-service';
-import { analytics } from '$lib/server/database/connection';
-import { dev } from '$app/environment';
-import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration';
-import { fastStringify } from '$lib/utils/fast-json';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import { orchestrator } from '$lib/services/unified-legal-orchestrator'
+import { contextualMemoryChatService } from '$lib/services/contextual-memory-chat-service'
+import { parallelOrchestrationMaster } from '$lib/services/parallel-orchestration-master'
+import type { ParallelRequest } from '$lib/services/parallel-orchestration-master'
+import { natsQuicSearchService } from '$lib/server/search/nats-quic-search-service'
+import { analytics } from '$lib/server/database/connection'
+import { dev } from '$app/environment'
+import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration'
+import { fastStringify } from '$lib/utils/fast-json'
+import type { RequestHandler } from './$types.js'
 
-// Advanced Chat API with Quantized LLM, GRPMO Thinking, and Contextual Memory;
+// Advanced Chat API with Quantized LLM, GRPMO Thinking, and Contextual Memory
 export const POST: RequestHandler = async ({ request, url, getClientAddress }) => {
-  const startTime = performance.now();
-  const clientIP = getClientAddress();
+  const startTime = performance.now()
+  const clientIP = getClientAddress()
 
   try {
-    const body = await readBodyFastWithMetrics(request);
+    const body = await readBodyFastWithMetrics(request)
     const {
       action = 'send',
       message,
@@ -29,9 +29,9 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
       context_needed = true,
       stream = false,
       options = {}
-    } = body;
+    } = body
 
-    // Enhanced validation;
+    // Enhanced validation
     if (action === 'send' && !message?.trim() && !messages?.length) {
       return json({
           success: false,
@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
           }
         },)
         { status: 400 }
-      );
+      )
     }
 
     if (!user_id) {
@@ -53,12 +53,12 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
           }
         },)
         { status: 400 }
-      );
+      )
     }
 
-    // Route through Parallel Orchestration Master for maximum concurrency;
+    // Route through Parallel Orchestration Master for maximum concurrency
     switch (action) {
-      case 'send':;
+      case 'send':
         return await handleParallelChatExecution({
           message: message || messages?.[messages.length - 1]?.content,
           userId: user_id,
@@ -69,14 +69,14 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
           options,
           clientIP,
           startTime
-        });
+        })
 
       default:
         // Handle other actions with existing logic
-        break;
+        break
     }
 
-    // Legacy orchestration request for non-chat actions;
+    // Legacy orchestration request for non-chat actions
     const orchestrationRequest = {
       type: 'chat' as const,
       payload: {
@@ -97,12 +97,12 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
         max_latency_ms: 3000,
         prefer_cache: true
       }
-    };
+    }
 
     // Process through orchestrator
-    const response = await orchestrator.processRequest(orchestrationRequest);
+    const response = await orchestrator.processRequest(orchestrationRequest)
 
-    // Track analytics asynchronously;
+    // Track analytics asynchronously
     await natsQuicSearchService.publishAnalytics({
       event_type: 'chat_request',
       event_data: {
@@ -116,9 +116,9 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
       },
       response_time_ms: Date.now() - startTime,
       cache_hit: response._metadata?.cached || false
-    });
+    })
 
-    // Store chat context for future use;
+    // Store chat context for future use
     if (user_id && response.content) {
       await natsQuicSearchService.publishChatContext({
         user_id,
@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
         message: response.content,
         embedding: response.embedding || [],
         context_type: 'new'
-      });
+      })
     }
 
     return json({
@@ -141,9 +141,9 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
           timestamp: new Date().toISOString()
         }
       }
-    });
+    })
   } catch (error: any) {
-    console.error('Chat API error:', error);
+    console.error('Chat API error:', error)
 
     // Track error analytics
     await analytics.trackEvent(
@@ -151,11 +151,11 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
       {
         error_message: error.message,
         client_ip: clientIP
-      },);
+      },)
       {
         responseTimeMs: Date.now() - startTime
       }
-    );
+    )
 
     return json({
         error: 'Chat processing failed',
@@ -163,48 +163,48 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
         status: 'error'
       },)
       { status: 500 }
-    );
+    )
   }
-};
+}
 
-// Streaming chat endpoint;
+// Streaming chat endpoint
 export const GET: RequestHandler = async ({ url }) => {
-  const session_id = url.searchParams.get('session_id');
-  const user_id = url.searchParams.get('user_id');
+  const session_id = url.searchParams.get('session_id')
+  const user_id = url.searchParams.get('user_id')
 
   if (!session_id) {
-    return json({ error: 'session_id required' }, { status: 400 });
+    return json({ error: 'session_id required' }, { status: 400 })
   }
 
-  // Server-Sent Events for streaming;
+  // Server-Sent Events for streaming
   const stream = new ReadableStream({
     start(controller) {
       // Setup streaming logic here
       // This would connect to the service worker and LLM streaming
 
-      const encoder = new TextEncoder();
+      const encoder = new TextEncoder()
 
       // Send initial connection message
-      controller.enqueue(;
+      controller.enqueue(
         encoder.encode(`data: ${fastStringify({
             type: 'connected',
             session_id,
             timestamp: Date.now()
           })}\n\n`
         )
-      );
+      )
 
       // In a real implementation, you'd setup listeners for:
       // - LLM stream chunks from service worker
       // - Real-time updates from RabbitMQ
       // - Vector search results
 
-      // Cleanup function;
+      // Cleanup function
       setTimeout(() => {
-        controller.close();
+        controller.close()
       }, 300000); // 5 minute timeout
     }
-  });
+  })
 
   return new Response(stream, {
     headers: {
@@ -212,10 +212,10 @@ export const GET: RequestHandler = async ({ url }) => {
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive'
     }
-  });
-};
+  })
+}
 
-// New Parallel Chat Execution - Routes ALL services concurrently;
+// New Parallel Chat Execution - Routes ALL services concurrently
 async function handleParallelChatExecution({
   message,
   userId,
@@ -227,18 +227,18 @@ async function handleParallelChatExecution({
   clientIP,
   startTime
 }: {
-  message: string;
-  userId: string;
-  sessionId: string;
-  caseId?: string;
-  model: string;
-  temperature: number;
-  options: any;
-  clientIP: string;
-  startTime: number;
+  message: string
+  userId: string
+  sessionId: string
+  caseId?: string
+  model: string
+  temperature: number
+  options: any
+  clientIP: string
+  startTime: number
 }) {
   try {
-    // Create parallel request for ALL services to execute concurrently;
+    // Create parallel request for ALL services to execute concurrently
     const parallelRequest: ParallelRequest = {
       id: crypto.randomUUID(),
       type: 'hybrid', // Executes multiple service types in parallel
@@ -271,12 +271,12 @@ async function handleParallelChatExecution({
         maxRAGQueries: 2
       },
       timeout: options.timeout || 30000, // 30 second timeout
-    };
+    }
 
     // Execute ALL services in parallel - maximum concurrency!
-    const parallelResult = await parallelOrchestrationMaster.executeParallel(parallelRequest);
+    const parallelResult = await parallelOrchestrationMaster.executeParallel(parallelRequest)
 
-    // Format response for API compatibility;
+    // Format response for API compatibility
     const response = {
       success: parallelResult.success,
       data: {
@@ -285,7 +285,7 @@ async function handleParallelChatExecution({
         object: 'chat.completion',
         created: Math.floor(Date.now() / 1000),
         model: model,
-        choices: [;
+        choices: [
           {
             index: 0,
             message: {
@@ -303,7 +303,7 @@ async function handleParallelChatExecution({
         }
       },
 
-      // Enhanced parallel execution metadata;
+      // Enhanced parallel execution metadata
       parallel: {
         executionMetrics: parallelResult.executionMetrics,
         serviceResults: {
@@ -333,9 +333,9 @@ async function handleParallelChatExecution({
         parallelExecution: true,
         servicesUsed: Object.keys(parallelResult.serviceResults)
       }
-    };
+    }
 
-    // Track analytics for parallel execution;
+    // Track analytics for parallel execution
     await natsQuicSearchService.publishAnalytics({
       event_type: 'parallel_chat_request',
       event_data: {
@@ -351,9 +351,9 @@ async function handleParallelChatExecution({
         parallel_execution: true
       },
       response_time_ms: performance.now() - startTime
-    });
+    })
 
-    // Log performance in development;
+    // Log performance in development
     if (dev) {
       console.log('🚀 Parallel Chat Execution Complete:', {
         totalLatency: parallelResult.executionMetrics.totalLatency,
@@ -361,21 +361,21 @@ async function handleParallelChatExecution({
         servicesExecuted: Object.keys(parallelResult.serviceResults).length,
         cacheHits: parallelResult.executionMetrics.cacheHitRate,
         tasksCompleted: `${parallelResult.executionMetrics.tasksSucceeded}/${parallelResult.executionMetrics.tasksExecuted}`
-      });
+      })
     }
 
-    return json(response);
+    return json(response)
   } catch (error: any) {
-    console.error('Parallel chat execution error:', error);
+    console.error('Parallel chat execution error:', error)
 
-    // Fallback to single-service execution;
+    // Fallback to single-service execution
     try {
       const fallbackResult = await contextualMemoryChatService.sendMessage(
         message,
         userId,
         sessionId,)
         { useRAG: !!caseId, maxContextMessages: 5 }
-      );
+      )
 
       return json({
         success: true,
@@ -384,7 +384,7 @@ async function handleParallelChatExecution({
           object: 'chat.completion',
           created: Math.floor(Date.now() / 1000),
           model: model,
-          choices: [;
+          choices: [
             {
               index: 0,
               message: {
@@ -405,16 +405,16 @@ async function handleParallelChatExecution({
           processingTimeMs: performance.now() - startTime,
           fallback: true
         }
-      });
+      })
     } catch (fallbackError) {
-      console.error('Fallback also failed:', fallbackError);
-      throw error;
+      console.error('Fallback also failed:', fallbackError)
+      throw error
     }
   }
 }
 
-// Simple token estimation helper;
+// Simple token estimation helper
 function estimateTokens(text: string): number {
-  if (!text) return 0;
-  return Math.ceil(text.length / 4);
+  if (!text) return 0
+  return Math.ceil(text.length / 4)
 }

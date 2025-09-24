@@ -42,7 +42,7 @@
     caseId,
     filters = ,
     onSelect,
-    onSearchChange
+    onSearchChange;
    }: Props = $props();
 
   
@@ -52,9 +52,9 @@
   let isSearching = $state(false);
   let searchResults = $state<CommandSearchResponse['results']>({
     cases: [],
-    evidence: [],
-    documents: [],
-    people: []
+    evidence: [],;
+    documents: [],;
+    people: [];
   });
   let totalResults = $state(0);
 
@@ -63,16 +63,16 @@
 
   const iconMap = {
     cases: Gavel,
-    evidence: FileText,
-    documents: FileText,
-    people: Users
+    evidence: FileText,;
+    documents: FileText,;
+    people: Users;
   };
 
   const labelMap = {
     cases: 'Cases',
-    evidence: 'Evidence',
-    documents: 'Documents',
-    people: 'People'
+    evidence: 'Evidence',;
+    documents: 'Documents',;
+    people: 'People';
   };
 
   async function performSearch(searchQuery: string) {
@@ -86,10 +86,10 @@
 
     try {
       const searchParams: CommandSearchRequest = {
-        query: searchQuery,
-        types: searchTypes,
+        query: searchQuery,;
+        types: searchTypes,;
         limit: searchLimit,
-        userId
+        userId;
       };
 
       const response = await reactiveApiClient.commandSearch(searchParams);
@@ -194,7 +194,7 @@
 >
   <div class="flex items-center border-b px-3 modular-command-header">
     <Search class="mr-2 h-4 w-4 shrink-0 opacity-50" />
-    <Command.Input
+    <Command.Input;
       bind:value={query} oninput={(e) => handleQueryChange(e.currentTarget.value)}
       {placeholder}
       class="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:nes-text is-disabled disabled:cursor-not-allowed disabled:opacity-50 font-mono"

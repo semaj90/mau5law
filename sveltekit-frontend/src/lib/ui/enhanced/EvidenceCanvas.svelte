@@ -26,8 +26,8 @@
           fileId: `file-${i}`,
           fileName: f.name,
           bucket: task.options.bucket,
-          size: f.size
-        })),
+          size: f.size;
+        })),;
         embeddings: { documentEmbeddings: 1, chunkEmbeddings: 5, processingTime: 1200 },
         somClustering: { clusters: 3, quality: 0.85, processingTime: 800 },
         rtxCompression: { originalSize: task.files[0].size, compressedSize: Math.floor(task.files[0].size / 50), ratio: '50:1', processingTime: 500 },
@@ -53,31 +53,31 @@
             entities: ['evidence', 'legal', 'document'],
             keywords: ['case', 'analysis'],
             confidence: 0.85,
-            language: 'en'
+            language: 'en';
           }
         },
         anchor_points: [
           { 
             id: '1', 
-            type: 'text', 
+            type: 'text', ;
             coordinates: { x: 0.1, y: 0.1, width: 0.3, height: 0.1 }, 
             confidence: 0.9, 
             description: 'Key evidence section', 
-            legal_relevance: 'high' 
+            legal_relevance: 'high' ;
           },
           { 
             id: '2', 
-            type: 'object', 
+            type: 'object', ;
             coordinates: { x: 0.5, y: 0.3, width: 0.2, height: 0.2 }, 
-            confidence: 0.8, 
+            confidence: 0.8, ;
             description: 'Relevant document element', 
-            legal_relevance: 'medium' 
+            legal_relevance: 'medium' ;
           }
         ],
         timeline_segments: evidence.type === 'video' ? [
           { start_time: 0, end_time: 30, event_type: 'scene_change', description: 'Initial scene', confidence: 0.9, legal_significance: 'Key evidence timestamp' }
         ] : undefined,
-        copilot_analysis: `Enhanced analysis for ${evidence.type} evidence: Legal relevance assessed with high confidence. Recommended for case inclusion.`
+        copilot_analysis: `Enhanced analysis for ${evidence.type} evidence: Legal relevance assessed with high confidence. Recommended for case inclusion.`;
       };
     }
   }
@@ -161,8 +161,9 @@
     processingTime: number;
   }
 
-  $effect(async () => {
-    const fabricModule = await import("fabric");
+  $effect(() => {
+    (async () => {
+const fabricModule = await import("fabric");
     fabric = fabricModule.fabric;
     fabricCanvas = new fabric.Canvas(canvasEl);
     // Register canvas with concurrency orchestrator
@@ -178,27 +179,28 @@
         left: 100,
         top: 100,
         fill: enableN64Style ? "#FFD700" : "red",
-        width: 60,
-        height: 60,
+        width: 60,;
+        height: 60,;
         stroke: enableN64Style ? "#FFA500" : undefined,
-        strokeWidth: enableN64Style ? 2 : 0
+        strokeWidth: enableN64Style ? 2 : 0;
       })
     );
     // Example: Add evidence annotation text with N64 styling
     fabricCanvas.add(
       new fabric.Text('🎮 Evidence Item #1', {
-        left: 120,
+        left: 120,;
         top: 80,
         fontFamily: enableN64Style ? 'Courier New' : 'Arial',
-        fontSize: enableN64Style ? 14 : 12,
+        fontSize: enableN64Style ? 14 : 12,;
         fill: enableN64Style ? '#FFD700' : '#333',
-        fontWeight: enableN64Style ? 'bold' : 'normal'
+        fontWeight: enableN64Style ? 'bold' : 'normal';
       })
     );
     // Add canvas event listeners for file drops
     canvasEl.addEventListener('dragover', handleCanvasDragOver);
     canvasEl.addEventListener('dragleave', handleCanvasDragLeave);
     canvasEl.addEventListener('drop', handleCanvasDrop);
+    })();
   });
   onDestroy(() => {
     if (canvasEl) {
@@ -230,11 +232,11 @@
           canvas_json: fabricCanvas?.toJSON() || ,
           objects: collectObjects(),
           canvas_size: { width: canvasEl.width, height: canvasEl.height },
-          uploaded_files: uploadedFiles.filter(item => item.map)(f => ({
+          uploaded_files: uploadedFiles.filter(item => item.map)(f => ({;
             id: f.id,
             fileName: f.file.name,
             minioPath: f.minioPath,
-            cudaProcessed: f.cudaProcessed
+            cudaProcessed: f.cudaProcessed;
           })),
           options
         },
@@ -248,10 +250,10 @@
         if (completedResult) {
           result = {
             analysis: completedResult.data.response || completedResult.data.analysis || 'Analysis completed',
-            summary: completedResult.data.summary || 'Summary generated',
+            summary: completedResult.data.summary || 'Summary generated',;
             confidence: completedResult.data.confidence || 0.85,
-            processing_time_ms: completedResult.duration,
-            status: 'success'
+            processing_time_ms: completedResult.duration,;
+            status: 'success';
           };
           unsubscribe();
           analyzing = false;
@@ -345,8 +347,8 @@
     const uploadFiles: UploadedFile[] = validFiles.map(file => ({
       id: `${Date.now()}-${Math.random()}`,
       file,
-      progress: 0,
-      status: 'pending'
+      progress: 0,;
+      status: 'pending';
     }));
 
     uploadedFiles = [...uploadedFiles, ...uploadFiles];
@@ -450,8 +452,8 @@
       }));
 
       const response = await fetch('/api/v1/gpu/cuda/preprocess', {
-        method: 'POST',
-        body: formData
+        method: 'POST',;
+        body: formData;
       });
 
       if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown; success?: unknown; jobIds?: unknown; evidenceCount?: unknown; jobStatuses?: unknown; error?: unknown }).ok) {
@@ -461,7 +463,7 @@
       const result = await (response as { ok?: unknown; statusText?: unknown; json?: unknown; success?: unknown; jobIds?: unknown; evidenceCount?: unknown; jobStatuses?: unknown; error?: unknown }).json();
       return {
         success: true,
-        processedFile: (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).processedFile ? new File([(result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).processedFile], file.name, { type: file.type }) : undefined,
+        processedFile: (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).processedFile ? new File([(result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).processedFile], file.name, { type: file.type }) : undefined,;
         metadata: (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).metadata
       };
 
@@ -475,7 +477,7 @@
     formData.append('file', file);
     formData.append('uploadData', JSON.stringify({
       caseId,
-      title: file.name,
+      title: file.name,;
       description: `🎮 Canvas upload: ${file.name}`,
       evidenceType: getEvidenceType(file),
       enableAiAnalysis: true,
@@ -485,22 +487,22 @@
     }));
 
     const response = await fetch('/api/evidence/upload', {
-      method: 'POST',
-      body: formData
+      method: 'POST',;
+      body: formData;
     });
 
     if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown; success?: unknown; jobIds?: unknown; evidenceCount?: unknown; jobStatuses?: unknown; error?: unknown }).ok) {
       const errorData = await (response as { ok?: unknown; statusText?: unknown; json?: unknown; success?: unknown; jobIds?: unknown; evidenceCount?: unknown; jobStatuses?: unknown; error?: unknown }).json();
       return {
-        success: false,
-        error: errorData.error?.message || 'Upload failed'
+        success: false,;
+        error: errorData.error?.message || 'Upload failed';
       };
     }
 
     const result = await (response as { ok?: unknown; statusText?: unknown; json?: unknown; success?: unknown; jobIds?: unknown; evidenceCount?: unknown; jobStatuses?: unknown; error?: unknown }).json();
     if ((result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).success && (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).data?.[0]) {
       return {
-        success: true,
+        success: true,;
         data: {
           ...result.data[0],
           cudaOptimized: cudaProcessed
@@ -509,8 +511,8 @@
     }
 
     return {
-      success: false,
-      error: 'Invalid response from upload service'
+      success: false,;
+      error: 'Invalid response from upload service';
     };
   }
   async function addFileToCanvas(uploadFile: UploadedFile, position: { x: number; y: number }, uploadResult: UploadResult) {
@@ -523,13 +525,13 @@
         const imgElement = new Image();
         imgElement.onload = () => {
           const fabricImage = new fabric.Image(imgElement, {
-            left: position.x,
+            left: position.x,;
             top: position.y,
             scaleX: 0.3,
             scaleY: 0.3,
             cornerColor: enableN64Style ? '#FFD700' : '#178cff',
             cornerStrokeColor: enableN64Style ? '#FFA500' : '#178cff',
-            borderColor: enableN64Style ? '#FFD700' : '#178cff'
+            borderColor: enableN64Style ? '#FFD700' : '#178cff';
           });
           fabricCanvas.add(fabricImage);
           uploadFile.canvasObjectId = fabricImage.id;
@@ -537,12 +539,12 @@
           const label = new fabric.Text(enableN64Style ? `🎮 ${file.name}` : file.name, {
             left: position.x,
             top: position.y - 25,
-            fontSize: enableN64Style ? 12 : 10,
+            fontSize: enableN64Style ? 12 : 10,;
             fill: enableN64Style ? '#FFD700' : '#333',
             fontFamily: enableN64Style ? 'Courier New' : 'Arial',
             fontWeight: enableN64Style ? 'bold' : 'normal',
-            backgroundColor: enableN64Style ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)',
-            padding: 3
+            backgroundColor: enableN64Style ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)',;
+            padding: 3;
           });
           fabricCanvas.add(label);
           fabricCanvas.renderAll();
@@ -559,36 +561,36 @@
         height: 100,
         fill: enableN64Style ? '#1a1a2e' : '#4090FF',
         stroke: enableN64Style ? '#FFD700' : '#333',
-        strokeWidth: enableN64Style ? 3 : 2,
-        rx: enableN64Style ? 0 : 5,
-        ry: enableN64Style ? 0 : 5
+        strokeWidth: enableN64Style ? 3 : 2,;
+        rx: enableN64Style ? 0 : 5,;
+        ry: enableN64Style ? 0 : 5;
       });
       // File type icon
       const fileIcon = new fabric.Text(getFileIcon(file), {
-        left: position.x + 25,
+        left: position.x + 25,;
         top: position.y + 20,
-        fontSize: 24,
+        fontSize: 24,;
         fill: enableN64Style ? '#FFD700' : '#fff',
         fontFamily: enableN64Style ? 'Courier New' : 'Arial',
-        textAlign: 'center'
+        textAlign: 'center';
       });
       const label = new fabric.Text(enableN64Style ? `🎮 ${file.name}` : file.name, {
         left: position.x + 5,
         top: position.y + 50,
-        fontSize: enableN64Style ? 10 : 9,
+        fontSize: enableN64Style ? 10 : 9,;
         fill: enableN64Style ? '#FFD700' : '#fff',
-        fontFamily: enableN64Style ? 'Courier New' : 'Arial',
+        fontFamily: enableN64Style ? 'Courier New' : 'Arial',;
         width: 70,
         textAlign: 'center',
-        fontWeight: enableN64Style ? 'bold' : 'normal'
+        fontWeight: enableN64Style ? 'bold' : 'normal';
       });
       // CUDA indicator if processed
       if (uploadFile.cudaProcessed) {
         const cudaIndicator = new fabric.Text('⚡', {
-          left: position.x + 65,
+          left: position.x + 65,;
           top: position.y + 5,
-          fontSize: 16,
-          fill: '#40FF40'
+          fontSize: 16,;
+          fill: '#40FF40';
         });
         fabricCanvas.add(cudaIndicator);
       }
@@ -635,11 +637,11 @@
       await ingestionPipeline.initialize();
     }
     const evidence = {
-      id: uploadFile.id,
+      id: uploadFile.id,;
       type: getEvidenceType(uploadFile.file).toLowerCase(),
-      fileName: uploadFile.file.name,
+      fileName: uploadFile.file.name,;
       size: uploadFile.file.size,
-      minioPath: uploadFile.minioPath
+      minioPath: uploadFile.minioPath;
     };
     return await ingestionPipeline.processMultimodalEvidence(evidence);
   }
@@ -653,24 +655,24 @@
         {
           type: evidenceType as any,
           caseId: caseId,
-          userId: 'evidence-canvas-user'
+          userId: 'evidence-canvas-user';
         }
       );
       return {
         ocrResults: evidenceItem.ocrResults,
-        embeddings: evidenceItem.embeddings,
-        analysis: evidenceItem.analysis,
+        embeddings: evidenceItem.embeddings,;
+        analysis: evidenceItem.analysis,;
         conflicts: [], // Would be populated by conflict detection
-        processingTime: evidenceItem.metadata.processingTime
+        processingTime: evidenceItem.metadata.processingTime;
       };
     } catch (error) {
       console.error('Detective analysis failed:', error);
       return {
         ocrResults: { text: '', confidence: 0, boundingBoxes: [], handwritingDetected: false },
-        embeddings: ,
-        analysis: { detectedPatterns: [], legalRelevance: 'low', conflictIndicators: [], contextualClues: [], suggestedActions: [] },
+        embeddings: ,;
+        analysis: { detectedPatterns: [], legalRelevance: 'low', conflictIndicators: [], contextualClues: [], suggestedActions: [] },;
         conflicts: [],
-        processingTime: 0
+        processingTime: 0;
       };
     }
   }
@@ -685,13 +687,13 @@
     const insightsIcon = new fabric.Text('🔍', {
       left: fileObject.left + 80,
       top: fileObject.top - 5,
-      fontSize: 16,
+      fontSize: 16,;
       fill: detectiveResult.analysis.legalRelevance === 'high' ? '#FF3030' : 
-            detectiveResult.analysis.legalRelevance === 'medium' ? '#FFD700' : '#40FF40',
+            detectiveResult.analysis.legalRelevance === 'medium' ? '#FFD700' : '#40FF40',;
       selectable: true,
       hasControls: false,
       hasBorders: false,
-      hoverCursor: 'pointer'
+      hoverCursor: 'pointer';
     });
     // Add tooltip on hover (simplified)
     insightsIcon.on('mouseover', () => {
@@ -702,10 +704,10 @@
           fontSize: enableN64Style ? 9 : 8,
           fill: enableN64Style ? '#FFD700' : '#333',
           fontFamily: enableN64Style ? 'Courier New' : 'Arial',
-          backgroundColor: enableN64Style ? 'rgba(0,0,0,0.9)' : 'rgba(255,255,255,0.9)',
+          backgroundColor: enableN64Style ? 'rgba(0,0,0,0.9)' : 'rgba(255,255,255,0.9)',;
           padding: 5,
-          cornerStyle: 'rect',
-          selectable: false
+          cornerStyle: 'rect',;
+          selectable: false;
         }
       );
       fabricCanvas.add(tooltip);
@@ -721,10 +723,10 @@
       console.log(`🚀 Starting unified evidence processing for canvas: ${canvasId}`);
       // Use the unified legal orchestration service for comprehensive processing
       const response = await apiFetch('/api/legal/evidence-canvas', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json',
-        },
+        },;
         body: JSON.stringify({
           canvasId,
           evidenceItems,
@@ -822,11 +824,11 @@
     const evidenceItems = uploadedFiles.map(file => ({
       id: file.id,
       name: file.file.name,
-      type: getEvidenceType(file.file),
+      type: getEvidenceType(file.file),;
       size: file.file.size,
-      canvasPosition: file.canvasObjectId ? getCanvasObjectPosition(file.canvasObjectId) : null,
+      canvasPosition: file.canvasObjectId ? getCanvasObjectPosition(file.canvasObjectId) : null,;
       metadata: file.detectiveAnalysis || ,
-      uploadTime: file.timestamp
+      uploadTime: file.timestamp;
     }));
 
     const canvasId = `canvas_${Date.now()}`;
@@ -859,23 +861,23 @@
         top: anchorY,
         radius: 8,
         fill: anchor.legal_relevance === 'high' ? '#FF3030' : 
-              anchor.legal_relevance === 'medium' ? '#FFD700' : '#40FF40',
+              anchor.legal_relevance === 'medium' ? '#FFD700' : '#40FF40',;
         stroke: enableN64Style ? '#000' : '#fff',
-        strokeWidth: 2,
+        strokeWidth: 2,;
         selectable: true,
         hasControls: false,
-        hasBorders: false
+        hasBorders: false;
       });
       // Add anchor label
       const anchorLabel = new fabric.Text(`📍 ${anchor.type}`, {
         left: anchorX + 15,
         top: anchorY - 5,
-        fontSize: enableN64Style ? 10 : 8,
+        fontSize: enableN64Style ? 10 : 8,;
         fill: enableN64Style ? '#FFD700' : '#333',
         fontFamily: enableN64Style ? 'Courier New' : 'Arial',
-        backgroundColor: enableN64Style ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)',
+        backgroundColor: enableN64Style ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)',;
         padding: 2,
-        fontWeight: enableN64Style ? 'bold' : 'normal'
+        fontWeight: enableN64Style ? 'bold' : 'normal';
       });
       fabricCanvas.add(anchorCircle);
       fabricCanvas.add(anchorLabel);
@@ -1033,7 +1035,7 @@
     </small>
     <small class="config-input" class:n64-input={enableN64Style}>
       Conf: <input
-        type="number"
+        type="number";
         bind:value={options.confidence_level}
         min={0}
         max={1}
@@ -1139,7 +1141,7 @@
             </div>
             
             <button 
-              class="remove-btn" 
+              class="remove-btn" ;
               class:n64-remove={enableN64Style}
               onclick={() => removeFile(file.id)}
               disabled={file.status === 'uploading'}

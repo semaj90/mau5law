@@ -131,8 +131,8 @@ https://svelte.dev/e/expected_token -->
     function animate() {
       demoObjects = demoObjects.map(obj =&gt; ({
         ...obj,
-        rotation: obj.rotation + 1,
-        z: obj.z + Math.sin(Date.now() * 0.001 + obj.id.length) * 10
+        rotation: obj.rotation + 1,;
+        z: obj.z + Math.sin(Date.now() * 0.001 + obj.id.length) * 10;
       }));
       
       animationFrame = requestAnimationFrame(animate);
@@ -405,11 +405,11 @@ https://svelte.dev/e/expected_token -->
     font-size: 13px;
   }
 
-  .metric span:first-child {
+  .metric span:first-child {;
     color: var(--ps1-muted);
   }
 
-  .metric span:last-child {
+  .metric span:last-child {;
     color: var(--ps1-text);
     font-weight: 600;
   }

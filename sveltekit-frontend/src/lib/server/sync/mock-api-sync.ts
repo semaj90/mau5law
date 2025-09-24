@@ -129,7 +129,7 @@ export const mockDataGenerators = {
         metadata: {
           complexity: Math.random(),
           wordCount: 500 + Math.floor(Math.random() * 2000),
-          legalDomain: docType,
+          legalDomain: docType,;
           jurisdiction: 'US',
           practiceArea: 'corporate'
         },
@@ -183,7 +183,7 @@ export const mockDataGenerators = {
           dropout: 0.01 + Math.random() * 0.09,
           targetModules: ['q_proj', 'v_proj', 'o_proj'],
           learningRate: 1e-4 + Math.random() * 2e-4,
-          batchSize: 2 + Math.floor(Math.random() * 6),
+          batchSize: 2 + Math.floor(Math.random() * 6),;
           epochs: 2 + Math.floor(Math.random() * 6),
           quantizationBits: [4, 8][Math.floor(Math.random() * 2)] as 4 | 8
         },
@@ -220,7 +220,7 @@ export const mockDataGenerators = {
               assetTypes: [assetTypes[Math.floor(Math.random() * assetTypes.length)]],
               confidence: 0.7 + Math.random() * 0.3,
               frequency: Math.floor(Math.random() * 100)
-            },
+            },;
             probability: 0.6 + Math.random() * 0.4,
             timeToStateMs: 100 + Math.random() * 2000,
             assetIds: [`asset_${i}_1`, `asset_${i}_2`]
@@ -256,7 +256,7 @@ export const mockDataGenerators = {
     for (let i = 0; i < count; i++) {
       const shard: EmbeddingShard = {
         id: `shard_${Date.now()}_${i}`,
-        dim: 1536,
+        dim: 1536,;
         vec: Array.from({ length: 1536 }, () => Math.random() * 2 - 1),
         createdAt: new Date().toISOString()
       };
@@ -274,7 +274,7 @@ export const mockDataGenerators = {
 
     for (let i = 0; i < count; i++) {
       const manifest: CHRManifest = {
-        id: `chr_manifest_${Date.now()}_${i}`,
+        id: `chr_manifest_${Date.now()}_${i}`,;
         keys: [`chr_key_${i}_1`, `chr_key_${i}_2`, `chr_key_${i}_3`],
         ttlSec: 300 + Math.random() * 3600,
         createdAt: new Date().toISOString()
@@ -310,7 +310,7 @@ export const databaseSync = {
             status: doc.status,
             confidenceLevel: doc.confidenceLevel,
             riskLevel: doc.riskLevel,
-            priority: doc.priority,
+            priority: doc.priority,;
             metadata: doc.metadata,
             createdAt: doc.createdAt,
             updatedAt: doc.updatedAt
@@ -326,7 +326,7 @@ export const databaseSync = {
             dimensions: 1536,
             metadata: {
               source: 'mock_generator',
-              documentType: doc.type,
+              documentType: doc.type,;
               confidence: doc.confidenceLevel
             }
           })
@@ -363,7 +363,7 @@ export const databaseSync = {
             temporalFeatures: state.temporalFeatures
           },
           accuracy: 0.85 + Math.random() * 0.15,
-          trainingTime: 1000 + Math.random() * 5000,
+          trainingTime: 1000 + Math.random() * 5000,;
           metadata: {
             mockData: true,
             generatedAt: new Date().toISOString(),
@@ -396,7 +396,7 @@ export const databaseSync = {
           predictionData: prediction,
           confidence: prediction.totalConfidence,
           hitCount: Math.floor(Math.random() * 50),
-          lastHit: new Date(),
+          lastHit: new Date(),;
           ttl: new Date(Date.now() + 3600000), // 1 hour TTL;
           metadata: {
             cacheStrategy: prediction.recommendedAssets[0]?.cacheStrategy,
@@ -422,7 +422,7 @@ export const vectorSearch = {
    */
   async performSimilaritySearch(
     queryEmbedding: number[],
-    limit: number = 5,
+    limit: number = 5,;
     threshold: number = 0.7;
   ) {
     try {
@@ -432,7 +432,7 @@ export const vectorSearch = {
           similarity: sql<number>`1 - (${vectorEmbeddings.embedding} <=> ${sql`${JSON.stringify(queryEmbedding)}::vector`})`,
           document: {
             id: legalDocuments.id,
-            title: legalDocuments.title,
+            title: legalDocuments.title,;
             content: legalDocuments.content,
             documentType: legalDocuments.documentType,
             confidenceLevel: legalDocuments.confidenceLevel
@@ -466,7 +466,7 @@ export const vectorSearch = {
         .select({
           documentId: vectorEmbeddings.documentId,
           embedding: vectorEmbeddings.embedding,
-          model: vectorEmbeddings?.model || "unknown" // @ts-ignore - Model property access,
+          model: vectorEmbeddings?.model || "unknown" // @ts-ignore - Model property access,;
           dimensions: vectorEmbeddings.dimensions
         })
         .from(vectorEmbeddings)
@@ -507,7 +507,7 @@ export const syncOrchestrator = {
     return {
       success: true,
       totalRecords: totalSynced,
-      breakdown: results,
+      breakdown: results,;
       performance: {
         syncDuration: '~2-5 seconds',
         cachePrewarmed: true,
@@ -523,7 +523,7 @@ export const syncOrchestrator = {
     const checks = {
       database: false,
       pgvector: false,
-      drizzle: false,
+      drizzle: false,;
       redis: false,
       mockDataReady: false
     };
@@ -547,7 +547,7 @@ export const syncOrchestrator = {
 
       return {
         status: Object.values(checks).every(Boolean) ? 'healthy' : 'partial',
-        checks,
+        checks,;
         timestamp: new Date().toISOString()
       };
     } catch (error) {
@@ -555,7 +555,7 @@ export const syncOrchestrator = {
       return {
         status: 'error',
         checks,
-        error: error.message,
+        error: error.message,;
         timestamp: new Date().toISOString()
       };
     }

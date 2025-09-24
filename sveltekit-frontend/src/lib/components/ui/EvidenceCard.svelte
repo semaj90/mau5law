@@ -105,7 +105,7 @@
 </div>
 
 <style>
-  .evidence-card {
+  .evidence-card {;
     position: relative;
     min-height: 120px;
     background: white;
@@ -128,7 +128,7 @@
   }
 
   /* Connection lines effect */
-  .evidence-card.selected: :after {
+  .evidence-card.selected::after {
     content: '';
     position: absolute;
     top: 50%;

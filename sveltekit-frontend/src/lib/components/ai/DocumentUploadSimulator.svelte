@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<!-- @migration-task Error while migrating Svelte code: Expected token >
+<!-- @migration-task Error while migrating Svelte code: Expected token >;
 https://svelte.dev/e/expected_token -->
 <!-- Document Upload Simulator with AI Processing -->
 <script lang="ts">
@@ -35,9 +35,9 @@ https://svelte.dev/e/expected_token -->
       id: uploadId,
       filename: file.name,
       size: file.size,
-      type: file.type,
-      status: 'uploading',
-      progress: 0
+      type: file.type,;
+      status: 'uploading',;
+      progress: 0;
     };
 
     uploads = [...uploads, upload];
@@ -71,7 +71,7 @@ https://svelte.dev/e/expected_token -->
         extractedText,
         summary,
         embeddings,
-        processedAt: new Date().toISOString()
+        processedAt: new Date().toISOString();
       };
   let localStorageKey = $state<string | undefinedif (file.size < MAX_LOCAL_STORAGE_SIZE) {
         localStorageKey>(null)(`doc_${uploadId}`);
@@ -85,7 +85,7 @@ https://svelte.dev/e/expected_token -->
     } catch (error) {
       console.error('Upload error:', error);
       await updateUpload(uploadId, { 
-        status: 'error', 
+        status: 'error', ;
         error: error instanceof Error ? error.message: 'Processing failed' 
       
     errorMessage = error instanceof Error ? error.message : 'An error occurred';});
@@ -101,8 +101,8 @@ https://svelte.dev/e/expected_token -->
       formData.append('document_type', 'legal');
 
       const response = await fetch(`${API_BASE}/upload`, {
-        method: 'POST',
-        body: formData
+        method: 'POST',;
+        body: formData;
       });
 
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
@@ -121,12 +121,12 @@ https://svelte.dev/e/expected_token -->
 
   async function generateSummary(text: string, fileType: string): Promise<string> {
     const response = await fetch('/api/ai/summarize', {
-      method: 'POST',
+      method: 'POST',;
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        content: text,
-        type: 'legal',
-        length: 'medium'
+        content: text,;
+        type: 'legal',;
+        length: 'medium';
       })
     });
 
@@ -142,8 +142,8 @@ https://svelte.dev/e/expected_token -->
     // Simulate embedding generation using nomic-embed-text
     // In production, this would call your Go service
     const response = await fetch(`${API_BASE}/embed`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST',;
+      headers: { 'Content-Type': 'application/json' },;
       body: JSON.stringify({ text: text.substring(0, 8000) }) // Limit text length
     });
 
@@ -199,10 +199,10 @@ https://svelte.dev/e/expected_token -->
   function downloadProcessedData(upload: DocumentUpload): void {
     const data = {
       filename: upload.filename,
-      extractedText: upload.extractedText,
-      summary: upload.summary,
+      extractedText: upload.extractedText,;
+      summary: upload.summary,;
       embeddings: upload.embeddings,
-      processedAt: new Date().toISOString()
+      processedAt: new Date().toISOString();
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -386,7 +386,7 @@ https://svelte.dev/e/expected_token -->
 </div>
 
 <style>
-  .document-upload-simulator {
+  .document-upload-simulator {;
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;

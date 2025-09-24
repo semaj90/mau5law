@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string
+<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string;
 https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
 <!--
@@ -70,8 +70,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     try {
       const params = new URLSearchParams({
         caseId,
-        limit: itemsPerPage.toString(),
-        offset: ((currentPage - 1) * itemsPerPage).toString()
+        limit: itemsPerPage.toString(),;
+        offset: ((currentPage - 1) * itemsPerPage).toString();
       });
 
       if (typeFilter !== 'all') params.set('type', typeFilter);
@@ -82,7 +82,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       const result = await (response as { json?: any }).json();
 
       if ((result as { success?: any; citations?: any; pagination?: any; error?: any }).success) {
-        citations.set.citations);
+        citations.set(citations));
         totalPages = (result as { success?: any; citations?: any; pagination?: any; error?: any }).pagination?.totalPages || 1;
         applyClientSideSort();
       } else {
@@ -268,7 +268,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       <!-- Search -->
       <div>
         <label class="block text-xs font-medium text-gray-700 mb-1" for="search">Search</label><input id="search"
-          type="text"
+          type="text";
           bind:value={searchQuery}
           onkeydown={(e) => e.key === 'Enter' && handleSearch()}
           placeholder="Search citations..."
@@ -278,7 +278,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 
       <!-- Type Filter -->
       <div>
-        <label class="block text-xs font-medium text-gray-700 mb-1" for="type">Type</label><select id="type"
+        <label class="block text-xs font-medium text-gray-700 mb-1" for="type">Type</label><select id="type";
           bind:value={typeFilter}
           onchange={handleFilterChange}
           class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -306,7 +306,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       <div>
         <label class="block text-xs font-medium text-gray-700 mb-1">Sort by</label>
         <div class="flex space-x-1">
-          <select
+          <select;
             bind:value={sortBy}
             onchange={handleSortChange}
             class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -528,7 +528,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 class={`px-3 py-2 text-sm font-medium rounded ${
                   pageNum === currentPage 
                     ? 'text-white bg-blue-600' 
-                    : 'text-gray-500 hover:text-gray-700'
+                    : 'text-gray-500 hover:text-gray-700';
                 }`}
               >
                 {pageNum}
@@ -548,7 +548,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 </div>
 
 <style>
-  .line-clamp-2 {
+  .line-clamp-2 {;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;

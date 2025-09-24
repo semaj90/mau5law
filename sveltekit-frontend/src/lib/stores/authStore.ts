@@ -82,7 +82,7 @@ const createAuthStore = () => {
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ email, password }),
+          body: JSON.stringify({ email, password }),;
           credentials: "include"
         });
 
@@ -135,7 +135,7 @@ const createAuthStore = () => {
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify(userData),
+          body: JSON.stringify(userData),;
           credentials: "include"
         });
 
@@ -176,7 +176,7 @@ const createAuthStore = () => {
     async logout() {
       try {
         await fetch("/api/auth/logout", {
-          method: "POST",
+          method: "POST",;
           credentials: "include"
         });
       } catch (error: any) {
@@ -208,7 +208,7 @@ const createAuthStore = () => {
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify(updates),
+          body: JSON.stringify(updates),;
           credentials: "include"
         });
 
@@ -325,7 +325,7 @@ const createAIAssistantStore = () => {
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify(updates),
+          body: JSON.stringify(updates),;
           credentials: "include"
         });
 
@@ -360,7 +360,7 @@ const createAIAssistantStore = () => {
     ) {
       const newConversation = {
         ...conversation,
-        id: crypto.randomUUID(),
+        id: crypto.randomUUID(),;
         timestamp: new Date()
       };
 

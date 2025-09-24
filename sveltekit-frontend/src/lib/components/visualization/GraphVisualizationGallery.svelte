@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: 'return' outside of function
+<!-- @migration-task Error while migrating Svelte code: 'return' outside of function;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: 'return' outside of function -->
 <script lang="ts">
@@ -40,7 +40,7 @@ https://svelte.dev/e/js_parse_error -->
       { id: 'statute-1', label: '15 USC § 1', type: 'statute', position: { x: 200, y: 150 }, metadata: { jurisdiction: 'federal', year: 1990 }, embedding: new Float32Array([0.2, 0.3, 0.4, 0.5]) },
       { id: 'regulation-1', label: '17 CFR 240.10b-5', type: 'regulation', position: { x: 150, y: 200 }, metadata: { agency: 'SEC', type: 'rule' }, embedding: new Float32Array([0.3, 0.4, 0.5, 0.6]) },
       { id: 'precedent-1', label: 'Brown v. Board', type: 'precedent', position: { x: 250, y: 120 }, metadata: { impact: 'landmark', year: 1954 }, embedding: new Float32Array([0.4, 0.5, 0.6, 0.7]) }
-    ],
+    ],;
     edges: [
       { id: 'edge-1', source: 'legal-case-1', target: 'statute-1', type: 'cites', weight: 0.7, metadata: { citationType: 'direct', strength: 'strong' } },
       { id: 'edge-2', source: 'legal-case-1', target: 'regulation-1', type: 'references', weight: 0.5, metadata: { citationType: 'indirect', strength: 'moderate' } },
@@ -57,7 +57,7 @@ https://svelte.dev/e/js_parse_error -->
     return vis.metadata.algorithm === algorithmFilter;
   });
 
-  $effect(async () => {
+  $effect(() => {
     try {
       // Initialize services
       visualizationEngine = new GraphVisualizationEngine({
@@ -118,7 +118,7 @@ https://svelte.dev/e/js_parse_error -->
     for (let i = 0; i < algorithms.length; i++) {
       const algorithm = algorithms[i];
       try {
-        const cacheKey = `graph_vis_${algorithm}_${JSON.stringify.slice(0, 100)}`;
+        const cacheKey = `graph_vis_${algorithm}_${JSON.stringify(slice)(0, 100)}`;
         let visualization: GraphVisualizationResult | null = null;
         // Try cache first if enabled
         if (cacheResults && multiLayerCache) {
@@ -132,8 +132,8 @@ https://svelte.dev/e/js_parse_error -->
         if (!visualization) {
           const options = {
             algorithm: algorithm as 'dfs' | 'bfs' | 'som' | 'autoencoder',
-            outputFormat: 'base64' as const,
-            dimensions: { width: 800, height: 600 },
+            outputFormat: 'base64' as const,;
+            dimensions: { width: 800, height: 600 },;
             style: {
               backgroundColor: '#1a1a1a',
               nodeColor: '#00ff88',
@@ -172,8 +172,8 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const options = {
         algorithm: algorithm as 'dfs' | 'bfs' | 'som' | 'autoencoder',
-        outputFormat: 'base64' as const,
-        dimensions: { width: 800, height: 600 },
+        outputFormat: 'base64' as const,;
+        dimensions: { width: 800, height: 600 },;
         style: {
           backgroundColor: '#1a1a1a',
           nodeColor: '#00ff88',
@@ -191,7 +191,7 @@ https://svelte.dev/e/js_parse_error -->
 
         // Update cache
         if (cacheResults && multiLayerCache) {
-          const cacheKey = `graph_vis_${algorithm}_${JSON.stringify.slice(0, 100)}`;
+          const cacheKey = `graph_vis_${algorithm}_${JSON.stringify(slice)(0, 100)}`;
           await multiLayerCache.set('visualization', cacheKey, visualization, 3600);
         }
       }
@@ -318,8 +318,8 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Preview Image -->
         <div class="item-preview" role="button" tabindex="0"
                 onclick={() => openVisualization(visualization)}>
-          <img 
-            src={getVisualizationPreview(visualization)} 
+          <img
+            src={getVisualizationPreview(visualization)}
             alt="Graph visualization using {visualization.metadata.algorithm}"
             class="preview-image"
             loading="lazy"
@@ -347,7 +347,7 @@ regenerateVisualization(visualization.metadata.algorithm)}
           >
             🔄 Regenerate
 </Button>
-          
+
           <div class="item-metrics">
             <span class="nes-text is-disabled">
               ⚡ {visualization.metadata.processingTime}ms
@@ -378,7 +378,7 @@ generateVisualizationsForAllAlgorithms()}
   {/if}
 
   <!-- Real-time Canvas (Hidden, used for generation) -->
-  <canvas
+  <canvas;
     bind:this={canvas as any}
     width="800"
     height="600"
@@ -395,7 +395,7 @@ generateVisualizationsForAllAlgorithms()}
                 onclick={(e) => e.stopPropagation()}>
       <button class="modal-close nes-btn is-error" onclick={closeModal}>×
 </Button>
-      
+
       <div class="modal-header">
         <h3 class="nes-text is-primary">
           {getAlgorithmDisplayName($selectedVisualization.metadata.algorithm)}
@@ -406,7 +406,7 @@ generateVisualizationsForAllAlgorithms()}
       </div>
 
       <div class="modal-image">
-        <img 
+        <img
           src={getVisualizationPreview($selectedVisualization)}
           alt="Full-size graph visualization"
           class="full-image"
@@ -444,7 +444,7 @@ generateVisualizationsForAllAlgorithms()}
 {/if}
 
 <style>
-  .graph-gallery-container {
+  .graph-gallery-container {;
     padding: 2rem;
     background: #212529;
     border-radius: 8px;
@@ -689,7 +689,7 @@ generateVisualizationsForAllAlgorithms()}
     50% { opacity: 1; }
   }
 
-  .gallery-item: has(.generate-btn:disabled) {
+  .gallery-item:has(.generate-btn:disabled) {
     animation: pulse 2s infinite;
   }
 </style>

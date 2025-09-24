@@ -37,7 +37,7 @@ const legalBERT = {
   }),
   healthCheck: () => Promise.resolve({ status: 'healthy', uptime: 100 }),
   calculateLegalSimilarity: (text1: string, text2: string) => Promise.resolve({
-    similarity: 0.8,
+    similarity: 0.8,;
     confidence: 0.8
   })
 };
@@ -57,13 +57,13 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T
 export interface SynthesizerAnalysisResult {
   confidence: number;
   categories: string[];
-  summary: string | {
+  summary: string | {;
     abstractive: string;
     extractive: string;
     keyPoints: string[];
   };
-  entities?: Array<any>;
-  concepts?: Array<any>;
+  entities?: Array<unknown>;
+  concepts?: Array<unknown>;
   complexity?: {
     legalComplexity: number;
   };
@@ -129,7 +129,7 @@ export interface SynthesizedOutput {
   };
   retrievedContext: {
     sources: Array<any>;
-    summary: {
+    summary: {;
       abstractive: string;
       extractive: string[];
       keyPoints: string[];
@@ -251,7 +251,7 @@ export class AIAssistantInputSynthesizer {
           processingTime,
           confidence: qualityMetrics.responseReadiness,
           strategies: this.getUsedStrategies(options),
-          qualityScore: this.calculateOverallQuality(qualityMetrics),
+          qualityScore: this.calculateOverallQuality(qualityMetrics),;
           recommendations: this.generateRecommendations(qualityMetrics)
         }
       };
@@ -298,7 +298,7 @@ export class AIAssistantInputSynthesizer {
           type: e.type,
           confidence: e.confidence
         })),
-        legalConcepts: (legalAnalysis.legalConcepts ?? []).map((c: any) => c.concept || c),
+        legalConcepts: (legalAnalysis.legalConcepts ?? []).map((c: any) => c.concept || c),;
         complexity: legalAnalysis.complexity?.legalComplexity ?? 0.5
       };
     } catch (error: any) {
@@ -308,7 +308,7 @@ export class AIAssistantInputSynthesizer {
         enhanced: query,
         intent: 'general_legal_query',
         entities: [],
-        legalConcepts: [],
+        legalConcepts: [],;
         complexity: 0.5
       };
     }
@@ -335,7 +335,7 @@ export class AIAssistantInputSynthesizer {
     const effectiveOptions = { ...defaults, ...options };
 
     const retrievalResults: RetrievalResult = {
-      sources: [],
+      sources: [],;
       summary: { abstractive: '', extractive: [], keyPoints: [] },
       totalSources: 0,
       searchStrategies: []
@@ -348,7 +348,7 @@ export class AIAssistantInputSynthesizer {
           const ragResults = await enhancedRAGPipeline.hybridSearch({
             query: processedQuery.enhanced,
             caseId: context?.caseId,
-            limit: effectiveOptions.maxSources,
+            limit: effectiveOptions.maxSources,;
             threshold: effectiveOptions.similarityThreshold
           });
 
@@ -360,40 +360,51 @@ export class AIAssistantInputSynthesizer {
               relevanceScore: doc.metadata.score || 0.5,
               diversityScore: 0.5,
               rerankedScore: 0.5,
-              type: (doc.metadata.documentType as any) || 'document',
+              type: (doc.metadata.documentType as any) || 'document',;
               metadata: doc.metadata
             });
           }
 
           retrievalResults.searchStrategies.push('rag_hybrid');
           logger.debug(`[Synthesizer] RAG search found ${ragResults.length} results`);
-        } catch (error: any) {
+        } catch (error: unknown) {
           logger.warn('[Synthesizer] RAG search failed:', error);
         }
       }
 
       // Strategy 2: Enhanced Legal Search;
       try {
-        const legalSearchResults: any[] = await enhancedLegalSearch.search(processedQuery.enhanced, {
+        const legalSearchResults: unknown[] = await enhancedLegalSearch.search(processedQuery.enhanced, {
           maxResults: effectiveOptions.maxSources,
           useAI: true
         });
 
         for (const result of legalSearchResults) {
-          if (!retrievalResults.sources.find((s) => s.id === (result as { id?: any; title?: any; content?: any; score?: any; category?: any; jurisdiction?: any; searchType?: any; confidence?: any }).id)) {
+          const searchResult = result as {
+            id?: string;
+            title?: string;
+            content?: string;
+            score?: number;
+            category?: string;
+            jurisdiction?: string;
+            searchType?: string;
+            confidence?: number;
+          };
+
+          if (!retrievalResults.sources.find((s) => s.id === searchResult.id)) {
             retrievalResults.sources.push({
-              id: (result as { id?: any; title?: any; content?: any; score?: any; category?: any; jurisdiction?: any; searchType?: any; confidence?: any }).id,
-              title: (result as { id?: any; title?: any; content?: any; score?: any; category?: any; jurisdiction?: any; searchType?: any; confidence?: any }).title,
-              content: (result as { id?: any; title?: any; content?: any; score?: any; category?: any; jurisdiction?: any; searchType?: any; confidence?: any }).content,
-              relevanceScore: (result as { id?: any; title?: any; content?: any; score?: any; category?: any; jurisdiction?: any; searchType?: any; confidence?: any }).score,
+              id: searchResult.id,
+              title: searchResult.title,
+              content: searchResult.content,
+              relevanceScore: searchResult.score,
               diversityScore: 0.5,
               rerankedScore: 0.5,
-              type: (result as { id?: any; title?: any; content?: any; score?: any; category?: any; jurisdiction?: any; searchType?: any; confidence?: any }).category === 'case_law' ? 'case' : 'document',
+              type: searchResult.category === 'case_law' ? 'case' : 'document',
               metadata: {
-                jurisdiction: (result as { id?: any; title?: any; content?: any; score?: any; category?: any; jurisdiction?: any; searchType?: any; confidence?: any }).jurisdiction,
-                category: (result as { id?: any; title?: any; content?: any; score?: any; category?: any; jurisdiction?: any; searchType?: any; confidence?: any }).category,
-                searchType: (result as { id?: any; title?: any; content?: any; score?: any; category?: any; jurisdiction?: any; searchType?: any; confidence?: any }).searchType,
-                confidence: (result as { id?: any; title?: any; content?: any; score?: any; category?: any; jurisdiction?: any; searchType?: any; confidence?: any }).confidence
+                jurisdiction: searchResult.jurisdiction,
+                category: searchResult.category,
+                searchType: searchResult.searchType,;
+                confidence: searchResult.confidence
               }
             });
           }
@@ -423,7 +434,7 @@ export class AIAssistantInputSynthesizer {
                 relevanceScore: similarity,
                 diversityScore: 0.5,
                 rerankedScore: 0.5,
-                type: doc.type as any,
+                type: doc.type as any,;
                 metadata: { source: 'context_documents' }
               });
             }
@@ -530,7 +541,7 @@ export class AIAssistantInputSynthesizer {
         systemPrompt: 'You are a legal AI assistant.',
         contextPrompt: 'No context available.',
         queryPrompt: processedQuery.original,
-        instructions: ['Provide a helpful response.'],
+        instructions: ['Provide a helpful response.'],;
         constraints: ['Be accurate and professional.']
       };
     }
@@ -678,7 +689,7 @@ export class AIAssistantInputSynthesizer {
 
   private async applyMMRDiversification(
     sources: any[],
-    query: string,
+    query: string,;
     lambda: number = 0.5;
   ): Promise<any[]> {
     // Implement MMR algorithm for diversity
@@ -768,7 +779,7 @@ export class AIAssistantInputSynthesizer {
       const summary = await legalBERT.analyzeLegalText(combinedContent);
 
       return {
-        abstractive: summary.summary.abstractive,
+        abstractive: summary.summary.abstractive,;
         extractive: Array.isArray(summary.summary.extractive)
           ? summary.summary.extractive: [summary.summary.extractive || ''],
         keyPoints: Array.isArray(summary.summary.keyPoints)
@@ -778,7 +789,7 @@ export class AIAssistantInputSynthesizer {
     } catch (error: any) {
       logger.warn('[Synthesizer] Summary generation failed:', error);
       return {
-        abstractive: 'Summary generation failed',
+        abstractive: 'Summary generation failed',;
         extractive: sources.slice(0, 3).map((s) => s.content.substring(0, 200) + '...'),
         keyPoints: sources.slice(0, 5).map((s) => s.title)
       };
@@ -930,7 +941,7 @@ export class AIAssistantInputSynthesizer {
     const authorityScores = {
       case: 0.9,
       statute: 0.95,
-      precedent: 0.85,
+      precedent: 0.85,;
       document: 0.7
     };
 

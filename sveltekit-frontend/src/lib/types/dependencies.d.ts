@@ -183,125 +183,132 @@ declare module '@xenova/transformers' {
 
   export interface FeatureExtractionPipeline extends Pipeline {}
   export interface TextGenerationPipeline extends Pipeline {}
-}
 
-// LokiJS types - Complete interface definitions
-declare module 'lokijs' {
-  export interface LokiObj {
-    $loki: number;
-    meta: {
-      revision: number;
-      created: number;
-      version: number;
-    };
+  // LokiJS types - Complete interface definitions
+  declare module 'lokijs' {
+    export interface LokiObj {
+      $loki: number;
+      meta: {
+        revision: number;
+        created: number;
+        version: number;
+      };
+    }
+
+    export interface LokiCollection<T = any> {
+      insert(doc: T): T & LokiObj;
+      insertOne(doc: T): T & LokiObj;
+      find(query?: Partial<T> | ((obj: T & LokiObj) => boolean)): (T & LokiObj)[];
+      findOne(query?: Partial<T> | ((obj: T & LokiObj) => boolean)): (T & LokiObj) | null;
+      findAndRemove(query?: Partial<T> | ((obj: T & LokiObj) => boolean)): (T & LokiObj)[];
+      where(query: (obj: T & LokiObj) => boolean): (T & LokiObj)[];
+      remove(doc: T & LokiObj): void;
+      removeWhere(query: (obj: T & LokiObj) => boolean): void;
+      update(doc: T & LokiObj): T & LokiObj;
+      count(query?: any): number;
+      clear(): void;
+      chain(): LokiCollectionChain<T>;
+      simplesort(prop: keyof (T & LokiObj), desc?: boolean): LokiCollection<T>;
+      compoundsort(sorts: Array<[keyof (T & LokiObj), boolean?]>): LokiCollection<T>;
+      data: (T & LokiObj)[];
+    }
+
+    export interface LokiCollectionChain<T = any> {
+      find(query?: any): LokiCollectionChain<T>;
+      where(filter: (obj: T & LokiObj) => boolean): LokiCollectionChain<T>;
+      simplesort(property: keyof (T & LokiObj), desc?: boolean): LokiCollectionChain<T>;
+      limit(qty: number): LokiCollectionChain<T>;
+      data(): (T & LokiObj)[];
+    }
+
+    export interface LokiDatabase {
+      addCollection<T = any>(
+        name: string,
+        options?: {
+          unique?: string[];
+          indices?: string[];
+          asyncListeners?: boolean;
+          transactional?: boolean;
+          autoupdate?: boolean;
+          exact?: string[];
+        }
+      ): LokiCollection<T>;
+      getCollection<T = any>(name: string): LokiCollection<T> | null;
+      removeCollection(name: string): void;
+      saveDatabase(callback?: (err?: any) => void): void;
+      loadDatabase(options?: any, callback?: (err?: any) => void): void;
+      serialize(): string;
+      deserialize(serializedDb: string): void;
+      listCollections(): Array<any>;
+      getName(): string;
+      close(callback?: () => void): void;
+      filename: string;
+      options: any;
+    }
+
+    export interface LokiMemoryAdapter {
+      loadDatabase(dbname: string, callback: (data: string | null) => void): void;
+      saveDatabase(dbname: string, dbstring: string, callback: (err?: Error) => void): void;
+      deleteDatabase(dbname: string, callback: (err?: Error) => void): void;
+    }
+
+    export const LokiMemoryAdapter: new () => LokiMemoryAdapter;
+    export interface LokiFsAdapter {
+      new (): any;
+      loadDatabase(dbname: string, callback: (data: string | null) => void): void;
+      saveDatabase(dbname: string, dbstring: string, callback: (err?: Error) => void): void;
+      deleteDatabase(dbname: string, callback: (err?: Error) => void): void;
+    }
+
+    export class LokiConstructor {
+      constructor(
+        filename?: string | null,
+        options?: {
+          adapter?: any;
+          autoload?: boolean;
+          autoloadCallback?: (err?: any) => void;
+          autosave?: boolean;
+          autosaveInterval?: number;
+          persistenceMethod?: 'fs' | 'localStorage' | 'memory' | 'adapter';
+          destructureDelimiter?: string;
+          serializationMethod?: 'normal' | 'pretty' | 'destructured';
+          throttledSaves?: boolean;
+        }
+      );
+
+      // Database methods;
+      addCollection<T = any>(
+        name: string,
+        options?: {
+          unique?: string[];
+          indices?: string[];
+          asyncListeners?: boolean;
+          transactional?: boolean;
+          autoupdate?: boolean;
+          exact?: string[];
+        }
+      ): LokiCollection<T>;
+      getCollection<T = any>(name: string): LokiCollection<T> | null;
+      removeCollection(name: string): void;
+      saveDatabase(callback?: (err?: any) => void): void;
+      loadDatabase(options?: any, callback?: (err?: any) => void): void;
+      serialize(): string;
+      deserialize(serializedDb: string): void;
+      listCollections(): Array<any>;
+      getName(): string;
+      close(callback?: () => void): void;
+      filename: string;
+      options: any;
+
+      // Static adapter properties
+      static LokiFsAdapter: new () => LokiFsAdapter;
+      static LokiFSAdapter: new () => LokiFsAdapter;
+      static LokiMemoryAdapter: new () => LokiMemoryAdapter;
+    }
+
+    const loki: typeof LokiConstructor;
+    export default loki;
   }
-
-  export interface LokiCollection<T = any> {
-    insert(doc: T): T & LokiObj;
-    insertOne(doc: T): T & LokiObj;
-    find(query?: Partial<T> | ((obj: T & LokiObj) => boolean)): (T & LokiObj)[];
-    findOne(query?: Partial<T> | ((obj: T & LokiObj) => boolean)): (T & LokiObj) | null;
-    findAndRemove(query?: Partial<T> | ((obj: T & LokiObj) => boolean)): (T & LokiObj)[];
-    where(query: (obj: T & LokiObj) => boolean): (T & LokiObj)[];
-    remove(doc: T & LokiObj): void;
-    removeWhere(query: (obj: T & LokiObj) => boolean): void;
-    update(doc: T & LokiObj): T & LokiObj;
-    count(query?: any): number;
-    clear(): void;
-    chain(): LokiCollectionChain<T>;
-    simplesort(prop: keyof (T & LokiObj), desc?: boolean): LokiCollection<T>;
-    compoundsort(sorts: Array<[keyof (T & LokiObj), boolean?]>): LokiCollection<T>;
-    data: (T & LokiObj)[];
-  }
-
-  export interface LokiCollectionChain<T = any> {
-    find(query?: any): LokiCollectionChain<T>;
-    where(filter: (obj: T & LokiObj) => boolean): LokiCollectionChain<T>;
-    simplesort(property: keyof (T & LokiObj), desc?: boolean): LokiCollectionChain<T>;
-    limit(qty: number): LokiCollectionChain<T>;
-    data(): (T & LokiObj)[];
-  }
-
-  export interface LokiDatabase {
-    addCollection<T = any>(name: string, options?: {
-      unique?: string[];
-      indices?: string[];
-      asyncListeners?: boolean;
-      transactional?: boolean;
-      autoupdate?: boolean;
-      exact?: string[];
-    }): LokiCollection<T>;
-    getCollection<T = any>(name: string): LokiCollection<T> | null;
-    removeCollection(name: string): void;
-    saveDatabase(callback?: (err?: any) => void): void;
-    loadDatabase(options?: any, callback?: (err?: any) => void): void;
-    serialize(): string;
-    deserialize(serializedDb: string): void;
-    listCollections(): Array<any>;
-    getName(): string;
-    close(callback?: () => void): void;
-    filename: string;
-    options: any;
-  }
-
-  export interface LokiMemoryAdapter {
-    loadDatabase(dbname: string, callback: (data: string | null) => void): void;
-    saveDatabase(dbname: string, dbstring: string, callback: (err?: Error) => void): void;
-    deleteDatabase(dbname: string, callback: (err?: Error) => void): void;
-  }
-
-  export const LokiMemoryAdapter: new () => LokiMemoryAdapter;
-;
-  export interface LokiFsAdapter {
-    new (): any;
-    loadDatabase(dbname: string, callback: (data: string | null) => void): void;
-    saveDatabase(dbname: string, dbstring: string, callback: (err?: Error) => void): void;
-    deleteDatabase(dbname: string, callback: (err?: Error) => void): void;
-  }
-
-  export class LokiConstructor {
-    constructor(filename?: string | null, options?: {
-      adapter?: any;
-      autoload?: boolean;
-      autoloadCallback?: (err?: any) => void;
-      autosave?: boolean;
-      autosaveInterval?: number;
-      persistenceMethod?: 'fs' | 'localStorage' | 'memory' | 'adapter';
-      destructureDelimiter?: string;
-      serializationMethod?: 'normal' | 'pretty' | 'destructured';
-      throttledSaves?: boolean;
-    });
-
-    // Database methods;
-    addCollection<T = any>(name: string, options?: {
-      unique?: string[];
-      indices?: string[];
-      asyncListeners?: boolean;
-      transactional?: boolean;
-      autoupdate?: boolean;
-      exact?: string[];
-    }): LokiCollection<T>;
-    getCollection<T = any>(name: string): LokiCollection<T> | null;
-    removeCollection(name: string): void;
-    saveDatabase(callback?: (err?: any) => void): void;
-    loadDatabase(options?: any, callback?: (err?: any) => void): void;
-    serialize(): string;
-    deserialize(serializedDb: string): void;
-    listCollections(): Array<any>;
-    getName(): string;
-    close(callback?: () => void): void;
-    filename: string;
-    options: any;
-
-    // Static adapter properties
-    static LokiFsAdapter: new () => LokiFsAdapter;
-    static LokiFSAdapter: new () => LokiFsAdapter;
-    static LokiMemoryAdapter: new () => LokiMemoryAdapter;
-  }
-
-  const loki: typeof LokiConstructor;
-  export default loki;
-}
 
 // Performance types for test environments;
 declare global {

@@ -42,7 +42,7 @@ export const MODELS: Record<string, ModelConfig> = {
     type: 'embedding',
     capabilities: ['embeddings'],
     embeddingDimension: 768,
-    contextWindow: 8192,
+    contextWindow: 8192,;
     temperature: 0.0, // Deterministic embeddings
     systemPrompt:
       'Generate high-quality semantic embeddings for legal document analysis and retrieval.'
@@ -71,14 +71,14 @@ export const OLLAMA_CONFIG: OllamaConfig = {
   fallbackModels: {
     legal: 'gemma3-legal:latest',
     general: 'gemma3-legal:latest'
-  },
+  },;
   timeout: 60000, // 60 seconds for complex legal analysis
   maxRetries: 3,
   streamEnabled: true,
 
   // GPU acceleration settings;
   gpu: {
-    enabled: true,
+    enabled: true,;
     layers: 35, // Number of layers to offload to GPU
     mainGpu: 0,
     tensorSplit: null
@@ -93,7 +93,7 @@ export const OLLAMA_CONFIG: OllamaConfig = {
   },
 
   // Advanced features from blueprint;
-  features: {
+  features: {;
     som: true, // Self-Organizing Map for topic modeling
     proactiveCaching: true,
     multiModalIndexing: true,
@@ -136,10 +136,7 @@ export function getOptimalModel(task: 'embedding' | 'generation' | 'legal-analys
  * @param preferredModels Array of model names in order of preference
  * @param availableModels Array of currently available model names
  */
-export function selectBestAvailableModel(
-  preferredModels: string[],
-  availableModels: string[];
-): string | null {
+export function selectBestAvailableModel(preferredModels: string[], availableModels: string[]): string | null {
   for (const model of preferredModels) {
     // Check exact match;
     if (availableModels.includes(model)) {
@@ -147,9 +144,7 @@ export function selectBestAvailableModel(
     }
 
     // Check partial match for variants (e.g., legal-bert:latest)
-    const matchingModel = availableModels.find(available =>
-      available.includes(model.split(':')[0])
-    );
+    const matchingModel = availableModels.find(available => available.includes(model.split(':')[0]));
 
     if (matchingModel) {
       return matchingModel;
@@ -176,7 +171,7 @@ export function isLegalTask(prompt: string): boolean {
   ];
 
   const lowerPrompt = prompt.toLowerCase();
-  return legalKeywords.some(keyword => lowerPrompt.includes(keyword);
+  return legalKeywords.some(keyword => lowerPrompt.includes(keyword));
 }
 
 export default OLLAMA_CONFIG;

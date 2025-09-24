@@ -38,25 +38,25 @@
     footer,
     children,
     class: className = '',
-    ...formProps
+    ...formProps;
   }: Props = $props();
 
   const variantClasses = {
-    default: '',
-    card: 'bg-white rounded-lg border border-gray-200 shadow-sm p-6',
-    inline: 'flex flex-row items-center gap-4'
+    default: '',;
+    card: 'bg-white rounded-lg border border-gray-200 shadow-sm p-6',;
+    inline: 'flex flex-row items-center gap-4';
   };
 
   const sizeClasses = {
-    sm: 'text-sm',
-    md: 'text-base',
-    lg: 'text-lg'
+    sm: 'text-sm',;
+    md: 'text-base',;
+    lg: 'text-lg';
   };
 
   const spacingClasses = {
-    compact: 'space-y-2',
-    normal: 'space-y-4',
-    relaxed: 'space-y-6'
+    compact: 'space-y-2',;
+    normal: 'space-y-4',;
+    relaxed: 'space-y-6';
   };
 
   // Enhanced submit function with error handling
@@ -73,7 +73,7 @@
   };
 
   // Global form error display
-  let hasErrors = $derived(Object.keys.length > 0);
+  let hasErrors = $derived(Object.keys(errors).length > 0);
 </script>
 
 <form 
@@ -135,7 +135,7 @@
 </form>
 
 <style>
-  .form-standard {
+  .form-standard {;
     position: relative;
   }
 </style>

@@ -1,5 +1,5 @@
-import type { RequestHandler } from './$types.js';
-import { minioService, BUCKETS } from '$lib/server/storage/minio-service';
+import type { RequestHandler } from './$types.js'
+import { minioService, BUCKETS } from '$lib/server/storage/minio-service'
 
 /**
  * MinIO Bucket Management API
@@ -11,7 +11,7 @@ import { minioService, BUCKETS } from '$lib/server/storage/minio-service';
 export const GET: RequestHandler = async ({ url }) => {
   try {
     // Initialize MinIO service
-    const initialized = await minioService.initialize();
+    const initialized = await minioService.initialize()
     if (!initialized) {
       return new Response(JSON.stringify({
         error: 'MinIO service unavailable',
@@ -19,29 +19,29 @@ export const GET: RequestHandler = async ({ url }) => {
       }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' }
-      });
+      })
     }
 
     // Get bucket details
-    const includeStats = url.searchParams.get('stats') === 'true';
-    const buckets = await minioService.listBuckets();
+    const includeStats = url.searchParams.get('stats') === 'true'
+    const buckets = await minioService.listBuckets()
 
     let bucketDetails = buckets.map(bucket => ({
       name: bucket.name,
       creationDate: bucket.creationDate
-    });
+    })
 
-    // Add file counts if stats requested;
+    // Add file counts if stats requested
     if (includeStats) {
       const detailedBuckets = await Promise.allSettled(buckets.map(async (bucket) => {
           try {
-            const files = await minioService.listFiles(bucket.name, undefined, 1000));
+            const files = await minioService.listFiles(bucket.name, undefined, 1000))
             return {
               name: bucket.name,
               creationDate: bucket.creationDate,
               fileCount: files.length,
               totalSize: files.reduce((sum, file) => sum + (file.size || 0), 0)
-            };
+            }
           } catch (error) {
             return {
               name: bucket.name,
@@ -49,20 +49,20 @@ export const GET: RequestHandler = async ({ url }) => {
               fileCount: 0,
               totalSize: 0,
               error: error instanceof Error ? error.message: 'Unknown error'
-            };
+            }
           }
         })
-      );
+      )
 
       bucketDetails = detailedBuckets.map(result =>
         (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any; reason?: any }).value: (result as { status?: any; value?: any; reason?: any }).reason
-      );
+      )
     }
 
     // Show expected vs actual buckets
-    const expectedBuckets = Object.values(BUCKETS);
-    const actualBuckets = buckets.map(b => b.name);
-    const missingBuckets = expectedBuckets.filter(name => !actualBuckets.includes(name);
+    const expectedBuckets = Object.values(BUCKETS)
+    const actualBuckets = buckets.map(b => b.name)
+    const missingBuckets = expectedBuckets.filter(name => !actualBuckets.includes(name)
 
     return new Response(JSON.stringify({
       success: true,
@@ -77,39 +77,39 @@ export const GET: RequestHandler = async ({ url }) => {
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
-    });
+    })
 
   } catch (error) {
-    console.error('Bucket listing error:', error);
+    console.error('Bucket listing error:', error)
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message: 'Failed to list buckets',
       timestamp: new Date().toISOString()
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
-    });
+    })
   }
-};
+}
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json();
-    const { action, bucketName } = body;
+    const body = await request.json()
+    const { action, bucketName } = body
 
     // Initialize MinIO service
-    const initialized = await minioService.initialize();
+    const initialized = await minioService.initialize()
     if (!initialized) {
       return new Response(JSON.stringify({
         error: 'MinIO service unavailable'
       }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' }
-      });
+      })
     }
 
     if (action === 'ensure-all') {
       // Ensure all standard buckets exist
-      const results = await minioService.ensureAllBuckets();
+      const results = await minioService.ensureAllBuckets()
 
       return new Response(JSON.stringify({
         success: true,
@@ -119,12 +119,12 @@ export const POST: RequestHandler = async ({ request }) => {
       }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
-      });
+      })
     }
 
     if (action === 'create' && bucketName) {
       // Create specific bucket
-      const created = await minioService.createBucket(bucketName);
+      const created = await minioService.createBucket(bucketName)
 
       return new Response(JSON.stringify({
         success: created,
@@ -135,32 +135,32 @@ export const POST: RequestHandler = async ({ request }) => {
       }), {
         status: created ? 200 : 500,
         headers: { 'Content-Type': 'application/json' }
-      });
+      })
     }
 
     return new Response(JSON.stringify({
       error: 'Invalid action. Supported actions: ensure-all, create',
-      availableActions: ['ensure-all', 'create'];
+      availableActions: ['ensure-all', 'create']
     }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' }
-    });
+    })
 
   } catch (error) {
-    console.error('Bucket management error:', error);
+    console.error('Bucket management error:', error)
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message: 'Failed to manage buckets',
       timestamp: new Date().toISOString()
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
-    });
+    })
   }
-};
+}
 
 export const DELETE: RequestHandler = async ({ request }) => {
   try {
-    const { bucketName, force = false } = await request.json();
+    const { bucketName, force = false } = await request.json()
 
     if (!bucketName) {
       return new Response(JSON.stringify({
@@ -168,11 +168,11 @@ export const DELETE: RequestHandler = async ({ request }) => {
       }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
-      });
+      })
     }
 
     // Prevent deletion of standard buckets unless forced
-    const standardBuckets = Object.values(BUCKETS);
+    const standardBuckets = Object.values(BUCKETS)
     if (standardBuckets.includes(bucketName) && !force) {
       return new Response(JSON.stringify({
         error: 'Cannot delete standard bucket without force=true',
@@ -181,22 +181,22 @@ export const DELETE: RequestHandler = async ({ request }) => {
       }), {
         status: 403,
         headers: { 'Content-Type': 'application/json' }
-      });
+      })
     }
 
     // Initialize MinIO service
-    const initialized = await minioService.initialize();
+    const initialized = await minioService.initialize()
     if (!initialized) {
       return new Response(JSON.stringify({
         error: 'MinIO service unavailable'
       }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' }
-      });
+      })
     }
 
     // Check if bucket is empty before deletion
-    const files = await minioService.listFiles(bucketName, undefined, 1);
+    const files = await minioService.listFiles(bucketName, undefined, 1)
     if (files.length > 0 && !force) {
       return new Response(JSON.stringify({
         error: 'Bucket is not empty. Use force=true to delete non-empty bucket',
@@ -205,11 +205,11 @@ export const DELETE: RequestHandler = async ({ request }) => {
       }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
-      });
+      })
     }
 
     // Delete bucket (implementation needed in MinIO service)
-    const deleted = await minioService.deleteBucket(bucketName, force);
+    const deleted = await minioService.deleteBucket(bucketName, force)
 
     return new Response(JSON.stringify({
       success: deleted,
@@ -220,16 +220,16 @@ export const DELETE: RequestHandler = async ({ request }) => {
     }), {
       status: deleted ? 200 : 500,
       headers: { 'Content-Type': 'application/json' }
-    });
+    })
 
   } catch (error) {
-    console.error('Bucket deletion error:', error);
+    console.error('Bucket deletion error:', error)
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message: 'Failed to delete bucket',
       timestamp: new Date().toISOString()
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
-    });
+    })
   }
-};
+}

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -12,8 +12,8 @@ https://svelte.dev/e/js_parse_error -->
     caseTitle: string
     citation: string
     court: string
-    year: number
-    jurisdiction: string
+    year: number;
+    jurisdiction: string;
     summary: string
     relevanceScore: number
     legalPrinciples: string[];
@@ -21,19 +21,19 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   interface SearchFilters {
-    query: string
-    jurisdiction: string
+    query: string;
+    jurisdiction: string;
     court: string
     yearFrom: number | null;
     yearTo: number | null;
   }
 
   let searchFilters: SearchFilters = {
-    query: '',
-    jurisdiction: '',
+    query: '',;
+    jurisdiction: '',;
     court: '',
     yearFrom: null,
-    yearTo: null
+    yearTo: null;
   };
 
   let precedents: LegalPrecedent[] = [];
@@ -70,9 +70,9 @@ https://svelte.dev/e/js_parse_error -->
     error = '';
     try {
       const params = new URLSearchParams({
-        query: searchFilters.query,
-        limit: itemsPerPage.toString(),
-        offset: ((currentPage - 1) * itemsPerPage).toString()
+        query: searchFilters.query,;
+        limit: itemsPerPage.toString(),;
+        offset: ((currentPage - 1) * itemsPerPage).toString();
       });
 
       if (searchFilters.jurisdiction) params.set('jurisdiction', searchFilters.jurisdiction);
@@ -100,11 +100,11 @@ https://svelte.dev/e/js_parse_error -->
 
   function clearFilters() {
     searchFilters = {
-      query: '',
-      jurisdiction: '',
+      query: '',;
+      jurisdiction: '',;
       court: '',
       yearFrom: null,
-      yearTo: null
+      yearTo: null;
     };
     precedents = [];
     totalCount = 0;
@@ -148,7 +148,7 @@ https://svelte.dev/e/js_parse_error -->
             Jurisdiction
           </label>
           <select 
-            id="jurisdiction"
+            id="jurisdiction";
             bind:value={searchFilters.jurisdiction}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
@@ -196,7 +196,7 @@ https://svelte.dev/e/js_parse_error -->
           </label>
           <input
             id="year-to"
-            type="number"
+            type="number";
             bind:value={searchFilters.yearTo}
             placeholder="2024"
             min="1900"

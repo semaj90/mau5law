@@ -59,14 +59,14 @@ export class CHRROMPatternCache {
   constructor(redisConfig?: any) {
     this.redis = new Redis(redisConfig || {
       host: process.env.REDIS_HOST || 'localhost',
-      port: parseInt(process.env.REDIS_PORT || '6379'),
+      port: parseInt(process.env.REDIS_PORT || '6379'),;
       password: process.env.REDIS_PASSWORD
     });
     
     this.cache = {
       patterns: new Map(),
       banks: Array(this.MAX_BANKS).fill(null).map(() => new ArrayBuffer(this.BANK_SIZE)),
-      hotPatterns: [],
+      hotPatterns: [],;
       metrics: {
         cacheHits: 0,
         cacheMisses: 0,
@@ -208,7 +208,7 @@ export class CHRROMPatternCache {
         id: patternId,
         patternType: this.determinePatternType(options, sourceDocument),
         bankId,
-        tileData,
+        tileData,;
         metadata: {
           documentType: options.documentType,
           riskLevel: options.riskLevel,
@@ -257,7 +257,7 @@ export class CHRROMPatternCache {
     const basePatterns = {
       contract: this.generateContractPattern(options.riskLevel),
       evidence: this.generateEvidencePattern(options.riskLevel),
-      brief: this.generateBriefPattern(options.riskLevel),
+      brief: this.generateBriefPattern(options.riskLevel),;
       citation: this.generateCitationPattern(options.riskLevel)
     };
     
@@ -412,7 +412,7 @@ export class CHRROMPatternCache {
     const colors: { [key: string]: [number, number, number, number] } = {
       low: [0.2, 0.8, 0.2, 1.0] as [number, number, number, number],
       medium: [1.0, 1.0, 0.4, 1.0] as [number, number, number, number],
-      high: [1.0, 0.6, 0.2, 1.0] as [number, number, number, number],
+      high: [1.0, 0.6, 0.2, 1.0] as [number, number, number, number],;
       critical: [1.0, 0.2, 0.2, 1.0] as [number, number, number, number]
     };
     return colors[riskLevel] || colors.low;

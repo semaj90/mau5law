@@ -8,7 +8,7 @@
   let {
     value,
     class: className = '',
-    children
+    children;
   }: Props & { children?: unknown } = $props();
 
   const { activeTab, setActiveTab } = getContext('tabs') as any;

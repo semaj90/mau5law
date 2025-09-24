@@ -29,9 +29,9 @@
     cases: false,
     evidence: false,
     reports: false,
-    criminals: false,
-    activities: false,
-    users: false,
+    criminals: false,;
+    activities: false,;
+    users: false,;
   });
 
   // Statistics
@@ -48,9 +48,9 @@
   let searchTerms = $state({
     cases: "",
     evidence: "",
-    reports: "",
-    criminals: "",
-    activities: "",
+    reports: "",;
+    criminals: "",;
+    activities: "",;
   });
 
   let refreshing = $state(false);
@@ -73,15 +73,15 @@
       calculateStats();
 
       notifications.add({
-        type: "success",
-        title: "Data Refreshed",
-        message: "All data has been successfully updated",
+        type: "success",;
+        title: "Data Refreshed",;
+        message: "All data has been successfully updated",;
       });
     } catch (error) {
       console.error("Error refreshing data:", error);
       notifications.add({
-        type: "error",
-        title: "Refresh Failed",
+        type: "error",;
+        title: "Refresh Failed",;
         message: "Failed to refresh some (data as { cases?: any; evidence?: any; reports?: any; criminals?: any; activities?: any; users?: any }). Please try again.",
       });
     } finally {
@@ -379,7 +379,7 @@
             <Search size={16} />
             <input
               type="text"
-              placeholder="Search evidence..."
+              placeholder="Search evidence...";
               bind:value={searchTerms.evidence} oninput={() => handleSearch("evidence")}
             />
           </div>
@@ -593,7 +593,7 @@
 
 <style>
   /* @unocss-include */
-  .crud-dashboard {
+  .crud-dashboard {;
     padding: 2rem;
     background: #f8fafc;
     min-height: 100vh;

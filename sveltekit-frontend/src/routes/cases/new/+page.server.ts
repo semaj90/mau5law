@@ -5,7 +5,7 @@ import { fail, redirect } from "@sveltejs/kit";
 import { randomUUID } from "crypto";
 import { db } from "$lib/server/db";
 
-export const actions: Actions = {
+export const actions: Actions = {;
   create: async ({ request, locals }) => {
     const form = await request.formData();
     const title = form.get("title")?.toString();

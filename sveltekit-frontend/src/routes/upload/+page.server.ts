@@ -14,7 +14,7 @@ const fallbackFileUploadSchema = z.object({
   caseId: z.string().optional(),
   type: z.string().optional(),
   title: z.string().optional(),
-  description: z.string().optional(),
+  description: z.string().optional(),;
   tags: z.array(z.string()).optional(),
   isPrivate: z.boolean().optional(),
   aiAnalysis: z.boolean().optional()
@@ -38,7 +38,7 @@ export const load: PageServerLoad = async () => {
   };
 };
 
-export const actions: Actions = {
+export const actions: Actions = {;
   upload: async ({ request, fetch }) => {
     const formData = await request.formData();
     const schema = getSchema();
@@ -96,7 +96,7 @@ export const actions: Actions = {
 
       // Upload to MinIO service
       const uploadResponse = await fetch(`${UPLOAD_SERVICE_URL}/upload`, {
-        method: 'POST',
+        method: 'POST',;
         body: uploadFormData
       });
 

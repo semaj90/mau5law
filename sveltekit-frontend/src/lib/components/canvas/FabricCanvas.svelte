@@ -89,7 +89,7 @@ let uploadProgress = $state(new Map<string, number>());
       width,
       height,
       backgroundColor: '#f8fafc',
-      selection: !readOnly
+      selection: !readOnly;
     });
 
     if (gridEnabled) {
@@ -124,8 +124,8 @@ let uploadProgress = $state(new Map<string, number>());
       fabricCanvas.on('object:moving', (e: any) => {
         const obj = e.target;
         obj.set({
-          left: Math.round(obj.left / gridSize) * gridSize,
-          top: Math.round(obj.top / gridSize) * gridSize
+          left: Math.round(obj.left / gridSize) * gridSize,;
+          top: Math.round(obj.top / gridSize) * gridSize;
         });
       });
     }
@@ -203,11 +203,11 @@ let uploadProgress = $state(new Map<string, number>());
     try {
       // Refresh presigned URL
       const response = await fetch(`/api/v1/minio/url-refresh`, {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({;
           bucket: evidence.metadata.bucket,
-          fileName: evidence.metadata.fileName
+          fileName: evidence.metadata.fileName;
         })
       });
 
@@ -238,13 +238,13 @@ let uploadProgress = $state(new Map<string, number>());
 
         fabric.Image.fromURL(imageUrl, (img: any) => {
           img.set({
-            left: evidence.x,
+            left: evidence.x,;
             top: evidence.y,
             scaleX: 0.5,
-            scaleY: 0.5,
+            scaleY: 0.5,;
             selectable: !readOnly,
             evidenceId: evidence.id,
-            evidenceType: evidence.type
+            evidenceType: evidence.type;
           });
 
           fabricCanvas.add(img);
@@ -264,29 +264,29 @@ let uploadProgress = $state(new Map<string, number>());
           top: evidence.y,
           width: 120,
           height: 160,
-          fill: '#ffffff',
+          fill: '#ffffff',;
           stroke: '#e2e8f0',
-          strokeWidth: 2,
+          strokeWidth: 2,;
           selectable: !readOnly,
           evidenceId: evidence.id,
-          evidenceType: evidence.type
+          evidenceType: evidence.type;
         });
 
         const text = new fabric.Text(evidence.title, {
           left: evidence.x + 10,
           top: evidence.y + 10,
           fontSize: 12,
-          fontFamily: 'Arial',
-          fill: '#1f2937',
-          selectable: false
+          fontFamily: 'Arial',;
+          fill: '#1f2937',;
+          selectable: false;
         });
 
         const group = new fabric.Group([rect, text], {
-          left: evidence.x,
-          top: evidence.y,
+          left: evidence.x,;
+          top: evidence.y,;
           selectable: !readOnly,
           evidenceId: evidence.id,
-          evidenceType: evidence.type
+          evidenceType: evidence.type;
         });
 
         fabricCanvas.add(group);
@@ -324,16 +324,16 @@ let uploadProgress = $state(new Map<string, number>());
 
       // Try MinIO upload first, fallback to demo endpoint
       let uploadResponse = await fetch('/api/v1/minio/upload?bucket=evidence-files', {
-        method: 'POST',
-        body: formData
+        method: 'POST',;
+        body: formData;
       });
 
       // If MinIO fails (connection issues), try demo endpoint
       if (!uploadResponse.ok) {
         console.log('🔄 MinIO upload failed, trying demo endpoint...');
         uploadResponse = await fetch('/api/evidence/demo', {
-          method: 'POST',
-          body: formData
+          method: 'POST',;
+          body: formData;
         });
       }
 
@@ -351,13 +351,13 @@ let uploadProgress = $state(new Map<string, number>());
         url: uploadResult.url,
         urlExpiry: uploadResult.bucket ? Date.now() + (23 * 60 * 60 * 1000) : undefined, // 23hr expiry for MinIO
         x: Math.random() * (width - 200) + 100,
-        y: Math.random() * (height - 200) + 100,
+        y: Math.random() * (height - 200) + 100,;
         metadata: {
           fileSize: file.size,
           fileType: file.type,
-          uploadDate: new Date().toISOString(),
+          uploadDate: new Date().toISOString(),;
           bucket: uploadResult.bucket || 'demo',
-          fileName: uploadResult.fileName || uploadResult.filename
+          fileName: uploadResult.fileName || uploadResult.filename;
         }
       };
 
@@ -392,9 +392,9 @@ let uploadProgress = $state(new Map<string, number>());
         fontFamily: 'Arial',
         fill: '#dc2626',
         backgroundColor: '#fef2f2',
-        padding: 8,
-        selectable: !readOnly,
-        editable: !readOnly
+        padding: 8,;
+        selectable: !readOnly,;
+        editable: !readOnly;
       });
 
       fabricCanvas.add(text);
@@ -453,13 +453,13 @@ let uploadProgress = $state(new Map<string, number>());
       type: obj.type,
       left: obj.left,
       top: obj.top,
-      width: obj.width,
-      height: obj.height,
+      width: obj.width,;
+      height: obj.height,;
       angle: obj.angle,
       scaleX: obj.scaleX,
       scaleY: obj.scaleY,
       evidenceId: obj.evidenceId,
-      evidenceType: obj.evidenceType
+      evidenceType: obj.evidenceType;
     }));
   }
 
@@ -467,9 +467,9 @@ let uploadProgress = $state(new Map<string, number>());
     if (!fabricCanvas) return;
 
     const dataURL = fabricCanvas.toDataURL({
-      format: 'png',
-      quality: 1,
-      multiplier: 2
+      format: 'png',;
+      quality: 1,;
+      multiplier: 2;
     });
 
     // Create download link
@@ -640,7 +640,7 @@ let uploadProgress = $state(new Map<string, number>());
 </div>
 
 <style>
-  .fabric-canvas-container {
+  .fabric-canvas-container {;
     width: 100%;
   }
 

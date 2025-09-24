@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- AI Processing Dashboard - Integration Demo -->
@@ -31,25 +31,25 @@ https://svelte.dev/e/js_parse_error -->
   		{
   			name: "Document Embedding",
   			type: "embedding" as const,
-  			description: "Generate vector embeddings for document search",
+  			description: "Generate vector embeddings for document search",;
   			payload: { text: testInput, model: "nomic-embed-text" }
   		},
   		{
   			name: "Legal Analysis",
   			type: "analysis" as const,
-  			description: "Analyze document for legal compliance",
+  			description: "Analyze document for legal compliance",;
   			payload: { content: testInput, analysisType: "legal-document" }
   		},
   		{
   			name: "Text Generation",
   			type: "generation" as const,
-  			description: "Generate legal summary and recommendations",
+  			description: "Generate legal summary and recommendations",;
   			payload: { prompt: `Create a legal summary for: ${testInput}`, model: "gemma3-legal" }
   		},
   		{
   			name: "Vector Search",
-  			type: "vector-search" as const,
-  			description: "Search similar documents in database",
+  			type: "vector-search" as const,;
+  			description: "Search similar documents in database",;
   			payload: { query: testInput, collection: "legal_docs", limit: 5 }
   		}
   	];
@@ -81,11 +81,11 @@ https://svelte.dev/e/js_parse_error -->
   				type: taskTemplate.type,
   				priority: 'medium',
   				provider: selectedProvider,
-  				payload: taskTemplate.payload,
+  				payload: taskTemplate.payload,;
   				metadata: {
   					userId: 'demo-user',
-  					sessionId: 'demo-session',
-  					timestamp: Date.now()
+  					sessionId: 'demo-session',;
+  					timestamp: Date.now();
   				}
   			});
 
@@ -97,9 +97,9 @@ https://svelte.dev/e/js_parse_error -->
   					taskId,
   					success: true,
   					result: generateMockResult(taskTemplate.type),
-  					duration: Math.random() * 2000 + 500,
+  					duration: Math.random() * 2000 + 500,;
   					metrics: {
-  						tokensProcessed: Math.floor(Math.random() * 1000) + 100,
+  						tokensProcessed: Math.floor(Math.random() * 1000) + 100,;
   						throughput: Math.floor(Math.random() * 50) + 10,
   						memoryUsed: `${Math.floor(Math.random() * 500) + 100}MB`
   					}
@@ -124,9 +124,9 @@ https://svelte.dev/e/js_parse_error -->
   			isProcessing = true;
   			const tasks = demoTasks.map(task => ({
   				type: task.type,
-  				priority: 'high' as const,
-  				provider: selectedProvider!,
-  				payload: task.payload
+  				priority: 'high' as const,;
+  				provider: selectedProvider!,;
+  				payload: task.payload;
   			}));
 
   			console.log('🚀 Processing parallel tasks...');
@@ -145,20 +145,20 @@ https://svelte.dev/e/js_parse_error -->
   		switch (taskType) {
   			case 'embedding':
   				return {
-  					embedding: Array(384).fill.map(() => Math.random() - 0.5),
-  					dimensions: 384
+  					embedding: Array(384).fill.map(() => Math.random() - 0.5),;
+  					dimensions: 384;
   				};
   			case 'analysis':
   				return {
-  					entities: ['GDPR', 'Privacy Policy', 'Data Controller'],
+  					entities: ['GDPR', 'Privacy Policy', 'Data Controller'],;
   					sentiment: 'neutral',
   					compliance_score: 0.85,
-  					key_points: ['Data retention requirements', 'User consent mechanisms', 'Privacy by design']
+  					key_points: ['Data retention requirements', 'User consent mechanisms', 'Privacy by design'];
   				};
   			case 'generation':
   				return {
-  					text: 'This document appears to address key privacy regulations including GDPR compliance, data retention policies, and user consent mechanisms. Recommendations include updating privacy notices and implementing data subject request procedures.',
-  					confidence: 0.92
+  					text: 'This document appears to address key privacy regulations including GDPR compliance, data retention policies, and user consent mechanisms. Recommendations include updating privacy notices and implementing data subject request procedures.',;
+  					confidence: 0.92;
   				};
   			case 'vector-search':
   				return {
@@ -287,7 +287,7 @@ https://svelte.dev/e/js_parse_error -->
 			<div>
 				<label class="block text-sm font-medium text-yorha-text-primary mb-2" for="-test-input-">
 					Test Input
-				</label><textarea id="-test-input-" 
+				</label><textarea id="-test-input-" ;
 					bind:value={testInput}
 					class="w-full h-20 px-3 py-2 bg-yorha-bg-secondary border border-yorha-border rounded-md text-yorha-text-primary placeholder-yorha-text-tertiary focus:outline-none focus:ring-2 focus:ring-yorha-primary"
 					placeholder="Enter text to process..."
@@ -361,7 +361,7 @@ https://svelte.dev/e/js_parse_error -->
 							{#if (result as { taskId?: any; success?: any; duration?: any; result?: any; metrics?: any }).success && (result as { taskId?: any; success?: any; duration?: any; result?: any; metrics?: any }).result}
 								<div class="text-sm bg-yorha-bg-primary p-2 rounded border">
 									<pre class="whitespace-pre-wrap text-yorha-text-primary overflow-x-auto">
-{JSON.stringify.result, null, 2)}
+{JSON.stringify((result as any).result, null, 2)}
 									</pre>
 								</div>
 							{/if}
@@ -415,7 +415,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-	.ai-processing-dashboard {
+	.ai-processing-dashboard {;
 		background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
 	}
 </style>

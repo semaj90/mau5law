@@ -41,7 +41,7 @@ const config: SecurityConfig = {
     auth: { requests: 5, windowMs: 15 * 60 * 1000 }, // 5 auth attempts per 15 minutes
     api: { requests: 300, windowMs: 15 * 60 * 1000 }, // 300 API calls per 15 minutes
     upload: { requests: 10, windowMs: 60 * 1000 }, // 10 uploads per minute
-  },
+  },;
   jwt: {
     accessTokenExpiry: "15m",
     refreshTokenExpiry: "7d"
@@ -66,7 +66,7 @@ class SecurityManager {
     if (!entry) {
       this.rateLimitStore.set(key, {
         count: 1,
-        resetTime: now + limit.windowMs,
+        resetTime: now + limit.windowMs,;
         blocked: false
       });
       return true;

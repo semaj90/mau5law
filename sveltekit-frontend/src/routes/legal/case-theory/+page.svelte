@@ -25,8 +25,8 @@
   let newTheoryForm = $state({
     name: '',
     type: 'prosecution',
-    strategy: 'evidence-based',
-    description: '',
+    strategy: 'evidence-based',;
+    description: '',;
     errors: });
   
   // Theory building components
@@ -57,8 +57,9 @@
     { id: 'technical-based', label: 'Technical-Driven', description: 'Focus on legal technicalities' }
   ];
 
-  $effect(async () => {
-    // Initialize with case data if coming from case page
+  $effect(() => {
+    (async () => {
+// Initialize with case data if coming from case page
     const urlParams = new URLSearchParams(window.location.search);
     const paramCaseId = urlParams.get('caseId');
     if (paramCaseId) {
@@ -67,6 +68,7 @@
     }
     
     await loadExistingTheories();
+    })();
   });
 
   async function loadCaseData() {
@@ -103,15 +105,15 @@
   async function loadCasePrecedents() {
     try {
       const response = await fetch(`/api/legal/research/search`, {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query: caseTitle,
           mode: 'semantic',
           filters: ,
-          sort: 'relevance',
-          page: 1,
-          limit: 10
+          sort: 'relevance',;
+          page: 1,;
+          limit: 10;
         })
       });
       
@@ -141,12 +143,12 @@
           name: 'Self-Defense Theory',
           type: 'defense',
           strategy: 'evidence-based',
-          description: 'Client acted in self-defense under reasonable fear of imminent harm',
+          description: 'Client acted in self-defense under reasonable fear of imminent harm',;
           strength: 0.87,
-          legalArguments: ['Evidence of threat', 'Witness testimony', 'Prior incidents'],
+          legalArguments: ['Evidence of threat', 'Witness testimony', 'Prior incidents'],;
           counterarguments: ['No imminent danger', 'Excessive force'],
           createdAt: new Date(Date.now() - 86400000),
-          updatedAt: new Date(Date.now() - 3600000)
+          updatedAt: new Date(Date.now() - 3600000);
         }
       ];
     }
@@ -160,13 +162,13 @@
       await nesGPUBridge.storeCHRROMPattern(`theory_${Date.now()}`, {/* JSX syntax converted to Svelte */});
 
       const response = await fetch('/api/legal/case-theory/build', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           caseId,
-          theory: theoryData,
-          evidence: evidenceItems,
-          precedents: precedents.slice(0, 5)
+          theory: theoryData,;
+          evidence: evidenceItems,;
+          precedents: precedents.slice(0, 5);
         })
       });
 
@@ -241,9 +243,9 @@
       strength: 0.75 + Math.random() * 0.2,
       riskAssessment: {
         overallRisk: 'Medium',
-        strengths: ['Strong evidence', 'Clear precedent', 'Compelling narrative'],
-        weaknesses: ['Procedural complexity', 'Jury unpredictability'],
-        recommendations: ['Strengthen witness prep', 'Consider plea alternatives']
+        strengths: ['Strong evidence', 'Clear precedent', 'Compelling narrative'],;
+        weaknesses: ['Procedural complexity', 'Jury unpredictability'],;
+        recommendations: ['Strengthen witness prep', 'Consider plea alternatives'];
       },
       aiSuggestions: [
         'Research similar cases in jurisdiction',
@@ -265,12 +267,12 @@
     
     // Calculate theory strength visualization
     strengthAnalysis = {
-      overall: theory.strength || 0,
+      overall: theory.strength || 0,;
       components: {
         evidence: 0.8,
-        precedent: 0.7,
-        logic: 0.9,
-        presentation: 0.6
+        precedent: 0.7,;
+        logic: 0.9,;
+        presentation: 0.6;
       }
     };
   }
@@ -289,8 +291,8 @@
     newTheoryForm = {
       name: '',
       type: 'prosecution',
-      strategy: 'evidence-based',
-      description: '',
+      strategy: 'evidence-based',;
+      description: '',;
       errors: };
   }
 
@@ -322,21 +324,21 @@
         title: 'Security Camera Footage',
         type: 'video',
         description: 'Shows defendant actions at time of incident',
-        strength: 0.9
+        strength: 0.9;
       },
       {
         id: '2', 
         title: 'Witness Statement - John Doe',
         type: 'testimony',
         description: 'Eyewitness account of events leading to incident',
-        strength: 0.7
+        strength: 0.7;
       },
       {
         id: '3',
         title: 'Medical Examiner Report',
-        type: 'document',
-        description: 'Autopsy findings and cause of death determination',
-        strength: 0.95
+        type: 'document',;
+        description: 'Autopsy findings and cause of death determination',;
+        strength: 0.95;
       }
     ];
   }
@@ -348,14 +350,14 @@
         title: 'State v. Johnson - Self Defense Standard',
         citation: '123 State 456 (2019)',
         relevanceScore: 0.92,
-        summary: 'Establishes criteria for valid self-defense claims'
+        summary: 'Establishes criteria for valid self-defense claims';
       },
       {
         id: '2',
-        title: 'Commonwealth v. Williams - Reasonable Force',
+        title: 'Commonwealth v. Williams - Reasonable Force',;
         citation: '789 Commonwealth 012 (2020)',
-        relevanceScore: 0.85,
-        summary: 'Defines proportional response in threat situations'
+        relevanceScore: 0.85,;
+        summary: 'Defines proportional response in threat situations';
       }
     ];
   }
@@ -697,7 +699,7 @@
             id="theoryName"
             type="text"
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
-            placeholder="e.g., Self-Defense Theory"
+            placeholder="e.g., Self-Defense Theory";
             bind:value={newTheoryForm.name}
             required
           />
@@ -712,7 +714,7 @@
           </label>
           <select
             id="theoryType"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500";
             bind:value={newTheoryForm.type}
           >
             {#each theoryTypes as type}
@@ -727,7 +729,7 @@
           </label>
           <select
             id="strategy"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500";
             bind:value={newTheoryForm.strategy}
           >
             {#each strategyTypes as strategy}
@@ -744,7 +746,7 @@
             id="description"
             rows="3"
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
-            placeholder="Describe the core elements of this theory..."
+            placeholder="Describe the core elements of this theory...";
             bind:value={newTheoryForm.description}
           ></textarea>
         </div>
@@ -774,4 +776,4 @@
       </form>
     </div>
   </div>
-</HeadlessDialog>
+</HeadlessDialog>;

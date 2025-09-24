@@ -11,11 +11,7 @@
     enableRealtimeUpdates = true,
     showMetrics = true,
     enableClusterMode = true
-   }: { caseId = undefined,
-    enableRealtimeUpdates = true,
-    showMetrics = true,
-    enableClusterMode = true
-  : any } = $props();
+   }: Props = $props();
 
 
 
@@ -56,14 +52,16 @@
   		{ id: 'agent_orchestrate_crewai', name: 'CrewAI Agent', description: 'Orchestrate CrewAI agent' },
   		{ id: 'agent_orchestrate_autogen', name: 'AutoGen Agent', description: 'Orchestrate AutoGen agent' }
   	];
-  	$effect(async () => {
-  		await initializeMCPConnection();
+  	$effect(() => {
+    (async () => {
+await initializeMCPConnection();
   		if (enableRealtimeUpdates) {
   			setupWebSocketConnection();
   		}
   		await loadInitialData();
   		startMetricsPolling();
-  	});
+    })();
+  });
   	async function initializeMCPConnection() {
   		mcpStatus.set('connecting');
   		try {
@@ -77,7 +75,7 @@
   					...tool,
   					status: 'available',
   					successCount: 0,
-  					errorCount: 0
+  					errorCount: 0;
   				})));
   			} else {
   				throw new Error('MCP server not responding');
@@ -109,17 +107,16 @@
   	function handleRealtimeUpdate(data: any) {
   		switch ((data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).type) {
   			case 'cluster-metrics-update':
-  				clusterMetrics.set.metrics);
+  				clusterMetrics.set(data.metrics);
   				break;
   			case 'mcp-tool-status':
-  				mcpTools.update.toolId 
-  							? { ...tool, status: (data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).status, lastUsed: new Date() }
+  				mcpTools.update(tools => tools.map(tool => tool.id === (data as any).toolId ? { ...tool, status: (data as any).status, lastUsed: new Date() } : tool)).status, lastUsed: new Date() }
   							: tool
   					)
   				);
   				break;
   			case 'query-result':
-  				queryResults.update.result, ...results.slice(0, 9)]);
+  				queryResults.update(results => [(data as any).result, ...results.slice(0, 9)])]);
   				break;
   		}
   	}
@@ -134,51 +131,51 @@
   		if (caseId) {
   			suggestions.push({
   				type: 'mcp_tool',
-  				title: 'Analyze Case Evidence',
-  				description: 'Run enhanced RAG analysis on case evidence',
+  				title: 'Analyze Case Evidence',;
+  				description: 'Run enhanced RAG analysis on case evidence',;
   				action: async () => {
-  					await executeMCPTool('enhanced_rag_query', {
+  					await executeMCPTool('enhanced_rag_query', {;
   						query: `Analyze all evidence for case ${caseId}`,
   						caseId,
   						maxResults: 10,
   						includeContext7: true
   					});
   				},
-  				priority: 'high'
+  				priority: 'high';
   			});
   			suggestions.push({
   				type: 'memory_relation',
-  				title: 'Update Knowledge Graph',
-  				description: 'Create memory relations for current case',
+  				title: 'Update Knowledge Graph',;
+  				description: 'Create memory relations for current case',;
   				action: async () => {
   					await executeMCPTool('mcp_memory2_create_relations', {
   						entities: [
   							{
-  								type: 'case',
-  								id: caseId,
+  								type: 'case',;
+  								id: caseId,;
   								properties: {
-  									analyzed_at: new Date().toISOString(),
-  									source: 'enhanced_mcp_integration'
+  									analyzed_at: new Date().toISOString(),;
+  									source: 'enhanced_mcp_integration';
   								}
   							}
   						]
   					});
   				},
-  				priority: 'medium'
+  				priority: 'medium';
   			});
   		}
   		// Context7 documentation suggestions
   		suggestions.push({
   			type: 'context7_doc',
-  			title: 'Get SvelteKit Best Practices',
-  			description: 'Fetch Context7 documentation for SvelteKit',
+  			title: 'Get SvelteKit Best Practices',;
+  			description: 'Fetch Context7 documentation for SvelteKit',;
   			action: async () => {
   				await executeMCPTool('mcp_context72_get-library-docs', {
-  					libraryId: '/sveltejs/kit',
-  					topic: 'best-practices'
+  					libraryId: '/sveltejs/kit',;
+  					topic: 'best-practices';
   				});
   			},
-  			priority: 'low'
+  			priority: 'low';
   		});
   		return suggestions;
   	}
@@ -195,7 +192,7 @@
   			if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
   				const data = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json();
   				if ((data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).success) {
-  					clusterMetrics.set.metrics.connections || 0,
+  					clusterMetrics.set({activeWorkers: (data as any).metrics.connections || 0,
   						totalRequests: (data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).metrics.totalRequests || 0,
   						successRate: 1 - ((data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).metrics.errorRate || 0),
   						averageResponseTime: (data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).metrics.averageResponseTime || 0,
@@ -207,7 +204,7 @@
   			console.error('Failed to update cluster metrics:', error);
   		}
   	}
-  	async function executeMCPTool(toolId: string, args: any = ) {
+  	async function executeMCPTool(toolId: string, args: any = {}) {
   		if (isProcessing) return;
   		isProcessing = true;
   		const startTime = Date.now();
@@ -249,9 +246,9 @@
   					throw new Error(`Unknown tool: ${toolId}`);
   			}
   			const response = await fetch(`http://localhost:40000${endpoint}`, {
-  				method: 'POST',
-  				headers: { 'Content-Type': 'application/json' },
-  				body: JSON.stringify(args)
+  				method: 'POST',;
+  				headers: { 'Content-Type': 'application/json' },;
+  				body: JSON.stringify(args);
   			});
   			if (!(response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
   				throw new Error(`HTTP ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).status}: ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).statusText}`);
@@ -262,11 +259,11 @@
   			queryResults.update(results => [{
   				id: crypto.randomUUID(),
   				query: JSON.stringify(args),
-  				result,
-  				source: getSourceType(toolId),
+  				result,;
+  				source: getSourceType(toolId),;
   				timestamp: new Date(),
-  				responseTime,
-  				success: true
+  				responseTime,;
+  				success: true;
   			}, ...results.slice(0, 9)]);
   			// Update tool success count
   			mcpTools.update(tools =>
@@ -289,13 +286,13 @@
   			);
   			// Add error to results
   			queryResults.update(results => [{
-  				id: crypto.randomUUID(),
-  				query: JSON.stringify(args),
+  				id: crypto.randomUUID(),;
+  				query: JSON.stringify(args),;
   				result: { error: error.message },
-  				source: getSourceType(toolId),
+  				source: getSourceType(toolId),;
   				timestamp: new Date(),
-  				responseTime: Date.now() - startTime,
-  				success: false
+  				responseTime: Date.now() - startTime,;
+  				success: false;
   			}, ...results.slice(0, 9)]);
   		} finally {
   			isProcessing = false;
@@ -371,7 +368,7 @@
 						<option value={tool.id}>{tool.name} - {tool.description}</option>
 					{/each}
 				</select>
-				<input 
+				<input ;
 					bind:value={queryInput}
 					placeholder="Enter your query..."
 					class="query-input"
@@ -408,7 +405,7 @@
 			<h3>🛠️ MCP Tools Status</h3>
 			<div class="tools-grid">
 				{#each $mcpTools as tool}
-					<div class="tool-nier-bits-card tool-{tool.status}">
+					<div class="tool-card tool-{tool.status}">
 						<div class="tool-name">{tool.name}</div>
 						<div class="tool-stats">
 							<span class="success-count">✅ {tool.successCount}</span>
@@ -438,7 +435,7 @@
 						<div class="result-query">{(result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).query}</div>
 						<div class="result-content">
 							{#if (result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).success}
-								<pre>{JSON.stringify.result, null, 2)}</pre>
+								<pre>{JSON.stringify((result as any).result, null, 2)}</pre>
 							{:else}
 								<div class="error-message">Error: {(result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).result.error}</div>
 							{/if}
@@ -461,9 +458,9 @@
 	}
 
 	.mcp-header {
-		display: flex
+		display: flex;
 		justify-content: space-between;
-		align-items: center
+		align-items: center;
 		margin-bottom: 24px;
 		border-bottom: 1px solid rgba(229, 231, 235, 0.1);
 		padding-bottom: 16px;
@@ -472,8 +469,8 @@
 	.mcp-title {
 		font-size: 1.5rem;
 		font-weight: 600;
-		display: flex
-		align-items: center
+		display: flex;
+		align-items: center;
 		gap: 8px;
 	}
 
@@ -507,17 +504,17 @@
 	}
 
 	.metrics-grid {
-		display: grid
+		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
 		gap: 16px;
 		margin-top: 12px;
 	}
 
 	.metric {
-		display: flex
-		flex-direction: column
-		align-items: center
-		text-align: center
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
 	}
 
 	.metric-label {
@@ -533,7 +530,7 @@
 	}
 
 	.mcp-interface {
-		display: grid
+		display: grid;
 		gap: 24px;
 	}
 
@@ -548,10 +545,10 @@
 	}
 
 	.query-form {
-		display: flex
+		display: flex;
 		gap: 12px;
-		align-items: center
-		flex-wrap: wrap
+		align-items: center;
+		flex-wrap: wrap;
 	}
 
 	.tool-selector,
@@ -575,12 +572,12 @@
 
 	.execute-button {
 		background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-		border: none
+		border: none;
 		border-radius: 6px;
 		padding: 8px 16px;
-		color: white
+		color: white;
 		font-weight: 500;
-		cursor: pointer
+		cursor: pointer;
 		transition: all 0.2s;
 	}
 
@@ -595,7 +592,7 @@
 	}
 
 	.suggestions-list {
-		display: grid
+		display: grid;
 		gap: 8px;
 	}
 
@@ -604,8 +601,8 @@
 		border: 1px solid rgba(255, 255, 255, 0.1);
 		border-radius: 6px;
 		padding: 12px;
-		text-align: left
-		cursor: pointer
+		text-align: left;
+		cursor: pointer;
 		transition: all 0.2s;
 	}
 
@@ -619,7 +616,7 @@
 	.suggestion-low { border-left: 4px solid #10b981; }
 
 	.tools-grid {
-		display: grid
+		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 		gap: 12px;
 	}
@@ -641,7 +638,7 @@
 	}
 
 	.tool-stats {
-		display: flex
+		display: flex;
 		gap: 12px;
 		font-size: 0.75rem;
 		margin-bottom: 4px;
@@ -649,8 +646,8 @@
 
 	.results-list {
 		max-height: 400px;
-		overflow-y: auto
-		display: grid
+		overflow-y: auto;
+		display: grid;
 		gap: 12px;
 	}
 
@@ -665,7 +662,7 @@
 	.result-error { border-left-color: #ef4444; }
 
 	.result-header {
-		display: flex
+		display: flex;
 		gap: 12px;
 		font-size: 0.75rem;
 		color: #9ca3af;
@@ -675,7 +672,7 @@
 	.result-content {
 		font-size: 0.875rem;
 		max-height: 200px;
-		overflow-y: auto
+		overflow-y: auto;
 	}
 
 	.result-content pre {

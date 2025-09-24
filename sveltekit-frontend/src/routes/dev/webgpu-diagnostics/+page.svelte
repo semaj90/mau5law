@@ -85,7 +85,7 @@ https://svelte.dev/e/expected_token -->
         <h3>Features</h3>
         <div class="mono" style="white-space: pre-wrap">{(result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).adapter.features.join(', ') || '—'}</div>
         <h3>Limits</h3>
-        <div class="mono" style="white-space: pre-wrap">{JSON.stringify.adapter.limits, null, 2)}</div>
+        <div class="mono" style="white-space: pre-wrap">{JSON.stringify(adapter).limits, null, 2)}</div>
       {:else}
         <div class="muted">No adapter details available.</div>
       {/if}
@@ -93,7 +93,7 @@ https://svelte.dev/e/expected_token -->
 
     <div class="nier-bits-card">
       <h2>Device Limits</h2>
-      <div class="mono" style="white-space: pre-wrap">{(result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).deviceLimits ? JSON.stringify.deviceLimits, null, 2) : '—'}</div>
+      <div class="mono" style="white-space: pre-wrap">{(result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).deviceLimits ? JSON.stringify(deviceLimits), null, 2) : '—'}</div>
     </div>
   </div>
 

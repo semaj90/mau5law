@@ -112,7 +112,7 @@
 </div>
 
 <style>
-  .container {
+  .container {;
     animation: fadeIn 0.5s ease-in;
   }
 

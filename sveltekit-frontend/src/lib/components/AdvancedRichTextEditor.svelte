@@ -1,7 +1,7 @@
 
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
 <!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Advanced Rich Text Editor with Google Slides/Photoshop-like Features -->
@@ -116,7 +116,7 @@ https://svelte.dev/e/js_parse_error -->
       "#3b82f6",
       "#8b5cf6",
       "#ec4899",
-    ],
+    ],;
     highlight: [
       "transparent",
       "#fef3c7",
@@ -127,7 +127,7 @@ https://svelte.dev/e/js_parse_error -->
       "#fce7f3",
       "#fed7d7",
       "#f0f9ff",
-    ],
+    ],;
     legal: [
       "#1e40af",
       "#7c2d12",
@@ -137,7 +137,7 @@ https://svelte.dev/e/js_parse_error -->
       "#831843",
       "#92400e",
       "#166534",
-    ],
+    ],;
   };
 
   // Font options
@@ -172,29 +172,29 @@ https://svelte.dev/e/js_parse_error -->
 
   function initializeEditor( {
     editor = new Editor({
-      element: editorElement,
+      element: editorElement,;
       extensions: [
         StarterKit.configure({
           history: {
-            depth: 100,
+            depth: 100,;
           },
         }),
         Image.configure({
           inline: true,
-          allowBase64: true,
+          allowBase64: true,;
         }),
         TextAlign.configure({
-          types: ["heading", "paragraph"],
+          types: ["heading", "paragraph"],;
         }),
         Highlight.configure({
-          multicolor: true,
+          multicolor: true,;
         }),
         Typography,
         Placeholder.configure({
-          placeholder: placeholder,
+          placeholder: placeholder,;
         }),
         Table.configure({
-          resizable: true,
+          resizable: true,;
         }),
         TableRow,
         TableHeader,
@@ -202,9 +202,9 @@ https://svelte.dev/e/js_parse_error -->
         TextStyle,
         Color,
         FontFamily.configure({
-          types: ["textStyle"],
+          types: ["textStyle"],;
         }),
-      ],
+      ],;
       content: content,
       onTransaction: updateEditorState,
       onUpdate: ({ editor }) => {
@@ -214,9 +214,9 @@ https://svelte.dev/e/js_parse_error -->
         }
       },
       editorProps: {
-        attributes: {
+        attributes: {;
           class:
-            "prose prose-lg max-w-none focus:outline-none min-h-[400px] p-6",
+            "prose prose-lg max-w-none focus:outline-none min-h-[400px] p-6",;
         },
       },
     });
@@ -225,7 +225,7 @@ https://svelte.dev/e/js_parse_error -->
   function updateEditorState() {
     if (!editor) return;
 
-    editorState.set.undo(),
+    editorState.set(undo)(),
       canRedo: editor.can.redo(),
       isBold: editor.isActive("bold"),
       isItalic: editor.isActive("italic"),
@@ -276,10 +276,10 @@ https://svelte.dev/e/js_parse_error -->
     try {
       try {
     const response = await fetch("/api/reports/save", {
-        method: "POST",
+        method: "POST",;
         headers: {
           "Content-Type": "application/json",
-        },
+        },;
         body: JSON.stringify({
           reportId,
           caseId,
@@ -434,7 +434,7 @@ https://svelte.dev/e/js_parse_error -->
 
     const content = format === "json" ? editor.getJSON() : editor.getHTML();
     const blob = new Blob([JSON.stringify(content, null, 2)], {
-      type: format === "json" ? "application/json" : "text/html",
+      type: format === "json" ? "application/json" : "text/html",;
     });
 
     const url = URL.createObjectURL(blob);
@@ -783,7 +783,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   /* Remove all @apply rules. Use Tailwind/UnoCSS classes in markup instead. */
-  .advanced-editor {
+  .advanced-editor {;
     min-height: 500px;
     border: 1px solid #d1d5db;
     border-radius: 0.5rem;
@@ -869,7 +869,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     transition: background 0.2s;
   }
-  .dropdown-menu button:hover {
+  .dropdown-menu button:hover {;
     background: #f3f4f6;
   }
   .color-palette {

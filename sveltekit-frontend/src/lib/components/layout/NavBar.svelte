@@ -344,7 +344,7 @@
 <svelte:window onkeydown={handleKeyboardShortcut} />
 
 <style>
-  .navbar-header {
+  .navbar-header {;
     position: sticky;
     top: 0;
     z-index: 40;

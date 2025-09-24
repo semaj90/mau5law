@@ -1,93 +1,93 @@
-import { json } from '@sveltejs/kit';
-import type { RequestEvent } from '@sveltejs/kit';
-import { db } from '$lib/server/db/index.js';
-import { chatSessions, chatMessages, chatRecommendations, users } from '$lib/server/db/schema-unified.js';
-import { eq } from 'drizzle-orm';
-import { v4 as uuidv4 } from 'uuid';
-import { generateEnhancedEmbedding } from '$lib/server/ai/embeddings-enhanced.js';
-import { insertChatMessageWithEmbedding, searchSimilarMessages } from '$lib/server/db/pgvector-utils.js';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import type { RequestEvent } from '@sveltejs/kit'
+import { db } from '$lib/server/db/index.js'
+import { chatSessions, chatMessages, chatRecommendations, users } from '$lib/server/db/schema-unified.js'
+import { eq } from 'drizzle-orm'
+import { v4 as uuidv4 } from 'uuid'
+import { generateEnhancedEmbedding } from '$lib/server/ai/embeddings-enhanced.js'
+import { insertChatMessageWithEmbedding, searchSimilarMessages } from '$lib/server/db/pgvector-utils.js'
+import type { RequestHandler } from './$types.js'
 
 
 /*
  * Database Persistence Test for AI Recommendations
  * Tests database operations, vector embeddings, and recommendations storage
- */;
+ */
 export async function POST({ request }: RequestEvent): Promise<any> {
-  const startTime = Date.now();
-  const testResults: any[] = [];
+  const startTime = Date.now()
+  const testResults: any[] = []
   
   try {
-    const { testContent = "Test legal recommendation content for database persistence" } = await request.json();
+    const { testContent = "Test legal recommendation content for database persistence" } = await request.json()
     
     // Test 1: Create test user
-    const testUser = await testCreateUser();
-    testResults.push(testUser);
+    const testUser = await testCreateUser()
+    testResults.push(testUser)
     
     if (!testUser.success) {
       return json({
         success: false,
         error: 'Failed to create test user',
         results: testResults
-      });
+      })
     }
     
-    const userId = testUser.data.userId;
+    const userId = testUser.data.userId
     
     // Test 2: Create chat session
-    const testSession = await testCreateChatSession(userId);
-    testResults.push(testSession);
+    const testSession = await testCreateChatSession(userId)
+    testResults.push(testSession)
     
     if (!testSession.success) {
       return json({
         success: false,
         error: 'Failed to create chat session',
         results: testResults
-      });
+      })
     }
     
-    const sessionId = testSession.data.sessionId;
+    const sessionId = testSession.data.sessionId
     
     // Test 3: Generate and store embedding
-    const testEmbedding = await testEmbeddingGeneration(testContent);
-    testResults.push(testEmbedding);
+    const testEmbedding = await testEmbeddingGeneration(testContent)
+    testResults.push(testEmbedding)
     
     // Test 4: Store chat message with embedding
-    const testMessage = await testStoreMessage(sessionId, testContent, testEmbedding.data?.embedding);
-    testResults.push(testMessage);
+    const testMessage = await testStoreMessage(sessionId, testContent, testEmbedding.data?.embedding)
+    testResults.push(testMessage)
     
     if (!testMessage.success) {
       return json({
         success: false,
         error: 'Failed to store message',
         results: testResults
-      });
+      })
     }
     
-    const messageId = testMessage.data.messageId;
+    const messageId = testMessage.data.messageId
     
     // Test 5: Store recommendations
-    const testRecommendations = await testStoreRecommendations(userId, messageId);
-    testResults.push(testRecommendations);
+    const testRecommendations = await testStoreRecommendations(userId, messageId)
+    testResults.push(testRecommendations)
     
     // Test 6: Vector similarity search
-    const testVectorSearch = await testVectorSimilaritySearch(testEmbedding.data?.embedding);
-    testResults.push(testVectorSearch);
+    const testVectorSearch = await testVectorSimilaritySearch(testEmbedding.data?.embedding)
+    testResults.push(testVectorSearch)
     
     // Test 7: Retrieve recommendations
-    const testRetrieveRecommendations = await testRetrieveRecommendations(userId);
-    testResults.push(testRetrieveRecommendations);
+    const testRetrieveRecommendations = await testRetrieveRecommendations(userId)
+    testResults.push(testRetrieveRecommendations)
     
     // Test 8: Update recommendation with feedback
-    const testFeedback = await testUpdateRecommendationFeedback(userId);
-    testResults.push(testFeedback);
+    const testFeedback = await testUpdateRecommendationFeedback(userId)
+    testResults.push(testFeedback)
     
     // Clean up test data
-    await cleanupTestData(userId, sessionId);
+    await cleanupTestData(userId, sessionId)
     
     // Calculate overall results
-    const successCount = testResults.filter(item => item.length);
-    const totalTests = testResults.length;
+    const successCount = testResults.filter(item => item.length)
+    const totalTests = testResults.length
     
     return json({
       success: successCount === totalTests,
@@ -99,7 +99,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
       },
       results: testResults,
       timestamp: new Date().toISOString()
-    });
+    })
     
   } catch (error: any) {
     return json({
@@ -108,23 +108,23 @@ export async function POST({ request }: RequestEvent): Promise<any> {
       details: error instanceof Error ? error.message: 'Unknown error',
       results: testResults,
       processingTime: Date.now() - startTime
-    }, { status: 500 });
+    }, { status: 500 })
   }
 }
 
 async function testCreateUser(): Promise<any> {
-  const startTime = Date.now();
+  const startTime = Date.now()
   
   try {
-    const userId = uuidv4();
-    const testEmail = `test-${Date.now()}@legal-ai.com`;
+    const userId = uuidv4()
+    const testEmail = `test-${Date.now()}@legal-ai.com`
     
     await db.insert(users).values({
       id: userId,
       email: testEmail,
       displayName: 'Test User',
       role: 'user'
-    });
+    })
     
     return {
       test: 'Create User',
@@ -132,7 +132,7 @@ async function testCreateUser(): Promise<any> {
       message: 'Test user created successfully',
       data: { userId, email: testEmail },
       responseTime: Date.now() - startTime
-    };
+    }
   } catch (error: any) {
     return {
       test: 'Create User',
@@ -140,15 +140,15 @@ async function testCreateUser(): Promise<any> {
       message: 'Failed to create test user',
       error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
-    };
+    }
   }
 }
 
 async function testCreateChatSession(userId: string): Promise<any> {
-  const startTime = Date.now();
+  const startTime = Date.now()
   
   try {
-    const sessionId = uuidv4();
+    const sessionId = uuidv4()
     
     await db.insert(chatSessions).values({
       id: sessionId,
@@ -159,7 +159,7 @@ async function testCreateChatSession(userId: string): Promise<any> {
         createdForTesting: true,
         timestamp: new Date().toISOString()
       }
-    });
+    })
     
     return {
       test: 'Create Chat Session',
@@ -167,7 +167,7 @@ async function testCreateChatSession(userId: string): Promise<any> {
       message: 'Chat session created successfully',
       data: { sessionId },
       responseTime: Date.now() - startTime
-    };
+    }
   } catch (error: any) {
     return {
       test: 'Create Chat Session',
@@ -175,22 +175,22 @@ async function testCreateChatSession(userId: string): Promise<any> {
       message: 'Failed to create chat session',
       error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
-    };
+    }
   }
 }
 
 async function testEmbeddingGeneration(content: string): Promise<any> {
-  const startTime = Date.now();
+  const startTime = Date.now()
   
   try {
     const embedding = await generateEnhancedEmbedding(content, {
       provider: 'nomic-embed',
       legalDomain: true,
       cache: true
-    }) as number[];
+    }) as number[]
     
     if (!Array.isArray(embedding) || embedding.length === 0) {
-      throw new Error('Invalid embedding generated');
+      throw new Error('Invalid embedding generated')
     }
     
     return {
@@ -198,12 +198,12 @@ async function testEmbeddingGeneration(content: string): Promise<any> {
       success: true,
       message: `Generated ${embedding.length}-dimensional embedding`,
       data: { 
-        embedding, 
+        embedding,
         dimensions: embedding.length,
         sampleValues: embedding.slice(0, 5)
       },
       responseTime: Date.now() - startTime
-    };
+    }
   } catch (error: any) {
     return {
       test: 'Embedding Generation',
@@ -211,18 +211,18 @@ async function testEmbeddingGeneration(content: string): Promise<any> {
       message: 'Failed to generate embedding',
       error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
-    };
+    }
   }
 }
 
 async function testStoreMessage(sessionId: string, content: string, embedding?: number[]): Promise<any> {
-  const startTime = Date.now();
+  const startTime = Date.now()
   
   try {
-    const messageId = uuidv4();
+    const messageId = uuidv4()
     
     if (embedding && embedding.length > 0) {
-      // Use pgvector utility function;
+      // Use pgvector utility function
       const success = await insertChatMessageWithEmbedding({
         id: messageId,
         sessionId,
@@ -233,13 +233,13 @@ async function testStoreMessage(sessionId: string, content: string, embedding?: 
           testMessage: true,
           embeddingDimensions: embedding.length
         }
-      });
+      })
       
       if (!success) {
-        throw new Error('Failed to insert message with embedding');
+        throw new Error('Failed to insert message with embedding')
       }
     } else {
-      // Fallback without embedding;
+      // Fallback without embedding
       await db.insert(chatMessages).values({
         id: messageId,
         sessionId,
@@ -249,7 +249,7 @@ async function testStoreMessage(sessionId: string, content: string, embedding?: 
           testMessage: true,
           embeddingStatus: 'not_available'
         }
-      });
+      })
     }
     
     return {
@@ -262,7 +262,7 @@ async function testStoreMessage(sessionId: string, content: string, embedding?: 
         embeddingDimensions: embedding?.length || 0
       },
       responseTime: Date.now() - startTime
-    };
+    }
   } catch (error: any) {
     return {
       test: 'Store Message',
@@ -270,15 +270,15 @@ async function testStoreMessage(sessionId: string, content: string, embedding?: 
       message: 'Failed to store message',
       error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
-    };
+    }
   }
 }
 
 async function testStoreRecommendations(userId: string, messageId: string): Promise<any> {
-  const startTime = Date.now();
+  const startTime = Date.now()
   
   try {
-    const recommendations = [;
+    const recommendations = [
       {
         id: uuidv4(),
         type: 'legal_analysis',
@@ -301,7 +301,7 @@ async function testStoreRecommendations(userId: string, messageId: string): Prom
           reasoning: 'Test procedural recommendation'
         }
       }
-    ];
+    ]
     
     for (const rec of recommendations) {
       await db.insert(chatRecommendations).values({
@@ -312,7 +312,7 @@ async function testStoreRecommendations(userId: string, messageId: string): Prom
         content: rec.content,
         confidence: rec.confidence,
         metadata: rec.metadata
-      });
+      })
     }
     
     return {
@@ -324,7 +324,7 @@ async function testStoreRecommendations(userId: string, messageId: string): Prom
         recommendationIds: recommendations.map(r => r.id)
       },
       responseTime: Date.now() - startTime
-    };
+    }
   } catch (error: any) {
     return {
       test: 'Store Recommendations',
@@ -332,12 +332,12 @@ async function testStoreRecommendations(userId: string, messageId: string): Prom
       message: 'Failed to store recommendations',
       error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
-    };
+    }
   }
 }
 
 async function testVectorSimilaritySearch(embedding?: number[]): Promise<any> {
-  const startTime = Date.now();
+  const startTime = Date.now()
   
   try {
     if (!embedding || embedding.length === 0) {
@@ -346,14 +346,14 @@ async function testVectorSimilaritySearch(embedding?: number[]): Promise<any> {
         success: false,
         message: 'No embedding available for similarity search',
         responseTime: Date.now() - startTime
-      };
+      }
     }
     
     const similarResults = await searchSimilarMessages(embedding, {
       limit: 5,
       threshold: 0.1, // Low threshold to ensure we find our test message
       includeMetadata: true
-    });
+    })
     
     return {
       test: 'Vector Similarity Search',
@@ -369,7 +369,7 @@ async function testVectorSimilaritySearch(embedding?: number[]): Promise<any> {
         })
       },
       responseTime: Date.now() - startTime
-    };
+    }
   } catch (error: any) {
     return {
       test: 'Vector Similarity Search',
@@ -377,15 +377,15 @@ async function testVectorSimilaritySearch(embedding?: number[]): Promise<any> {
       message: 'Vector similarity search failed',
       error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
-    };
+    }
   }
 }
 
 async function testRetrieveRecommendations(userId: string): Promise<any> {
-  const startTime = Date.now();
+  const startTime = Date.now()
   
   try {
-    const recommendations = await db;
+    const recommendations = await db
       .select({
         id: chatRecommendations.id,
         content: chatRecommendations.content,
@@ -396,7 +396,7 @@ async function testRetrieveRecommendations(userId: string): Promise<any> {
       })
       .from(chatRecommendations)
       .where(eq(chatRecommendations.userId, userId)
-      .limit(10);
+      .limit(10)
     
     return {
       test: 'Retrieve Recommendations',
@@ -413,7 +413,7 @@ async function testRetrieveRecommendations(userId: string): Promise<any> {
         })
       },
       responseTime: Date.now() - startTime
-    };
+    }
   } catch (error: any) {
     return {
       test: 'Retrieve Recommendations',
@@ -421,12 +421,12 @@ async function testRetrieveRecommendations(userId: string): Promise<any> {
       message: 'Failed to retrieve recommendations',
       error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
-    };
+    }
   }
 }
 
 async function testUpdateRecommendationFeedback(userId: string): Promise<any> {
-  const startTime = Date.now();
+  const startTime = Date.now()
   
   try {
     // Get a test recommendation to update
@@ -434,17 +434,17 @@ async function testUpdateRecommendationFeedback(userId: string): Promise<any> {
       .select({ id: chatRecommendations.id })
       .from(chatRecommendations)
       .where(eq(chatRecommendations.userId, userId)
-      .limit(1);
+      .limit(1)
     
     if (recommendations.length === 0) {
-      throw new Error('No recommendations found to update');
+      throw new Error('No recommendations found to update')
     }
     
-    const recommendationId = recommendations[0].id;
+    const recommendationId = recommendations[0].id
     
     // Update with feedback
     const result = await db
-      .update(chatRecommendations);
+      .update(chatRecommendations)
       .set({
         feedback: 'helpful',
         metadata: {
@@ -453,7 +453,7 @@ async function testUpdateRecommendationFeedback(userId: string): Promise<any> {
         }
       })
       .where(eq(chatRecommendations.id, recommendationId)
-      .returning({ id: chatRecommendations.id });
+      .returning({ id: chatRecommendations.id })
     
     return {
       test: 'Update Recommendation Feedback',
@@ -464,7 +464,7 @@ async function testUpdateRecommendationFeedback(userId: string): Promise<any> {
         feedback: 'helpful'
       },
       responseTime: Date.now() - startTime
-    };
+    }
   } catch (error: any) {
     return {
       test: 'Update Recommendation Feedback',
@@ -472,43 +472,43 @@ async function testUpdateRecommendationFeedback(userId: string): Promise<any> {
       message: 'Failed to update recommendation feedback',
       error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
-    };
+    }
   }
 }
 
 async function cleanupTestData(userId: string, sessionId: string): Promise<any> {
   try {
     // Clean up in reverse order of dependencies
-    await db.delete(chatRecommendations).where(eq(chatRecommendations.userId, userId);
-    await db.delete(chatMessages).where(eq(chatMessages.sessionId, sessionId);
-    await db.delete(chatSessions).where(eq(chatSessions.id, sessionId);
-    await db.delete(users).where(eq(users.id, userId);
+    await db.delete(chatRecommendations).where(eq(chatRecommendations.userId, userId)
+    await db.delete(chatMessages).where(eq(chatMessages.sessionId, sessionId)
+    await db.delete(chatSessions).where(eq(chatSessions.id, sessionId)
+    await db.delete(users).where(eq(users.id, userId)
     
-    console.log('Test data cleaned up successfully');
+    console.log('Test data cleaned up successfully')
   } catch (error: any) {
-    console.warn('Failed to clean up test data:', error);
+    console.warn('Failed to clean up test data:', error)
   }
 }
 
 /*
  * GET endpoint for quick health check
- */;
+ */
 export async function GET(): Promise<any> {
   try {
     // Quick database connection test
-    await db.select().from(users).limit(1);
+    await db.select().from(users).limit(1)
     
     return json({
       status: 'healthy',
       message: 'Database persistence test endpoint is operational',
       timestamp: new Date().toISOString()
-    });
+    })
   } catch (error: any) {
     return json({
       status: 'unhealthy',
       message: 'Database connection failed',
       error: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
-    }, { status: 500 });
+    }, { status: 500 })
   }
 }

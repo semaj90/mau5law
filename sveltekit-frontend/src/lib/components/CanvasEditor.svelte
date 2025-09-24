@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -49,8 +49,9 @@ https://svelte.dev/e/js_parse_error -->
   	let text = writable(["bold"]);
   	let align = writable("");
 
-  	$effect(async () => {
-  		if (browser) {
+  	$effect(() => {
+    (async () => {
+if (browser) {
   			await loadFabricJs();
   			initializeCanvas();
   			loadCanvasState();
@@ -59,7 +60,8 @@ https://svelte.dev/e/js_parse_error -->
   		// Subscribe to real-time evidence updates
   		unsubscribeEvidence = evidenceStore.evidence.subscribe((evidenceList) => {
   			realtimeEvidence = evidenceList;
-  		});
+    })();
+  });
   	});
 
   	onDestroy(() => {
@@ -122,8 +124,8 @@ https://svelte.dev/e/js_parse_error -->
   			width,
   			height,
   			backgroundColor: '#ffffff',
-  			selection: !readOnly,
-  			interactive: !readOnly
+  			selection: !readOnly,;
+  			interactive: !readOnly;
   		});
 
   		// Set up event listeners
@@ -261,8 +263,8 @@ https://svelte.dev/e/js_parse_error -->
   		const path = event.path;
   		path.set({
   			stroke: currentColor,
-  			strokeWidth: currentStrokeWidth,
-  			fill: selectedTool === 'highlight' ? currentColor + '40' : 'transparent'
+  			strokeWidth: currentStrokeWidth,;
+  			fill: selectedTool === 'highlight' ? currentColor + '40' : 'transparent';
   		});
   		markDirty();
   	}
@@ -340,11 +342,11 @@ https://svelte.dev/e/js_parse_error -->
   		// Fabric.js v6+ uses FabricText instead of IText in some cases
   		const TextClass = fabric.IText || fabric.FabricText || fabric.Text;
   		const text = new TextClass('Click to edit', {
-  			left: pointer.x,
+  			left: pointer.x,;
   			top: pointer.y,
-  			fontSize: currentFontSize,
+  			fontSize: currentFontSize,;
   			fill: currentColor,
-  			fontFamily: 'Arial'
+  			fontFamily: 'Arial';
   		});
   		fabricCanvas.add(text);
   		fabricCanvas.setActiveObject(text);
@@ -361,10 +363,10 @@ https://svelte.dev/e/js_parse_error -->
   			left: pointer.x,
   			top: pointer.y,
   			width: 0,
-  			height: 0,
-  			fill: 'transparent',
+  			height: 0,;
+  			fill: 'transparent',;
   			stroke: currentColor,
-  			strokeWidth: currentStrokeWidth
+  			strokeWidth: currentStrokeWidth;
   		});
   		fabricCanvas.add(rect);
   		drawingPath = rect;
@@ -376,10 +378,10 @@ https://svelte.dev/e/js_parse_error -->
   		const circle = new CircleClass({
   			left: pointer.x,
   			top: pointer.y,
-  			radius: 0,
-  			fill: 'transparent',
+  			radius: 0,;
+  			fill: 'transparent',;
   			stroke: currentColor,
-  			strokeWidth: currentStrokeWidth
+  			strokeWidth: currentStrokeWidth;
   		});
   		fabricCanvas.add(circle);
   		drawingPath = circle;
@@ -392,7 +394,7 @@ https://svelte.dev/e/js_parse_error -->
   			stroke: currentColor,
   			strokeWidth: currentStrokeWidth,
   			originX: 'center',
-  			originY: 'center'
+  			originY: 'center';
   		});
   		fabricCanvas.add(line);
   		drawingPath = line;
@@ -420,26 +422,26 @@ https://svelte.dev/e/js_parse_error -->
   				radius: 20,
   				fill: '#ef4444',
   				stroke: '#dc2626',
-  				strokeWidth: 2
+  				strokeWidth: 2;
   			}),
   			new TextClass('E', {
   				fontSize: 16,
   				fill: 'white',
   				fontWeight: 'bold',
   				originX: 'center',
-  				originY: 'center'
+  				originY: 'center';
   			})
   		], {
-  			left: 100,
-  			top: 100,
-  			selectable: true
+  			left: 100,;
+  			top: 100,;
+  			selectable: true;
   		});
 
   		// Add evidence metadata
   		marker.set({
   			evidenceId: evidence.id,
   			evidenceTitle: evidence.title,
-  			type: 'evidence-marker'
+  			type: 'evidence-marker';
   		});
 
   		fabricCanvas.add(marker);
@@ -461,26 +463,26 @@ https://svelte.dev/e/js_parse_error -->
   				stroke: '#2563eb',
   				strokeWidth: 2,
   				rx: 4,
-  				ry: 4
+  				ry: 4;
   			}),
   			new TextClass('Cite', {
   				fontSize: 12,
   				fill: 'white',
   				fontWeight: 'bold',
   				originX: 'center',
-  				originY: 'center'
+  				originY: 'center';
   			})
   		], {
-  			left: 100,
-  			top: 100,
-  			selectable: true
+  			left: 100,;
+  			top: 100,;
+  			selectable: true;
   		});
 
   		// Add citation metadata
   		marker.set({
   			citationId: citation.id,
   			citationSource: citation.source,
-  			type: 'citation-marker'
+  			type: 'citation-marker';
   		});
 
   		fabricCanvas.add(marker);
@@ -511,9 +513,9 @@ https://svelte.dev/e/js_parse_error -->
   			clipboardData.clone((clonedObj: any) => {
   				fabricCanvas.discardActiveObject();
   				clonedObj.set({
-  					left: clonedObj.left + 10,
-  					top: clonedObj.top + 10,
-  					evented: true,
+  					left: clonedObj.left + 10,;
+  					top: clonedObj.top + 10,;
+  					evented: true,;
   				});
   				if (clonedObj.type === 'activeSelection') {
   					clonedObj.canvas = fabricCanvas;
@@ -581,19 +583,19 @@ https://svelte.dev/e/js_parse_error -->
   			// Get canvas data
   			const canvasData: CanvasStateData = {
   				objects: fabricCanvas.toObject.objects,
-  				background: fabricCanvas.backgroundColor,
+  				background: fabricCanvas.backgroundColor,;
   				dimensions: { width, height },
   				viewport: {
   					zoom: zoomLevel,
   					panX,
-  					panY
+  					panY;
   				},
   				metadata: {
-  					title: canvasState?.title || 'Untitled Canvas',
-  					description: '',
+  					title: canvasState?.title || 'Untitled Canvas',;
+  					description: '',;
   					tags: [],
   					evidenceIds: getEvidenceIds(),
-  					citationIds: getCitationIds()
+  					citationIds: getCitationIds();
   				}
   			};
 
@@ -609,11 +611,11 @@ https://svelte.dev/e/js_parse_error -->
   			};
 
   			const response = await fetch('/api/canvas-states', {
-  				method: canvasState ? 'PUT' : 'POST',
+  				method: canvasState ? 'PUT' : 'POST',;
   				headers: {
   					'Content-Type': 'application/json'
-  				},
-  				body: JSON.stringify(canvasStateData)
+  				},;
+  				body: JSON.stringify(canvasStateData);
   			});
 
   			if ((response as { ok?: any; json?: any }).ok) {
@@ -655,9 +657,9 @@ https://svelte.dev/e/js_parse_error -->
   		// Generate a thumbnail of the canvas
   		const scale = Math.min(200 / width, 150 / height);
   		return fabricCanvas.toDataURL({
-  			format: 'png',
-  			quality: 0.8,
-  			multiplier: scale
+  			format: 'png',;
+  			quality: 0.8,;
+  			multiplier: scale;
   		});
   	}
 
@@ -669,8 +671,8 @@ https://svelte.dev/e/js_parse_error -->
   			case 'png':
   			default:
   				dataUrl = fabricCanvas.toDataURL({
-  					format: 'png',
-  					quality: 1.0
+  					format: 'png',;
+  					quality: 1.0;
   				});
   				break;
   		}
@@ -734,18 +736,18 @@ https://svelte.dev/e/js_parse_error -->
   						height: 60,
   						fill: '#fef9c3',
   						stroke: '#f59e0b',
-  						strokeWidth: 2,
-  						rx: 8,
-  						ry: 8
+  						strokeWidth: 2,;
+  						rx: 8,;
+  						ry: 8;
   					});
   					fabricCanvas.add(obj);
   					const label = new TextboxClass(evd.title || 'Evidence', {
   						left: left + 10,
   						top: top + 10,
-  						fontSize: 14,
+  						fontSize: 14,;
   						fill: '#92400e',
-  						fontWeight: 'bold',
-  						width: 100
+  						fontWeight: 'bold',;
+  						width: 100;
   					});
   					fabricCanvas.add(label);
   				}

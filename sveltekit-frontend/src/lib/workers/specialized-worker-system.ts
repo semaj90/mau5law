@@ -126,7 +126,7 @@ export class JobOrchestrator extends EventEmitter {
         queueName,
         Buffer.from(JSON.stringify(fullJob)),
         {
-          persistent: true,
+          persistent: true,;
           priority: this.getPriorityNumber(job.priority)
         }
       );
@@ -315,7 +315,7 @@ export abstract class SpecializedWorker extends EventEmitter {
             workerInfo: {
               id: this.workerId,
               type: this.workerType,
-              version: this.version,
+              version: this.version,;
               capabilities: this.capabilities
             }
           };
@@ -342,7 +342,7 @@ export abstract class SpecializedWorker extends EventEmitter {
             workerInfo: {
               id: this.workerId,
               type: this.workerType,
-              version: this.version,
+              version: this.version,;
               capabilities: this.capabilities
             }
           };
@@ -406,7 +406,7 @@ export class DocumentSummarizationWorker extends SpecializedWorker {
       summary,
       keyPoints: this.extractKeyPoints(document.content),
       confidence: 0.85,
-      processingModel: 'gemma3-legal',
+      processingModel: 'gemma3-legal',;
       metadata: {
         originalLength: document.content.length,
         summaryLength: summary.length,
@@ -476,7 +476,7 @@ export class CaseLawWorker extends SpecializedWorker {
         jurisdiction: options.jurisdiction || 'Federal',
         court: '9th Circuit Court of Appeals',
         date: '2023-03-15',
-        relevanceScore,
+        relevanceScore,;
         summary: `A sample legal case generated for query "${q}". This is placeholder data for testing.`,
         keyHoldings: ['Sample holding 1', 'Sample holding 2'],
         precedentialValue: 'binding'
@@ -507,7 +507,7 @@ export class EmbeddingWorker extends SpecializedWorker {
       text: options.includeText ? text : undefined,
       embedding,
       dimensions: embedding.length,
-      model,
+      model,;
       metadata: {
         textLength: text.length
       }

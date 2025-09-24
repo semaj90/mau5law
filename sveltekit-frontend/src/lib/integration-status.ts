@@ -18,12 +18,12 @@ const browser = typeof window !== 'undefined';
 }
 
 export interface IntegrationStatus {
-  webassembly: {
+  webassembly: {;
     available: boolean;
     simdSupport: boolean;
     runtimeConnected: boolean;
   };
-  sveltekit: {
+  sveltekit: {;
     version: string;
     svelte5Patterns: boolean;
     ssrReady: boolean;
@@ -39,7 +39,7 @@ export interface IntegrationStatus {
     nesCSS: boolean;
     gamingTheme: boolean;
   };
-  webgpu: {
+  webgpu: {;
     available: boolean;
     dawnBackend: boolean;
     unifiedRuntime: boolean;
@@ -78,7 +78,7 @@ export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
       available: false,
       dawnBackend: false,
       unifiedRuntime: true
-    },
+    },;
     cache: {
       chrRomCache: true,
       redisConnected: false,

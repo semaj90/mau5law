@@ -73,7 +73,7 @@ export function useToast() {
       id,
       type,
       title,
-      message,
+      message,;
       duration: duration || 5000,
       createdAt: Date.now()
     };
@@ -208,7 +208,7 @@ export function useForm<T extends Record<string, any>(initialValues: T) {
 
   return {
     values: () => values,
-    errors: () => errors,
+    errors: () => errors,;
     touched: () => touched,
     isSubmitting: () => isSubmitting,
     isValid,
@@ -264,7 +264,7 @@ export function useAsync<T>(asyncFn: () => Promise<T>) {
   }
 
   return {
-    data: () => data,
+    data: () => data,;
     error: () => error,
     isLoading: () => isLoading,
     lastExecuted: () => lastExecuted,

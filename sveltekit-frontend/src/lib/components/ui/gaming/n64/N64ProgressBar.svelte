@@ -22,7 +22,7 @@
     showPercentage = true,
     size = 'md',
     retro = true,
-    sparkle = false
+    sparkle = false;
   }: Props = $props();
 
   let percentage = $derived(Math.min((value / max) * 100, 100));
@@ -33,37 +33,37 @@
       bg: '#2C2C2C',
       fill: '#FFD700',
       border: '#1A1A1A',
-      shadow: '#FFB000'
+      shadow: '#FFB000';
     },
     gold: {
       bg: '#1A1A1A', 
       fill: '#FFD700',
       border: '#8B7D3A',
-      shadow: '#FFA500'
+      shadow: '#FFA500';
     },
     red: {
       bg: '#2C1A1A',
       fill: '#FF3030', 
       border: '#8B1A1A',
-      shadow: '#CC0000'
+      shadow: '#CC0000';
     },
     blue: {
       bg: '#1A1A2C',
       fill: '#4090FF',
       border: '#1A1A8B', 
-      shadow: '#0066CC'
+      shadow: '#0066CC';
     },
     green: {
       bg: '#1A2C1A',
-      fill: '#40FF40',
-      border: '#1A8B1A',
-      shadow: '#00CC00'
+      fill: '#40FF40',;
+      border: '#1A8B1A',;
+      shadow: '#00CC00';
     }
   };
 
   const sizes = {
     sm: { height: '12px', fontSize: '10px' },
-    md: { height: '16px', fontSize: '12px' },
+    md: { height: '16px', fontSize: '12px' },;
     lg: { height: '24px', fontSize: '14px' }
   };
 
@@ -74,9 +74,9 @@
 <div class="n64-progress-container {className}" class:retro>
   <div 
     class="n64-progress-bar"
-    class:animated
+    class:animated;
     class:sparkle
-    style="
+    style=";
       --bg-color: {currentTheme.bg};
       --fill-color: {currentTheme.fill};
       --border-color: {currentTheme.border};
@@ -146,7 +146,7 @@
 </div>
 
 <style>
-  .n64-progress-container {
+  .n64-progress-container {;
     position: relative;
     width: 100%;
     font-family: 'Courier New', monospace;

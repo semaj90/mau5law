@@ -13,7 +13,7 @@
     documentType: [] as string[],
     jurisdiction: [] as string[],
     riskLevel: [] as string[],
-    minimumConfidence: 0.5
+    minimumConfidence: 0.5;
   });
   let rankingStrategy = $state<SearchQuery['rankingStrategy']>('similarity');
   let showFilters = $state(false);
@@ -28,12 +28,14 @@
     { value: 'risk_prioritized', label: 'Risk Prioritized' }
   ];
 
-  $effect(async () => {
-    try {
+  $effect(() => {
+    (async () => {
+try {
       searchStats = await vectorSearchIndex.getStats();
     } catch (error) {
       console.error('Failed to load search stats:', error);
     }
+    })();
   });
 
   async function performSearch() {
@@ -47,12 +49,12 @@
         rankingStrategy,
         includeChunks: true,
         limit: 20,
-        threshold: 0.1,
+        threshold: 0.1,;
         filters: {
-          documentType: selectedFilters.documentType.length > 0 ? selectedFilters.documentType: undefined,
+          documentType: selectedFilters.documentType.length > 0 ? selectedFilters.documentType: undefined,;
           jurisdiction: selectedFilters.jurisdiction.length > 0 ? selectedFilters.jurisdiction : undefined,
           riskLevel: selectedFilters.riskLevel.length > 0 ? selectedFilters.riskLevel : undefined,
-          minimumConfidence: selectedFilters.minimumConfidence
+          minimumConfidence: selectedFilters.minimumConfidence;
         }
       };
       
@@ -84,9 +86,9 @@
   function getRiskLevelClass(riskLevel: string): string {
     const classes = {
       low: 'bg-green-500/20 text-green-400 border-green-500/30',
-      medium: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-      high: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-      critical: 'bg-red-500/20 text-red-400 border-red-500/30'
+      medium: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',;
+      high: 'bg-orange-500/20 text-orange-400 border-orange-500/30',;
+      critical: 'bg-red-500/20 text-red-400 border-red-500/30';
     };
     return classes[riskLevel as keyof typeof classes] || classes.medium;
   }
@@ -136,7 +138,7 @@
   <div class="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
     <!-- Ranking Strategy -->
     <div>
-      <label class="block text-sm font-medium text-cyan-400 mb-2" for="ranking-strategy">Ranking Strategy</label><select id="ranking-strategy"
+      <label class="block text-sm font-medium text-cyan-400 mb-2" for="ranking-strategy">Ranking Strategy</label><select id="ranking-strategy";
         bind:value={rankingStrategy}
         class="w-full bg-gray-800/50 border border-cyan-400/30 rounded-lg px-3 py-2 text-gray-200 focus:border-cyan-400 focus:outline-none"
       >
@@ -347,11 +349,11 @@
             <div class="text-xs text-gray-500">Documents</div>
           </div>
           <div class="bg-gray-800/30 rounded-lg p-3">
-            <div class="text-2xl font-bold text-cyan-400">{Object.keys.length}</div>
+            <div class="text-2xl font-bold text-cyan-400">{Object.keys(errors).length}</div>
             <div class="text-xs text-gray-500">Types</div>
           </div>
           <div class="bg-gray-800/30 rounded-lg p-3">
-            <div class="text-2xl font-bold text-cyan-400">{Object.keys.length}</div>
+            <div class="text-2xl font-bold text-cyan-400">{Object.keys(errors).length}</div>
             <div class="text-xs text-gray-500">Jurisdictions</div>
           </div>
           <div class="bg-gray-800/30 rounded-lg p-3">
@@ -365,7 +367,7 @@
 </div>
 
 <style>
-  .line-clamp-3 {
+  .line-clamp-3 {;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;

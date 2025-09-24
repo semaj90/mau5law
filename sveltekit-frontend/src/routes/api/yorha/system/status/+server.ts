@@ -1,46 +1,46 @@
-import { getContext7MulticoreService } from '$lib/services/context7-multicore.js';
-import type { RequestHandler } from './$types.js';
+import { getContext7MulticoreService } from '$lib/services/context7-multicore.js'
+import type { RequestHandler } from './$types.js'
 
 
-let startTime = Date.now();
-let requestCount = 0;
+let startTime = Date.now()
+let requestCount = 0
 }
 
 export interface YoRHaSystemStatus {
-  database: { connected: boolean; latency: number; activeConnections: number; queryCount: number };
-  backend: { healthy: boolean; uptime: number; activeServices: number; cpuUsage: number; memoryUsage: number };
-  frontend: { renderFPS: number; componentCount: number; activeComponents: number; webGPUEnabled: boolean };
+  database: { connected: boolean; latency: number; activeConnections: number; queryCount: number }
+  backend: { healthy: boolean; uptime: number; activeServices: number; cpuUsage: number; memoryUsage: number }
+  frontend: { renderFPS: number; componentCount: number; activeComponents: number; webGPUEnabled: boolean }
   multicore?: {
-    totalWorkers: number;
-    healthyWorkers: number;
-    busyWorkers: number;
-    queueSize: number;
-    activeTasks: number;
-    totalTasks: number;
-    completedTasks: number;
-    failedTasks: number;
-  };
-  timestamp: string;
-  systemLoad: number;
-  gpuUtilization: number;
-  networkLatency: number;
+    totalWorkers: number
+    healthyWorkers: number
+    busyWorkers: number
+    queueSize: number
+    activeTasks: number
+    totalTasks: number
+    completedTasks: number
+    failedTasks: number
+  }
+  timestamp: string
+  systemLoad: number
+  gpuUtilization: number
+  networkLatency: number
 }
 
 function collectStatus(): YoRHaSystemStatus {
-  const mem = process.memoryUsage();
-  const rssMB = Math.round(mem.rss / 1024 / 1024);
+  const mem = process.memoryUsage()
+  const rssMB = Math.round(mem.rss / 1024 / 1024)
   const cpuApprox = 5 + Math.random() * 20; // placeholder approximation
 
   // Try to get Context7 multicore service status
-  let multicoreStatus = null;
+  let multicoreStatus = null
   try {
     const multicoreService = getContext7MulticoreService({
       workerCount: 4,
       enableLegalBert: true,
       enableGoLlama: true,
       maxConcurrentTasks: 20
-    });
-    const systemStatus = multicoreService.getSystemStatus();
+    })
+    const systemStatus = multicoreService.getSystemStatus()
 
     multicoreStatus = {
       totalWorkers: systemStatus.workers.length,
@@ -51,10 +51,10 @@ function collectStatus(): YoRHaSystemStatus {
       totalTasks: systemStatus.metrics.totalTasks,
       completedTasks: systemStatus.metrics.completedTasks,
       failedTasks: systemStatus.metrics.failedTasks
-    };
+    }
   } catch (error: any) {
     // Multicore service not available
-    console.warn('Context7 multicore service not available:', error.message);
+    console.warn('Context7 multicore service not available:', error.message)
   }
 
   return {
@@ -82,14 +82,14 @@ function collectStatus(): YoRHaSystemStatus {
     systemLoad: Math.floor(Math.random() * 30) + 45,
     gpuUtilization: Math.floor(Math.random() * 20) + 78,
     networkLatency: Math.floor(Math.random() * 30) + 23
-  };
+  }
 }
 
 export const GET: RequestHandler = async () => {
-  requestCount++;
-  const status = collectStatus();
+  requestCount++
+  const status = collectStatus()
   return new Response(JSON.stringify(status), {
     status: 200,
     headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
-  });
-};
+  })
+}

@@ -40,8 +40,9 @@
   );
 
   // Load initial dashboard data
-  $effect(async () => {
-    try {
+  $effect(() => {
+    (async () => {
+try {
       loading = true;
       error = null;
 
@@ -59,6 +60,7 @@
     } finally {
       loading = false;
     }
+    })();
   });
 
   async function loadInitialData(): Promise<void> {
@@ -90,8 +92,8 @@
 
     try {
       const response = await apiClient.createCase({
-        title: title.trim(),
-        description: description.trim()
+        title: title.trim(),;
+        description: description.trim();
       });
 
       if (response.success) {
@@ -118,7 +120,7 @@
       try {
         for (const file of Array.from(files)) {
           const response = await apiClient.uploadEvidence(caseId, file, {
-            title: file.name,
+            title: file.name,;
             description: `Uploaded file: ${file.name}`
           });
 
@@ -299,7 +301,7 @@
               <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Recent Cases</h3>
                 <div class="flex items-center space-x-2">
-                  <input
+                  <input;
                     bind:value={searchQuery}
                     type="text"
                     placeholder="Search cases..."
@@ -313,7 +315,7 @@
                   <div
                     class="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer transition-colors"
                     onclick={() => selectCase(case_)}
-                    class:ring-2={selectedCase?.id === case_.id}
+                    class:ring-2={selectedCase?.id === case_.id};
                     class:ring-blue-500={selectedCase?.id === case_.id}
                   >
                     <div class="flex justify-between items-start">
@@ -481,7 +483,7 @@
 
 <style>
   /* Custom styles for the dashboard */
-  .animate-pulse {
+  .animate-pulse {;
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 

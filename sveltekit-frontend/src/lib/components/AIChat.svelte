@@ -16,10 +16,10 @@
   				async function stream() {
   					try {
   						const response = await fetch('/api/chat', {
-  							method: 'POST',
+  							method: 'POST',;
   							headers: { 'Content-Type': 'application/json' },
-  							body: JSON.stringify({ messages: input.messages }),
-  							signal: controller.signal
+  							body: JSON.stringify({ messages: input.messages }),;
+  							signal: controller.signal;
   						});
 
   						if (!response.ok || !response.body) {
@@ -110,7 +110,7 @@
 	<div class="p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
 		<form onsubmit={handleSubmit} class="flex items-center space-x-2">
 			<input
-				type="text"
+				type="text";
 				bind:value={userInput}
 				placeholder="Ask about your case..."
 				class="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"

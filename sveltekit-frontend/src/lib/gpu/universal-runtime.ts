@@ -101,7 +101,7 @@ class BackendDetector {
     try {
       // Check if CUDA service is available;
       const response = await fetch('/api/cuda/health', {
-        method: 'GET',
+        method: 'GET',;
         signal: AbortSignal.timeout(1000)
       });
 
@@ -230,7 +230,7 @@ class WebGPUBackend extends BaseBackend {
     // Create pipeline for matrix multiplication;
     this.matMulPipeline = this.device.createComputePipeline({
       layout: 'auto',
-      compute: {
+      compute: {;
         module: shaderModule,
         entryPoint: 'main'
       }
@@ -281,7 +281,7 @@ class WebGPUBackend extends BaseBackend {
 
     this.batchMatMulPipeline = this.device.createComputePipeline({
       layout: 'auto',
-      compute: {
+      compute: {;
         module: batchShaderModule,
         entryPoint: 'main'
       }
@@ -297,7 +297,7 @@ class WebGPUBackend extends BaseBackend {
 
     const size = shape.rows * shape.cols * (shape.batch || 1);
     const buffer = this.device.createBuffer({
-      size: size * 4, // Float32 is 4 bytes
+      size: size * 4, // Float32 is 4 bytes;
       usage: 0x80 | 0x4 | 0x8, // STORAGE | COPY_DST | COPY_SRC
       mappedAtCreation: !!data
     });
@@ -310,7 +310,7 @@ class WebGPUBackend extends BaseBackend {
     const tensor: Tensor = {
       data: buffer,
       shape,
-      backend: 'webgpu',
+      backend: 'webgpu',;
       id: this.generateId()
     };
 
@@ -347,7 +347,7 @@ class WebGPUBackend extends BaseBackend {
 
     // Create uniform buffer for dimensions;
     const uniformBuffer = this.device.createBuffer({
-      size: 16, // 3 u32 + padding
+      size: 16, // 3 u32 + padding;
       usage: 0x40 | 0x4, // UNIFORM | COPY_DST
       mappedAtCreation: true
     });
@@ -356,7 +356,7 @@ class WebGPUBackend extends BaseBackend {
 
     // Create bind group;
     const bindGroup = this.device.createBindGroup({
-      layout: this.matMulPipeline.getBindGroupLayout(0),
+      layout: this.matMulPipeline.getBindGroupLayout(0),;
       entries: [
         { binding: 0, resource: { buffer: a.data as any } },
         { binding: 1, resource: { buffer: b.data as any } },
@@ -397,7 +397,7 @@ class WebGPUBackend extends BaseBackend {
     const result = await this.allocate({ rows: M, cols: N, batch });
 
     const uniformBuffer = this.device.createBuffer({
-      size: 16,
+      size: 16,;
       usage: 0x40 | 0x4, // UNIFORM | COPY_DST
       mappedAtCreation: true
     });
@@ -405,7 +405,7 @@ class WebGPUBackend extends BaseBackend {
     uniformBuffer.unmap();
 
     const bindGroup = this.device.createBindGroup({
-      layout: this.batchMatMulPipeline.getBindGroupLayout(0),
+      layout: this.batchMatMulPipeline.getBindGroupLayout(0),;
       entries: [
         { binding: 0, resource: { buffer: a.data as any } },
         { binding: 1, resource: { buffer: b.data as any } },
@@ -447,7 +447,7 @@ class WebGPUBackend extends BaseBackend {
     
     // Create staging buffer for readback;
     const stagingBuffer = this.device.createBuffer({
-      size: size * 4,
+      size: size * 4,;
       usage: 0x4 | 0x1 // COPY_DST | MAP_READ
     });
 
@@ -645,7 +645,7 @@ class WebGL2Backend extends BaseBackend {
     const tensor: Tensor = {
       data: texture,
       shape,
-      backend: 'webgl2',
+      backend: 'webgl2',;
       id: this.generateId()
     };
 
@@ -727,7 +727,7 @@ class WebGL2Backend extends BaseBackend {
     const result: Tensor = {
       data: resultTexture,
       shape: { rows: M, cols: N },
-      backend: 'webgl2',
+      backend: 'webgl2',;
       id: this.generateId()
     };
 
@@ -750,14 +750,14 @@ class WebGL2Backend extends BaseBackend {
       const sliceA: Tensor = {
         data: a.data,
         shape: { rows: a.shape.rows, cols: a.shape.cols },
-        backend: 'webgl2',
+        backend: 'webgl2',;
         id: `${a.id}_batch_${i}`
       };
 
       const sliceB: Tensor = {
         data: b.data,
         shape: { rows: b.shape.rows, cols: b.shape.cols },
-        backend: 'webgl2',
+        backend: 'webgl2',;
         id: `${b.id}_batch_${i}`
       };
 
@@ -849,7 +849,7 @@ class WASMSIMDBackend extends BaseBackend {
       // Create memory for WASM module;
       this.memory = new WebAssembly.Memory({
         initial: 256, // 16MB initial
-        maximum: 4096, // 256MB maximum
+        maximum: 4096, // 256MB maximum;
         shared: typeof SharedArrayBuffer !== 'undefined' // Enable threading if available
       });
 
@@ -869,7 +869,7 @@ class WASMSIMDBackend extends BaseBackend {
 
       // Mock WASM exports for demonstration;
       this.exports = {
-        memory: this.memory,
+        memory: this.memory,;
         allocate: (size: number) => {
           // Allocate memory in WASM heap
           const ptr = this.tensorCount * 1024 * 1024; // Simple allocation
@@ -944,7 +944,7 @@ class WASMSIMDBackend extends BaseBackend {
     const tensor: Tensor = {
       data: ptr as any, // Store pointer as data
       shape,
-      backend: 'wasm-simd',
+      backend: 'wasm-simd',;
       id: this.generateId()
     };
 
@@ -1087,7 +1087,7 @@ class TensorRTBackend extends BaseBackend {
       // Initialize TensorRT session;
       const sessionResponse = await fetch(`${this.cudaServiceUrl}/api/v1/tensorrt/session`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({
           device_id: 0, // RTX 3060 Ti
           max_batch_size: 8,
@@ -1151,7 +1151,7 @@ class TensorRTBackend extends BaseBackend {
         body: JSON.stringify({
           session_id: this.sessionId,
           tensor_id: tensorId,
-          shape: [shape.batch || 1, shape.rows, shape.cols],
+          shape: [shape.batch || 1, shape.rows, shape.cols],;
           data: Array.from(data),
           data_type: 'float32'
         })
@@ -1166,7 +1166,7 @@ class TensorRTBackend extends BaseBackend {
     const tensor: Tensor = {
       data: { tensorId, serverTensorId, uploaded: !!serverTensorId },
       shape,
-      backend: 'tensorrt',
+      backend: 'tensorrt',;
       id: tensorId
     };
 
@@ -1185,7 +1185,7 @@ class TensorRTBackend extends BaseBackend {
       try {
         await fetch(`${this.cudaServiceUrl}/api/v1/tensorrt/tensor/${tensorData.serverTensorId}`, {
           method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' },;
           body: JSON.stringify({ session_id: this.sessionId })
         });
       } catch (error) {
@@ -1220,7 +1220,7 @@ class TensorRTBackend extends BaseBackend {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           session_id: this.sessionId,
-          engine_name: engineName,
+          engine_name: engineName,;
           inputs: {
             input_a: (a.data as any).serverTensorId,
             input_b: (b.data as any).serverTensorId
@@ -1243,7 +1243,7 @@ class TensorRTBackend extends BaseBackend {
           uploaded: true
         },
         shape: { rows: M, cols: N },
-        backend: 'tensorrt',
+        backend: 'tensorrt',;
         id: this.generateId()
       };
 
@@ -1277,7 +1277,7 @@ class TensorRTBackend extends BaseBackend {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           session_id: this.sessionId,
-          engine_name: engineName,
+          engine_name: engineName,;
           inputs: {
             input_a: (a.data as any).serverTensorId,
             input_b: (b.data as any).serverTensorId
@@ -1299,7 +1299,7 @@ class TensorRTBackend extends BaseBackend {
           uploaded: true
         },
         shape: { rows: M, cols: N, batch },
-        backend: 'tensorrt',
+        backend: 'tensorrt',;
         id: this.generateId()
       };
 
@@ -1327,7 +1327,7 @@ class TensorRTBackend extends BaseBackend {
 
     try {
       const response = await fetch(`${this.cudaServiceUrl}/api/v1/tensorrt/tensor/${tensorData.serverTensorId}/data`, {
-        method: 'GET',
+        method: 'GET',;
         headers: { 'Content-Type': 'application/json' }
       });
 
@@ -1387,7 +1387,7 @@ class CPUJSBackend extends BaseBackend {
     const tensor: Tensor = {
       data: tensorData,
       shape,
-      backend: 'cpu-js',
+      backend: 'cpu-js',;
       id: this.generateId()
     };
 

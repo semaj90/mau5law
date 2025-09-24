@@ -318,7 +318,7 @@ export class UnifiedCacheEnhancedOrchestrator {
         current: this.currentAccuracy,
         target: this.targetAccuracy,
         improvement: this.currentAccuracy - 0.6, // Improvement over baseline
-        trend: this.calculateAccuracyTrend(),
+        trend: this.calculateAccuracyTrend(),;
         predictions: this.accuracyHistory.length
       },
       cacheMetrics: {
@@ -354,7 +354,7 @@ export class UnifiedCacheEnhancedOrchestrator {
     const characteristics = {
       urgency: userPattern.timeConstraints,
       complexity: documentComplexity,
-      accuracy: preferences.minAccuracyThreshold,
+      accuracy: preferences.minAccuracyThreshold,;
       latency: preferences.maxLatencyMs
     };
     
@@ -394,7 +394,7 @@ export class UnifiedCacheEnhancedOrchestrator {
       resourceRequirement: {
         memory: strategy === 'memory_first' ? 100 : 50,
         gpu: strategy === 'gpu_optimized' ? 70 : 20,
-        network: strategy === 'distributed_cache' ? 50 : 10,
+        network: strategy === 'distributed_cache' ? 50 : 10,;
         cpu: 30
       }
     };
@@ -404,7 +404,7 @@ export class UnifiedCacheEnhancedOrchestrator {
   }
 
   private async performIntelligentCacheLookup(
-    request: UnifiedCacheRequest,
+    request: UnifiedCacheRequest,;
     strategy: CacheStrategyDecision;
   ): Promise<any> {
     const cacheKey = await this.generateIntelligentCacheKey(request);
@@ -449,7 +449,7 @@ export class UnifiedCacheEnhancedOrchestrator {
   }
 
   private async executeAdaptiveProcessing(
-    request: UnifiedCacheRequest,
+    request: UnifiedCacheRequest,;
     prediction: TopologyPrediction;
   ): Promise<any> {
     // Convert to synthesis request format;
@@ -480,7 +480,7 @@ export class UnifiedCacheEnhancedOrchestrator {
   }
 
   private async generateUnifiedResponse(
-    request: UnifiedCacheRequest,
+    request: UnifiedCacheRequest,;
     results: any,
     processingTime: number;
   ): Promise<UnifiedCacheResponse> {
@@ -502,7 +502,7 @@ export class UnifiedCacheEnhancedOrchestrator {
         memoryUsed: results.processingResult?.performance?.memoryUsed || 0,
         cacheHitRate: cacheMetrics.totalCacheHitRate,
         confidenceScore: results.topologyPrediction?.confidence || 0.8
-      },
+      },;
       adaptations: {
         modelUpdated: accuracyImprovement > 0.05,
         cacheUpdated: true,
@@ -544,9 +544,9 @@ export class UnifiedCacheEnhancedOrchestrator {
         request.documentId,
         (response as { accuracyMetrics?: any; results?: any; performance?: any }).results.qloraConfig,
         {
-          timestamp: Date.now(),
+          timestamp: Date.now(),;
           config: (response as { accuracyMetrics?: any; results?: any; performance?: any }).results.qloraConfig,
-          accuracy: actualAccuracy,
+          accuracy: actualAccuracy,;
           throughput: 1000 / (response as { accuracyMetrics?: any; results?: any; performance?: any }).performance.latency,
           memoryUsage: (response as { accuracyMetrics?: any; results?: any; performance?: any }).performance.memoryUsed * 1024 * 1024,
           userSatisfaction: (response as { accuracyMetrics?: any; results?: any; performance?: any }).performance.confidenceScore,
@@ -567,7 +567,7 @@ export class UnifiedCacheEnhancedOrchestrator {
 
   private async cacheResultsIntelligently(
     request: UnifiedCacheRequest,
-    response: UnifiedCacheResponse,
+    response: UnifiedCacheResponse,;
     strategy: CacheStrategyDecision;
   ): Promise<void> {
     const cacheKey = await this.generateIntelligentCacheKey(request);
@@ -597,7 +597,7 @@ export class UnifiedCacheEnhancedOrchestrator {
           type: request.operationType,
           ts: Date.now(),
           ttlMs: ttl,
-          perf: {
+          perf: {;
             duration: (response as { accuracyMetrics?: any; results?: any; performance?: any }).performance.latency,
             tokens: 1000, // Estimated
             promptTokens: 500, // Estimated
@@ -637,7 +637,7 @@ export class UnifiedCacheEnhancedOrchestrator {
     return {
       hitRate: 0.73,
       status: 'operational',
-      totalSize: '45MB',
+      totalSize: '45MB',;
       entries: 1250
     };
   }
@@ -766,7 +766,7 @@ export class UnifiedCacheEnhancedOrchestrator {
       },
       error: {
         message: error.message || 'Unknown error',
-        component: 'unified-orchestrator',
+        component: 'unified-orchestrator',;
         recovery: 'Retry with fallback configuration'
       }
     };
@@ -928,7 +928,7 @@ export class UnifiedCacheEnhancedOrchestrator {
         memoryUsed: 0,
         cacheHitRate: 1.0,
         confidenceScore: 0.9
-      },
+      },;
       adaptations: {
         modelUpdated: false,
         cacheUpdated: false,

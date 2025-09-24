@@ -14,9 +14,9 @@
   let formData = $state({
     text: '',
     select: '',
-    textarea: '',
-    checkbox: false,
-    radio: ''
+    textarea: '',;
+    checkbox: false,;
+    radio: '';
   });
 
   function handleSubmit() {

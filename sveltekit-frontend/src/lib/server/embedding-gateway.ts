@@ -16,7 +16,7 @@ export interface EmbedGatewayResult {
 // Backend-agnostic embedding gateway: tries New Embedder -> FastAPI -> vLLM -> Ollama -> Go
 export async function getEmbeddingViaGate(
   fetchFn: typeof fetch,
-  text: string,
+  text: string,;
   opts: EmbedGatewayOptions = {}
 ): Promise<EmbedGatewayResult> {
   const model =
@@ -48,7 +48,7 @@ export async function getEmbeddingViaGate(
     try {
       const resp = await fetchFn(`${fastApiUrl.replace(/\/$/, '')}/embed`, {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        headers: { 'content-type': 'application/json' },;
         body: JSON.stringify({ text, model, tags: opts.tags || [] })
       });
       if (resp.ok) {
@@ -66,7 +66,7 @@ export async function getEmbeddingViaGate(
     try {
       const vResp = await fetchFn(`${vllmUrl}/embeddings`, {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        headers: { 'content-type': 'application/json' },;
         body: JSON.stringify({ model, input: text })
       });
       if (vResp.ok) {
@@ -84,7 +84,7 @@ export async function getEmbeddingViaGate(
     const ollamaUrl = (process.env.OLLAMA_URL || process.env.PUBLIC_OLLAMA_URL || 'http://localhost:11434').replace(/\/$/, '');
     const oResp = await fetchFn(`${ollamaUrl}/api/embeddings`, {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: { 'content-type': 'application/json' },;
       body: JSON.stringify({ model, prompt: text })
     });
     if (oResp.ok) {
@@ -101,12 +101,12 @@ export async function getEmbeddingViaGate(
     const goReq = {
       operation: 'vectorize',
       documentId: `doc:${Date.now()}`,
-      data: [] as number[],
+      data: [] as number[],;
       options: { timeout: 5000 }
     };
     const goResp = await fetchFn('/api/tensor', {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: { 'content-type': 'application/json' },;
       body: JSON.stringify(goReq)
     });
     if (goResp.ok) {

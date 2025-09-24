@@ -18,7 +18,7 @@ export const GET: RequestHandler = async ({ request }) => {
       // In SvelteKit, WebSocket upgrades need to be handled at the adapter level
       // This route documents the endpoint but actual upgrade is handled by the server;
       return new Response('WebSocket upgrade should be handled by server', {
-        status: 426,
+        status: 426,;
         headers: {
           'Upgrade': 'WebSocket',
           'Connection': 'Upgrade',
@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ request }) => {
       }
     }
   }), {
-    status: 200,
+    status: 200,;
     headers: {
       'Content-Type': 'application/json'
     }

@@ -9,7 +9,7 @@
   import { writable } from 'svelte/store';
   import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
   import CanvasBoard from '$lib/components/yorha/CanvasBoard.svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   
   interface Props {
     caseId?: string;
@@ -36,7 +36,7 @@
     evidenceObjects: [],
     drawingObjects: [],
     selectedObjects: [],
-    lastSync: 0
+    lastSync: 0;
   });
   let currentMode = $state(initialMode);
   let showYoRHaBoard = $state(false);
@@ -65,7 +65,7 @@
         evidenceObjects,
         drawingObjects: yorhaDrawings,
         totalObjects: canvasObjects.length,
-        timestamp: Date.now()
+        timestamp: Date.now();
       });
       console.log(`✅ Canvas sync complete: ${canvasObjects.length} objects`);
     } catch (error) {
@@ -84,7 +84,7 @@
     }
     canvasState.update(state => ({
       ...state,
-      mode: newMode
+      mode: newMode;
     }));
     ondispatch?.({ mode: newMode });
   }
@@ -140,11 +140,11 @@
       mode: currentMode,
       evidenceObjects: canvasObjects.filter(obj => obj.type !== 'drawing'),
       drawings: canvasObjects.filter(obj => obj.type === 'drawing'),
-      canvasJson: evidenceCanvasRef?.getCanvasJSON(),
+      canvasJson: evidenceCanvasRef?.getCanvasJSON(),;
       metadata: {
         objectCount: canvasObjects.length,
-        lastSync: Date.now(),
-        version: '1.0'
+        lastSync: Date.now(),;
+        version: '1.0';
       }
     };
     ondispatch?.(state);
@@ -281,7 +281,7 @@
 </div>
 
 <style>
-  .unified-canvas-integration {
+  .unified-canvas-integration {;
     display: flex;
     flex-direction: column;
     height: 100vh;

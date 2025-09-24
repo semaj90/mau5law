@@ -43,7 +43,7 @@ export class MCPGraphReader {
         case: cases,
         creator: {
           id: users.id,
-          name: users.name,
+          name: users.name,;
           email: users.email
         }
       })
@@ -56,9 +56,9 @@ export class MCPGraphReader {
 
     const nodes = caseData.map((item) => ({
       id: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.id,
-      type: "case",
+      type: "case",;
       label: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.title,
-      data: {
+      data: {;
         title: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.title,
         description: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.description,
         status: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.status,
@@ -66,7 +66,7 @@ export class MCPGraphReader {
         caseType: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.category,
         creator: (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator
       },
-      connections: [],
+      connections: [],;
       metadata: {
         createdAt: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.createdAt,
         updatedAt: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.updatedAt,
@@ -85,7 +85,7 @@ export class MCPGraphReader {
         from: (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator!.id,
         to: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.id,
         type: "owns" as const,
-        weight: 8,
+        weight: 8,;
         metadata: { relationship: "case_owner" }
       });
 
@@ -115,7 +115,7 @@ export class MCPGraphReader {
           title: cases.title
         },
         creator: {
-          id: users.id,
+          id: users.id,;
           name: users.name
         }
       })
@@ -129,9 +129,9 @@ export class MCPGraphReader {
 
     const nodes = evidenceData.map((item) => ({
       id: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.id,
-      type: "evidence",
+      type: "evidence",;
       label: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.title,
-      data: {
+      data: {;
         title: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.title,
         description: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.description,
         evidenceType: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.evidenceType,
@@ -143,7 +143,7 @@ export class MCPGraphReader {
         case: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case,
         creator: (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator
       },
-      connections: [],
+      connections: [],;
       metadata: {
         createdAt: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.uploadedAt,
         weight:
@@ -162,7 +162,7 @@ export class MCPGraphReader {
           from: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.id,
           to: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case!.id,
           type: "belongs_to" as const,
-          weight: 9,
+          weight: 9,;
           metadata: { relationship: "evidence_in_case" }
         })),
       ...evidenceData
@@ -171,7 +171,7 @@ export class MCPGraphReader {
           from: (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator!.id,
           to: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.id,
           type: "owns" as const,
-          weight: 7,
+          weight: 7,;
           metadata: { relationship: "evidence_owner" }
         }))
     ];
@@ -202,7 +202,7 @@ export class MCPGraphReader {
           title: cases.title
         },
         creator: {
-          id: users.id,
+          id: users.id,;
           name: users.name
         }
       })
@@ -216,9 +216,9 @@ export class MCPGraphReader {
 
     const nodes = reportData.map((item) => ({
       id: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.id,
-      type: "report",
+      type: "report",;
       label: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.title,
-      data: {
+      data: {;
         title: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.title,
         content: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.content,
         reportType: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.reportType,
@@ -227,7 +227,7 @@ export class MCPGraphReader {
         case: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case,
         creator: (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator
       },
-      connections: [],
+      connections: [],;
       metadata: {
         createdAt: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.createdAt,
         updatedAt: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.updatedAt,
@@ -247,7 +247,7 @@ export class MCPGraphReader {
           from: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.id,
           to: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case!.id,
           type: "belongs_to" as const,
-          weight: 8,
+          weight: 8,;
           metadata: { relationship: "report_for_case" }
         })),
       ...reportData
@@ -256,7 +256,7 @@ export class MCPGraphReader {
           from: (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator!.id,
           to: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.id,
           type: "generated_from" as const,
-          weight: 7,
+          weight: 7,;
           metadata: { relationship: "report_generator" }
         }))
     ];

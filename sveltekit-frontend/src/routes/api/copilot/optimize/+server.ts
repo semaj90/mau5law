@@ -1,22 +1,22 @@
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 /*
  * Simple Copilot Optimization API for Testing
  */
 
-import { URL } from "url";
+import { URL } from "url"
 
 export const GET: RequestHandler = async ({ url }) => {
-  const action = url.searchParams.get('action');
+  const action = url.searchParams.get('action')
   
   try {
-    // Add input validation;
+    // Add input validation
     if (!action) {
-      return error(400, 'Action parameter is required');
+      return error(400, 'Action parameter is required')
     }
     switch (action) {
-      case 'health':;
+      case 'health':
         return json({
           status: 'healthy',
           services: {
@@ -30,9 +30,9 @@ export const GET: RequestHandler = async ({ url }) => {
             memoryUsage: 50
           },
           timestamp: Date.now()
-        });
+        })
       
-      case 'status':;
+      case 'status':
         return json({
           service: 'Copilot Optimization API',
           version: '2.1.0',
@@ -45,9 +45,9 @@ export const GET: RequestHandler = async ({ url }) => {
             'Semantic Clustering'
           ],
           timestamp: Date.now()
-        });
+        })
       
-      case 'load_copilot':;
+      case 'load_copilot':
         return json({
           success: true,
           content: generateExampleCopilotContent(),
@@ -59,10 +59,10 @@ export const GET: RequestHandler = async ({ url }) => {
             hasContext7Patterns: true
           },
           timestamp: Date.now()
-        });
+        })
       
       default:
-        return error(400, `Invalid action: ${action}. Use: health, status, load_copilot`);
+        return error(400, `Invalid action: ${action}. Use: health, status, load_copilot`)
     }
   } catch (err: any) {
     console.error('Optimization API error:', {
@@ -70,36 +70,36 @@ export const GET: RequestHandler = async ({ url }) => {
       stack: err.stack,
       action,
       timestamp: new Date().toISOString()
-    });
-    return error(500, `API request failed: ${err.message || 'Unknown error'}`);
+    })
+    return error(500, `API request failed: ${err.message || 'Unknown error'}`)
   }
-};
+}
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     // Add request validation
-    const contentType = request.headers.get('content-type');
+    const contentType = request.headers.get('content-type')
     if (!contentType?.includes('application/json')) {
-      return error(400, 'Content-Type must be application/json');
+      return error(400, 'Content-Type must be application/json')
     }
 
-    const body = await request.json().catch(() => null);
+    const body = await request.json().catch(() => null)
     if (!body) {
-      return error(400, 'Invalid JSON body');
+      return error(400, 'Invalid JSON body')
     }
 
-    const { action, content } = body;
+    const { action, content } = body
 
     if (!action) {
-      return error(400, 'Action is required');
+      return error(400, 'Action is required')
     }
 
     switch (action) {
-      case 'optimize_index':;
+      case 'optimize_index':
         return json({
           success: true,
           optimizedIndex: {
-            entries: [);
+            entries: [)
               {
                 id: 'demo_1',
                 content: content || 'Demo content',
@@ -117,13 +117,13 @@ export const POST: RequestHandler = async ({ request }) => {
             context7Patterns: 3
           },
           timestamp: Date.now()
-        });
+        })
       
-      case 'semantic_search':;
+      case 'semantic_search':
         return json({
           success: true,
           query: content,
-          results: [);
+          results: [)
             {
               id: 'result_1',
               content: 'Example search result',
@@ -133,20 +133,20 @@ export const POST: RequestHandler = async ({ request }) => {
           ],
           count: 1,
           timestamp: Date.now()
-        });
+        })
       
       default:
-        return error(400, `Invalid action: ${action}. Use: optimize_index, semantic_search`);
+        return error(400, `Invalid action: ${action}. Use: optimize_index, semantic_search`)
     }
   } catch (err: any) {
     console.error('Copilot optimization POST error:', {
       error: err.message,
       stack: err.stack,
       timestamp: new Date().toISOString()
-    });
-    return error(500, `Optimization failed: ${err.message || 'Unknown error'}`);
+    })
+    return error(500, `Optimization failed: ${err.message || 'Unknown error'}`)
   }
-};
+}
 
 function generateExampleCopilotContent(): string {
   return `# Copilot Context - Legal AI System
@@ -160,39 +160,39 @@ function generateExampleCopilotContent(): string {
 - **Effects**: Use \`$effect()\` for side effects
 
 \`\`\`typescript
-// Example Svelte 5 component;
+// Example Svelte 5 component
 export function MyComponent() {
-  let { data = [] } = $props();
-  let count = $state(0);
-  let doubled = $derived(count * 2);
+  let { data = [] } = $props()
+  let count = $state(0)
+  let doubled = $derived(count * 2)
   
   $effect(() => {
-    console.log('Count changed:', count);
-  });
+    console.log('Count changed:', count)
+  })
 }
 \`\`\`
 
 ## Database Patterns with Drizzle ORM
 
 \`\`\`typescript
-// Legal case schema;
+// Legal case schema
 export const cases = pgTable('cases', {
   id: text('id').primaryKey(),
   title: text('title').notNull(),
   status: text('status'),
   embedding: vector('embedding', { dimensions: 384 })
-});
+})
 \`\`\`
 
 ## AI Integration Patterns
 
 \`\`\`typescript
-// RAG document processing;
+// RAG document processing
 export async function processLegalDocument(content: string): Promise<any> {
-  const embedding = await generateEmbedding(content);
-  const similarDocs = await semanticSearch(embedding);
-  return { embedding, similarDocs };
+  const embedding = await generateEmbedding(content)
+  const similarDocs = await semanticSearch(embedding)
+  return { embedding, similarDocs }
 }
 \`\`\`
-`;
+`
 }

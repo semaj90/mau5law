@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: 'default' is a reserved word in JavaScript and cannot be used here
+<!-- @migration-task Error while migrating Svelte code: 'default' is a reserved word in JavaScript and cannot be used here;
 https://svelte.dev/e/unexpected_reserved_word -->
 <!-- @migration-task Error while migrating Svelte code: 'default' is a reserved word in JavaScript and cannot be used here -->
 {#snippet default}
@@ -15,7 +15,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
 
   // Reactive state using Svelte 5 runes
   let isInitialized = $state(false);
@@ -39,7 +39,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       priority: 200,
       riskLevel: 'high' as const,
       textureSize: '2048x2048',
-      estimatedComplexity: 'High'
+      estimatedComplexity: 'High';
     },
     {
       id: 'evidence_001', 
@@ -48,16 +48,16 @@ https://svelte.dev/e/unexpected_reserved_word -->
       priority: 180,
       riskLevel: 'critical' as const,
       textureSize: '4096x4096',
-      estimatedComplexity: 'Very High'
+      estimatedComplexity: 'Very High';
     },
     {
       id: 'brief_001',
-      type: 'brief' as const,
-      title: 'Legal Brief Document',
+      type: 'brief' as const,;
+      title: 'Legal Brief Document',;
       priority: 150,
       riskLevel: 'medium' as const,
       textureSize: '1024x1024',
-      estimatedComplexity: 'Medium'
+      estimatedComplexity: 'Medium';
     }
   ]);
 
@@ -113,9 +113,9 @@ https://svelte.dev/e/unexpected_reserved_word -->
       if (!device) return null;
 
       return device.createTexture({
-        size: [width, height, 1],
-        format: 'rgba8unorm',
-        usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.STORAGE_BINDING
+        size: [width, height, 1],;
+        format: 'rgba8unorm',;
+        usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.STORAGE_BINDING;
       });
     } catch (error) {
       console.error('Failed to create mock texture:', error);
@@ -156,7 +156,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         memoryUsed: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).memoryUsed,
         rtxAcceleration: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.rtxAcceleration,
         streamingUsed: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.streamingUsed,
-        timestamp: new Date()
+        timestamp: new Date();
       }, ...processingResults.slice(0, 9)]; // Keep last 10 results
 
       // Update performance metrics
@@ -188,7 +188,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         const texture = createMockTexture(width, height);
         return {
           ...doc,
-          texture: texture!
+          texture: texture!;
         };
       }).filter(doc => doc.texture); // Filter out failed textures
 
@@ -207,8 +207,8 @@ https://svelte.dev/e/unexpected_reserved_word -->
         memoryUsed: 0,
         rtxAcceleration: true,
         streamingUsed: false,
-        batchProcessing: true,
-        timestamp: new Date()
+        batchProcessing: true,;
+        timestamp: new Date();
       }, ...processingResults.slice(0, 9)];
 
       // Update metrics
@@ -261,8 +261,8 @@ https://svelte.dev/e/unexpected_reserved_word -->
         memoryUsed: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).memoryUsed,
         rtxAcceleration: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.rtxAcceleration,
         streamingUsed: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.streamingUsed,
-        demo: true,
-        timestamp: new Date()
+        demo: true,;
+        timestamp: new Date();
       }, ...processingResults.slice(0, 9)];
 
       console.log.mipmapLevels.length} levels generated in ${(result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).totalGenerationTime.toFixed(2)}ms`);
@@ -354,7 +354,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label class="block text-sm font-medium mb-2" for="max-mip-levels">Max Mip Levels</label><input id="max-mip-levels" 
-            type="number" 
+            type="number" ;
             bind:value={mipmapConfig.maxMipLevels}
             min="1" 
             max="16"
@@ -531,7 +531,7 @@ processDocument(index)}
               <div class="mt-2">
                 <div class="w-full bg-gray-200 rounded-full h-2">
                   <div 
-                    class="bg-blue-600 h-2 rounded-full transition-all"
+                    class="bg-blue-600 h-2 rounded-full transition-all";
                     style:width="{bankStats.utilization}%"
                   ></div>
                 </div>

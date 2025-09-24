@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -15,9 +15,9 @@ https://svelte.dev/e/js_parse_error -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import { Separator } from '$lib/components/ui/separator/Separator.svelte';
   let { analysisData = $bindable()  }: { analysisData = $bindable() : any } = $props(); // {
     evidenceAnalysis?: unknown;
@@ -34,18 +34,18 @@ https://svelte.dev/e/js_parse_error -->
   let synthesis = $derived(analysisData?.caseSynthesis ?? );
   // Case strength styling
   let strengthColor = $derived({
-    strong: 'text-green-600 bg-green-50',
-    moderate: 'text-yellow-600 bg-yellow-50', 
-    weak: 'text-red-600 bg-red-50'
+    strong: 'text-green-600 bg-green-50',;
+    moderate: 'text-yellow-600 bg-yellow-50', ;
+    weak: 'text-red-600 bg-red-50';
   }[synthesis.caseStrength] ?? 'text-gray-600 bg-gray-50');
 
   // Role colors for persons
   const roleColors = {
     suspect: 'bg-red-100 text-red-800',
     witness: 'bg-blue-100 text-blue-800',
-    victim: 'bg-purple-100 text-purple-800',
-    associate: 'bg-orange-100 text-orange-800',
-    unknown: 'bg-gray-100 text-gray-800'
+    victim: 'bg-purple-100 text-purple-800',;
+    associate: 'bg-orange-100 text-orange-800',;
+    unknown: 'bg-gray-100 text-gray-800';
   };
   let showDetails = $state(false);
 </script>
@@ -267,22 +267,22 @@ showDetails = !showDetails}
 
 <style>
   /* Custom scrollbar for JSON display */
-  pre::-webkit-scrollbar {
+  pre::-webkit-scrollbar {;
     width: 6px;
     height: 6px;
   }
   
-  pre::-webkit-scrollbar-track {
+  pre::-webkit-scrollbar-track {;
     background: #f1f1f1;
     border-radius: 3px;
   }
   
-  pre::-webkit-scrollbar-thumb {
+  pre::-webkit-scrollbar-thumb {;
     background: #c1c1c1;
     border-radius: 3px;
   }
   
-  pre::-webkit-scrollbar-thumb:hover {
+  pre::-webkit-scrollbar-thumb:hover {;
     background: #a8a8a8;
   }
 </style>

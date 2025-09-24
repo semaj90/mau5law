@@ -8,7 +8,7 @@ export async function fetchEmbedding(text: string): Promise<number[]> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'nomic-embed-text',
+        model: 'nomic-embed-text',;
         prompt: text
       })
     });

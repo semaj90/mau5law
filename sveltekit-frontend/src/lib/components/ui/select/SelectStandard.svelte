@@ -21,7 +21,7 @@
     placeholder = "Select option",
     disabled = false,
     class: className = "",
-    onchange
+    onchange;
   }: Props = $props();
   // Helper to get selected option label
   let selectedLabel = $derived(

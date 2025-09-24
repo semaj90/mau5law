@@ -104,7 +104,7 @@ export class ProductionSoraService {
 
   async traverseGraph(
     startNodeId: string,
-    query: string,
+    query: string,;
     options: Partial<SoraTraversalOptions> = {}
   ): Promise<SoraTraversalPath[]> {
     await this.initialize();
@@ -146,7 +146,7 @@ export class ProductionSoraService {
 
   private async performSimpleTraversal(
     startNodeId: string,
-    query: string,
+    query: string,;
     config: SoraTraversalOptions;
   ): Promise<SoraTraversalPath[]> {
     // Mock traversal for production - replace with actual Neo4j queries;
@@ -154,12 +154,12 @@ export class ProductionSoraService {
       id: startNodeId,
       type: 'document',
       properties: { title: `Document ${startNodeId}`, content: query },
-      score: 0.85,
+      score: 0.85,;
       coordinates: { x: 0, y: 0, z: 0 }
     };
 
     const mockPath: SoraTraversalPath = {
-      nodes: [mockNode],
+      nodes: [mockNode],;
       edges: [],
       totalScore: 0.85,
       pathLength: 1,
@@ -175,7 +175,7 @@ export class ProductionSoraService {
 
   public getCacheStats(): { size: number; keys: string[] } {
     return {
-      size: this.cache.size,
+      size: this.cache.size,;
       keys: Array.from(this.cache.keys()
     };
   }
@@ -215,7 +215,7 @@ export class ProductionMoogleService {
       backgroundColor: '#0f1419',
       nodeSize: { min: 8, max: 32 },
       edgeThickness: { min: 1, max: 6 },
-      colorScheme: 'legal',
+      colorScheme: 'legal',;
       layout: 'force-directed',
       useWebGL: false, // Disabled for compatibility
       enableCaching: true,
@@ -245,7 +245,7 @@ export class ProductionMoogleService {
   }
 
   private async render2DVisualization(
-    paths: SoraTraversalPath[],
+    paths: SoraTraversalPath[],;
     config: MoogleVisualizationConfig;
   ): Promise<MoogleVisualizationOutput> {
     if (!this.canvas || !this.context) {
@@ -291,7 +291,7 @@ export class ProductionMoogleService {
       canvas: this.canvas,
       imageData,
       base64,
-      svg,
+      svg,;
       metadata: {
         nodePositions: positions,
         bounds,
@@ -304,7 +304,7 @@ export class ProductionMoogleService {
 
   private calculateNodePositions(
     nodes: Map<string, SoraGraphNode>,
-    edges: Map<string, SoraGraphEdge>,
+    edges: Map<string, SoraGraphEdge>,;
     config: MoogleVisualizationConfig;
   ): Map<string, { x: number; y: number }> {
     const positions = new Map<string, { x: number; y: number }>();
@@ -318,7 +318,7 @@ export class ProductionMoogleService {
     nodeArray.forEach((node, index) => {
       const angle = (index / nodeArray.length) * 2 * Math.PI;
       positions.set(node.id, {
-        x: centerX + Math.cos(angle) * radius,
+        x: centerX + Math.cos(angle) * radius,;
         y: centerY + Math.sin(angle) * radius
       });
     });
@@ -327,8 +327,8 @@ export class ProductionMoogleService {
   }
 
   private renderEdges(
-    edges: Map<string, SoraGraphEdge>,
-    positions: Map<string, { x: number; y: number }>,
+    edges: Map<string, SoraGraphEdge>,;
+    positions: Map<string, { x: number; y: number }>,;
     config: MoogleVisualizationConfig;
   ): void {
     if (!this.context) return;
@@ -353,8 +353,8 @@ export class ProductionMoogleService {
   }
 
   private renderNodes(
-    nodes: Map<string, SoraGraphNode>,
-    positions: Map<string, { x: number; y: number }>,
+    nodes: Map<string, SoraGraphNode>,;
+    positions: Map<string, { x: number; y: number }>,;
     config: MoogleVisualizationConfig;
   ): void {
     if (!this.context) return;
@@ -400,8 +400,8 @@ export class ProductionMoogleService {
   }
 
   private generateSVG(
-    nodes: Map<string, SoraGraphNode>,
-    positions: Map<string, { x: number; y: number }>,
+    nodes: Map<string, SoraGraphNode>,;
+    positions: Map<string, { x: number; y: number }>,;
     config: MoogleVisualizationConfig;
   ): string {
     let svg = `<svg width="${config.width}" height="${config.height}" xmlns="http://www.w3.org/2000/svg">`;
@@ -423,7 +423,7 @@ export class ProductionMoogleService {
   private createErrorVisualization(config: MoogleVisualizationConfig): MoogleVisualizationOutput {
     return {
       metadata: {
-        nodePositions: [],
+        nodePositions: [],;
         bounds: { minX: 0, maxX: config.width, minY: 0, maxY: config.height },
         renderTime: 0,
         nodeCount: 0,
@@ -466,7 +466,7 @@ export const moogleStore = writable({
 // Helper functions for integration with existing stack
 export async function performLegalGraphQuery(
   query: string,
-  caseId?: string,
+  caseId?: string,;
   options: Partial<SoraTraversalOptions> = {}
 ): Promise<SoraTraversalPath[]> {
   try {
@@ -495,7 +495,7 @@ export async function performLegalGraphQuery(
 }
 
 export async function generateLegalVisualization(
-  paths: SoraTraversalPath[],
+  paths: SoraTraversalPath[],;
   options: Partial<MoogleVisualizationConfig> = {}
 ): Promise<MoogleVisualizationOutput> {
   try {

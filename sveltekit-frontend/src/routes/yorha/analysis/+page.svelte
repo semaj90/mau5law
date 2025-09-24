@@ -25,27 +25,27 @@
       active: 8,
       pending: 3,
       closed: 1,
-      success_rate: 87
+      success_rate: 87;
     },
     evidenceAnalysis: {
       total_pieces: 247,
       processed: 203,
       ai_analyzed: 189,
       flagged: 24,
-      processing_queue: 15
+      processing_queue: 15;
     },
     threatAssessment: {
       critical: 2,
       high: 5,
       medium: 8,
       low: 12,
-      cleared: 3
+      cleared: 3;
     },
     aiPerformance: {
       accuracy: 94.2,
-      processing_speed: 1.3,
+      processing_speed: 1.3,;
       confidence: 91.8,
-      last_update: '2024-01-22 14:35:00'
+      last_update: '2024-01-22 14:35:00';
     }
   });
 
@@ -57,7 +57,7 @@
       status: 'completed',
       confidence: 94.7,
       findings: 'Corporate network intrusion patterns identified',
-      timestamp: '2 hours ago'
+      timestamp: '2 hours ago';
     },
     {
       id: 'ANA-002',
@@ -66,7 +66,7 @@
       status: 'processing',
       confidence: null,
       findings: 'Analyzing communication patterns...',
-      timestamp: '15 minutes ago'
+      timestamp: '15 minutes ago';
     },
     {
       id: 'ANA-003',
@@ -74,8 +74,8 @@
       type: 'Financial Correlation',
       status: 'completed',
       confidence: 88.3,
-      findings: 'Suspicious transaction clusters detected',
-      timestamp: '4 hours ago'
+      findings: 'Suspicious transaction clusters detected',;
+      timestamp: '4 hours ago';
     }
   ]);
 </script>

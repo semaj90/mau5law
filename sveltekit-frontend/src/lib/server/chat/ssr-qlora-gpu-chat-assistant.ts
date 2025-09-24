@@ -103,7 +103,7 @@ export class SSRQLorAGPUChatAssistant {
           size: patternBuffer.byteLength,
           confidenceLevel: 1.0,
           riskLevel: 'low' as const,
-          compressed: true,
+          compressed: true,;
           metadata: {
             vectorEmbedding: embeddedPattern
           }
@@ -179,7 +179,7 @@ export class SSRQLorAGPUChatAssistant {
           if (instantResponse) {
             controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({
               type: 'instant',
-              content: instantResponse,
+              content: instantResponse,;
               source: 'nes_memory'
             })}\n\n`);
           }
@@ -196,7 +196,7 @@ export class SSRQLorAGPUChatAssistant {
             controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({
               type: 'cached',
               content: cacheHit[0].metadata.response,
-              similarity: cacheHit[0].similarity,
+              similarity: cacheHit[0].similarity,;
               source: 'gpu_cache'
             })}\n\n`);
           }
@@ -215,7 +215,7 @@ export class SSRQLorAGPUChatAssistant {
               type: 'chunk',
               content: chunk,
               index,
-              total: chunks.length,
+              total: chunks.length,;
               source: 'qlora'
             })}\n\n`);
 
@@ -228,7 +228,7 @@ export class SSRQLorAGPUChatAssistant {
           if (glyphData) {
             controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({
               type: 'glyph',
-              content: glyphData,
+              content: glyphData,;
               source: 'neural_sprite'
             })}\n\n`);
           }
@@ -299,7 +299,7 @@ export class SSRQLorAGPUChatAssistant {
         Array.from(embedding),
         {
           response: interaction.aiResponse,
-          feedback: interaction.feedback,
+          feedback: interaction.feedback,;
           timestamp: interaction.timestamp.toISOString()
         }
       );
@@ -362,7 +362,7 @@ export class SSRQLorAGPUChatAssistant {
    */
   private async generateQLorAResponse(
     userDictionary: UserDictionary,
-    message: string,
+    message: string,;
     embedding: Float32Array;
   ): Promise<string> {
     // Use the QLoRA orchestrator with user-specific parameters
@@ -375,7 +375,7 @@ export class SSRQLorAGPUChatAssistant {
         confidenceLevel: 0.8,
         riskLevel: 'low',
         lastAccessed: Date.now(),
-        compressed: false,
+        compressed: false,;
         metadata: {
           vectorEmbedding: embedding
         }
@@ -406,7 +406,7 @@ export class SSRQLorAGPUChatAssistant {
 
         dictionary.legalTerms.set(term, {
           definition,
-          frequency: 1,
+          frequency: 1,;
           confidence: 0.7,
           lastUsed: new Date(),
           contextEmbedding: embedding
@@ -428,7 +428,7 @@ export class SSRQLorAGPUChatAssistant {
       vertices: this.embeddingToVertices(messageEmbedding),
       colors: this.responseToColors(response),
       animation: 'legal_pulse',
-      metadata: {
+      metadata: {;
         complexity: (response as { length?: any; json?: any; split?: any }).length / 100,
         confidence: 0.8
       }
@@ -444,7 +444,7 @@ export class SSRQLorAGPUChatAssistant {
     // Use your existing embedding service (nomic-embed-text);
     const response = await fetch('/api/ai/embed', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },;
       body: JSON.stringify({ text })
     });
 
@@ -587,7 +587,7 @@ export class SSRQLorAGPUChatAssistant {
       id: `interaction_${Date.now()}`,
       timestamp: new Date(),
       userMessage,
-      aiResponse,
+      aiResponse,;
       feedback: 0, // Will be updated by user
       extractedEntities: this.extractLegalTerms(userMessage),
       glyphGenerated: true,

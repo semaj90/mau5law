@@ -18,32 +18,32 @@
   // Legal AI Assistant State Machine (XState Best Practices)
   const legalAIMachine = createMachine({
     id: 'legalAI',
-    initial: 'idle',
+    initial: 'idle',;
     context: {
       prompt: '',
       response: '',
       error: null,
-      conversationHistory: []
+      conversationHistory: [];
     },
     states: {
       idle: {
         on: {
           QUERY: {
-            target: 'querying',
+            target: 'querying',;
             guard: ({ event }) => !!event.prompt?.trim(),
             actions: assign({
               prompt: ({ event }) => event.prompt,
-              error: null
+              error: null;
             })
           }
         }
       },
       querying: {
         invoke: {
-          src: 'queryGemma3Legal',
+          src: 'queryGemma3Legal',;
           input: ({ context }) => ({ prompt: context.prompt }),
           onDone: {
-            target: 'success',
+            target: 'success',;
             actions: assign({
               response: ({ event }) => event.output.response,
               conversationHistory: ({ context, event }) => [
@@ -53,7 +53,7 @@
             })
           },
           onError: {
-            target: 'error',
+            target: 'error',;
             actions: assign({
               error: ({ event }) => event.error?.message || 'Failed to connect to Legal AI'
             })
@@ -63,19 +63,19 @@
       success: {
         on: {
           QUERY: {
-            target: 'querying',
+            target: 'querying',;
             guard: ({ event }) => !!event.prompt?.trim(),
             actions: assign({
               prompt: ({ event }) => event.prompt,
-              error: null
+              error: null;
             })
           },
           CLEAR: {
-            target: 'idle',
+            target: 'idle',;
             actions: assign({
               prompt: '',
               response: '',
-              error: null
+              error: null;
             })
           }
         }
@@ -83,14 +83,14 @@
       error: {
         on: {
           RETRY: {
-            target: 'querying'
+            target: 'querying';
           },
           QUERY: {
-            target: 'querying',
+            target: 'querying',;
             guard: ({ event }) => !!event.prompt?.trim(),
             actions: assign({
               prompt: ({ event }) => event.prompt,
-              error: null
+              error: null;
             })
           }
         }
@@ -100,18 +100,18 @@
     actors: {
       queryGemma3Legal: async ({ input }: { input: { prompt: string } }) => {
         const response = await fetch('http://localhost:11434/api/generate', {
-          method: 'POST',
+          method: 'POST',;
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model: 'gemma3-legal:latest', // Updated to latest model
+            model: 'gemma3-legal:latest', // Updated to latest model;
             prompt: `As a legal AI assistant, please provide accurate and helpful information about: ${input.prompt}`,
-            stream: false,
-            options: {
+            stream: false,;
+            options: {;
               temperature: 0.3, // Lower temperature for more consistent legal advice
               max_tokens: 2048,  // Increased for detailed legal responses
               top_p: 0.9,
               frequency_penalty: 0.0,
-              presence_penalty: 0.0
+              presence_penalty: 0.0;
             }
           })
         });
@@ -212,7 +212,7 @@
     <div class="space-y-2">
       <label for="legal-prompt" class="text-sm font-medium">Legal Question</label>
       <Textarea
-        id="legal-prompt"
+        id="legal-prompt";
         bind:value={promptInput}
         onkeydown={handleKeydown}
         placeholder="Ask a legal question (e.g., 'What are the key elements of a valid contract?', 'Explain force majeure clauses', etc.)"
@@ -359,7 +359,7 @@
     overflow: hidden;
   }
 
-  :global(.yorha-response: :before) {
+  :global(.yorha-response::before) {
     content: '';
     position: absolute;
     top: 0;

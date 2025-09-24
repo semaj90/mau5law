@@ -1,12 +1,12 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { enhancedRAGService } from '$lib/services/enhanced-rag-integration.js';
-import { dev } from '$app/environment';
+import type { RequestHandler } from '@sveltejs/kit'
+import { json, type RequestHandler } from '@sveltejs/kit'
+import { enhancedRAGService } from '$lib/services/enhanced-rag-integration.js'
+import { dev } from '$app/environment'
 
 export const GET: RequestHandler = async () => {
   try {
     if (dev) {
-      console.log('🔍 Enhanced RAG System Status Check');
+      console.log('🔍 Enhanced RAG System Status Check')
     }
 
     // Check all system components
@@ -25,7 +25,7 @@ export const GET: RequestHandler = async () => {
       
       // Test Neo4j connection (if available)
       enhancedRAGService.testNeo4jConnection()
-    ]);
+    ])
 
     const systemHealth = {
       timestamp: new Date().toISOString(),
@@ -67,31 +67,31 @@ export const GET: RequestHandler = async () => {
         confidence: '87% avg',
         uptime: '99.9%'
       }
-    };
+    }
 
     // Determine overall status
-    const failedServices = Object.values(systemHealth.services).filter(item => item.length);
+    const failedServices = Object.values(systemHealth.services).filter(item => item.length)
 
     if (failedServices === 0) {
-      systemHealth.overallStatus = 'fully_operational';
+      systemHealth.overallStatus = 'fully_operational'
     } else if (failedServices <= 2) {
-      systemHealth.overallStatus = 'degraded_performance';
+      systemHealth.overallStatus = 'degraded_performance'
     } else {
-      systemHealth.overallStatus = 'service_disruption';
+      systemHealth.overallStatus = 'service_disruption'
     }
 
     if (dev) {
-      console.log(`🎯 System Status: ${systemHealth.overallStatus}`);
-      console.log(`📊 Services: ${5 - failedServices}/5 operational`);
+      console.log(`🎯 System Status: ${systemHealth.overallStatus}`)
+      console.log(`📊 Services: ${5 - failedServices}/5 operational`)
     }
 
     return json({
       success: true,
       health: systemHealth
-    });
+    })
 
   } catch (error: any) {
-    console.error('❌ Enhanced RAG Status Check Error:', error);
+    console.error('❌ Enhanced RAG Status Check Error:', error)
     
     return json({
       success: false,
@@ -103,6 +103,6 @@ export const GET: RequestHandler = async () => {
         capabilities: Record<string, any>,
         performance: Record<string, any>
       }
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

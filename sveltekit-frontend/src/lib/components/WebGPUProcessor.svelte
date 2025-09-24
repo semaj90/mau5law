@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<!-- @migration-task Error while migrating Svelte code: 'import' and 'export' may only appear at the top level
+<!-- @migration-task Error while migrating Svelte code: 'import' and 'export' may only appear at the top level;
 https://svelte.dev/e/js_parse_error -->
 <!-- WebGPU Tensor Processing Component for SvelteKit 2 -->
 <!-- Real-time GPU acceleration for legal document processing -->
@@ -20,7 +20,7 @@ https://svelte.dev/e/js_parse_error -->
   		enableWebGPU = true,
   		enableAttentionTracking = true,
   		streamingEnabled = true,
-  		class: className = ''
+  		class: className = '';
   	}: {
   		documentData?: unknown[];
   		enableWebGPU?: boolean;
@@ -64,11 +64,11 @@ https://svelte.dev/e/js_parse_error -->
   	// Stores
   	const webgpuContext = writable<WebGPUContext>({
   		device: null,
-  		adapter: null,
-  		canvas: null,
+  		adapter: null,;
+  		canvas: null,;
   		context: null,
   		isSupported: false,
-  		isInitialized: false
+  		isInitialized: false;
   	});
 
   	const tensorOperations = writable<TensorOperation[]>([]);
@@ -223,9 +223,9 @@ https://svelte.dev/e/js_parse_error -->
 
   		private handleMouseMove(event: MouseEvent) {
   			this.mousePositions.push({
-  				x: event.clientX,
-  				y: event.clientY,
-  				timestamp: performance.now()
+  				x: event.clientX,;
+  				y: event.clientY,;
+  				timestamp: performance.now();
   			});
 
   			// Keep only last 100 positions
@@ -239,8 +239,8 @@ https://svelte.dev/e/js_parse_error -->
   		private handleScroll(event: Event) {
   			const target = event.target as HTMLElement;
   			this.scrollPositions.push({
-  				y: target.scrollTop,
-  				timestamp: performance.now()
+  				y: target.scrollTop,;
+  				timestamp: performance.now();
   			});
 
   			if (this.scrollPositions.length > 50) {
@@ -261,9 +261,9 @@ https://svelte.dev/e/js_parse_error -->
   		private handleClick(event: MouseEvent) {
   			// Add high-weight attention point for clicks
   			this.mousePositions.push({
-  				x: event.clientX,
-  				y: event.clientY,
-  				timestamp: performance.now()
+  				x: event.clientX,;
+  				y: event.clientY,;
+  				timestamp: performance.now();
   			});
 
   			// Increase weight for recent positions
@@ -301,9 +301,9 @@ https://svelte.dev/e/js_parse_error -->
 
   			attentionData.set({
   				scores,
-  				positions: recentPositions,
+  				positions: recentPositions,;
   				timestamp: now,
-  				activeRegions
+  				activeRegions;
   			});
   		}
 
@@ -328,9 +328,9 @@ https://svelte.dev/e/js_parse_error -->
 
   				if (!found) {
   					regions.push({
-  						start: positions[i].y - threshold,
-  						end: positions[i].y + threshold,
-  						weight: scores[i]
+  						start: positions[i].y - threshold,;
+  						end: positions[i].y + threshold,;
+  						weight: scores[i];
   					});
   				}
   			}
@@ -383,7 +383,7 @@ https://svelte.dev/e/js_parse_error -->
   			context.configure({
   				device,
   				format: 'bgra8unorm',
-  				alphaMode: 'premultiplied'
+  				alphaMode: 'premultiplied';
   			});
 
   			webgpuContext.set({
@@ -411,14 +411,14 @@ https://svelte.dev/e/js_parse_error -->
   		try {
   			// Embedding pipeline
   			const embeddingModule = device.createShaderModule({
-  				code: EMBEDDING_SHADER
+  				code: EMBEDDING_SHADER;
   			});
 
   			const embeddingPipeline = device.createComputePipeline({
-  				layout: 'auto',
-  				compute: {
+  				layout: 'auto',;
+  				compute: {;
   					module: embeddingModule,
-  					entryPoint: 'main'
+  					entryPoint: 'main';
   				}
   			});
 
@@ -426,14 +426,14 @@ https://svelte.dev/e/js_parse_error -->
 
   			// Attention pipeline
   			const attentionModule = device.createShaderModule({
-  				code: ATTENTION_SHADER
+  				code: ATTENTION_SHADER;
   			});
 
   			const attentionPipeline = device.createComputePipeline({
-  				layout: 'auto',
-  				compute: {
+  				layout: 'auto',;
+  				compute: {;
   					module: attentionModule,
-  					entryPoint: 'main'
+  					entryPoint: 'main';
   				}
   			});
 
@@ -441,14 +441,14 @@ https://svelte.dev/e/js_parse_error -->
 
   			// SOM update pipeline
   			const somModule = device.createShaderModule({
-  				code: SOM_UPDATE_SHADER
+  				code: SOM_UPDATE_SHADER;
   			});
 
   			const somPipeline = device.createComputePipeline({
-  				layout: 'auto',
-  				compute: {
+  				layout: 'auto',;
+  				compute: {;
   					module: somModule,
-  					entryPoint: 'main'
+  					entryPoint: 'main';
   				}
   			});
 
@@ -479,18 +479,18 @@ https://svelte.dev/e/js_parse_error -->
   		try {
   			// Create buffers
   			const inputBuffer = ctx.device.createBuffer({
-  				size: operation.input.byteLength,
-  				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+  				size: operation.input.byteLength,;
+  				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,;
   			});
 
   			const outputBuffer = ctx.device.createBuffer({
-  				size: operation.input.byteLength,
-  				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+  				size: operation.input.byteLength,;
+  				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,;
   			});
 
   			const readBuffer = ctx.device.createBuffer({
-  				size: operation.input.byteLength,
-  				usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+  				size: operation.input.byteLength,;
+  				usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,;
   			});
 
   			// Write input data
@@ -498,7 +498,7 @@ https://svelte.dev/e/js_parse_error -->
 
   			// Create bind group
   			const bindGroup = ctx.device.createBindGroup({
-  				layout: pipeline.getBindGroupLayout(0),
+  				layout: pipeline.getBindGroupLayout(0),;
   				entries: [
   					{ binding: 0, resource: { buffer: inputBuffer } },
   					{ binding: 1, resource: { buffer: outputBuffer } },
@@ -553,7 +553,7 @@ https://svelte.dev/e/js_parse_error -->
   	}
 
   	// Queue tensor operation
-  	function queueOperation(type: TensorOperation['type'], input: Float32Array, shape: number[], metadata: unknown = ) {
+  	function queueOperation(type: TensorOperation['type'], input: Float32Array, shape: number[], metadata: unknown = {} {
   		const operation: TensorOperation = {
   			id: `op_${++operationId}`,
   			type,
@@ -561,9 +561,9 @@ https://svelte.dev/e/js_parse_error -->
   			shape,
   			metadata: {
   				...metadata,
-  				timestamp: performance.now()
-  			},
-  			status: 'pending'
+  				timestamp: performance.now();
+  			},;
+  			status: 'pending';
   		};
 
   		tensorOperations.update(ops => [...ops, operation]);
@@ -656,7 +656,7 @@ https://svelte.dev/e/js_parse_error -->
   				const attentionInput = new Float32Array(doc.content.length).map(() => Math.random());
   				queueOperation('attention', attentionInput, [1, doc.content.length], {
   					documentId: doc.id || `doc_${index}`,
-  					type: 'content_attention'
+  					type: 'content_attention';
   				});
   			}
   		});
@@ -693,8 +693,9 @@ https://svelte.dev/e/js_parse_error -->
   	}
 
   	// Component lifecycle
-  	$effect(async () => {
-  		if (enableWebGPU) {
+  	$effect(() => {
+    (async () => {
+if (enableWebGPU) {
   			await initializeWebGPU();
   		}
 
@@ -709,7 +710,8 @@ https://svelte.dev/e/js_parse_error -->
 
   		// Start animation loop
   		animate();
-  	});
+    })();
+  });
 
   	onDestroy(() => {
   		if (animationFrame) {
@@ -831,7 +833,7 @@ https://svelte.dev/e/js_parse_error -->
 				{#each $attentionData.activeRegions as region, i}
 					<div
 						class="attention-region"
-						style="
+						style=";
 							top: {region.start}px;
 							height: {region.end - region.start}px;
 							opacity: {Math.min(1, region.weight)};
@@ -1027,12 +1029,12 @@ https://svelte.dev/e/js_parse_error -->
 	}
 
 	/* Performance indicator colors */
-	.value.enabled: :before {
+	.value.enabled::before {
 		content: '●';
 		@apply text-green-400 mr-1;
 	}
 
-	.value.disabled: :before {
+	.value.disabled::before {
 		content: '●';
 		@apply text-red-400 mr-1;
 	}

@@ -123,7 +123,7 @@ export class UnifiedAIService {
       },
       langChainConfig: {
         model: 'gemma3-legal:latest',
-        embeddingModel: 'nomic-embed-text:latest',
+        embeddingModel: 'nomic-embed-text:latest',;
         temperature: 0.3,
         chunkSize: 1000,
         chunkOverlap: 200,
@@ -201,7 +201,7 @@ export class UnifiedAIService {
       const cached = this.cache.get(cacheKey)!;
       return {
         ...cached,
-        metadata: { 
+        metadata: { ;
           model: cached.metadata?.model || 'cached',
           ...cached.metadata, 
           cacheHit: true 
@@ -243,7 +243,7 @@ export class UnifiedAIService {
         success: false,
         response: '',
         mode: 'error',
-        processingTime: performance.now() - startTime,
+        processingTime: performance.now() - startTime,;
         error: error.message
       };
     }
@@ -270,7 +270,7 @@ export class UnifiedAIService {
         processingTime: wasmResponse.processingTimeMs,
         metadata: {
           model: wasmResponse.metadata?.model || 'wasm-model',
-          tokenCount: wasmResponse.tokens,
+          tokenCount: wasmResponse.tokens,;
           confidence: wasmResponse.confidence
         }
       };
@@ -307,7 +307,7 @@ export class UnifiedAIService {
         processingTime: langChainResponse.processingTime,
         sources: langChainResponse.sources,
         metadata: {
-          model: this.config.langChainConfig?.model || 'langchain-model',
+          model: this.config.langChainConfig?.model || 'langchain-model',;
           confidence: langChainResponse.confidence
         }
       };
@@ -328,7 +328,7 @@ export class UnifiedAIService {
       const gpuResults: LegalDocument[] = await nesGPUIntegration.searchLegalDocumentsGPU(
         options.query,);
         {
-          limit: options.maxResults || 20,
+          limit: options.maxResults || 20,;
           threshold: options.threshold || 0.7,
           useNESCache: this.config.gpuConfig?.useNESCache,
           enableGPUAcceleration: this.config.enableGPUAcceleration
@@ -340,7 +340,7 @@ export class UnifiedAIService {
       
       return {
         success: true,
-        response,
+        response,;
         mode: 'gpu',
         processingTime: 0, // Will be set by caller;
         sources: gpuResults.map(doc => ({
@@ -349,7 +349,7 @@ export class UnifiedAIService {
           score: doc.score || 0.8
         })),
         metadata: {
-          model: 'gpu-accelerated',
+          model: 'gpu-accelerated',;
           confidence: 0.8
         }
       };
@@ -424,7 +424,7 @@ export class UnifiedAIService {
             if (doc.content) {
               await langChainOllamaService.processDocument(doc.content, {
                 documentId: doc.id,
-                title: doc.title,
+                title: doc.title,;
                 type: doc.type
               });
               processed++;
@@ -447,7 +447,7 @@ export class UnifiedAIService {
       console.error('Document ingestion failed:', error);
       return {
         success: false,
-        processed,
+        processed,;
         errors: documents.length - processed,
         processingTime: performance.now() - startTime
       };
@@ -460,7 +460,7 @@ export class UnifiedAIService {
   async getStats() {
     const stats: any = {
       initialized: this.initialized,
-      cacheSize: this.cache.size,
+      cacheSize: this.cache.size,;
       config: this.config
     };
     
@@ -521,7 +521,7 @@ export class UnifiedAIService {
     
     return {
       ...best,
-      mode: 'hybrid',
+      mode: 'hybrid',;
       sources: results.flatMap(r => r.sources || [])
     };
   }

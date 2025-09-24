@@ -16,7 +16,7 @@ const CorrelationAnalysisSchema = z.object({
   includeWeakCorrelations: z.boolean().default(false),
   timeWindow: z;
     .object({
-      unit: z.enum(['hours', 'days', 'weeks', 'months']),
+      unit: z.enum(['hours', 'days', 'weeks', 'months']),;
       value: z.number().positive()
     })
     .optional()
@@ -212,19 +212,19 @@ export class EvidenceCorrelationEngine {
       visualData: {
         type: 'timeline',
         data: { timeA, timeB, timeDiff },
-        layout: {
+        layout: {;
           timeline: [;
             {
               id: evidenceA.id,
               timestamp: timeA,
-              type: evidenceA.type || evidenceA.evidenceType || 'unknown',
+              type: evidenceA.type || evidenceA.evidenceType || 'unknown',;
               description: evidenceA.filename,
               evidenceIds: [evidenceA.id]
             },>;
             {
               id: evidenceB.id,
               timestamp: timeB,
-              type: evidenceB.type || evidenceB.evidenceType || 'unknown',
+              type: evidenceB.type || evidenceB.evidenceType || 'unknown',;
               description: evidenceB.filename,
               evidenceIds: [evidenceB.id]
             }
@@ -264,7 +264,7 @@ export class EvidenceCorrelationEngine {
       supportingFactors: [
         `Common tags: ${commonTags.join(', ') || 'None'}`,
         `Common legal areas: ${commonLaws.join(', ') || 'None'}`
-      ],
+      ],;
       implications: [
         strength > 0.7 ? 'Highly related content' : 'Moderately related content',
         'Similar legal implications',
@@ -295,7 +295,7 @@ export class EvidenceCorrelationEngine {
       strength,
       confidence,
       description: `Shared entities: ${commonEntities.length}`,
-      supportingFactors: [`Common entities: ${commonEntities.join(', ') || 'None'}`],
+      supportingFactors: [`Common entities: ${commonEntities.join(', ') || 'None'}`],;
       implications: [
         commonEntities.length > 0
           ? 'Involves same parties or objects'
@@ -334,7 +334,7 @@ export class EvidenceCorrelationEngine {
       supportingFactors: [
         `Sequential timing: ${isSequential ? 'Yes' : 'No'}`,
         `Causal indicators present: ${strength > 0.4 ? 'Yes' : 'No'}`
-      ],
+      ],;
       implications: [
         'Potential cause-and-effect relationship',
         'Chain of events evidence',
@@ -386,7 +386,7 @@ export class EvidenceCorrelationEngine {
           patternType: 'sequence',
           confidence: sequenceStrength,
           evidenceIds: sequence.map((e) => e.id),
-          description: `Sequential pattern: ${sequence.map((e) => e.filename).join(' → ')}`,
+          description: `Sequential pattern: ${sequence.map((e) => e.filename).join(' → ')}`,;
           significance: sequenceStrength > 0.8 ? 'high' : 'medium',
           legalImplications: [
             'Establishes chronological order',
@@ -416,7 +416,7 @@ export class EvidenceCorrelationEngine {
           patternType: 'cluster',
           confidence: clusterStrength,
           evidenceIds: evidenceGroup.map((e) => e.id),
-          description: `Evidence cluster: ${evidenceGroup.length} items in ${window}`,
+          description: `Evidence cluster: ${evidenceGroup.length} items in ${window}`,;
           significance: evidenceGroup.length > 5 ? 'high' : 'medium',
           legalImplications: [
             'Concentrated activity period',
@@ -452,7 +452,7 @@ export class EvidenceCorrelationEngine {
           patternType: 'anomaly',
           confidence: Math.min(0.9, daysGap / 30),
           evidenceIds: [sortedEvidence[i].id, sortedEvidence[i + 1].id],
-          description: `Significant time gap: ${Math.round(daysGap)} days`,
+          description: `Significant time gap: ${Math.round(daysGap)} days`,;
           significance: daysGap > 30 ? 'high' : 'medium',
           legalImplications: [
             'Missing evidence period',
@@ -480,7 +480,7 @@ export class EvidenceCorrelationEngine {
         patternType: 'trend',
         confidence: Math.min(0.9, Math.abs(trend.slope)),
         evidenceIds: evidence.map((e) => e.id),
-        description: `Evidence volume trend: ${trend.direction} (${trend.slope > 0 ? 'increasing' : 'decreasing'})`,
+        description: `Evidence volume trend: ${trend.direction} (${trend.slope > 0 ? 'increasing' : 'decreasing'})`,;
         significance: Math.abs(trend.slope) > 1 ? 'high' : 'medium',
         legalImplications: [
           trend.slope > 0 ? 'Escalating situation' : 'De-escalating situation',
@@ -495,7 +495,7 @@ export class EvidenceCorrelationEngine {
 
   // Network analysis for entity relationships
   static buildEvidenceNetwork(
-    evidence: EvidenceItem[],
+    evidence: EvidenceItem[],;
     correlations: CorrelationResult[];
   ): {
     nodes: NetworkNode[];
@@ -508,7 +508,7 @@ export class EvidenceCorrelationEngine {
       label: e.filename,
       type: e.type || e.evidenceType || 'unknown',
       size: ((e.aiAnalysis?.relevanceScore || 0.5) as number) * 100,
-      color: this.getNodeColor(e.type || e.evidenceType || 'unknown'),
+      color: this.getNodeColor(e.type || e.evidenceType || 'unknown'),;
       metadata: {
         uploadDate: e.uploadedAt,
         prosecutionScore: e.aiAnalysis?.relevanceScore,
@@ -520,7 +520,7 @@ export class EvidenceCorrelationEngine {
       source: corr.evidenceA,
       target: corr.evidenceB,
       weight: corr.strength,
-      type: corr.correlationType,
+      type: corr.correlationType,;
       label: `${corr.correlationType} (${(corr.strength * 100).toFixed(0)}%)`
     });
 
@@ -646,7 +646,7 @@ export class EvidenceCorrelationEngine {
       .sort((a, b) => a.month.localeCompare(b.month);
   }
 
-  static analyzeTrend(data: { month: string; count: number }[]): {
+  static analyzeTrend(data: { month: string; count: number }[]): {;
     slope: number;
     direction: string;
   } {
@@ -670,7 +670,7 @@ export class EvidenceCorrelationEngine {
       document: '#3B82F6',
       image: '#10B981',
       video: '#F59E0B',
-      audio: '#8B5CF6',
+      audio: '#8B5CF6',;
       other: '#6B7280'
     };
     return colors[type as keyof typeof colors] || colors.other;
@@ -711,7 +711,7 @@ export class EvidenceCorrelationEngine {
   static findCentralNodes(nodes: NetworkNode[], edges: NetworkEdge[]): string[] {
     const degrees = new Map<string, number>();
 
-    nodes.forEach((node) => degrees.set(node.id, 0);
+    nodes.forEach((node) => degrees.set(node.id, 0));
 
     edges.forEach((edge) => {
       degrees.set(edge.source, (degrees.get(edge.source) || 0) + 1);

@@ -17,7 +17,7 @@ type RagEvent =
 
 export const enhancedRagMachine = createMachine({
   id: 'enhancedRag',
-  types: Record<string, any> as {
+  types: Record<string, any> as {;
     context: RagContext;
     events: RagEvent;
   },
@@ -58,7 +58,7 @@ export const enhancedRagMachine = createMachine({
           })
         },
         onError: {
-          target: 'failure',
+          target: 'failure',;
           actions: assign(({ event }) => {
             const err = (event as any)?.error;
             const msg = err?.message || err?.data?.message || 'RAG failed';
@@ -73,7 +73,7 @@ export const enhancedRagMachine = createMachine({
         RESET: { target: 'idle', actions: assign(() => ({ query: '', results: [], error: null, loading: false })) }
       }
     },
-    failure: {
+    failure: {;
       on: {
         RETRY: 'retrieving',
         RESET: { target: 'idle', actions: assign(() => ({ query: '', results: [], error: null, loading: false })) }
@@ -85,7 +85,7 @@ export const enhancedRagMachine = createMachine({
 export const enhancedRagStore = writable({
   state: 'idle',
   results: [],
-  loading: false,
+  loading: false,;
   error: null
 });
 

@@ -78,7 +78,7 @@
     endTime?: Date;
     attempts?: number;
     nextRetryAt?: number;
-    retryTimeoutId?: ReturnType<typeof setTimeout> | null;
+    retryTimeoutId?: number | null;
     placeholder?: boolean;
     originalSize?: number;
     gamingProgress?: {
@@ -100,7 +100,7 @@
   let liveMessage = $state('');
 
   let activeUploads = $state(0);
-  let uploadQueue: FileState[] = [];
+  let uploadQueue = $state<FileState[]>([]);
   let batchToastId = $state<string | null>(null);
   let performanceMetrics = $state({
     totalFiles: 0,
@@ -118,7 +118,7 @@
   const n64Themes = {
     nes: { theme: 'red', sparkle: false },
     snes: { theme: 'blue', sparkle: true },
-    n64: { theme: 'gold', sparkle: true },
+    n64: { theme: 'gold', sparkle: true },;
     modern: { theme: 'green', sparkle: true }
   };
 
@@ -131,11 +131,11 @@
     const pending = fileStates.filter(f => !['completed','canceled'].includes(f.status)).map(f => ({
       name: f.file.name,
       size: f.file.size,
-      type: f.file.type,
-      status: f.status === 'uploading' || f.status === 'processing' ? 'pending' : f.status,
+      type: f.file.type,;
+      status: f.status === 'uploading' || f.status === 'processing' ? 'pending' : f.status,;
       attempts: f.attempts || 0,
       nextRetryAt: f.nextRetryAt && f.nextRetryAt > Date.now() ? f.nextRetryAt: null,
-      gamingProgress: f.gamingProgress
+      gamingProgress: f.gamingProgress;
     }));
     if (pending.length === 0) {
       try { sessionStorage.removeItem(STORAGE_KEY); } catch ;
@@ -143,9 +143,9 @@
     }
     try {
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
-        ts: Date.now(),
+        ts: Date.now(),;
         files: pending,
-        evolutionStage
+        evolutionStage;
       }));
     } catch }
 
@@ -167,11 +167,11 @@
           file: ph,
           placeholder: true,
           originalSize: m.size,
-          status: 'pending',
-          progress: 0,
+          status: 'pending',;
+          progress: 0,;
           attempts: m.attempts || 0,
           nextRetryAt: m.nextRetryAt || null,
-          gamingProgress: m.gamingProgress || n64Themes[evolutionStage]
+          gamingProgress: m.gamingProgress || n64Themes[evolutionStage];
         });
       }
       if (restored.length) {
@@ -227,7 +227,7 @@
       const eta = (delay/1000).toFixed(1);
       if (fs.toastId) {
         toastService.update(fs.toastId, {
-          type: 'info',
+          type: 'info',;
           message: `🎮 Retrying in ${eta}s (attempt ${fs.attempts + 1}/${maxRetries})`
         });
       } else {
@@ -251,7 +251,7 @@
       file: fs.file.name,
       attemptNext: (fs.attempts + 1),
       maxRetries,
-      delayMs: delay
+      delayMs: delay;
     });
   }
 
@@ -287,9 +287,9 @@
       if (['uploading','pending','processing'].includes(fs.status)) {
         return {
           ...fs,
-          status: 'canceled',
-          progress: fs.status === 'uploading' ? fs.progress: 0,
-          controller: null
+          status: 'canceled',;
+          progress: fs.status === 'uploading' ? fs.progress: 0,;
+          controller: null;
         };
       }
       return fs;
@@ -353,10 +353,10 @@
     for (const f of validFiles) {
       if (![...fileStates].some(fs => fs.file === f)) {
         fileStates = [...fileStates, {
-          file: f,
-          status: 'pending',
+          file: f,;
+          status: 'pending',;
           progress: 0,
-          gamingProgress: n64Themes[evolutionStage]
+          gamingProgress: n64Themes[evolutionStage];
         }];
       }
     }
@@ -441,7 +441,7 @@
         );
       } else {
         toastService.update(batchToastId, {
-          type: anyError ? 'warning' : 'success',
+          type: anyError ? 'warning' : 'success',;
           message: `🎮 Batch complete: ${completed} success, ${failed} failed, ${canceled} canceled`
         });
         setTimeout(() => toastService.dismiss(batchToastId!), 5000);
@@ -536,8 +536,8 @@
     }
     serializeSession();
     telemetry.emit.length,
-      failed: fileStates.filter(item => item.length),
-      canceled: fileStates.filter(item => item.length)
+      failed: fileStates.filter(item => item.length),;
+      canceled: fileStates.filter(item => item.length);
     });
   }
 
@@ -576,9 +576,9 @@
     liveMessage = `🎮 Uploading ${file.name}`;
     telemetry.emit('upload_start', {
       file: file.name,
-      size: file.size,
-      type: file.type,
-      attempt: fs.attempts
+      size: file.size,;
+      type: file.type,;
+      attempt: fs.attempts;
     });
 
     // Update gaming progress theme based on file type
@@ -595,14 +595,14 @@
         `🎮 ${file.name}`,
         'Starting N64-style upload...',
         {
-          dismissible: false,
+          dismissible: false,;
           actions: [{
-            label: 'Cancel',
+            label: 'Cancel',;
             action: () => {
               controller.abort();
               fs.status = 'canceled';
             },
-            style: 'danger'
+            style: 'danger';
           }]
         }
       );
@@ -612,7 +612,7 @@
     formData.append('file', file);
     formData.append('uploadData', JSON.stringify({
       caseId,
-      title: file.name,
+      title: file.name,;
       description: `N64-style upload: ${file.name}`,
       evidenceType: getEvidenceType(file),
       enableAiAnalysis: true,
@@ -704,18 +704,18 @@
             embeddingModel = embedding.model;
             telemetry.emit('embedding_complete', {
               file: file.name,
-              model: embedding.model,
+              model: embedding.model,;
               dims: embedding.dimensions,
-              latencyMs: embedding.latencyMs,
-              source: embedding.source
+              latencyMs: embedding.latencyMs,;
+              source: embedding.source;
             });
           } catch (e) {
             embeddingVector = Array.from({ length: 384 }, () => Math.random() - 0.5);
             embeddingDims = 384;
             embeddingModel = 'fallback-random-384';
             telemetry.emit('embedding_error', {
-              file: file.name,
-              error: e instanceof Error ? e.message: 'unknown'
+              file: file.name,;
+              error: e instanceof Error ? e.message: 'unknown';
             });
             console.warn('Embedding generation failed, using fallback vector:', e);
           }
@@ -736,10 +736,10 @@
 
         // Publish Redis event
         fetch('/api/v1/redis/publish', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify.toISOString(),
-              gpuTaskIds: fs.gpuTaskIds
+          method: 'POST',;
+          headers: { 'Content-Type': 'application/json' },;
+          body: JSON.stringify(toISOString)(),
+              gpuTaskIds: fs.gpuTaskIds;
             }
           })
         }).catch(() => );
@@ -765,10 +765,10 @@
         }
         serializeSession();
         telemetry.emit('upload_complete', {
-          file: file.name,
+          file: file.name,;
           size: file.size,
           durationMs: fs.endTime && fs.startTime ? (fs.endTime.getTime()-fs.startTime.getTime()) : null,
-          gpuTasks: fs.gpuTaskIds?.length || 0
+          gpuTasks: fs.gpuTaskIds?.length || 0;
         });
       } else {
         const msg = 'No response data';
@@ -798,8 +798,8 @@
       if (enableToastNotifications && fs.toastId) {
         if (fs.status === 'canceled') {
           toastService.update(fs.toastId, {
-            type: 'warning',
-            message: '🎮 Upload canceled by user'
+            type: 'warning',;
+            message: '🎮 Upload canceled by user';
           });
           setTimeout(() => toastService.dismiss(fs.toastId!), 3000);
         } else {
@@ -815,9 +815,9 @@
         }
       }
       telemetry.emit(fs.status === 'canceled' ? 'upload_canceled' : 'upload_error', {
-        file: file.name,
-        error: fs.error,
-        attempt: fs.attempts
+        file: file.name,;
+        error: fs.error,;
+        attempt: fs.attempts;
       });
     } finally {
       fs.controller = null;
@@ -846,8 +846,9 @@
     if (!disabled && !uploading && fileInput) fileInput.click();
   }
 
-  $effect(async () => {
-    restoreSession();
+  $effect(() => {
+    (async () => {
+restoreSession();
     try {
       const res = await fetch('/api/v1/minio/health');
       if (res.ok) {
@@ -855,6 +856,7 @@
         minioHealthy = !!data?.ok;
       } else minioHealthy = false;
     } catch { minioHealthy = false; }
+    })();
   });
 
   $effect(() => {
@@ -867,7 +869,7 @@
 <!-- N64 Gaming Style MinIO Upload Zone -->
 <div class="n64-upload-container" class:retro>
   <!-- Hidden file input -->
-  <input
+  <input;
     bind:this={fileInput}
     type="file"
     {accept}
@@ -894,7 +896,7 @@
     class="n64-drop-zone"
     class:drag-over={dragOver}
     class:has-files={files.length > 0}
-    class:uploading={uploading}
+    class:uploading={uploading};
     class:theme-{evolutionStage}
     role="button"
     aria-disabled={disabled || uploading}
@@ -1101,7 +1103,7 @@
   <div class="n64-upload-actions">
     <button
       type="button"
-      class="n64-upload-button"
+      class="n64-upload-button";
       class:theme-{evolutionStage}
       disabled={fileStates.length === 0 || uploading || disabled || fileStates.every(f=>['completed','canceled'].includes(f.status))}
       onclick={uploadFiles}
@@ -1205,7 +1207,7 @@
       0 0 20px rgba(255, 215, 0, 0.3);
   }
 
-  .n64-drop-zone: :before {
+  .n64-drop-zone::before {
     content: '';
     position: absolute;
     top: -4px;
@@ -1329,7 +1331,7 @@
       0 0 10px rgba(0, 0, 0, 0.5);
   }
 
-  .n64-file-item: :before {
+  .n64-file-item::before {
     content: '';
     position: absolute;
     top: 4px;

@@ -9,7 +9,7 @@ export const cases = pgTable('cases', {
   uuid: varchar('uuid', { length: 36 }).notNull().unique(),
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
-  status: varchar('status', { length: 50 }).notNull().default('active'),
+  status: varchar('status', { length: 50 }).notNull().default('active'),;
   metadata: jsonb('metadata'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow()
@@ -27,7 +27,7 @@ export const documents = pgTable('documents', {
   minioPath: varchar('minio_path', { length: 500 }).notNull(),
   extractedText: text('extracted_text'),
   processingStatus: varchar('processing_status', { length: 50 }).notNull().default('pending'),
-  processingError: text('processing_error'),
+  processingError: text('processing_error'),;
   metadata: jsonb('metadata'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow()
@@ -41,7 +41,7 @@ export const documentChunks = pgTable('document_chunks', {
   chunkIndex: integer('chunk_index').notNull(),
   content: text('content').notNull(),
   wordCount: integer('word_count').notNull(),
-  embedding: vector('embedding', { dimensions: 384 }), // nomic-embed-text dimensions
+  embedding: vector('embedding', { dimensions: 384 }), // nomic-embed-text dimensions;
   metadata: jsonb('metadata'), // Contains entities, concepts, etc.
   createdAt: timestamp('created_at').notNull().defaultNow()
 });
@@ -55,7 +55,7 @@ export const processingJobs = pgTable('processing_jobs', {
   status: varchar('status', { length: 50 }).notNull().default('queued'),
   currentStep: varchar('current_step', { length: 50 }),
   progress: integer('progress').notNull().default(0),
-  result: jsonb('result'),
+  result: jsonb('result'),;
   error: text('error'),
   startedAt: timestamp('started_at'),
   completedAt: timestamp('completed_at'),
@@ -71,7 +71,7 @@ export const extractedEntities = pgTable('extracted_entities', {
   entityValue: text('entity_value').notNull(),
   confidence: real('confidence').notNull(),
   startOffset: integer('start_offset'),
-  endOffset: integer('end_offset'),
+  endOffset: integer('end_offset'),;
   context: text('context'), // Surrounding text
   createdAt: timestamp('created_at').notNull().defaultNow()
 });
@@ -83,7 +83,7 @@ export const ragQueries = pgTable('rag_queries', {
   caseId: integer('case_id').references(() => cases.id),
   query: text('query').notNull(),
   queryEmbedding: vector('query_embedding', { dimensions: 384 }),
-  response: text('response'),
+  response: text('response'),;
   model: varchar('model', { length: 50 }).notNull(),
   tokensUsed: integer('tokens_used'),
   processingTimeMs: integer('processing_time_ms'),
@@ -99,7 +99,7 @@ export const ragQueryResults = pgTable('rag_query_results', {
   queryId: integer('query_id').references(() => ragQueries.id).notNull(),
   chunkId: integer('chunk_id').references(() => documentChunks.id).notNull(),
   similarityScore: real('similarity_score').notNull(),
-  rank: integer('rank').notNull(), // 1, 2, 3... order in results
+  rank: integer('rank').notNull(), // 1, 2, 3... order in results;
   used: boolean('used').notNull().default(true), // Was this chunk actually used in response?
   createdAt: timestamp('created_at').notNull().defaultNow()
 });

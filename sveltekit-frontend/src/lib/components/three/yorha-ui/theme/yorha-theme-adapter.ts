@@ -14,7 +14,7 @@ export const NES_PALETTE = {
   red: '#e76e55',
   orange: '#f59e0b',
   grey: '#7c7c7c',
-  black: '#000000',
+  black: '#000000',;
   white: '#ffffff'
 } as const;
 
@@ -30,7 +30,7 @@ const TOKEN_ROLE_MAP: Record<string, { bg: string; border: string; text: string;
   warning: { bg: 'yorha-warning', border: 'yorha-border', text: 'yorha-text-primary' },
   info: { bg: 'ai-status-processing', border: 'yorha-border', text: 'yorha-text-primary' },
   terminal: { bg: 'gothic-bg-secondary', border: 'gothic-border-primary', text: 'gothic-text-primary' },
-  alert: { bg: 'yorha-error', border: 'yorha-border', text: 'yorha-text-primary' },
+  alert: { bg: 'yorha-error', border: 'yorha-border', text: 'yorha-text-primary' },;
   confirm: { bg: 'yorha-success', border: 'yorha-border', text: 'yorha-text-primary' }
 };
 
@@ -131,7 +131,7 @@ export function resolveVariantStyle(variant: string, options?: { enableGlow?: bo
 
   const glow = options?.enableGlow ? {
     enabled: true,
-    color: backgroundColor,
+    color: backgroundColor,;
     intensity: 0.35
   } : undefined;
 

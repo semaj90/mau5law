@@ -16,7 +16,7 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
 		lastModified: '2024-01-20',
 		assignedLawyers: ['Sarah Chen', 'Michael Rodriguez'],
 		client: 'TechCorp Industries',
-		practiceArea: 'Corporate Law',
+		practiceArea: 'Corporate Law',;
 		jurisdiction: 'Federal - Northern District of California',
 		caseType: 'Contract Dispute',
 		estimated_value: 2500000,
@@ -41,7 +41,7 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
 				{ id: '2023-CV-9012', similarity: 0.78, outcome: 'Defendant Victory', settlement: 0 }
 			],
 			timeline_prediction: {
-				discovery_phase: '3-4 months',
+				discovery_phase: '3-4 months',;
 				mediation: '6-8 months',
 				trial_ready: '12-15 months',
 				estimated_resolution: '8-10 months'
@@ -101,7 +101,7 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
 			{
 				priority: 'high',
 				recommendation: 'Consider early mediation at 6-month mark',
-				reasoning: 'Settlement probability increases 34% when mediation occurs before discovery completion',
+				reasoning: 'Settlement probability increases 34% when mediation occurs before discovery completion',;
 				confidence: 0.85
 			}
 		],

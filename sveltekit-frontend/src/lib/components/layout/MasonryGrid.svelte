@@ -1,26 +1,29 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
+  import { onDestroy } from 'svelte';
+  import { dndzone } from 'svelte-dnd-action';
+  import Masonry from 'masonry-layout';
 
   interface Props {
-    items: unknown[] ;
-    columnWidth?: unknown;
-    gutter?: unknown;
-    itemSelector?: unknown;
-    containerClass?: unknown;
-    fitWidth?: unknown;
-    horizontalOrder?: unknown;
-    percentPosition?: unknown;
-    resize?: unknown;
-    initLayout?: unknown;
-    transitionDuration?: unknown;
-    dragDisabled?: unknown;
-    dropTargetStyle?: unknown;
-    dropFromOthersDisabled?: unknown;
+    items: unknown[];
+    columnWidth?: number;
+    gutter?: number;
+    itemSelector?: string;
+    containerClass?: string;
+    fitWidth?: boolean;
+    horizontalOrder?: boolean;
+    percentPosition?: boolean;
+    resize?: boolean;
+    initLayout?: boolean;
+    transitionDuration?: string;
+    dragDisabled?: boolean;
+    dropTargetStyle?: Record<string, string> | undefined;
+    dropFromOthersDisabled?: boolean;
   }
   let {
     items = [],
@@ -35,17 +38,12 @@ https://svelte.dev/e/js_parse_error -->
     initLayout = true,
     transitionDuration = '0.3s',
     dragDisabled = false,
-    dropTargetStyle = ,
+    dropTargetStyle = undefined,
     dropFromOthersDisabled = false
   }: Props = $props();
 
-    import { onMount, onDestroy } from 'svelte';
-    import { dndzone } from 'svelte-dnd-action';
-    import { fly } from 'svelte/transition';
-    import Masonry from 'masonry-layout';
-
   let container: HTMLElement;
-  let masonry: unknown;
+  let masonry: any;
   let isInitialized = $state(false);
 
   // Masonry configuration
@@ -62,28 +60,30 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // Initialize Masonry
-    $effect(() => {
-      if (container) {
-        setTimeout(() => {
-          masonry = new Masonry(container, masonryOptions);
-          isInitialized = true;
-        }, 100);
-      }
-    });
+  $effect(() => {
+    if (container) {
+      const id = setTimeout(() => {
+        masonry = new Masonry(container, masonryOptions);
+        isInitialized = true;
+      }, 100);
+      return () => clearTimeout(id);
+    }
+  });
 
-    // Update layout when items change
-    $effect(() => {
-      if (masonry && isInitialized) {
-        setTimeout(() => {
-          masonry?.reloadItems();
-          masonry?.layout();
-        }, 50);
-      }
-    });
+  // Update layout when items change
+  $effect(() => {
+    if (masonry && isInitialized) {
+      const id = setTimeout(() => {
+        masonry?.reloadItems();
+        masonry?.layout();
+      }, 50);
+      return () => clearTimeout(id);
+    }
+  });
 
-    onDestroy(() => {
-      masonry?.destroy();
-    });
+  onDestroy(() => {
+    masonry?.destroy();
+  });
 
   // Handle drag and drop
   const handleDndConsider = (e: CustomEvent) => {
@@ -94,52 +94,37 @@ https://svelte.dev/e/js_parse_error -->
     items = e.detail.items;
     // Trigger layout update after reordering
     setTimeout(() => {
-      if (masonry) {
-        masonry.layout();
-  }
+      masonry?.layout();
     }, 100);
   };
 
-  // Responsive breakpoints
-  const getResponsiveColumns = () => {
-    if (typeof window === 'undefined') return 3;
-    const width = window.innerWidth;
-    if (width < 640) return 1;
-    if (width < 1024) return 2;
-    if (width < 1280) return 3;
-    return 4;
-  };
-
   // Auto-resize functionality
-  let resizeTimeout = $state<NodeJS.Timeout | null>(null);
-
+  let resizeTimeout = $state<ReturnType<typeof setTimeout> | null>(null);
   const handleResize = () => {
     if (!resize || !masonry) return;
 
-    clearTimeout(resizeTimeout);
+    if (resizeTimeout) clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
-      if (masonry) {
-        masonry.layout();
-      }
+      masonry?.layout();
     }, 150);
   };
 
-    $effect(() => {
-      if (resize) {
-        window.addEventListener('resize', handleResize);
-      }
-      return () => {
-        window.removeEventListener('resize', handleResize);
-        if (resizeTimeout) clearTimeout(resizeTimeout);
-      };
-    });
+  $effect(() => {
+    if (resize) {
+      window.addEventListener('resize', handleResize);
+    }
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+    };
+  });
 </script>
 
+<div
 <div
   bind:this={container}
   class={`${containerClass} masonry-grid`}
   use:dndzone={{
-    items,
     dragDisabled,
     dropTargetStyle,
     dropFromOthersDisabled
@@ -149,28 +134,24 @@ https://svelte.dev/e/js_parse_error -->
   style="--column-width: {columnWidth}px; --gutter: {gutter}px;"
 >
   {#each items as item, index ((item as { id?: unknown; drag?: unknown; newly?: unknown }).id)}
-    <div
-      class="space-y-4"
-      /* transition removed */}
-    >
+<div
+  bind:this={container}
+  class={`${containerClass} masonry-grid`}
+  use:dndzone={{
+    dragDisabled,
+    dropTargetStyle,
+    dropFromOthersDisabled
+  }}
+  on:consider={handleDndConsider}
+  on:finalize={handleDndFinalize}
+  style="--column-width: {columnWidth}px; --gutter: {gutter}px;"
+>
+  {#each items as item, index (item?.id ?? index)}
+    <div class="masonry-item space-y-4">
       <slot {item} {index} />
     </div>
   {/each}
 </div>
-
-<style>
-  /* @unocss-include */
-  .masonry-grid {
-    position: relative;
-    margin: 0 auto;
-}
-  :global(.masonry-item) {
-    width: var(--column-width);
-    margin-bottom: var(--gutter);
-    break-inside: avoid;
-    position: relative;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-}
   /* Responsive design */
   @media (max-width: 640px) {
     :global(.masonry-item) {
@@ -192,10 +173,10 @@ https://svelte.dev/e/js_parse_error -->
   :global(.masonry-item.drag-disabled) {
     cursor: default;
   }
-  :global(.masonry-item: not(.drag-disabled)) {
+  :global(.masonry-item:not(.drag-disabled)) {
     cursor: grab;
 }
-  :global(.masonry-item: not(.drag-disabled):active) {
+  :global(.masonry-item:not(.drag-disabled):active) {
     cursor: grabbing;
 }
   :global(.masonry-item.drag-shadow) {
@@ -207,7 +188,7 @@ https://svelte.dev/e/js_parse_error -->
     transform: rotate(5deg);
   }
   /* Loading state */
-  .masonry-grid: empty::before {
+    .masonry-grid:empty::before {
     content: 'Loading...';
     display: block;
     text-align: center;

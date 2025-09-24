@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -44,9 +44,9 @@ https://svelte.dev/e/js_parse_error -->
     title: '',
     content: '',
     source: '',
-    category: 'general',
-    tags: '',
-    notes: '',
+    category: 'general',;
+    tags: '',;
+    notes: '',;
   });
 
   // Categories for filtering
@@ -81,12 +81,12 @@ https://svelte.dev/e/js_parse_error -->
         ...newCitation,
         tags: newCitation.tags
           .split.map((tag) => tag.trim())
-          .filter((tag: string) => tag.length > 0),
+          .filter((tag: string) => tag.length > 0),;
         id: crypto.randomUUID(),
         isFavorite: false,
         savedAt: new Date(),
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date(),;
       };
 
       // In a real app, this would POST to /api/user/saved-citations
@@ -97,9 +97,9 @@ https://svelte.dev/e/js_parse_error -->
         title: '',
         content: '',
         source: '',
-        category: 'general',
-        tags: '',
-        notes: '',
+        category: 'general',;
+        tags: '',;
+        notes: '',;
       };
 
       showAddDialog = false;
@@ -139,7 +139,7 @@ https://svelte.dev/e/js_parse_error -->
         tags: Array.isArray(editingCitation.tags)
           ? editingCitation.tags: (editingCitation.tags as any as string)
               ?.split.map((tag: string) => tag.trim())
-              .filter((tag: string) => tag.length > 0),
+              .filter((tag: string) => tag.length > 0),;
       };
 
       const index = savedCitations.findIndex((c) => c.id === updated.id);

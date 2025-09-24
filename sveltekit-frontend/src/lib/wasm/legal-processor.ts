@@ -167,7 +167,7 @@ export class WasmLegalProcessor {
           documentType: 'error',
           legalEntities: [],
           citations: [],
-          sensitiveInfo: [],
+          sensitiveInfo: [],;
           fingerprint: '',
           readabilityScore: 0,
           processingTime: 0
@@ -186,7 +186,7 @@ export class WasmLegalProcessor {
       return {
         entities: [],
         citations: [],
-        documentType: 'fragment',
+        documentType: 'fragment',;
         readability: 0
       };
     }
@@ -197,7 +197,7 @@ export class WasmLegalProcessor {
     const readability = this.wasmModule!.calculate_readability_score(text);
 
     return {
-      entities: JSON.parse(entitiesJson),
+      entities: JSON.parse(entitiesJson),;
       citations: JSON.parse(citationsJson),
       documentType,
       readability
@@ -278,7 +278,7 @@ export class WasmLegalProcessor {
         const analysis = {
           complexity: this.calculateComplexity(text),
           legalTermDensity: this.calculateLegalTermDensity(text),
-          structure: this.analyzeStructure(text),
+          structure: this.analyzeStructure(text),;
           classification: this.classifyDocument(text)
         };
         return JSON.stringify(analysis);
@@ -313,7 +313,7 @@ export class WasmLegalProcessor {
             text: match[0],
             confidence: 0.8,
             startIndex: match.index,
-            endIndex: match.index + match[0].length,
+            endIndex: match.index + match[0].length,;
             context: text.substring(Math.max(0, match.index - 20), match.index + match[0].length + 20)
           });
         }
@@ -326,7 +326,7 @@ export class WasmLegalProcessor {
             text: match[0],
             confidence: 0.9,
             startIndex: match.index,
-            endIndex: match.index + match[0].length,
+            endIndex: match.index + match[0].length,;
             context: text.substring(Math.max(0, match.index - 20), match.index + match[0].length + 20)
           });
         }
@@ -352,7 +352,7 @@ export class WasmLegalProcessor {
           citations.push({
             type: 'case',
             citation: match[0],
-            jurisdiction: 'Federal',
+            jurisdiction: 'Federal',;
             relevance: 0.8
           });
         }
@@ -363,7 +363,7 @@ export class WasmLegalProcessor {
           citations.push({
             type: 'statute',
             citation: match[0],
-            jurisdiction: 'Federal',
+            jurisdiction: 'Federal',;
             relevance: 0.9
           });
         }
@@ -397,7 +397,7 @@ export class WasmLegalProcessor {
             type: 'ssn',
             value: match[0],
             masked: 'XXX-XX-' + match[0].slice(-4),
-            confidence: 0.95,
+            confidence: 0.95,;
             location: { start: match.index, end: match.index + match[0].length }
           });
         }
@@ -409,7 +409,7 @@ export class WasmLegalProcessor {
             type: 'email',
             value: match[0],
             masked: match[0].charAt(0) + '***@' + match[0].split('@')[1],
-            confidence: 0.9,
+            confidence: 0.9,;
             location: { start: match.index, end: match.index + match[0].length }
           });
         }
@@ -442,7 +442,7 @@ export class WasmLegalProcessor {
   private analyzeStructure(text: string): any {
     return {
       paragraphs: text.split(/\n\s*\n/).length,
-      sections: (text.match(/^\d+\./gm) || []).length,
+      sections: (text.match(/^\d+\./gm) || []).length,;
       headers: (text.match(/^[A-Z\s]+$/gm) || []).length
     };
   }

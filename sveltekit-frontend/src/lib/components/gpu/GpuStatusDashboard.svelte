@@ -94,10 +94,10 @@
   function triggerTestRun() {
     // Example test invocation (embedding-generation assumed):
     gpuVectorProcessor.run({
-      pipeline: 'embedding-generation',
+      pipeline: 'embedding-generation',;
       input: { data: new Float32Array(1024) },
-      expected: 'compute',
-      label: 'dashboard-test'
+      expected: 'compute',;
+      label: 'dashboard-test';
     } as any);
   }
 

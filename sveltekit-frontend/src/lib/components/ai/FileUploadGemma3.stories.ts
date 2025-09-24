@@ -33,7 +33,7 @@ const meta = {
     enableAIProcessing: {
       control: 'boolean',
       description: 'Enable AI processing and analysis',
-      table: {
+      table: {;
         type: { summary: 'boolean' },
         defaultValue: { summary: 'true' }
       }
@@ -76,7 +76,7 @@ export const LargeFileSupport: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'File upload with large file support (100MB) and multimedia types'
       }
     }
@@ -92,7 +92,7 @@ export const SimpleUpload: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Simple file upload without AI processing - faster for basic use cases'
       }
     }
@@ -114,7 +114,7 @@ export const LegalDocuments: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Optimized for legal document formats with enhanced AI analysis'
       }
     }
@@ -139,7 +139,7 @@ export const MediaUpload: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Media upload with OCR and audio transcription capabilities'
       }
     }
@@ -155,7 +155,7 @@ export const Minimal: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Minimal upload component for simple text files only'
       }
     }

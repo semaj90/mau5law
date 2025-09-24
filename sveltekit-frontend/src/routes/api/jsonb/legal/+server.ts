@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 /*
  * JSONB Legal API Endpoints
@@ -13,13 +13,13 @@ import type { RequestHandler } from './$types.js';
  * - Chain of custody verification
  */
 
-import { json, error } from '@sveltejs/kit';
-import { jsonbLegalService } from '$lib/services/jsonb-legal-service.js';
-import { logger } from '$lib/logging/structured-logger.js';
-import { z } from 'zod';
-import path from "path";
-import crypto from "crypto";
-import { URL } from "url";
+import { json, error } from '@sveltejs/kit'
+import { jsonbLegalService } from '$lib/services/jsonb-legal-service.js'
+import { logger } from '$lib/logging/structured-logger.js'
+import { z } from 'zod'
+import path from "path"
+import crypto from "crypto"
+import { URL } from "url"
 
 // ============================================================================
 // REQUEST VALIDATION SCHEMAS
@@ -56,7 +56,7 @@ const CreateDocumentSchema = z.object({
     title: z.array(z.number()).optional(),
     content: z.array(z.number()).optional()
   }).optional()
-});
+})
 
 const CreateCaseSchema = z.object({
   title: z.string().min(1).max(500),
@@ -80,7 +80,7 @@ const CreateCaseSchema = z.object({
       })).optional()
     }).optional()
   })
-});
+})
 
 const CreateEvidenceSchema = z.object({
   caseId: z.string().uuid(),
@@ -116,7 +116,7 @@ const CreateEvidenceSchema = z.object({
     }).optional()
   }),
   embedding: z.array(z.number()).optional()
-});
+})
 
 const DocumentSearchSchema = z.object({
   documentTypes: z.array(z.string()).optional(),
@@ -136,18 +136,18 @@ const DocumentSearchSchema = z.object({
   })).optional(),
   limit: z.number().int().positive().max(1000).default(50),
   offset: z.number().int().min(0).default(0)
-});
+})
 
 // ============================================================================
 // API HANDLERS
 // ============================================================================
 
 export const GET: RequestHandler = async ({ url, request }) => {
-  const requestId = crypto.randomUUID();
-  const startTime = performance.now();
+  const requestId = crypto.randomUUID()
+  const startTime = performance.now()
 
   try {
-    const path = url.pathname.split('/').pop();
+    const path = url.pathname.split('/').pop()
     
     await logger.logAPIRequest({
       requestId,
@@ -156,12 +156,12 @@ export const GET: RequestHandler = async ({ url, request }) => {
       userAgent: request.headers.get('user-agent') || 'unknown',
       ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
       headers: Object.fromEntries(request.headers.entries()
-    });
+    })
 
     switch (path) {
       case 'analytics':
-        const analytics = await jsonbLegalService.getLegalAnalytics();
-        const duration = performance.now() - startTime;
+        const analytics = await jsonbLegalService.getLegalAnalytics()
+        const duration = performance.now() - startTime
         
         await logger.logAPIResponse({
           requestId,
@@ -169,7 +169,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           responseSize: JSON.stringify(analytics).length,
           processingTime: duration,
           success: true
-        });
+        })
 
         return json({
           success: true,
@@ -179,11 +179,11 @@ export const GET: RequestHandler = async ({ url, request }) => {
             processingTime: duration,
             timestamp: new Date().toISOString()
           }
-        });
+        })
 
       case 'performance':
-        const performance_metrics = await jsonbLegalService.getPerformanceMetrics();
-        const perfDuration = performance.now() - startTime;
+        const performance_metrics = await jsonbLegalService.getPerformanceMetrics()
+        const perfDuration = performance.now() - startTime
         
         await logger.logAPIResponse({
           requestId,
@@ -191,7 +191,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           responseSize: JSON.stringify(performance_metrics).length,
           processingTime: perfDuration,
           success: true
-        });
+        })
 
         return json({
           success: true,
@@ -201,14 +201,14 @@ export const GET: RequestHandler = async ({ url, request }) => {
             processingTime: perfDuration,
             timestamp: new Date().toISOString()
           }
-        });
+        })
 
       default:
-        throw error(404, `Endpoint not found: ${path}`);
+        throw error(404, `Endpoint not found: ${path}`)
     }
   } catch (err: any) {
-    const duration = performance.now() - startTime;
-    const errorMessage = err instanceof Error ? err.message: 'Unknown error';
+    const duration = performance.now() - startTime
+    const errorMessage = err instanceof Error ? err.message: 'Unknown error'
     
     await logger.logAPIResponse({
       requestId,
@@ -217,7 +217,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       processingTime: duration,
       success: false,
       error: errorMessage
-    });
+    })
 
     await logger.logError({
       error: errorMessage,
@@ -225,21 +225,21 @@ export const GET: RequestHandler = async ({ url, request }) => {
       requestId,
       severity: 'high',
       category: 'api'
-    });
+    })
 
-    throw error(500, errorMessage);
+    throw error(500, errorMessage)
   }
-};
+}
 
 export const POST: RequestHandler = async ({ request, url }) => {
-  const requestId = crypto.randomUUID();
-  const startTime = performance.now();
-  let requestBody: any;
+  const requestId = crypto.randomUUID()
+  const startTime = performance.now()
+  let requestBody: any
 
   try {
-    requestBody = await request.json();
+    requestBody = await request.json()
     const path = url.pathname.split('/').slice(-2); // Get last two parts: ['legal', 'documents']
-    const operation = path[1] || path[0];
+    const operation = path[1] || path[0]
 
     await logger.logAPIRequest({
       requestId,
@@ -249,13 +249,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
       ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
       requestBody,
       headers: Object.fromEntries(request.headers.entries()
-    });
+    })
 
     switch (operation) {
       case 'documents':
         // Create legal document
-        const documentData = CreateDocumentSchema.parse(requestBody);
-        const document = await jsonbLegalService.createLegalDocument();
+        const documentData = CreateDocumentSchema.parse(requestBody)
+        const document = await jsonbLegalService.createLegalDocument()
           {
             title: documentData.title,
             content: documentData.content,
@@ -265,9 +265,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
             title: documentData.embeddings.title || [],
             content: documentData.embeddings.content || []
           } : undefined
-        );
+        )
         
-        const docDuration = performance.now() - startTime;
+        const docDuration = performance.now() - startTime
         
         await logger.logAPIResponse({
           requestId,
@@ -275,7 +275,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           responseSize: JSON.stringify(document).length,
           processingTime: docDuration,
           success: true
-        });
+        })
 
         return json({
           success: true,
@@ -285,18 +285,18 @@ export const POST: RequestHandler = async ({ request, url }) => {
             processingTime: docDuration,
             timestamp: new Date().toISOString()
           }
-        }, { status: 201 });
+        }, { status: 201 })
 
       case 'cases':
         // Create case
-        const caseData = CreateCaseSchema.parse(requestBody);
+        const caseData = CreateCaseSchema.parse(requestBody)
         const caseRecord = await jsonbLegalService.createCase({
           title: caseData.title,
           description: caseData.description,
           metadata: caseData.metadata
-        });
+        })
         
-        const caseDuration = performance.now() - startTime;
+        const caseDuration = performance.now() - startTime
         
         await logger.logAPIResponse({
           requestId,
@@ -304,7 +304,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           responseSize: JSON.stringify(caseRecord).length,
           processingTime: caseDuration,
           success: true
-        });
+        })
 
         return json({
           success: true,
@@ -314,12 +314,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
             processingTime: caseDuration,
             timestamp: new Date().toISOString()
           }
-        }, { status: 201 });
+        }, { status: 201 })
 
       case 'evidence':
         // Create evidence
-        const evidenceData = CreateEvidenceSchema.parse(requestBody);
-        const evidence = await jsonbLegalService.createEvidence();
+        const evidenceData = CreateEvidenceSchema.parse(requestBody)
+        const evidence = await jsonbLegalService.createEvidence()
           {
             caseId: evidenceData.caseId,
             title: evidenceData.title,
@@ -330,9 +330,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
             metadata: evidenceData.metadata
           },
           evidenceData.embedding
-        );
+        )
         
-        const evidenceDuration = performance.now() - startTime;
+        const evidenceDuration = performance.now() - startTime
         
         await logger.logAPIResponse({
           requestId,
@@ -340,7 +340,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           responseSize: JSON.stringify(evidence).length,
           processingTime: evidenceDuration,
           success: true
-        });
+        })
 
         return json({
           success: true,
@@ -350,21 +350,21 @@ export const POST: RequestHandler = async ({ request, url }) => {
             processingTime: evidenceDuration,
             timestamp: new Date().toISOString()
           }
-        }, { status: 201 });
+        }, { status: 201 })
 
       case 'search':
         // Search documents by criteria
-        const searchCriteria = DocumentSearchSchema.parse(requestBody);
+        const searchCriteria = DocumentSearchSchema.parse(requestBody)
         const searchCriteriaWithDates = {
           ...searchCriteria,
           dateRange: searchCriteria.dateRange ? {
             start: new Date(searchCriteria.dateRange.start),
             end: new Date(searchCriteria.dateRange.end)
           } : undefined
-        };
+        }
         
-        const searchResults = await jsonbLegalService.findDocumentsByLegalCriteria(searchCriteriaWithDates);
-        const searchDuration = performance.now() - startTime;
+        const searchResults = await jsonbLegalService.findDocumentsByLegalCriteria(searchCriteriaWithDates)
+        const searchDuration = performance.now() - startTime
         
         await logger.logAPIResponse({
           requestId,
@@ -372,7 +372,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           responseSize: JSON.stringify(searchResults).length,
           processingTime: searchDuration,
           success: true
-        });
+        })
 
         return json({
           success: true,
@@ -382,16 +382,16 @@ export const POST: RequestHandler = async ({ request, url }) => {
             processingTime: searchDuration,
             timestamp: new Date().toISOString()
           }
-        });
+        })
 
       case 'concepts':
-        // Analyze legal concepts;
+        // Analyze legal concepts
         const { documentIds } = z.object({
           documentIds: z.array(z.string().uuid()).min(1).max(100)
-        }).parse(requestBody);
+        }).parse(requestBody)
         
-        const conceptAnalysis = await jsonbLegalService.analyzeLegalConcepts(documentIds);
-        const conceptDuration = performance.now() - startTime;
+        const conceptAnalysis = await jsonbLegalService.analyzeLegalConcepts(documentIds)
+        const conceptDuration = performance.now() - startTime
         
         await logger.logAPIResponse({
           requestId,
@@ -399,7 +399,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           responseSize: JSON.stringify(conceptAnalysis).length,
           processingTime: conceptDuration,
           success: true
-        });
+        })
 
         return json({
           success: true,
@@ -409,17 +409,17 @@ export const POST: RequestHandler = async ({ request, url }) => {
             processingTime: conceptDuration,
             timestamp: new Date().toISOString()
           }
-        });
+        })
 
       case 'similar-cases':
-        // Find similar cases;
+        // Find similar cases
         const { caseId, threshold } = z.object({
           caseId: z.string().uuid(),
           threshold: z.number().min(0).max(1).default(0.8)
-        }).parse(requestBody);
+        }).parse(requestBody)
         
-        const similarCases = await jsonbLegalService.findSimilarCases(caseId, threshold);
-        const similarDuration = performance.now() - startTime;
+        const similarCases = await jsonbLegalService.findSimilarCases(caseId, threshold)
+        const similarDuration = performance.now() - startTime
         
         await logger.logAPIResponse({
           requestId,
@@ -427,7 +427,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           responseSize: JSON.stringify(similarCases).length,
           processingTime: similarDuration,
           success: true
-        });
+        })
 
         return json({
           success: true,
@@ -437,17 +437,17 @@ export const POST: RequestHandler = async ({ request, url }) => {
             processingTime: similarDuration,
             timestamp: new Date().toISOString()
           }
-        });
+        })
 
       case 'citation-network':
-        // Build citation network;
+        // Build citation network
         const { documentId, depth } = z.object({
           documentId: z.string().uuid(),
           depth: z.number().int().min(1).max(5).default(2)
-        }).parse(requestBody);
+        }).parse(requestBody)
         
-        const citationNetwork = await jsonbLegalService.buildCitationNetwork(documentId, depth);
-        const networkDuration = performance.now() - startTime;
+        const citationNetwork = await jsonbLegalService.buildCitationNetwork(documentId, depth)
+        const networkDuration = performance.now() - startTime
         
         await logger.logAPIResponse({
           requestId,
@@ -455,7 +455,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           responseSize: JSON.stringify(citationNetwork).length,
           processingTime: networkDuration,
           success: true
-        });
+        })
 
         return json({
           success: true,
@@ -465,23 +465,23 @@ export const POST: RequestHandler = async ({ request, url }) => {
             processingTime: networkDuration,
             timestamp: new Date().toISOString()
           }
-        });
+        })
 
       default:
-        throw error(404, `Operation not found: ${operation}`);
+        throw error(404, `Operation not found: ${operation}`)
     }
   } catch (err: any) {
-    const duration = performance.now() - startTime;
-    let errorMessage = 'Unknown error';
-    let statusCode = 500;
+    const duration = performance.now() - startTime
+    let errorMessage = 'Unknown error'
+    let statusCode = 500
 
     if (err instanceof z.ZodError) {
-      errorMessage = `Validation error: ${err.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')}`;
-      statusCode = 400;
+      errorMessage = `Validation error: ${err.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')}`
+      statusCode = 400
     } else if (err instanceof Error) {
-      errorMessage = err.message;
+      errorMessage = err.message
       if (err.message.includes('not found')) {
-        statusCode = 404;
+        statusCode = 404
       }
     }
     
@@ -492,7 +492,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       processingTime: duration,
       success: false,
       error: errorMessage
-    });
+    })
 
     await logger.logError({
       error: errorMessage,
@@ -501,7 +501,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       requestBody,
       severity: statusCode >= 500 ? 'high' : 'medium',
       category: 'api'
-    });
+    })
 
     return json({
       success: false,
@@ -511,18 +511,18 @@ export const POST: RequestHandler = async ({ request, url }) => {
         processingTime: duration,
         timestamp: new Date().toISOString()
       }
-    }, { status: statusCode });
+    }, { status: statusCode })
   }
-};
+}
 
 export const PUT: RequestHandler = async ({ request, url }) => {
-  const requestId = crypto.randomUUID();
-  const startTime = performance.now();
-  let requestBody: any;
+  const requestId = crypto.randomUUID()
+  const startTime = performance.now()
+  let requestBody: any
 
   try {
-    requestBody = await request.json();
-    const pathParts = url.pathname.split('/');
+    requestBody = await request.json()
+    const pathParts = url.pathname.split('/')
     const operation = pathParts[pathParts.length - 2]; // e.g., 'cases' from '/api/jsonb/legal/cases/timeline'
     const action = pathParts[pathParts.length - 1]; // e.g., 'timeline' or 'custody'
 
@@ -534,10 +534,10 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
       requestBody,
       headers: Object.fromEntries(request.headers.entries()
-    });
+    })
 
     if (operation === 'cases' && action === 'timeline') {
-      // Add timeline event to case;
+      // Add timeline event to case
       const { caseId, event } = z.object({
         caseId: z.string().uuid(),
         event: z.object({
@@ -545,10 +545,10 @@ export const PUT: RequestHandler = async ({ request, url }) => {
           event: z.string(),
           significance: z.enum(['low', 'medium', 'high', 'critical'])
         })
-      }).parse(requestBody);
+      }).parse(requestBody)
       
-      const updatedCase = await jsonbLegalService.addCaseTimelineEvent(caseId, event);
-      const duration = performance.now() - startTime;
+      const updatedCase = await jsonbLegalService.addCaseTimelineEvent(caseId, event)
+      const duration = performance.now() - startTime
       
       await logger.logAPIResponse({
         requestId,
@@ -556,7 +556,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
         responseSize: JSON.stringify(updatedCase).length,
         processingTime: duration,
         success: true
-      });
+      })
 
       return json({
         success: true,
@@ -566,9 +566,9 @@ export const PUT: RequestHandler = async ({ request, url }) => {
           processingTime: duration,
           timestamp: new Date().toISOString()
         }
-      });
+      })
     } else if (operation === 'evidence' && action === 'custody') {
-      // Add custody transfer;
+      // Add custody transfer
       const { evidenceId, transfer } = z.object({
         evidenceId: z.string().uuid(),
         transfer: z.object({
@@ -578,10 +578,10 @@ export const PUT: RequestHandler = async ({ request, url }) => {
           location: z.string().optional(),
           condition: z.string().optional()
         })
-      }).parse(requestBody);
+      }).parse(requestBody)
       
-      const updatedEvidence = await jsonbLegalService.addCustodyTransfer(evidenceId, transfer);
-      const duration = performance.now() - startTime;
+      const updatedEvidence = await jsonbLegalService.addCustodyTransfer(evidenceId, transfer)
+      const duration = performance.now() - startTime
       
       await logger.logAPIResponse({
         requestId,
@@ -589,7 +589,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
         responseSize: JSON.stringify(updatedEvidence).length,
         processingTime: duration,
         success: true
-      });
+      })
 
       return json({
         success: true,
@@ -599,15 +599,15 @@ export const PUT: RequestHandler = async ({ request, url }) => {
           processingTime: duration,
           timestamp: new Date().toISOString()
         }
-      });
+      })
     } else if (operation === 'evidence' && action === 'verify') {
-      // Verify evidence chain;
+      // Verify evidence chain
       const { evidenceId } = z.object({
         evidenceId: z.string().uuid()
-      }).parse(requestBody);
+      }).parse(requestBody)
       
-      const verification = await jsonbLegalService.verifyEvidenceChain(evidenceId);
-      const duration = performance.now() - startTime;
+      const verification = await jsonbLegalService.verifyEvidenceChain(evidenceId)
+      const duration = performance.now() - startTime
       
       await logger.logAPIResponse({
         requestId,
@@ -615,7 +615,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
         responseSize: JSON.stringify(verification).length,
         processingTime: duration,
         success: true
-      });
+      })
 
       return json({
         success: true,
@@ -625,22 +625,22 @@ export const PUT: RequestHandler = async ({ request, url }) => {
           processingTime: duration,
           timestamp: new Date().toISOString()
         }
-      });
+      })
     } else {
-      throw error(404, `Operation not found: ${operation}/${action}`);
+      throw error(404, `Operation not found: ${operation}/${action}`)
     }
   } catch (err: any) {
-    const duration = performance.now() - startTime;
-    let errorMessage = 'Unknown error';
-    let statusCode = 500;
+    const duration = performance.now() - startTime
+    let errorMessage = 'Unknown error'
+    let statusCode = 500
 
     if (err instanceof z.ZodError) {
-      errorMessage = `Validation error: ${err.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')}`;
-      statusCode = 400;
+      errorMessage = `Validation error: ${err.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')}`
+      statusCode = 400
     } else if (err instanceof Error) {
-      errorMessage = err.message;
+      errorMessage = err.message
       if (err.message.includes('not found')) {
-        statusCode = 404;
+        statusCode = 404
       }
     }
     
@@ -651,7 +651,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       processingTime: duration,
       success: false,
       error: errorMessage
-    });
+    })
 
     await logger.logError({
       error: errorMessage,
@@ -660,7 +660,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       requestBody,
       severity: statusCode >= 500 ? 'high' : 'medium',
       category: 'api'
-    });
+    })
 
     return json({
       success: false,
@@ -670,14 +670,14 @@ export const PUT: RequestHandler = async ({ request, url }) => {
         processingTime: duration,
         timestamp: new Date().toISOString()
       }
-    }, { status: statusCode });
+    }, { status: statusCode })
   }
-};
+}
 
-// Maintenance endpoint;
+// Maintenance endpoint
 export const PATCH: RequestHandler = async ({ request }) => {
-  const requestId = crypto.randomUUID();
-  const startTime = performance.now();
+  const requestId = crypto.randomUUID()
+  const startTime = performance.now()
 
   try {
     await logger.logAPIRequest({
@@ -687,11 +687,11 @@ export const PATCH: RequestHandler = async ({ request }) => {
       userAgent: request.headers.get('user-agent') || 'unknown',
       ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
       headers: Object.fromEntries(request.headers.entries()
-    });
+    })
 
     // Update case counters
-    await jsonbLegalService.updateCaseCounters();
-    const duration = performance.now() - startTime;
+    await jsonbLegalService.updateCaseCounters()
+    const duration = performance.now() - startTime
     
     await logger.logAPIResponse({
       requestId,
@@ -699,7 +699,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
       responseSize: 0,
       processingTime: duration,
       success: true
-    });
+    })
 
     return json({
       success: true,
@@ -709,10 +709,10 @@ export const PATCH: RequestHandler = async ({ request }) => {
         processingTime: duration,
         timestamp: new Date().toISOString()
       }
-    });
+    })
   } catch (err: any) {
-    const duration = performance.now() - startTime;
-    const errorMessage = err instanceof Error ? err.message: 'Unknown error';
+    const duration = performance.now() - startTime
+    const errorMessage = err instanceof Error ? err.message: 'Unknown error'
     
     await logger.logAPIResponse({
       requestId,
@@ -721,7 +721,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
       processingTime: duration,
       success: false,
       error: errorMessage
-    });
+    })
 
     await logger.logError({
       error: errorMessage,
@@ -729,7 +729,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
       requestId,
       severity: 'high',
       category: 'api'
-    });
+    })
 
     return json({
       success: false,
@@ -739,6 +739,6 @@ export const PATCH: RequestHandler = async ({ request }) => {
         processingTime: duration,
         timestamp: new Date().toISOString()
       }
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

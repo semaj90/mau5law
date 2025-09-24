@@ -1,10 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use keyword 'await' outside an async function
+<!-- @migration-task Error while migrating Svelte code: Cannot use keyword 'await' outside an async function;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use keyword 'await' outside an async function -->
 <!--
   Progressive Gaming Provider
   Manages gaming era evolution and provides context to child components
-  
+
   Features:
   - Automatic era detection based on device capabilities
   - Performance monitoring and adaptive downgrading
@@ -17,10 +17,10 @@ https://svelte.dev/e/js_parse_error -->
   import { setContext, onMount, onDestroy } from 'svelte';
   import { writable, type Writable } from 'svelte/store';
   import { GamingEvolutionManager } from './GamingEvolutionManager.js';
-  import type { 
-    GamingEra, 
-    GamingThemeState, 
-    ProgressiveGamingConfig 
+  import type {
+    GamingEra,
+    GamingThemeState,
+    ProgressiveGamingConfig
   } from '../types/gaming-types.js';
   import { GAMING_CSS_VARS } from '../constants/gaming-constants.js';
 
@@ -50,7 +50,7 @@ https://svelte.dev/e/js_parse_error -->
     enableGlobalCSS = true,
     showDebugInfo = false,
     children,
-    class: className = ''
+    class: className = '';
   }: Props = $props();
 
   // Gaming context stores
@@ -165,13 +165,13 @@ https://svelte.dev/e/js_parse_error -->
     if (!showDebugInfo || !evolutionManager) return;
     debugInfo = {
       currentState: evolutionManager.getCurrentState(),
-      capabilities: evolutionManager.getCapabilities(),
-      config: evolutionManager.getConfig(),
-      timestamp: new Date().toISOString()
+      capabilities: evolutionManager.getCapabilities(),;
+      config: evolutionManager.getConfig(),;
+      timestamp: new Date().toISOString();
     };
   };
 
-  $effect(async () => {
+  $effect(() => {
     // Initialize gaming evolution manager
     evolutionManager = GamingEvolutionManager.getInstance($gamingConfig);
     // Subscribe to state changes
@@ -211,12 +211,12 @@ https://svelte.dev/e/js_parse_error -->
   });
 </script>
 
-<div 
+<div
   class="progressive-gaming-provider {className}"
   class:era-8bit={$gamingState.currentEra === '8bit'}
   class:era-16bit={$gamingState.currentEra === '16bit'}
   class:era-n64={$gamingState.currentEra === 'n64'}
-  class:transitioning={$gamingState.isTransitioning}
+  class:transitioning={$gamingState.isTransitioning};
   class:yorha-integration={integrateWithYorha}
   data-gaming-era={$gamingState.currentEra}
   data-performance-level={$gamingState.performanceLevel}
@@ -293,7 +293,7 @@ https://svelte.dev/e/js_parse_error -->
     image-rendering: crisp-edges;
   }
 
-  .progressive-gaming-provider.era-8bit: global(*) {
+  .progressive-gaming-provider.era-8bit :global(*) {
     image-rendering: inherit;
   }
 
@@ -439,7 +439,7 @@ background-image: linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
     font-family: inherit;
   }
 
-  .debug-controls button:hover {
+  .debug-controls button:hover {;
     background: var(--yorha-secondary, #ffd700);
     color: black;
   }
@@ -457,12 +457,12 @@ background-image: linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
       margin: 1rem;
       max-width: none;
     }
-    
+
     .transition-content {
       font-size: 12px;
       padding: 0 1rem;
     }
-    
+
     .era-indicator {
       margin-bottom: 1rem;
     }
@@ -472,7 +472,7 @@ background-image: linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
       animation: none !important;
       transition: none !important;
     }
-    
+
     .progressive-gaming-provider.transitioning .gaming-content {
       filter: none;
       opacity: 1;
@@ -483,7 +483,7 @@ background-image: linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
       background: black;
       border: 2px solid white;
     }
-    
+
     .transition-overlay {
       background: black;
     }

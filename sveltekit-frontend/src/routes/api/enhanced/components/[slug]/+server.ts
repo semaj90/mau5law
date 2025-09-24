@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import { cacheManager } from '$lib/services/cache-layer-manager';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import { cacheManager } from '$lib/services/cache-layer-manager'
+import type { RequestHandler } from './$types.js'
 
 // Enhanced SSR Components API with multi-layer caching
 // Supports procedural rendering with CRUD-triggered cache invalidation
@@ -8,95 +8,95 @@ import type { RequestHandler } from './$types.js';
 const logger = {
   info: (message: string, data?: any) => console.log(`[ENHANCED-API] ${message}`, data || ''),
   error: (message: string, data?: any) => console.error(`[ERROR] ${message}`, data || '')
-};
+}
 
 export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
-  const { slug } = params;
-  const variant = url.searchParams.get('variant') || 'default';
-  const refresh = url.searchParams.get('refresh') === 'true';
+  const { slug } = params
+  const variant = url.searchParams.get('variant') || 'default'
+  const refresh = url.searchParams.get('refresh') === 'true'
   
-  const cacheKey = `enhanced:${slug}:${variant}:${url.searchParams.toString()}`;
+  const cacheKey = `enhanced:${slug}:${variant}:${url.searchParams.toString()}`
 
-  // Skip cache if refresh requested;
+  // Skip cache if refresh requested
   if (!refresh) {
     try {
-      const cached = await cacheManager.get(cacheKey, 'enhanced-component');
+      const cached = await cacheManager.get(cacheKey, 'enhanced-component')
       if (cached) {
         setHeaders({
           'cache-control': 'public, max-age=300, stale-while-revalidate=600',
           'x-cache': 'HIT',
           'x-cache-layer': cached._cacheLayer || 'unknown'
-        });
+        })
         
-        logger.info('Cache hit for enhanced component', { slug, variant, cacheLayer: cached._cacheLayer });
-        return json(cached);
+        logger.info('Cache hit for enhanced component', { slug, variant, cacheLayer: cached._cacheLayer })
+        return json(cached)
       }
     } catch (error: any) {
-      logger.error('Cache retrieval failed', { slug, error: error.message });
+      logger.error('Cache retrieval failed', { slug, error: error.message })
     }
   }
 
-  // Generate enhanced component data;
+  // Generate enhanced component data
   try {
-    const componentData = await generateEnhancedComponent(slug, variant, url.searchParams);
+    const componentData = await generateEnhancedComponent(slug, variant, url.searchParams)
     
     // Cache the generated data
-    await cacheManager.set(cacheKey, componentData, 'enhanced-component', 300);
+    await cacheManager.set(cacheKey, componentData, 'enhanced-component', 300)
     
     setHeaders({
       'cache-control': 'public, max-age=300, stale-while-revalidate=600',
       'x-cache': 'MISS'
-    });
+    })
 
-    logger.info('Generated enhanced component', { slug, variant });
-    return json(componentData);
+    logger.info('Generated enhanced component', { slug, variant })
+    return json(componentData)
 
   } catch (error: any) {
-    logger.error('Enhanced component generation failed', { slug, error: error.message });
+    logger.error('Enhanced component generation failed', { slug, error: error.message })
     
     return json({
       error: 'Component generation failed',
       slug,
       details: error.message
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 async function generateEnhancedComponent(slug: string, variant: string, searchParams: URLSearchParams) {
-  const startTime = Date.now();
+  const startTime = Date.now()
   
   switch (slug) {
     case 'evidence-board':
-      return await generateEvidenceBoard(variant, searchParams);
+      return await generateEvidenceBoard(variant, searchParams)
     
     case 'legal-timeline':
-      return await generateLegalTimeline(variant, searchParams);
+      return await generateLegalTimeline(variant, searchParams)
     
     case 'semantic-search':
-      return await generateSemanticSearch(variant, searchParams);
+      return await generateSemanticSearch(variant, searchParams)
     
     case 'case-analysis':
-      return await generateCaseAnalysis(variant, searchParams);
+      return await generateCaseAnalysis(variant, searchParams)
     
     case 'document-insights':
-      return await generateDocumentInsights(variant, searchParams);
+      return await generateDocumentInsights(variant, searchParams)
     
     default:
-      throw new Error(`Unknown enhanced component: ${slug}`);
+      throw new Error(`Unknown enhanced component: ${slug}`)
   }
 }
 
 async function generateEvidenceBoard(variant: string, searchParams: URLSearchParams) {
   // Import database and vector search capabilities
-  const { db } = await import('$lib/server/database/connection');
-  const { evidenceTable, documentsTable } = await import('$lib/server/database/schema');
-  const { desc, eq, and, or, ilike } = await import('drizzle-orm');
+  const { db } = await import('$lib/server/database/connection')
+  const { evidenceTable, documentsTable } = await import('$lib/server/database/schema')
+  const { desc, eq, and, or, ilike } = await import('drizzle-orm')
   
-  const limit = parseInt(searchParams.get('limit') || '20');
-  const caseId = searchParams.get('case_id');
-  const priority = searchParams.get('priority');
+  const limit = parseInt(searchParams.get('limit') || '20')
+  const caseId = searchParams.get('case_id')
+  const priority = searchParams.get('priority')
   
-  // Build enhanced query with vector similarity;
+  // Build enhanced query with vector similarity
   let query = db.select({
     id: evidenceTable.id,
     title: evidenceTable.title,
@@ -106,23 +106,23 @@ async function generateEvidenceBoard(variant: string, searchParams: URLSearchPar
     metadata: evidenceTable.metadata,
     created_at: evidenceTable.created_at,
     embedding_similarity: evidenceTable.embedding // This would need proper vector similarity calculation
-  }).from(evidenceTable);
+  }).from(evidenceTable)
 
   // Apply filters
-  const conditions = [];
-  if (caseId) conditions.push(eq(evidenceTable.case_id, caseId);
-  if (priority) conditions.push(eq(evidenceTable.priority, priority);
+  const conditions = []
+  if (caseId) conditions.push(eq(evidenceTable.case_id, caseId)
+  if (priority) conditions.push(eq(evidenceTable.priority, priority)
   
   if (conditions.length > 0) {
-    query = query.where(and(...conditions);
+    query = query.where(and(...conditions)
   }
   
   const evidenceItems = await query
     .orderBy(desc(evidenceTable.priority), desc(evidenceTable.created_at)
-    .limit(limit);
+    .limit(limit)
 
   // Generate related insights using vector similarity
-  const relatedInsights = await generateRelatedInsights(evidenceItems);
+  const relatedInsights = await generateRelatedInsights(evidenceItems)
   
   return {
     component: 'evidence-board',
@@ -143,22 +143,22 @@ async function generateEvidenceBoard(variant: string, searchParams: URLSearchPar
       cache_key: `evidence-board:${variant}`,
       query_time_ms: Date.now() - Date.now()
     }
-  };
+  }
 }
 
 async function generateLegalTimeline(variant: string, searchParams: URLSearchParams) {
-  const { db } = await import('$lib/server/database/connection');
-  const { timelineEventsTable } = await import('$lib/server/database/schema');
-  const { desc, asc, eq } = await import('drizzle-orm');
+  const { db } = await import('$lib/server/database/connection')
+  const { timelineEventsTable } = await import('$lib/server/database/schema')
+  const { desc, asc, eq } = await import('drizzle-orm')
   
-  const caseId = searchParams.get('case_id');
-  const timeRange = searchParams.get('range') || '1y';
+  const caseId = searchParams.get('case_id')
+  const timeRange = searchParams.get('range') || '1y'
   
   const events = await db.select()
     .from(timelineEventsTable)
     .where(caseId ? eq(timelineEventsTable.case_id, caseId) : undefined)
     .orderBy(desc(timelineEventsTable.event_date)
-    .limit(100);
+    .limit(100)
 
   return {
     component: 'legal-timeline',
@@ -171,16 +171,16 @@ async function generateLegalTimeline(variant: string, searchParams: URLSearchPar
     meta: {
       generated_at: new Date().toISOString()
     }
-  };
+  }
 }
 
 async function generateSemanticSearch(variant: string, searchParams: URLSearchParams) {
-  const query = searchParams.get('q') || '';
-  const limit = parseInt(searchParams.get('limit') || '10');
+  const query = searchParams.get('q') || ''
+  const limit = parseInt(searchParams.get('limit') || '10')
   
   // Semantic search using pgvector
-  const { db } = await import('$lib/server/database/connection');
-  const { documentsTable } = await import('$lib/server/database/schema');
+  const { db } = await import('$lib/server/database/connection')
+  const { documentsTable } = await import('$lib/server/database/schema')
   
   if (!query) {
     return {
@@ -188,16 +188,16 @@ async function generateSemanticSearch(variant: string, searchParams: URLSearchPa
       variant,
       data: { results: [], query: '' },
       meta: { generated_at: new Date().toISOString() }
-    };
+    }
   }
   
   // Generate query embedding and perform vector search
-  const queryEmbedding = await generateEmbedding(query);
+  const queryEmbedding = await generateEmbedding(query)
   
   // Note: This would need proper pgvector distance calculation
   const results = await db.select()
     .from(documentsTable)
-    .limit(limit);
+    .limit(limit)
   
   return {
     component: 'semantic-search',
@@ -211,11 +211,11 @@ async function generateSemanticSearch(variant: string, searchParams: URLSearchPa
       generated_at: new Date().toISOString(),
       query_embedding_dims: queryEmbedding?.length || 0
     }
-  };
+  }
 }
 
 async function generateCaseAnalysis(variant: string, searchParams: URLSearchParams) {
-  const caseId = searchParams.get('case_id');
+  const caseId = searchParams.get('case_id')
   
   if (!caseId) {
     return {
@@ -223,7 +223,7 @@ async function generateCaseAnalysis(variant: string, searchParams: URLSearchPara
       variant,
       data: { error: 'case_id required' },
       meta: { generated_at: new Date().toISOString() }
-    };
+    }
   }
   
   // Multi-source analysis combining PostgreSQL, vector search, and graph data
@@ -231,7 +231,7 @@ async function generateCaseAnalysis(variant: string, searchParams: URLSearchPara
     getCaseData(caseId),
     getRelatedCases(caseId),
     generateCaseInsights(caseId)
-  ]);
+  ])
   
   return {
     component: 'case-analysis',
@@ -245,11 +245,11 @@ async function generateCaseAnalysis(variant: string, searchParams: URLSearchPara
     meta: {
       generated_at: new Date().toISOString()
     }
-  };
+  }
 }
 
 async function generateDocumentInsights(variant: string, searchParams: URLSearchParams) {
-  const docId = searchParams.get('doc_id');
+  const docId = searchParams.get('doc_id')
   
   if (!docId) {
     return {
@@ -257,10 +257,10 @@ async function generateDocumentInsights(variant: string, searchParams: URLSearch
       variant,
       data: { error: 'doc_id required' },
       meta: { generated_at: new Date().toISOString() }
-    };
+    }
   }
   
-  const insights = await analyzeDocument(docId);
+  const insights = await analyzeDocument(docId)
   
   return {
     component: 'document-insights',
@@ -269,13 +269,13 @@ async function generateDocumentInsights(variant: string, searchParams: URLSearch
     meta: {
       generated_at: new Date().toISOString()
     }
-  };
+  }
 }
 
-// Helper functions (would be implemented based on your specific needs);
+// Helper functions (would be implemented based on your specific needs)
 async function generateRelatedInsights(evidenceItems: any[]) {
   // Vector similarity analysis
-  return [];
+  return []
 }
 
 async function generateEmbedding(text: string) {
@@ -285,46 +285,46 @@ async function generateEmbedding(text: string) {
 
 async function generateSearchSuggestions(query: string) {
   // Fuse.js powered suggestions
-  return [];
+  return []
 }
 
 async function getCaseData(caseId: string) {
-  const { db } = await import('$lib/server/database/connection');
-  const { casesTable } = await import('$lib/server/database/schema');
-  const { eq } = await import('drizzle-orm');
+  const { db } = await import('$lib/server/database/connection')
+  const { casesTable } = await import('$lib/server/database/schema')
+  const { eq } = await import('drizzle-orm')
   
-  return await db.select().from(casesTable).where(eq(casesTable.id, caseId);
+  return await db.select().from(casesTable).where(eq(casesTable.id, caseId)
 }
 
 async function getRelatedCases(caseId: string) {
   // Vector similarity search for related cases
-  return [];
+  return []
 }
 
 async function generateCaseInsights(caseId: string) {
-  // AI-powered case analysis;
+  // AI-powered case analysis
   return {
     key_points: [],
     risk_factors: [],
     recommendations: []
-  };
+  }
 }
 
 async function calculateRiskScore(caseId: string) {
-  // Risk assessment algorithm;
+  // Risk assessment algorithm
   return {
     score: 0.5,
     factors: [],
     confidence: 0.8
-  };
+  }
 }
 
 async function analyzeDocument(docId: string) {
-  // Document analysis with NLP and vector search;
+  // Document analysis with NLP and vector search
   return {
     summary: '',
     entities: [],
     key_phrases: [],
     sentiment: 0.0
-  };
+  }
 }

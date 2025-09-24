@@ -29,13 +29,13 @@
         'Prefers dark locations',
         'Known Habits',
         'Evade a scene has kinder Sleeps'
-      ],
+      ],;
       attributes: {
         stealth: 95,
         intelligence: 80,
         strength: 70,
         speed: 85,
-        dangerousness: 90
+        dangerousness: 90;
       }
     },
     {
@@ -60,13 +60,13 @@
       knownHabits: [
         'Frequents high-end establishments',
         'Uses multiple identities'
-      ],
+      ],;
       attributes: {
         stealth: 75,
         intelligence: 95,
         strength: 45,
         speed: 60,
-        dangerousness: 65
+        dangerousness: 65;
       }
     },
     {
@@ -91,13 +91,13 @@
       knownHabits: [
         'Meets at specific locations',
         'Always demands payment upfront'
-      ],
+      ],;
       attributes: {
         stealth: 60,
         intelligence: 85,
-        strength: 55,
-        speed: 70,
-        dangerousness: 30
+        strength: 55,;
+        speed: 70,;
+        dangerousness: 30;
       }
     }
   ]);
@@ -132,15 +132,15 @@
                         person.threatLevel === 'medium' ? 5.0 : 2.0),
           photo: '/placeholder-person.jpg',
           knownAssociates: person.profileData?.associates || ['No known associates'],
-          knownHabits: person.profileData?.habits || ['No known habits'],
+          knownHabits: person.profileData?.habits || ['No known habits'],;
           attributes: {
             stealth: Math.floor(Math.random() * 100),
             intelligence: Math.floor(Math.random() * 100),
-            strength: Math.floor(Math.random() * 100),
-            speed: Math.floor(Math.random() * 100),
+            strength: Math.floor(Math.random() * 100),;
+            speed: Math.floor(Math.random() * 100),;
             dangerousness: person.profileData?.dangerLevel ? Math.floor(person.profileData.dangerLevel * 10) :
                           (person.threatLevel === 'high' ? 75 :
-                           person.threatLevel === 'medium' ? 50 : 25)
+                           person.threatLevel === 'medium' ? 50 : 25);
           }
         }));
 
@@ -363,7 +363,7 @@
 </div>
 
 <style>
-  .fugitive-dex {
+  .fugitive-dex {;
     background: linear-gradient(135deg, #0d1117, #161b22);
     min-height: 100vh;
     color: #f0f6fc;
@@ -371,7 +371,7 @@
     position: relative;
   }
 
-  .fugitive-dex: :before {
+  .fugitive-dex::before {
     content: '';
     position: fixed;
     top: 0;
@@ -755,7 +755,7 @@
   }
 
   .associates-list li:before,
-  .habits-list li:before {
+  .habits-list li:before {;
     content: "• ";
     color: #10b981;
     font-weight: bold;

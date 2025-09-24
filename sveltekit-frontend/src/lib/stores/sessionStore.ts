@@ -31,7 +31,7 @@ export interface SessionState {
 const createSessionStore = () => {
   // Initialize with empty state using $state
   let sessionState = $state<SessionState>({
-    user: null,
+    user: null,;
     session: null,
     isAuthenticated: false,
     isLoading: true,
@@ -49,7 +49,7 @@ const createSessionStore = () => {
       if (pageData?.user && pageData?.session) {
         // Primary: Use SvelteKit page data (most reliable)
         sessionState = {
-          user: pageData.user,
+          user: pageData.user,;
           session: pageData.session,
           isAuthenticated: !!pageData.user,
           isLoading: false,
@@ -88,7 +88,7 @@ const createSessionStore = () => {
     // Clear session
     clearSession: () => {
       sessionState = {
-        user: null,
+        user: null,;
         session: null,
         isAuthenticated: false,
         isLoading: false,
@@ -120,7 +120,7 @@ const createSessionStore = () => {
           const data = await response.json();
           if (data?.user) {
             sessionState = {
-              user: data.user,
+              user: data.user,;
               session: data.session || { id: 'server', user: data.user },
               isAuthenticated: true,
               isLoading: false,
@@ -132,7 +132,7 @@ const createSessionStore = () => {
 
         // No valid session found
         sessionState = {
-          user: null,
+          user: null,;
           session: null,
           isAuthenticated: false,
           isLoading: false,

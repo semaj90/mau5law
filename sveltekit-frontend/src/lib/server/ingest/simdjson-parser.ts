@@ -60,7 +60,7 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
     return {
       success: true,
       data: parsedData,
-      extractedText,
+      extractedText,;
       metadata: {
         parser,
         originalSize,
@@ -73,7 +73,7 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
     return {
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      metadata: {
+      metadata: {;
         parser: 'native',
         originalSize,
         textFields: 0,
@@ -133,7 +133,7 @@ export async function parseJsonStream(
     return {
       success: false,
       extractedTexts: [],
-      totalChunks: 0,
+      totalChunks: 0,;
       error: error instanceof Error ? error.message: String(error)
     };
   }

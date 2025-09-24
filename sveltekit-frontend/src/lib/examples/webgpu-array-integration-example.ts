@@ -20,7 +20,7 @@ import {
  * Shows how to handle embeddings from different sources with type safety
  */
 export async function processLegalDocumentEmbeddings(
-  device: GPUDevice,
+  device: GPUDevice,;
   embeddings: {
     sourceType: 'openai' | 'sentence-transformers' | 'custom';
     data: ArrayBuffer | Float32Array | number[];
@@ -119,7 +119,7 @@ export async function optimizeModelWeights(
  * Example: Dynamic Quantization Based on GPU Memory
  */
 export async function adaptiveQuantization(
-  device: GPUDevice,
+  device: GPUDevice,;
   data: Float32Array,
   availableMemoryMB: number;
 ) {
@@ -165,7 +165,7 @@ export async function adaptiveQuantization(
  */
 export function integrateWithTextureStreaming(
   embeddings: Float32Array[],
-  textureConfig: {
+  textureConfig: {;
     width: number;
     height: number;
     format: GPUTextureFormat;

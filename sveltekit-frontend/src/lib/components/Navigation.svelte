@@ -77,9 +77,9 @@
   			const typeRoutes: Record<string, string> = {
   				caseItem: '/cases',
   				evidence: '/evidence',
-  				criminal: '/persons',
-  				document: '/documents',
-  				precedent: '/analysis'
+  				criminal: '/persons',;
+  				document: '/documents',;
+  				precedent: '/analysis';
   			};
   			const baseRoute = typeRoutes[(result as { metadata?: unknown; type?: unknown; id?: unknown }).type] || '/search';
   			handleNavigation(`${baseRoute}?id=${(result as { metadata?: unknown; type?: unknown; id?: unknown }).id}`);

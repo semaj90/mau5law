@@ -255,7 +255,7 @@ const apiCoordinationService = fromCallback(({ sendBack, receive }) => {
         
         sendBack({ 
           type: "API_COORDINATION_START", 
-          connections: redisConnections.length,
+          connections: redisConnections.length,;
           channels: natsChannels.length
         });
         
@@ -267,7 +267,7 @@ const apiCoordinationService = fromCallback(({ sendBack, receive }) => {
           }
           
           sendBack({ 
-            type: "COORDINATION_HEARTBEAT",
+            type: "COORDINATION_HEARTBEAT",;
             timestamp: Date.now(),
             activeConnections: redisConnections.length,
             queueDepth: Math.floor(Math.random() * 100)
@@ -303,7 +303,7 @@ export const phase13StateMachine = setup({
           const gl = event.canvas.getContext("webgl2", {
             powerPreference: "high-performance",
             preserveDrawingBuffer: true,
-            antialias: false,
+            antialias: false,;
             alpha: false
           }) as WebGL2RenderingContext;
           
@@ -320,7 +320,7 @@ export const phase13StateMachine = setup({
       },
       gpuStatus: ({ event }) => ({
         utilization: 0,
-        memoryUsed: 0,
+        memoryUsed: 0,;
         temperature: 65,
         shaderPrograms: 0
       })
@@ -545,7 +545,7 @@ export const phase13StateMachine = setup({
         id: "apiCoordination",
         src: "apiCoordinationService"
       },
-      
+      ;
       entry: ({ self }) => {
         self.send({ type: "API_COORDINATION_START" });
       },
@@ -664,7 +664,7 @@ export const phase13StateMachine = setup({
         description: "Emergency shutdown - all systems stopped",
         phase: "Phase 13 Emergency Shutdown"
       },
-      
+      ;
       type: "final"
     }
   }
@@ -694,7 +694,7 @@ export const phase13Derived = {
       return {
         overall: webglScore + apiScore + perfScore + latencyScore,
         webgl: webglScore,
-        api: apiScore,
+        api: apiScore,;
         performance: perfScore + latencyScore
       };
     }
@@ -724,7 +724,7 @@ export function createPhase13Integration(canvas: HTMLCanvasElement) {
   return {
     actor,
     machine: phase13StateMachine,
-    stores: phase13Stores,
+    stores: phase13Stores,;
     derived: phase13Derived,
     
     // Convenience methods;

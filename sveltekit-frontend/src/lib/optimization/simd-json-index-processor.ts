@@ -22,7 +22,7 @@ export interface CopilotIndexEntry {
   language: string;
   content: string;
   embedding: Float32Array; // Use typed arrays for SIMD operations;
-  metadata: {
+  metadata: {;
     source: 'enhanced_local_index' | 'context7_mcp' | 'basic_index';
     priority: 'high' | 'medium' | 'low';
     relevanceScore: number;
@@ -72,7 +72,7 @@ export class SIMDJSONIndexProcessor {
       model: 'nomic-embed-text',
       dimensions: 384,
       backend: 'hybrid',
-      chunkSize: 512,
+      chunkSize: 512,;
       overlap: 50,
       ...config
     };
@@ -102,7 +102,7 @@ export class SIMDJSONIndexProcessor {
 
       const processedIndex: CopilotIndex = {
         version: '2.0.0',
-        indexType: 'enhanced_legal_ai',
+        indexType: 'enhanced_legal_ai',;
         entries: optimizedEntries,
         statistics,
         clusters
@@ -171,7 +171,7 @@ export class SIMDJSONIndexProcessor {
    */
   async semanticSearch(
     query: string,
-    index: CopilotIndex,
+    index: CopilotIndex,;
     options: {
       limit?: number;
       threshold?: number;
@@ -235,7 +235,7 @@ export class SIMDJSONIndexProcessor {
         confidence: entry.metadata.relevanceScore
       },
       relevanceScore: similarity,
-      rank: index + 1,
+      rank: index + 1,;
       snippet: entry.content.substring(0, 200)
     });
   }
@@ -364,7 +364,7 @@ export class SIMDJSONIndexProcessor {
             priority: entry.mcp_metadata?.priority || 'medium',
             relevanceScore: entry.relevance_score || 0.8,
             timestamp: Date.now(),
-            fileSize: entry.content?.length || 0,
+            fileSize: entry.content?.length || 0,;
             tokens: this.estimateTokens(entry.content || '')
           },
           semanticChunks
@@ -428,7 +428,7 @@ export class SIMDJSONIndexProcessor {
             fileSize: entry.metadata.fileSize || entry.content.length,
             language: 'en',
             tags: []
-          },
+          },;
           version: '1.0'
         });
       }
@@ -436,7 +436,7 @@ export class SIMDJSONIndexProcessor {
       const somClusters = somRAG.getClusters();
       // Convert BooleanCluster to expected format;
       return somClusters.map((cluster: any) => ({
-        id: cluster.id,
+        id: cluster.id,;
         centroid: new Float32Array(cluster.centroid || []),
         memberIds: cluster.documents || [],
         relevantTerms: cluster.metadata?.dominant_legal_type ? [cluster.metadata.dominant_legal_type] : []
@@ -496,7 +496,7 @@ export class SIMDJSONIndexProcessor {
         fileSize: entry.metadata.fileSize,
         language: entry.language,
         tags: [entry.metadata.source, entry.metadata.priority]
-      },
+      },;
       version: '1.0'
     } as import('$lib/types/rag').RAGDocument;
   }
@@ -512,7 +512,7 @@ export class SIMDJSONIndexProcessor {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           content, 
-          model: this.vectorConfig?.model || "unknown" // @ts-ignore - Model property access,
+          model: this.vectorConfig?.model || "unknown" // @ts-ignore - Model property access,;
           backend: 'pgvector'
         })
       });
@@ -537,7 +537,7 @@ export class SIMDJSONIndexProcessor {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           content, 
-          model: this.vectorConfig?.model || "unknown" // @ts-ignore - Model property access,
+          model: this.vectorConfig?.model || "unknown" // @ts-ignore - Model property access,;
           backend: 'qdrant'
         })
       });
@@ -625,7 +625,7 @@ export class SIMDJSONIndexProcessor {
       typescript: 'memo',
       javascript: 'memo',
       svelte: 'memo',
-      markdown: 'memo',
+      markdown: 'memo',;
       json: 'evidence'
     };
     return typeMap[language] || 'memo';
@@ -685,7 +685,7 @@ export const simdIndexProcessor = new SIMDJSONIndexProcessor({
   model: 'nomic-embed-text',
   dimensions: 384,
   backend: 'hybrid',
-  chunkSize: 512,
+  chunkSize: 512,;
   overlap: 50
 });
 

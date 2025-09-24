@@ -38,10 +38,10 @@
   let newUser = $state({
     email: '',
     firstName: '',
-    lastName: '',
-    role: 'viewer' as UserRole,
+    lastName: '',;
+    role: 'viewer' as UserRole,;
     password: '',
-    confirmPassword: ''
+    confirmPassword: '';
   });
 
   // Pagination
@@ -57,12 +57,12 @@
     buttonPrimary: 'px-4 py-2 border border-[#00ff88] bg-[#002211] text-[#00ff88] hover:bg-[#003322] transition-colors text-sm',
     buttonDanger: 'px-4 py-2 border border-red-500 bg-red-900 text-red-100 hover:bg-red-800 transition-colors text-sm',
     input: 'bg-[#111111] border border-[#333333] px-3 py-2 text-sm w-full focus:border-[#00ff88] focus:outline-none',
-    select: 'bg-[#111111] border border-[#333333] px-3 py-2 text-sm focus:border-[#00ff88] focus:outline-none',
+    select: 'bg-[#111111] border border-[#333333] px-3 py-2 text-sm focus:border-[#00ff88] focus:outline-none',;
     table: 'min-w-full divide-y divide-[#222222] text-sm',
     tableHeader: 'text-left px-3 py-2 text-xs opacity-60',
-    tableCell: 'px-3 py-2 text-sm',
+    tableCell: 'px-3 py-2 text-sm',;
     modal: 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50',
-    modalContent: 'bg-[#0b0b0b] border border-[#333333] p-6 w-full max-w-2xl rounded'
+    modalContent: 'bg-[#0b0b0b] border border-[#333333] p-6 w-full max-w-2xl rounded';
   };
 
   // Paginated users container
@@ -116,7 +116,7 @@
       isLoading = true;
 
       const response = await fetch('/api/admin/users', {
-        credentials: 'include'
+        credentials: 'include';
       });
 
       if (response.ok) {
@@ -141,7 +141,7 @@
 
     try {
       const response = await fetch('/api/admin/users', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
         },
@@ -150,9 +150,9 @@
           firstName: newUser.firstName,
           lastName: newUser.lastName,
           role: newUser.role,
-          password: newUser.password
-        }),
-        credentials: 'include'
+          password: newUser.password;
+        }),;
+        credentials: 'include';
       });
 
       if (response.ok) {
@@ -172,12 +172,12 @@
   async function updateUser(userId: string, updates: Partial<AdminUser>) {
     try {
       const response = await fetch(`/api/admin/users/${userId}`, {
-        method: 'PUT',
+        method: 'PUT',;
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(updates),
-        credentials: 'include'
+        body: JSON.stringify(updates),;
+        credentials: 'include';
       });
 
       if (response.ok) {
@@ -202,22 +202,22 @@
       email: z.string().email({ message: 'Invalid email address' }),
       firstName: z.string().max(50).optional().or(z.literal('')),
       lastName: z.string().max(50).optional().or(z.literal('')),
-      role: z.string(),
+      role: z.string(),;
       password: z.string().min(8, { message: 'Password must be at least 8 characters' }),
       confirmPassword: z.string().min(8)
     })
     .refine((data) => data.password === data.confirmPassword, {
-      message: 'Passwords do not match',
-      path: ['confirmPassword']
+      message: 'Passwords do not match',;
+      path: ['confirmPassword'];
     });
 
   const editUserSchema = z.object({
-    id: z.string(),
+    id: z.string(),;
     email: z.string.email({ message: 'Invalid email address' }),
     firstName: z.string.max-optional.or(z.literal('')),
-    lastName: z.string.max-optional.or(z.literal('')),
+    lastName: z.string.max-optional.or(z.literal('')),;
     role: z.string(),
-    isActive: z.boolean.optional()
+    isActive: z.boolean.optional();
   });
 
   // Safe submit handler for the edit form to ensure currentEditUser is not null
@@ -252,8 +252,8 @@
 
     try {
       const response = await fetch(`/api/admin/users/${userId}`, {
-        method: 'DELETE',
-        credentials: 'include'
+        method: 'DELETE',;
+        credentials: 'include';
       });
 
       if (response.ok) {
@@ -276,15 +276,15 @@
 
     try {
       const response = await fetch('/api/admin/users/bulk', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           action,
           userIds: Array.from(selectedUsers)
-        }),
-        credentials: 'include'
+        }),;
+        credentials: 'include';
       });
 
       if (response.ok) {
@@ -304,10 +304,10 @@
     newUser = {
       email: '',
       firstName: '',
-      lastName: '',
-      role: 'viewer',
+      lastName: '',;
+      role: 'viewer',;
       password: '',
-      confirmPassword: ''
+      confirmPassword: '';
     };
   }
 
@@ -380,10 +380,10 @@
       lastName: z.string.optional().or(z.literal('')),
       role: z.string(),
       password: z.string.min(8),
-      confirmPassword: z.string.min(8)
+      confirmPassword: z.string.min(8);
     }).refine(d => d.password === d.confirmPassword, {
-      path: ['confirmPassword'],
-      message: 'Passwords do not match'
+      path: ['confirmPassword'],;
+      message: 'Passwords do not match';
     });
 
     export const load = async () => {

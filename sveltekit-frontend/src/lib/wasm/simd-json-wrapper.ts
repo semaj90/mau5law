@@ -46,7 +46,7 @@ export class SIMDJSONAccelerator {
     parseTime: 0,
     validationTime: 0,
     compressionTime: 0,
-    compressionRatio: 0,
+    compressionRatio: 0,;
     throughput: 0
   };
 
@@ -54,14 +54,14 @@ export class SIMDJSONAccelerator {
     try {
       // Create memory instance (1MB initial, 16MB max);
       this.memory = new WebAssembly.Memory({ 
-        initial: 16, // 16 * 64KB = 1MB
+        initial: 16, // 16 * 64KB = 1MB;
         maximum: 256 // 256 * 64KB = 16MB
       });
 
       // Set up imports for WebAssembly module;
       const imports = {
         js: {
-          memory: this.memory,
+          memory: this.memory,;
           log: (value: number) => {
             console.log(`🔍 WASM Log: ${value}`);
           }
@@ -303,7 +303,7 @@ export class SIMDJSONAccelerator {
         confidence: 0.85,
         practiceArea: ['corporate'],
         jurisdiction: 'federal',
-        dateCreated: '2024-01-01',
+        dateCreated: '2024-01-01',;
         parties: []
       }
     };
@@ -316,7 +316,7 @@ export class SIMDJSONAccelerator {
       confidence: 0.85,
       practiceArea: ['corporate'],
       jurisdiction: 'federal',
-      dateCreated: '2024-01-01',
+      dateCreated: '2024-01-01',;
       parties: []
     };
   }
@@ -340,7 +340,7 @@ export class SIMDJSONAccelerator {
         confidence: 0,
         practiceArea: [],
         jurisdiction: '',
-        dateCreated: '',
+        dateCreated: '',;
         parties: []
       };
     }

@@ -136,9 +136,9 @@
         response: result.text || result.content || '',
         duration: Math.round(duration),
         timestamp: new Date().toLocaleTimeString(),
-        success: true,
-        metrics: result.metrics || ,
-        acceleration: result.acceleration || 'none'
+        success: true,;
+        metrics: result.metrics || ,;
+        acceleration: result.acceleration || 'none';
       };
 
       testResults = [testResult, ...testResults];
@@ -147,8 +147,8 @@
       performanceMetrics = {
         ...performanceMetrics,
         [testType]: {
-          time: duration,
-          tokens: result.tokens || result.tokensGenerated || 0,
+          time: duration,;
+          tokens: result.tokens || result.tokensGenerated || 0,;
           device: result.device || result.acceleration || 'unknown',
           ...(testType === 'cuda' && { gpu: result.gpuUtilization || 0 })
         }
@@ -167,9 +167,9 @@
         duration: performance.now() - startTime,
         timestamp: new Date().toLocaleTimeString(),
         success: false,
-        error: error instanceof Error ? error.message: String(error),
-        metrics: ,
-        acceleration: 'failed'
+        error: error instanceof Error ? error.message: String(error),;
+        metrics: ,;
+        acceleration: 'failed';
       };
 
       testResults = [testResult, ...testResults];
@@ -183,9 +183,9 @@
 
     const result = await browserLocalAI.generateText({
       prompt: testQuery,
-      maxTokens: 256,
+      maxTokens: 256,;
       temperature: 0.3,
-      systemPrompt: 'You are a legal AI assistant specialized in contract analysis.'
+      systemPrompt: 'You are a legal AI assistant specialized in contract analysis.';
     });
 
     const capabilities = browserLocalAI.getCapabilities();
@@ -193,11 +193,11 @@
     return {
       text: result.text,
       tokens: result.tokensGenerated,
-      device: result.device,
+      device: result.device,;
       metrics: {
         processingTime: result.processingTime,
-        fromCache: result.fromCache,
-        capabilities: capabilities
+        fromCache: result.fromCache,;
+        capabilities: capabilities;
       }
     };
   }
@@ -212,13 +212,13 @@
       prompt: testQuery,
       maxTokens: 512,
       temperature: 0.2,
-      systemPrompt: 'You are a specialized legal AI assistant with expertise in contract law.',
+      systemPrompt: 'You are a specialized legal AI assistant with expertise in contract law.',;
       priority: 'high',
       legalContext: {
         jurisdiction: 'general',
         practiceArea: 'contract_law',
-        documentType: 'employment_contract',
-        confidentiality: 'attorney-client'
+        documentType: 'employment_contract',;
+        confidentiality: 'attorney-client';
       }
     });
 
@@ -227,15 +227,15 @@
     return {
       text: result.text,
       tokens: result.tokensGenerated,
-      gpuUtilization: result.gpuUtilization,
+      gpuUtilization: result.gpuUtilization,;
       metrics: {
         processingTime: result.processingTime,
         queueTime: result.queueTime,
         modelUsed: result.modelUsed,
         precision: result.precision,
-        gpuMetrics: gpuMetrics
-      },
-      acceleration: 'cuda-tensorrt'
+        gpuMetrics: gpuMetrics;
+      },;
+      acceleration: 'cuda-tensorrt';
     };
   }
 
@@ -251,13 +251,13 @@
     return {
       content: result.content,
       tokens: result.metadata?.tokenCount || 0,
-      acceleration: result.metadata?.accelerationMetrics?.accelerationUsed || 'unknown',
+      acceleration: result.metadata?.accelerationMetrics?.accelerationUsed || 'unknown',;
       metrics: {
         processingTime: result.metadata?.processingTime || 0,
-        backend: result.metadata?.backend,
-        model: result.metadata?.model,
+        backend: result.metadata?.backend,;
+        model: result.metadata?.model,;
         confidence: result.metadata?.confidence,
-        accelerationMetrics: result.metadata?.accelerationMetrics
+        accelerationMetrics: result.metadata?.accelerationMetrics;
       }
     };
   }
@@ -277,7 +277,7 @@
   ];
 
   function formatMetrics(metrics: any): string {
-    if (!metrics || Object.keys.length === 0) return 'No metrics available';
+    if (!metrics || Object.keys(errors).length === 0) return 'No metrics available';
 
     const items = [];
     if (metrics.processingTime) items.push(`${metrics.processingTime.toFixed(1)}ms`);
@@ -463,7 +463,7 @@
   </div>
 
   <!-- Performance Comparison -->
-  {#if Object.keys.length > 0}
+  {#if Object.keys(errors).length > 0}
     <Card class="mb-6">
       <CardHeader>
         <CardTitle>📊 Performance Comparison</CardTitle>
@@ -552,7 +552,7 @@
 </div>
 
 <style>
-  .comprehensive-ai-test {
+  .comprehensive-ai-test {;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 </style>

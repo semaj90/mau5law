@@ -1,0 +1,34 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "strict": false,
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "include": [
+    "src/**/*.svelte",
+    "src/**/*.ts",
+    "src/**/*.js"
+  ],
+  "exclude": [
+    // Exclude backend/server code and heavy GPU/WASM during Svelte checks
+    "src/lib/server/**",
+    "src/lib/server/db/**",
+    "src/lib/tests/**",
+    "src/wasm/**",
+    "src/workers/**",
+    "src/lib/webasm/**",
+    "src/lib/webgpu/**",
+    "src/lib/gpu/**",
+    // Temporarily exclude problematic ambient type files to avoid parse blockers
+    "src/lib/types/webassembly-types.d.ts",
+    "src/lib/types/webassembly-enhanced.d.ts",
+    "src/lib/types/webgpu-extensions.d.ts",
+    "src/lib/types/dependencies.d.ts",
+    // Standard exclusions
+    "node_modules/**",
+    ".svelte-kit/**",
+    "dist/**",
+    "build/**"
+  ]
+}

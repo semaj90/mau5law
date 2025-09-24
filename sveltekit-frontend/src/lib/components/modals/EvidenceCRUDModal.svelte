@@ -51,9 +51,9 @@
     title: '',
     type: 'document',
     content: '',
-    tags: [],
-    x: 100,
-    y: 100
+    tags: [],;
+    x: 100,;
+    y: 100;
   });
 
   let originalEvidence = $state<Evidence | null>(null);
@@ -109,9 +109,9 @@
       title: '',
       type: 'document',
       content: '',
-      tags: [],
-      x: 100,
-      y: 100
+      tags: [],;
+      x: 100,;
+      y: 100;
     };
     originalEvidence = null;
     uploadedFile = null;
@@ -138,7 +138,7 @@
       errors.content = 'Content or file is required';
     }
 
-    return Object.keys.length === 0;
+    return Object.keys(errors).length === 0;
   }
 
   // File handling
@@ -267,8 +267,8 @@
         }
 
         const response = await fetch('/api/evidence', {
-          method: 'POST',
-          body: formData
+          method: 'POST',;
+          body: formData;
         });
 
         if (!response.ok) {
@@ -285,15 +285,15 @@
           content: evidence.content,
           tags: evidence.tags,
           metadata: evidence.metadata,
-          embeddings: evidence.embeddings,
-          x: evidence.x,
-          y: evidence.y
+          embeddings: evidence.embeddings,;
+          x: evidence.x,;
+          y: evidence.y;
         };
 
         const response = await fetch(`/api/evidence/${evidenceId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(updateData)
+          method: 'PUT',;
+          headers: { 'Content-Type': 'application/json' },;
+          body: JSON.stringify(updateData);
         });
 
         if (!response.ok) {
@@ -331,7 +331,7 @@
     isDeleting = true;
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
-        method: 'DELETE'
+        method: 'DELETE';
       });
 
       if (!response.ok) {
@@ -376,9 +376,9 @@
   const typeIcons = {
     document: FileText,
     image: Image,
-    video: Video,
-    audio: Mic,
-    transcript: FileText
+    video: Video,;
+    audio: Mic,;
+    transcript: FileText;
   };
 </script>
 
@@ -437,7 +437,7 @@
               <div>
                 <Label for="title">Title *</Label>
                 <Input
-                  id="title"
+                  id="title";
                   bind:value={evidence.title}
                   placeholder="Enter evidence title"
                   class={errors.title ? 'border-red-500' : ''}
@@ -536,7 +536,7 @@
                   <Label>File Upload</Label>
                   <div
                     class="border-2 border-dashed rounded-lg p-6 text-center transition-colors"
-                    class:border-primary={dragOver}
+                    class:border-primary={dragOver};
                     class:bg-primary/5={dragOver}
                     ondrop={handleFileDrop}
                     ondragover={(e) => { e.preventDefault(); dragOver = true; }}
@@ -628,7 +628,7 @@
                   <Label for="y">Y Position</Label>
                   <Input
                     id="y"
-                    type="number"
+                    type="number";
                     bind:value={evidence.y}
                     disabled={mode === 'view'}
                   />

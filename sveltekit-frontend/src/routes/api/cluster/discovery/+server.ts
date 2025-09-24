@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 /*
  * Service Discovery and Failover API
@@ -6,63 +6,63 @@ import type { RequestHandler } from './$types.js';
  * Integrates with cluster-manager Go service on port 8103
  */
 
-import { productionServiceClient } from '$lib/services/productionServiceClient';
-import { URL } from "url";
+import { productionServiceClient } from '$lib/services/productionServiceClient'
+import { URL } from "url"
 
 interface ServiceInstance {
-  id: string;
-  name: string;
-  host: string;
-  port: number;
-  protocols: string[];
-  status: 'healthy' | 'unhealthy' | 'unknown' | 'starting' | 'stopping';
+  id: string
+  name: string
+  host: string
+  port: number
+  protocols: string[]
+  status: 'healthy' | 'unhealthy' | 'unknown' | 'starting' | 'stopping'
   health: {
     score: number; // 0-100
-    latency: number;
-    uptime: number;
-    lastCheck: string;
-    consecutiveFailures: number;
-  };
+    latency: number
+    uptime: number
+    lastCheck: string
+    consecutiveFailures: number
+  }
   metadata: {
-    version: string;
-    capabilities: string[];
-    region?: string;
-    weight: number;
-  };
+    version: string
+    capabilities: string[]
+    region?: string
+    weight: number
+  }
   failover: {
-    primary: boolean;
-    backups: string[];
-    autoFailover: boolean;
-    failoverThreshold: number;
-  };
+    primary: boolean
+    backups: string[]
+    autoFailover: boolean
+    failoverThreshold: number
+  }
 }
 
 interface DiscoveryRegistry {
-  services: Record<string, ServiceInstance[]>;
-  totalServices: number;
-  healthyServices: number;
-  lastUpdate: string;
+  services: Record<string, ServiceInstance[]>
+  totalServices: number
+  healthyServices: number
+  lastUpdate: string
   discoveryConfig: {
-    checkInterval: number;
-    failoverTimeout: number;
-    healthThreshold: number;
-  };
+    checkInterval: number
+    failoverTimeout: number
+    healthThreshold: number
+  }
 }
 
 interface FailoverEvent {
-  id: string;
-  timestamp: string;
-  serviceId: string;
-  reason: string;
-  from: string;
-  to: string;
-  duration: number;
-  success: boolean;
+  id: string
+  timestamp: string
+  serviceId: string
+  reason: string
+  from: string
+  to: string
+  duration: number
+  success: boolean
 }
 
 // Service registry - in production, this would be persistent storage
-const serviceRegistry = new Map<string, ServiceInstance[]>();
-const failoverHistory: FailoverEvent[] = [];
+const serviceRegistry = new Map<string, ServiceInstance[]>()
+const failoverHistory: FailoverEvent[] = []
 
 // Initialize with known services from ecosystem
 const KNOWN_SERVICES = [
@@ -84,92 +84,92 @@ const KNOWN_SERVICES = [
   { name: 'cluster-manager', port: 8103, protocols: ['http', 'grpc'], primary: true },
   { name: 't5-transformer', port: 8122, protocols: ['http'], primary: false },
   { name: 'multi-core-ollama', port: 8125, protocols: ['http'], primary: false }
-];
+]
 
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
-    const action = url.searchParams.get('action') || 'discover';
-    const body = await request.json();
+    const action = url.searchParams.get('action') || 'discover'
+    const body = await request.json()
 
     switch (action) {
       case 'register': {
-        const { service } = body;
+        const { service } = body
         
         if (!service || !service.name || !service.port) {
           return json({
             success: false,
             error: 'Service name and port are required'
-          }, { status: 400 });
+          }, { status: 400 })
         }
 
-        const registered = await registerService(service);
+        const registered = await registerService(service)
         
         return json({
           success: true,
           action: 'register',
           service: registered,
           timestamp: Date.now()
-        });
+        })
       }
 
       case 'deregister': {
-        const { serviceId } = body;
+        const { serviceId } = body
         
-        const deregistered = await deregisterService(serviceId);
+        const deregistered = await deregisterService(serviceId)
         
         return json({
           success: deregistered,
           action: 'deregister',
           serviceId,
           timestamp: Date.now()
-        });
+        })
       }
 
       case 'health-check': {
-        const { serviceId, force = false } = body;
+        const { serviceId, force = false } = body
         
         const health = serviceId 
           ? await checkServiceHealth(serviceId, force)
-          : await performFullHealthCheck(force);
+          : await performFullHealthCheck(force)
         
         return json({
           success: true,
           action: 'health-check',
           health,
           timestamp: Date.now()
-        });
+        })
       }
 
       case 'failover': {
-        const { serviceId, reason = 'manual', targetInstance } = body;
+        const { serviceId, reason = 'manual', targetInstance } = body
         
-        const failoverResult = await executeFailover(serviceId, reason, targetInstance);
+        const failoverResult = await executeFailover(serviceId, reason, targetInstance)
         
         return json({
           success: failoverResult.success,
           action: 'failover',
           result: failoverResult,
           timestamp: Date.now()
-        });
+        })
       }
 
       case 'update-config': {
-        const { config } = body;
+        const { config } = body
         
-        const updated = await updateDiscoveryConfig(config);
+        const updated = await updateDiscoveryConfig(config)
         
         return json({
           success: true,
           action: 'update-config',
           config: updated,
           timestamp: Date.now()
-        });
+        })
       }
 
       case 'discover': {
-        const { force = false } = body;
+        const { force = false } = body
         
-        const discovered = await discoverServices(force);
+        const discovered = await discoverServices(force)
         
         return json({
           success: true,
@@ -177,35 +177,35 @@ export const POST: RequestHandler = async ({ request, url }) => {
           discovered: discovered.length,
           services: discovered,
           timestamp: Date.now()
-        });
+        })
       }
 
-      default:;
+      default:
         return json({
           success: false,
           error: `Unknown action: ${action}`,
           availableActions: ['register', 'deregister', 'health-check', 'failover', 'update-config', 'discover']
-        }, { status: 400 });
+        }, { status: 400 })
     }
 
   } catch (error: any) {
-    console.error('Service Discovery error:', error);
+    console.error('Service Discovery error:', error)
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const service = url.searchParams.get('service');
-    const includeHistory = url.searchParams.get('history') === 'true';
+    const service = url.searchParams.get('service')
+    const includeHistory = url.searchParams.get('history') === 'true'
     
     if (service) {
       // Get specific service instances
-      const instances = serviceRegistry.get(service) || [];
+      const instances = serviceRegistry.get(service) || []
       
       return json({
         success: true,
@@ -214,11 +214,11 @@ export const GET: RequestHandler = async ({ url }) => {
         healthy: instances.filter(item => item.length),
         total: instances.length,
         timestamp: Date.now()
-      });
+      })
     }
 
     // Get full registry
-    const registry = await getServiceRegistry();
+    const registry = await getServiceRegistry()
     
     const response: any = {
       success: true,
@@ -240,33 +240,33 @@ export const GET: RequestHandler = async ({ url }) => {
         discover: '/api/cluster/discovery?action=discover (POST)'
       },
       timestamp: Date.now()
-    };
+    }
 
     if (includeHistory) {
       response.failoverHistory = failoverHistory.slice(-20); // Last 20 events
     }
 
-    return json(response);
+    return json(response)
 
   } catch (error: any) {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 // Helper functions
 
 async function getServiceRegistry(): Promise<DiscoveryRegistry> {
-  const allServices = Array.from(serviceRegistry.values()).flat();
-  const healthyServices = allServices.filter(item => item.length);
+  const allServices = Array.from(serviceRegistry.values()).flat()
+  const healthyServices = allServices.filter(item => item.length)
 
-  const services: Record<string, ServiceInstance[]> = {};
+  const services: Record<string, ServiceInstance[]> = {}
   serviceRegistry.forEach((instances, name) => {
-    services[name] = instances;
-  });
+    services[name] = instances
+  })
 
   return {
     services,
@@ -278,7 +278,7 @@ async function getServiceRegistry(): Promise<DiscoveryRegistry> {
       failoverTimeout: 5000, // 5 seconds  
       healthThreshold: 70
     }
-  };
+  }
 }
 
 async function registerService(serviceData: any): Promise<ServiceInstance> {
@@ -308,58 +308,58 @@ async function registerService(serviceData: any): Promise<ServiceInstance> {
       autoFailover: serviceData.autoFailover !== false,
       failoverThreshold: serviceData.failoverThreshold || 3
     }
-  };
+  }
 
-  const existingInstances = serviceRegistry.get(service.name) || [];
-  existingInstances.push(service);
-  serviceRegistry.set(service.name, existingInstances);
+  const existingInstances = serviceRegistry.get(service.name) || []
+  existingInstances.push(service)
+  serviceRegistry.set(service.name, existingInstances)
 
   // Perform initial health check
-  await checkServiceHealth(service.id);
+  await checkServiceHealth(service.id)
 
-  return service;
+  return service
 }
 
 async function deregisterService(serviceId: string): Promise<boolean> {
   for (const [name, instances] of serviceRegistry.entries()) {
-    const filtered = instances.filter(s => s.id !== serviceId);
+    const filtered = instances.filter(s => s.id !== serviceId)
     if (filtered.length !== instances.length) {
-      serviceRegistry.set(name, filtered);
-      return true;
+      serviceRegistry.set(name, filtered)
+      return true
     }
   }
-  return false;
+  return false
 }
 
 async function checkServiceHealth(serviceId: string, force: boolean = false): Promise<any> {
-  const service = findServiceById(serviceId);
+  const service = findServiceById(serviceId)
   if (!service) {
-    return { error: 'Service not found' };
+    return { error: 'Service not found' }
   }
 
   try {
-    const startTime = Date.now();
+    const startTime = Date.now()
     
     // In production, make actual HTTP request to service health endpoint
-    const isHealthy = await performHealthCheck(service);
-    const latency = Date.now() - startTime;
+    const isHealthy = await performHealthCheck(service)
+    const latency = Date.now() - startTime
 
     if (isHealthy) {
-      service.health.score = Math.min(100, service.health.score + 10);
-      service.health.consecutiveFailures = 0;
-      service.status = 'healthy';
+      service.health.score = Math.min(100, service.health.score + 10)
+      service.health.consecutiveFailures = 0
+      service.status = 'healthy'
     } else {
-      service.health.score = Math.max(0, service.health.score - 20);
-      service.health.consecutiveFailures++;
-      service.status = service.health.consecutiveFailures >= service.failover.failoverThreshold ? 'unhealthy' : 'healthy';
+      service.health.score = Math.max(0, service.health.score - 20)
+      service.health.consecutiveFailures++
+      service.status = service.health.consecutiveFailures >= service.failover.failoverThreshold ? 'unhealthy' : 'healthy'
     }
 
-    service.health.latency = latency;
-    service.health.lastCheck = new Date().toISOString();
+    service.health.latency = latency
+    service.health.lastCheck = new Date().toISOString()
 
-    // Trigger failover if needed;
+    // Trigger failover if needed
     if (service.status === 'unhealthy' && service.failover.autoFailover && service.failover.primary) {
-      await executeFailover(serviceId, 'health-check-failure');
+      await executeFailover(serviceId, 'health-check-failure')
     }
 
     return {
@@ -367,31 +367,31 @@ async function checkServiceHealth(serviceId: string, force: boolean = false): Pr
       status: service.status,
       health: service.health,
       failoverTriggered: service.status === 'unhealthy' && service.failover.autoFailover
-    };
+    }
 
   } catch (error: any) {
-    service.health.consecutiveFailures++;
-    service.status = 'unhealthy';
-    service.health.lastCheck = new Date().toISOString();
+    service.health.consecutiveFailures++
+    service.status = 'unhealthy'
+    service.health.lastCheck = new Date().toISOString()
     
     return {
       serviceId,
       status: 'unhealthy',
       error: error.message,
       health: service.health
-    };
+    }
   }
 }
 
 async function performFullHealthCheck(force: boolean = false): Promise<any> {
-  const allServices = Array.from(serviceRegistry.values()).flat();
+  const allServices = Array.from(serviceRegistry.values()).flat()
   
   const results = await Promise.all(
     allServices.map(service => checkServiceHealth(service.id, force)
-  );
+  )
 
-  const healthy = results.filter(item => item.length);
-  const total = results.length;
+  const healthy = results.filter(item => item.length)
+  const total = results.length
 
   return {
     summary: {
@@ -402,43 +402,43 @@ async function performFullHealthCheck(force: boolean = false): Promise<any> {
     },
     results: results.slice(0, 10), // First 10 detailed results
     timestamp: new Date().toISOString()
-  };
+  }
 }
 
 async function executeFailover(serviceId: string, reason: string, targetInstance?: string): Promise<any> {
-  const service = findServiceById(serviceId);
+  const service = findServiceById(serviceId)
   if (!service) {
-    return { success: false, error: 'Service not found' };
+    return { success: false, error: 'Service not found' }
   }
 
-  const startTime = Date.now();
+  const startTime = Date.now()
   
   try {
     // Find backup instances
-    const serviceName = service.name;
-    const allInstances = serviceRegistry.get(serviceName) || [];
-    const backupInstances = allInstances.filter(s => s.id !== serviceId && s.status === 'healthy');
+    const serviceName = service.name
+    const allInstances = serviceRegistry.get(serviceName) || []
+    const backupInstances = allInstances.filter(s => s.id !== serviceId && s.status === 'healthy')
 
     if (backupInstances.length === 0) {
-      return { success: false, error: 'No healthy backup instances available' };
+      return { success: false, error: 'No healthy backup instances available' }
     }
 
     // Select target instance
     const target = targetInstance 
       ? backupInstances.find(s => s.id === targetInstance)
-      : backupInstances.sort((a, b) => b.health.score - a.health.score)[0];
+      : backupInstances.sort((a, b) => b.health.score - a.health.score)[0]
 
     if (!target) {
-      return { success: false, error: 'Target instance not found or unhealthy' };
+      return { success: false, error: 'Target instance not found or unhealthy' }
     }
 
     // Execute failover
-    service.failover.primary = false;
-    service.status = 'unhealthy';
+    service.failover.primary = false
+    service.status = 'unhealthy'
     
-    target.failover.primary = true;
+    target.failover.primary = true
     
-    // Record failover event;
+    // Record failover event
     const failoverEvent: FailoverEvent = {
       id: `failover-${Date.now()}`,
       timestamp: new Date().toISOString(),
@@ -448,13 +448,13 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
       to: target.id,
       duration: Date.now() - startTime,
       success: true
-    };
+    }
     
-    failoverHistory.push(failoverEvent);
+    failoverHistory.push(failoverEvent)
     
-    // Keep only last 100 events;
+    // Keep only last 100 events
     if (failoverHistory.length > 100) {
-      failoverHistory.splice(0, failoverHistory.length - 100);
+      failoverHistory.splice(0, failoverHistory.length - 100)
     }
 
     return {
@@ -464,7 +464,7 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
       reason,
       duration: failoverEvent.duration,
       event: failoverEvent
-    };
+    }
 
   } catch (error: any) {
     const failoverEvent: FailoverEvent = {
@@ -476,23 +476,23 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
       to: 'none',
       duration: Date.now() - startTime,
       success: false
-    };
+    }
     
-    failoverHistory.push(failoverEvent);
+    failoverHistory.push(failoverEvent)
 
     return {
       success: false,
       error: error.message,
       duration: failoverEvent.duration,
       event: failoverEvent
-    };
+    }
   }
 }
 
 async function discoverServices(force: boolean = false): Promise<ServiceInstance[]> {
-  const discovered: ServiceInstance[] = [];
+  const discovered: ServiceInstance[] = []
 
-  // Initialize known services if registry is empty or force discovery;
+  // Initialize known services if registry is empty or force discovery
   if (serviceRegistry.size === 0 || force) {
     for (const knownService of KNOWN_SERVICES) {
       const service = await registerService({
@@ -503,47 +503,47 @@ async function discoverServices(force: boolean = false): Promise<ServiceInstance
         primary: knownService.primary,
         capabilities: [`${knownService.name}-service`],
         autoFailover: true
-      });
+      })
       
-      discovered.push(service);
+      discovered.push(service)
     }
   }
 
-  return discovered;
+  return discovered
 }
 
 async function updateDiscoveryConfig(config: any): Promise<any> {
-  // In production, this would update persistent configuration;
+  // In production, this would update persistent configuration
   return {
     checkInterval: config.checkInterval || 30000,
     failoverTimeout: config.failoverTimeout || 5000,
     healthThreshold: config.healthThreshold || 70,
     updated: new Date().toISOString()
-  };
+  }
 }
 
 function findServiceById(serviceId: string): ServiceInstance | null {
   for (const instances of serviceRegistry.values()) {
-    const service = instances.find(s => s.id === serviceId);
-    if (service) return service;
+    const service = instances.find(s => s.id === serviceId)
+    if (service) return service
   }
-  return null;
+  return null
 }
 
 async function performHealthCheck(service: ServiceInstance): Promise<boolean> {
   try {
     // In production, make actual HTTP request to service
     // For now, simulate with high success rate
-    const successRate = service.name.includes('core') ? 0.95 : 0.85;
-    return Math.random() < successRate;
+    const successRate = service.name.includes('core') ? 0.95 : 0.85
+    return Math.random() < successRate
   } catch (error) {
-    return false;
+    return false
   }
 }
 
-// Initialize registry with known services on startup;
+// Initialize registry with known services on startup
 setTimeout(async () => {
   if (serviceRegistry.size === 0) {
-    await discoverServices(true);
+    await discoverServices(true)
   }
-}, 1000);
+}, 1000)

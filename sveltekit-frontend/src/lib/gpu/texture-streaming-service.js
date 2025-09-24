@@ -7,10 +7,10 @@ export class TextureStreamingService {
     this.streamCache = new Map(); // L1 cache for active streams
     this.lodManager = new N64LODManager();
     this.memoryBanks = {
-      CHR_ROM: new Map(),    // Pattern tiles (8x8)
-      PRG_ROM: new Map(),    // Program data
-      SRAM: new Map(),       // Save RAM for persistent cache
-      VRAM: new Map()        // Video RAM for active textures,
+      CHR_ROM: new Map(), // Pattern tiles (8x8)
+      PRG_ROM: new Map(), // Program data
+      SRAM: new Map(), // Save RAM for persistent cache
+      VRAM: new Map(), // Video RAM for active textures,
     };
     this.maxCacheSize = 1000; // Nintendo memory constraints
     this.isInitialized = false;
@@ -18,9 +18,9 @@ export class TextureStreamingService {
 
   async initialize() {
     if (this.isInitialized) return;
-    
+
     console.log('🎮 Initializing Nintendo Texture Streaming Service...');
-    
+
     // Initialize GPU context if available
     if (typeof window !== 'undefined' && window.navigator?.gpu) {
       try {
@@ -33,21 +33,15 @@ export class TextureStreamingService {
         console.log('⚠️ WebGPU not available, using CPU fallback');
       }
     }
-    
+
     this.isInitialized = true;
   }
 
   // Stream texture data with CHR-ROM banking
   async streamTexture(textureId, data, options = {}) {
     await this.initialize();
-    
-    const {
-      format = 'chr-rom',
-      tileSize = 8,
-      lodLevel = 0,
-      bankRegion = 'CHR_ROM',
-      compress = true
-    } = options;
+
+    const { format = 'chr-rom', tileSize = 8, lodLevel = 0, bankRegion = 'CHR_ROM', compress = true } = options;
 
     // Nintendo bank switching - check memory constraints
     if (this.memoryBanks[bankRegion].size >= this.maxCacheSize) {
@@ -66,7 +60,7 @@ export class TextureStreamingService {
 
     // Store in appropriate memory bank
     this.memoryBanks[bankRegion].set(textureId, textureData);
-    
+
     // Update LOD manager
     this.lodManager.registerTexture(textureId, {
       originalSize: data.length,
@@ -85,34 +79,34 @@ export class TextureStreamingService {
       const texture = bank.get(textureId);
       if (texture) {
         texture.accessCount++;
-        
+
         // LOD adjustment based on memory pressure
         const optimalLOD = requestedLOD ?? this.lodManager.getOptimalLOD(textureId);
         if (optimalLOD !== texture.lodLevel) {
           return this.adjustTextureLOD(texture, optimalLOD);
         }
-        
+
         return texture;
       }
     }
-    
+
     return null;
   }
 
   // Nintendo-style bank switching when memory is full
   performBankSwitch(bankRegion) {
     const bank = this.memoryBanks[bankRegion];
-    const entries = Array.from(bank.entries();
-    
+    const entries = Array.from(bank.entries());
+
     // Sort by access count and age (LRU + Nintendo priority system)
     entries.sort((a, b) => {
       const [, textureA] = a;
       const [, textureB] = b;
-      
+
       // Priority: low access count + older timestamp = first to evict
       const priorityA = textureA.accessCount + (Date.now() - textureA.timestamp) / 1000;
       const priorityB = textureB.accessCount + (Date.now() - textureB.timestamp) / 1000;
-      
+
       return priorityA - priorityB;
     });
 
@@ -158,7 +152,7 @@ export class TextureStreamingService {
     // Simple pattern-based compression for repeated text
     const patterns = {};
     let patternId = 0;
-    
+
     // Find repeated 8-character patterns (like 8x8 tiles)
     for (let i = 0; i < text.length - 7; i++) {
       const pattern = text.substr(i, 8);
@@ -209,17 +203,17 @@ export class TextureStreamingService {
     if (typeof data === 'string') {
       // For text, truncate or pad based on scale
       if (scaleFactor < 1) {
-        return data.substring(0, Math.floor(data.length * scaleFactor);
+        return data.substring(0, Math.floor(data.length * scaleFactor));
       } else {
-        return data.repeat(Math.ceil(scaleFactor);
+        return data.repeat(Math.ceil(scaleFactor));
       }
     }
-    
+
     // For compressed data, adjust accordingly
     if (data.type === 'pattern') {
       return {
         ...data,
-        data: this.scaleTextureData(data.data, scaleFactor)
+        data: this.scaleTextureData(data.data, scaleFactor),
       };
     }
 
@@ -233,10 +227,8 @@ export class TextureStreamingService {
 
     for (let i = 0; i < textures.length; i += batchSize) {
       const batch = textures.slice(i, i + batchSize);
-      const batchPromises = batch.map(texture => 
-        this.streamTexture(texture.id, texture.data, texture.options)
-      );
-      
+      const batchPromises = batch.map(texture => this.streamTexture(texture.id, texture.data, texture.options));
+
       const batchResults = await Promise.all(batchPromises);
       results.push(...batchResults);
     }
@@ -254,10 +246,10 @@ export class TextureStreamingService {
     };
 
     for (const [bankName, bank] of Object.entries(this.memoryBanks)) {
-      const textures = Array.from(bank.values();
+      const textures = Array.from(bank.values());
       stats.memoryUsage[bankName] = {
         count: textures.length,
-        totalSize: textures.reduce((sum, t) => sum + (t.data.length || 0), 0)
+        totalSize: textures.reduce((sum, t) => sum + (t.data.length || 0), 0),
       };
       stats.totalTextures += textures.length;
 
@@ -316,7 +308,7 @@ class N64LODManager {
 
     // N64-style LOD calculation
     // LOD 0: 64x64 (highest quality)
-    // LOD 1: 32x32  
+    // LOD 1: 32x32
     // LOD 2: 16x16
     // LOD 3: 8x8 (NES-style tiles)
 

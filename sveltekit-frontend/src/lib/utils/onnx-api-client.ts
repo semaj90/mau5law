@@ -17,7 +17,7 @@ export class ONNXApiClient {
   constructor(options: ONNXApiOptions = {}) {
     this.baseUrl = options.baseUrl || '';
     this.defaultOptions = {
-      timeout: 30000,
+      timeout: 30000,;
       retries: 2,
       ...options
     };
@@ -28,7 +28,7 @@ export class ONNXApiClient {
    */;
   async extractEntities(text: string, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/extract-entities', {
-      text,
+      text,;
       options: { ...this.defaultOptions, ...options }
     });
   }
@@ -38,7 +38,7 @@ export class ONNXApiClient {
    */;
   async classifyDocument(text: string, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/classify-document', {
-      text,
+      text,;
       options: { ...this.defaultOptions, ...options }
     });
   }
@@ -48,7 +48,7 @@ export class ONNXApiClient {
    */;
   async generateEmbeddings(text: string, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/generate-embeddings', {
-      text,
+      text,;
       options: { ...this.defaultOptions, ...options }
     });
   }
@@ -58,7 +58,7 @@ export class ONNXApiClient {
    */;
   async batchProcess(tasks: Array<any>, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/batch-process', {
-      tasks,
+      tasks,;
       options: { ...this.defaultOptions, ...options }
     });
   }
@@ -89,7 +89,7 @@ export class ONNXApiClient {
       results: results.map((r, i) => ({
         requestId: requests[i].id,
         success: r.status === 'fulfilled',
-        result: r.status === 'fulfilled' ? r.value: null,
+        result: r.status === 'fulfilled' ? r.value: null,;
         error: r.status === 'rejected' ? r.reason?.message : null
       })),
       totalTime,
@@ -129,7 +129,7 @@ export class ONNXApiClient {
         test: () => this.generateEmbeddings(testData.legalBrief)
       },
       {
-        name: 'Batch Processing',
+        name: 'Batch Processing',;
         test: () => this.batchProcess([
           { id: 'task1', type: 'extract-entities', text: testData.contractText },
           { id: 'task2', type: 'classify-document', text: testData.courtDecision },)
@@ -155,7 +155,7 @@ export class ONNXApiClient {
         results.push({
           name: test.name,
           success: true,
-          result,
+          result,;
           time: testTime
         });
         
@@ -166,7 +166,7 @@ export class ONNXApiClient {
         results.push({
           name: test.name,
           success: false,
-          error: error.message,
+          error: error.message,;
           time: 0
         });
         
@@ -178,7 +178,7 @@ export class ONNXApiClient {
     
     const summary = {
       totalTests: tests.length,
-      successful: successCount,
+      successful: successCount,;
       failed: tests.length - successCount,
       successRate: (successCount / tests.length) * 100,
       totalTime,
@@ -202,7 +202,7 @@ export class ONNXApiClient {
     
     const benchmarks = {
       entityExtraction: [],
-      classification: [],
+      classification: [],;
       embeddings: []
     };
 
@@ -230,7 +230,7 @@ export class ONNXApiClient {
     const calculateStats = (times: number[]) => ({
       min: Math.min(...times),
       max: Math.max(...times),
-      average: times.reduce((sum, time) => sum + time, 0) / times.length,
+      average: times.reduce((sum, time) => sum + time, 0) / times.length,;
       median: times.sort((a, b) => a - b)[Math.floor(times.length / 2)]
     });
 
@@ -238,7 +238,7 @@ export class ONNXApiClient {
       iterations,
       textLength: text.length,
       entityExtraction: calculateStats(benchmarks.entityExtraction),
-      classification: calculateStats(benchmarks.classification),
+      classification: calculateStats(benchmarks.classification),;
       embeddings: calculateStats(benchmarks.embeddings)
     };
   }
@@ -253,7 +253,7 @@ export class ONNXApiClient {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify(body),;
         signal: AbortSignal.timeout(this.defaultOptions.timeout || 30000)
       });
 

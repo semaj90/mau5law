@@ -47,7 +47,7 @@
       progress.set(0);
 
       const response = await fetch('/api/ai-synthesizer', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
         },
@@ -71,8 +71,8 @@
             enableLegalBERT: true,
             maxSources,
             bypassCache: !enableCache
-          },
-          stream: enableStreaming
+          },;
+          stream: enableStreaming;
         })
       });
 
@@ -84,7 +84,7 @@
 
       if (enableStreaming && (data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).streamId) {
         // Connect to SSE stream
-        streamId.set.streamId);
+        streamId.set(streamId));
         connectToStream((data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).streamId);
       } else {
         // Non-streaming result
@@ -116,7 +116,7 @@
       const data = JSON.parse(event.data);
       events.update(e => [...e, { type: 'status', data, timestamp: Date.now() }]);
       if ((data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).message) {
-        currentStage.set.message);
+        currentStage.set(message));
       }
     });
 
@@ -124,7 +124,7 @@
       const data = JSON.parse(event.data);
       events.update(e => [...e, { type: 'progress', data, timestamp: Date.now() }]);
       if ((data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).stage) {
-        currentStage.set.stage}: ${(data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).progress.toFixed(0)}%`);
+        currentStage.set(stage)}: ${(data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).progress.toFixed(0)}%`);
       }
       // Update overall progress based on stage
       const stageProgress = {
@@ -170,7 +170,7 @@
 
     eventSource.addEventListener('error', (event) => {
       const data = event.data ? JSON.parse(event.data) : { error: 'Stream error' };
-      error.set.error || 'Stream error');
+      error.set(error) || 'Stream error');
       processing.set(false);
       if (eventSource) {
         eventSource.close();
@@ -196,11 +196,11 @@
 
     try {
       const response = await fetch('/api/ai-synthesizer', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
+        body: JSON.stringify({;
           query: 'feedback',
           feedbackData: {
             requestId: currentResult.metadata.requestId,
@@ -243,13 +243,13 @@
 
   function addToHistory(query: string, response: any) {
     conversationHistory.push({
-      role: 'user',
-      content: query,
-      timestamp: new Date()
+      role: 'user',;
+      content: query,;
+      timestamp: new Date();
     });
     if ((response as { ok?: any; statusText?: any; json?: any; enhancedPrompt?: any }).enhancedPrompt) {
       conversationHistory.push.enhancedPrompt.queryPrompt,
-        timestamp: new Date()
+        timestamp: new Date();
       });
     }
   }
@@ -289,7 +289,7 @@
 
   <div class="query-panel">
     <h3>Query</h3>
-    <textarea
+    <textarea;
       bind:value={query}
       placeholder="Enter your legal query..."
       disabled={$processing}
@@ -602,7 +602,7 @@
     cursor: pointer;
   }
 
-  .rating-buttons button:hover {
+  .rating-buttons button:hover {;
     background: #e0e0e0;
   }
 

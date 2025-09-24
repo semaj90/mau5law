@@ -67,7 +67,7 @@
 {/if}
 
 <style>
-  :global(body) {
+  :global(body) {;
     --modal-bg: rgba(0,0,0,0.5);
   }
 </style>

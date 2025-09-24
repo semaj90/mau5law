@@ -1,6 +1,6 @@
-import { json, error } from "@sveltejs/kit";
-import type { RequestHandler } from './$types';
-import { AIEvidenceAnalyzer, type EvidenceItem } from '$lib/services/ai-evidence-analyzer';
+import { json, error } from "@sveltejs/kit"
+import type { RequestHandler } from './$types'
+import { AIEvidenceAnalyzer, type EvidenceItem } from '$lib/services/ai-evidence-analyzer'
 }
 
 export interface AnalyzeRequest extends EvidenceItem {
@@ -8,61 +8,61 @@ export interface AnalyzeRequest extends EvidenceItem {
 }
 
 export interface AnalysisResult {
-  sessionId: string;
-  status: "processing" | "completed" | "failed";
-  step: string;
-  analysis?: any;
-  error?: string;
+  sessionId: string
+  status: "processing" | "completed" | "failed"
+  step: string
+  analysis?: any
+  error?: string
 }
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const evidence: AnalyzeRequest = await request.json();
+    const evidence: AnalyzeRequest = await request.json()
 
-    // Validate evidence data;
+    // Validate evidence data
     if (!evidence.id || !evidence.title || !evidence.description) {
-      throw error(400, 'Missing required evidence fields: id, title, description');
+      throw error(400, 'Missing required evidence fields: id, title, description')
     }
 
     // Generate session ID
-    const sessionId = `analysis_${evidence.id}_${Date.now()}`;
+    const sessionId = `analysis_${evidence.id}_${Date.now()}`
 
     // Initialize analyzer
-    const analyzer = new AIEvidenceAnalyzer();
+    const analyzer = new AIEvidenceAnalyzer()
 
     // Perform analysis
-    const analysis = await analyzer.analyzeEvidence(evidence);
+    const analysis = await analyzer.analyzeEvidence(evidence)
 
     return json({
       sessionId,
       status: "completed",
       step: "analysis_complete",
       analysis
-    });
+    })
   } catch (err: any) {
-    console.error('Evidence analysis failed:', err);
-    throw error(500, `Analysis failed: ${err.message}`);
+    console.error('Evidence analysis failed:', err)
+    throw error(500, `Analysis failed: ${err.message}`)
   }
-};
+}
 
-// GET endpoint to retrieve analysis by evidence ID;
+// GET endpoint to retrieve analysis by evidence ID
 export const GET: RequestHandler = async ({ url }) => {
-  const evidenceId = url.searchParams.get('evidenceId');
+  const evidenceId = url.searchParams.get('evidenceId')
 
   if (!evidenceId) {
-    throw error(400, 'Missing evidenceId parameter');
+    throw error(400, 'Missing evidenceId parameter')
   }
 
   try {
     // TODO: Fetch analysis from database
-    // For now, return a sample response indicating the analysis should be requested via POST;
+    // For now, return a sample response indicating the analysis should be requested via POST
     return json({
       message: 'Analysis not found. Please submit evidence for analysis via POST request.',
       evidenceId,
       status: 'not_found'
-    }, { status: 404 });
+    }, { status: 404 })
   } catch (err: any) {
-    console.error('Failed to fetch analysis:', err);
-    throw error(500, `Failed to fetch analysis: ${err.message}`);
+    console.error('Failed to fetch analysis:', err)
+    throw error(500, `Failed to fetch analysis: ${err.message}`)
   }
-};
+}

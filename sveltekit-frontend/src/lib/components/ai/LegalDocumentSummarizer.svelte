@@ -99,8 +99,10 @@ Enhanced-bits UI integration with real-time progress and quality metrics
   ];
 
   // Check service health on mount
-  $effect(async () => {
-    await checkServiceHealth();
+  $effect(() => {
+    (async () => {
+await checkServiceHealth();
+    })();
   });
 
   // Check if summarization service is available
@@ -150,8 +152,8 @@ Enhanced-bits UI integration with real-time progress and quality metrics
         content: documentContent,
         document_type: documentType,
         summary_type: summaryType,
-        max_length: maxLength,
-        focus:focusAreas,
+        max_length: maxLength,;
+        focus:focusAreas,;
         metadata: {
           generated_at: new Date().toISOString(),
           user_agent: navigator.userAgent,
@@ -160,11 +162,11 @@ Enhanced-bits UI integration with real-time progress and quality metrics
       };
 
       const response = await fetch(`${serviceUrl}/summarize`, {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(request)
+        },;
+        body: JSON.stringify(request);
       });
 
       clearInterval(progressInterval);
@@ -269,7 +271,7 @@ Enhanced-bits UI integration with real-time progress and quality metrics
           <Label for="doc-title">Document Title</Label>
           <Input
             id="doc-title"
-            type="text"
+            type="text";
             bind:value={documentTitle}
             placeholder="e.g., Software License Agreement - ABC Corp"
           />
@@ -541,7 +543,7 @@ Enhanced-bits UI integration with real-time progress and quality metrics
 </div>
 
 <style>
-  .legal-summarizer {
+  .legal-summarizer {;
     font-family: system-ui, -apple-system, sans-serif;
   }
 </style>

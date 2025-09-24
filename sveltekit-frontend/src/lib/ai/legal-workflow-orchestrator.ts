@@ -111,7 +111,7 @@ export class LegalWorkflowOrchestrator {
    * Generate workflow-specific guidance
    */
   private generateWorkflowGuidance(
-    context: LegalContext,
+    context: LegalContext,;
     prediction: HybridPredictionResult;
   ): WorkflowGuidance {
     const currentStage = this.workflowProfiles.get(context.workflowStage);
@@ -133,13 +133,13 @@ export class LegalWorkflowOrchestrator {
    * Calculate optimal asset preloading strategy
    */
   private calculatePreloadingStrategy(
-    context: LegalContext,
+    context: LegalContext,;
     prediction: HybridPredictionResult;
   ): AssetPreloadingStrategy {
     const strategy: AssetPreloadingStrategy = {
       immediate: [],
       background: [],
-      predictive: [],
+      predictive: [],;
       ondemand: []
     };
 
@@ -168,7 +168,7 @@ export class LegalWorkflowOrchestrator {
    * Generate next step recommendations
    */
   private generateNextStepRecommendations(
-    context: LegalContext,
+    context: LegalContext,;
     prediction: HybridPredictionResult;
   ): NextStepRecommendation[] {
     const recommendations: NextStepRecommendation[] = [];
@@ -182,7 +182,7 @@ export class LegalWorkflowOrchestrator {
           action: `Prepare for ${nextStage.stage}`,
           priority: Math.round(nextStage.probability * 100),
           timeEstimate: nextStage.timeEstimate,
-          reasoning: `${(nextStage.probability * 100).toFixed(1)}% chance of progressing to ${nextStage.stage}`,
+          reasoning: `${(nextStage.probability * 100).toFixed(1)}% chance of progressing to ${nextStage.stage}`,;
           assets: this.getStageAssets(nextStage.stage)
         });
       }
@@ -195,7 +195,7 @@ export class LegalWorkflowOrchestrator {
         action: nextState.action,
         priority: Math.round(nextState.probability * 100),
         timeEstimate: nextState.timeEstimate,
-        reasoning: `AI predicts ${nextState.action} with ${(nextState.probability * 100).toFixed(1)}% confidence`,
+        reasoning: `AI predicts ${nextState.action} with ${(nextState.probability * 100).toFixed(1)}% confidence`,;
         assets: prediction.behavioralPrediction.recommendedAssets
           .filter(asset => asset.priority > 50)
           .map(asset => asset.type)
@@ -210,7 +210,7 @@ export class LegalWorkflowOrchestrator {
         action: `Explore ${topMatch.legalDomain} documents`,
         priority: Math.round(topMatch.similarity * 100),
         timeEstimate: 30000, // 30 seconds
-        reasoning: `Found ${(topMatch.similarity * 100).toFixed(1)}% similar content in ${topMatch.legalDomain}`,
+        reasoning: `Found ${(topMatch.similarity * 100).toFixed(1)}% similar content in ${topMatch.legalDomain}`,;
         assets: ['document_viewer', 'comparison_tools', 'citation_helper']
       });
     }
@@ -222,7 +222,7 @@ export class LegalWorkflowOrchestrator {
    * Execute asset preloading in background
    */
   private async executeAssetPreloading(
-    strategy: AssetPreloadingStrategy,
+    strategy: AssetPreloadingStrategy,;
     context: LegalContext;
   ): Promise<void> {
     // Immediate loading (highest priority);
@@ -326,7 +326,7 @@ export class LegalWorkflowOrchestrator {
         ]
       }],
       ['filing', {
-        stage: 'filing',
+        stage: 'filing',;
         priority: 70,
         expectedAssets: ['filing_system', 'court_integration', 'deadline_tracker', 'confirmation_tools'],
         nextStages: [
@@ -363,7 +363,7 @@ export class LegalWorkflowOrchestrator {
       ['evidence:litigation', {
         type: 'evidence',
         domain: 'litigation',
-        complexity: 'highly_complex',
+        complexity: 'highly_complex',;
         urgency: 'urgent',
         requiredAssets: ['evidence_canvas', 'timeline_tools', 'relationship_mapper'],
         recommendedActions: ['evidence_cataloging', 'timeline_creation', 'relationship_analysis']
@@ -388,7 +388,7 @@ export class LegalWorkflowOrchestrator {
   }
 
   private generateStageAdvice(
-    stage: LegalWorkflowStage | undefined,
+    stage: LegalWorkflowStage | undefined,;
     context: LegalContext;
   ): string {
     if (!stage) return 'Continue with current workflow';
@@ -409,7 +409,7 @@ export class LegalWorkflowOrchestrator {
   }
 
   private generateDocumentGuidance(
-    profile: LegalDocumentProfile | null,
+    profile: LegalDocumentProfile | null,;
     context: LegalContext;
   ): string {
     if (!profile) return 'Apply general document handling best practices';
@@ -418,7 +418,7 @@ export class LegalWorkflowOrchestrator {
   }
 
   private generateEfficiencyTips(
-    context: LegalContext,
+    context: LegalContext,;
     prediction: HybridPredictionResult;
   ): string[] {
     const tips = [
@@ -434,7 +434,7 @@ export class LegalWorkflowOrchestrator {
   }
 
   private generateRiskAlerts(
-    context: LegalContext,
+    context: LegalContext,;
     prediction: HybridPredictionResult;
   ): string[] {
     const alerts = [];
@@ -455,7 +455,7 @@ export class LegalWorkflowOrchestrator {
   }
 
   private generateQualityChecklist(
-    stage: LegalWorkflowStage | undefined,
+    stage: LegalWorkflowStage | undefined,;
     profile: LegalDocumentProfile | null;
   ): string[] {
     const checklist = ['Verify all required information is complete'];
@@ -485,7 +485,7 @@ export class LegalWorkflowOrchestrator {
     }
 
     return {
-      essential: stage.expectedAssets.slice(0, 2),
+      essential: stage.expectedAssets.slice(0, 2),;
       recommended: stage.expectedAssets.slice(2)
     };
   }
@@ -518,7 +518,7 @@ export class LegalWorkflowOrchestrator {
   }
 
   private async recordWorkflowTransition(
-    context: LegalContext,
+    context: LegalContext,;
     prediction: HybridPredictionResult;
   ): Promise<void> {
     const transitionData = {

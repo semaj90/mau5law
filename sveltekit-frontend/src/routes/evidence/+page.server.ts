@@ -18,7 +18,7 @@ const evidenceSchema = z.object({
   url: z.string().url("Must be a valid URL").optional(),
   fileSize: z.number().optional(),
   mimeType: z.string().optional(),
-  tags: z.array(z.string()).default([]),
+  tags: z.array(z.string()).default([]),;
   metadata: z.record(z.unknown()).optional()
 });
 

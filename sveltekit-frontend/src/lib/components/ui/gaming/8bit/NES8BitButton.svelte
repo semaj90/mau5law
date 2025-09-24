@@ -1,7 +1,7 @@
 <!--
   NES 8-Bit Button Component
   Authentic NES.css styling with bits-ui compatibility
-  
+
   Features:
   - Hardware-accurate NES color palette
   - Pixel-perfect rendering
@@ -65,11 +65,11 @@
     class: className = '',
     onClick,
     onHover,
-    onFocus
+    onFocus;
   }: Props = $props();
 
   // Events now handled via props in Svelte 5
-  // 
+  //
 
   let isPressed = $state(false);
   let audioContext = $state<AudioContext | null >(null);
@@ -139,7 +139,7 @@
     const sizeMap = {
       small: { padding: '8px 12px', fontSize: '10px', minHeight: '32px' },
       medium: { padding: '12px 16px', fontSize: '12px', minHeight: '40px' },
-      large: { padding: '16px 20px', fontSize: '14px', minHeight: '48px' },
+      large: { padding: '16px 20px', fontSize: '14px', minHeight: '48px' },;
       xl: { padding: '20px 24px', fontSize: '16px', minHeight: '56px' }
     };
     return sizeMap[size as keyof typeof sizeMap] || sizeMap.medium;
@@ -166,7 +166,7 @@
   ononmouseenter={handleHover}
   onfocus={handleFocus}
   class="nes-8bit-button nes-btn {nesVariant} {className}"
-  style="
+  style=";
     --button-color: {variantColor};
     --button-padding: {sizeStyles.padding};
     --button-font-size: {sizeStyles.fontSize};
@@ -197,7 +197,7 @@
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
 /* 3D button effect */ box-shadow: 2px 2px 0px #000000, 0px 0px 0px 2px var(--button-color);
-    
+
     transform: var(--press-transform);
     transition: transform 50ms ease-out;
 /* Remove default button styles */ -webkit-appearance: none;
@@ -245,11 +245,11 @@
     transform: none !important;
     box-shadow: 1px 1px 0px #000000;
   }
-/* Hover effects */ :global(.nes-8bit-button: not(:disabled):hover) {
+/* Hover effects */ :global(.nes-8bit-button:not(:disabled):hover) {
     filter: brightness(1.1);
 box-shadow: 3px 3px 0px #000000, 0px 0px 0px 2px var(--button-color);
   }
-/* Active/Pressed state */ :global(.nes-8bit-button: not(:disabled):active) {
+/* Active/Pressed state */ :global(.nes-8bit-button:not(:disabled):active) {
 box-shadow: 1px 1px 0px #000000, 0px 0px 0px 2px var(--button-color);
   }
 /* Focus styles for accessibility */ :global(.nes-8bit-button:focus-visible) {
@@ -278,7 +278,7 @@ box-shadow: 1px 1px 0px #000000, 0px 0px 0px 2px var(--button-color);
     75% { transform: rotate(270deg); }
     100% { transform: rotate(360deg); }
   }
-/* Scanlines effect (optional) */ :global(.nes-8bit-button.enable-scanlines: :after) {
+/* Scanlines effect (optional) */ :global(.nes-8bit-button.enable-scanlines::after) {
     content: '';
     position: absolute;
     top: 0;
@@ -324,8 +324,8 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 2px 2px 0px #000000;
       border-width: 1px;
 box-shadow: 1px 1px 0px #000000, 0px 0px 0px 1px var(--button-color);
     }
-    
-    :global(.nes-8bit-button: not(:disabled):hover) {
+
+  :global(.nes-8bit-button:not(:disabled):hover) {
 box-shadow: 2px 2px 0px #000000, 0px 0px 0px 1px var(--button-color);
     }
   }

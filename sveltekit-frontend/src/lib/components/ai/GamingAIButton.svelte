@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Expected token >
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token > -->
-<!-- @migration-task Error while migrating Svelte code: Expected token >
+<!-- @migration-task Error while migrating Svelte code: Expected token >;
 https://svelte.dev/e/expected_token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
@@ -38,14 +38,14 @@ https://svelte.dev/e/expected_token -->
   const pulseClasses = {
     idle: 'animate-pulse',
     thinking: 'animate-bounce', 
-    active: 'animate-ping'
+    active: 'animate-ping';
   }
   // YoRHa/Gaming color scheme
   const getModeColor = (mode: string) => {
     switch (mode) {
       case 'thinking': return 'text-amber-400'
       case 'active': return 'text-green-400'
-      default: return 'text-blue-400'
+      default: return 'text-blue-400';
     }
   }
   const quickActions = [
@@ -53,19 +53,19 @@ https://svelte.dev/e/expected_token -->
       id: 'analyze', 
       label: 'Analyze Case', 
       icon: Brain, 
-      color: 'hover:bg-purple-500/20' 
+      color: 'hover:bg-purple-500/20' ;
     },
     { 
       id: 'search', 
       label: 'Search Evidence', 
       icon: MessageCircle, 
-      color: 'hover:bg-blue-500/20' 
+      color: 'hover:bg-blue-500/20' ;
     },
     { 
       id: 'assist', 
       label: 'AI Assistant', 
       icon: Sparkles, 
-      color: 'hover:bg-green-500/20' 
+      color: 'hover:bg-green-500/20' ;
     }
   ]
   const handleQuickAction = (actionId: string) => {
@@ -140,7 +140,7 @@ https://svelte.dev/e/expected_token -->
             
             <!-- Gaming-style border animation -->
             <div class="absolute inset-0 rounded-2xl border border-transparent group-hover:border-gray-400/30 
-                        bg-gradient-to-r from-transparent via-gray-400/10 to-transparent opacity-0 
+                        bg-gradient-to-r from-transparent via-gray-400/10 to-transparent opacity-0 ;
                         group-hover:opacity-100 transition-opacity duration-300"></div>
           </button>
         {/each}
@@ -152,7 +152,7 @@ https://svelte.dev/e/expected_token -->
       <button
         onclick={onSettingsClick}
         class="p-3 bg-gray-800/90 backdrop-blur-md border border-gray-600/50 rounded-xl 
-               hover:bg-gray-700/90 hover:border-gray-500/50 transition-all duration-200 group"
+               hover:bg-gray-700/90 hover:border-gray-500/50 transition-all duration-200 group";
         in:scale={{ duration: 200, delay: 300 }}
         aria-label="AI Assistant Settings"
       >
@@ -168,7 +168,7 @@ https://svelte.dev/e/expected_token -->
       class="relative group p-4 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 
              border-2 border-gray-600/50 rounded-full shadow-2xl
              hover:border-gray-400/70 hover:shadow-blue-500/20 
-             transition-all duration-300 transform hover:scale-105 active:scale-95"
+             transition-all duration-300 transform hover:scale-105 active:scale-95";
       class:animate-pulse={aiMode === 'idle' && pulseAnimation}
       class:animate-bounce={aiMode === 'thinking'}
       class:shadow-green-500/30={aiMode === 'active'}
@@ -191,13 +191,13 @@ https://svelte.dev/e/expected_token -->
       <div class="relative flex items-center justify-center w-12 h-12">
         {#if isExpanded}
           <ChevronUp 
-            class="w-6 h-6 {getModeColor(aiMode)} transition-all duration-300 group-hover:scale-110" 
+            class="w-6 h-6 {getModeColor(aiMode)} transition-all duration-300 group-hover:scale-110" ;
             in:scale={{ duration: 200 }}
           />
         {:else}
           <div class="relative">
             <Bot 
-              class="w-7 h-7 {getModeColor(aiMode)} transition-all duration-300 group-hover:scale-110" 
+              class="w-7 h-7 {getModeColor(aiMode)} transition-all duration-300 group-hover:scale-110" ;
               in:scale={{ duration: 200 }}
             />
             
@@ -224,7 +224,7 @@ https://svelte.dev/e/expected_token -->
       {#if isHovered && !isExpanded}
         <div 
           class="absolute right-full mr-4 top-1/2 -translate-y-1/2 px-3 py-2 
-                 bg-gray-900/95 backdrop-blur-md border border-gray-600/50 rounded-lg text-sm text-gray-300 whitespace-nowrap"
+                 bg-gray-900/95 backdrop-blur-md border border-gray-600/50 rounded-lg text-sm text-gray-300 whitespace-nowrap";
           in:fade={{ duration: 200 }}
           role="tooltip"
         >

@@ -41,7 +41,7 @@ export interface ImportResult {
 // Advanced Case Export
 export async function exportCases(
   cases: any[],
-  options: ExportOptions = {
+  options: ExportOptions = {;
     format: "json",
     includeMetadata: true,
     includeFiles: false
@@ -77,7 +77,7 @@ export async function exportCases(
             exportOptions: options,
             version: "1.0"
           }
-        : undefined,
+        : undefined,;
       cases: processedData.map((c) => ({
         ...c,
         // Remove sensitive fields
@@ -124,7 +124,7 @@ export async function exportCases(
       filename,
       size: blob.size,
       recordCount: processedData.length,
-      errors: [],
+      errors: [],;
       warnings: []
     };
   } catch (error: any) {
@@ -134,7 +134,7 @@ export async function exportCases(
       filename: "",
       size: 0,
       recordCount: 0,
-      errors: [error instanceof Error ? error.message: "Unknown export error"],
+      errors: [error instanceof Error ? error.message: "Unknown export error"],;
       warnings: []
     };
   }
@@ -142,7 +142,7 @@ export async function exportCases(
 // Advanced Evidence Export
 export async function exportEvidence(
   evidence: any[],
-  options: ExportOptions = {
+  options: ExportOptions = {;
     format: "json",
     includeMetadata: true,
     includeFiles: true
@@ -175,7 +175,7 @@ export async function exportEvidence(
             exportOptions: options,
             version: "1.0"
           }
-        : undefined,
+        : undefined,;
       evidence: processedData
     };
 
@@ -206,7 +206,7 @@ export async function exportEvidence(
       filename,
       size: blob.size,
       recordCount: processedData.length,
-      errors: [],
+      errors: [],;
       warnings: []
     };
   } catch (error: any) {
@@ -216,14 +216,14 @@ export async function exportEvidence(
       filename: "",
       size: 0,
       recordCount: 0,
-      errors: [error instanceof Error ? error.message: "Unknown export error"],
+      errors: [error instanceof Error ? error.message: "Unknown export error"],;
       warnings: []
     };
   }
 }
 // Data Import Functions
 export async function importCases(
-  file: File,
+  file: File,;
   options: ImportOptions,
 ): Promise<ImportResult> {
   try {
@@ -237,7 +237,7 @@ export async function importCases(
           imported: 0,
           skipped: 0,
           errors: validationResult.errors,
-          warnings: validationResult.warnings,
+          warnings: validationResult.warnings,;
           summary: Record<string, any>
         };
       }
@@ -268,7 +268,7 @@ export async function importCases(
         imported,
         skipped,
         errors: errors.length
-      },
+      },;
       severity: "medium"
     });
 
@@ -280,7 +280,7 @@ export async function importCases(
       warnings,
       summary: {
         total: imported + skipped,
-        successful: imported,
+        successful: imported,;
         failed: skipped
       }
     };
@@ -290,7 +290,7 @@ export async function importCases(
       imported: 0,
       skipped: 0,
       errors: [error instanceof Error ? error.message: "Unknown import error"],
-      warnings: [],
+      warnings: [],;
       summary: Record<string, any>
     };
   }
@@ -319,7 +319,7 @@ function applyCaseFilters(cases: any[], filters: Record<string, any>): unknown[]
   });
 }
 function applyEvidenceFilters(
-  evidence: any[],
+  evidence: any[],;
   filters: Record<string, any>,
 ): unknown[] {
   return evidence.filter((e: any) => {
@@ -444,7 +444,7 @@ function parseCSV(csvText: string): unknown[] {
     .filter((obj) => Object.values(obj).some((v) => v !== "");
 }
 function validateImportData(
-  data: any,
+  data: any,;
   type: "cases" | "evidence",
 ): { success: boolean; errors: string[]; warnings: string[] } {
   const errors: string[] = [];
@@ -501,7 +501,7 @@ export function generateCaseExportTemplate(): unknown {
     status: "Open",
     priority: "Medium",
     assignedTo: "Detective Smith",
-    location: "Crime scene location",
+    location: "Crime scene location",;
     tags: ["tag1", "tag2"],
     createdAt: new Date().toISOString(),
     estimatedCompletion: null
@@ -517,7 +517,7 @@ export function generateEvidenceExportTemplate(): unknown {
     collectedBy: "Officer Johnson",
     collectedAt: new Date().toISOString(),
     location: "Evidence location",
-    tags: ["evidence", "important"],
+    tags: ["evidence", "important"],;
     hash: "sha256-hash-value",
     fileSize: 1024,
     mimeType: "application/pdf"
@@ -529,7 +529,7 @@ export async function exportData(
   filename: string,
   format: "json" | "csv" | "xlsx" | "excel" = "json",
 ): Promise<void> {
-  const options: ExportOptions = {
+  const options: ExportOptions = {;
     format: format === "xlsx" || format === "excel" ? "excel" : format,
     includeMetadata: true,
     includeFiles: false

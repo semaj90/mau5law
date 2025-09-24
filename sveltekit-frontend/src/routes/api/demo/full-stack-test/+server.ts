@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { unifiedLegalProcessor } from '$lib/services/unified-legal-simd-pgvector';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { unifiedLegalProcessor } from '$lib/services/unified-legal-simd-pgvector'
 
 /*
  * Full Stack Demo: SIMD + PGVector + Redis + GPU Integration
@@ -8,11 +8,11 @@ import { unifiedLegalProcessor } from '$lib/services/unified-legal-simd-pgvector
  */
 
 export const GET: RequestHandler = async ({ url }) => {
-  const action = url.searchParams.get('action') || 'demo';
+  const action = url.searchParams.get('action') || 'demo'
   
   try {
     if (action === 'demo') {
-      console.log('🚀 Starting Full Stack Legal AI Demo...');
+      console.log('🚀 Starting Full Stack Legal AI Demo...')
       
       // Sample legal document for testing
       const sampleLegalDoc = `
@@ -41,58 +41,58 @@ export const GET: RequestHandler = async ({ url }) => {
         CONCLUSION:
         We respectfully request the court grant summary judgment in favor
         of the plaintiff and award punitive damages as appropriate.
-      `.trim();
+      `.trim()
 
       // Step 1: Initialize the system
-      console.log('⚙️ Step 1: Initializing unified system...');
-      await unifiedLegalProcessor.initialize();
+      console.log('⚙️ Step 1: Initializing unified system...')
+      await unifiedLegalProcessor.initialize()
       
       // Step 2: Process the document with SIMD + GPU acceleration
-      console.log('📝 Step 2: Processing document with SIMD GPU parser...');
+      console.log('📝 Step 2: Processing document with SIMD GPU parser...')
       const processResult = await unifiedLegalProcessor.processAndStoreLegalDocument(
         sampleLegalDoc,
         'Sample Legal Brief - Contract Dispute',
-        'brief',);
+        'brief',)
         {
           jurisdiction: 'Federal District Court',
           practiceAreas: ['Contract Law', 'Commercial Litigation']
         }
-      );
+      )
       
       // Step 3: Test semantic search with Redis caching
-      console.log('🔍 Step 3: Testing semantic search with Redis caching...');
+      console.log('🔍 Step 3: Testing semantic search with Redis caching...')
       const searchQueries = [
         'breach of contract damages',
         'substantive due process',
         'compensatory damages injunctive relief',
         'commercial litigation precedent'
-      ];
+      ]
       
-      const searchResults = [];
+      const searchResults = []
       for (const query of searchQueries) {
-        console.log(`   Searching: "${query}"`);
+        console.log(`   Searching: "${query}"`)
         const results = await unifiedLegalProcessor.semanticSearch(query, {
           documentType: 'brief',
           similarityThreshold: 0.5,
           limit: 5
-        });
+        })
         searchResults.push({
           query,
           resultCount: results.length,
           topResult: results[0] || null
-        });
+        })
       }
       
       // Step 4: Get system performance stats
-      console.log('📊 Step 4: Gathering system performance statistics...');
-      const systemStats = await unifiedLegalProcessor.getSystemStats();
+      console.log('📊 Step 4: Gathering system performance statistics...')
+      const systemStats = await unifiedLegalProcessor.getSystemStats()
       
-      // Demo results summary;
+      // Demo results summary
       const demoResults = {
         timestamp: new Date().toISOString(),
         demo_status: 'completed',
         
-        // Document processing results;
+        // Document processing results
         document_processing: {
           document_id: processResult.documentId,
           entities_found: processResult.parsedDocument.entities.length,
@@ -103,7 +103,7 @@ export const GET: RequestHandler = async ({ url }) => {
           processing_stats: processResult.processingStats
         },
         
-        // Search performance results;
+        // Search performance results
         semantic_search: {
           queries_tested: searchQueries.length,
           results_summary: searchResults,
@@ -114,7 +114,7 @@ export const GET: RequestHandler = async ({ url }) => {
         // System performance
         system_performance: systemStats,
         
-        // Component status;
+        // Component status
         components_status: {
           simd_gpu_parser: 'operational',
           pgvector_indexing: 'operational',
@@ -123,7 +123,7 @@ export const GET: RequestHandler = async ({ url }) => {
           cognitive_cache: 'operational'
         },
         
-        // Hardware utilization;
+        // Hardware utilization
         hardware_stats: {
           rtx_3060_ti_utilization: systemStats.gpu_utilization,
           pgvector_efficiency: systemStats.pgvector_index_efficiency,
@@ -131,9 +131,9 @@ export const GET: RequestHandler = async ({ url }) => {
           total_documents_indexed: systemStats.total_documents,
           total_vectors_stored: systemStats.total_vectors
         }
-      };
+      }
       
-      console.log('✅ Full Stack Demo completed successfully!');
+      console.log('✅ Full Stack Demo completed successfully!')
       
       return json({
         success: true,
@@ -146,11 +146,11 @@ export const GET: RequestHandler = async ({ url }) => {
           'All components working in harmony with RTX 3060 Ti',
           'Ready for production legal document processing'
         ]
-      });
+      })
     }
     
     if (action === 'health') {
-      // Comprehensive health check;
+      // Comprehensive health check
       const healthCheck = {
         timestamp: new Date().toISOString(),
         overall_status: 'healthy',
@@ -161,58 +161,58 @@ export const GET: RequestHandler = async ({ url }) => {
           redis_cache: 'operational',
           gpu_orchestrator: 'operational'
         }
-      };
+      }
       
       try {
-        await unifiedLegalProcessor.initialize();
-        const stats = await unifiedLegalProcessor.getSystemStats();
+        await unifiedLegalProcessor.initialize()
+        const stats = await unifiedLegalProcessor.getSystemStats()
         healthCheck.services = {
           ...healthCheck.services,
           documents_indexed: stats.total_documents,
           gpu_utilization: `${Math.round(stats.gpu_utilization * 100)}%`
-        };
+        }
       } catch (error) {
-        healthCheck.overall_status = 'degraded';
-        healthCheck.services.unified_processor = 'degraded';
+        healthCheck.overall_status = 'degraded'
+        healthCheck.services.unified_processor = 'degraded'
       }
       
-      return json(healthCheck);
+      return json(healthCheck)
     }
     
     if (action === 'stress-test') {
       // Stress test the system
-      console.log('⚡ Starting stress test...');
+      console.log('⚡ Starting stress test...')
       
-      const stressResults = [];
+      const stressResults = []
       const testDocuments = [
         'Contract dispute regarding payment terms and deliverables',
         'Patent infringement case with complex technical claims',
         'Employment law matter involving discrimination allegations',
         'Real estate transaction with title defects and liens',
         'Corporate merger requiring regulatory approval process'
-      ];
+      ]
       
       for (let i = 0; i < testDocuments.length; i++) {
-        const startTime = performance.now();
+        const startTime = performance.now()
         
         const result = await unifiedLegalProcessor.processAndStoreLegalDocument(
           `${testDocuments[i]}. This is a detailed legal document with complex analysis and multiple legal entities involved in the proceedings.`,
           `Stress Test Document ${i + 1}`,
           'contract',)>
           { jurisdiction: 'Test Court', practiceAreas: ['Test Law'] }
-        );
+        )
         
-        const endTime = performance.now();
+        const endTime = performance.now()
         
         stressResults.push({
           document_index: i + 1,
           processing_time: endTime - startTime,
           entities_extracted: (result as { parsedDocument?: any; documentId?: any; processingStats?: any }).parsedDocument.entities.length,
           suggestions_generated: (result as { parsedDocument?: any; documentId?: any; processingStats?: any }).parsedDocument.suggestions.length
-        });
+        })
       }
       
-      const avgProcessingTime = stressResults.reduce((sum, r) => sum + r.processing_time, 0) / stressResults.length;
+      const avgProcessingTime = stressResults.reduce((sum, r) => sum + r.processing_time, 0) / stressResults.length
       
       return json({
         success: true,
@@ -223,31 +223,31 @@ export const GET: RequestHandler = async ({ url }) => {
           throughput: `${(testDocuments.length / (avgProcessingTime / 1000)).toFixed(2)} docs/second`,
           detailed_results: stressResults
         }
-      });
+      })
     }
     
     return json({
       error: 'Invalid action',
       available_actions: ['demo', 'health', 'stress-test']
-    }, { status: 400 });
+    }, { status: 400 })
     
   } catch (error) {
-    console.error('❌ Full stack demo failed:', error);
+    console.error('❌ Full stack demo failed:', error)
     
     return json({
       success: false,
       error: 'Demo failed',
       message: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { content, title, documentType, searchQuery } = await request.json();
+    const { content, title, documentType, searchQuery } = await request.json()
     
-    console.log('🔧 Custom full stack test request...');
+    console.log('🔧 Custom full stack test request...')
     
     if (content && title && documentType) {
       // Process custom document
@@ -256,7 +256,7 @@ export const POST: RequestHandler = async ({ request }) => {
         title,
         documentType,)
         {}
-      );
+      )
       
       return json({
         success: true,
@@ -267,12 +267,12 @@ export const POST: RequestHandler = async ({ request }) => {
           suggestions: (result as { parsedDocument?: any; documentId?: any; processingStats?: any }).parsedDocument.suggestions,
           processingStats: (result as { parsedDocument?: any; documentId?: any; processingStats?: any }).processingStats
         }
-      });
+      })
     }
     
     if (searchQuery) {
       // Perform custom search
-      const searchResults = await unifiedLegalProcessor.semanticSearch(searchQuery);
+      const searchResults = await unifiedLegalProcessor.semanticSearch(searchQuery)
       
       return json({
         success: true,
@@ -280,21 +280,21 @@ export const POST: RequestHandler = async ({ request }) => {
         query: searchQuery,
         results: searchResults,
         cached: searchResults.length > 0 // Indicates if this was likely cached
-      });
+      })
     }
     
     return json({
       error: 'Invalid request',
       expected_fields: 'Either (content, title, documentType) for processing or (searchQuery) for search'
-    }, { status: 400 });
+    }, { status: 400 })
     
   } catch (error) {
-    console.error('❌ Custom test failed:', error);
+    console.error('❌ Custom test failed:', error)
     
     return json({
       success: false,
       error: 'Custom test failed',
       message: error instanceof Error ? error.message: 'Unknown error'
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

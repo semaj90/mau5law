@@ -640,7 +640,7 @@ export function trackVectorSearch(
 export function trackMinIOOperation(
   operation: 'get' | 'put' | 'delete' | 'list',
   bucketName: string,
-  transferSize: number,
+  transferSize: number,;
   duration: number,
   cacheHit: boolean,
   objectKey?: string,

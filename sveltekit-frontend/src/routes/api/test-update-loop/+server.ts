@@ -1,13 +1,13 @@
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 // Test Full Re-embed + Re-rank Loop
 // End-to-end testing of document changes, re-embedding, and re-ranking
 
-import { documentUpdateLoop } from "$lib/services/documentUpdateLoop";
-import { documents, document_chunks, cases, users } from '$lib/db/schema';
-import { documentVectors, queryVectors } from '$lib/db/schema/vectors';
-import { URL } from "url";
+import { documentUpdateLoop } from "$lib/services/documentUpdateLoop"
+import { documents, document_chunks, cases, users } from '$lib/db/schema'
+import { documentVectors, queryVectors } from '$lib/db/schema/vectors'
+import { URL } from "url"
 
 // ============================================================================
 // TEST SCENARIOS
@@ -52,19 +52,19 @@ const testScenarios = {
       'CONFIDENTIAL SETTLEMENT AGREEMENT - This settlement resolves all claims between parties regarding patent infringement allegations. Payment terms are $500,000 over 12 months with mutual non-disclosure requirements.',
     expectedPriority: 'critical'
   }
-};
+}
 
 // ============================================================================
 // TEST EXECUTION
 // ============================================================================
 
 class UpdateLoopTester {
-  private testResults: any = {};
-  private testDocumentIds: string[] = [];
+  private testResults: any = {}
+  private testDocumentIds: string[] = []
 
   async runFullTest(scenarioName?: string): Promise<any> {
-    const startTime = Date.now();
-    console.log('🧪 Starting full update loop test...');
+    const startTime = Date.now()
+    console.log('🧪 Starting full update loop test...')
 
     try {
       this.testResults = {
@@ -74,66 +74,66 @@ class UpdateLoopTester {
         steps: Record<string, any>,
         performance: Record<string, any>,
         errors: []
-      };
+      }
 
       // Step 1: Setup test environment
-      await this.setupTestEnvironment();
+      await this.setupTestEnvironment()
 
-      // Step 2: Run test scenarios;
+      // Step 2: Run test scenarios
       if (scenarioName && testScenarios[scenarioName as keyof typeof testScenarios]) {
-        await this.runTestScenario(scenarioName);
+        await this.runTestScenario(scenarioName)
       } else {
         for (const [name, scenario] of Object.entries(testScenarios)) {
-          await this.runTestScenario(name);
+          await this.runTestScenario(name)
         }
       }
 
       // Step 3: Test search impact
-      await this.testSearchImpact();
+      await this.testSearchImpact()
 
       // Step 4: Performance analysis
-      await this.analyzePerformance();
+      await this.analyzePerformance()
 
       // Step 5: Cleanup
-      await this.cleanup();
+      await this.cleanup()
 
-      this.testResults.status = 'completed';
-      this.testResults.totalTime = Date.now() - startTime;
+      this.testResults.status = 'completed'
+      this.testResults.totalTime = Date.now() - startTime
 
-      return this.testResults;
+      return this.testResults
     } catch (err: any) {
-      this.testResults.status = 'failed';
-      this.testResults.error = err instanceof Error ? err.message: 'Unknown error';
-      this.testResults.totalTime = Date.now() - startTime;
+      this.testResults.status = 'failed'
+      this.testResults.error = err instanceof Error ? err.message: 'Unknown error'
+      this.testResults.totalTime = Date.now() - startTime
 
-      console.error('❌ Update loop test failed:', err);
-      return this.testResults;
+      console.error('❌ Update loop test failed:', err)
+      return this.testResults
     }
   }
 
   private async setupTestEnvironment() {
-    const stepStart = Date.now();
-    console.log('🔧 Setting up test environment...');
+    const stepStart = Date.now()
+    console.log('🔧 Setting up test environment...')
 
     try {
       // Create test user
       const [testUser] = await db
-        .insert(users);
+        .insert(users)
         .values({
           email: 'test@update-loop.com',
           name: 'Update Loop Test User',
           role: 'prosecutor',
           passwordHash: 'test-hash'
-        });
+        })
         .onConflictDoUpdate({
           target: users.email,
           set: { name: 'Update Loop Test User (Updated)' }
         })
-        .returning();
+        .returning()
 
       // Create test case
       const [testCase] = await db
-        .insert(cases);
+        .insert(cases)
         .values({
           title: 'Update Loop Test Case',
           description: 'Test case for document update loop validation',
@@ -141,38 +141,38 @@ class UpdateLoopTester {
           priority: 'medium',
           createdBy: testUser.id
         })
-        .returning();
+        .returning()
 
       this.testResults.steps.setup = {
         status: 'success',
         userId: testUser.id,
         caseId: testCase.id,
         time: Date.now() - stepStart
-      };
+      }
 
-      this.testResults.testUserId = testUser.id;
-      this.testResults.testCaseId = testCase.id;
+      this.testResults.testUserId = testUser.id
+      this.testResults.testCaseId = testCase.id
 
-      console.log('✅ Test environment ready');
+      console.log('✅ Test environment ready')
     } catch (err: any) {
       this.testResults.steps.setup = {
         status: 'failed',
         error: err instanceof Error ? err.message: 'Setup failed'
-      };
-      throw err;
+      }
+      throw err
     }
   }
 
   private async runTestScenario(scenarioName: string) {
-    const scenario = testScenarios[scenarioName as keyof typeof testScenarios];
-    const stepStart = Date.now();
+    const scenario = testScenarios[scenarioName as keyof typeof testScenarios]
+    const stepStart = Date.now()
 
-    console.log(`📝 Running scenario: ${scenario.name}`);
+    console.log(`📝 Running scenario: ${scenario.name}`)
 
     try {
       // Create initial document
       const [document] = await db
-        .insert(documents);
+        .insert(documents)
         .values({
           caseId: this.testResults.testCaseId,
           filename: `${scenarioName}_test.txt`,
@@ -180,17 +180,17 @@ class UpdateLoopTester {
           extractedText: scenario.originalContent,
           createdBy: this.testResults.testUserId
         })
-        .returning();
+        .returning()
 
-      this.testDocumentIds.push(document.id);
+      this.testDocumentIds.push(document.id)
 
       // Initial embedding (simulate existing document)
-      await documentUpdateLoop.queueDocumentUpdate(document.id, scenario.originalContent);
+      await documentUpdateLoop.queueDocumentUpdate(document.id, scenario.originalContent)
       await new Promise((resolve: any) => setTimeout(resolve, 1000); // Wait for processing
 
       // Create some test queries that would return this document
-      const testQuery = this.generateTestQuery(scenario.originalContent);
-      const queryEmbedding = await documentUpdateLoop['embeddings'].embedQuery(testQuery);
+      const testQuery = this.generateTestQuery(scenario.originalContent)
+      const queryEmbedding = await documentUpdateLoop['embeddings'].embedQuery(testQuery)
 
       await db.insert(queryVectors).values({
         userId: this.testResults.testUserId,
@@ -198,21 +198,21 @@ class UpdateLoopTester {
         embedding: queryEmbedding,
         resultCount: 1,
         clickedResults: [{ id: document.id, score: 0.8 }]
-      });
+      })
 
       // NOW TEST THE UPDATE LOOP
       const changeDetection = await documentUpdateLoop.detectDocumentChanges(
         document.id,
         scenario.modifiedContent
-      );
+      )
 
-      let updateResult;
-      let rerankingResult;
+      let updateResult
+      let rerankingResult
 
       if (changeDetection) {
         // Test the full update loop
-        updateResult = await documentUpdateLoop.reembedDocument(changeDetection);
-        rerankingResult = await documentUpdateLoop.rerankAffectedQueries(document.id);
+        updateResult = await documentUpdateLoop.reembedDocument(changeDetection)
+        rerankingResult = await documentUpdateLoop.rerankAffectedQueries(document.id)
       }
 
       this.testResults.steps[scenarioName] = {
@@ -222,13 +222,13 @@ class UpdateLoopTester {
         detectedPriority: changeDetection?.priority,
         expectedPriority: scenario.expectedPriority,
         priorityMatch: changeDetection?.priority === scenario.expectedPriority,
-        updateResult: updateResult;
+        updateResult: updateResult
           ? {
               chunksUpdated: updateResult.chunksUpdated,
               processingTime: updateResult.processingTime
             }
           : null,
-        rerankingResult: rerankingResult;
+        rerankingResult: rerankingResult
           ? {
               queriesAffected: rerankingResult.length,
               avgImprovement:
@@ -237,16 +237,16 @@ class UpdateLoopTester {
             }
           : null,
         time: Date.now() - stepStart
-      };
+      }
 
-      console.log(`✅ Scenario ${scenario.name} completed`);
+      console.log(`✅ Scenario ${scenario.name} completed`)
     } catch (err: any) {
       this.testResults.steps[scenarioName] = {
         status: 'failed',
         error: err instanceof Error ? err.message: 'Scenario failed'
-      };
+      }
 
-      console.error(`❌ Scenario ${scenario.name} failed:`, err);
+      console.error(`❌ Scenario ${scenario.name} failed:`, err)
     }
   }
 
@@ -259,17 +259,17 @@ class UpdateLoopTester {
         (word: any) =>
           word.length > 4 &&
           !['this', 'that', 'with', 'from', 'they', 'have', 'will', 'been'].includes(word)
-      );
+      )
 
-    return words.slice(0, 3).join(' ');
+    return words.slice(0, 3).join(' ')
   }
 
   private async testSearchImpact() {
-    const stepStart = Date.now();
-    console.log('🔍 Testing search impact...');
+    const stepStart = Date.now()
+    console.log('🔍 Testing search impact...')
 
     try {
-      const searchTests = [];
+      const searchTests = []
 
       for (const documentId of this.testDocumentIds) {
         // Get document content
@@ -277,15 +277,15 @@ class UpdateLoopTester {
           .select()
           .from(documents)
           .where(eq(documents.id, documentId)
-          .limit(1);
+          .limit(1)
 
-        if (!doc) continue;
+        if (!doc) continue
 
         // Test search before and after
-        const testQuery = this.generateTestQuery(doc.extractedText || '');
-        const queryEmbedding = await documentUpdateLoop['embeddings'].embedQuery(testQuery);
+        const testQuery = this.generateTestQuery(doc.extractedText || '')
+        const queryEmbedding = await documentUpdateLoop['embeddings'].embedQuery(testQuery)
 
-        const searchResults = await db;
+        const searchResults = await db
           .select({
             documentId: documentVectors.documentId,
             similarity: sql<number>`1 - (${documentVectors.embedding} <=> ${queryEmbedding})`
@@ -293,9 +293,9 @@ class UpdateLoopTester {
           .from(documentVectors)
           .where(sql`1 - (${documentVectors.embedding} <=> ${queryEmbedding}) > 0.3`)
           .orderBy(sql`${documentVectors.embedding} <=> ${queryEmbedding}`)
-          .limit(10);
+          .limit(10)
 
-        const relevantResult = searchResults.find((r: any) => r.documentId === documentId);
+        const relevantResult = searchResults.find((r: any) => r.documentId === documentId)
 
         searchTests.push({
           documentId,
@@ -305,7 +305,7 @@ class UpdateLoopTester {
           rank: relevantResult
             ? searchResults.findIndex((r: any) => r.documentId === documentId) + 1
             : -1
-        });
+        })
       }
 
       this.testResults.steps.searchImpact = {
@@ -314,34 +314,34 @@ class UpdateLoopTester {
         documentsFound: searchTests.filter((t: any) => t.found).length,
         avgSimilarity: searchTests.reduce((sum, t) => sum + t.similarity, 0) / searchTests.length,
         time: Date.now() - stepStart
-      };
+      }
 
-      console.log('✅ Search impact testing completed');
+      console.log('✅ Search impact testing completed')
     } catch (err: any) {
       this.testResults.steps.searchImpact = {
         status: 'failed',
         error: err instanceof Error ? err.message: 'Search testing failed'
-      };
+      }
     }
   }
 
   private async analyzePerformance() {
-    const stepStart = Date.now();
-    console.log('📊 Analyzing performance...');
+    const stepStart = Date.now()
+    console.log('📊 Analyzing performance...')
 
     try {
       // Get queue status
-      const queueStatus = await documentUpdateLoop.getQueueStatus();
+      const queueStatus = await documentUpdateLoop.getQueueStatus()
 
       // Calculate average processing times
       const processingTimes = Object.values(this.testResults.steps)
         .filter((step: any) => step.updateResult?.processingTime)
-        .map((step: any) => step.updateResult.processingTime);
+        .map((step: any) => step.updateResult.processingTime)
 
       const avgProcessingTime =
         processingTimes.length > 0
           ? processingTimes.reduce((sum: number, time: number) => sum + time, 0) /
-            processingTimes.length: 0;
+            processingTimes.length: 0
 
       this.testResults.performance = {
         avgProcessingTime,
@@ -351,48 +351,48 @@ class UpdateLoopTester {
         ).length,
         queueStatus,
         priorityDistribution: Object.values(this.testResults.steps)
-          .filter((step: any) => step.detectedPriority);
+          .filter((step: any) => step.detectedPriority)
           .reduce((acc: any, step: any) => {
-            acc[step.detectedPriority] = (acc[step.detectedPriority] || 0) + 1;
-            return acc;
+            acc[step.detectedPriority] = (acc[step.detectedPriority] || 0) + 1
+            return acc
           }, {}),
         time: Date.now() - stepStart
-      };
+      }
 
-      console.log('✅ Performance analysis completed');
+      console.log('✅ Performance analysis completed')
     } catch (err: any) {
       this.testResults.performance = {
         error: err instanceof Error ? err.message: 'Performance analysis failed'
-      };
+      }
     }
   }
 
   private async cleanup() {
-    const stepStart = Date.now();
-    console.log('🧹 Cleaning up test data...');
+    const stepStart = Date.now()
+    console.log('🧹 Cleaning up test data...')
 
     try {
-      // Delete test documents and vectors;
+      // Delete test documents and vectors
       for (const documentId of this.testDocumentIds) {
-        await db.delete(documentVectors).where(eq(documentVectors.documentId, documentId);
-        await db.delete(documents).where(eq(documents.id, documentId);
+        await db.delete(documentVectors).where(eq(documentVectors.documentId, documentId)
+        await db.delete(documents).where(eq(documents.id, documentId)
       }
 
       // Delete test queries
-      await db.delete(queryVectors).where(eq(queryVectors.userId, this.testResults.testUserId);
+      await db.delete(queryVectors).where(eq(queryVectors.userId, this.testResults.testUserId)
 
       this.testResults.steps.cleanup = {
         status: 'success',
         documentsDeleted: this.testDocumentIds.length,
         time: Date.now() - stepStart
-      };
+      }
 
-      console.log('✅ Cleanup completed');
+      console.log('✅ Cleanup completed')
     } catch (err: any) {
       this.testResults.steps.cleanup = {
         status: 'failed',
         error: err instanceof Error ? err.message: 'Cleanup failed'
-      };
+      }
     }
   }
 }
@@ -403,32 +403,32 @@ class UpdateLoopTester {
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { scenario = 'all', action = 'test' } = await request.json();
+    const { scenario = 'all', action = 'test' } = await request.json()
 
-    const tester = new UpdateLoopTester();
+    const tester = new UpdateLoopTester()
 
     if (action === 'test') {
-      const results = await tester.runFullTest(scenario);
+      const results = await tester.runFullTest(scenario)
       return json({
         success: true,
         data: results
-      });
+      })
     }
 
-    return json({ error: 'Unknown action' }, { status: 400 });
+    return json({ error: 'Unknown action' }, { status: 400 })
 
   } catch (err: any) {
-    console.error('❌ Update loop test error:', err);
+    console.error('❌ Update loop test error:', err)
     return json({
       success: false,
       error: err instanceof Error ? err.message: 'Test failed'
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const action = url.searchParams.get('action') || 'info';
+    const action = url.searchParams.get('action') || 'info'
 
     if (action === 'info') {
       return json({
@@ -442,7 +442,7 @@ export const GET: RequestHandler = async ({ url }) => {
             'GET /?action=scenarios': 'List available test scenarios'
           }
         }
-      });
+      })
     }
 
     if (action === 'scenarios') {
@@ -456,15 +456,15 @@ export const GET: RequestHandler = async ({ url }) => {
             expectedPriority: scenario.expectedPriority
           })
         }
-      });
+      })
     }
 
-    return json({ error: 'Unknown action' }, { status: 400 });
+    return json({ error: 'Unknown action' }, { status: 400 })
 
   } catch (err: any) {
     return json({
       success: false,
       error: err instanceof Error ? err.message: 'Request failed'
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

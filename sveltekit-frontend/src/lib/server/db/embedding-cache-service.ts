@@ -26,11 +26,11 @@ export async function upsertEmbedding(opts: UpsertEmbeddingOptions): Promise<any
   const existing = await db.select().from(embeddingCache).where(eq(embeddingCache.textHash, textHash);
   if (existing.length) {
     await db.update(embeddingCache)
-      .set({ embedding, packedEmbedding: b64, embeddingScale: scale?.toString(), model })
+      .set({ embedding, packedEmbedding: b64, embeddingScale: scale?.toString()), model })
       .where(eq(embeddingCache.textHash, textHash);
     return { updated: true, method, scale };
   } else {
-    await db.insert(embeddingCache).values({ textHash, embedding, packedEmbedding: b64, embeddingScale: scale?.toString(), model });
+    await db.insert(embeddingCache).values({ textHash, embedding, packedEmbedding: b64, embeddingScale: scale?.toString()), model });
     return { created: true, method, scale };
   }
 }

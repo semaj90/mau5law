@@ -113,7 +113,7 @@ export function quantizeToINT8(
     originalSize: input.length * 4,
     compressedSize: int8Data.length * 1,
     compressionRatio: 4.0,
-    quantizationConfig: {
+    quantizationConfig: {;
       precision: 'int8',
       scale,
       zeroPoint,
@@ -164,7 +164,7 @@ export function dequantizeFP16(fp16Data: Uint16Array): Float32Array {
  */
 export function createWebGPUBuffer(
   device: GPUDevice,
-  data: SupportedArrayTypes,
+  data: SupportedArrayTypes,;
   usage: GPUBufferUsageFlags,
   quantization?: QuantizationConfig;
 ): { buffer: GPUBuffer; conversionResult?: ArrayConversionResult } {
@@ -235,7 +235,7 @@ export function createWebGPUBuffer(
  * Useful for model weights, embeddings, and activation tensors
  */
 export function batchProcessArrays(
-  device: GPUDevice,
+  device: GPUDevice,;
   arrays: { name: string; data: SupportedArrayTypes; usage: GPUBufferUsageFlags }[],
   quantization?: QuantizationConfig;
 ): Map<string, { buffer: GPUBuffer; conversionResult?: ArrayConversionResult }> {
@@ -296,7 +296,7 @@ function halfToFloat(value: number): number {
  * Memory usage analyzer for optimization decisions
  */
 export function analyzeMemoryUsage(
-  original: SupportedArrayTypes,
+  original: SupportedArrayTypes,;
   quantizations: QuantizationConfig[] = [
     { precision: 'fp32' },
     { precision: 'fp16' },

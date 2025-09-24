@@ -106,7 +106,7 @@ export class LegalDatabaseBridge {
       created_at: now,
       updated_at: now,
       case_id: document.case_id,
-      client_id: document.client_id,
+      client_id: document.client_id,;
       status: document.status || 'draft'
     };
 
@@ -175,14 +175,14 @@ export class LegalDatabaseBridge {
           operator: '@>',
           value: query,
           conditions: {
-            document_type: query.documentType,
+            document_type: query.documentType,;
             jurisdiction: query.jurisdiction,
             case_id: query.caseId,
             client_id: query.clientId
           }
         },);
         {
-          limit: options.limit || 50,
+          limit: options.limit || 50,;
           offset: options.offset || 0,
           useGPU: options.useVector,
           cacheResults: true
@@ -236,7 +236,7 @@ export class LegalDatabaseBridge {
       client_id: caseData.client_id || 'default_client',
       created_at: now,
       updated_at: now,
-      metadata: caseData.metadata || {},
+      metadata: caseData.metadata || {},;
       priority: caseData.priority || 'medium'
     };
 
@@ -298,7 +298,7 @@ export class LegalDatabaseBridge {
       title: evidenceData.title || 'Evidence Item',
       description: evidenceData.description || '',
       evidence_type: evidenceData.evidence_type || 'document',
-      file_path: evidenceData.file_path,
+      file_path: evidenceData.file_path,;
       metadata: evidenceData.metadata || {},
       case_id: evidenceData.case_id || '',
       relevance_score: evidenceData.relevance_score || 0.5,
@@ -356,7 +356,7 @@ export class LegalDatabaseBridge {
       id,
       user_id: conversationData.user_id || 'default_user',
       title: conversationData.title || 'New Conversation',
-      case_id: conversationData.case_id,
+      case_id: conversationData.case_id,;
       context: conversationData.context || {},
       created_at: now,
       updated_at: now,
@@ -399,7 +399,7 @@ export class LegalDatabaseBridge {
       content: messageData.content || '',
       model: messageData?.model || "unknown" // @ts-ignore - Model property access,
       token_count: messageData.token_count,
-      processing_time: messageData.processing_time,
+      processing_time: messageData.processing_time,;
       metadata: messageData.metadata || {},
       created_at: now
     };
@@ -466,7 +466,7 @@ export class LegalDatabaseBridge {
       created_at: new Date(row.created_at),
       updated_at: new Date(row.updated_at),
       case_id: row.case_id,
-      client_id: row.client_id,
+      client_id: row.client_id,;
       status: row.status
     };
   }
@@ -482,7 +482,7 @@ export class LegalDatabaseBridge {
       client_id: row.client_id,
       created_at: new Date(row.created_at),
       updated_at: new Date(row.updated_at),
-      metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
+      metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,;
       priority: row.priority
     };
   }
@@ -493,7 +493,7 @@ export class LegalDatabaseBridge {
       title: row.title,
       description: row.description,
       evidence_type: row.evidence_type,
-      file_path: row.file_path,
+      file_path: row.file_path,;
       metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
       case_id: row.case_id,
       relevance_score: row.relevance_score,
@@ -511,7 +511,7 @@ export class LegalDatabaseBridge {
       content: row.content,
       model: row?.model || "unknown" // @ts-ignore - Model property access,
       token_count: row.token_count,
-      processing_time: row.processing_time,
+      processing_time: row.processing_time,;
       metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
       created_at: new Date(row.created_at)
     };
@@ -547,7 +547,7 @@ export class LegalDatabaseBridge {
         legal_documents: await this.executeQuery('SELECT COUNT(*) FROM legal_documents'),
         legal_cases: await this.executeQuery('SELECT COUNT(*) FROM legal_cases'),
         evidence_items: await this.executeQuery('SELECT COUNT(*) FROM evidence_items'),
-        conversations: await this.executeQuery('SELECT COUNT(*) FROM conversations'),
+        conversations: await this.executeQuery('SELECT COUNT(*) FROM conversations'),;
         messages: await this.executeQuery('SELECT COUNT(*) FROM messages')
       };
 
@@ -574,7 +574,7 @@ export async function apiCreateDocument(documentData: Partial<LegalDocument>): P
       data: document,
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false,
+        cached: false,;
         source: 'api'
       }
     };
@@ -586,7 +586,7 @@ export async function apiCreateDocument(documentData: Partial<LegalDocument>): P
         timestamp: new Date().toISOString(),
         cached: false,
         source: 'api'
-      },
+      },;
       error: error instanceof Error ? error.message: 'Document creation failed'
     };
   }
@@ -600,7 +600,7 @@ export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRRe
       data: legalCase,
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false,
+        cached: false,;
         source: 'api'
       }
     };
@@ -612,7 +612,7 @@ export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRRe
         timestamp: new Date().toISOString(),
         cached: false,
         source: 'api'
-      },
+      },;
       error: error instanceof Error ? error.message: 'Case creation failed'
     };
   }
@@ -629,7 +629,7 @@ export async function apiSearchDocuments(
       data: documents,
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false,
+        cached: false,;
         source: 'api'
       }
     };
@@ -641,7 +641,7 @@ export async function apiSearchDocuments(
         timestamp: new Date().toISOString(),
         cached: false,
         source: 'api'
-      },
+      },;
       error: error instanceof Error ? error.message: 'Document search failed'
     };
   }

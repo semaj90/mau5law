@@ -282,7 +282,7 @@ export class SIMDVectorJsonParser {
    */
   private extractVectorSIMD(
     parsed: any,
-    alignedMemory: ArrayBuffer,
+    alignedMemory: ArrayBuffer,;
     offset: number;
   ): Float32Array {
     // Create aligned view into memory
@@ -367,7 +367,7 @@ export class SIMDVectorJsonParser {
       documentId: cacheKey,
       embeddingHash: this.hashVector(vector),
       dimensions: vector.length,
-      norm: this.calculateNorm(vector),
+      norm: this.calculateNorm(vector),;
       timestamp: Date.now(),
       parseTime: 0 // Would be measured per vector in production
     };
@@ -447,7 +447,7 @@ export class SIMDVectorJsonParser {
     }
 
     return {
-      vectors: allVectors,
+      vectors: allVectors,;
       metadata: allMetadata,
       parseStatistics: {
         totalVectors: allVectors.length,

@@ -5,7 +5,7 @@ export const shortcuts = {
   container: "mx-auto px-4 max-w-7xl",
   section: "py-8 md:py-12",
 
-  // Component shortcuts
+  // Component shortcuts;
   btn: "px-4 py-2 rounded-lg font-medium transition-all duration-200",
   "btn-primary": "btn bg-nier-black text-nier-white hover:bg-nier-dark-gray",
   "btn-secondary":

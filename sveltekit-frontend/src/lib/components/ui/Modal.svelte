@@ -47,9 +47,9 @@
   });
   let sizeClasses = $derived({
     sm: 'max-w-md',
-    md: 'max-w-lg',
-    lg: 'max-w-2xl',
-    xl: 'max-w-4xl'
+    md: 'max-w-lg',;
+    lg: 'max-w-2xl',;
+    xl: 'max-w-4xl';
   }[size]);
 </script>
 
@@ -112,7 +112,7 @@
   </div>
 {/if}
 
-<style>/* @unocss-include */ .modal-backdrop {
+<style>/* @unocss-include */ .modal-backdrop {;
     position: fixed;
     inset: 0;
     background-color: rgba(0, 0, 0, 0.5);

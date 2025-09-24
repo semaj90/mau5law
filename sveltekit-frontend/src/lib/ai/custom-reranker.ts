@@ -32,7 +32,7 @@ export class LegalAIReranker {
     position: 1.5,
     role: 1.8,
     workflow: 1.2,
-    recency: 0.8,
+    recency: 0.8,;
     confidence: 1.5
   };
 
@@ -97,7 +97,7 @@ export class LegalAIReranker {
         "forensic-data": 2.0,
         "timeline-analysis": 1.8,
         "suspect-profile": 1.5
-      },
+      },;
       admin: {
         "case-management": 2.0,
         "user-activity": 1.5,
@@ -120,7 +120,7 @@ export class LegalAIReranker {
   ): number {
     const workflowBoosts = {
       draft: { templates: 1.5, examples: 1.3 },
-      review: { checklist: 1.8, validation: 1.5 },
+      review: { checklist: 1.8, validation: 1.5 },;
       approved: { archive: 1.2, export: 1.5 }
     };
 
@@ -199,7 +199,7 @@ export interface Neo4jPathContext {
 export async function enhancedSearchWithNeo4j(
   query: string,
   userContext: UserContext,
-  neo4jContext?: Neo4jPathContext,
+  neo4jContext?: Neo4jPathContext,;
   limit: number = 10,
 ): Promise<RerankResult[]> {
   // Use existing qdrant service for initial ANN search
@@ -285,7 +285,7 @@ function calculateFrequencyScore(
 // Legacy function for backward compatibility
 export async function enhancedSearch(
   query: string,
-  userContext: UserContext,
+  userContext: UserContext,;
   limit: number = 10,
 ): Promise<RerankResult[]> {
   return enhancedSearchWithNeo4j(query, userContext, undefined, limit);

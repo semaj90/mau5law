@@ -49,16 +49,16 @@
 
     try {
       const response = await fetch('/api/legal-ai', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           prompt,
           context: context || undefined,
-          max_tokens: 512,
+          max_tokens: 512,;
           temperature: 0.3,
-          use_vector_search: useVectorSearch
+          use_vector_search: useVectorSearch;
         })
       });
 
@@ -69,12 +69,12 @@
           id: data.result.query_id,
           prompt,
           response: data.result.response,
-          model_used: data.result.model_used,
+          model_used: data.result.model_used,;
           tokens: data.result.tokens,
           inference_time: data.result.inference_time,
           total_time: data.result.total_time,
-          similar_documents_found: data.result.similar_documents_found,
-          timestamp: new Date()
+          similar_documents_found: data.result.similar_documents_found,;
+          timestamp: new Date();
         };
 
         queries = [newQuery, ...queries];
@@ -111,7 +111,7 @@
       if (data.success) {
         queries = data.queries.map((q: any) => ({
           ...q,
-          timestamp: new Date(q.timestamp)
+          timestamp: new Date(q.timestamp);
         }));
       }
     } catch (err) {
@@ -306,7 +306,7 @@
 </div>
 
 <style>
-  .line-clamp-3 {
+  .line-clamp-3 {;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;

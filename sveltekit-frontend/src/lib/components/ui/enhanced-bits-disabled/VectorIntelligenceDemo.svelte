@@ -26,31 +26,31 @@
       value: 'semantic',
       label: 'Semantic Search',
       description: 'AI-powered contextual understanding',
-      category: 'AI-Powered'
+      category: 'AI-Powered';
     },
     {
       value: 'vector',
       label: 'Vector Similarity',
       description: 'Embedding-based similarity matching',
-      category: 'AI-Powered'
+      category: 'AI-Powered';
     },
     {
       value: 'hybrid',
       label: 'Hybrid Search',
       description: 'Combined semantic and keyword search',
-      category: 'AI-Powered'
+      category: 'AI-Powered';
     },
     {
       value: 'legal',
       label: 'Legal Precedent',
       description: 'Case law and precedent matching',
-      category: 'Legal-Specific'
+      category: 'Legal-Specific';
     },
     {
       value: 'citation',
-      label: 'Citation Analysis',
-      description: 'Legal citation and reference tracking',
-      category: 'Legal-Specific'
+      label: 'Citation Analysis',;
+      description: 'Legal citation and reference tracking',;
+      category: 'Legal-Specific';
     }
   ];
 
@@ -71,53 +71,53 @@
   const mockSearchResults: VectorSearchResult[] = [
     {
       id: '1',
-      content: 'Contract breach regarding non-disclosure agreement violation with evidence of corporate espionage through unauthorized access to proprietary systems.',
+      content: 'Contract breach regarding non-disclosure agreement violation with evidence of corporate espionage through unauthorized access to proprietary systems.',;
       metadata: {
         caseNumber: 'CV-2024-001',
         court: 'Superior Court of California',
         judge: 'Hon. Sarah Mitchell',
-        date: '2024-01-15'
+        date: '2024-01-15';
       },
       score: 0.94,
-      highlights: ['non-disclosure agreement', 'corporate espionage', 'unauthorized access'],
+      highlights: ['non-disclosure agreement', 'corporate espionage', 'unauthorized access'],;
       source: {
         type: 'case',
         name: 'TechCorp vs. StartupInc',
-        url: '/cases/cv-2024-001'
+        url: '/cases/cv-2024-001';
       }
     },
     {
       id: '2',
-      content: 'Employment termination dispute involving alleged discrimination based on protected class status under Title VII enforcement guidelines.',
+      content: 'Employment termination dispute involving alleged discrimination based on protected class status under Title VII enforcement guidelines.',;
       metadata: {
         caseNumber: 'EM-2024-042',
         jurisdiction: 'Federal District Court',
         statute: 'Title VII Civil Rights Act',
-        precedent: 'McDonnell Douglas test'
+        precedent: 'McDonnell Douglas test';
       },
       score: 0.87,
-      highlights: ['employment termination', 'discrimination', 'protected class'],
+      highlights: ['employment termination', 'discrimination', 'protected class'],;
       source: {
         type: 'precedent',
         name: 'EEOC Guidelines on Discrimination',
-        url: '/precedents/title-vii-enforcement'
+        url: '/precedents/title-vii-enforcement';
       }
     },
     {
       id: '3',
-      content: 'Intellectual property infringement case analyzing patent claims and prior art references in software development litigation.',
+      content: 'Intellectual property infringement case analyzing patent claims and prior art references in software development litigation.',;
       metadata: {
         patentNumber: 'US 10,123,456',
         filingDate: '2020-03-15',
         inventor: 'Dr. Jane Smith',
-        classification: 'G06F 16/00'
+        classification: 'G06F 16/00';
       },
       score: 0.82,
-      highlights: ['intellectual property', 'patent claims', 'prior art'],
+      highlights: ['intellectual property', 'patent claims', 'prior art'],;
       source: {
-        type: 'document',
-        name: 'Patent Application Analysis',
-        url: '/documents/patent-analysis-2024'
+        type: 'document',;
+        name: 'Patent Application Analysis',;
+        url: '/documents/patent-analysis-2024';
       }
     }
   ];
@@ -136,9 +136,9 @@
   let filteredResults = $derived(
     selectedConfidence === 'all' ? searchResults : (() => {
       const thresholds = {
-        high: 0.9,
-        medium: 0.7,
-        low: 0.0
+        high: 0.9,;
+        medium: 0.7,;
+        low: 0.0;
       };
 
       const minScore = thresholds[selectedConfidence as keyof typeof thresholds];
@@ -152,21 +152,21 @@
   // Entity type icons mapping
   const entityIcons = {
     person: Users,
-    organization: Scale,
-    location: MapPin,
+    organization: Scale,;
+    location: MapPin,;
     date: Calendar,
     legal_term: FileText,
-    case_citation: Scale
+    case_citation: Scale;
   };
 
   // Entity type colors
   const entityColors = {
     person: 'semantic-entity-person',
-    organization: 'semantic-entity-organization',
-    location: 'semantic-entity-location',
+    organization: 'semantic-entity-organization',;
+    location: 'semantic-entity-location',;
     date: 'semantic-entity-date',
     legal_term: 'semantic-entity-legal',
-    case_citation: 'semantic-entity-legal'
+    case_citation: 'semantic-entity-legal';
   };
 
   // Search functionality
@@ -182,7 +182,7 @@
       // Mock results based on search type
       searchResults = mockSearchResults.map(result => ({
         ...result,
-        score: Math.random() * 0.3 + 0.7, // Random score between 0.7-1.0
+        score: Math.random() * 0.3 + 0.7, // Random score between 0.7-1.0;
         highlights: (result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).highlights.filter(() => Math.random() > 0.3) // Random highlights
       }));
 
@@ -237,7 +237,7 @@
     <h2 class="text-lg font-gothic mb-4 text-nier-text-primary">Search Configuration</h2>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-      <Select
+      <Select;
         bind:value={selectedSearchType}
         options={searchTypes}
         placeholder="Select search type..."
@@ -271,7 +271,7 @@
     <div class="flex gap-3 mb-4">
       <Input
         variant="search"
-        placeholder="Enter legal query or document content..."
+        placeholder="Enter legal query or document content...";
         bind:value={searchQuery}
         evidenceSearch
         legal
@@ -498,7 +498,7 @@ searchQuery = 'contract breach non-disclosure agreement'}
   /* @unocss-include */
 
   /* Vector Intelligence specific styling */
-  .vector-intelligence-demo {
+  .vector-intelligence-demo {;
     background: linear-gradient(
       135deg,
       var(--color-nier-bg-primary) 0%,
@@ -567,7 +567,7 @@ searchQuery = 'contract breach non-disclosure agreement'}
     overflow: hidden;
   }
 
-  :global(.vector-result-item: :before) {
+  :global(.vector-result-item::before) {
     content: '';
     position: absolute;
     top: 0;

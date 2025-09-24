@@ -97,13 +97,13 @@ export class WebAssemblyAccelerator {
       // Set up memory and imports;
       const memory = new WebAssembly.Memory({
         initial: 256, // 16MB initial
-        maximum: 1024, // 64MB maximum
+        maximum: 1024, // 64MB maximum;
         shared: false
       });
 
       const defaultImports = {
         env: {
-          memory,
+          memory,;
           abort: () => {
             throw new Error("WASM module aborted");
           },
@@ -367,7 +367,7 @@ export class WebAssemblyAccelerator {
 
   private getEmbeddedWasmModule(moduleName: string): Uint8Array {
     // Return minimal WASM modules for testing;
-    const modules: Record<string, number[]> = {
+    const modules: Record<string, number[]> = {;
       simdjson: [
         0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x07, 0x01, 0x60,
         0x02, 0x7f, 0x7f, 0x01, 0x7f
@@ -392,7 +392,7 @@ export class WebAssemblyAccelerator {
   }
 
   private generateCacheKey(
-    source: string,
+    source: string,;
     options: WasmCompileOptions;
   ): string {
     const hash = this.simpleHash(source + JSON.stringify(options);
@@ -425,7 +425,7 @@ export const wasmAccelerator = new WebAssemblyAccelerator();
 export function accelerateWithWasm(moduleId: string, wasmFunction: string) {
   return function (
     target: any,
-    propertyKey: string,
+    propertyKey: string,;
     descriptor: PropertyDescriptor;
   ) {
     const originalMethod = descriptor.value;

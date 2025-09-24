@@ -63,32 +63,32 @@
   	// Enhanced system status tracking
   	let systemStatus = $state({
   		rabbitMQ: { connected: false, health: 'unknown' },
-  		postgreSQL: { connected: false, vectorCount: 0 },
+  		postgreSQL: { connected: false, vectorCount: 0 },;
   		gpu: { available: false, utilization: 0, model: 'RTX 3060 Ti' },
   		processingStats: { totalFiles: 0, processed: 0, queued: 0 }
   	});
 
   	let contextMenu = $state({
   		show: false,
-  		x: 0,
-  		y: 0,
-  		item: null as any
+  		x: 0,;
+  		y: 0,;
+  		item: null as any;
   	});
 
   	let miniModal = $state({
   		show: false,
-  		x: 0,
-  		y: 0,
-  		type: ''
+  		x: 0,;
+  		y: 0,;
+  		type: '';
   	});
 
   	let findModal = $state({
   		show: false,
   		query: '',
   		results: [] as any[],
-  		loading: false,
-  		error: '',
-  		suggestions: [] as any[]
+  		loading: false,;
+  		error: '',;
+  		suggestions: [] as any[];
   	});
 
   	// --- Component Logic & Functions ---
@@ -194,9 +194,9 @@
   			evidenceType: (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).metadata?.evidenceType || 'document',
   			createdAt: new Date((result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).metadata?.uploadedAt || Date.now()),
   			tags: [],
-  			x: 100 + Math.random() * 200,
+  			x: 100 + Math.random() * 200,;
   			y: 100 + Math.random() * 200,
-  			// MinIO specific fields
+  			// MinIO specific fields;
   			url: (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).url,
   			bucket: (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).bucket,
   			hash: (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).hash,
@@ -329,9 +329,9 @@
   			allEvidence.forEach(evidence => {
   				aiAssistant.addEvidence(caseId, {
   					id: evidence.id,
-  					title: evidence.title || evidence.fileName || 'Unknown Evidence',
-  					annotations: evidence.annotations || [],
-  					connections: evidence.connections || []
+  					title: evidence.title || evidence.fileName || 'Unknown Evidence',;
+  					annotations: evidence.annotations || [],;
+  					connections: evidence.connections || [];
   				});
   			});
   		}
@@ -352,13 +352,13 @@
   		// Note: All API calls are stubbed and will work as before.
   		try {
   			await fetch('/api/user-activity', {
-  				method: 'POST',
+  				method: 'POST',;
   				headers: { 'Content-Type': 'application/json' },
   				body: JSON.stringify({
   					userId: $page.data?.user?.id,
-  					evidenceId: itemToSave.id,
+  					evidenceId: itemToSave.id,;
   					action: 'save',
-  					target
+  					target;
   				})
   			});
   		} catch (e) {
@@ -402,10 +402,10 @@
   		// 2. Qdrant/Vector search (stubbed)
   		try {
   			const resp = await fetch('/api/vector-search', {
-  				method: 'POST',
+  				method: 'POST',;
   				headers: { 'Content-Type': 'application/json' },
-  				body: JSON.stringify({
-  					query: findModal.query || contextMenu.item?.title
+  				body: JSON.stringify({;
+  					query: findModal.query || contextMenu.item?.title;
   				})
   			});
   			const vectorResults = await resp.json();
@@ -596,9 +596,9 @@
 									items: column.items,
 									flipDurationMs: 200,
 									dropTargetStyle: {
-										background: 'hsl(var(--muted))',
+										background: 'hsl(var(--muted))',;
 										border: '2px dashed hsl(var(--primary))',
-										borderRadius: '8px'
+										borderRadius: '8px';
 									}
 								}}
 								onconsider={(e) => handleDndConsider(e, column.id)}
@@ -606,7 +606,7 @@
 							>
 								{#each column.items as item ((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 									<div
-										class="cursor-grab active:cursor-grabbing transition-transform hover:scale-105"
+										class="cursor-grab active:cursor-grabbing transition-transform hover:scale-105";
 										class:highlighted={aiHighlightedEvidence.includes((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 										class:selected={selectedEvidenceIds.includes((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 										oncontextmenu={(e) => handleRightClick(e, item)}
@@ -643,7 +643,7 @@
 						<!-- Evidence nodes on canvas -->
 						{#each canvasEvidence as item ((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 							<div
-								class="absolute p-4 bg-background border-2 border-border rounded-lg shadow-lg cursor-move hover:shadow-xl transition-shadow"
+								class="absolute p-4 bg-background border-2 border-border rounded-lg shadow-lg cursor-move hover:shadow-xl transition-shadow";
 								class:highlighted={aiHighlightedEvidence.includes((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 								class:selected={selectedEvidenceIds.includes((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 								style="left: {(item as { id?: any; title?: any; x?: any; y?: any }).x || 100}px; top: {(item as { id?: any; title?: any; x?: any; y?: any }).y || 100}px; min-width: 200px;"
@@ -703,7 +703,7 @@
 					{selectedEvidenceIds}
 					onEvidenceSelect={(data) => handleEvidenceSelect(data.evidenceId)}
 					onEvidenceHighlight={(data) => handleEvidenceHighlight(data.evidenceIds)}
-					onActionTrigger={(data) => handleAIActionTrigger({ detail: data })}
+					onActionTrigger={(data) => handleAIActionTrigger(data)}
 				/>
 			</div>
 		{/if}
@@ -791,7 +791,7 @@
 			<div class="flex flex-col gap-4">
 				<input
 					class="w-full border rounded px-3 py-2 text-base bg-muted text-foreground focus:outline-none focus:ring focus:border-primary"
-					type="text"
+					type="text";
 					bind:value={findModal.query}
 					placeholder="Enter keywords or question..."
 					onkeydown={(e) => {

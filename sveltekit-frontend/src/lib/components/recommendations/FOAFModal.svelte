@@ -40,8 +40,9 @@
   });
 
   // Load FOAF data when modal opens
-  $effect(async () => {
-    if (open && personId && !foafData) {
+  $effect(() => {
+    (async () => {
+if (open && personId && !foafData) {
       loading = true;
       error = null;
       try {
@@ -54,6 +55,7 @@
         loading = false;
       }
     }
+    })();
   });
 
   function handleClose() {
@@ -176,7 +178,7 @@
 
 <style>
   /* Additional Tailwind-compatible styles for enhanced UX */
-  .animate-spin {
+  .animate-spin {;
     animation: spin 1s linear infinite;
   }
   

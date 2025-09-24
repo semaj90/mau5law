@@ -33,7 +33,7 @@ export class ThinkingProcessor {
    * Analyzes a document using the enhanced API endpoint
    */
   static async analyzeDocument(
-    text: string,
+    text: string,;
     options: AnalysisOptions = {}
   ): Promise<ThinkingAnalysis> {
     // Check if enhanced GRPO should be used
@@ -48,7 +48,7 @@ export class ThinkingProcessor {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        text,
+        text,;
         query: text,
         userId: enhancedOptions.userId,
         userRole: enhancedOptions.userRole,
@@ -123,7 +123,7 @@ export class ThinkingProcessor {
         thinking: '',
         analysis: this.extractJSON(content) || { raw_analysis: content },
         confidence: 0.8,
-        reasoning_steps: [],
+        reasoning_steps: [],;
         metadata: {
           model_used: 'quick',
           processing_time: 0,
@@ -141,7 +141,7 @@ export class ThinkingProcessor {
       thinking,
       analysis: this.extractJSON(afterThinking) || { raw_analysis: afterThinking },
       confidence: this.calculateConfidence(thinking, afterThinking),
-      reasoning_steps: this.extractReasoningSteps(thinking),
+      reasoning_steps: this.extractReasoningSteps(thinking),;
       metadata: {
         model_used: 'thinking',
         processing_time: 0,

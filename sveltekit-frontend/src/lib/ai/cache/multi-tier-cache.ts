@@ -7,7 +7,7 @@
  * - persistent enables localStorage backing (when available).
  */
 
-type PersistedEntry = {
+type PersistedEntry = {;
   value: unknown;
   expiresAt?: number | null;
 };

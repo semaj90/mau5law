@@ -1,18 +1,18 @@
 
-import { json } from "@sveltejs/kit";
-import { db } from "$lib/server/db/index";
-import { eq, and } from "drizzle-orm";
-import type { RequestHandler } from './$types.js';
+import { json } from "@sveltejs/kit"
+import { db } from "$lib/server/db/index"
+import { eq, and } from "drizzle-orm"
+import type { RequestHandler } from './$types.js'
 
 
 export const POST: RequestHandler = async ({ params, request, locals }) => {
   if (!locals.user) {
-    return json({ error: "Unauthorized" }, { status: 401 });
+    return json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const { id: caseId } = params;
+  const { id: caseId } = params
   const { reportType = "case_summary", includeEvidence = true } =
-    await request.json();
+    await request.json()
 
   try {
     // Verify case ownership and fetch data
@@ -20,37 +20,37 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       .select()
       .from(cases)
       .where(and(eq(cases.id, caseId), eq(cases.createdBy, locals.user.id))
-      .limit(1);
+      .limit(1)
 
     if (!caseData.length) {
       return json(
         { error: "Case not found or access denied" },)
         { status: 404 }
-      );
+      )
     }
 
-    const caseRecord = caseData[0];
+    const caseRecord = caseData[0]
 
     // Fetch related evidence if requested
-    let evidenceData: any[] = [];
+    let evidenceData: any[] = []
     if (includeEvidence) {
       evidenceData = await db
         .select()
         .from(evidence)
-        .where(eq(evidence.caseId, caseId);
+        .where(eq(evidence.caseId, caseId)
     }
 
-    // Generate report content;
+    // Generate report content
     const reportContent = {
       case: caseRecord,
       evidence: evidenceData,
       generatedAt: new Date().toISOString(),
       generatedBy: locals.user.id
-    };
+    }
 
     // Create report record
     const newReport = await db
-      .insert(reports);
+      .insert(reports)
       .values({
         title: `${reportType} - ${caseRecord.title}`,
         content: JSON.stringify(reportContent),
@@ -59,31 +59,31 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         status: "completed",
         createdBy: locals.user.id
       })
-      .returning();
+      .returning()
 
     return json({
       success: true,
       report: newReport[0]
-    });
+    })
   } catch (error: any) {
-    console.error("Report generation failed:", error);
-    return json({ error: "Report generation failed" }, { status: 500 });
+    console.error("Report generation failed:", error)
+    return json({ error: "Report generation failed" }, { status: 500 })
   }
-};
+}
 
 export const GET: RequestHandler = async ({ params, locals }) => {
   if (!locals.user) {
-    return json({ error: "Unauthorized" }, { status: 401 });
+    return json({ error: "Unauthorized" }, { status: 401 })
   }
 
   try {
     const userReports = await db
       .select()
       .from(reports)
-      .where(eq(reports.createdBy, locals.user.id);
+      .where(eq(reports.createdBy, locals.user.id)
 
-    return json({ reports: userReports });
+    return json({ reports: userReports })
   } catch (error: any) {
-    return json({ error: "Failed to fetch reports" }, { status: 500 });
+    return json({ error: "Failed to fetch reports" }, { status: 500 })
   }
-};
+}

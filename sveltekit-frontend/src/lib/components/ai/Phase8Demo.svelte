@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class'
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class';
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <script lang="ts">
@@ -37,45 +37,45 @@ https://svelte.dev/e/js_parse_error -->
     {
       type: 'card',
       id: 'evidence-card-1',
-      matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 100, 50, 0, 1],
+      matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 100, 50, 0, 1],;
       styles: {
-        base: 'yorha-card p-6 bg-gray-900 border border-yellow-400'
+        base: 'yorha-card p-6 bg-gray-900 border border-yellow-400';
       },
-      events: ['click', 'mouseover'],
+      events: ['click', 'mouseover'],;
       metadata: {
         priority: 'high',
         confidence: 95,
         evidenceType: 'forensic',
-        aiGenerated: true
+        aiGenerated: true;
       }
     },
     {
       type: 'button',
       id: 'analyze-btn-1',
-      matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 250, 150, 0, 1],
+      matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 250, 150, 0, 1],;
       styles: {
-        base: 'yorha-button px-4 py-2 bg-yellow-400 text-black'
+        base: 'yorha-button px-4 py-2 bg-yellow-400 text-black';
       },
-      events: ['click'],
+      events: ['click'],;
       metadata: {
         priority: 'critical',
         confidence: 88,
-        aiGenerated: false
+        aiGenerated: false;
       }
     },
     {
       type: 'evidence-item',
       id: 'evidence-item-1',
-      matrix: [0.8, 0, 0, 0, 0, 0.8, 0, 0, 0, 0, 1, 0, 400, 100, 0, 1],
+      matrix: [0.8, 0, 0, 0, 0, 0.8, 0, 0, 0, 0, 1, 0, 400, 100, 0, 1],;
       styles: {
-        base: 'yorha-evidence-item border-l-4 border-blue-400 pl-4'
+        base: 'yorha-evidence-item border-l-4 border-blue-400 pl-4';
       },
-      events: ['click', 'dblclick'],
+      events: ['click', 'dblclick'],;
       metadata: {
-        priority: 'medium',
+        priority: 'medium',;
         confidence: 72,
         evidenceType: 'digital',
-        aiGenerated: true
+        aiGenerated: true;
       }
     }
   ];
@@ -86,12 +86,14 @@ https://svelte.dev/e/js_parse_error -->
     currentCase: 'CASE-2024-001',
     recentActions: ['file_upload', 'view_document', 'apply_filter'],
     userRole: 'prosecutor',
-    workflowState: 'review'
+    workflowState: 'review';
   };
 
-  $effect(async () => {
-    await initializePhase8System();
+  $effect(() => {
+    (async () => {
+await initializePhase8System();
     startDemoLoop();
+    })();
   });
 
   async function initializePhase8System(): Promise<void> {
@@ -154,10 +156,10 @@ https://svelte.dev/e/js_parse_error -->
   function simulateViewportFocus(): void {
     const focus: ViewportFocus = {
       centerX: Math.random() * 800,
-      centerY: Math.random() * 600,
+      centerY: Math.random() * 600,;
       radius: 200 + Math.random() * 100,
       aiSuggestions: ['evidence-card-1', 'analyze-btn-1'],
-      confidenceScore: 0.8 + Math.random() * 0.2
+      confidenceScore: 0.8 + Math.random() * 0.2;
     };
     lodSystem.updateViewportFocus(focus);
   }
@@ -168,19 +170,19 @@ https://svelte.dev/e/js_parse_error -->
       const mockResults = [
         {
           id: 'evidence-1',
-          content: 'Forensic DNA analysis report',
+          content: 'Forensic DNA analysis report',;
           metadata: { type: 'evidence-analysis', confidence: 95 },
           originalScore: 0.8,
           rerankScore: 0,
-          confidence: 95
+          confidence: 95;
         },
         {
           id: 'precedent-1',
-          content: 'Similar case precedent from 2023',
+          content: 'Similar case precedent from 2023',;
           metadata: { type: 'case-precedent', confidence: 78 },
           originalScore: 0.6,
-          rerankScore: 0,
-          confidence: 78
+          rerankScore: 0,;
+          confidence: 78;
         }
       ];
       const rerankedResults = await reranker.rerank(mockResults, sampleUserContext);
@@ -309,7 +311,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="webgl-section">
       <h3 class="text-lg font-semibold text-yellow-400 mb-3">WebGL2 Rendering</h3>
       <div class="canvas-container relative bg-black border border-gray-700 rounded">
-        <canvas 
+        <canvas ;
           bind:this={canvas as any}
           width="600"
           height="400"
@@ -324,7 +326,7 @@ https://svelte.dev/e/js_parse_error -->
     <!-- UI Components Demo -->
     <div class="ui-section">
       <h3 class="text-lg font-semibold text-yellow-400 mb-3">Matrix UI Components</h3>
-      <div 
+      <div ;
         bind:this={demoContainer}
         class="ui-container relative h-96 bg-gray-900 border border-gray-700 rounded p-4 overflow-hidden"
       >

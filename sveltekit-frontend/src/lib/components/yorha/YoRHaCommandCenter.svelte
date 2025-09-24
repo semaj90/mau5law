@@ -5,14 +5,14 @@
   // Svelte 5 runes and modern imports
   import { onMount } from 'svelte';
   import { goto } from "$app/navigation";
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import RealTimeLegalSearch from '$lib/components/search/RealTimeLegalSearch.svelte';
   import YoRHaCaseForm from './YoRHaCaseForm.svelte';
   import { useRealTimeSearch } from '$lib/services/real-time-search.js';
@@ -115,10 +115,10 @@
     recentActivity = [
       {
         id: Date.now(),
-        action: 'New Case Created',
+        action: 'New Case Created',;
         target: newCase.title || `Case ${newCase.caseNumber}`,
-        time: 'just now',
-        type: 'success'
+        time: 'just now',;
+        type: 'success';
       },
       ...recentActivity.slice(0, 4)
     ];
@@ -376,10 +376,10 @@
           // Handle search result selection
           recentActivity = [{
             id: Date.now(),
-            action: 'Search Query Executed',
+            action: 'Search Query Executed',;
             target: `"${(result as { detail?: unknown }).detail.title}"`,
-            time: 'just now',
-            type: 'ai'
+            time: 'just now',;
+            type: 'ai';
           }, ...recentActivity.slice(0, 4)];
         }}
       />

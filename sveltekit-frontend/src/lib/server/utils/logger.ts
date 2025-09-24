@@ -206,7 +206,7 @@ class Logger {
       timestamp: new Date().toISOString(),
       level,
       message,
-      component,
+      component,;
       metadata: { ...metadata }
     };
 
@@ -264,7 +264,7 @@ class Logger {
       metadata: { ...metadata },
       error: error ? {
         name: error.name,
-        message: error.message,
+        message: error.message,;
         stack: error.stack
       } : undefined
     };
@@ -288,7 +288,7 @@ class Logger {
       metadata: { ...metadata },
       error: error ? {
         name: error.name,
-        message: error.message,
+        message: error.message,;
         stack: error.stack
       } : undefined
     };
@@ -316,7 +316,7 @@ class Logger {
       warn: (message: string, component: string, metadata?: Record<string, any>) => 
         this.warn(message, component, { ...metadata, requestId }),
       error: (message: string, component: string, error?: Error, metadata?: Record<string, any>) => 
-        this.error(message, component, error, { ...metadata, requestId }),
+        this.error(message, component, error, { ...metadata, requestId }),;
       fatal: (message: string, component: string, error?: Error, metadata?: Record<string, any>) => 
         this.fatal(message, component, error, { ...metadata, requestId })
     };
@@ -331,7 +331,7 @@ class Logger {
       warn: (message: string, component: string, metadata?: Record<string, any>) => 
         this.warn(message, component, { ...metadata, conversationId }),
       error: (message: string, component: string, error?: Error, metadata?: Record<string, any>) => 
-        this.error(message, component, error, { ...metadata, conversationId }),
+        this.error(message, component, error, { ...metadata, conversationId }),;
       fatal: (message: string, component: string, error?: Error, metadata?: Record<string, any>) => 
         this.fatal(message, component, error, { ...metadata, conversationId })
     };

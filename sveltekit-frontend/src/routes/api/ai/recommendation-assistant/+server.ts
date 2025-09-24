@@ -3,97 +3,97 @@
  * Integrates Gemma3 Legal model with recommendation engine
  */
 
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
-import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem';
+import type { RequestHandler } from './$types'
+import { json } from '@sveltejs/kit'
+import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem'
 
 interface AIRecommendationRequest {
   context: {
-    recentCases?: string[];
-    currentCase?: string;
-    practiceArea?: string;
-    userRole?: string;
-    recentSearches?: string[];
-    workHistory?: string[];
-  };
-  query?: string;
-  type: 'case-analysis' | 'search-suggestion' | 'workflow-optimization' | 'precedent-discovery';
+    recentCases?: string[]
+    currentCase?: string
+    practiceArea?: string
+    userRole?: string
+    recentSearches?: string[]
+    workHistory?: string[]
+  }
+  query?: string
+  type: 'case-analysis' | 'search-suggestion' | 'workflow-optimization' | 'precedent-discovery'
 }
 
 interface AIRecommendationResponse {
-  recommendations: AIRecommendation[];
-  reasoning: string;
-  confidence: number;
-  suggestedActions: AIAction[];
-  relatedTopics: string[];
+  recommendations: AIRecommendation[]
+  reasoning: string
+  confidence: number
+  suggestedActions: AIAction[]
+  relatedTopics: string[]
 }
 
 interface AIRecommendation {
-  id: string;
-  type: 'case' | 'document' | 'search' | 'workflow' | 'precedent';
-  title: string;
-  description: string;
-  confidence: number;
-  priority: number;
-  metadata: any;
-  aiInsight: string;
+  id: string
+  type: 'case' | 'document' | 'search' | 'workflow' | 'precedent'
+  title: string
+  description: string
+  confidence: number
+  priority: number
+  metadata: any
+  aiInsight: string
 }
 
 interface AIAction {
-  action: string;
-  description: string;
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  estimatedTime: string;
-  tools?: string[];
+  action: string
+  description: string
+  priority: 'low' | 'medium' | 'high' | 'critical'
+  estimatedTime: string
+  tools?: string[]
 }
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body: AIRecommendationRequest = await request.json();
-    const { context, query, type } = body;
+    const body: AIRecommendationRequest = await request.json()
+    const { context, query, type } = body
 
     if (!context || !type) {
       return json({
         success: false,
         error: 'Missing required fields: context, type'
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
     // Generate cache key based on request
-    const cacheKey = `ai-recommendation-${type}-${JSON.stringify(context).slice(0, 50)}`;
+    const cacheKey = `ai-recommendation-${type}-${JSON.stringify(context).slice(0, 50)}`
 
     // Check cache first (15-minute TTL for AI responses)
-    const cached = await multiLayerCache.get<AIRecommendationResponse>(cacheKey);
+    const cached = await multiLayerCache.get<AIRecommendationResponse>(cacheKey)
     if (cached) {
       return json({
         success: true,
         data: cached,
         fromCache: true,
         timestamp: new Date().toISOString()
-      });
+      })
     }
 
     // Generate AI recommendations based on type
-    let aiResponse: AIRecommendationResponse;
+    let aiResponse: AIRecommendationResponse
 
     switch (type) {
       case 'case-analysis':
-        aiResponse = await generateCaseAnalysis(context, query);
-        break;
+        aiResponse = await generateCaseAnalysis(context, query)
+        break
       case 'search-suggestion':
-        aiResponse = await generateSearchSuggestions(context, query);
-        break;
+        aiResponse = await generateSearchSuggestions(context, query)
+        break
       case 'workflow-optimization':
-        aiResponse = await generateWorkflowOptimization(context, query);
-        break;
+        aiResponse = await generateWorkflowOptimization(context, query)
+        break
       case 'precedent-discovery':
-        aiResponse = await generatePrecedentDiscovery(context, query);
-        break;
+        aiResponse = await generatePrecedentDiscovery(context, query)
+        break
       default:
         return json({
           success: false,
           error: 'Invalid recommendation type'
-        }, { status: 400 });
+        }, { status: 400 })
     }
 
     // Cache the AI response
@@ -110,10 +110,10 @@ export const POST: RequestHandler = async ({ request }) => {
         confidence: aiResponse.confidence,
         processingTime: 150 // Mock processing time
       }
-    });
+    })
 
   } catch (error) {
-    console.error('AI recommendation error:', error);
+    console.error('AI recommendation error:', error)
 
     // Return mock AI recommendations on failure
     const mockResponse: AIRecommendationResponse = {
@@ -151,7 +151,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       ],
       relatedTopics: ['Employment Law', 'Contract Analysis', 'Legal Precedents']
-    };
+    }
 
     return json({
       success: false,
@@ -166,9 +166,9 @@ export const POST: RequestHandler = async ({ request }) => {
         processingTime: 500,
         source: 'mock-ai-service'
       }
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 async function generateCaseAnalysis(context: any, query?: string): Promise<AIRecommendationResponse> {
   // Simulate Gemma3 Legal model analysis
@@ -218,7 +218,7 @@ async function generateCaseAnalysis(context: any, query?: string): Promise<AIRec
       },
       aiInsight: 'Martinez v. TechSolutions establishes new standard for constructive dismissal in at-will employment states.'
     }
-  ];
+  ]
 
   return {
     recommendations,
@@ -253,7 +253,7 @@ async function generateCaseAnalysis(context: any, query?: string): Promise<AIRec
       'Discrimination Evidence Standards',
       'Constructive Dismissal Elements'
     ]
-  };
+  }
 }
 
 async function generateSearchSuggestions(context: any, query?: string): Promise<AIRecommendationResponse> {
@@ -302,7 +302,7 @@ async function generateSearchSuggestions(context: any, query?: string): Promise<
       },
       aiInsight: 'California-specific protections may provide additional remedies not available federally.'
     }
-  ];
+  ]
 
   return {
     recommendations,
@@ -330,7 +330,7 @@ async function generateSearchSuggestions(context: any, query?: string): Promise<
       'Jurisdiction-Specific Research',
       'Citation Analysis Techniques'
     ]
-  };
+  }
 }
 
 async function generateWorkflowOptimization(context: any, query?: string): Promise<AIRecommendationResponse> {
@@ -380,7 +380,7 @@ async function generateWorkflowOptimization(context: any, query?: string): Promi
       },
       aiInsight: 'Setting up saved search templates for common precedent patterns saves significant time.'
     }
-  ];
+  ]
 
   return {
     recommendations,
@@ -415,7 +415,7 @@ async function generateWorkflowOptimization(context: any, query?: string): Promi
       'Document Review Efficiency',
       'Case Priority Management'
     ]
-  };
+  }
 }
 
 async function generatePrecedentDiscovery(context: any, query?: string): Promise<AIRecommendationResponse> {
@@ -466,7 +466,7 @@ async function generatePrecedentDiscovery(context: any, query?: string): Promise
       },
       aiInsight: 'AI bias in hiring is becoming a major litigation area - early precedents are still developing.'
     }
-  ];
+  ]
 
   return {
     recommendations,
@@ -502,5 +502,5 @@ async function generatePrecedentDiscovery(context: any, query?: string): Promise
       'Employment Discrimination',
       'AI and Legal Ethics'
     ]
-  };
+  }
 }

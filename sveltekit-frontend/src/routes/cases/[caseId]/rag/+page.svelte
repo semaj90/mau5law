@@ -33,8 +33,8 @@
       id: doc.id,
       title: doc.title,
       type: doc.type as LegalEvidenceItem['type'],
-      priority: 'medium' as const,
-      confidence: doc.processed ? 0.95 : 0.5,
+      priority: 'medium' as const,;
+      confidence: doc.processed ? 0.95 : 0.5,;
       metadata: { processed: doc.processed },
       createdAt: new Date(doc.uploadedAt),
       updatedAt: new Date(doc.uploadedAt)
@@ -94,7 +94,7 @@
       <!-- Query Form -->
       <form method="POST" action="?/query" use:enhance={handleRAGSubmit}>
         <div class="flex gap-3">
-          <Input
+          <Input;
             bind:value={queryText}
             name="query"
             placeholder="Ask questions about case documents..."

@@ -125,8 +125,8 @@
       caseContext: {
         activeCases: caseId ? [caseId] : [],
         currentCaseId: caseId,
-        workflowStage: 'discovery',
-        expertise: expertiseLevel
+        workflowStage: 'discovery',;
+        expertise: expertiseLevel;
       }
     };
 
@@ -159,9 +159,9 @@
         const wpm = Math.round((keyStrokes / 5) / (timeDiff / 60000));
 
         uploadActor?.send({
-          type: 'USER_TYPING',
-          speed: wpm,
-          content: e.key
+          type: 'USER_TYPING',;
+          speed: wpm,;
+          content: e.key;
         });
       }
     });
@@ -170,9 +170,9 @@
     document.addEventListener('click', (e) => {
       uploadActor?.send({
         type: 'USER_CLICK',
-        x: e.clientX,
-        y: e.clientY,
-        element: (e.target as HTMLElement)?.tagName || 'unknown'
+        x: e.clientX,;
+        y: e.clientY,;
+        element: (e.target as HTMLElement)?.tagName || 'unknown';
       });
     });
 
@@ -186,9 +186,9 @@
         const scrollSpeed = Math.abs(window.scrollY) / (currentTime - lastScrollTime);
 
         uploadActor?.send({
-          type: 'USER_SCROLL',
-          depth: scrollDepth,
-          speed: scrollSpeed
+          type: 'USER_SCROLL',;
+          depth: scrollDepth,;
+          speed: scrollSpeed;
         });
       }
       lastScrollTime = currentTime;
@@ -235,15 +235,15 @@
 
     if (uploadActor) {
       uploadActor.send({
-        type: 'SELECT_FILES',
+        type: 'SELECT_FILES',;
         files: limitedFiles,
-        caseId
+        caseId;
       });
 
       // Track file selection
       uploadActor.send({
-        type: 'TRACK_USER_ACTION',
-        action: 'file_selection',
+        type: 'TRACK_USER_ACTION',;
+        action: 'file_selection',;
         data: {
           fileCount: limitedFiles.length,
           totalSize: limitedFiles.reduce((sum, file) => sum + file.size, 0),
@@ -281,10 +281,10 @@
 
   function handlePromptReaction(promptId: string, reaction: 'accepted' | 'dismissed' | 'ignored') {
     if (uploadActor) {
-      uploadActor.send({
+      uploadActor.send({;
         type: 'USER_REACTED_TO_PROMPT',
         promptId,
-        reaction
+        reaction;
       });
     }
   }
@@ -292,8 +292,8 @@
   function requestAISuggestions() {
     if (uploadActor) {
       uploadActor.send({
-        type: 'REQUEST_AI_SUGGESTIONS',
-        context: 'user_requested'
+        type: 'REQUEST_AI_SUGGESTIONS',;
+        context: 'user_requested';
       });
     }
   }
@@ -374,7 +374,7 @@
         <p class="file-constraints">
           Max {maxFiles} files • {allowedTypes.map(type => type.split('/')[1]).join(', ')}
         </p>
-        <input
+        <input;
           bind:this={fileInput}
           type="file"
           multiple

@@ -37,12 +37,12 @@
 
   // Generate field IDs for accessibility
   const fieldIds = {
-    email: progressiveForm.generateFieldId('email', formId),
+    email: progressiveForm.generateFieldId('email', formId),;
     password: progressiveForm.generateFieldId('password', formId),
     confirmPassword: progressiveForm.generateFieldId('confirmPassword', formId),
     firstName: progressiveForm.generateFieldId('firstName', formId),
-    lastName: progressiveForm.generateFieldId('lastName', formId),
-    terms: progressiveForm.generateFieldId('terms', formId)
+    lastName: progressiveForm.generateFieldId('lastName', formId),;
+    terms: progressiveForm.generateFieldId('terms', formId);
   };
 
   // Validation functions
@@ -196,7 +196,7 @@
       id: fieldId,
       'aria-invalid': hasError(fieldName) ? 'true' : 'false',
       'aria-describedby': hasError(fieldName) ? errorId : undefined,
-      'aria-required': 'true'
+      'aria-required': 'true';
     };
   }
 </script>
@@ -231,7 +231,7 @@
   ></div>
 
   <!-- Form errors summary -->
-  {#if Object.keys.length > 0 && progressiveForm.config.showSummaryErrors}
+  {#if Object.keys(errors).length > 0 && progressiveForm.config.showSummaryErrors}
     <div class="error-summary" role="alert" aria-labelledby="{formId}-error-heading">
       <h3 id="{formId}-error-heading">Please correct the following errors:</h3>
       <ul>
@@ -397,7 +397,7 @@
         id={fieldIds.terms}
         type="checkbox"
         name="terms"
-        class="form-checkbox"
+        class="form-checkbox";
         bind:checked={formState.data.terms}
         onchange={(e) => handleFieldChange('terms', e.target.checked)}
         aria-describedby={hasError('terms') ? progressiveForm.generateErrorId(fieldIds.terms) : undefined}
@@ -574,7 +574,7 @@
     color: #374151;
   }
 
-  .form-label.required: :after {
+  .form-label.required::after {
     content: ' *';
     color: #dc2626;
   }

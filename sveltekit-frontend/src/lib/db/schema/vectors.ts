@@ -20,7 +20,7 @@ export const documentVectors = pgTable("document_vectors", {
   documentId: uuid("document_id").references(() => documents.id).notNull(),
   chunkIndex: integer("chunk_index").notNull(),
   content: text("content").notNull(),
-  embedding: vector("embedding", { dimensions: 384 }).notNull(),
+  embedding: vector("embedding", { dimensions: 384 }).notNull(),;
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow().notNull()
 }, (table: any) => ({
@@ -33,7 +33,7 @@ export const caseSummaryVectors = pgTable("case_summary_vectors", {
   id: uuid("id").primaryKey().defaultRandom(),
   caseId: uuid("case_id").references(() => cases.id).notNull().unique(),
   summary: text("summary").notNull(),
-  embedding: vector("embedding", { dimensions: 384 }).notNull(),
+  embedding: vector("embedding", { dimensions: 384 }).notNull(),;
   confidence: real("confidence").default(1.0),
   lastUpdated: timestamp("last_updated").defaultNow().notNull()
 }, (table: any) => ({
@@ -47,7 +47,7 @@ export const evidenceVectors = pgTable("evidence_vectors", {
   chunkIndex: integer("chunk_index").notNull(),
   content: text("content").notNull(),
   embedding: vector("embedding", { dimensions: 384 }).notNull(),
-  analysisType: text("analysis_type"), // summary, entities, sentiment, classification
+  analysisType: text("analysis_type"), // summary, entities, sentiment, classification;
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow().notNull()
 }, (table: any) => ({
@@ -59,7 +59,7 @@ export const evidenceVectors = pgTable("evidence_vectors", {
 export const queryVectors = pgTable("query_vectors", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id").references(() => users.id).notNull(),
-  query: text("query").notNull(),
+  query: text("query").notNull(),;
   embedding: vector("embedding", { dimensions: 384 }).notNull(),
   resultCount: integer("result_count").default(0),
   clickedResults: jsonb("clicked_results"),
@@ -75,7 +75,7 @@ export const knowledgeNodes = pgTable("knowledge_nodes", {
   nodeType: text("node_type").notNull(), // case, evidence, document, entity
   nodeId: uuid("node_id").notNull(),
   label: text("label").notNull(),
-  embedding: vector("embedding", { dimensions: 384 }).notNull(),
+  embedding: vector("embedding", { dimensions: 384 }).notNull(),;
   properties: jsonb("properties"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull()
@@ -90,7 +90,7 @@ export const knowledgeEdges = pgTable("knowledge_edges", {
   sourceId: uuid("source_id").references(() => knowledgeNodes.id).notNull(),
   targetId: uuid("target_id").references(() => knowledgeNodes.id).notNull(),
   relationship: text("relationship").notNull(), // similar_to, relates_to, references, etc.
-  weight: real("weight").default(1.0),
+  weight: real("weight").default(1.0),;
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow().notNull()
 }, (table: any) => ({
@@ -104,7 +104,7 @@ export const recommendationCache = pgTable("recommendation_cache", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id").references(() => users.id).notNull(),
   recommendationType: text("recommendation_type").notNull(), // case, evidence, document
-  recommendations: jsonb("recommendations").notNull(), // Array of recommended items
+  recommendations: jsonb("recommendations").notNull(), // Array of recommended items;
   score: real("score").default(0),
   expiresAt: timestamp("expires_at").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull()

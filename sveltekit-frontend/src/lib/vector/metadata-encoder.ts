@@ -64,7 +64,7 @@ export class VectorMetadataEncoder {
     gpuContext?: HybridGPUContext;
   ) {
     this.config = {
-      dimensions: validateVectorDimensions(config.dimensions || 768),
+      dimensions: validateVectorDimensions(config.dimensions || 768),;
       quantization: config.quantization || 'int8',
       compressionTarget: Math.min(Math.max(config.compressionTarget || 0.5, 0.1), 0.9),
       adaptiveDimensions: config.adaptiveDimensions ?? true,
@@ -79,7 +79,7 @@ export class VectorMetadataEncoder {
    * Encode single vector with adaptive scaling
    */
   async encodeVector(
-    vector: Float32Array, 
+    vector: Float32Array, ;
     id: string = this.generateId();
   ): Promise<VectorMetadata> {
     return measureAsync('vector_encode_single', async () => {
@@ -116,7 +116,7 @@ export class VectorMetadataEncoder {
         encodedDimensions: workingConfig.dimensions,
         quantization: workingConfig.quantization,
         compressionRatio,
-        encoding: encoded,
+        encoding: encoded,;
         timestamp: Date.now(),
         processingTime,
         gpuAccelerated: !!this.gpuContext
@@ -266,7 +266,7 @@ export class VectorMetadataEncoder {
       telemetryBus.emitGPUEvent({
         type: 'context_switch',
         gpuUtilization: 0,
-        memoryUsed: this.estimateGPUMemoryUsage(),
+        memoryUsed: this.estimateGPUMemoryUsage(),;
         temperature: 50
       });
     } catch (error) {
@@ -309,7 +309,7 @@ export class VectorMetadataEncoder {
 
     return {
       name: 'VectorQuantization',
-      backend: this.gpuContext.getBackendType(),
+      backend: this.gpuContext.getBackendType(),;
       compute: computeShader,
       entryPoint: 'main'
     };
@@ -335,7 +335,7 @@ export class VectorMetadataEncoder {
   }
 
   private async encodeVectorGPU(
-    vector: Float32Array, 
+    vector: Float32Array, ;
     config: VectorEncodingConfig;
   ): Promise<Float32Array | Int8Array | Uint8Array> {
     if (!this.gpuContext || !this.shaderBundle) {
@@ -348,7 +348,7 @@ export class VectorMetadataEncoder {
   }
 
   private encodeVectorCPU(
-    vector: Float32Array, 
+    vector: Float32Array, ;
     config: VectorEncodingConfig;
   ): Float32Array | Int8Array | Uint8Array {
     switch (config.quantization) {
@@ -365,7 +365,7 @@ export class VectorMetadataEncoder {
 
   private async encodeBatchGPU(
     vectors: Float32Array[],
-    metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>,
+    metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>,;
     config: VectorEncodingConfig;
   ): Promise<VectorMetadata[]> {
     // GPU batch processing would be more efficient
@@ -389,7 +389,7 @@ export class VectorMetadataEncoder {
 
   private async encodeBatchCPU(
     vectors: Float32Array[],
-    metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>,
+    metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>,;
     config: VectorEncodingConfig;
   ): Promise<VectorMetadata[]> {
     return vectors.map((vector, i) => {
@@ -525,7 +525,7 @@ export class VectorMetadataEncoder {
     if (decision.shouldScale) {
       return {
         ...this.config,
-        dimensions: decision.recommendedDimensions,
+        dimensions: decision.recommendedDimensions,;
         quantization: decision.recommendedQuantization
       };
     }
@@ -542,7 +542,7 @@ export class VectorMetadataEncoder {
       // Aggressive scaling for large batches;
       return {
         ...this.config,
-        dimensions: 256 as VectorDimensions,
+        dimensions: 256 as VectorDimensions,;
         quantization: 'int4' as QuantizationLevel,
         batchSize: Math.max(16, Math.floor(this.config.batchSize / 2)
       };
@@ -616,7 +616,7 @@ export class VectorMetadataEncoder {
 
   private generateRecommendedConfig(metrics: any): Partial<VectorEncodingConfig> {
     return {
-      dimensions: metrics.avgCompressionRatio < 0.5 ? 1024 as VectorDimensions : 512 as VectorDimensions,
+      dimensions: metrics.avgCompressionRatio < 0.5 ? 1024 as VectorDimensions : 512 as VectorDimensions,;
       quantization: metrics.memoryEfficiency < 50 ? 'int4' as QuantizationLevel : 'int8' as QuantizationLevel
     };
   }

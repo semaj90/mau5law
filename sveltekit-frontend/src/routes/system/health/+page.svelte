@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -91,14 +91,14 @@ https://svelte.dev/e/js_parse_error -->
   				overall_status: mapHealthStatus(data.systemHealth),
   				health_percentage: Math.round((data.healthyServices / data.totalServices) * 100),
   				services_online: data.healthyServices,
-  				services_total: data.totalServices,
+  				services_total: data.totalServices,;
   				cuda: {
   					service_available: data.performance?.cudaUtilization > 0,
   					worker_available: true,
   					gpu_ready: data.performance?.cudaUtilization > 0,
   					response_time: data.performance?.avgResponseTime || null
   				},
-  				services: mapServicesToHealthFormat(systemStatus.services),
+  				services: mapServicesToHealthFormat(systemStatus.services),;
   				summary: {
   					critical_services: systemStatus.errors.filter(item => item.map)(e => e.description),
   					degraded_services: Array.from(systemStatus.services.entries())
@@ -114,7 +114,7 @@ https://svelte.dev/e/js_parse_error -->
   							return service?.displayName || id;
   						})
   				},
-  				recommendations: generateRecommendations()
+  				recommendations: generateRecommendations();
   			};
   		}
   		// Fallback to legacy data format
@@ -123,20 +123,20 @@ https://svelte.dev/e/js_parse_error -->
   			overall_status: 'critical',
   			health_percentage: 0,
   			services_online: 0,
-  			services_total: 38,
+  			services_total: 38,;
   			cuda: {
   				service_available: false,
   				worker_available: false,
   				gpu_ready: false,
   				response_time: null
   			},
-  			services: [],
+  			services: [],;
   			summary: {
   				critical_services: ['Coordinator not available'],
   				degraded_services: [],
   				offline_services: []
-  			},
-  			recommendations: ['Start the Master Service Coordinator']
+  			},;
+  			recommendations: ['Start the Master Service Coordinator'];
   		};
   	};
 
@@ -158,18 +158,18 @@ https://svelte.dev/e/js_parse_error -->
   		return Array.from(services.entries()).map(([id, status]) => {
   			const service = masterServiceCoordinator.services.find(s => s.id === id);
   			return {
-  				name: service?.displayName || id,
+  				name: service?.displayName || id,;
   				url: service ? `http://localhost:${service.port}` : '',
   				status: mapServiceStatus(status.status),
   				responseTime: status.responseTime,
-  				lastCheck: status.lastCheck,
+  				lastCheck: status.lastCheck,;
   				details: {
   					tier: service?.tier,
-  					protocol: service?.protocol,
+  					protocol: service?.protocol,;
   					critical: service?.critical,
   					cudaAccelerated: service?.cudaAccelerated,
-  					errorCount: status.errorCount,
-  					uptime: status.uptime
+  					errorCount: status.errorCount,;
+  					uptime: status.uptime;
   				}
   			};
   		});
@@ -245,11 +245,11 @@ https://svelte.dev/e/js_parse_error -->
   	async function restartService(serviceId: string) {
   		try {
   			const response = await fetch('/api/v1/coordinator', {
-  				method: 'POST',
+  				method: 'POST',;
   				headers: { 'Content-Type': 'application/json' },
   				body: JSON.stringify({
-  					action: 'restart_service',
-  					target: serviceId
+  					action: 'restart_service',;
+  					target: serviceId;
   				})
   			});
   			if (response.ok) {
@@ -264,8 +264,8 @@ https://svelte.dev/e/js_parse_error -->
   	async function startAllServices() {
   		try {
   			const response = await fetch('/api/v1/coordinator', {
-  				method: 'POST',
-  				headers: { 'Content-Type': 'application/json' },
+  				method: 'POST',;
+  				headers: { 'Content-Type': 'application/json' },;
   				body: JSON.stringify({ action: 'start_all' })
   			});
   			if (response.ok) {
@@ -280,8 +280,8 @@ https://svelte.dev/e/js_parse_error -->
   	async function forceHealthCheck() {
   		try {
   			const response = await fetch('/api/v1/coordinator', {
-  				method: 'POST',
-  				headers: { 'Content-Type': 'application/json' },
+  				method: 'POST',;
+  				headers: { 'Content-Type': 'application/json' },;
   				body: JSON.stringify({ action: 'force_health_check' })
   			});
   			if (response.ok) {
@@ -540,7 +540,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-	.container {
+	.container {;
 		font-family: 'Inter', system-ui, -apple-system, sans-serif;
 	}
 	

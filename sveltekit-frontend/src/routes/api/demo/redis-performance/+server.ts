@@ -4,29 +4,29 @@
  * Demonstrates 240x speed improvement for complex operations
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { createRedisInstance } from '$lib/server/redis';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { createRedisInstance } from '$lib/server/redis'
 
 // Create Redis client directly
-let redis = createRedisInstance();
+let redis = createRedisInstance()
 
 interface PerformanceResult {
-  operation: string;
-  uncachedTime: number;
-  cachedTime: number;
-  speedupFactor: number;
-  result: any;
+  operation: string
+  uncachedTime: number
+  cachedTime: number
+  speedupFactor: number
+  result: any
 }
 
-// Simulate expensive operations like vector search, legal analysis, etc.;
+// Simulate expensive operations like vector search, legal analysis, etc.
 async function expensiveVectorSearch(query: string): Promise<any> {
   // Simulate heavy computation (vector similarity, AI processing)
   await new Promise((resolve) => setTimeout(resolve, 1200); // 1.2s delay
 
   return {
     query,
-    results: [;
+    results: [
       {
         id: 'doc_001',
         title: 'Employment Contract Analysis - Remote Work Clauses',
@@ -48,7 +48,7 @@ async function expensiveVectorSearch(query: string): Promise<any> {
       model: 'legal-nomic-embed',
       embedding: new Array(768).fill(0).map(() => Math.random()), // Mock 768-dim vector
     }
-  };
+  }
 }
 
 async function expensiveLegalAnalysis(document: string): Promise<any> {
@@ -70,36 +70,36 @@ async function expensiveLegalAnalysis(document: string): Promise<any> {
       ]
     },
     processingTime: '800ms'
-  };
+  }
 }
 
 export const POST: RequestHandler = async ({ request }) => {
-  const startTime = performance.now();
+  const startTime = performance.now()
 
   try {
     const { operation = 'vector-search', query = 'employment contract dispute' } =
-      await request.json();
+      await request.json()
 
-    const results: PerformanceResult[] = [];
-    const cacheKey = `demo:${operation}:${Buffer.from(query).toString('base64')}`;
+    const results: PerformanceResult[] = []
+    const cacheKey = `demo:${operation}:${Buffer.from(query).toString('base64')}`
 
-    // Test 1: Vector Search Performance;
+    // Test 1: Vector Search Performance
     if (operation === 'vector-search' || operation === 'all') {
-      const vectorKey = `${cacheKey}:vector`;
+      const vectorKey = `${cacheKey}:vector`
 
       // Uncached performance
-      const uncachedStart = performance.now();
-      const freshResult = await expensiveVectorSearch(query);
-      const uncachedTime = performance.now() - uncachedStart;
+      const uncachedStart = performance.now()
+      const freshResult = await expensiveVectorSearch(query)
+      const uncachedTime = performance.now() - uncachedStart
 
       // Cache the result
       await redis.setex(vectorKey, 300, JSON.stringify(freshResult); // 5min TTL
 
       // Cached performance
-      const cachedStart = performance.now();
-      const cachedData = await redis.get(vectorKey);
-      const cachedResult = JSON.parse(cachedData!);
-      const cachedTime = performance.now() - cachedStart;
+      const cachedStart = performance.now()
+      const cachedData = await redis.get(vectorKey)
+      const cachedResult = JSON.parse(cachedData!)
+      const cachedTime = performance.now() - cachedStart
 
       results.push({
         operation: 'Vector Search',
@@ -107,27 +107,27 @@ export const POST: RequestHandler = async ({ request }) => {
         cachedTime: Math.round(cachedTime),
         speedupFactor: Math.round(uncachedTime / cachedTime),
         result: cachedResult
-      });
+      })
     }
 
-    // Test 2: Legal Analysis Performance;
+    // Test 2: Legal Analysis Performance
     if (operation === 'legal-analysis' || operation === 'all') {
-      const analysisKey = `${cacheKey}:analysis`;
-      const sampleDocument = `Employment Agreement between TechCorp Inc. and John Smith. This agreement establishes terms for remote work arrangements, compensation structure, and termination procedures. Employee shall work from designated home office with company-provided equipment. Compensation includes base salary plus performance bonuses. Either party may terminate with 30 days written notice.`;
+      const analysisKey = `${cacheKey}:analysis`
+      const sampleDocument = `Employment Agreement between TechCorp Inc. and John Smith. This agreement establishes terms for remote work arrangements, compensation structure, and termination procedures. Employee shall work from designated home office with company-provided equipment. Compensation includes base salary plus performance bonuses. Either party may terminate with 30 days written notice.`
 
       // Uncached performance
-      const uncachedStart = performance.now();
-      const freshAnalysis = await expensiveLegalAnalysis(sampleDocument);
-      const uncachedTime = performance.now() - uncachedStart;
+      const uncachedStart = performance.now()
+      const freshAnalysis = await expensiveLegalAnalysis(sampleDocument)
+      const uncachedTime = performance.now() - uncachedStart
 
       // Cache the result
-      await redis.setex(analysisKey, 300, JSON.stringify(freshAnalysis);
+      await redis.setex(analysisKey, 300, JSON.stringify(freshAnalysis)
 
       // Cached performance
-      const cachedStart = performance.now();
-      const cachedData = await redis.get(analysisKey);
-      const cachedAnalysis = JSON.parse(cachedData!);
-      const cachedTime = performance.now() - cachedStart;
+      const cachedStart = performance.now()
+      const cachedData = await redis.get(analysisKey)
+      const cachedAnalysis = JSON.parse(cachedData!)
+      const cachedTime = performance.now() - cachedStart
 
       results.push({
         operation: 'Legal Analysis',
@@ -135,11 +135,11 @@ export const POST: RequestHandler = async ({ request }) => {
         cachedTime: Math.round(cachedTime),
         speedupFactor: Math.round(uncachedTime / cachedTime),
         result: cachedAnalysis
-      });
+      })
     }
 
     // Redis Performance Metrics
-    const redisInfo = await redis.info('memory');
+    const redisInfo = await redis.info('memory')
     const redisStats = {
       connected: redis.status === 'ready',
       memory: parseRedisInfo(redisInfo),
@@ -147,9 +147,9 @@ export const POST: RequestHandler = async ({ request }) => {
       uptime: await redis
         .info('server')
         .then((info) => parseRedisInfo(info).uptime_in_seconds || 0)
-    };
+    }
 
-    const totalTime = performance.now() - startTime;
+    const totalTime = performance.now() - startTime
 
     return json({
       success: true,
@@ -176,11 +176,11 @@ export const POST: RequestHandler = async ({ request }) => {
         energyEfficiency: '240x reduction in CPU usage per query'
       },
       timestamp: new Date().toISOString()
-    });
+    })
   } catch (error: any) {
-    const totalTime = performance.now() - startTime;
+    const totalTime = performance.now() - startTime
 
-    return json();
+    return json()
       {
         success: false,
         error: error.message,
@@ -194,28 +194,28 @@ export const POST: RequestHandler = async ({ request }) => {
         timestamp: new Date().toISOString()
       },
       { status: 500 }
-    );
+    )
   }
-};
+}
 
-// GET: Quick Redis health and cache statistics;
+// GET: Quick Redis health and cache statistics
 export const GET: RequestHandler = async () => {
   try {
-    const start = performance.now();
+    const start = performance.now()
 
     // Quick health check
-    await redis.ping();
+    await redis.ping()
 
     const [memoryInfo, serverInfo, keyCount] = await Promise.all([
       redis.info('memory'),
       redis.info('server'),
       redis.dbsize()
-    ]);
+    ])
 
-    const memory = parseRedisInfo(memoryInfo);
-    const server = parseRedisInfo(serverInfo);
+    const memory = parseRedisInfo(memoryInfo)
+    const server = parseRedisInfo(serverInfo)
 
-    const responseTime = performance.now() - start;
+    const responseTime = performance.now() - start
 
     return json({
       success: true,
@@ -241,9 +241,9 @@ export const GET: RequestHandler = async () => {
         ]
       },
       timestamp: new Date().toISOString()
-    });
+    })
   } catch (error: any) {
-    return json();
+    return json()
       {
         success: false,
         redis: {
@@ -257,20 +257,20 @@ export const GET: RequestHandler = async () => {
         timestamp: new Date().toISOString()
       },
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 function parseRedisInfo(info: string): any {
-  const result: any = {};
-  const lines = info.split('\r\n');
+  const result: any = {}
+  const lines = info.split('\r\n')
 
   for (const line of lines) {
     if (line.includes(':')) {
-      const [key, value] = line.split(':', 2);
-      result[key] = isNaN(Number(value)) ? value : Number(value);
+      const [key, value] = line.split(':', 2)
+      result[key] = isNaN(Number(value)) ? value : Number(value)
     }
   }
 
-  return result;
+  return result
 }

@@ -102,7 +102,7 @@ const services = {
       parties: ['John Smith', 'ABC Corporation'],
       dates: ['2023-01-15', '2023-12-31'],
       monetary: ['$50,000', '$10,000'],
-      clauses: ['Section 3.1', 'Clause 7.2'],
+      clauses: ['Section 3.1', 'Clause 7.2'],;
       jurisdictions: [context.jurisdiction],
       caseTypes: [context.caseType]
     };
@@ -171,7 +171,7 @@ const services = {
 // Legal Document Processing State Machine;
 export const legalDocumentProcessingMachine = createMachine({
   id: 'legalDocumentProcessing',
-  types: Record<string, any> as {
+  types: Record<string, any> as {;
     context: LegalDocumentContext;
     events: LegalDocumentEvent;
   },
@@ -218,7 +218,7 @@ export const legalDocumentProcessingMachine = createMachine({
       }
     },
 
-    initializing: {
+    initializing: {;
       always: [;
         {
           target: 'extractingContent',
@@ -444,7 +444,7 @@ export const legalDocumentProcessingMachine = createMachine({
               }
             },
             completed: { type: 'final' },
-            failed: { type: 'final' },
+            failed: { type: 'final' },;
             skipped: { type: 'final' }
           }
         }
@@ -489,7 +489,7 @@ export const legalDocumentProcessingMachine = createMachine({
       })
     },
 
-    error: {
+    error: {;
       on: {
         RETRY: [;
           {
@@ -514,7 +514,7 @@ export const legalDocumentProcessingMachine = createMachine({
       type: 'final'
     },
 
-    cancelled: {
+    cancelled: {;
       type: 'final'
     }
   }

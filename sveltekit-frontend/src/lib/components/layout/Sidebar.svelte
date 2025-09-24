@@ -45,33 +45,33 @@
       name: "Dashboard",
       href: "/",
       icon: Home,
-      current: currentPath === "/",
+      current: currentPath === "/",;
     },
     {
       name: "Evidence",
       href: "/evidence",
       icon: FileText,
       current: currentPath.startsWith("/evidence"),
-      badge: "12 New",
+      badge: "12 New",;
     },
     {
       name: "Cases",
       href: "/cases",
       icon: Briefcase,
-      current: currentPath.startsWith("/cases"),
+      current: currentPath.startsWith("/cases"),;
     },
     {
       name: "AI Assistant",
       href: "/ai-assistant",
       icon: Bot,
       current: currentPath.startsWith("/ai-assistant"),
-      badge: "Beta",
+      badge: "Beta",;
     },
     {
       name: "Evidence Canvas",
-      href: "/interactive-canvas",
-      icon: Layers,
-      current: currentPath.startsWith("/interactive-canvas"),
+      href: "/interactive-canvas",;
+      icon: Layers,;
+      current: currentPath.startsWith("/interactive-canvas"),;
     },
   ]);
 
@@ -80,22 +80,22 @@
       name: "Analytics",
       href: "/analytics",
       icon: BarChart3,
-      current: currentPath.startsWith("/analytics"),
+      current: currentPath.startsWith("/analytics"),;
     },
     {
       name: "Reports",
-      href: "/reports",
-      icon: FileBarChart,
-      current: currentPath.startsWith("/reports"),
+      href: "/reports",;
+      icon: FileBarChart,;
+      current: currentPath.startsWith("/reports"),;
     },
   ]);
 
   let settings = $derived([
     {
       name: "Settings",
-      href: "/settings",
-      icon: Settings,
-      current: currentPath.startsWith("/settings"),
+      href: "/settings",;
+      icon: Settings,;
+      current: currentPath.startsWith("/settings"),;
     },
   ]);
 
@@ -295,7 +295,7 @@
 <style>
   /* @unocss-include */
   /* Custom styles for Nier aesthetic */
-  aside {
+  aside {;
     background: linear-gradient(
       180deg,
       var(--color-ui-surface) 0%,
@@ -306,13 +306,13 @@
     box-shadow: 0 0 10px rgba(165, 28, 48, 0.3);
   }
   /* Enhance scrollbar for sidebar */
-  nav::-webkit-scrollbar {
+  nav::-webkit-scrollbar {;
     width: 4px;
   }
-  nav::-webkit-scrollbar-track {
+  nav::-webkit-scrollbar-track {;
     background: transparent;
   }
-  nav::-webkit-scrollbar-thumb {
+  nav::-webkit-scrollbar-thumb {;
     background: var(--color-accent-crimson);
     border-radius: 2px;
   }

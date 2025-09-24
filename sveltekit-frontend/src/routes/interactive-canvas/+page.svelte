@@ -1,10 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  interface Props {
+  interface Props {;
     data: PageData;
   }
   let {
@@ -94,8 +94,8 @@ https://svelte.dev/e/js_parse_error -->
   		for (const file of files) {
   			const fileId = crypto.randomUUID();
   			uploadingFiles[fileId] = {
-  				name: file.name,
-  				size: file.size
+  				name: file.name,;
+  				size: file.size;
   			};
   			uploadProgress[fileId] = 0;
 
@@ -115,8 +115,8 @@ https://svelte.dev/e/js_parse_error -->
 
   				// Mark as completed
   				completedUploads[fileId] = {
-  					name: file.name,
-  					hash: hash,
+  					name: file.name,;
+  					hash: hash,;
   					id: (result as { id?: unknown; uploaded?: unknown }).id
   				};
   				uploadProgress[fileId] = 100;
@@ -162,8 +162,8 @@ https://svelte.dev/e/js_parse_error -->
   				onProgress(i / 100);
   }}
   		const response = await fetch('/api/evidence/upload', {
-  			method: 'POST',
-  			body: formData
+  			method: 'POST',;
+  			body: formData;
   		});
 
   		if (!(response as { ok?: unknown; json?: unknown }).ok) {
@@ -217,7 +217,7 @@ https://svelte.dev/e/js_parse_error -->
 				<FileUploadSection />
 
 				<!-- Upload Progress Indicators -->
-				{#if Object.keys.length > 0}
+				{#if Object.keys(errors).length > 0}
 					<div class="space-y-4">
 						<h4>🔄 Uploading Files</h4>
 						{#each Object.entries(uploadingFiles) as [fileId, file]}
@@ -252,7 +252,7 @@ https://svelte.dev/e/js_parse_error -->
 				{/if}
 
 				<!-- Completed Uploads -->
-				{#if Object.keys.length > 0}
+				{#if Object.keys(errors).length > 0}
 					<div class="space-y-4">
 						<h4>✅ Upload Complete</h4>
 						{#each Object.entries(completedUploads) as [fileId, upload]}
@@ -282,7 +282,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   /* @unocss-include */
-	.canvas-layout {
+	.canvas-layout {;
 		display: flex;
 		flex-direction: column;
 		height: 100vh;

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -93,7 +93,7 @@ https://svelte.dev/e/js_parse_error -->
         await logger.logPerformance({
           operation: 'cache_lookup_start',
           documentId: docId,
-          startTime: Date.now()
+          startTime: Date.now();
         });
 
         const cachedData = await db.getCache(`document_detail_${docId}`);
@@ -105,7 +105,7 @@ https://svelte.dev/e/js_parse_error -->
             operation: 'cache_hit',
             documentId: docId,
             processingTime: performance.now() - startTime,
-            cacheSize: JSON.stringify.length
+            cacheSize: JSON.stringify(length);
           });
           // Still fetch fresh data in background for next time
           loadFromServerInBackground(docId);
@@ -121,9 +121,9 @@ https://svelte.dev/e/js_parse_error -->
       await logger.logError({
         error: errorMessage,
         context: 'document_detail_load',
-        documentId: docId,
-        severity: 'medium',
-        category: 'ui'
+        documentId: docId,;
+        severity: 'medium',;
+        category: 'ui';
       });
     } finally {
       loading = false;
@@ -138,10 +138,10 @@ https://svelte.dev/e/js_parse_error -->
     const serverStartTime = performance.now();
     await logger.logAPIRequest({
       requestId: crypto.randomUUID(),
-      method: 'GET',
+      method: 'GET',;
       endpoint: `/api/document/${docId}`,
       userAgent: navigator.userAgent,
-      ipAddress: 'client',
+      ipAddress: 'client',;
       headers: { 'Cache-Control': forceRefresh ? 'no-cache' : 'max-age=300' }
     });
 
@@ -168,8 +168,8 @@ https://svelte.dev/e/js_parse_error -->
     await unifiedStore.updateDocumentCache(docId, {
       document: document,
       relatedDocuments,
-      graphConnections,
-      timestamp: Date.now()
+      graphConnections,;
+      timestamp: Date.now();
     });
 
     // Cache for next time with intelligent TTL
@@ -191,9 +191,9 @@ https://svelte.dev/e/js_parse_error -->
     await logger.logAPIResponse({
       requestId: crypto.randomUUID(),
       statusCode: 200,
-      responseSize: JSON.stringify.length,
+      responseSize: JSON.stringify(length),
       processingTime: serverTime,
-      success: true
+      success: true;
     });
 
     // Emit events for graph updates
@@ -214,7 +214,7 @@ https://svelte.dev/e/js_parse_error -->
 
       const url = `/api/document/${docId}?background=true`;
       const response = await fetch(url, { 
-        signal: controller.signal,
+        signal: controller.signal,;
         headers: { 'X-Background-Request': 'true' }
       });
       clearTimeout(timeoutId);
@@ -228,10 +228,10 @@ https://svelte.dev/e/js_parse_error -->
             relatedDocuments: data.related_documents || [],
             graphConnections: data.graph_connections || [],
             caseAssociations: data.case_associations || [],
-            gpuAnalysis: data.gpu_analysis,
+            gpuAnalysis: data.gpu_analysis,;
             metadata: data.enhanced_metadata,
             cached_at: Date.now(),
-            cache_source: 'background_refresh'
+            cache_source: 'background_refresh';
           };
 
           await db.setCache(`document_detail_${docId}`, cacheData, 5 * 60 * 1000);
@@ -264,9 +264,9 @@ https://svelte.dev/e/js_parse_error -->
    */
   async function handleRelatedDocumentClick(relatedDoc: RelatedDocument): Promise<void> {
     await logger.logUserAction({
-      action: 'click',
+      action: 'click',;
       target: 'related_document',
-      documentId: relatedDoc.id,
+      documentId: relatedDoc.id,;
       metadata: { similarity: relatedDoc.similarity, source_document: documentId }
     });
 
@@ -287,11 +287,11 @@ https://svelte.dev/e/js_parse_error -->
     await logger.logUserAction({
       action: 'click',
       target: 'graph_connection',
-      documentId: connection.targetId,
+      documentId: connection.targetId,;
       metadata: { 
-        connection_type: connection.connection_type,
+        connection_type: connection.connection_type,;
         strength: connection.relationship_strength,
-        source_document: documentId 
+        source_document: documentId ;
       }
     });
 
@@ -419,7 +419,7 @@ https://svelte.dev/e/js_parse_error -->
           <button
             type="button"
             onclick={toggleGPUAnalysis}
-            class="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500";
             class:bg-blue-50={enableGPUAnalysis}
             class:text-blue-700={enableGPUAnalysis}
             class:border-blue-300={enableGPUAnalysis}
@@ -499,7 +499,7 @@ https://svelte.dev/e/js_parse_error -->
                 <button
                   type="button"
                   onclick={() => activeTab = tab.id}
-                  class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-blue-500";
                   class:border-blue-500={activeTab === tab.id}
                   class:text-blue-600={activeTab === tab.id}
                   class:border-transparent={activeTab !== tab.id}
@@ -565,7 +565,7 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
 
                 <!-- Metadata -->
-                {#if document.metadata && Object.keys.length > 0}
+                {#if document.metadata && Object.keys(errors).length > 0}
                   <div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-3">Metadata</h3>
                     <div class="bg-white border border-gray-200 rounded-lg p-4">
@@ -788,7 +788,7 @@ https://svelte.dev/e/js_parse_error -->
 {/if}
 
 <style>
-  .line-clamp-2 {
+  .line-clamp-2 {;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;

@@ -1,20 +1,20 @@
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { evidence } from '$lib/server/db/schema-postgres-enhanced';
-import { sql, ilike, and, or } from 'drizzle-orm';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import { db } from '$lib/server/db'
+import { evidence } from '$lib/server/db/schema-postgres-enhanced'
+import { sql, ilike, and, or } from 'drizzle-orm'
+import type { RequestHandler } from './$types.js'
 
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { query, useSemanticSearch, includeContext7, maxResults = 10 } = await request.json();
+    const { query, useSemanticSearch, includeContext7, maxResults = 10 } = await request.json()
 
     if (!query?.trim()) {
-      return json({ matches: [] }, { status: 200 });
+      return json({ matches: [] }, { status: 200 })
     }
 
     // Basic text search in evidence
-    const searchResults = await db;
+    const searchResults = await db
       .select({
         id: evidence.id,
         filename: evidence.fileName,
@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
           ilike(evidence.aiSummary, `%${query}%`)
         )
       )
-      .limit(maxResults);
+      .limit(maxResults)
 
     const matches = searchResults.map(row => ({
       id: row.id,
@@ -43,14 +43,14 @@ export const POST: RequestHandler = async ({ request }) => {
       prosecutionScore: typeof row.prosecutionScore === 'object' 
         ? (row.prosecutionScore as any)?.prosecutionScore || 0 
         : 0
-    });
+    })
 
-    return json({ matches, query, useSemanticSearch, includeContext7 }, { status: 200 });
+    return json({ matches, query, useSemanticSearch, includeContext7 }, { status: 200 })
   } catch (error: any) {
-    console.error('Evidence search error:', error);
+    console.error('Evidence search error:', error)
     return json({ 
-      error: 'Search failed', 
+      error: 'Search failed',
       matches: [] 
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

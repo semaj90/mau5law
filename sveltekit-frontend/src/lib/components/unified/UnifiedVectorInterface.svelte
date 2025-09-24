@@ -37,13 +37,13 @@
       id: 'doc1',
       title: 'Contract Analysis',
       content: 'This employment contract contains standard clauses for non-disclosure and termination procedures.',
-      type: 'CONTRACT'
+      type: 'CONTRACT';
     },
     {
       id: 'doc2', 
-      title: 'Legal Precedent',
-      content: 'In the case of Smith v. Johnson, the court ruled that contractual obligations must be clearly stated.',
-      type: 'CASE_LAW'
+      title: 'Legal Precedent',;
+      content: 'In the case of Smith v. Johnson, the court ruled that contractual obligations must be clearly stated.',;
+      type: 'CASE_LAW';
     }
   ];
 
@@ -57,7 +57,7 @@
     try {
       const response = await fetch('/api/unified-vector?action=health');
       const data = await (response as { json?: unknown }).json();
-      health.set.health || );
+      health.set(health) || );
       const healthStatus = (data as { health?: unknown; allSystemsOperational?: unknown; analytics?: unknown; success?: unknown; results?: unknown; metadata?: unknown; componentsUsed?: unknown; performance?: unknown; errors?: unknown }).allSystemsOperational ? 'All systems operational' : 'Some systems offline';
       addLog(`Health check: ${healthStatus}`);
     } catch (error: unknown) {
@@ -69,7 +69,7 @@
     try {
       const response = await fetch('/api/unified-vector?action=analytics');
       const data = await (response as { json?: unknown }).json();
-      analytics.set.analytics || );
+      analytics.set(analytics) || );
       addLog('Analytics updated');
     } catch (error: unknown) {
       addLog(`Analytics failed: ${error.message}`);
@@ -87,13 +87,13 @@
 
     try {
       const request: UnifiedVectorRequest = {
-        type: selectedOperation,
+        type: selectedOperation,;
         payload: {
           text: inputText || undefined,
-          documents: selectedOperation === 'ingest' ? sampleDocuments : undefined,
+          documents: selectedOperation === 'ingest' ? sampleDocuments : undefined,;
           query: selectedOperation === 'search' ? inputText : undefined,
           userId,
-          sessionId,
+          sessionId,;
           options: {
             useWebGPU,
             useWebAssembly,
@@ -107,11 +107,11 @@
       };
 
       const response = await fetch('/api/unified-vector', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(request)
+        },;
+        body: JSON.stringify(request);
       });
 
       const data: UnifiedVectorResponse = await (response as { json?: unknown }).json();
@@ -215,7 +215,7 @@
 
       <!-- Operation Selection -->
       <div class="mb-4">
-        <label class="block text-sm mb-2" for="operation">OPERATION</label><select id="operation" 
+        <label class="block text-sm mb-2" for="operation">OPERATION</label><select id="operation" ;
           bind:value={selectedOperation}
           class="w-full bg-black border border-green-400 text-green-400 p-2 text-sm"
         >
@@ -247,7 +247,7 @@
           />
         </div>
         <div>
-          <label class="block text-xs mb-1" for="session-id">SESSION ID</label><input id="session-id"
+          <label class="block text-xs mb-1" for="session-id">SESSION ID</label><input id="session-id";
             bind:value={sessionId}
             class="w-full bg-black border border-green-400 text-green-400 p-1 text-xs"
           />
@@ -341,7 +341,7 @@
           </div>
 
           <!-- Performance Breakdown -->
-          {#if Object.keys.length > 0}
+          {#if Object.keys(errors).length > 0}
             <div class="border border-green-600 p-3">
               <div class="text-green-200 mb-2">PERFORMANCE</div>
               <div class="space-y-1 text-xs">
@@ -415,11 +415,11 @@
     outline: none;
   }
 
-  input:focus, textarea:focus, select:focus {
+  input:focus, textarea:focus, select:focus {;
     box-shadow: inset 0 0 0 1px theme('colors.green.400');
   }
 
-  button:disabled {
+  button:disabled {;
     cursor: not-allowed;
   }
 

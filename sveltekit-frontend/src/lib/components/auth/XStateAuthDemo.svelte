@@ -8,10 +8,10 @@
 
   import { onMount, onDestroy } from 'svelte';
   // Card components removed - using native HTML elements
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Label } from '$lib/components/ui/label';
   import { Badge } from '$lib/components/ui/badge';
   import { Alert, AlertDescription } from '$lib/components/ui/alert';
@@ -128,13 +128,13 @@
   function demonstrateUpload() {
     // Create a mock file for demo
     const mockFile = new File(['Mock legal document content'], 'evidence.pdf', {
-      type: 'application/pdf'
+      type: 'application/pdf';
     });
 
     xstateIntegration.uploadDocument(mockFile, {
       type: 'evidence',
-      caseId: 'case_2024_001',
-      description: 'Key evidence document'
+      caseId: 'case_2024_001',;
+      description: 'Key evidence document';
     });
   }
 
@@ -238,7 +238,7 @@
                 <Label for="demo-email">Email</Label>
                 <Input
                   id="demo-email"
-                  type="email"
+                  type="email";
                   bind:value={email}
                   placeholder="prosecutor@example.gov"
                   disabled={isLoading}
@@ -328,7 +328,7 @@
             <div>
               <Label for="ai-message">Message to AI Assistant</Label>
               <Input
-                id="ai-message"
+                id="ai-message";
                 bind:value={aiMessage}
                 placeholder="Ask the AI assistant something..."
               />

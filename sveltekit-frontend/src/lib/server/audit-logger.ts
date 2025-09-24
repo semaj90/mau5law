@@ -35,7 +35,7 @@ export class StorageAuditLogger {
     user: AuthenticatedUser,
     bucket: string,
     key: string,
-    request: Request,
+    request: Request,;
     success: boolean,
     error?: string,
     metadata?: Record<string, any>;
@@ -46,7 +46,7 @@ export class StorageAuditLogger {
       userId: user.id,
       userEmail: user.email,
       bucket,
-      key,
+      key,;
       ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown',
       userAgent: request.headers.get('user-agent') || 'unknown',
       success,
@@ -65,7 +65,7 @@ export class StorageAuditLogger {
           user_id: entry.userId,
           target: entry.key,
           bucket: entry.bucket,
-          success: entry.success,
+          success: entry.success,;
           metadata: entry.metadata || null
         });
       } catch (e) {
@@ -107,7 +107,7 @@ export class StorageAuditLogger {
             ip: entry.ip,
             userAgent: entry.userAgent,
             success: entry.success,
-            error: entry.error,
+            error: entry.error,;
             metadata: entry.metadata ? JSON.stringify(entry.metadata) : null
           }
         });
@@ -146,7 +146,7 @@ export class StorageAuditLogger {
             ip: r.ip || undefined,
             userAgent: r.user_agent || undefined,
             success: r.success,
-            error: r.error || undefined,
+            error: r.error || undefined,;
             metadata: r.metadata || undefined
           } as AuditEntry);
         } catch (e) {
@@ -224,7 +224,7 @@ export class StorageAuditLogger {
         // Archive database logs;
         await global.database.auditLog.deleteMany({
           where: {
-            timestamp: {
+            timestamp: {;
               lt: cutoffDate
             }
           }

@@ -124,7 +124,7 @@ class UnifiedClientLLMOrchestrator {
       const cacheResult = await this.checkInferenceCache(request);
       if (cacheResult.hit) {
         return {
-          success: true,
+          success: true,;
           response: cacheResult.data.response,
           modelUsed: cacheResult.data.modelUsed,
           executionMetrics: {
@@ -159,7 +159,7 @@ class UnifiedClientLLMOrchestrator {
       const totalLatency = performance.now() - startTime;
 
       return {
-        success: true,
+        success: true,;
         response: inferenceResult.response,
         modelUsed: selectedModel.id,
         executionMetrics: {
@@ -187,7 +187,7 @@ class UnifiedClientLLMOrchestrator {
         return fallbackResult;
       } catch (fallbackError) {
         return {
-          success: false,
+          success: false,;
           response: 'Error: Unable to process request with any available model',
           modelUsed: 'none',
           executionMetrics: {
@@ -243,7 +243,7 @@ class UnifiedClientLLMOrchestrator {
         type: 'INIT_WASM',
         config: {
           modelVariant: 'gemma-270m',
-          modelSize: '270m',
+          modelSize: '270m',;
           architecture: 'llama'
         }
       });
@@ -252,7 +252,7 @@ class UnifiedClientLLMOrchestrator {
       await this.sendWorkerMessage(worker, {
         type: 'LOAD_MODEL',
         data: {
-          modelUrl: '/wasm/gemma-models/gemma-270m.bin',
+          modelUrl: '/wasm/gemma-models/gemma-270m.bin',;
           config: { contextLength: 2048, quantization: 'int8' }
         }
       });
@@ -269,7 +269,7 @@ class UnifiedClientLLMOrchestrator {
           wasmHeapMB: 256
         },
         performanceMetrics: {
-          averageLatency: 150,
+          averageLatency: 150,;
           throughput: 20, // tokens/sec
           qualityScore: 0.85,
           lastUsed: 0
@@ -307,7 +307,7 @@ class UnifiedClientLLMOrchestrator {
           wasmHeapMB: 384
         },
         performanceMetrics: {
-          averageLatency: 280,
+          averageLatency: 280,;
           throughput: 18,
           qualityScore: 0.9,
           lastUsed: 0
@@ -347,7 +347,7 @@ class UnifiedClientLLMOrchestrator {
           wasmHeapMB: 128
         },
         performanceMetrics: {
-          averageLatency: 50, // Very fast for context switching
+          averageLatency: 50, // Very fast for context switching;
           throughput: 100,
           qualityScore: 0.92, // High quality for legal domain
           lastUsed: 0
@@ -386,7 +386,7 @@ class UnifiedClientLLMOrchestrator {
           wasmHeapMB: 64
         },
         performanceMetrics: {
-          averageLatency: 25, // Very fast embeddings
+          averageLatency: 25, // Very fast embeddings;
           throughput: 200,
           qualityScore: 0.88,
           lastUsed: 0
@@ -456,7 +456,7 @@ class UnifiedClientLLMOrchestrator {
       const cacheResult = await parallelCacheOrchestrator.executeParallel({
         id: `llm-inference:${request.id}`,
         type: 'context',
-  priority: request.priority === 'realtime' ? 'high' : request.priority,
+  priority: request.priority === 'realtime' ? 'high' : request.priority,;
         keys: [cacheKey]
       });
 
@@ -514,7 +514,7 @@ class UnifiedClientLLMOrchestrator {
       data: {
         prompt: request.prompt,
         maxTokens: 256,
-        temperature: 0.7,
+        temperature: 0.7,;
         context: request.context
       }
     });
@@ -560,7 +560,7 @@ class UnifiedClientLLMOrchestrator {
         prompt: request.prompt,
         maxTokens: 512,
         temperature: 0.4,
-        legalContext: {
+        legalContext: {;
           domain: request.context.legalDomain || 'general',
           documentType: request.context.documentType || 'generic'
         }
@@ -581,7 +581,7 @@ class UnifiedClientLLMOrchestrator {
     const response = await this.sendWorkerMessage(model.worker, {
       type: 'RL_INFERENCE',
       data: {
-        prompt: request.prompt,
+        prompt: request.prompt,;
         context: request.context.previousContext || []
       }
     });
@@ -628,7 +628,7 @@ class UnifiedClientLLMOrchestrator {
       }, {
         tier: 'l1',
         ttl: 10 * 60 * 1000, // 10 minutes
-        priority: 'normal',
+        priority: 'normal',;
         type: 'llm_inference'
       });
     } catch (error) {
@@ -703,7 +703,7 @@ class UnifiedClientLLMOrchestrator {
     if (gemmaModel) {
       const result = await this.executeGemmaInference(gemmaModel, request);
       return {
-        success: true,
+        success: true,;
         response: (result as { confidence?: any; response?: any; modelUsed?: any; qualityScore?: any }).response,
         modelUsed: 'gemma270m',
         executionMetrics: {
@@ -764,7 +764,7 @@ class ONNXInferenceEngine {
   async runInference(session: any, input: string, options: any): Promise<any> {
     // ONNX inference implementation;
     return {
-      output: `ONNX inference result for: ${input}`,
+      output: `ONNX inference result for: ${input}`,;
       confidence: 0.88,
       contextType: options.task
     };

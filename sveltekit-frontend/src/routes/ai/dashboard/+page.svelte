@@ -7,7 +7,7 @@
     totalQueries: 1847,
     activeModels: 5,
     inferenceSpeed: '1.2s',
-    accuracy: 94.7
+    accuracy: 94.7;
   });
 </script>
 

@@ -89,7 +89,7 @@ export class WebGPUVertexStreamer {
 
     const canvasFormat = navigator.gpu.getPreferredCanvasFormat();
     this.context.configure({
-      device: this.device,
+      device: this.device,;
       format: canvasFormat
     });
 
@@ -195,7 +195,7 @@ export class WebGPUVertexStreamer {
         entryPoint: 'fs_main',
         targets: [{ format }]
       },
-      primitive: {
+      primitive: {;
         topology: 'triangle-list'
       }
     });
@@ -206,13 +206,13 @@ export class WebGPUVertexStreamer {
 
     // Create vertex buffer;
     this.vertexBuffer = this.device.createBuffer({
-      size: this.config.bufferSize,
+      size: this.config.bufferSize,;
       usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
     });
 
     // Create uniform buffer;
     this.uniformBuffer = this.device.createBuffer({
-      size: 80, // mat4x4 (64 bytes) + 2 floats (16 bytes for alignment)
+      size: 80, // mat4x4 (64 bytes) + 2 floats (16 bytes for alignment);
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
 
@@ -220,7 +220,7 @@ export class WebGPUVertexStreamer {
     this.bindGroup = this.device.createBindGroup({
       layout: this.pipeline!.getBindGroupLayout(0),
       entries: [{
-        binding: 0,
+        binding: 0,;
         resource: { buffer: this.uniformBuffer }
       }]
     });
@@ -244,7 +244,7 @@ export class WebGPUVertexStreamer {
       }
       
       const vertex: LegalVisualizationVertex = {
-        position: new Float32Array(doc.position),
+        position: new Float32Array(doc.position),;
         color: this.getRiskColor(doc.riskLevel),
         textureCoord: new Float32Array([
           (doc.position[0] + 1) * 0.5,
@@ -278,7 +278,7 @@ export class WebGPUVertexStreamer {
     const typePatterns = {
       contract: [0x3C, 0x42, 0x81, 0x81, 0x81, 0x81, 0x42, 0x3C],
       evidence: [0xFF, 0x81, 0x81, 0xBD, 0xBD, 0x81, 0x81, 0xFF],
-      brief: [0x7E, 0x81, 0x99, 0x81, 0x81, 0x99, 0x81, 0x7E],
+      brief: [0x7E, 0x81, 0x99, 0x81, 0x81, 0x99, 0x81, 0x7E],;
       citation: [0x18, 0x24, 0x42, 0x81, 0x81, 0x42, 0x24, 0x18]
     };
     
@@ -297,7 +297,7 @@ export class WebGPUVertexStreamer {
     const colors = {
       low: [0.2, 0.8, 0.2, 1.0],
       medium: [1.0, 1.0, 0.4, 1.0],
-      high: [1.0, 0.6, 0.2, 1.0],
+      high: [1.0, 0.6, 0.2, 1.0],;
       critical: [1.0, 0.2, 0.2, 1.0]
     };
     return new Float32Array(colors[riskLevel as keyof typeof colors] || colors.low);
@@ -465,7 +465,7 @@ export function createLegalVertexBuffer(
     metadata: {
       caseId: doc.metadata.caseId,
       documentType: doc.metadata.documentType,
-      riskLevel: doc.metadata.riskLevel,
+      riskLevel: doc.metadata.riskLevel,;
       confidence: doc.metadata.confidence
     }
   });
@@ -475,7 +475,7 @@ function getRiskColorArray(riskLevel: string): [number, number, number, number] 
   const colors = {
     low: [0.2, 0.8, 0.2, 1.0] as [number, number, number, number],
     medium: [1.0, 1.0, 0.4, 1.0] as [number, number, number, number],
-    high: [1.0, 0.6, 0.2, 1.0] as [number, number, number, number],
+    high: [1.0, 0.6, 0.2, 1.0] as [number, number, number, number],;
     critical: [1.0, 0.2, 0.2, 1.0] as [number, number, number, number]
   };
   return colors[riskLevel as keyof typeof colors] || colors.low;

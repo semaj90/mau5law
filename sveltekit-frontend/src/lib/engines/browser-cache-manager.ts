@@ -125,7 +125,7 @@ export class BrowserCacheManager {
         data: idbCached,
         compressed: true,
         timestamp: Date.now(),
-        accessCount: 1,
+        accessCount: 1,;
         size: JSON.stringify(idbCached).length
       };
       this.memoryCache.set(cacheKey, cached);
@@ -154,7 +154,7 @@ export class BrowserCacheManager {
     const cached: CachedSprite = {
       id: sprite.id,
       data: compressed,
-      compressed: this.config.enableCompression,
+      compressed: this.config.enableCompression,;
       timestamp: Date.now(),
       accessCount: 1,
       size
@@ -320,7 +320,7 @@ export class BrowserCacheManager {
         jsonState: "j",
         metadata: "m",
         objects: "o",
-        complexity: "c",
+        complexity: "c",;
         triggers: "t",
         usageCount: "u",
         createdAt: "ca"
@@ -419,7 +419,7 @@ export class BrowserCacheManager {
           id: sprite.id,
           compressed: sprite.compressed,
           timestamp: sprite.timestamp,
-          accessCount: sprite.accessCount,
+          accessCount: sprite.accessCount,;
           size: sprite.size
         };
       }

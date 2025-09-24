@@ -1,5 +1,5 @@
-import type { RequestHandler } from './$types.js';
-import { minioService } from '$lib/server/storage/minio-service';
+import type { RequestHandler } from './$types.js'
+import { minioService } from '$lib/server/storage/minio-service'
 
 /**
  * MinIO File Management API
@@ -10,23 +10,23 @@ import { minioService } from '$lib/server/storage/minio-service';
 export const GET: RequestHandler = async ({ url }) => {
   try {
     // Initialize MinIO service
-    const initialized = await minioService.initialize();
+    const initialized = await minioService.initialize()
     if (!initialized) {
       return new Response(JSON.stringify({
         error: 'MinIO service unavailable'
       }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' }
-      });
+      })
     }
 
     // Extract query parameters
-    const bucket = url.searchParams.get('bucket') || 'legal-documents';
-    const prefix = url.searchParams.get('prefix') || undefined;
-    const limit = Math.min(parseInt(url.searchParams.get('limit') || '100'), 1000);
+    const bucket = url.searchParams.get('bucket') || 'legal-documents'
+    const prefix = url.searchParams.get('prefix') || undefined
+    const limit = Math.min(parseInt(url.searchParams.get('limit') || '100'), 1000)
 
     // List files in bucket
-    const files = await minioService.listFiles(bucket, prefix, limit);
+    const files = await minioService.listFiles(bucket, prefix, limit)
 
     return new Response(JSON.stringify({
       success: true,
@@ -44,23 +44,23 @@ export const GET: RequestHandler = async ({ url }) => {
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
-    });
+    })
 
   } catch (error) {
-    console.error('File listing error:', error);
+    console.error('File listing error:', error)
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message: 'Failed to list files',
       timestamp: new Date().toISOString()
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
-    });
+    })
   }
-};
+}
 
 export const DELETE: RequestHandler = async ({ request }) => {
   try {
-    const { bucket, fileName } = await request.json();
+    const { bucket, fileName } = await request.json()
 
     if (!bucket || !fileName) {
       return new Response(JSON.stringify({
@@ -68,22 +68,22 @@ export const DELETE: RequestHandler = async ({ request }) => {
       }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
-      });
+      })
     }
 
     // Initialize MinIO service
-    const initialized = await minioService.initialize();
+    const initialized = await minioService.initialize()
     if (!initialized) {
       return new Response(JSON.stringify({
         error: 'MinIO service unavailable'
       }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' }
-      });
+      })
     }
 
     // Delete file
-    const deleted = await minioService.deleteFile(bucket, fileName);
+    const deleted = await minioService.deleteFile(bucket, fileName)
 
     if (!deleted) {
       return new Response(JSON.stringify({
@@ -91,7 +91,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
       }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' }
-      });
+      })
     }
 
     return new Response(JSON.stringify({
@@ -101,16 +101,16 @@ export const DELETE: RequestHandler = async ({ request }) => {
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
-    });
+    })
 
   } catch (error) {
-    console.error('File deletion error:', error);
+    console.error('File deletion error:', error)
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message: 'Failed to delete file',
       timestamp: new Date().toISOString()
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
-    });
+    })
   }
-};
+}

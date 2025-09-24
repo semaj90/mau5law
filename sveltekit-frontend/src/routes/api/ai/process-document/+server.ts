@@ -16,83 +16,83 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 // AI Document Processing API - Summarization, Entity Extraction, Embeddings
 // Production-ready endpoint with LangChain + Ollama integration + CUDA acceleration
 
-import { json } from '@sveltejs/kit';
-import { URL } from "url";
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { json } from '@sveltejs/kit'
+import { URL } from "url"
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 
-const CUDA_SERVICE_URL = 'http://localhost:8097';
-const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
+const CUDA_SERVICE_URL = 'http://localhost:8097'
+const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434'
 
 interface DocumentProcessingRequest {
-  documentId?: string;
-  content?: string;
-  document_text?: string;
-  generateSummary?: boolean;
-  extractEntities?: boolean;
-  generateEmbeddings?: boolean;
-  legal_domain?: string;
-  use_cuda_acceleration?: boolean;
-  use_simd_optimization?: boolean;
-  chunk_size?: number;
-  metadata?: Record<string, any>;
+  documentId?: string
+  content?: string
+  document_text?: string
+  generateSummary?: boolean
+  extractEntities?: boolean
+  generateEmbeddings?: boolean
+  legal_domain?: string
+  use_cuda_acceleration?: boolean
+  use_simd_optimization?: boolean
+  chunk_size?: number
+  metadata?: Record<string, any>
 }
 
 interface ProcessingResult {
-  success: boolean;
-  documentId: string;
-  summary?: string;
+  success: boolean
+  documentId: string
+  summary?: string
   entities?: Array<{
-    text: string;
-    label: string;
-    confidence: number;
-    start: number;
-    end: number;
-  }>;
+    text: string
+    label: string
+    confidence: number
+    start: number
+    end: number
+  }>
   embeddings?: {
-    document_embedding: number[];
-    chunk_embeddings?: number[][];
-    embedding_model: string;
-    dimensions: number;
-  };
+    document_embedding: number[]
+    chunk_embeddings?: number[][]
+    embedding_model: string
+    dimensions: number
+  }
   legal_analysis?: {
-    document_type: string;
-    jurisdiction: string;
-    key_clauses: string[];
+    document_type: string
+    jurisdiction: string
+    key_clauses: string[]
     risk_assessment: {
-      level: 'low' | 'medium' | 'high' | 'critical';
-      factors: string[];
-      score: number;
-    };
+      level: 'low' | 'medium' | 'high' | 'critical'
+      factors: string[]
+      score: number
+    }
     compliance_check: {
-      status: 'compliant' | 'non_compliant' | 'requires_review';
-      issues: string[];
-    };
-  };
+      status: 'compliant' | 'non_compliant' | 'requires_review'
+      issues: string[]
+    }
+  }
   performance_metrics: {
-    total_processing_ms: number;
-    cuda_acceleration_ms?: number;
-    simd_optimization_ms?: number;
-    embedding_generation_ms?: number;
-    model_inference_ms?: number;
-    gpu_utilization?: number;
-    memory_usage_mb?: number;
-  };
+    total_processing_ms: number
+    cuda_acceleration_ms?: number
+    simd_optimization_ms?: number
+    embedding_generation_ms?: number
+    model_inference_ms?: number
+    gpu_utilization?: number
+    memory_usage_mb?: number
+  }
   metadata: {
-    model: string;
-    timestamp: string;
-    chunks_processed: number;
-    tokens_processed: number;
-    gpu_accelerated: boolean;
-    simd_optimized: boolean;
-  };
+    model: string
+    timestamp: string
+    chunks_processed: number
+    tokens_processed: number
+    gpu_accelerated: boolean
+    simd_optimized: boolean
+  }
 }
 
-// Generate embeddings using Ollama with embeddinggemma;
+// Generate embeddings using Ollama with embeddinggemma
 async function generateEmbeddingsWithOllama(text: string): Promise<number[]> {
   try {
     const response = await fetch(`${OLLAMA_URL}/api/embeddings`, {
@@ -103,27 +103,27 @@ async function generateEmbeddingsWithOllama(text: string): Promise<number[]> {
         prompt: text
       }),
       signal: AbortSignal.timeout(30000)
-    });
+    })
 
     if (!response.ok) {
-      throw new Error(`Ollama embeddings failed: ${response.status}`);
+      throw new Error(`Ollama embeddings failed: ${response.status}`)
     }
 
-    const result = await response.json();
-    return result.embedding;
+    const result = await response.json()
+    return result.embedding
   } catch (error) {
-    console.error('Ollama embedding generation failed:', error);
-    throw error;
+    console.error('Ollama embedding generation failed:', error)
+    throw error
   }
 }
 
-// Process with CUDA acceleration;
+// Process with CUDA acceleration
 async function processCudaAccelerated(content: string, options: any): Promise<any> {
   try {
     // First, generate embeddings
-    const embedding = await generateEmbeddingsWithOllama(content);
+    const embedding = await generateEmbeddingsWithOllama(content)
 
-    // If we have embeddings, build a CUDA index for similar document retrieval;
+    // If we have embeddings, build a CUDA index for similar document retrieval
     if (embedding.length > 0) {
       const indexResponse = await fetch(`${CUDA_SERVICE_URL}/api/v1/index/hnsw`, {
         method: 'POST',
@@ -134,33 +134,33 @@ async function processCudaAccelerated(content: string, options: any): Promise<an
           max_elements: 10000
         }),
         signal: AbortSignal.timeout(60000)
-      });
+      })
 
       if (indexResponse.ok) {
-        const indexResult = await indexResponse.json();
+        const indexResult = await indexResponse.json()
         return {
           embedding: embedding,
           cuda_index: indexResult,
           gpu_accelerated: true
-        };
+        }
       }
     }
 
     return {
       embedding: embedding,
       gpu_accelerated: false
-    };
+    }
   } catch (error) {
-    console.error('CUDA acceleration failed:', error);
+    console.error('CUDA acceleration failed:', error)
     return {
       embedding: null,
       gpu_accelerated: false,
       error: error.message
-    };
+    }
   }
 }
 
-// Legal document analysis with Gemma3;
+// Legal document analysis with Gemma3
 async function analyzeLegalDocument(content: string): Promise<any> {
   try {
     const response = await fetch(`${OLLAMA_URL}/api/generate`, {
@@ -185,16 +185,16 @@ ${content.substring(0, 4000)}...`, // Limit for performance
         }
       }),
       signal: AbortSignal.timeout(45000)
-    });
+    })
 
     if (!response.ok) {
-      throw new Error(`Legal analysis failed: ${response.status}`);
+      throw new Error(`Legal analysis failed: ${response.status}`)
     }
 
-    const result = await response.json();
+    const result = await response.json()
 
     // Parse the analysis (in production, use structured output)
-    const analysis = result.response;
+    const analysis = result.response
 
     return {
       document_type: extractDocumentType(analysis),
@@ -203,9 +203,9 @@ ${content.substring(0, 4000)}...`, // Limit for performance
       risk_assessment: extractRiskAssessment(analysis),
       compliance_check: extractComplianceStatus(analysis),
       raw_analysis: analysis
-    };
+    }
   } catch (error) {
-    console.error('Legal analysis failed:', error);
+    console.error('Legal analysis failed:', error)
     return {
       document_type: 'unknown',
       jurisdiction: 'unknown',
@@ -213,39 +213,39 @@ ${content.substring(0, 4000)}...`, // Limit for performance
       risk_assessment: { level: 'medium', factors: [], score: 0.5 },
       compliance_check: { status: 'requires_review', issues: ['Analysis failed'] },
       error: error.message
-    };
+    }
   }
 }
 
-// Helper functions for parsing legal analysis;
+// Helper functions for parsing legal analysis
 function extractDocumentType(analysis: string): string {
-  const types = ['contract', 'agreement', 'lease', 'deed', 'will', 'trust', 'license', 'permit'];
+  const types = ['contract', 'agreement', 'lease', 'deed', 'will', 'trust', 'license', 'permit']
   for (const type of types) {
     if (analysis.toLowerCase().includes(type)) {
-      return type;
+      return type
     }
   }
-  return 'legal_document';
+  return 'legal_document'
 }
 
 function extractJurisdiction(analysis: string): string {
-  const jurisdictions = ['federal', 'state', 'local', 'california', 'new york', 'texas', 'florida'];
+  const jurisdictions = ['federal', 'state', 'local', 'california', 'new york', 'texas', 'florida']
   for (const jurisdiction of jurisdictions) {
     if (analysis.toLowerCase().includes(jurisdiction)) {
-      return jurisdiction;
+      return jurisdiction
     }
   }
-  return 'unknown';
+  return 'unknown'
 }
 
 function extractKeyClauses(analysis: string): string[] {
   // Simple extraction - in production, use NER models
-  const clauses = [];
-  if (analysis.includes('termination')) clauses.push('termination_clause');
-  if (analysis.includes('payment')) clauses.push('payment_terms');
-  if (analysis.includes('liability')) clauses.push('liability_clause');
-  if (analysis.includes('confidential')) clauses.push('confidentiality_clause');
-  return clauses;
+  const clauses = []
+  if (analysis.includes('termination')) clauses.push('termination_clause')
+  if (analysis.includes('payment')) clauses.push('payment_terms')
+  if (analysis.includes('liability')) clauses.push('liability_clause')
+  if (analysis.includes('confidential')) clauses.push('confidentiality_clause')
+  return clauses
 }
 
 function extractRiskAssessment(analysis: string): any {
@@ -254,39 +254,39 @@ function extractRiskAssessment(analysis: string): any {
     high: ['liability', 'damages', 'terminate', 'void'],
     medium: ['review', 'consider', 'may'],
     low: ['standard', 'routine', 'normal']
-  };
+  }
 
-  let level: 'low' | 'medium' | 'high' | 'critical' = 'medium';
-  const factors: string[] = [];
+  let level: 'low' | 'medium' | 'high' | 'critical' = 'medium'
+  const factors: string[] = []
 
   for (const [riskLevel, keywords] of Object.entries(riskKeywords)) {
     for (const keyword of keywords) {
       if (analysis.toLowerCase().includes(keyword)) {
-        level = riskLevel as any;
-        factors.push(`Contains ${keyword}`);
+        level = riskLevel as any
+        factors.push(`Contains ${keyword}`)
       }
     }
   }
 
-  const score = level === 'critical' ? 0.9 : level === 'high' ? 0.7 : level === 'medium' ? 0.5 : 0.3;
+  const score = level === 'critical' ? 0.9 : level === 'high' ? 0.7 : level === 'medium' ? 0.5 : 0.3
 
-  return { level, factors, score };
+  return { level, factors, score }
 }
 
 function extractComplianceStatus(analysis: string): any {
   if (analysis.toLowerCase().includes('compliant')) {
-    return { status: 'compliant', issues: [] };
+    return { status: 'compliant', issues: [] }
   } else if (analysis.toLowerCase().includes('violation') || analysis.toLowerCase().includes('non-compliant')) {
-    return { status: 'non_compliant', issues: ['Potential compliance issues identified'] };
+    return { status: 'non_compliant', issues: ['Potential compliance issues identified'] }
   } else {
-    return { status: 'requires_review', issues: ['Manual review recommended'] };
+    return { status: 'requires_review', issues: ['Manual review recommended'] }
   }
 }
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
-    const startTime = Date.now();
-    const body: DocumentProcessingRequest = await request.json();
+    const startTime = Date.now()
+    const body: DocumentProcessingRequest = await request.json()
 
     const {
       documentId,
@@ -300,58 +300,58 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       use_simd_optimization = true,
       chunk_size = 1000,
       metadata = {}
-    } = body;
+    } = body
 
     if (!documentId && !content && !document_text) {
-      return json({ error: 'Document ID or content is required' }, { status: 400 });
+      return json({ error: 'Document ID or content is required' }, { status: 400 })
     }
 
-    const documentContent = content || document_text || '';
-    const docId = documentId || `doc_${Date.now()}`;
+    const documentContent = content || document_text || ''
+    const docId = documentId || `doc_${Date.now()}`
 
-    let cudaResult: any = {};
-    let embeddingResult: any = {};
-    let legalAnalysis: any = {};
-    let summaryResult = '';
+    let cudaResult: any = {}
+    let embeddingResult: any = {}
+    let legalAnalysis: any = {}
+    let summaryResult = ''
 
-    // Step 1: Generate embeddings and CUDA indexing;
+    // Step 1: Generate embeddings and CUDA indexing
     if (generateEmbeddings && documentContent) {
-      const embeddingStartTime = Date.now();
+      const embeddingStartTime = Date.now()
 
       if (use_cuda_acceleration) {
         cudaResult = await processCudaAccelerated(documentContent, {
           legal_domain,
           chunk_size
-        });
+        })
         embeddingResult = {
           document_embedding: cudaResult.embedding || [],
           embedding_model: 'embeddinggemma:latest',
           dimensions: cudaResult.embedding?.length || 0,
           cuda_indexed: cudaResult.gpu_accelerated || false
-        };
+        }
       } else {
-        const embedding = await generateEmbeddingsWithOllama(documentContent);
+        const embedding = await generateEmbeddingsWithOllama(documentContent)
         embeddingResult = {
           document_embedding: embedding,
           embedding_model: 'embeddinggemma:latest',
           dimensions: embedding.length,
           cuda_indexed: false
-        };
+        }
       }
 
-      embeddingResult.generation_time_ms = Date.now() - embeddingStartTime;
+      embeddingResult.generation_time_ms = Date.now() - embeddingStartTime
     }
 
-    // Step 2: Legal document analysis;
+    // Step 2: Legal document analysis
     if (documentContent && legal_domain !== 'none') {
-      const analysisStartTime = Date.now();
-      legalAnalysis = await analyzeLegalDocument(documentContent);
-      legalAnalysis.analysis_time_ms = Date.now() - analysisStartTime;
+      const analysisStartTime = Date.now()
+      legalAnalysis = await analyzeLegalDocument(documentContent)
+      legalAnalysis.analysis_time_ms = Date.now() - analysisStartTime
     }
 
-    // Step 3: Generate summary;
+    // Step 3: Generate summary
     if (generateSummary && documentContent) {
-      const summaryStartTime = Date.now();
+      const summaryStartTime = Date.now()
       try {
         const summaryResponse = await fetch(`${OLLAMA_URL}/api/generate`, {
           method: 'POST',
@@ -363,24 +363,24 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
             options: { temperature: 0.3, num_predict: 200 }
           }),
           signal: AbortSignal.timeout(30000)
-        });
+        })
 
         if (summaryResponse.ok) {
-          const summaryData = await summaryResponse.json();
-          summaryResult = summaryData.response;
+          const summaryData = await summaryResponse.json()
+          summaryResult = summaryData.response
         }
       } catch (error) {
-        console.error('Summary generation failed:', error);
-        summaryResult = 'Summary generation failed';
+        console.error('Summary generation failed:', error)
+        summaryResult = 'Summary generation failed'
       }
     }
 
     // Step 4: Entity extraction (simplified - use NER models in production)
     const entities = extractEntities ? [
       { text: 'Sample Entity', label: 'LEGAL_TERM', confidence: 0.95, start: 0, end: 13 }
-    ] : [];
+    ] : []
 
-    const totalProcessingTime = Date.now() - startTime;
+    const totalProcessingTime = Date.now() - startTime
 
     const response: ProcessingResult = {
       success: true,
@@ -406,11 +406,11 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         gpu_accelerated: use_cuda_acceleration && (cudaResult.gpu_accelerated || false),
         simd_optimized: use_simd_optimization
       }
-    };
+    }
 
-    return json(response);
+    return json(response)
   } catch (error: any) {
-    console.error('Document processing error:', error);
+    console.error('Document processing error:', error)
     return json({
       success: false,
       error: 'failure default to mock',
@@ -459,23 +459,23 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         simd_optimized: false,
         mockData: true
       }
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
-    const documentId = url.searchParams.get('documentId');
+    const documentId = url.searchParams.get('documentId')
     
     if (!documentId) {
-      return json({ error: 'Document ID parameter required' }, { status: 400 });
+      return json({ error: 'Document ID parameter required' }, { status: 400 })
     }
 
     return json({
       success: true,
       status: 'completed',
       documentId
-    });
+    })
   } catch (error: any) {
     return json({
       success: false,
@@ -484,9 +484,9 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       documentId: documentId || 'mock-document-id',
       mockData: true,
       details: 'Document processing status check failed, providing mock status'
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
-export const GET = redisOptimized.aiAnalysis(originalGETHandler);
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
+export const GET = redisOptimized.aiAnalysis(originalGETHandler)

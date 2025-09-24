@@ -1,6 +1,6 @@
-import cluster from "node:cluster";
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import cluster from "node:cluster"
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 
 /*
@@ -11,7 +11,7 @@ import type { RequestHandler } from './$types.js';
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    // If we're in a worker process, proxy to primary;
+    // If we're in a worker process, proxy to primary
     if (!cluster.isPrimary) {
       return json({
         error: 'Cluster status only available from primary process',
@@ -20,11 +20,11 @@ export const GET: RequestHandler = async ({ url }) => {
           memory: process.memoryUsage(),
           uptime: process.uptime()
         }
-      }, { status: 503 });
+      }, { status: 503 })
     }
 
     // Get cluster manager instance (would be injected in real implementation)
-    const clusterManager = globalThis.clusterManager;
+    const clusterManager = globalThis.clusterManager
     
     if (!clusterManager) {
       return json({
@@ -36,12 +36,12 @@ export const GET: RequestHandler = async ({ url }) => {
           uptime: process.uptime(),
           cpuUsage: process.cpuUsage()
         }
-      });
+      })
     }
 
     // Collect cluster health data
-    const health = await clusterManager.getHealth();
-    const workers = await clusterManager.getWorkerMetrics();
+    const health = await clusterManager.getHealth()
+    const workers = await clusterManager.getWorkerMetrics()
 
     return json({
       health,
@@ -54,10 +54,10 @@ export const GET: RequestHandler = async ({ url }) => {
         platform: process.platform,
         architecture: process.arch
       }
-    });
+    })
 
   } catch (error: any) {
-    console.error('Cluster status error:', error);
+    console.error('Cluster status error:', error)
     
     return json({
       error: 'Failed to get cluster status',
@@ -85,6 +85,6 @@ export const GET: RequestHandler = async ({ url }) => {
           uptime: process.uptime()
         }]
       }
-    }, { status: 200 });
+    }, { status: 200 })
   }
-};
+}

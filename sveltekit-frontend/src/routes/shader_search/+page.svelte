@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -49,11 +49,13 @@ https://svelte.dev/e/js_parse_error -->
   let availableTags = $state<string[]>([]);
   let availableOperations = $state<string[]>([]);
 
-  $effect(async () => {
-    if (!browser) return;
+  $effect(() => {
+    (async () => {
+if (!browser) return;
     await loadStats();
     await loadAvailableFilters();
     await performSearch(); // Initial search to show all shaders
+    })();
   });
 
   async function loadStats() {
@@ -62,9 +64,9 @@ https://svelte.dev/e/js_parse_error -->
       const data = await response.json();
       stats = {
         totalShaders: {
-          total: data.totalShaders.total,
-          webgpu: data.totalShaders.webgpu,
-          webgl: data.totalShaders.webgl
+          total: data.totalShaders.total,;
+          webgpu: data.totalShaders.webgpu,;
+          webgl: data.totalShaders.webgl;
         },
         topOperations: data.supportedOperations.map((op: string) => ({ operation: op, count: 0 })),
         averagePerformance: 0,
@@ -79,8 +81,8 @@ https://svelte.dev/e/js_parse_error -->
   async function loadAvailableFilters() {
     try {
       const response = await fetch('/api/shaders/unified', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ limit: 100 })
       });
       const data = await response.json();
@@ -101,18 +103,18 @@ https://svelte.dev/e/js_parse_error -->
     isSearching = true;
     try {
       const query: ShaderSearchQuery = {
-        text: searchQuery.trim() || undefined,
-        operation: selectedOperation || undefined,
+        text: searchQuery.trim() || undefined,;
+        operation: selectedOperation || undefined,;
         tags: selectedTags.length > 0 ? selectedTags : undefined,
         shaderType: selectedShaderType,
         sortBy,
-        limit
+        limit;
       };
 
       const response = await fetch('/api/shaders/unified', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(query)
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
+        body: JSON.stringify(query);
       });
 
       const data: SearchResponse = await response.json();
@@ -162,20 +164,20 @@ https://svelte.dev/e/js_parse_error -->
 
   function exportResults() {
     const exportData = {
-      query: searchMetadata?.query,
+      query: searchMetadata?.query,;
       results: searchResults.map(shader => ({
         id: shader.id,
         operation: shader.metadata.operation,
         description: shader.metadata.description,
         tags: shader.metadata.tags,
         relevanceScore: shader.relevanceScore,
-        embeddingSimilarity: shader.embeddingSimilarity,
+        embeddingSimilarity: shader.embeddingSimilarity,;
         performance: {
           usageCount: shader.metadata.usageCount,
           averageExecutionTime: shader.metadata.averageExecutionTime
         }
-      })),
-      timestamp: new Date().toISOString()
+      })),;
+      timestamp: new Date().toISOString();
     };
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
@@ -465,7 +467,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .container {
+  .container {;
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
@@ -492,7 +494,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     margin-bottom: 2rem;
   }
@@ -786,7 +788,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .shader-meta {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 0.5rem;
     margin-bottom: 1rem;
     font-size: 0.9rem;
@@ -893,7 +895,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .detail-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
   }
 

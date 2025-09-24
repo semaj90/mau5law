@@ -3,8 +3,8 @@
  * Provides HTTP interface for WASM-accelerated tensor processing via RabbitMQ
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 import {
   rabbitMQTensorIntegration,
   initializeIntegration,
@@ -12,31 +12,31 @@ import {
   getIntegrationStatus,
   WASM_SERVICE_PORTS,
   WASM_QUEUE_ROUTING
-} from '$lib/integrations/rabbitmq-tensor-integration.js';
+} from '$lib/integrations/rabbitmq-tensor-integration.js'
 import {
   readBodyFastWithMetrics,
   getSIMDStatus,
   benchmarkJSONParsing,
   simdMetrics
-} from '$lib/simd/simd-json-integration.js';
+} from '$lib/simd/simd-json-integration.js'
 
-// GET: Get integration status and health;
+// GET: Get integration status and health
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const action = url.searchParams.get('action');
+    const action = url.searchParams.get('action')
 
     switch (action) {
       case 'status':
-        const status = getIntegrationStatus();
+        const status = getIntegrationStatus()
         return json({
           success: true,
           data: status,
           timestamp: new Date().toISOString()
-        });
+        })
 
       case 'health':
-        const healthStatus = getIntegrationStatus();
-        const isHealthy = healthStatus.integrated && healthStatus.bridge.wasmReady;
+        const healthStatus = getIntegrationStatus()
+        const isHealthy = healthStatus.integrated && healthStatus.bridge.wasmReady
 
         return json({
             success: true,
@@ -47,56 +47,56 @@ export const GET: RequestHandler = async ({ url }) => {
               tensorWorker: healthStatus.tensorWorker,
               activeJobs: healthStatus.activeJobs
             }
-          },);
+          },
           {
             headers: {
               'X-Integration-Health': isHealthy ? 'healthy' : 'unhealthy',
               'Cache-Control': 'no-cache'
             }
           }
-        );
+        )
 
-      case 'ports':;
+      case 'ports':
         return json({
           success: true,
           data: {
             services: WASM_SERVICE_PORTS,
             description: 'Port configuration for WebAssembly services'
           }
-        });
+        })
 
-      case 'queues':;
+      case 'queues':
         return json({
           success: true,
           data: {
             routing: WASM_QUEUE_ROUTING,
             description: 'Queue routing for WASM-accelerated jobs'
           }
-        });
+        })
 
       case 'simd':
-        const simdStatus = getSIMDStatus();
+        const simdStatus = getSIMDStatus()
         return json({
           success: true,
           data: {
             simd: simdStatus,
             description: 'SIMD JSON parsing status and performance metrics'
           }
-        });
+        })
 
       case 'benchmark':
-        const benchmark = await benchmarkJSONParsing(1000);
+        const benchmark = await benchmarkJSONParsing(1000)
         return json({
           success: true,
           data: {
             benchmark,
             description: 'JSON parsing performance comparison (SIMD vs standard)'
           }
-        });
+        })
 
       default:
         // Default: Return comprehensive status
-        const fullStatus = getIntegrationStatus();
+        const fullStatus = getIntegrationStatus()
         return json({
           success: true,
           data: {
@@ -114,12 +114,12 @@ export const GET: RequestHandler = async ({ url }) => {
               normalize: 'POST /api/workers/rabbitmq/tensor (action: normalize)'
             }
           }
-        });
+        })
     }
   } catch (error: any) {
-    console.error('❌ RabbitMQ-Tensor API Error:', error);
+    console.error('❌ RabbitMQ-Tensor API Error:', error)
 
-    return json();
+    return json(
       {
         success: false,
         error: {
@@ -128,22 +128,22 @@ export const GET: RequestHandler = async ({ url }) => {
         }
       },
       { status: 500 }
-    );
+    )
   }
-};
+}
 
-// POST: Control integration operations and submit tensor jobs;
+// POST: Control integration operations and submit tensor jobs
 export const POST: RequestHandler = async ({ request }) => {
   try {
     // Use SIMD-accelerated JSON parsing for hot endpoint
-    const body = await readBodyFastWithMetrics(request);
-    const { action, ...payload } = body;
+    const body = await readBodyFastWithMetrics(request)
+    const { action, ...payload } = body
 
     switch (action) {
       case 'initialize':
-        console.log('🔗 Initializing RabbitMQ-Tensor Integration...');
+        console.log('🔗 Initializing RabbitMQ-Tensor Integration...')
 
-        const initialized = await initializeIntegration();
+        const initialized = await initializeIntegration()
 
         return json({
           success: initialized,
@@ -154,21 +154,21 @@ export const POST: RequestHandler = async ({ request }) => {
             initialized,
             status: getIntegrationStatus()
           }
-        });
+        })
 
       case 'submit_job':
-        const { jobType: submittedJobType, data, priority = 2 } = payload;
+        const { jobType: submittedJobType, data, priority = 2 } = payload
 
         if (!submittedJobType || !data) {
           return json({
               success: false,
               error: { message: 'jobType and data are required' }
-            },)
+            },
             { status: 400 }
-          );
+          )
         }
 
-        const jobId = await submitDirectTensorJob(submittedJobType, data, priority);
+        const jobId = await submitDirectTensorJob(submittedJobType, data, priority)
 
         return json({
           success: true,
@@ -179,22 +179,22 @@ export const POST: RequestHandler = async ({ request }) => {
             priority,
             submitted_at: new Date().toISOString()
           }
-        });
+        })
 
       case 'similarity':
-        const { queryVector, candidateVectors, algorithm = 'cosine' } = payload;
+        const { queryVector, candidateVectors, algorithm = 'cosine' } = payload
 
         if (!queryVector || !candidateVectors) {
           return json({
               success: false,
               error: { message: 'queryVector and candidateVectors are required' }
-            },)
+            },
             { status: 400 }
-          );
+          )
         }
 
         const similarityJobId = await submitDirectTensorJob(
-          'wasm_similarity_compute',);
+          'wasm_similarity_compute',
           {
             query: queryVector,
             vectors: candidateVectors,
@@ -213,29 +213,29 @@ export const POST: RequestHandler = async ({ request }) => {
             vectorCount: candidateVectors.length,
             queryDimensions: queryVector.length
           }
-        });
+        })
 
       case 'normalize':
-        const { vectors, batchProcess = false } = payload;
+        const { vectors, batchProcess = false } = payload
 
         if (!vectors || !Array.isArray(vectors)) {
           return json({
               success: false,
               error: { message: 'vectors array is required' }
-            },)
+            },
             { status: 400 }
-          );
+          )
         }
 
-        const normalizeJobType = batchProcess ? 'wasm_batch_normalize' : 'wasm_vector_operations';
+        const normalizeJobType = batchProcess ? 'wasm_batch_normalize' : 'wasm_vector_operations'
         const normalizeJobId = await submitDirectTensorJob(
-          normalizeJobType,);
+          normalizeJobType,
           {
             vectors,
             operation: batchProcess ? 'batch_process' : 'normalize'
           },
           2
-        );
+        )
 
         return json({
           success: true,
@@ -245,28 +245,28 @@ export const POST: RequestHandler = async ({ request }) => {
             vectorCount: vectors.length,
             batchProcess
           }
-        });
+        })
 
       case 'compress':
-        const { embeddings, compressionRatio = 0.5 } = payload;
+        const { embeddings, compressionRatio = 0.5 } = payload
 
         if (!embeddings) {
           return json({
               success: false,
               error: { message: 'embeddings are required' }
-            },)
+            },
             { status: 400 }
-          );
+          )
         }
 
         const compressJobId = await submitDirectTensorJob(
-          'wasm_embedding_compress',);
+          'wasm_embedding_compress',
           {
             vectors: [embeddings],
             operation: 'compress'
           },
           1
-        );
+        )
 
         return json({
           success: true,
@@ -276,18 +276,18 @@ export const POST: RequestHandler = async ({ request }) => {
             originalSize: embeddings.length,
             compressionRatio
           }
-        });
+        })
 
       case 'benchmark':
         // Run performance benchmark comparing WASM vs JS
         const benchmarkVectors = Array.from({ length: 100 }, () =>
-          Array.from({ length: 768 }, () => Math.random()
-        );
+          Array.from({ length: 768 }, () => Math.random())
+        )
 
-        const benchmarkQuery = Array.from({ length: 768 }, () => Math.random();
+        const benchmarkQuery = Array.from({ length: 768 }, () => Math.random())
 
         const benchmarkJobId = await submitDirectTensorJob(
-          'wasm_similarity_compute',);
+          'wasm_similarity_compute',
           {
             query: benchmarkQuery,
             vectors: benchmarkVectors,
@@ -295,7 +295,7 @@ export const POST: RequestHandler = async ({ request }) => {
             algorithm: 'cosine'
           },
           1
-        );
+        )
 
         return json({
           success: true,
@@ -306,20 +306,20 @@ export const POST: RequestHandler = async ({ request }) => {
             dimensions: benchmarkQuery.length,
             benchmarkType: 'similarity_performance'
           }
-        });
+        })
 
-      default:;
+      default:
         return json({
             success: false,
             error: { message: `Unknown action: ${action}` }
-          },)
+          },
           { status: 400 }
-        );
+        )
     }
   } catch (error: any) {
-    console.error('❌ RabbitMQ-Tensor POST Error:', error);
+    console.error('❌ RabbitMQ-Tensor POST Error:', error)
 
-    return json();
+    return json(
       {
         success: false,
         error: {
@@ -328,17 +328,17 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       },
       { status: 500 }
-    );
+    )
   }
-};
+}
 
-// PUT: Update integration configuration;
+// PUT: Update integration configuration
 export const PUT: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json();
-    const { config } = body;
+    const body = await request.json()
+    const { config } = body
 
-    // For future implementation: Update integration configuration;
+    // For future implementation: Update integration configuration
     return json({
       success: true,
       message: 'Integration configuration update received',
@@ -347,11 +347,11 @@ export const PUT: RequestHandler = async ({ request }) => {
         note: 'Configuration updates will be implemented in future version',
         timestamp: new Date().toISOString()
       }
-    });
+    })
   } catch (error: any) {
-    console.error('❌ RabbitMQ-Tensor PUT Error:', error);
+    console.error('❌ RabbitMQ-Tensor PUT Error:', error)
 
-    return json();
+    return json(
       {
         success: false,
         error: {
@@ -360,18 +360,18 @@ export const PUT: RequestHandler = async ({ request }) => {
         }
       },
       { status: 500 }
-    );
+    )
   }
-};
+}
 
-// DELETE: Shutdown integration or clear jobs;
+// DELETE: Shutdown integration or clear jobs
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
-    const action = url.searchParams.get('action');
+    const action = url.searchParams.get('action')
 
     switch (action) {
       case 'shutdown':
-        await rabbitMQTensorIntegration.shutdown();
+        await rabbitMQTensorIntegration.shutdown()
 
         return json({
           success: true,
@@ -379,30 +379,30 @@ export const DELETE: RequestHandler = async ({ url }) => {
           data: {
             shutdown_at: new Date().toISOString()
           }
-        });
+        })
 
       case 'clear_cache':
-        // Future implementation: Clear WASM result cache;
+        // Future implementation: Clear WASM result cache
         return json({
           success: true,
           message: 'Tensor cache clearing initiated (simulation)',
           data: {
             cleared_at: new Date().toISOString()
           }
-        });
+        })
 
-      default:;
+      default:
         return json({
             success: false,
             error: { message: 'Action required for DELETE operation' }
-          },)
+          },
           { status: 400 }
-        );
+        )
     }
   } catch (error: any) {
-    console.error('❌ RabbitMQ-Tensor DELETE Error:', error);
+    console.error('❌ RabbitMQ-Tensor DELETE Error:', error)
 
-    return json();
+    return json(
       {
         success: false,
         error: {
@@ -411,6 +411,6 @@ export const DELETE: RequestHandler = async ({ url }) => {
         }
       },
       { status: 500 }
-    );
+    )
   }
-};
+}

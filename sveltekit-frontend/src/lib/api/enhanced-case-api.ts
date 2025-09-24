@@ -53,7 +53,7 @@ export interface WorkerTriggerResponse {
     action: string;
     caseId?: string;
   };
-  metadata: {
+  metadata: {;
     timestamp: string;
     worker: string;
     version: string;
@@ -75,7 +75,7 @@ export class EnhancedCaseAPI {
         metadata: {
           createdVia: 'yorha-command-center',
           formVersion: '2.0',
-          workflowStep: 'case-creation',
+          workflowStep: 'case-creation',;
           timestamp: new Date().toISOString(),
           ...data.metadata
         }
@@ -104,7 +104,7 @@ export class EnhancedCaseAPI {
       console.error('❌ Enhanced case creation failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message: String(error),
+        error: error instanceof Error ? error.message: String(error),;
         data: undefined
       };
     }
@@ -134,7 +134,7 @@ export class EnhancedCaseAPI {
           timestamp: new Date().toISOString(),
           formMetadata: {
             // These fields are not in the CaseForm schema, using defaults
-            location: 'not_specified',
+            location: 'not_specified',;
             jurisdiction: 'not_specified',
             clientName: 'not_specified',
             assignedTo: formData.assignedTo
@@ -154,7 +154,7 @@ export class EnhancedCaseAPI {
       console.error('❌ Worker trigger failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message: String(error),
+        error: error instanceof Error ? error.message: String(error),;
         data: undefined
       };
     }
@@ -205,7 +205,7 @@ export class EnhancedCaseAPI {
       ...updates,
       metadata: {
         updatedVia: 'yorha-command-center',
-        workflowStep: 'case-update',
+        workflowStep: 'case-update',;
         timestamp: new Date().toISOString(),
         ...updates.metadata
       }
@@ -272,7 +272,7 @@ export class EnhancedCaseAPI {
   }>> {
     return restClient.post('/cases/cluster', {
       ...params,
-      algorithm: params.algorithm || 'kmeans',
+      algorithm: params.algorithm || 'kmeans',;
       k: params.k || 5
     });
   }

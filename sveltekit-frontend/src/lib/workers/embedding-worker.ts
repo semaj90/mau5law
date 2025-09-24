@@ -86,13 +86,13 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         
         this.postResponse({
           id,
-          success: true,
+          success: true,;
           data: result
         });
       } catch (error: any) {
         this.postResponse({
           id,
-          success: false,
+          success: false,;
           error: error instanceof Error ? error.message: 'Unknown error'
         });
       }
@@ -121,7 +121,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           this.postResponse({
             id: taskId,
             success: true,
-            progress: Math.round((processed / texts.length) * 100),
+            progress: Math.round((processed / texts.length) * 100),;
             data: { processed, total: texts.length }
           });
           
@@ -131,7 +131,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           batch.forEach((text, index) => {
             errors.push({
               index: i + index,
-              content: text.substring(0, 100) + '...',
+              content: text.substring(0, 100) + '...',;
               error: error instanceof Error ? error.message: 'Unknown error'
             });
           });
@@ -165,7 +165,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           id: this.generateId(),
           content: chunk,
           metadata: {
-            ...metadata,
+            ...metadata,;
             source: metadata?.source || 'unknown',
             chunkIndex: index,
             totalChunks: chunks.length,
@@ -179,7 +179,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           this.postResponse({
             id: taskId,
             success: true,
-            progress: Math.round((index / chunks.length) * 100),
+            progress: Math.round((index / chunks.length) * 100),;
             data: { processed: index, total: chunks.length }
           });
         }
@@ -205,7 +205,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           this.postResponse({
             id: taskId,
             success: true,
-            progress: Math.round((i / targetEmbeddings.length) * 100),
+            progress: Math.round((i / targetEmbeddings.length) * 100),;
             data: { processed: i, total: targetEmbeddings.length }
           });
         }
@@ -238,7 +238,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       return texts.map((text: any) => ({
         id: this.generateId(),
         embedding: new Array(dimensions).fill(0).map(() => Math.random() - 0.5),
-        content: text,
+        content: text,;
         metadata: {
           tokenCount: Math.ceil(text.length / 4),
           processingTime: Math.random() * 100
@@ -582,7 +582,7 @@ export class EmbeddingWorkerManager {
   }
   
   public async processGeneral(
-    data: any,
+    data: any,;
     options: any,
     onProgress?: (progress: number, data?: unknown) => void
   ): Promise<any> {
@@ -590,7 +590,7 @@ export class EmbeddingWorkerManager {
   }
   
   private async executeTask(
-    type: WorkerMessage['type'],
+    type: WorkerMessage['type'],;
     data: any,
     onProgress?: (progress: number, data?: unknown) => void,
     options?: unknown

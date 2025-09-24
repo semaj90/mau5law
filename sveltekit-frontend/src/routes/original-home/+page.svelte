@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -10,8 +10,9 @@ https://svelte.dev/e/js_parse_error -->
   import { browser } from '$app/environment';
   let recentCases: unknown[] = $state([]);
   let heroText = $state("Advanced Legal Case Management");
-  $effect(async () => {
-    // Load recent cases
+  $effect(() => {
+    (async () => {
+// Load recent cases
     try {
       const casesRes = await fetch('/api/cases/recent');
       if (casesRes.ok) {
@@ -30,7 +31,8 @@ https://svelte.dev/e/js_parse_error -->
           if (e.key === 'Enter') {
             handleAiSearch(aiSearchInputEl.value);
   }
-        });
+    })();
+  });
   }}
   });
   function handleQuickUpload(files: unknown) {

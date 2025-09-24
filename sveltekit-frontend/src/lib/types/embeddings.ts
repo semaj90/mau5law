@@ -63,7 +63,7 @@ export interface WASMEmbeddingConfig {
 export interface BatchEmbeddingResponse {
   success: boolean;
   results: Array<any>;
-  summary: {
+  summary: {;
     total: number;
     successful: number;
     failed: number;

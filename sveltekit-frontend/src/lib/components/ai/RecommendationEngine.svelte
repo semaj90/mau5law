@@ -103,7 +103,7 @@
     try {
       // Use new integrated legal recommendation engine
       const response = await fetch(`http://localhost:8095/api/v1/cases`, {
-        method: 'GET',
+        method: 'GET',;
         headers: {
           'Content-Type': 'application/json'
         }
@@ -123,7 +123,7 @@
     
     try {
       const response = await fetch(`/api/ai/recommendations/context?type=${contextType}&id=${contextId}`, {
-        method: 'GET',
+        method: 'GET',;
         headers: {
           'Content-Type': 'application/json'
         }
@@ -143,18 +143,18 @@
     try {
       const request = {
         query: contextId || 'legal case analysis',
-        case_id: contextId,
+        case_id: contextId,;
         jurisdiction: 'Federal',
-        practice_area: categoryFilter === 'all' ? 'Contract Law' : categoryFilter,
-        limit: 10
+        practice_area: categoryFilter === 'all' ? 'Contract Law' : categoryFilter,;
+        limit: 10;
       };
 
       const response = await fetch('http://localhost:8095/api/v1/recommend', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(request)
+        },;
+        body: JSON.stringify(request);
       });
       
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
@@ -170,7 +170,7 @@
           confidence: Math.round(rec.relevance * 100),
           impact: Math.round(rec.relevance * 100),
           effort: Math.round((1 - rec.relevance) * 100),
-          timeframe: 'short_term',
+          timeframe: 'short_term',;
           rationale: `Legal precedent analysis for ${rec.practice_area} case`,
           steps: [{
             id: '1',
@@ -179,15 +179,15 @@
             estimated_duration: '2-3 hours',
             required_resources: ['Legal database access'],
             dependencies: [],
-            completion_criteria: 'Case analysis completed'
+            completion_criteria: 'Case analysis completed';
           }],
           resources: [],
           risks: [],
-          alternatives: [],
+          alternatives: [],;
           dependencies: [],
           success_metrics: [],
-          estimated_completion: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-          tags: [rec.jurisdiction, rec.practice_area].filter(Boolean)
+          estimated_completion: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),;
+          tags: [rec.jurisdiction, rec.practice_area].filter(Boolean);
         }));
       } else {
         throw new Error(`Generation failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
@@ -203,7 +203,7 @@
     try {
       // Get detailed case information from legal recommendation engine
       const response = await fetch(`http://localhost:8095/api/v1/cases/${recommendationId}`, {
-        method: 'GET',
+        method: 'GET',;
         headers: {
           'Content-Type': 'application/json'
         }
@@ -681,7 +681,7 @@
 </Dialog.Root>
 
 <style>
-  .recommendation-engine {
+  .recommendation-engine {;
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
@@ -925,7 +925,7 @@
     padding-left: 1.5rem;
   }
 
-  .step-item: :before {
+  .step-item::before {
     content: counter(step-counter);
     position: absolute;
     left: 0;

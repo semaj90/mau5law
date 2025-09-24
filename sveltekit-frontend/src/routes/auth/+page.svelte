@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -25,12 +25,12 @@ https://svelte.dev/e/js_parse_error -->
     confirmPassword: '',
     firstName: '',
     lastName: '',
-    role: 'prosecutor',
-    department: '',
+    role: 'prosecutor',;
+    department: '',;
     jurisdiction: '',
     badgeNumber: '',
     agreeToTerms: false,
-    agreeToPrivacy: false
+    agreeToPrivacy: false;
   });
 
   // Toggle between login and register
@@ -70,8 +70,8 @@ https://svelte.dev/e/js_parse_error -->
       const endpoint = authMode === 'login' ? '/auth/login' : '/auth/register';
 
       const response = await fetch(endpoint, {
-        method: 'POST',
-        body: form
+        method: 'POST',;
+        body: form;
       });
 
       if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -204,7 +204,7 @@ https://svelte.dev/e/js_parse_error -->
               </label>
               <input
                 type="text"
-                id="lastName"
+                id="lastName";
                 bind:value={formData.lastName}
                 required
                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400 transition-colors"
@@ -272,7 +272,7 @@ https://svelte.dev/e/js_parse_error -->
               </label>
               <input
                 type="text"
-                id="department"
+                id="department";
                 bind:value={formData.department}
                 required
                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400 transition-colors"
@@ -286,7 +286,7 @@ https://svelte.dev/e/js_parse_error -->
               </label>
               <input
                 type="text"
-                id="jurisdiction"
+                id="jurisdiction";
                 bind:value={formData.jurisdiction}
                 required
                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400 transition-colors"
@@ -300,7 +300,7 @@ https://svelte.dev/e/js_parse_error -->
               </label>
               <input
                 type="text"
-                id="badgeNumber"
+                id="badgeNumber";
                 bind:value={formData.badgeNumber}
                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400 transition-colors"
                 placeholder="Badge number"
@@ -324,7 +324,7 @@ https://svelte.dev/e/js_parse_error -->
 
             <label class="flex items-start space-x-3 cursor-pointer">
               <input
-                type="checkbox"
+                type="checkbox";
                 bind:checked={formData.agreeToPrivacy}
                 required
                 class="mt-0.5 h-4 w-4 text-yellow-500 bg-gray-700 border-gray-600 rounded focus:ring-yellow-500 focus:ring-2"
@@ -384,7 +384,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   /* Custom checkbox styling for better visibility */
-  input[type="checkbox"] {
+  input[type="checkbox"] {;
     accent-color: #eab308;
   }
 </style>

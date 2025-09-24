@@ -75,7 +75,7 @@ class WebGPUCudaBridge {
 			console.log('GPU Device:', {
 				vendor: adapter.info?.vendor || 'Unknown',
 				architecture: adapter.info?.architecture || 'Unknown',
-				device: adapter.info?.device || 'Unknown',
+				device: adapter.info?.device || 'Unknown',;
 				description: adapter.info?.description || 'Unknown'
 			});
 
@@ -152,7 +152,7 @@ class WebGPUCudaBridge {
 			self.postMessage({
 				type: 'task-complete',
 				taskId: task.id,
-				result,
+				result,;
 				timestamp: new Date().toISOString()
 			});
 
@@ -164,7 +164,7 @@ class WebGPUCudaBridge {
 			self.postMessage({
 				type: 'task-error',
 				taskId: task.id,
-				error: error instanceof Error ? error.message: String(error),
+				error: error instanceof Error ? error.message: String(error),;
 				timestamp: new Date().toISOString()
 			});
 		} finally {
@@ -237,12 +237,12 @@ class WebGPUCudaBridge {
 
 		// Create buffers
 		const inputBuffer = device.createBuffer({
-			size: inputArray.byteLength,
+			size: inputArray.byteLength,;
 			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
 		});
 
 		const outputBuffer = device.createBuffer({
-			size: outputArray.byteLength,
+			size: outputArray.byteLength,;
 			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
 		});
 
@@ -254,7 +254,7 @@ class WebGPUCudaBridge {
 		]);
 
 		const configBuffer = device.createBuffer({
-			size: configArray.byteLength,
+			size: configArray.byteLength,;
 			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
 		});
 
@@ -277,7 +277,7 @@ class WebGPUCudaBridge {
 				},
 				{
 					binding: 2,
-					visibility: GPUShaderStage.COMPUTE,
+					visibility: GPUShaderStage.COMPUTE,;
 					buffer: { type: 'uniform' }
 				}
 			]
@@ -285,7 +285,7 @@ class WebGPUCudaBridge {
 
 		// Create bind group
 		const bindGroup = device.createBindGroup({
-			layout: bindGroupLayout,
+			layout: bindGroupLayout,;
 			entries: [
 				{ binding: 0, resource: { buffer: inputBuffer } },
 				{ binding: 1, resource: { buffer: outputBuffer } },
@@ -298,7 +298,7 @@ class WebGPUCudaBridge {
 			layout: device.createPipelineLayout({
 				bindGroupLayouts: [bindGroupLayout]
 			}),
-			compute: {
+			compute: {;
 				module: shaderModule,
 				entryPoint: 'main'
 			}
@@ -315,7 +315,7 @@ class WebGPUCudaBridge {
 
 		// Copy result buffer to staging buffer
 		const stagingBuffer = device.createBuffer({
-			size: outputArray.byteLength,
+			size: outputArray.byteLength,;
 			usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
 		});
 
@@ -348,7 +348,7 @@ class WebGPUCudaBridge {
 					model: config?.model || 'gemma3-legal',
 					prompt: config.prompt || 'Analyze the provided legal document.',
 					stream: false,
-					options: {
+					options: {;
 						temperature: config.temperature || 0.7,
 						top_p: config.top_p || 0.9,
 						top_k: config.top_k || 40
@@ -382,7 +382,7 @@ class WebGPUCudaBridge {
 					enable_grpo: config.enable_grpo || true,
 					legal_domain: config.legal_domain || 'general',
 					user_id: config.user_id,
-					session_id: config.session_id,
+					session_id: config.session_id,;
 					metadata: {
 						webgpu_bridge: true,
 						data_length: data instanceof Float32Array ? (data as { length?: any; byteLength?: any }).length: (data as { length?: any; byteLength?: any }).byteLength,
@@ -397,7 +397,7 @@ class WebGPUCudaBridge {
 
 			const result = await (response as { ok?: any; status?: any; json?: any }).json();
 			return { 
-				source: 'cuda-enhanced-server', 
+				source: 'cuda-enhanced-server', ;
 				result: (result as { response?: any; confidence?: any; processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any; grpo?: any; thinking_content?: any; embedding?: any; matches?: any }).response,
 				confidence: (result as { response?: any; confidence?: any; processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any; grpo?: any; thinking_content?: any; embedding?: any; matches?: any }).confidence,
 				processing_time_ms: (result as { response?: any; confidence?: any; processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any; grpo?: any; thinking_content?: any; embedding?: any; matches?: any }).processing_time_ms,
@@ -422,7 +422,7 @@ class WebGPUCudaBridge {
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					model: config?.model || 'nomic-embed-text',
-					prompt: config.text || config.prompt,
+					prompt: config.text || config.prompt,;
 					options: config.options || {}
 				})
 			});
@@ -441,7 +441,7 @@ class WebGPUCudaBridge {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
 				query_vector: config.query_vector || new Array(768).fill(0.1),
-				top_k: config.top_k || 10,
+				top_k: config.top_k || 10,;
 				threshold: config.threshold || 0.5,
 				legal_domain: config.legal_domain || 'general',
 				include_metadata: true
@@ -454,7 +454,7 @@ class WebGPUCudaBridge {
 
 		const result = await (response as { ok?: any; status?: any; json?: any }).json();
 		return { 
-			source: 'cuda-enhanced-server', 
+			source: 'cuda-enhanced-server', ;
 			embeddings: (result as { response?: any; confidence?: any; processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any; grpo?: any; thinking_content?: any; embedding?: any; matches?: any }).matches,
 			processing_time_ms: (result as { response?: any; confidence?: any; processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any; grpo?: any; thinking_content?: any; embedding?: any; matches?: any }).processing_time_ms,
 			gpu_metrics: (result as { response?: any; confidence?: any; processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any; grpo?: any; thinking_content?: any; embedding?: any; matches?: any }).gpu_metrics
@@ -542,7 +542,7 @@ class WebGPUCudaBridge {
 				vendor: this.webgpuDevice.adapter.info?.vendor || 'Unknown',
 				architecture: this.webgpuDevice.adapter.info?.architecture || 'Unknown'
 			} : null,
-			endpoints: {
+			endpoints: {;
 				ollama: this.ollamaEndpoint,
 				cudaService: this.cudaServiceEndpoint
 			}
@@ -576,7 +576,7 @@ self.onmessage = async (event: MessageEvent<WebGPUCudaBridgeMessage>) => {
 				self.postMessage({
 					type: 'init-complete',
 					requestId,
-					success: initialized,
+					success: initialized,;
 					status: bridge.getStatus()
 				});
 				break;
@@ -593,7 +593,7 @@ self.onmessage = async (event: MessageEvent<WebGPUCudaBridgeMessage>) => {
 			case 'status':
 				self.postMessage({
 					type: 'status-response',
-					requestId,
+					requestId,;
 					status: bridge.getStatus()
 				});
 				break;
@@ -612,7 +612,7 @@ self.onmessage = async (event: MessageEvent<WebGPUCudaBridgeMessage>) => {
 	} catch (error) {
 		self.postMessage({
 			type: 'error',
-			requestId,
+			requestId,;
 			error: error instanceof Error ? error.message: String(error)
 		});
 	}

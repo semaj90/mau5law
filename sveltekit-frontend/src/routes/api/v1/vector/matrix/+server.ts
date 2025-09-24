@@ -3,111 +3,111 @@
  * Handles matrix computations, batch operations, and parallel processing
  */
 
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { getCudaServiceUrl } from '$lib/config/pgvector-gpu-config.js';
+import { json, error } from '@sveltejs/kit'
+import type { RequestHandler } from './$types'
+import { getCudaServiceUrl } from '$lib/config/pgvector-gpu-config.js'
 
 interface MatrixOperation {
-  operation: 'multiply' | 'transpose' | 'inverse' | 'eigenvalues' | 'svd' | 'qr' | 'cholesky';
-  matrixA: number[][];
-  matrixB?: number[][];
+  operation: 'multiply' | 'transpose' | 'inverse' | 'eigenvalues' | 'svd' | 'qr' | 'cholesky'
+  matrixA: number[][]
+  matrixB?: number[][]
   options?: {
-    useCUDA?: boolean;
-    parallel?: boolean;
-    precision?: 'float32' | 'float64';
-    batchSize?: number;
-    workers?: number;
-  };
+    useCUDA?: boolean
+    parallel?: boolean
+    precision?: 'float32' | 'float64'
+    batchSize?: number
+    workers?: number
+  }
 }
 
 interface MatrixBatchOperation {
-  operation: 'batch_multiply' | 'batch_similarity' | 'batch_normalize' | 'batch_transform';
-  matrices: number[][][];
-  transformMatrix?: number[][];
+  operation: 'batch_multiply' | 'batch_similarity' | 'batch_normalize' | 'batch_transform'
+  matrices: number[][][]
+  transformMatrix?: number[][]
   options?: {
-    useCUDA?: boolean;
-    parallel?: boolean;
-    maxParallelWorkers?: number;
-    chunkSize?: number;
-  };
+    useCUDA?: boolean
+    parallel?: boolean
+    maxParallelWorkers?: number
+    chunkSize?: number
+  }
 }
 
 interface MatrixResponse {
-  success: boolean;
-  result: number[][] | number[][][] | number[];
+  success: boolean
+  result: number[][] | number[][][] | number[]
   metadata: {
-    operation: string;
-    inputShape: number[];
-    outputShape: number[];
-    processingTime: number;
-    usedCUDA: boolean;
-    parallelWorkers: number;
-    memoryUsed: number;
+    operation: string
+    inputShape: number[]
+    outputShape: number[]
+    processingTime: number
+    usedCUDA: boolean
+    parallelWorkers: number
+    memoryUsed: number
     flops?: number; // Floating point operations count
-    matrixComplexity?: number;
-    totalApiTime?: number;
-    requestId?: string;
-  };
-  clientOptimizations?: Record<string, unknown>;
+    matrixComplexity?: number
+    totalApiTime?: number
+    requestId?: string
+  }
+  clientOptimizations?: Record<string, unknown>
 }
 
 export const POST: RequestHandler = async ({ request, url }) => {
-  const startTime = performance.now();
-  const requestId = `mtx_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const startTime = performance.now()
+  const requestId = `mtx_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
   try {
-    const endpoint = url.pathname.split('/').pop();
+    const endpoint = url.pathname.split('/').pop()
 
     if (endpoint === 'matrix') {
-      return await handleMatrixOperation(request, requestId, startTime);
+      return await handleMatrixOperation(request, requestId, startTime)
     } else if (endpoint === 'batch') {
-      return await handleBatchOperation(request, requestId, startTime);
+      return await handleBatchOperation(request, requestId, startTime)
     } else {
-      throw error(404, 'Unknown matrix endpoint');
+      throw error(404, 'Unknown matrix endpoint')
     }
   } catch (err) {
-    console.error('Matrix API error:', err);
-    throw error(500, `Matrix operation failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    console.error('Matrix API error:', err)
+    throw error(500, `Matrix operation failed: ${err instanceof Error ? err.message : 'Unknown error'}`)
   }
-};
+}
 
 async function handleMatrixOperation(request: Request, requestId: string, apiStartTime: number): Promise<Response> {
-  const startTime = Date.now();
-  const body: MatrixOperation = await request.json();
+  const startTime = Date.now()
+  const body: MatrixOperation = await request.json()
 
-  const { operation, matrixA, matrixB, options = {} } = body;
+  const { operation, matrixA, matrixB, options = {} } = body
 
-  const { useCUDA = true, parallel = true, precision = 'float32', workers = 8 } = options;
+  const { useCUDA = true, parallel = true, precision = 'float32', workers = 8 } = options
 
   if (!matrixA || matrixA.length === 0) {
-    throw error(400, 'matrixA is required and cannot be empty');
+    throw error(400, 'matrixA is required and cannot be empty')
   }
 
   // Validate matrix dimensions
-  const rowsA = matrixA.length;
-  const colsA = matrixA[0]?.length || 0;
+  const rowsA = matrixA.length
+  const colsA = matrixA[0]?.length || 0
 
   if (matrixA.some(row => row.length !== colsA)) {
-    throw error(400, 'matrixA must have consistent row lengths');
+    throw error(400, 'matrixA must have consistent row lengths')
   }
 
-  let result: number[][] | number[];
-  let flops = 0;
-  let memoryUsed = 0;
-  let parallelWorkers = 1;
+  let result: number[][] | number[]
+  let flops = 0
+  let memoryUsed = 0
+  let parallelWorkers = 1
 
   // Enhanced routing with tensor core optimization
-  const matrixComplexity = calculateMatrixComplexity(operation, rowsA, colsA, matrixB);
+  const matrixComplexity = calculateMatrixComplexity(operation, rowsA, colsA, matrixB)
   const shouldUseCUDA =
     useCUDA &&
     parallel &&
     (matrixComplexity > 50 ||
       operation === 'multiply' ||
       rowsA * colsA > 10000 ||
-      (matrixB && matrixB.length * matrixB[0].length > 10000));
+      (matrixB && matrixB.length * matrixB[0].length > 10000))
 
   if (shouldUseCUDA) {
-    // Route to CUDA service with tensor core acceleration;
+    // Route to CUDA service with tensor core acceleration
     const cudaResult = await processCUDAMatrixOperation({
       operation,
       matrixA,
@@ -116,29 +116,29 @@ async function handleMatrixOperation(request: Request, requestId: string, apiSta
       workers,
       requestId,
       complexity: matrixComplexity,
-    });
+    })
 
-    result = cudaResult.result;
-    flops = cudaResult.flops;
-    memoryUsed = cudaResult.memoryUsed;
-    parallelWorkers = cudaResult.parallelWorkers;
+    result = cudaResult.result
+    flops = cudaResult.flops
+    memoryUsed = cudaResult.memoryUsed
+    parallelWorkers = cudaResult.parallelWorkers
   } else {
-    // Fallback to CPU processing;
+    // Fallback to CPU processing
     result = await processCPUMatrixOperation({
       operation,
       matrixA,
       matrixB,
       precision,
-    });
+    })
 
     // Estimate FLOPS for CPU operations
-    flops = estimateFLOPS(operation, rowsA, colsA, matrixB);
+    flops = estimateFLOPS(operation, rowsA, colsA, matrixB)
   }
 
-  const processingTime = Date.now() - startTime;
+  const processingTime = Date.now() - startTime
 
-  const clientHints = generateMatrixClientHints(operation, rowsA, colsA, matrixComplexity);
-  const totalApiTime = performance.now() - apiStartTime;
+  const clientHints = generateMatrixClientHints(operation, rowsA, colsA, matrixComplexity)
+  const totalApiTime = performance.now() - apiStartTime
 
   const response: MatrixResponse = {
     success: true,
@@ -181,58 +181,58 @@ async function handleMatrixOperation(request: Request, requestId: string, apiSta
           }
         : undefined,
     },
-  };
+  }
 
-  return json(response);
+  return json(response)
 }
 
 async function handleBatchOperation(request: Request, _requestId: string, _apiStartTime: number): Promise<Response> {
-  const startTime = Date.now();
-  const body: MatrixBatchOperation = await request.json();
+  const startTime = Date.now()
+  const body: MatrixBatchOperation = await request.json()
 
-  const { operation, matrices, transformMatrix, options = {} } = body;
+  const { operation, matrices, transformMatrix, options = {} } = body
 
-  const { useCUDA = true, parallel = true, maxParallelWorkers = 8, chunkSize = 10 } = options;
+  const { useCUDA = true, parallel = true, maxParallelWorkers = 8, chunkSize = 10 } = options
 
   if (!matrices || matrices.length === 0) {
-    throw error(400, 'matrices array is required and cannot be empty');
+    throw error(400, 'matrices array is required and cannot be empty')
   }
 
-  let result: number[][][];
-  let totalFlops = 0;
-  let memoryUsed = 0;
-  let parallelWorkers = 1;
+  let result: number[][][]
+  let totalFlops = 0
+  let memoryUsed = 0
+  let parallelWorkers = 1
 
   if (useCUDA && parallel) {
-    // Route to CUDA service for GPU batch processing;
+    // Route to CUDA service for GPU batch processing
     const cudaResult = await processCUDABatchOperation({
       operation,
       matrices,
       transformMatrix,
       maxParallelWorkers,
       chunkSize,
-    });
+    })
 
-    result = cudaResult.result;
-    totalFlops = cudaResult.flops;
-    memoryUsed = cudaResult.memoryUsed;
-    parallelWorkers = cudaResult.parallelWorkers;
+    result = cudaResult.result
+    totalFlops = cudaResult.flops
+    memoryUsed = cudaResult.memoryUsed
+    parallelWorkers = cudaResult.parallelWorkers
   } else {
-    // Fallback to CPU batch processing;
+    // Fallback to CPU batch processing
     result = await processCPUBatchOperation({
       operation,
       matrices,
       transformMatrix,
       chunkSize,
-    });
+    })
 
-    // Estimate total FLOPS for batch operations;
+    // Estimate total FLOPS for batch operations
     totalFlops = matrices.reduce((acc, matrix) => {
-      return acc + estimateFLOPS(operation.replace('batch_', ''), matrix.length, matrix[0]?.length || 0);
-    }, 0);
+      return acc + estimateFLOPS(operation.replace('batch_', ''), matrix.length, matrix[0]?.length || 0)
+    }, 0)
   }
 
-  const processingTime = Date.now() - startTime;
+  const processingTime = Date.now() - startTime
 
   const response: MatrixResponse = {
     success: true,
@@ -247,25 +247,25 @@ async function handleBatchOperation(request: Request, _requestId: string, _apiSt
       memoryUsed,
       flops: totalFlops,
     },
-  };
+  }
 
-  return json(response);
+  return json(response)
 }
 
 async function processCUDAMatrixOperation(params: {
-  operation: string;
-  matrixA: number[][];
-  matrixB?: number[][];
-  precision: string;
-  workers: number;
-  requestId: string;
-  complexity: number;
+  operation: string
+  matrixA: number[][]
+  matrixB?: number[][]
+  precision: string
+  workers: number
+  requestId: string
+  complexity: number
 }): Promise<{ result: number[][] | number[]; flops: number; memoryUsed: number; parallelWorkers: number }> {
-  const { operation, matrixA, matrixB, precision, workers, requestId, complexity } = params;
+  const { operation, matrixA, matrixB, precision, workers, requestId, complexity } = params
 
-  const cudaUrl = getCudaServiceUrl('submit');
+  const cudaUrl = getCudaServiceUrl('submit')
 
-  // Enhanced tensor core optimized payload;
+  // Enhanced tensor core optimized payload
   const payload = {
     type: 'matrix_operation',
     operation,
@@ -307,7 +307,7 @@ async function processCUDAMatrixOperation(params: {
       optimal_block_size: [16, 16],
       memory_bandwidth_gbps: 448,
     },
-  };
+  }
 
   const response = await fetch(cudaUrl, {
     method: 'POST',
@@ -315,32 +315,32 @@ async function processCUDAMatrixOperation(params: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(payload),
-  });
+  })
 
   if (!response.ok) {
-    throw new Error(`CUDA matrix service error: ${response.statusText}`);
+    throw new Error(`CUDA matrix service error: ${response.statusText}`)
   }
 
-  const result = await response.json();
+  const result = await response.json()
 
   return {
     result: result.matrix || result.result || [],
     flops: result.flops || 0,
     memoryUsed: result.memory_used || 0,
     parallelWorkers: result.parallel_workers || 1,
-  };
+  }
 }
 
 async function processCUDABatchOperation(params: {
-  operation: string;
-  matrices: number[][][];
-  transformMatrix?: number[][];
-  maxParallelWorkers: number;
-  chunkSize: number;
+  operation: string
+  matrices: number[][][]
+  transformMatrix?: number[][]
+  maxParallelWorkers: number
+  chunkSize: number
 }): Promise<{ result: number[][][]; flops: number; memoryUsed: number; parallelWorkers: number }> {
-  const { operation, matrices, transformMatrix, maxParallelWorkers, chunkSize } = params;
+  const { operation, matrices, transformMatrix, maxParallelWorkers, chunkSize } = params
 
-  const cudaUrl = getCudaServiceUrl('submit');
+  const cudaUrl = getCudaServiceUrl('submit')
 
   const payload = {
     type: 'matrix_batch_operation',
@@ -356,7 +356,7 @@ async function processCUDABatchOperation(params: {
       parallel_workers: maxParallelWorkers,
       batch_processing: true,
     },
-  };
+  }
 
   const response = await fetch(cudaUrl, {
     method: 'POST',
@@ -364,247 +364,247 @@ async function processCUDABatchOperation(params: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(payload),
-  });
+  })
 
   if (!response.ok) {
-    throw new Error(`CUDA batch matrix service error: ${response.statusText}`);
+    throw new Error(`CUDA batch matrix service error: ${response.statusText}`)
   }
 
-  const result = await response.json();
+  const result = await response.json()
 
   return {
     result: result.matrices || result.result || [],
     flops: result.total_flops || 0,
     memoryUsed: result.memory_used || 0,
     parallelWorkers: result.parallel_workers || 1,
-  };
+  }
 }
 
 async function processCPUMatrixOperation(params: {
-  operation: string;
-  matrixA: number[][];
-  matrixB?: number[][];
-  precision: string;
+  operation: string
+  matrixA: number[][]
+  matrixB?: number[][]
+  precision: string
 }): Promise<number[][] | number[]> {
-  const { operation, matrixA, matrixB } = params;
+  const { operation, matrixA, matrixB } = params
 
   switch (operation) {
     case 'multiply':
-      if (!matrixB) throw new Error('matrixB required for multiplication');
-      return multiplyMatrices(matrixA, matrixB);
+      if (!matrixB) throw new Error('matrixB required for multiplication')
+      return multiplyMatrices(matrixA, matrixB)
 
     case 'transpose':
-      return transposeMatrix(matrixA);
+      return transposeMatrix(matrixA)
 
     case 'inverse':
-      return inverseMatrix(matrixA);
+      return inverseMatrix(matrixA)
 
     case 'eigenvalues':
-      return computeEigenvalues(matrixA);
+      return computeEigenvalues(matrixA)
 
     default:
-      throw new Error(`Unknown CPU operation: ${operation}`);
+      throw new Error(`Unknown CPU operation: ${operation}`)
   }
 }
 
 async function processCPUBatchOperation(params: {
-  operation: string;
-  matrices: number[][][];
-  transformMatrix?: number[][];
-  chunkSize: number;
+  operation: string
+  matrices: number[][][]
+  transformMatrix?: number[][]
+  chunkSize: number
 }): Promise<number[][][]> {
-  const { operation, matrices, transformMatrix, chunkSize } = params;
+  const { operation, matrices, transformMatrix, chunkSize } = params
 
-  const results: number[][][] = [];
+  const results: number[][][] = []
 
-  // Process in chunks to avoid memory issues;
+  // Process in chunks to avoid memory issues
   for (let i = 0; i < matrices.length; i += chunkSize) {
-    const chunk = matrices.slice(i, i + chunkSize);
+    const chunk = matrices.slice(i, i + chunkSize)
 
     const chunkResults = await Promise.all(
       chunk.map(async matrix => {
         switch (operation) {
           case 'batch_multiply':
-            if (!transformMatrix) throw new Error('transformMatrix required for batch_multiply');
-            return multiplyMatrices(matrix, transformMatrix);
+            if (!transformMatrix) throw new Error('transformMatrix required for batch_multiply')
+            return multiplyMatrices(matrix, transformMatrix)
 
           case 'batch_transpose':
-            return transposeMatrix(matrix);
+            return transposeMatrix(matrix)
 
           case 'batch_normalize':
-            return normalizeMatrix(matrix);
+            return normalizeMatrix(matrix)
 
           default:
-            throw new Error(`Unknown batch operation: ${operation}`);
+            throw new Error(`Unknown batch operation: ${operation}`)
         }
       })
-    );
+    )
 
-    results.push(...chunkResults);
+    results.push(...chunkResults)
   }
 
-  return results;
+  return results
 }
 
-// CPU fallback implementations;
+// CPU fallback implementations
 function multiplyMatrices(a: number[][], b: number[][]): number[][] {
-  const rowsA = a.length;
-  const colsA = a[0].length;
-  const colsB = b[0].length;
+  const rowsA = a.length
+  const colsA = a[0].length
+  const colsB = b[0].length
 
   if (colsA !== b.length) {
-    throw new Error('Matrix dimensions incompatible for multiplication');
+    throw new Error('Matrix dimensions incompatible for multiplication')
   }
 
   const result: number[][] = Array(rowsA)
     .fill(null)
-    .map(() => Array(colsB).fill(0));
+    .map(() => Array(colsB).fill(0))
 
   for (let i = 0; i < rowsA; i++) {
     for (let j = 0; j < colsB; j++) {
       for (let k = 0; k < colsA; k++) {
-        result[i][j] += a[i][k] * b[k][j];
+        result[i][j] += a[i][k] * b[k][j]
       }
     }
   }
 
-  return result;
+  return result
 }
 
 function transposeMatrix(matrix: number[][]): number[][] {
-  const rows = matrix.length;
-  const cols = matrix[0].length;
+  const rows = matrix.length
+  const cols = matrix[0].length
 
   const result: number[][] = Array(cols)
     .fill(null)
-    .map(() => Array(rows).fill(0));
+    .map(() => Array(rows).fill(0))
 
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
-      result[j][i] = matrix[i][j];
+      result[j][i] = matrix[i][j]
     }
   }
 
-  return result;
+  return result
 }
 
 function inverseMatrix(matrix: number[][]): number[][] {
-  const n = matrix.length;
+  const n = matrix.length
 
   if (n !== matrix[0].length) {
-    throw new Error('Matrix must be square for inversion');
+    throw new Error('Matrix must be square for inversion')
   }
 
-  // Create augmented matrix [A|I];
+  // Create augmented matrix [A|I]
   const augmented: number[][] = matrix.map((row, i) => {
-    const identity = Array(n).fill(0);
-    identity[i] = 1;
-    return [...row, ...identity];
-  });
+    const identity = Array(n).fill(0)
+    identity[i] = 1
+    return [...row, ...identity]
+  })
 
-  // Gaussian elimination;
+  // Gaussian elimination
   for (let i = 0; i < n; i++) {
     // Find pivot
-    let maxRow = i;
+    let maxRow = i
     for (let k = i + 1; k < n; k++) {
       if (Math.abs(augmented[k][i]) > Math.abs(augmented[maxRow][i])) {
-        maxRow = k;
+        maxRow = k
       }
     }
 
     // Swap rows
-    [augmented[i], augmented[maxRow]] = [augmented[maxRow], augmented[i]];
+    [augmented[i], augmented[maxRow]] = [augmented[maxRow], augmented[i]]
 
     // Make diagonal 1
-    const pivot = augmented[i][i];
+    const pivot = augmented[i][i]
     if (Math.abs(pivot) < 1e-10) {
-      throw new Error('Matrix is singular and cannot be inverted');
+      throw new Error('Matrix is singular and cannot be inverted')
     }
 
     for (let j = 0; j < 2 * n; j++) {
-      augmented[i][j] /= pivot;
+      augmented[i][j] /= pivot
     }
 
-    // Eliminate column;
+    // Eliminate column
     for (let k = 0; k < n; k++) {
       if (k !== i) {
-        const factor = augmented[k][i];
+        const factor = augmented[k][i]
         for (let j = 0; j < 2 * n; j++) {
-          augmented[k][j] -= factor * augmented[i][j];
+          augmented[k][j] -= factor * augmented[i][j]
         }
       }
     }
   }
 
   // Extract inverse matrix
-  return augmented.map(row => row.slice(n));
+  return augmented.map(row => row.slice(n))
 }
 
 function computeEigenvalues(matrix: number[][]): number[] {
   // Simplified eigenvalue computation using power iteration
-  const n = matrix.length;
-  const maxIterations = 1000;
-  const tolerance = 1e-10;
+  const n = matrix.length
+  const maxIterations = 1000
+  const tolerance = 1e-10
 
   if (n !== matrix[0].length) {
-    throw new Error('Matrix must be square for eigenvalue computation');
+    throw new Error('Matrix must be square for eigenvalue computation')
   }
 
   // Power iteration for dominant eigenvalue
-  let vector = Array(n).fill(1);
-  let eigenvalue = 0;
+  let vector = Array(n).fill(1)
+  let eigenvalue = 0
 
   for (let iter = 0; iter < maxIterations; iter++) {
     // Matrix-vector multiplication
-    const newVector = Array(n).fill(0);
+    const newVector = Array(n).fill(0)
     for (let i = 0; i < n; i++) {
       for (let j = 0; j < n; j++) {
-        newVector[i] += matrix[i][j] * vector[j];
+        newVector[i] += matrix[i][j] * vector[j]
       }
     }
 
     // Normalize
-    const norm = Math.sqrt(newVector.reduce((sum, val) => sum + val * val, 0));
-    const newEigenvalue = norm;
+    const norm = Math.sqrt(newVector.reduce((sum, val) => sum + val * val, 0))
+    const newEigenvalue = norm
 
     if (Math.abs(newEigenvalue - eigenvalue) < tolerance) {
-      break;
+      break
     }
 
-    eigenvalue = newEigenvalue;
-    vector = newVector.map(val => val / norm);
+    eigenvalue = newEigenvalue
+    vector = newVector.map(val => val / norm)
   }
 
   // Return dominant eigenvalue (simplified - full implementation would compute all eigenvalues)
-  return [eigenvalue];
+  return [eigenvalue]
 }
 
 function normalizeMatrix(matrix: number[][]): number[][] {
-  const rows = matrix.length;
-  const cols = matrix[0].length;
+  const rows = matrix.length
+  const cols = matrix[0].length
 
   // Compute matrix norm (Frobenius norm)
-  let sumSquares = 0;
+  let sumSquares = 0
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
-      sumSquares += matrix[i][j] * matrix[i][j];
+      sumSquares += matrix[i][j] * matrix[i][j]
     }
   }
 
-  const norm = Math.sqrt(sumSquares);
+  const norm = Math.sqrt(sumSquares)
 
   if (norm < 1e-12) {
     return matrix; // Return original if norm is too small
   }
 
   // Normalize
-  return matrix.map(row => row.map(val => val / norm));
+  return matrix.map(row => row.map(val => val / norm))
 }
 
 function estimateFLOPS(operation: string, rows: number, cols: number, matrixB?: number[][]): number {
   switch (operation) {
     case 'multiply': {
-      const colsB = matrixB?.[0]?.length || cols;
+      const colsB = matrixB?.[0]?.length || cols
       return rows * cols * colsB * 2; // Multiply + Add
     }
 
@@ -622,11 +622,11 @@ function estimateFLOPS(operation: string, rows: number, cols: number, matrixB?: 
   }
 }
 
-// Enhanced matrix complexity analysis for routing decisions;
+// Enhanced matrix complexity analysis for routing decisions
 function calculateMatrixComplexity(operation: string, rows: number, cols: number, matrixB?: number[][]): number {
-  const baseComplexity = Math.log2(rows * cols + 1) * 10;
+  const baseComplexity = Math.log2(rows * cols + 1) * 10
 
-  // Operation-specific complexity multipliers;
+  // Operation-specific complexity multipliers
   const operationMultipliers = {
     'multiply': 2.0, // Matrix multiplication is compute-intensive
     'transpose': 0.5, // Simple memory operation
@@ -635,25 +635,25 @@ function calculateMatrixComplexity(operation: string, rows: number, cols: number
     'svd': 4.0, // Singular value decomposition
     'qr': 2.5, // QR factorization
     'cholesky': 1.8, // Cholesky decomposition
-  };
+  }
 
-  const multiplier = operationMultipliers[operation as keyof typeof operationMultipliers] || 1.0;
+  const multiplier = operationMultipliers[operation as keyof typeof operationMultipliers] || 1.0
 
   // Matrix size impact
-  const sizeMultiplier = Math.log2(Math.max(rows, cols) + 1) / 10;
+  const sizeMultiplier = Math.log2(Math.max(rows, cols) + 1) / 10
 
   // Second matrix impact for binary operations
-  const secondMatrixMultiplier = matrixB ? Math.log2(matrixB.length * matrixB[0].length + 1) / 20 : 0;
+  const secondMatrixMultiplier = matrixB ? Math.log2(matrixB.length * matrixB[0].length + 1) / 20 : 0
 
-  const finalComplexity = baseComplexity * multiplier * (1 + sizeMultiplier + secondMatrixMultiplier);
+  const finalComplexity = baseComplexity * multiplier * (1 + sizeMultiplier + secondMatrixMultiplier)
 
-  return Math.min(100, Math.max(0, finalComplexity));
+  return Math.min(100, Math.max(0, finalComplexity))
 }
 
-// WebGPU/WebGL2/WASM client optimization hints for matrix operations;
+// WebGPU/WebGL2/WASM client optimization hints for matrix operations
 function generateMatrixClientHints(operation: string, rows: number, cols: number, complexity: number) {
-  const totalElements = rows * cols;
-  const isSquare = rows === cols;
+  const totalElements = rows * cols
+  const isSquare = rows === cols
 
   return {
     prefer_webgpu: totalElements < 50000 && complexity < 60,
@@ -685,12 +685,12 @@ function generateMatrixClientHints(operation: string, rows: number, cols: number
       memory_prefetch: true,
       cache_blocking_size: 64
     }
-  };
+  }
 }
 
-// Helper function to check if number is power of two;
+// Helper function to check if number is power of two
 function isPowerOfTwo(n: number): boolean {
-  return n > 0 && (n & (n - 1)) === 0;
+  return n > 0 && (n & (n - 1)) === 0
 }
 
 export const GET: RequestHandler = async () => {
@@ -702,5 +702,5 @@ export const GET: RequestHandler = async () => {
       batch: ['batch_multiply', 'batch_similarity', 'batch_normalize', 'batch_transform']
     },
     timestamp: new Date().toISOString()
-  });
-};
+  })
+}

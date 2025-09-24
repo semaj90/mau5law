@@ -101,7 +101,7 @@ async function* streamQLoRAResponse(
         cacheStrategy: 'adaptive',
         maxLatencyMs: 5000,
         minAccuracyThreshold: accuracyTarget * 0.9
-      },
+      },;
       optimization: {
         predictiveAccuracy: 0.75,
         targetAccuracy: accuracyTarget,
@@ -153,7 +153,7 @@ async function* streamQLoRAResponse(
       binaryMetadata: {
         compressionRatio: 1,
         originalSize: 0,
-        compressedSize: 0,
+        compressedSize: 0,;
         encoding: 'gzip'
       }
     };
@@ -173,7 +173,7 @@ async function* streamQLoRAResponse(
 
       yield {
         type: 'binary',
-        data: binaryData,
+        data: binaryData,;
         metadata: {
           compressionRatio: compressionStats.compressionRatio,
           originalSize: compressionStats.originalSize,
@@ -196,13 +196,13 @@ async function* streamQLoRAResponse(
 
     yield {
       type: 'end',
-      message: 'QLoRA processing complete',
+      message: 'QLoRA processing complete',;
       metadata: { accuracy: (result as any).accuracy, processingTime }
     };
   } catch (error: any) {
     console.error('[WebSocket] QLoRA streaming error:', error);
     yield {
-      type: 'error',
+      type: 'error',;
       message: `QLoRA processing failed: ${(error as any)?.message || 'Unknown error'}`
     };
   }
@@ -219,7 +219,7 @@ export function createWebSocketServer() {
 
     ws.on('message', async (message: Buffer) => {
       try {
-        const requestData: StreamingQLoRARequest = JSON.parse(message.toString();
+        const requestData: StreamingQLoRARequest = JSON.parse(message.toString());
         console.log(`[WebSocket] Received request:`, requestData.query.substring(0, 50) + '...');
 
         // Stream QLoRA response;
@@ -227,7 +227,7 @@ export function createWebSocketServer() {
           if (event.type === 'binary') {
             // Send binary data directly;
             ws.send(JSON.stringify({
-                type: 'binary_metadata',
+                type: 'binary_metadata',;
                 metadata: event.metadata
               })
             );
@@ -240,7 +240,7 @@ export function createWebSocketServer() {
       } catch (error: any) {
         console.error('[WebSocket] Message processing error:', error);
         ws.send(JSON.stringify({
-            type: 'error',
+            type: 'error',;
             message: 'Failed to process request: ' + error.message
           })
         );
@@ -257,7 +257,7 @@ export function createWebSocketServer() {
 
     // Send welcome message;
     ws.send(JSON.stringify({
-        type: 'status',
+        type: 'status',;
         message: 'Connected to Binary QLoRA WebSocket server'
       })
     );

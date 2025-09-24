@@ -26,9 +26,9 @@
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      day: 'numeric',;
+      hour: '2-digit',;
+      minute: '2-digit';
     });
   }
   function formatTokens(tokens: number | null) {
@@ -341,7 +341,7 @@
             <input
               id="lastName"
               name="lastName"
-              type="text"
+              type="text";
               bind:value={profileForm.lastName}
               required
               class="w-full px-3 py-2 bg-black border-2 border-amber-300 text-amber-300 focus:outline-none focus:border-amber-400"
@@ -416,7 +416,7 @@
             <input
               id="confirmPassword"
               name="confirmPassword"
-              type="password"
+              type="password";
               bind:value={passwordForm.confirmPassword}
               required
               minlength="8"
@@ -497,30 +497,30 @@
 
 <style>
   /* YoRHa cyberpunk aesthetic */
-  :global(body) {
+  :global(body) {;
     background: #000;
     color: #fbbf24;
   }
   
   /* Custom scrollbar */
-  .overflow-y-auto: :-webkit-scrollbar,
+  .overflow-y-auto::-webkit-scrollbar,
   .overflow-x-auto::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
   
-  .overflow-y-auto: :-webkit-scrollbar-track,
+  .overflow-y-auto::-webkit-scrollbar-track,
   .overflow-x-auto::-webkit-scrollbar-track {
     background: #1f2937;
   }
   
-  .overflow-y-auto: :-webkit-scrollbar-thumb,
+  .overflow-y-auto::-webkit-scrollbar-thumb,
   .overflow-x-auto::-webkit-scrollbar-thumb {
     background: #fbbf24;
     border-radius: 4px;
   }
   
-  .overflow-y-auto: :-webkit-scrollbar-thumb:hover,
+  .overflow-y-auto::-webkit-scrollbar-thumb:hover,
   .overflow-x-auto::-webkit-scrollbar-thumb:hover {
     background: #f59e0b;
   }

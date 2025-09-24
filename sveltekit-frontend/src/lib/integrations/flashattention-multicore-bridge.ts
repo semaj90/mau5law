@@ -33,7 +33,7 @@ export interface FlashAttentionMulticoreResponse {
     gpuUtilization: number;
     memoryEfficiency: number;
     errorReduction?: number;
-    confidence: {
+    confidence: {;
       attention: number;
       multicore: number;
       overall: number;
@@ -177,7 +177,7 @@ export class FlashAttentionMulticoreBridge {
     const errorAnalysisTask = await this.multicoreService.generateRecommendations({
       context: 'TypeScript/Svelte error analysis with attention weights',
       errorType: 'compilation_errors',
-      codeSnippet: errorText.substring(0, 1000),
+      codeSnippet: errorText.substring(0, 1000),;
       priority: 'critical'
     });
 
@@ -218,7 +218,7 @@ export class FlashAttentionMulticoreBridge {
     );
 
     return {
-      result: {
+      result: {;
         embeddings: (result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).embeddings,
         attentionWeights: (result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).attentionWeights,
         contextualEmbeddings: (result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).contextualEmbeddings || new Float32Array([]),
@@ -257,7 +257,7 @@ export class FlashAttentionMulticoreBridge {
       const errorTask = await this.multicoreService.generateRecommendations({
         context: 'Error analysis with FlashAttention2 integration',
         errorType: 'compilation_errors',
-        codeSnippet: JSON.stringify(request.options.errorData).substring(0, 1000),
+        codeSnippet: JSON.stringify(request.options.errorData).substring(0, 1000),;
         priority: request.options?.priority || 'high'
       });
       tasks.push(errorTask);
@@ -279,7 +279,7 @@ export class FlashAttentionMulticoreBridge {
         multicoreTaskCount: multicoreTasks.length
       },
       options: {
-        agents: ['claude', 'crewai'],
+        agents: ['claude', 'crewai'],;
         priority: request.options?.priority || 'medium',
         analysisType: request.options?.analysisType === 'error_analysis' ? 'document_processing' : 'legal_research',
         useMulticoreAnalysis: true,
@@ -348,7 +348,7 @@ export class FlashAttentionMulticoreBridge {
         Math.max(0.6, 1 - (attentionResult.result.memoryUsage / (1024 * 1024 * 100))) : 0.8,
       confidence: {
         attention: attentionResult.result.confidence,
-        multicore: completedTasks / Math.max(1, totalTasks),
+        multicore: completedTasks / Math.max(1, totalTasks),;
         overall: (attentionResult.result.confidence + (completedTasks / Math.max(1, totalTasks))) / 2
       }
     };
@@ -471,7 +471,7 @@ export async function processWithEnhancedAI(
     options: {
       enableGPU: true,
       useAgentOrchestration: true,
-      analysisType: 'legal',
+      analysisType: 'legal',;
       priority: 'medium',
       ...options
     }

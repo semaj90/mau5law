@@ -116,7 +116,7 @@ export class UltraJSONParser {
     console.log(' Ultra JSON Parser initialized:', {
       supportLevel: this.capabilities.supportLevel,
       webgpu: this.capabilities.webgpuCompute,
-      simd: this.capabilities.wasmSIMD,
+      simd: this.capabilities.wasmSIMD,;
       config: this.config
     });
   }
@@ -393,7 +393,7 @@ export class UltraJSONParser {
     const patterns = {
       citations: /"\d+\s+[UF]\.\d*d?\s+\d+"/g,
       statutes: /"\d+\s+U\.S\.C\.\s+�?\s*\d+"/g,
-      courts: /"(?:Supreme Court|District Court|Circuit Court)"/g,
+      courts: /"(?:Supreme Court|District Court|Circuit Court)"/g,;
       dates: /"\d{4}-\d{2}-\d{2}"/g
     };
 

@@ -81,7 +81,7 @@
     gap: 0.25rem;
   }
 
-  .error-message: :before {
+  .error-message::before {
     content: '⚠';
     font-size: 0.875rem;
   }

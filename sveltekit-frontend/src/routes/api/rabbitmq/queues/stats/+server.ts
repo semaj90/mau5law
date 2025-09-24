@@ -4,18 +4,18 @@
  * Provides detailed statistics about queue performance and message flow
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 export const GET: RequestHandler = async ({ url }) => {
 	try {
-		const queueName = url.searchParams.get('queue');
-		const detailed = url.searchParams.get('detailed') === 'true';
+		const queueName = url.searchParams.get('queue')
+		const detailed = url.searchParams.get('detailed') === 'true'
 
 		// In a real implementation, this would query actual RabbitMQ Management API
 		// For development, we'll simulate realistic queue statistics
 		
-		const timestamp = new Date().toISOString();
+		const timestamp = new Date().toISOString()
 		const baseStats = {
 			'legal.docs.process': {
 				name: 'legal.docs.process',
@@ -77,11 +77,11 @@ export const GET: RequestHandler = async ({ url }) => {
 					ack_rate: 0
 				}
 			}
-		};
+		}
 
-		// If specific queue requested, return only that queue's stats;
+		// If specific queue requested, return only that queue's stats
 		if (queueName && baseStats[queueName as keyof typeof baseStats]) {
-			const queueStats = baseStats[queueName as keyof typeof baseStats];
+			const queueStats = baseStats[queueName as keyof typeof baseStats]
 			
 			if (detailed) {
 				return json({
@@ -110,20 +110,20 @@ export const GET: RequestHandler = async ({ url }) => {
 							active: true
 						})
 					}
-				});
+				})
 			}
 			
-			return json({ [queueName]: queueStats, timestamp });
+			return json({ [queueName]: queueStats, timestamp })
 		}
 
-		// Return all queue statistics;
+		// Return all queue statistics
 		const allStats = {
 			timestamp,
 			total_queues: Object.keys(baseStats).length,
 			total_messages: Object.values(baseStats).reduce((sum, queue) => sum + queue.messages, 0),
 			total_consumers: Object.values(baseStats).reduce((sum, queue) => sum + queue.consumers, 0),
 			queues: baseStats
-		};
+		}
 
 		if (detailed) {
 			allStats['system_metrics'] = {
@@ -138,7 +138,7 @@ export const GET: RequestHandler = async ({ url }) => {
 				},
 				connection_count: 12,
 				channel_count: 24
-			};
+			}
 		}
 
 		return json(allStats, {
@@ -146,58 +146,58 @@ export const GET: RequestHandler = async ({ url }) => {
 				'Cache-Control': 'max-age=30', // Cache for 30 seconds
 				'X-Queue-Count': String(Object.keys(baseStats).length)
 			}
-		});
+		})
 
 	} catch (error) {
-		console.error('Failed to fetch queue statistics:', error);
+		console.error('Failed to fetch queue statistics:', error)
 		
 		return json({
 			error: 'Failed to fetch queue statistics',
 			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString()
-		}, { status: 500 });
+		}, { status: 500 })
 	}
-};
+}
 
 export const POST: RequestHandler = async ({ request }) => {
 	try {
-		const { action, queue } = await request.json();
+		const { action, queue } = await request.json()
 
-		// Handle queue management actions;
+		// Handle queue management actions
 		switch (action) {
-			case 'purge':;
+			case 'purge':
 				if (!queue) {
-					return json({ error: 'Queue name required for purge action' }, { status: 400 });
+					return json({ error: 'Queue name required for purge action' }, { status: 400 })
 				}
 				
-				console.log(`🧹 Purging queue: ${queue}`);
+				console.log(`🧹 Purging queue: ${queue}`)
 				return json({
 					action: 'purge',
 					queue,
 					result: 'success',
 					messages_purged: Math.floor(Math.random() * 50),
 					timestamp: new Date().toISOString()
-				});
+				})
 
 			case 'reset_stats':
-				console.log('📊 Resetting queue statistics');
+				console.log('📊 Resetting queue statistics')
 				return json({
 					action: 'reset_stats',
 					result: 'success',
 					timestamp: new Date().toISOString()
-				});
+				})
 
 			default:
-				return json({ error: `Unknown action: ${action}` }, { status: 400 });
+				return json({ error: `Unknown action: ${action}` }, { status: 400 })
 		}
 
 	} catch (error) {
-		console.error('Queue management action failed:', error);
+		console.error('Queue management action failed:', error)
 		
 		return json({
 			error: 'Queue management action failed',
 			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString()
-		}, { status: 500 });
+		}, { status: 500 })
 	}
-};
+}

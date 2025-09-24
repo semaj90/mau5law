@@ -78,7 +78,7 @@ export class DatabaseSyncManager {
       create: "/api/canvas-states",
       read: "/api/canvas-states",
       update: "/api/canvas-states",
-      delete: "/api/canvas-states",
+      delete: "/api/canvas-states",;
       patch: "/api/canvas-states"
     }
   };
@@ -92,7 +92,7 @@ export class DatabaseSyncManager {
   // CREATE operations with database sync
   async create<T>(
     entity: string,
-    data: any,
+    data: any,;
     options: SyncOptions = {},
   ): Promise<T> {
     const operationId = this.generateOperationId("create", entity);
@@ -135,7 +135,7 @@ export class DatabaseSyncManager {
   async read<T>(
     entity: string,
     id?: string,
-    params: Record<string, any> = {},
+    params: Record<string, any> = {},;
     options: SyncOptions = {},
   ): Promise<T> {
     const operationId = this.generateOperationId("read", entity, id);
@@ -185,7 +185,7 @@ export class DatabaseSyncManager {
   async update<T>(
     entity: string,
     id: string,
-    data: any,
+    data: any,;
     options: SyncOptions = {},
   ): Promise<T> {
     const operationId = this.generateOperationId("update", entity, id);
@@ -232,7 +232,7 @@ export class DatabaseSyncManager {
   async patch<T>(
     entity: string,
     id: string,
-    data: any,
+    data: any,;
     options: SyncOptions = {},
   ): Promise<T> {
     const operationId = this.generateOperationId("patch", entity, id);
@@ -270,7 +270,7 @@ export class DatabaseSyncManager {
   // DELETE operations with confirmation
   async delete<T>(
     entity: string,
-    id: string,
+    id: string,;
     options: SyncOptions = {},
   ): Promise<T> {
     const operationId = this.generateOperationId("delete", entity, id);
@@ -358,7 +358,7 @@ export class DatabaseSyncManager {
   }
   private validateResponseData(
     entity: string,
-    data: any,
+    data: any,;
     operation: string,
   ): void {
     if (!data) {
@@ -389,7 +389,7 @@ export class DatabaseSyncManager {
       users: {
         create: ["email", "password"]
       },
-      canvasStates: {
+      canvasStates: {;
         create: ["name", "canvasData"]
       }
     };
@@ -404,7 +404,7 @@ export class DatabaseSyncManager {
     options: SyncOptions,
   ): Promise<Response> {
     const requestOptions: RequestInit = {
-      method,
+      method,;
       headers: {
         "Content-Type": "application/json"
       }
@@ -438,7 +438,7 @@ export class DatabaseSyncManager {
     throw new Error("Maximum retry attempts reached");
   }
   private generateOperationId(
-    operation: string,
+    operation: string,;
     entity: string,
     id?: string,
   ): string {
@@ -446,7 +446,7 @@ export class DatabaseSyncManager {
   }
   private updateLocalCache(
     entity: string,
-    operation: string,
+    operation: string,;
     data: any,
     id?: string,
   ): void {
@@ -515,7 +515,7 @@ export const CasesAPI = {
   update: (id: string, data: any, options?: SyncOptions) =>
     dbSync.update("cases", id, data, options),
   patch: (id: string, data: any, options?: SyncOptions) =>
-    dbSync.patch("cases", id, data, options),
+    dbSync.patch("cases", id, data, options),;
   delete: (id: string, options?: SyncOptions) =>
     dbSync.delete("cases", id, options)
 };
@@ -528,7 +528,7 @@ export const EvidenceAPI = {
   create: (data: any, options?: SyncOptions) =>
     dbSync.create("evidence", data, options),
   update: (id: string, data: any, options?: SyncOptions) =>
-    dbSync.patch("evidence", id, data, options),
+    dbSync.patch("evidence", id, data, options),;
   delete: (id: string, options?: SyncOptions) =>
     dbSync.delete("evidence", id, options)
 };
@@ -543,7 +543,7 @@ export const ReportsAPI = {
   update: (id: string, data: any, options?: SyncOptions) =>
     dbSync.update("reports", id, data, options),
   patch: (id: string, data: any, options?: SyncOptions) =>
-    dbSync.patch("reports", id, data, options),
+    dbSync.patch("reports", id, data, options),;
   delete: (id: string, options?: SyncOptions) =>
     dbSync.delete("reports", id, options)
 };
@@ -558,7 +558,7 @@ export const CriminalsAPI = {
   update: (id: string, data: any, options?: SyncOptions) =>
     dbSync.update("criminals", id, data, options),
   patch: (id: string, data: any, options?: SyncOptions) =>
-    dbSync.patch("criminals", id, data, options),
+    dbSync.patch("criminals", id, data, options),;
   delete: (id: string, options?: SyncOptions) =>
     dbSync.delete("criminals", id, options)
 };
@@ -573,7 +573,7 @@ export const ActivitiesAPI = {
   update: (id: string, data: any, options?: SyncOptions) =>
     dbSync.update("activities", id, data, options),
   patch: (id: string, data: any, options?: SyncOptions) =>
-    dbSync.patch("activities", id, data, options),
+    dbSync.patch("activities", id, data, options),;
   delete: (id: string, options?: SyncOptions) =>
     dbSync.delete("activities", id, options)
 };
@@ -588,7 +588,7 @@ export const UsersAPI = {
   update: (id: string, data: any, options?: SyncOptions) =>
     dbSync.update("users", id, data, options),
   patch: (id: string, data: any, options?: SyncOptions) =>
-    dbSync.patch("users", id, data, options),
+    dbSync.patch("users", id, data, options),;
   delete: (id: string, options?: SyncOptions) =>
     dbSync.delete("users", id, options)
 };
@@ -603,7 +603,7 @@ export const CanvasAPI = {
   update: (id: string, data: any, options?: SyncOptions) =>
     dbSync.update("canvasStates", id, data, options),
   patch: (id: string, data: any, options?: SyncOptions) =>
-    dbSync.patch("canvasStates", id, data, options),
+    dbSync.patch("canvasStates", id, data, options),;
   delete: (id: string, options?: SyncOptions) =>
     dbSync.delete("canvasStates", id, options)
 };

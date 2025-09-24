@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -25,19 +25,19 @@ https://svelte.dev/e/js_parse_error -->
   					legal: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 shadow-md',
   					evidence: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 shadow-md',
   					caseItem: 'bg-purple-600 text-white hover:bg-purple-700 focus:ring-purple-500 shadow-md',
-  					yorha: 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black hover:from-yellow-500 hover:to-yellow-700 font-bold uppercase tracking-wider border-2 border-yellow-700 shadow-lg'
+  					yorha: 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black hover:from-yellow-500 hover:to-yellow-700 font-bold uppercase tracking-wider border-2 border-yellow-700 shadow-lg';
   				},
   				size: {
   					default: 'h-10 px-4 py-2',
   					sm: 'h-9 rounded-md px-3',
   					lg: 'h-11 rounded-md px-8',
   					icon: 'h-10 w-10',
-  					xs: 'h-8 rounded px-2 text-xs'
+  					xs: 'h-8 rounded px-2 text-xs';
   				}
   			},
   			defaultVariants: {
-  				variant: 'default',
-  				size: 'default'
+  				variant: 'default',;
+  				size: 'default';
   			}
   		}
   	);
@@ -68,7 +68,7 @@ https://svelte.dev/e/js_parse_error -->
   		class: className = '',
   		useMelt = true,
   		useBits = false,
-  		...restProps
+  		...restProps;
   	}: Props = $props();
 
   	let isDisabled = $derived(disabled || loading);
@@ -76,7 +76,7 @@ https://svelte.dev/e/js_parse_error -->
 
   	// Create melt-ui button for enhanced accessibility and interactions - conditionally
   	const meltButtonBuilder = useMelt ? createButton({
-  		disabled: isDisabled
+  		disabled: isDisabled;
   	}) : null;
 
   	const meltButton = meltButtonBuilder?.elements.root;

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Real-time Evidence Grid with WebSocket and local sync -->
@@ -226,10 +226,10 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const newEvidence = {
         title: "New Evidence",
-        description: "",
+        description: "",;
         type: "document",
-        caseId: caseId || "default-case",
-        tags: [],
+        caseId: caseId || "default-case",;
+        tags: [],;
       };
 
       const evidenceId = await evidenceStore.createEvidence(newEvidence);
@@ -442,7 +442,7 @@ https://svelte.dev/e/js_parse_error -->
 
       <!-- Sort -->
       <div class="mx-auto px-4 max-w-7xl">
-        <select
+        <select;
           bind:value={sortBy}
           class="mx-auto px-4 max-w-7xl"
         >

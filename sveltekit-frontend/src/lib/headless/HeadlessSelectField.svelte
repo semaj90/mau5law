@@ -46,7 +46,7 @@
     description = undefined,
     class: className = '',
     onChange,
-    ...rest
+    ...rest;
   }: HeadlessSelectFieldProps = $props();
 
   // Internal state for current selection

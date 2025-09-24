@@ -38,7 +38,7 @@ export async function testDatabaseConnection(): Promise<any> {
       details: {
         postgresVersion: (result as any)[0]?.version,
         pgvectorEnabled: hasVector,
-        poolSize: 'n/a',
+        poolSize: 'n/a',;
         timestamp: new Date().toISOString()
       }
     };
@@ -47,7 +47,7 @@ export async function testDatabaseConnection(): Promise<any> {
       success: false,
       message: `Database connection failed: ${(error as Error).message}`,
       details: {
-        error: (error as Error).stack,
+        error: (error as Error).stack,;
         timestamp: new Date().toISOString()
       }
     };
@@ -58,7 +58,7 @@ export async function testDatabaseConnection(): Promise<any> {
 export async function vectorSimilaritySearch(
   table: 'documents' | 'search_index',
   queryEmbedding: number[],
-  limit: number = 10,
+  limit: number = 10,;
   threshold: number = 0.8;
 ): Promise<any> {
   try {
@@ -81,14 +81,14 @@ export async function vectorSimilaritySearch(
 
     return {
       success: true,
-      results: result,
+      results: result,;
       count: Array.isArray(result) ? (result as { length?: any }).length: 0
     };
   } catch (error: any) {
     return {
       success: false,
       error: (error as Error).message,
-      results: [],
+      results: [],;
       count: 0
     };
   }
@@ -97,7 +97,7 @@ export async function vectorSimilaritySearch(
 // Hybrid semantic search combining multiple tables
 export async function hybridSemanticSearch(
   query: string,
-  queryEmbedding: number[],
+  queryEmbedding: number[],;
   options: {
     limit?: number;
     threshold?: number;
@@ -158,7 +158,7 @@ export async function hybridSemanticSearch(
 
     return {
       success: true,
-      results: result,
+      results: result,;
       count: Array.isArray(result) ? (result as { length?: any }).length: 0,
       query,
       queryEmbedding: queryEmbedding.slice(0, 5)
@@ -167,7 +167,7 @@ export async function hybridSemanticSearch(
     return {
       success: false,
       error: (error as Error).message,
-      results: [],
+      results: [],;
       count: 0,
       query
     };
@@ -200,7 +200,7 @@ export async function initializeDatabase(): Promise<any> {
   } catch (error: any) {
     console.error('❌ Database initialization error:', error);
     return {
-      success: false,
+      success: false,;
       message: `Initialization failed: ${(error as Error).message}`
     };
   }

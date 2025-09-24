@@ -1,12 +1,12 @@
 
-import { json } from "@sveltejs/kit";
-import type { RequestHandler } from './$types.js';
+import { json } from "@sveltejs/kit"
+import type { RequestHandler } from './$types.js'
 
 
 export const GET: RequestHandler = async () => {
   try {
     // Mock recent cases data - replace with actual database query
-    const recentCases = [;
+    const recentCases = [
       {
         id: "1",
         title: "Robbery Investigation",
@@ -31,11 +31,11 @@ export const GET: RequestHandler = async () => {
         createdAt: new Date(Date.now() - 604800000).toISOString(), // 1 week ago
         lastActivity: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
       }
-    ];
+    ]
 
-    return json(recentCases);
+    return json(recentCases)
   } catch (error: any) {
-    console.error("Error fetching recent cases:", error);
-    return json({ error: "Failed to fetch recent cases" }, { status: 500 });
+    console.error("Error fetching recent cases:", error)
+    return json({ error: "Failed to fetch recent cases" }, { status: 500 })
   }
-};
+}

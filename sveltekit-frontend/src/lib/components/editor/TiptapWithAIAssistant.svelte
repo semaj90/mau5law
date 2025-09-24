@@ -1,11 +1,11 @@
 <!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script>
   // Svelte 5 runes are auto-imported
-` element and/or a single top-level `<script module>` element
+` element and/or a single top-level `<script module>` element;
 https://svelte.dev/e/script_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script>` element and/or a single top-level `<script module>` element -->
 <!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script lang="ts">
   ` element and/or a single top-level `<script module>
-  
+
 
 // Auto-generated default export
 export default ;
@@ -66,9 +66,11 @@ export default ;
   const userIntent = $derived($state.context.userIntent);
   const focusSchema = $derived($state.context.focusSchema);
 
-  $effect(async () => {
-    await initializeEditor();
+  $effect(() => {
+    (async () => {
+await initializeEditor();
     setupEventListeners();
+    })();
   });
 
   onDestroy(() => {
@@ -89,10 +91,10 @@ export default ;
 
   async function initializeEditor() {
     editor = new Editor({
-      element: editorElement,
+      element: editorElement,;
       extensions: [
         StarterKit.configure({
-          history: false, // We'll handle our own history with collaboration
+          history: false, // We'll handle our own history with collaboration;
         }),
         // Add collaboration extensions if needed
         // Collaboration.configure({
@@ -102,11 +104,11 @@ export default ;
         //   provider,
         // }),
       ],
-      content: initialContent,
+      content: initialContent,;
       editable: !readOnly,
       editorProps: {
-        attributes: {
-          class: 'tiptap-editor prose prose-lg max-w-none focus:outline-none',
+        attributes: {;
+          class: 'tiptap-editor prose prose-lg max-w-none focus:outline-none',;
         },
         handleKeyDown: (view, event) => {
           handleKeyDown(event);
@@ -190,8 +192,8 @@ export default ;
     const pos = editor.view.coordsAtPos(selection.from);
 
     recommendationPosition = {
-      x: pos.left,
-      y: pos.top
+      x: pos.left,;
+      y: pos.top;
     };
 
     // Check if selection contains recommended text
@@ -302,13 +304,13 @@ export default ;
 
     try {
       const response = await fetch('/api/crewai/review', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           documentId,
           reviewType: 'comprehensive',
           priority: 'medium',
-          assignedAgents: ['compliance_specialist', 'risk_analyst', 'legal_editor'],
+          assignedAgents: ['compliance_specialist', 'risk_analyst', 'legal_editor'],;
           context: {
             userIntent: 'comprehensive_review'
           }
@@ -320,7 +322,7 @@ export default ;
       if ((result as { success?: any; data?: any; suggestions?: any }).success) {
         // Start state machine orchestration
         send({
-          type: 'START_REVIEW',
+          type: 'START_REVIEW',;
           task: {
             taskId: (result as { success?: any; data?: any; suggestions?: any }).data.taskId,
             documentId,
@@ -345,8 +347,8 @@ export default ;
     // Apply the suggestion to the editor
     if (suggestion.position !== undefined) {
       editor.commands.setTextSelection({
-        from: suggestion.position,
-        to: suggestion.position + suggestion.length
+        from: suggestion.position,;
+        to: suggestion.position + suggestion.length;
       });
       editor.commands.insertContent(suggestion.suggestedText);
     }
@@ -386,8 +388,8 @@ export default ;
   async function saveDocument(content: string): Promise<void> {
     // This would integrate with your document save API
     await fetch(`/api/documents/${documentId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'PUT',;
+      headers: { 'Content-Type': 'application/json' },;
       body: JSON.stringify({ content })
     });
   }
@@ -395,8 +397,8 @@ export default ;
   async function fetchInlineSuggestions(content: string): Promise<unknown[]> {
     // This would call your AI suggestion API
     const response = await fetch('/api/ai/suggestions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST',;
+      headers: { 'Content-Type': 'application/json' },;
       body: JSON.stringify({ content, type: 'inline' })
     });
 
@@ -454,7 +456,7 @@ export default ;
   <!-- Editor Element -->
   <div
     bind:this={editorElement}
-    class="tiptap-editor-wrapper min-h-96 border border-gray-300 rounded-lg p-4 focus-within:border-blue-500 transition-colors"
+    class="tiptap-editor-wrapper min-h-96 border border-gray-300 rounded-lg p-4 focus-within:border-blue-500 transition-colors";
     class:opacity-50={readOnly}
   />
 
@@ -605,16 +607,16 @@ export default ;
 </div>
 
 <style>
-  .tiptap-editor {
+  .tiptap-editor {;
     outline: none;
   }
 
-  .tiptap-editor: global(.ProseMirror) {
+  .tiptap-editor :global(.ProseMirror) {
     outline: none;
     min-height: 200px;
   }
 
-  .tiptap-editor: global(.ProseMirror p.is-editor-empty:first-child::before) {
+  .tiptap-editor :global(.ProseMirror p.is-editor-empty:first-child::before) {
     content: attr(data-placeholder);
     float: left;
     color: #9ca3af;

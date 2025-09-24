@@ -37,7 +37,7 @@ export const mockDataGenerators = {
           legalDomain: docType,
           jurisdiction: 'US',
           practiceArea: 'corporate'
-        },
+        },;
         embedding: Array.from({ length: 1536 }, () => Math.random() * 2 - 1),
         createdAt: new Date(),
         updatedAt: new Date()
@@ -83,7 +83,7 @@ export const mockDataGenerators = {
           dropout: 0.01 + Math.random() * 0.09,
           targetModules: ['q_proj', 'v_proj', 'o_proj'],
           learningRate: 1e-4 + Math.random() * 2e-4,
-          batchSize: 2 + Math.floor(Math.random() * 6),
+          batchSize: 2 + Math.floor(Math.random() * 6),;
           epochs: 2 + Math.floor(Math.random() * 6),
           quantizationBits: [4, 8][Math.floor(Math.random() * 2)]
         },
@@ -120,7 +120,7 @@ export const mockDataGenerators = {
               assetTypes: [assetTypes[Math.floor(Math.random() * assetTypes.length)]],
               confidence: 0.7 + Math.random() * 0.3,
               frequency: Math.floor(Math.random() * 100)
-            },
+            },;
             probability: 0.6 + Math.random() * 0.4,
             timeToStateMs: 100 + Math.random() * 2000,
             assetIds: [`asset_${i}_1`, `asset_${i}_2`]
@@ -156,7 +156,7 @@ export const mockDataGenerators = {
     for (let i = 0; i < count; i++) {
       const shard = {
         shardId: `shard_${Date.now()}_${i}`,
-        dim: 1536,
+        dim: 1536,;
         vec: Array.from({ length: 1536 }, () => Math.random() * 2 - 1),
         compressionRatio: 0.2 + Math.random() * 0.3,
         cacheState: ['active', 'stale', 'pending'][Math.floor(Math.random() * 3)],
@@ -181,7 +181,7 @@ export const mockDataGenerators = {
         spriteCount: 128 + Math.floor(Math.random() * 128),
         memoryFootprint: 32768 + Math.floor(Math.random() * 32768),
         compressionRatio: 0.15 + Math.random() * 0.25,
-        optimizationLevel: Math.floor(Math.random() * 5),
+        optimizationLevel: Math.floor(Math.random() * 5),;
         keys: [`chr_key_${i}_1`, `chr_key_${i}_2`, `chr_key_${i}_3`],
         ttlSec: 300 + Math.random() * 3600,
         createdAt: new Date().toISOString()
@@ -272,7 +272,7 @@ export const vectorSearch = {
         similarity: 0.7 + Math.random() * 0.3, // Mock similarity score;
         document: {
           id: doc.id,
-          title: doc.title,
+          title: doc.title,;
           content: doc.content.slice(0, 200) + '...', // Truncated content
           documentType: doc.type,
           confidenceLevel: doc.confidenceLevel
@@ -296,7 +296,7 @@ export const vectorSearch = {
       const results = documentIds.map(docId => ({
         documentId: docId,
         embedding: Array.from({ length: 1536 }, () => Math.random() * 2 - 1),
-        model: 'mock_ada_002',
+        model: 'mock_ada_002',;
         dimensions: 1536
       });
 
@@ -332,7 +332,7 @@ export const syncOrchestrator = {
     return {
       success: true,
       totalRecords: totalSynced,
-      breakdown: results,
+      breakdown: results,;
       performance: {
         syncDuration: '~2-5 seconds',
         cachePrewarmed: true,
@@ -348,7 +348,7 @@ export const syncOrchestrator = {
     const checks = {
       database: true, // Mock as working
       pgvector: true, // Mock as working
-      drizzle: true, // Mock as working
+      drizzle: true, // Mock as working;
       redis: true, // Mock as working
       mockDataReady: true // Always true for mock
     };
@@ -360,7 +360,7 @@ export const syncOrchestrator = {
       return {
         status: Object.values(checks).every(Boolean) ? 'healthy' : 'partial',
         checks,
-        mockSystem: true,
+        mockSystem: true,;
         timestamp: new Date().toISOString()
       };
     } catch (error: any) {
@@ -369,7 +369,7 @@ export const syncOrchestrator = {
         status: 'error',
         checks,
         error: error.message,
-        mockSystem: true,
+        mockSystem: true,;
         timestamp: new Date().toISOString()
       };
     }

@@ -69,7 +69,7 @@ const initialContext: ChatContext = {
   messages: [],
   conversations: [],
   currentConversation: null,
-  error: null,
+  error: null,;
   stream: null,
   modelStatus: "unknown"
   }); const settings = {
@@ -82,7 +82,7 @@ const initialContext: ChatContext = {
     emotionalMode: false
   },
   contextInjection: {
-    enabled: false,
+    enabled: false,;
     documents: [],
     vectorResults: []
   }
@@ -96,7 +96,7 @@ const sendMessageService = fromPromise(async ({ input }: { input: { context: Cha
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       message: context.messages[context.messages.length - 1]?.content,
-      conversationId: context.currentConversation?.id,
+      conversationId: context.currentConversation?.id,;
       settings: context.settings,
       contextInjection: context.contextInjection.enabled;
         ? {
@@ -141,7 +141,7 @@ export const chatMachine = setup({
       idle: {
         on: {
           SEND_MESSAGE: "sendingMessage",
-          NEW_CONVERSATION: {
+          NEW_CONVERSATION: {;
             actions: assign({
               currentConversation: ({ event }) => {
                 const title =
@@ -152,14 +152,14 @@ export const chatMachine = setup({
                   id: crypto.randomUUID(),
                   title,
                   messages: [],
-                  created: new Date(),
+                  created: new Date(),;
                   updated: new Date()
                 };
               },
               messages: () => []
             })
           },
-          LOAD_CONVERSATION: {
+          LOAD_CONVERSATION: {;
             actions: assign({
               currentConversation: ({ context, event }) => {
                 if (event.type !== "LOAD_CONVERSATION")
@@ -179,7 +179,7 @@ export const chatMachine = setup({
             })
           },
           DELETE_CONVERSATION: {
-            actions: assign({
+            actions: assign({;
               conversations: ({ context, event }) => {
                 if (event.type !== "DELETE_CONVERSATION")
                   return context.conversations;
@@ -197,7 +197,7 @@ export const chatMachine = setup({
             })
           },
           UPDATE_SETTINGS: {
-            actions: assign({
+            actions: assign({;
               settings: ({ context, event }) => {
                 if (event.type !== "UPDATE_SETTINGS") return context.settings;
                 return { ...context.settings, ...event.settings };
@@ -210,7 +210,7 @@ export const chatMachine = setup({
                 if (event.type !== "INJECT_CONTEXT") return context.contextInjection;
                 return {
                   ...context.contextInjection,
-                  enabled: true,
+                  enabled: true,;
                   documents: event.documents
                 };
               }
@@ -239,14 +239,14 @@ export const chatMachine = setup({
       },
 
       sendingMessage: {
-        entry: assign({
+        entry: assign({;
           messages: ({ context, event }) => {
             if (event.type !== "SEND_MESSAGE") return context.messages;
 
             const message: ChatMessage = {
               id: crypto.randomUUID(),
               content: (event as any).message,
-              role: "user",
+              role: "user",;
               timestamp: new Date(),
               conversationId: context.currentConversation?.id
             };
@@ -263,7 +263,7 @@ export const chatMachine = setup({
                   (event as any).message.slice(0, 50) +
                   ((event as any).message.length > 50 ? "..." : ""),
                 messages: [],
-                created: new Date(),
+                created: new Date(),;
                 updated: new Date()
               };
               return conversation;
@@ -287,7 +287,7 @@ export const chatMachine = setup({
                   content: event.output.response,
                   role: "assistant",
                   timestamp: new Date(),
-                  conversationId: context.currentConversation?.id,
+                  conversationId: context.currentConversation?.id,;
                   metadata: event.output.metadata
                 };
 
@@ -314,7 +314,7 @@ export const chatMachine = setup({
         }),
         on: {
           STREAM_CHUNK: {
-            actions: assign({
+            actions: assign({;
               messages: ({ context, event }) => {
                 if (event.type !== "STREAM_CHUNK") return context.messages;
 
@@ -330,7 +330,7 @@ export const chatMachine = setup({
                 const newMessage: ChatMessage = {
                   id: crypto.randomUUID(),
                   content: event.chunk,
-                  role: "assistant",
+                  role: "assistant",;
                   timestamp: new Date(),
                   conversationId: context.currentConversation?.id
                 };
@@ -380,7 +380,7 @@ export const chatMachine = setup({
         on: {
           CLEAR_ERROR: {
             target: "idle",
-            actions: assign({
+            actions: assign({;
               error: () => null
             })
           },

@@ -289,7 +289,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
 
     return {
       success: steps.every(step => step.success),
-      steps,
+      steps,;
       timestamp: new Date().toISOString()
     };
 
@@ -297,7 +297,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
     console.error('❌ Database setup failed:', error);
     return {
       success: false,
-      steps: [...steps, { step: 'Overall setup', success: false, error: error.message }],
+      steps: [...steps, { step: 'Overall setup', success: false, error: error.message }],;
       timestamp: new Date().toISOString()
     };
   }

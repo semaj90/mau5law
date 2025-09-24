@@ -53,7 +53,7 @@ class RabbitMQService extends EventEmitter {
 
   private exchanges = {
     legal: 'legal.direct',
-    legalTopic: 'legal.topic',
+    legalTopic: 'legal.topic',;
     dlx: 'legal.dlx'
   };
 
@@ -98,7 +98,7 @@ class RabbitMQService extends EventEmitter {
     if (!this.channel) throw new Error('Channel not available');
 
     const queueConfig = {
-      durable: true,
+      durable: true,;
       arguments: {
         'x-dead-letter-exchange': this.exchanges.dlx,
         'x-message-ttl': 24 * 60 * 60 * 1000, // 24 hours
@@ -225,7 +225,7 @@ class RabbitMQService extends EventEmitter {
   async publish(
     exchange: string,
     routingKey: string,
-    message: any,
+    message: any,;
     options: any = {}
   ): Promise<boolean> {
     if (!this.isConnected || !this.channel) {

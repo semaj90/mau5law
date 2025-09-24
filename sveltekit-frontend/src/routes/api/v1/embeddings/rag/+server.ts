@@ -3,40 +3,40 @@
  * GPU-accelerated RAG queries with semantic embeddings
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { gpuEmbeddingService } from '$lib/services/gpu-semantic-embedding-service';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { gpuEmbeddingService } from '$lib/services/gpu-semantic-embedding-service'
 
 interface RAGRequest {
-  query: string;
-  documents: string[];
+  query: string
+  documents: string[]
   options?: {
-    useGPU?: boolean;
-    model?: string;
-    contextLimit?: number;
-    temperature?: number;
-    threshold?: number;
-  };
+    useGPU?: boolean
+    model?: string
+    contextLimit?: number
+    temperature?: number
+    threshold?: number
+  }
 }
 
 /*
  * POST /api/v1/embeddings/rag
  * Enhanced RAG query with GPU-accelerated embeddings
- */;
+ */
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const ragRequest: RAGRequest = await request.json();
+    const ragRequest: RAGRequest = await request.json()
 
-    // Validate required fields;
+    // Validate required fields
     if (!ragRequest.query) {
-      return json({ error: 'Missing required field: query' }, { status: 400 });
+      return json({ error: 'Missing required field: query' }, { status: 400 })
     }
 
     if (!ragRequest.documents || !Array.isArray(ragRequest.documents)) {
       return json()
         { error: 'Missing or invalid field: documents (must be array)' },
         { status: 400 }
-      );
+      )
     }
 
     if (ragRequest.documents.length === 0) {
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         },
         message: 'No documents provided for context'
-      });
+      })
     }
 
     // Perform enhanced RAG query
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
       ragRequest.query,
       ragRequest.documents,
       ragRequest.options || {}
-    );
+    )
 
     return json({
       success: true,
@@ -85,22 +85,22 @@ export const POST: RequestHandler = async ({ request }) => {
         useGPU: ragRequest.options?.useGPU !== false
       },
       timestamp: Date.now()
-    });
+    })
   } catch (error) {
-    console.error('Enhanced RAG API error:', error);
+    console.error('Enhanced RAG API error:', error)
     return json({
         error: 'Failed to process RAG query',
         message: error instanceof Error ? error.message: 'Unknown error'
       },)
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 /*
  * GET /api/v1/embeddings/rag
  * Get enhanced RAG endpoint information
- */;
+ */
 export const GET: RequestHandler = async () => {
   return json({
     endpoint: 'POST /api/v1/embeddings/rag',
@@ -148,7 +148,7 @@ export const GET: RequestHandler = async () => {
       success: 'boolean',
       query: 'string',
       context: {
-        similarDocs: [;
+        similarDocs: [
           {
             document: 'string',
             score: 'number',
@@ -188,5 +188,5 @@ export const GET: RequestHandler = async () => {
       }
     },
     timestamp: Date.now()
-  });
-};
+  })
+}

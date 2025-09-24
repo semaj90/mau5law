@@ -64,9 +64,11 @@
   }
 
   // Initialize search services
-  $effect(async () => {
-    await initializeSearchServices();
+  $effect(() => {
+    (async () => {
+await initializeSearchServices();
     setupKeyboardNavigation();
+    })();
   });
 
   async function initializeSearchServices() {
@@ -80,13 +82,13 @@
           { name: 'content', weight: 0.3 },
           { name: 'entities', weight: 0.2 },
           { name: 'metadata.practiceArea', weight: 0.1 }
-        ],
+        ],;
         threshold: 0.3,
         includeScore: true,
         includeMatches: true,
         minMatchCharLength: 2,
         useExtendedSearch: true,
-        ignoreLocation: true
+        ignoreLocation: true;
       };
       fuseIndex = new Fuse(evidenceData, fuseOptions);
       console.log('✅ Fuse.js initialized with', evidenceData.length, 'evidence items');
@@ -98,7 +100,7 @@
   async function loadEvidenceIndex(): Promise<any[]> {
     // Load evidence index from multiple sources
     const response = await fetch('/api/search/index', {
-      method: 'GET',
+      method: 'GET',;
       headers: { 'Content-Type': 'application/json' }
     });
     if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -109,8 +111,8 @@
       {
         id: 'ev_001',
         title: 'Contract Evidence - Service Level Agreement',
-        content: 'Signed SLA document with performance metrics and breach remedies',
-        entities: ['SLA', 'Performance Metrics', 'Contract'],
+        content: 'Signed SLA document with performance metrics and breach remedies',;
+        entities: ['SLA', 'Performance Metrics', 'Contract'],;
         metadata: {
           practiceArea: 'Contract Law',
           documentType: 'PDF',
@@ -122,8 +124,8 @@
       {
         id: 'ev_002', 
         title: 'Audio Recording - Client Interview',
-        content: 'Recorded client statement regarding contract dispute',
-        entities: ['Client Statement', 'Contract Dispute', 'Interview'],
+        content: 'Recorded client statement regarding contract dispute',;
+        entities: ['Client Statement', 'Contract Dispute', 'Interview'],;
         metadata: {
           practiceArea: 'Contract Law',
           documentType: 'Audio',
@@ -134,9 +136,9 @@
       },
       {
         id: 'ev_003',
-        title: 'Email Chain - Breach Notification',
-        content: 'Email correspondence regarding contract breach and remedial actions',
-        entities: ['Email', 'Contract Breach', 'Notification'],
+        title: 'Email Chain - Breach Notification',;
+        content: 'Email correspondence regarding contract breach and remedial actions',;
+        entities: ['Email', 'Contract Breach', 'Notification'],;
         metadata: {
           practiceArea: 'Contract Law', 
           documentType: 'Email',
@@ -201,14 +203,15 @@
     }
 
     const results = fuseIndex.search(searchQuery);
-    return results.map.item.id,
+    return results.map(result => ({
+      id: result.item.id,;
       title: (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).item.title,
       content: (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).item.content.substring(0, 150) + '...',
       source: 'minio' as const,
       similarity: 1 - ((result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).score || 0),
       confidence: 0.8,
       metadata: (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).item.metadata,
-      highlight: {
+      highlight: {;
         title: highlightMatches((result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).item.title, (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).matches?.filter(m => m.key === 'title')),
         content: highlightMatches((result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).item.content, (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).matches?.filter(m => m.key === 'content'))
       }
@@ -219,12 +222,12 @@
   async function performVectorSearch(query: string): Promise<SearchResult[]> {
     try {
       const response = await fetch('/api/search/vector', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           query, 
-          filters: selectedFilters,
-          limit: 5 
+          filters: selectedFilters,;
+          limit: 5 ;
         })
       });
 
@@ -233,7 +236,7 @@
         return results.map((r: unknown) => ({
           ...r,
           source: 'qdrant' as const,
-          content: r.content.substring(0, 150) + '...'
+          content: r.content.substring(0, 150) + '...';
         }));
       }
     } catch (error) {
@@ -246,12 +249,12 @@
   async function performFullTextSearch(query: string): Promise<SearchResult[]> {
     try {
       const response = await fetch('/api/search/fulltext', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query,
-          filters: selectedFilters,
-          limit: 5
+          filters: selectedFilters,;
+          limit: 5;
         })
       });
 
@@ -260,7 +263,7 @@
         return results.map((r: unknown) => ({
           ...r,
           source: 'postgresql' as const,
-          content: r.content.substring(0, 150) + '...'
+          content: r.content.substring(0, 150) + '...';
         }));
       }
     } catch (error) {
@@ -274,14 +277,14 @@
     const seen = new Map();
     return results.filter(item => item.id))) {
         // Keep highest scoring result
-        const existing = seen.get.id);
+        const existing = seen.get(result.id);
         if ((result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).similarity > existing.similarity) {
-          seen.set.id, result);
+          seen.set(result.id, result);
           return true;
         }
         return false;
       }
-      seen.set.id, result);
+      seen.set(result.id, result);
       return true;
     });
   }
@@ -399,7 +402,7 @@
     </div>
     
     <input
-      bind:this={searchInput}
+      bind:this={searchInput};
       bind:value={searchQuery}
       type="search"
       autocomplete="off"
@@ -457,7 +460,7 @@
           type="range" 
           min="0" 
           max="1" 
-          step="0.1" 
+          step="0.1"
           bind:value={selectedFilters.confidenceMin}
           class="w-16 h-1"
         />
@@ -545,7 +548,7 @@
 
 <!-- UnoCSS utilities for custom styling -->
 <style>
-  .line-clamp-2 {
+  .line-clamp-2 {;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;

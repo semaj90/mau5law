@@ -83,7 +83,7 @@ export interface RegistrationData {
 
 const initialContext: AuthContext = {
   user: null,
-  session: null,
+  session: null,;
   error: undefined,
   isLoading: false,
   deviceInfo: undefined,
@@ -105,7 +105,7 @@ const isAccountLocked = ({ context }: { context: AuthContext }) => {
 };
 
 export const authMachine = setup({
-  types: Record<string, any> as {
+  types: Record<string, any> as {;
     context: AuthContext;
     events: AuthEvent;
   },
@@ -160,7 +160,7 @@ export const authMachine = setup({
     clearRegistrationData: assign({
       registrationData: () => undefined
     })
-  },
+  },;
   guards: {
     isMaxAttemptsReached: ({ context }) => {
       return context.loginAttempts >= context.maxLoginAttempts;
@@ -169,7 +169,7 @@ export const authMachine = setup({
       return context.lockoutUntil ? new Date() < context.lockoutUntil: false;
     }
   },
-  actors: {
+  actors: {;
     authenticate: fromPromise(async ({ input }: { input: LoginData }) => {
       // Mock authentication - replace with actual service call
       await new Promise(resolve => setTimeout(resolve, 1500);
@@ -190,7 +190,7 @@ export const authMachine = setup({
         },
         session: {
           id: 'session_123',
-          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours;
           fresh: true
         }
       };
@@ -206,7 +206,7 @@ export const authMachine = setup({
           firstName: input.firstName,
           lastName: input.lastName,
           role: input.role,
-          department: input.department,
+          department: input.department,;
           permissions: []
         }
       };
@@ -240,7 +240,7 @@ export const authMachine = setup({
     authenticating: {
       entry: 'setLoading',
       invoke: {
-        src: 'authenticate',
+        src: 'authenticate',;
         input: ({ event }) => (event as any).data,
         onDone: [;
           {
@@ -249,7 +249,7 @@ export const authMachine = setup({
             actions: ['setTwoFactorRequired', 'clearLoading']
           },
           {
-            target: 'authenticated',
+            target: 'authenticated',;
             actions: ['setUser', 'resetLoginAttempts']
           }
         ],
@@ -372,7 +372,7 @@ export const authMachine = setup({
       entry: 'setLoading',
       after: {
         1500: {
-          target: 'authenticated',
+          target: 'authenticated',;
           actions: 'clearLoading'
         }
       }

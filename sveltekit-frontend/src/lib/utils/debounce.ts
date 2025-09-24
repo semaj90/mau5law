@@ -4,7 +4,7 @@
  */
 
 export function debounce<T extends (...args: any[]) => any>(
-  func: T,
+  func: T,;
   wait: number,
   immediate?: boolean;
 ): (...args: Parameters<T>) => void {
@@ -29,7 +29,7 @@ export function debounce<T extends (...args: any[]) => any>(
  * Throttle utility - limits function calls to once per specified interval
  */
 export function throttle<T extends (...args: any[]) => any>(
-  func: T,
+  func: T,;
   limit: number;
 ): (...args: Parameters<T>) => void {
   let inThrottle: boolean = false;

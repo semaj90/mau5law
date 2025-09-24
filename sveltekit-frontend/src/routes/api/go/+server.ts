@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 /*
  * Go Microservices Proxy API
@@ -7,12 +7,12 @@ import type { RequestHandler } from './$types.js';
  */
 
 
-import { ensureError } from '$lib/utils/ensure-error';
-import { dev } from '$app/environment';
+import { ensureError } from '$lib/utils/ensure-error'
+import { dev } from '$app/environment'
 
-// Go microservices configuration (37 services from ecosystem summary);
+// Go microservices configuration (37 services from ecosystem summary)
 const GO_SERVICES = {
-  // Tier 1: Core Services (Always Running);
+  // Tier 1: Core Services (Always Running)
   'enhanced-rag': {
     baseUrl: 'http://localhost:8094',
     healthPath: '/api/health',
@@ -32,7 +32,7 @@ const GO_SERVICES = {
     capabilities: ['legal-grpc', 'gpu-compute', 'search']
   },
   
-  // Tier 2: Advanced Services (New Implementations);
+  // Tier 2: Advanced Services (New Implementations)
   'advanced-cuda': {
     baseUrl: 'http://localhost:8095',
     healthPath: '/health',
@@ -111,17 +111,17 @@ const GO_SERVICES = {
   'auth-service': { baseUrl: 'http://localhost:8134', healthPath: '/health', protocols: ['http'], capabilities: ['authentication', 'authorization'] },
   'security-scanner': { baseUrl: 'http://localhost:8135', healthPath: '/health', protocols: ['http'], capabilities: ['security-scanning', 'vulnerability-detection'] },
   'rate-limiter': { baseUrl: 'http://localhost:8136', healthPath: '/health', protocols: ['http'], capabilities: ['rate-limiting', 'throttling'] }
-} as const;
+} as const
 
-// Request routing schema;
+// Request routing schema
 export interface GoServiceRequest {
-  service: keyof typeof GO_SERVICES;
-  endpoint: string;
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  data?: any;
-  headers?: Record<string, string>;
-  protocol?: 'http' | 'quic' | 'grpc';
-  timeout?: number;
+  service: keyof typeof GO_SERVICES
+  endpoint: string
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE'
+  data?: any
+  headers?: Record<string, string>
+  protocol?: 'http' | 'quic' | 'grpc'
+  timeout?: number
 }
 
 // Helper to make HTTP requests to Go services
@@ -131,9 +131,9 @@ async function makeServiceRequest(
   method: string = 'GET',
   data?: any,
   headers: Record<string, string> = {},
-  timeout: number = 30000;
+  timeout: number = 30000
 ): Promise<any> {
-  const url = `${serviceConfig.baseUrl}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`;
+  const url = `${serviceConfig.baseUrl}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`
   
   const requestConfig: RequestInit = {
     method,
@@ -143,36 +143,36 @@ async function makeServiceRequest(
       ...headers
     },
     signal: AbortSignal.timeout(timeout)
-  };
+  }
 
   if (data && ['POST', 'PUT', 'PATCH'].includes(method)) {
-    requestConfig.body = JSON.stringify(data);
+    requestConfig.body = JSON.stringify(data)
   }
 
   try {
-    const response = await fetch(url, requestConfig);
+    const response = await fetch(url, requestConfig)
     
-    const contentType = (response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).headers.get('content-type');
+    const contentType = (response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).headers.get('content-type')
     const responseData = contentType?.includes('application/json') 
       ? await (response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).json()
-      : await (response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).text();
+      : await (response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).text()
 
     return {
       success: (response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).ok,
       status: (response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).status,
       data: responseData,
       headers: Object.fromEntries((response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).headers.entries())
-    };
+    }
   } catch (err: any) {
-    console.error(`Go service request failed for ${url}:`, err);
-    throw new Error(`Service request failed: ${err.message}`);
+    console.error(`Go service request failed for ${url}:`, err)
+    throw new Error(`Service request failed: ${err.message}`)
   }
 }
 
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   try {
     // Parse request body
-    const body = await request.json().catch(() => ({});
+    const body = await request.json().catch(() => ({})
     const {
       service,
       endpoint,
@@ -181,40 +181,40 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       headers = {},
       protocol = 'http',
       timeout = 30000
-    }: GoServiceRequest = body;
+    }: GoServiceRequest = body
 
-    // Validate service;
+    // Validate service
     if (!service || !GO_SERVICES[service]) {
       throw error(400, ensureError({
         message: `Invalid service: ${service}. Available services: ${Object.keys(GO_SERVICES).join(', ')}`,
         code: 'INVALID_SERVICE'
-      });
+      })
     }
 
-    // Validate endpoint;
+    // Validate endpoint
     if (!endpoint) {
       throw error(400, ensureError({
         message: 'Endpoint is required',
         code: 'MISSING_ENDPOINT'
-      });
+      })
     }
 
-    const serviceConfig = GO_SERVICES[service];
+    const serviceConfig = GO_SERVICES[service]
 
-    // Protocol validation;
+    // Protocol validation
     if (!serviceConfig.protocols.includes(protocol)) {
       throw error(400, ensureError({
         message: `Service ${service} doesn't support protocol ${protocol}. Supported: ${serviceConfig.protocols.join(', ')}`,
         code: 'UNSUPPORTED_PROTOCOL'
-      });
+      })
     }
 
-    // Add client information to headers for logging;
+    // Add client information to headers for logging
     const clientHeaders = {
       'X-Client-IP': getClientAddress(),
       'X-Forwarded-By': 'SvelteKit-Proxy',
       ...headers
-    };
+    }
 
     // Route request to appropriate Go service
     const result = await makeServiceRequest(
@@ -224,9 +224,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       data,
       clientHeaders,
       timeout
-    );
+    )
 
-    // Return the response from Go service;
+    // Return the response from Go service
     return json({
       success: (result as { success?: any; data?: any; status?: any; headers?: any }).success,
       message: (result as { success?: any; data?: any; status?: any; headers?: any }).success ? 'Request successful' : 'Request failed',
@@ -248,13 +248,13 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         // Forward relevant headers from Go service
         ...((result as { success?: any; data?: any; status?: any; headers?: any }).headers['content-encoding'] && { 'Content-Encoding': (result as { success?: any; data?: any; status?: any; headers?: any }).headers['content-encoding'] })
       }
-    });
+    })
 
   } catch (err: any) {
-    console.error('Go services proxy error:', err);
+    console.error('Go services proxy error:', err)
     
-    const statusCode = err.status || 500;
-    const message = err.body?.message || err.message || 'Go service request failed';
+    const statusCode = err.status || 500
+    const message = err.body?.message || err.message || 'Go service request failed'
 
     return json({
       success: false,
@@ -267,17 +267,17 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     }, { 
       status: statusCode,
       headers: { 'Content-Type': 'application/json' }
-    });
+    })
   }
-};
+}
 
-// GET - Service status and capabilities;
+// GET - Service status and capabilities
 export const GET: RequestHandler = async () => {
   try {
-    // Check health of all Go services;
+    // Check health of all Go services
     const serviceStatus = await Promise.all(Object.entries(GO_SERVICES).map(async ([name, config]) => {
         try {
-          const healthCheck = await makeServiceRequest(config, config.healthPath || '/health', 'GET', undefined, {}, 5000));
+          const healthCheck = await makeServiceRequest(config, config.healthPath || '/health', 'GET', undefined, {}, 5000))
           return {
             name,
             status: healthCheck.success ? 'healthy' : 'unhealthy',
@@ -287,7 +287,7 @@ export const GET: RequestHandler = async () => {
               capabilities: config.capabilities
             },
             response: healthCheck.data
-          };
+          }
         } catch (err: any) {
           return {
             name,
@@ -298,13 +298,13 @@ export const GET: RequestHandler = async () => {
               capabilities: config.capabilities
             },
             error: err.message
-          };
+          }
         }
       })
-    );
+    )
 
-    const healthyServices = serviceStatus.filter(item => item.length);
-    const totalServices = serviceStatus.length;
+    const healthyServices = serviceStatus.filter(item => item.length)
+    const totalServices = serviceStatus.length
 
     return json({
       success: true,
@@ -334,10 +334,10 @@ export const GET: RequestHandler = async () => {
         'Content-Type': 'application/json',
         ...(dev && { 'Access-Control-Allow-Origin': '*' })
       }
-    });
+    })
 
   } catch (err: any) {
-    console.error('Go services status check failed:', err);
+    console.error('Go services status check failed:', err)
     
     return json({
       success: false,
@@ -350,11 +350,11 @@ export const GET: RequestHandler = async () => {
     }, { 
       status: 500,
       headers: { 'Content-Type': 'application/json' }
-    });
+    })
   }
-};
+}
 
-// OPTIONS handler for CORS preflight requests;
+// OPTIONS handler for CORS preflight requests
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {
     status: 200,
@@ -364,5 +364,5 @@ export const OPTIONS: RequestHandler = async () => {
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       'Access-Control-Max-Age': '86400', // 24 hours
     }
-  });
-};
+  })
+}

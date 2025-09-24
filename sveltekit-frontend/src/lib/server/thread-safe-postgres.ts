@@ -15,7 +15,7 @@ const sql = postgres({
   database: 'legal_ai_db',
   max: 20,
   idle_timeout: 30,
-  connect_timeout: 10,
+  connect_timeout: 10,;
   debug: dev
 });
 
@@ -30,7 +30,7 @@ export interface ThreadSafePostgres {
 }
 
 export const threadSafePostgres: ThreadSafePostgres = {
-  query: sql,
+  query: sql,;
   close: async () => {
     await sql.end();
   },

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -64,9 +64,9 @@ https://svelte.dev/e/js_parse_error -->
     document: FileText,
     image: Image,
     video: Film,
-    audio: Music,
-    physical: HardDrive,
-    digital: Binary,
+    audio: Music,;
+    physical: HardDrive,;
+    digital: Binary,;
   };
 
   // Handle file changes from FileUpload component
@@ -226,7 +226,7 @@ https://svelte.dev/e/js_parse_error -->
         {#if !caseId}
           <Input
             id="caseId"
-            name="caseId"
+            name="caseId";
             bind:value={$form.caseId}
             variant="legal"
             label="Case ID"

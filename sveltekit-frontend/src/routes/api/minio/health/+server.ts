@@ -1,18 +1,18 @@
 // MinIO Health Check API Endpoint
 // Verifies MinIO connectivity and bucket status
 
-import { json } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
-import { Client as MinIOClient } from 'minio';
-import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit'
+import { env } from '$env/dynamic/private'
+import { Client as MinIOClient } from 'minio'
+import type { RequestHandler } from './$types'
 
 export const GET: RequestHandler = async () => {
   try {
-    const minioEndpoint = env.MINIO_ENDPOINT || 'localhost:9000';
-    const accessKey = env.MINIO_ACCESS_KEY || 'minio';
-    const secretKey = env.MINIO_SECRET_KEY || 'minio123';
-    const bucketName = env.MINIO_BUCKET_NAME || 'legal-documents';
-    const useSSL = env.MINIO_USE_SSL === 'true';
+    const minioEndpoint = env.MINIO_ENDPOINT || 'localhost:9000'
+    const accessKey = env.MINIO_ACCESS_KEY || 'minio'
+    const secretKey = env.MINIO_SECRET_KEY || 'minio123'
+    const bucketName = env.MINIO_BUCKET_NAME || 'legal-documents'
+    const useSSL = env.MINIO_USE_SSL === 'true'
 
     // Initialize MinIO client
     const minioClient = new MinIOClient({
@@ -21,31 +21,31 @@ export const GET: RequestHandler = async () => {
       useSSL,
       accessKey,
       secretKey
-    });
+    })
 
     // Check bucket existence and connectivity
-    const bucketExists = await minioClient.bucketExists(bucketName);
+    const bucketExists = await minioClient.bucketExists(bucketName)
 
     // Get bucket region (tests connectivity)
-    let region = 'unknown';
+    let region = 'unknown'
     try {
-      region = await minioClient.getBucketRegion(bucketName);
+      region = await minioClient.getBucketRegion(bucketName)
     } catch (err) {
-      console.warn('Could not get bucket region:', err);
+      console.warn('Could not get bucket region:', err)
     }
 
     // List some objects to verify read permissions
-    let objectCount = 0;
+    let objectCount = 0
     try {
-      const objectStream = minioClient.listObjects(bucketName, '', false);
-      const objects: any[] = [];
+      const objectStream = minioClient.listObjects(bucketName, '', false)
+      const objects: any[] = []
       for await (const obj of objectStream) {
-        objects.push(obj);
+        objects.push(obj)
         if (objects.length >= 10) break; // Limit to first 10 objects
       }
-      objectCount = objects.length;
+      objectCount = objects.length
     } catch (err) {
-      console.warn('Could not list objects:', err);
+      console.warn('Could not list objects:', err)
     }
 
     const healthStatus = {
@@ -70,14 +70,14 @@ export const GET: RequestHandler = async () => {
         encryption: true,
         lifecycle: true
       }
-    };
+    }
 
-    console.log(`🏥 MinIO Health Check: ${healthStatus.status} - Bucket exists: ${bucketExists}`);
+    console.log(`🏥 MinIO Health Check: ${healthStatus.status} - Bucket exists: ${bucketExists}`)
 
-    return json(healthStatus);
+    return json(healthStatus)
 
   } catch (error) {
-    console.error('MinIO health check failed:', error);
+    console.error('MinIO health check failed:', error)
     return json(
       {
         status: 'unhealthy',
@@ -90,6 +90,6 @@ export const GET: RequestHandler = async () => {
         }
       },
       { status: 503 }
-    );
+    )
   }
-};
+}

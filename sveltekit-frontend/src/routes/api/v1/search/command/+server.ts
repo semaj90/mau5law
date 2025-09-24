@@ -1,27 +1,27 @@
-import { json } from '@sveltejs/kit';
-import { db, sql } from '$lib/server/db';
-import { cases, evidence, legalDocuments, users } from '$lib/server/db';
-import { helpers } from '$lib/server/db';
-import { vectorOps } from '$lib/server/db/enhanced-vector-operations';
-import type { CommandSearchRequest, CommandSearchResponse } from '$lib/types/api';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import { db, sql } from '$lib/server/db'
+import { cases, evidence, legalDocuments, users } from '$lib/server/db'
+import { helpers } from '$lib/server/db'
+import { vectorOps } from '$lib/server/db/enhanced-vector-operations'
+import type { CommandSearchRequest, CommandSearchResponse } from '$lib/types/api'
+import type { RequestHandler } from './$types.js'
 
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    const user = locals.user;
+    const user = locals.user
     if (!user) {
       return json({
         success: false,
         error: 'Unauthorized'
-      }, { status: 401 });
+      }, { status: 401 })
     }
 
-    const body: CommandSearchRequest = await request.json();
-    const query = body.query;
-    const types = body.types ?? ['cases', 'evidence', 'documents', 'people'];
-    const limit = body.limit ?? 10;
-    const userId = body.userId;
+    const body: CommandSearchRequest = await request.json()
+    const query = body.query
+    const types = body.types ?? ['cases', 'evidence', 'documents', 'people']
+    const limit = body.limit ?? 10
+    const userId = body.userId
 
     if (!query || query.trim().length < 2) {
       return json({
@@ -29,20 +29,20 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           error: 'Query must be at least 2 characters long'
         },)>
         { status: 400 }
-      );
+      )
     }
 
-    const searchQuery = query.trim();
+    const searchQuery = query.trim()
     const results = {
       cases: [] as any[],
       evidence: [] as any[],
       documents: [] as any[],
       people: [] as any[]
-    };
+    }
 
-    let totalResults = 0;
+    let totalResults = 0
 
-    // Search Cases;
+    // Search Cases
     if (types.includes('cases')) {
       try {
         const caseResults = await db
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             ) as any
           )
           .orderBy(helpers.desc?.(cases.updatedAt) as any)
-          .limit(limit);
+          .limit(limit)
 
         results.cases = caseResults.map((case_: any) => ({
           ...case_,
@@ -68,18 +68,18 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             searchQuery,
             case_.title + ' ' + (case_.description || '')
           )
-        });
+        })
 
-        totalResults += caseResults.length;
+        totalResults += caseResults.length
       } catch (error: any) {
-        console.error('Error searching cases:', error);
+        console.error('Error searching cases:', error)
       }
     }
 
-    // Search Evidence;
+    // Search Evidence
     if (types.includes('evidence')) {
       try {
-        const evidenceResults = await db;
+        const evidenceResults = await db
           .select({
             ...evidence,
             caseTitle: cases.title
@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             ) as any
           )
           .orderBy(helpers.desc?.(evidence.updatedAt) as any)
-          .limit(limit);
+          .limit(limit)
 
         results.evidence = evidenceResults.map((item: any & { title?: string; description?: string | null }) => ({
             ...item,
@@ -106,15 +106,15 @@ export const POST: RequestHandler = async ({ request, locals }) => {
               ((item as { title?: any; description?: any; id?: any }).title || '') + ' ' + ((item as { title?: any; description?: any; id?: any }).description || '')
             )
           })
-        );
+        )
 
-        totalResults += evidenceResults.length;
+        totalResults += evidenceResults.length
       } catch (error: any) {
-        console.error('Error searching evidence:', error);
+        console.error('Error searching evidence:', error)
       }
     }
 
-    // Search Documents;
+    // Search Documents
     if (types.includes('documents')) {
       try {
         const documentResults = await db
@@ -128,7 +128,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             ) as any
           )
           .orderBy(helpers.desc?.(legalDocuments.updatedAt) as any)
-          .limit(limit);
+          .limit(limit)
 
         results.documents = documentResults.map((doc: any) => ({
     ...doc,
@@ -136,15 +136,15 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       searchQuery,
       doc.title + ' ' + (doc.content || '').substring(0, 500)
     )
-  });
+  })
 
-        totalResults += documentResults.length;
+        totalResults += documentResults.length
       } catch (error: any) {
-        console.error('Error searching documents:', error);
+        console.error('Error searching documents:', error)
       }
     }
 
-    // Search People;
+    // Search People
     if (types.includes('people')) {
       try {
         const userResults = await db
@@ -160,7 +160,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             ) as any
           )
           .orderBy(helpers.desc?.(users.updatedAt) as any)
-          .limit(limit);
+          .limit(limit)
 
         results.people = userResults.map((person: any) => ({
           ...person,
@@ -168,51 +168,51 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             searchQuery,
             (person.name || '') + ' ' + (person.email || '') + ' ' + (person.department || '')
           )
-        });
+        })
 
-        totalResults += userResults.length;
+        totalResults += userResults.length
       } catch (error: any) {
-        console.error('Error searching people:', error);
+        console.error('Error searching people:', error)
       }
     }
 
-    // Enhanced vector search (if available and requested);
+    // Enhanced vector search (if available and requested)
     if (query.length >= 5) {
       try {
         const vectorResults = await vectorOps.performRAGSearch({
           query: searchQuery,
           userId: userId || user.id,
           limit: 5
-        });
+        })
 
-        // Merge vector results with existing results;
+        // Merge vector results with existing results
         for (const result of vectorResults) {
-          const type = (result as { metadata?: any; id?: any; content?: any; similarity?: any }).metadata?.type;
+          const type = (result as { metadata?: any; id?: any; content?: any; similarity?: any }).metadata?.type
           if (type && results[type as keyof typeof results]) {
-            const existing = results[type as keyof typeof results] as any[];
-            const existingIds = existing.map((item) => (item as { title?: any; description?: any; id?: any }).id);
+            const existing = results[type as keyof typeof results] as any[]
+            const existingIds = existing.map((item) => (item as { title?: any; description?: any; id?: any }).id)
 
             if (!existingIds.includes((result as { metadata?: any; id?: any; content?: any; similarity?: any }).id)) {
-              // Add vector result with high similarity score;
+              // Add vector result with high similarity score
               existing.push({
                 id: (result as { metadata?: any; id?: any; content?: any; similarity?: any }).id,
                 ...result.metadata,
                 content: (result as { metadata?: any; id?: any; content?: any; similarity?: any }).content,
                 similarity: (result as { metadata?: any; id?: any; content?: any; similarity?: any }).similarity
-              });
+              })
             }
           }
         }
       } catch (error: any) {
-        console.warn('Vector search failed:', error);
+        console.warn('Vector search failed:', error)
       }
     }
 
-    // Sort all results by similarity;
+    // Sort all results by similarity
     Object.keys(results).forEach((key) => {
-      const resultArray = results[key as keyof typeof results] as any[];
-      resultArray.sort((a, b) => (b.similarity || 0) - (a.similarity || 0);
-    });
+      const resultArray = results[key as keyof typeof results] as any[]
+      resultArray.sort((a, b) => (b.similarity || 0) - (a.similarity || 0)
+    })
 
     const response: CommandSearchResponse = {
       success: true,
@@ -221,45 +221,45 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         totalResults,
         timestamp: new Date().toISOString()
       }
-    };
+    }
 
-    return json(response as any);
+    return json(response as any)
 
   } catch (error: any) {
-    console.error('Command search error:', error);
+    console.error('Command search error:', error)
     return json({
       success: false,
       error: 'Internal server error',
       timestamp: new Date().toISOString()
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
-// Simple similarity calculation (can be enhanced with more sophisticated algorithms);
+// Simple similarity calculation (can be enhanced with more sophisticated algorithms)
 function calculateSimilarity(query: string, text: string): number {
-  const queryLower = query.toLowerCase();
-  const textLower = text.toLowerCase();
+  const queryLower = query.toLowerCase()
+  const textLower = text.toLowerCase()
 
-  // Exact match gets highest score;
+  // Exact match gets highest score
   if (textLower.includes(queryLower)) {
-    const position = textLower.indexOf(queryLower);
+    const position = textLower.indexOf(queryLower)
     // Earlier matches get higher scores
-    return Math.max(0.8, 1 - (position / text.length * 0.2);
+    return Math.max(0.8, 1 - (position / text.length * 0.2)
   }
 
   // Word-based matching
-  const queryWords = queryLower.split(/\s+/);
-  const textWords = textLower.split(/\s+/);
+  const queryWords = queryLower.split(/\s+/)
+  const textWords = textLower.split(/\s+/)
 
-  let matchCount = 0;
+  let matchCount = 0
   for (const queryWord of queryWords) {
     for (const textWord of textWords) {
       if (textWord.includes(queryWord) || queryWord.includes(textWord)) {
-        matchCount++;
-        break;
+        matchCount++
+        break
       }
     }
   }
 
-  return Math.min(0.7, matchCount / queryWords.length * 0.7);
+  return Math.min(0.7, matchCount / queryWords.length * 0.7)
 }

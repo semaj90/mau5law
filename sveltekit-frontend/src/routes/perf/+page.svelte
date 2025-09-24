@@ -160,8 +160,8 @@
         hitRate: 0.85 + Math.random() * 0.14, // 85-99% hit rate
         evictions: Math.floor(Math.random() * 200),
         size: Math.floor(Math.random() * 1024 * 1024 * 100), // Up to 100MB
-        maxSize: 1024 * 1024 * 256, // 256MB max
-        entries: Math.floor(Math.random() * 10000) + 1000,
+        maxSize: 1024 * 1024 * 256, // 256MB max;
+        entries: Math.floor(Math.random() * 10000) + 1000,;
         types: {
           'function-results': Math.floor(Math.random() * 3000),
           'compiled-wasm': Math.floor(Math.random() * 100),
@@ -202,29 +202,29 @@
           memory: 64 * 1024 * 1024,
           instances: 2,
           calls: Math.floor(Math.random() * 10000) + 5000,
-          compilationTime: 150 + Math.random() * 100
+          compilationTime: 150 + Math.random() * 100;
         },
         {
           name: 'vector-operations',
           memory: 32 * 1024 * 1024,
           instances: 1,
           calls: Math.floor(Math.random() * 5000) + 2000,
-          compilationTime: 80 + Math.random() * 50
+          compilationTime: 80 + Math.random() * 50;
         },
         {
           name: 'crypto-utils',
           memory: 16 * 1024 * 1024,
           instances: 3,
           calls: Math.floor(Math.random() * 15000) + 8000,
-          compilationTime: 45 + Math.random() * 30
+          compilationTime: 45 + Math.random() * 30;
         }
       ],
       totalMemory: 112 * 1024 * 1024,
       executionTime: {
         avg: 8.5 + Math.random() * 15,
         p95: 25.2 + Math.random() * 20,
-        p99: 58.3 + Math.random() * 30
-      },
+        p99: 58.3 + Math.random() * 30;
+      },;
       optimizations: {
         cacheHits: Math.floor(Math.random() * 1000) + 500,
         inlineFunctions: Math.floor(Math.random() * 200) + 100,
@@ -260,18 +260,18 @@
       eventLoop: {
         lag: Math.random() * 25 + 2, // 2-27ms lag
         utilization: Math.random() * 0.8 + 0.1, // 10-90% utilization
-        idle: Math.random() * 0.5 + 0.3 // 30-80% idle
+        idle: Math.random() * 0.5 + 0.3 // 30-80% idle;
       },
       memory: {
         rss: (150 + Math.random() * 100) * 1024 * 1024,
         heapTotal: (80 + Math.random() * 50) * 1024 * 1024,
         heapUsed: (60 + Math.random() * 30) * 1024 * 1024,
-        external: (20 + Math.random() * 15) * 1024 * 1024
+        external: (20 + Math.random() * 15) * 1024 * 1024;
       },
       handles: {
         active: Math.floor(Math.random() * 150) + 50,
-        requests: Math.floor(Math.random() * 80) + 20
-      },
+        requests: Math.floor(Math.random() * 80) + 20;
+      },;
       performance: {
         dnsLookups: Math.floor(Math.random() * 100),
         httpRequests: Math.floor(Math.random() * 1000) + 200,

@@ -5,7 +5,7 @@
 
   import {   } from "svelte";
 
-  // TODO: Replace createEventDispatcher with callback props in Svelte 5
+
 
   let notesContent: string = $state('');
   let selectedCaseForNotes: string = $state(''); // Assuming notes can be linked to a case
@@ -78,7 +78,7 @@
 </div>
 
 <style>
-  .card {
+  .card {;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);

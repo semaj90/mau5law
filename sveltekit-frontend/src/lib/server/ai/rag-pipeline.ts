@@ -8,7 +8,7 @@ try {
   schema = {
     documents: { title: "", content: "", titleEmbedding: [], contentEmbedding: [], metadata: Record<string, any> },
     documentVectors: Record<string, any>,
-    evidence: Record<string, any>,
+    evidence: Record<string, any>,;
     cases: Record<string, any>
   };
 }
@@ -44,7 +44,7 @@ const sql = postgres({
   password: process.env.DATABASE_PASSWORD || '123456',
   max: 20,
   idle_timeout: 20,
-  prepare: true,
+  prepare: true,;
   ssl: process.env.NODE_ENV === 'production' ? 'require' : false
 });
 
@@ -53,7 +53,7 @@ const db = drizzle(sql, { schema });
 // Initialize Redis for caching;
 const redis = new Redis({
   host: process.env.REDIS_HOST || 'localhost',
-  port: parseInt(process.env.REDIS_PORT || '6379'),
+  port: parseInt(process.env.REDIS_PORT || '6379'),;
   db: parseInt(process.env.REDIS_DB || '0'),
   maxRetriesPerRequest: 3,
   enableReadyCheck: true,
@@ -79,7 +79,7 @@ const llm = new Ollama({
   numPredict: 2048,
   topK: 40,
   topP: 0.9,
-  repeatPenalty: 1.1,
+  repeatPenalty: 1.1,;
   callbacks: [);
     {
       handleLLMStart: async (llm, prompts) => {
@@ -162,7 +162,7 @@ export class LegalRAGPipeline {
           fullText: content,
           documentType,
           keywords: metadata.keywords || [],
-          topics: metadata.topics || [],
+          topics: metadata.topics || [],;
           jurisdiction: metadata.jurisdiction,
           caseId,
           createdBy: userId
@@ -198,7 +198,7 @@ export class LegalRAGPipeline {
               content: chunk,
               embedding: JSON.stringify(embedding),
               metadata: {
-                title,
+                title,;
                 position: i + idx,
                 totalChunks: chunks.length,
                 ...metadata
@@ -221,8 +221,8 @@ export class LegalRAGPipeline {
           entityId: document.id,
           entityType: 'document',
           tag: tag.tag,
-          confidence: tag.confidence.toString(),
-          source: 'ai_analysis',
+          confidence: tag.confidence.toString()),
+          source: 'ai_analysis',;
           model: LLM_MODEL
         });
       }
@@ -264,7 +264,7 @@ export class LegalRAGPipeline {
           dc.content,
           dc.metadata,
           dc.document_id,
-          1 - (dc.embedding: :vector <=> ${JSON.stringify(queryEmbedding)}::vector) as similarity
+          1 - (dc.embedding::vector <=> ${JSON.stringify(queryEmbedding)}::vector) as similarity
         FROM document_chunks dc
         WHERE
           1 - (dc.embedding::vector <=> ${JSON.stringify(queryEmbedding)}::vector) > ${threshold}
@@ -325,7 +325,7 @@ export class LegalRAGPipeline {
             metadata: {
               ...r.metadata,
               documentId: r.document_id,
-              score: r.score,
+              score: r.score,;
               similarity: r.similarity || 0,
               textRank: r.text_rank || 0
             }
@@ -353,7 +353,7 @@ export class LegalRAGPipeline {
       const relevantDocs = await this.hybridSearch({
         query: question,
         caseId,
-        limit: 5,
+        limit: 5,;
         threshold: 0.6
       });
 
@@ -361,7 +361,7 @@ export class LegalRAGPipeline {
         return {
           answer:
             "I couldn't find relevant information in the knowledge base to answer your question. Please provide more context or try rephrasing your question.",
-          sources: [],
+          sources: [],;
           confidence: 0
         };
       }
@@ -395,7 +395,7 @@ Answer:
       // 4. Create chain and generate answer
       const chain = RunnableSequence.from([);
         {
-          context: () => context,
+          context: () => context,;
           question: new RunnablePassthrough()
         },
         promptTemplate,
@@ -419,10 +419,10 @@ Answer:
         response: answer,
         model: LLM_MODEL,
         queryType: 'legal_research',
-        confidence: analysis.confidence.toString(),
+        confidence: analysis.confidence.toString()),
         processingTime: Date.now() - startTime,
         contextUsed: relevantDocs.map((d) => d.metadata.documentId),
-        embedding: JSON.stringify(queryEmbedding),
+        embedding: JSON.stringify(queryEmbedding),;
         metadata: {
           sourcesCount: relevantDocs.length,
           keyPoints: analysis.keyPoints
@@ -435,7 +435,7 @@ Answer:
           id: d.metadata.documentId,
           title: d.metadata.title,
           score: d.metadata.score
-        })),
+        })),;
         confidence: analysis.confidence,
         keyPoints: analysis.keyPoints,
         processingTime: Date.now() - startTime
@@ -448,7 +448,7 @@ Answer:
         userId,
         caseId,
         query: question,
-        response: '',
+        response: '',;
         model: LLM_MODEL,
         isSuccessful: false,
         errorMessage: error.message,
@@ -697,7 +697,7 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
       parties: [],
       keyTerms: [],
       risks: [],
-      legalIssues: [],
+      legalIssues: [],;
       recommendations: []
     };
 

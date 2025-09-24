@@ -7,10 +7,10 @@
 
   import { enhance } from '$app/forms';
   import { goto } from '$app/navigation';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Label } from '$lib/components/ui/label';
   import { Eye, EyeOff, Shield, Loader2, AlertCircle, UserPlus } from 'lucide-svelte';
   interface Props {
@@ -39,13 +39,13 @@
     lastName: '',
     password: '',
     confirmPassword: '',
-    role: 'analyst',
-    department: '',
+    role: 'analyst',;
+    department: '',;
     jurisdiction: '',
     badgeNumber: '',
     agreeToTerms: false,
     agreeToPrivacy: false,
-    enableTwoFactor: false
+    enableTwoFactor: false;
   });
 
   // Role options
@@ -182,7 +182,7 @@
             id="firstName"
             name="firstName"
             type="text"
-            placeholder="John"
+            placeholder="John";
             bind:value={formData.firstName}
             disabled={isLoading}
             required
@@ -228,7 +228,7 @@
           <Label for="role">Professional Role</Label>
           <select
             id="role"
-            name="role"
+            name="role";
             bind:value={formData.role}
             disabled={isLoading}
             required
@@ -263,7 +263,7 @@
             id="department"
             name="department"
             type="text"
-            placeholder="District Attorney's Office"
+            placeholder="District Attorney's Office";
             bind:value={formData.department}
             disabled={isLoading}
             required
@@ -385,7 +385,7 @@
           <input
             type="checkbox"
             id="agreeToTerms"
-            name="agreeToTerms"
+            name="agreeToTerms";
             bind:checked={formData.agreeToTerms}
             disabled={isLoading}
             required
@@ -400,7 +400,7 @@
           <input
             type="checkbox"
             id="agreeToPrivacy"
-            name="agreeToPrivacy"
+            name="agreeToPrivacy";
             bind:checked={formData.agreeToPrivacy}
             disabled={isLoading}
             required

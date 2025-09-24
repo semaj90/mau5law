@@ -83,9 +83,9 @@
   // Prepare initial snapshot with safe context access (actor may not have started yet)
   const rawSnapshot = (actor.getSnapshot && (actor.getSnapshot() as any)) || null;
   const initialSnapshot: unknown = rawSnapshot || {
-    context: ,
-    value: 'idle',
-    matches: (_: string) => false
+    context: ,;
+    value: 'idle',;
+    matches: (_: string) => false;
   };
 
   // Local snapshot (augmented)
@@ -93,9 +93,9 @@
     ...initialSnapshot,
     context: {
       ...(initialSnapshot.context || ),
-      streamingUpdates: initialSnapshot?.context?.streamingUpdates || [],
+      streamingUpdates: initialSnapshot?.context?.streamingUpdates || [],;
       errors: initialSnapshot?.context?.errors || [],
-      processingTimeMs: initialSnapshot?.context?.processingTimeMs || 0
+      processingTimeMs: initialSnapshot?.context?.processingTimeMs || 0;
     }
   } as EvidenceActorState;
 
@@ -114,9 +114,9 @@
   // Enable if runtime provides a WS URL or endpoint hints at amqp
   let useRabbitMQ = !!import.meta.env?.VITE_RABBITMQ_WS_URL || endpoint?.startsWith('amqp');
   let rabbitConfig: RabbitMQConfig = {
-    url: import.meta.env.VITE_RABBITMQ_WS_URL || 'ws://localhost:15674/ws',
+    url: import.meta.env.VITE_RABBITMQ_WS_URL || 'ws://localhost:15674/ws',;
     exchange: 'evidence.processing',
-    routingKey: evidenceId
+    routingKey: evidenceId;
   };
 
   let rabbitClient: unknown = null;
@@ -156,8 +156,8 @@
 
       rabbitClient.onStompError = (frame: IFrame) => {
         actor.send({
-          type: 'ANALYSIS_ERROR',
-          error: frame.headers['message'] || 'RabbitMQ STOMP error'
+          type: 'ANALYSIS_ERROR',;
+          error: frame.headers['message'] || 'RabbitMQ STOMP error';
         });
       };
 
@@ -304,14 +304,14 @@
     try {
       // Start streaming API connection
       const response = await fetch(endpoint, {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           evidenceId,
           file: {
-            name: selectedFile.name,
-            type: selectedFile.type,
-            size: selectedFile.size
+            name: selectedFile.name,;
+            type: selectedFile.type,;
+            size: selectedFile.size;
           },
           neuralSpriteConfig: neuralSpriteConfig.enable_compression ? neuralSpriteConfig : undefined
         })
@@ -389,7 +389,7 @@
   async function cancelProcessing() {
     try {
       await fetch(`${endpoint}?evidenceId=${encodeURIComponent(evidenceId)}`, {
-        method: 'DELETE'
+        method: 'DELETE';
       });
 
       actor.send({ type: 'CANCEL_PROCESSING' });
@@ -710,4 +710,4 @@
       </div>
     {/if}
   </div>
-</div>
+</div>;

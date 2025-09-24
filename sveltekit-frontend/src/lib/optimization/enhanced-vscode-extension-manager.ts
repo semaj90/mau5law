@@ -111,7 +111,7 @@ export class EnhancedVSCodeExtensionManager extends EventEmitter {
         commandId,
         executionTime: endTime - startTime,
         memoryUsed: 0, // TODO: Implement memory tracking
-        timestamp: Date.now(),
+        timestamp: Date.now(),;
         success: true,
         resourceType: "json"
       };
@@ -126,7 +126,7 @@ export class EnhancedVSCodeExtensionManager extends EventEmitter {
         commandId,
         executionTime: endTime - startTime,
         memoryUsed: 0,
-        timestamp: Date.now(),
+        timestamp: Date.now(),;
         success: false,
         resourceType: "json"
       };

@@ -54,7 +54,7 @@
     isSubmitting = true;
     try {
       const response = await fetch('/api/v1/feedback?action=rate', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId,
@@ -62,19 +62,19 @@
           interactionId,
           ratingType,
           score: rating,
-          feedback: feedback.trim() || undefined,
+          feedback: feedback.trim() || undefined,;
           context: {
             ...context,
             page: $page.url.pathname,
             timestamp: new Date().toISOString(),
-            userAgent: navigator.userAgent,
+            userAgent: navigator.userAgent,;
             viewport: { width: window.innerWidth, height: window.innerHeight }
           },
           metadata: {
-            platform: navigator.platform,
+            platform: navigator.platform,;
             language: navigator.language,
             featureUsed: ratingType,
-            deviceType: window.innerWidth < 768 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop'
+            deviceType: window.innerWidth < 768 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop';
           }
         })
       });
@@ -114,7 +114,7 @@
     search_relevance: 'Search Relevance',
     ui_experience: 'User Experience',
     ai_accuracy: 'AI Accuracy',
-    performance: 'Performance'
+    performance: 'Performance';
   };
 </script>
 
@@ -191,7 +191,7 @@
 {/if}
 
 <style>
-  .feedback-overlay {
+  .feedback-overlay {;
     position: fixed;
     top: 0;
     left: 0;

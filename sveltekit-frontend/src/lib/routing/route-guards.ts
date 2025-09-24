@@ -103,13 +103,13 @@ export class RouteGuards {
 
     if (!user) {
       return {
-        allowed: false,
+        allowed: false,;
         redirect: '/auth/login?redirectTo=' + encodeURIComponent(event.url.pathname)
       };
     }
 
     return {
-      allowed: true,
+      allowed: true,;
       data: { user }
     };
   };
@@ -123,7 +123,7 @@ export class RouteGuards {
 
     if (!user) {
       return {
-        allowed: false,
+        allowed: false,;
         redirect: '/auth/login?redirectTo=' + encodeURIComponent(event.url.pathname)
       };
     }
@@ -132,7 +132,7 @@ export class RouteGuards {
       return {
         allowed: false,
         error: {
-          status: 403,
+          status: 403,;
           message: 'Admin access required'
         }
       };
@@ -152,7 +152,7 @@ export class RouteGuards {
       return {
         allowed: false,
         error: {
-          status: 404,
+          status: 404,;
           message: 'Page not found'
         }
       };
@@ -180,7 +180,7 @@ export class RouteGuards {
       return {
         allowed: false,
         error: {
-          status: 404,
+          status: 404,;
           message: 'Feature not available'
         }
       };
@@ -206,7 +206,7 @@ export class RouteGuards {
       return {
         allowed: false,
         error: {
-          status: 429,
+          status: 429,;
           message: 'Too many requests'
         }
       };
@@ -226,7 +226,7 @@ export class RouteGuards {
 
     if (isMaintenanceMode && !isMaintenancePage && !isAdmin) {
       return {
-        allowed: false,
+        allowed: false,;
         redirect: '/maintenance'
       };
     }
@@ -281,7 +281,7 @@ export function createGuardedLoader(
       event,
       route: route as any,
       params,
-      user: (event.locals as any).user,
+      user: (event.locals as any).user,;
       session: (event.locals as any).session
     };
 
@@ -344,7 +344,7 @@ export function createRouteGuardMiddleware(globalGuards: string[] = []) {
       event,
       route: route as any,
       params,
-      user: (event.locals as any).user,
+      user: (event.locals as any).user,;
       session: (event.locals as any).session
     };
 
@@ -411,7 +411,7 @@ export function getRouteGuardConfig(routeId: string): RouteGuardConfig | null {
  */
 export async function checkRoutePermission(
   routeId: string,
-  user: any,
+  user: any,;
   params: Record<string, string> = {}
 ): Promise<boolean> {
   const config = getRouteGuardConfig(routeId);
@@ -420,7 +420,7 @@ export async function checkRoutePermission(
   const mockEvent = {
     locals: { user },
     params,
-    url: { pathname: `/${routeId}` },
+    url: { pathname: `/${routeId}` },;
     route: { id: routeId }
   } as any;
 
@@ -428,7 +428,7 @@ export async function checkRoutePermission(
     event: mockEvent,
     route: { id: routeId } as any,
     params,
-    user,
+    user,;
     session: user?.sessionId
   };
 
@@ -441,7 +441,7 @@ export async function checkRoutePermission(
  */
 export async function checkMultipleRoutePermissions(
   routeIds: string[],
-  user: any,
+  user: any,;
   params: Record<string, string> = {}
 ): Promise<Record<string, boolean> {
   const results: Record<string, boolean> = {};

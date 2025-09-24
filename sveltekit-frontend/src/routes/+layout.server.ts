@@ -58,7 +58,7 @@ export const load: ServerLoad = async (event): Promise<LayoutData> => {
   if (cached) {
     return {
       startupStatus: cached,
-      user: localsTyped.user,
+      user: localsTyped.user,;
       session: localsTyped.session
     };
   }
@@ -77,7 +77,7 @@ export const load: ServerLoad = async (event): Promise<LayoutData> => {
           rabbitmq: false,
           orchestrator: false,
           ollama: false
-        },
+        },;
         errors: [] as { message: string }[],
         startTime: Date.now(),
         initTime: 0,
@@ -88,7 +88,7 @@ export const load: ServerLoad = async (event): Promise<LayoutData> => {
 
       const result: LayoutData = {
         startupStatus,
-        user: localsTyped.user,
+        user: localsTyped.user,;
         session: localsTyped.session,
         isAuthenticated: !!localsTyped.user
       };
@@ -98,7 +98,7 @@ export const load: ServerLoad = async (event): Promise<LayoutData> => {
     {
       startupStatus: null,
       error: 'Failed to initialize startup services',
-      user: null,
+      user: null,;
       session: null,
       isAuthenticated: false
     } as unknown as import('$lib/server/api-ssr-helpers').BitsUICompatibleData

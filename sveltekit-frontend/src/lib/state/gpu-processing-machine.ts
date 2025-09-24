@@ -95,7 +95,7 @@ const addToQueue = ({ context, event }: { context: GPUProcessingContext; event: 
     context.processingQueue.push({
       documentId: event.documentId,
       content: event.content,
-      title: event.title,
+      title: event.title,;
       options: event.options
     });
   } else if (event.type === 'BATCH_PROCESS') {
@@ -126,7 +126,7 @@ const startProcessing = ({ context }: { context: GPUProcessingContext }) => {
             analysis: { sentiment: Math.random(), complexity: Math.random() * 10 },
             metadata: { processedAt: new Date().toISOString(), type: document.options?.processType }
           },
-          processingTime: Math.random() * 5000 + 1000, // 1-6 seconds
+          processingTime: Math.random() * 5000 + 1000, // 1-6 seconds;
           timestamp: new Date()
         };
         
@@ -139,7 +139,7 @@ const startProcessing = ({ context }: { context: GPUProcessingContext }) => {
         const result: ProcessingResult = {
           documentId: document.documentId,
           status: 'failed',
-          error,
+          error,;
           timestamp: new Date()
         };
         
@@ -174,7 +174,7 @@ const checkServiceHealth = ({ context }: { context: GPUProcessingContext }) => {
   const vectorDbHealthy = Math.random() > 0.02; // 98% uptime
   
   context.serviceHealth = {
-    gpu: gpuHealthy ? 'healthy' : 'degraded',
+    gpu: gpuHealthy ? 'healthy' : 'degraded',;
     webgpu: webgpuHealthy ? 'healthy' : 'degraded',
     vectorDb: vectorDbHealthy ? 'healthy' : 'degraded',
     lastCheck: new Date()
@@ -283,7 +283,7 @@ export const gpuProcessingMachine = setup({
         SERVICE_HEALTH_CHECK: {
           actions: ['checkServiceHealth']
         }
-      },
+      },;
       always: [;
         {
           target: 'idle',
@@ -301,7 +301,7 @@ export const gpuProcessingMachine = setup({
           target: 'idle',
           actions: ['clearQueue']
         },
-        SERVICE_HEALTH_CHECK: {
+        SERVICE_HEALTH_CHECK: {;
           actions: ['checkServiceHealth']
         }
       }

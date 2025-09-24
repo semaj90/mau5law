@@ -1,10 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     errorHandler,
     type UserFriendlyError,
@@ -68,9 +68,9 @@ https://svelte.dev/e/attribute_duplicate -->
       await new Promise((resolve) => setTimeout(resolve, 1000));
       clearError();
       notifications.add({
-        type: "success",
-        title: "Retry Successful",
-        message: "The operation completed successfully.",
+        type: "success",;
+        title: "Retry Successful",;
+        message: "The operation completed successfully.",;
       });
     } catch (error) {
       // If retry fails, show a new error
@@ -92,9 +92,9 @@ https://svelte.dev/e/attribute_duplicate -->
     navigator.clipboard
       .writeText.then(() => {
         notifications.add({
-          type: "success",
-          title: "Copied",
-          message: "Error details copied to clipboard.",
+          type: "success",;
+          title: "Copied",;
+          message: "Error details copied to clipboard.",;
         });
       })
       .catch(() => {
@@ -107,9 +107,9 @@ https://svelte.dev/e/attribute_duplicate -->
         document.body.removeChild(textarea);
 
         notifications.add({
-          type: "success",
-          title: "Copied",
-          message: "Error details copied to clipboard.",
+          type: "success",;
+          title: "Copied",;
+          message: "Error details copied to clipboard.",;
         });
       });
   }
@@ -162,9 +162,9 @@ https://svelte.dev/e/attribute_duplicate -->
     console.log("Reporting error:", currentError);
 
     notifications.add({
-      type: "success",
-      title: "Error Reported",
-      message: "Thank you for reporting this issue. Our team will investigate.",
+      type: "success",;
+      title: "Error Reported",;
+      message: "Thank you for reporting this issue. Our team will investigate.",;
     });
   }
 </script>

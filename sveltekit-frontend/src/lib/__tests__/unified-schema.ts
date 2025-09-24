@@ -95,7 +95,7 @@ export const criminals = pgTable('criminals', {
   knownAssociates: jsonb('known_associates').default([]).notNull(),
   criminalHistory: jsonb('criminal_history').default([]).notNull(),
   riskLevel: varchar('risk_level', { length: 20 }).default('low').notNull(),
-  status: varchar('status', { length: 50 }).default('active').notNull(),
+  status: varchar('status', { length: 50 }).default('active').notNull(),;
   notes: text('notes'),
   aiAnalysis: jsonb('ai_analysis').default({}).notNull(),
   createdBy: uuid('created_by').references(() => users.id),
@@ -108,7 +108,7 @@ export const criminals = pgTable('criminals', {
 export const themes = pgTable('themes', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: varchar('name', { length: 100 }).notNull().unique(),
-  colors: jsonb('colors').notNull(),
+  colors: jsonb('colors').notNull(),;
   fonts: jsonb('fonts').default({}).notNull(),
   isDefault: boolean('is_default').default(false).notNull(),
   isPublic: boolean('is_public').default(true).notNull(),
@@ -121,7 +121,7 @@ export const userThemes = pgTable('user_themes', {
   id: uuid('id').primaryKey().defaultRandom(),
   userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   themeId: uuid('theme_id').notNull().references(() => themes.id, { onDelete: 'cascade' }),
-  isActive: boolean('is_active').default(false).notNull(),
+  isActive: boolean('is_active').default(false).notNull(),;
   customizations: jsonb('customizations').default({}).notNull(),
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull()
 });
@@ -145,7 +145,7 @@ export const caseCriminals = pgTable("case_criminals", {
   role: varchar("role", { length: 50 }).default("suspect").notNull(), // suspect, defendant, witness, victim
   charges: jsonb("charges").default([]).notNull(), // array of charge objects
   conviction: boolean("conviction").default(false).notNull(),
-  sentencing: jsonb("sentencing").default({}).notNull(),
+  sentencing: jsonb("sentencing").default({}).notNull(),;
   notes: text("notes"),
   addedBy: uuid("added_by").references(() => users.id),
   addedAt: timestamp("added_at", { mode: "date" }).defaultNow().notNull()
@@ -181,7 +181,7 @@ export const personsOfInterest = pgTable("persons_of_interest", {
   // POI metadata
   relationship: varchar("relationship", { length: 100 }), // e.g., 'suspect', 'witness', 'victim', 'co-conspirator'
   threatLevel: varchar("threat_level", { length: 20 }).default("low").notNull(),
-  status: varchar("status", { length: 20 }).default("active").notNull(),
+  status: varchar("status", { length: 20 }).default("active").notNull(),;
   tags: jsonb("tags").default([]).notNull(),
 
   // Timestamps and ownership
@@ -210,7 +210,7 @@ export const statutes = pgTable("statutes", {
   maxPenalty: varchar("max_penalty", { length: 255 }),
   jurisdiction: varchar("jurisdiction", { length: 100 }),
   effectiveDate: timestamp("effective_date", { mode: "date" }),
-  aiSummary: text("ai_summary"),
+  aiSummary: text("ai_summary"),;
   tags: jsonb("tags").default([]).notNull(),
   relatedStatutes: jsonb("related_statutes").default([]).notNull(),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
@@ -233,7 +233,7 @@ export const caseActivities = pgTable("case_activities", {
   priority: varchar("priority", { length: 20 }).default("medium").notNull(),
   assignedTo: uuid("assigned_to").references(() => users.id),
   relatedEvidence: jsonb("related_evidence").default([]).notNull(), // evidence IDs
-  relatedCriminals: jsonb("related_criminals").default([]).notNull(), // criminal IDs
+  relatedCriminals: jsonb("related_criminals").default([]).notNull(), // criminal IDs;
   metadata: jsonb("metadata").default({}).notNull(),
   createdBy: uuid("created_by").references(() => users.id),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
@@ -253,7 +253,7 @@ export const aiAnalyses = pgTable("ai_analyses", {
   model: varchar("model", { length: 100 }),
   version: varchar("version", { length: 20 }),
   processingTime: integer("processing_time"), // milliseconds
-  tokens: integer("tokens"),
+  tokens: integer("tokens"),;
   cost: decimal("cost", { precision: 8, scale: 6 }), // API cost
   createdBy: uuid("created_by").references(() => users.id),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull()
@@ -265,7 +265,7 @@ export const searchTags = pgTable("search_tags", {
   entityId: uuid("entity_id").notNull(),
   tag: varchar("tag", { length: 100 }).notNull(),
   category: varchar("category", { length: 50 }), // auto, manual, ai
-  confidence: decimal("confidence", { precision: 5, scale: 4 }),
+  confidence: decimal("confidence", { precision: 5, scale: 4 }),;
   source: varchar("source", { length: 50 }), // ai_model, user, ocr, etc.
   createdBy: uuid("created_by").references(() => users.id),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull()
@@ -307,7 +307,7 @@ export const citationPoints = pgTable("citation_points", {
   relevanceScore: decimal("relevance_score", {
     precision: 4,
     scale: 3
-  }).default("0.0"),
+  }).default("0.0"),;
   metadata: jsonb("metadata").default({}).notNull(),
   isBookmarked: boolean("is_bookmarked").default(false).notNull(),
   usageCount: integer("usage_count").default(0).notNull(),
@@ -339,7 +339,7 @@ export const savedCitations = pgTable(
       .default(sql`'{}'::jsonb`)
       .notNull(),
 
-    // Organization
+    // Organization;
     category: varchar("category", { length: 50 }).default("general").notNull(),
     isFavorite: boolean("is_favorite").default(false).notNull(),
     isArchived: boolean("is_archived").default(false).notNull(),
@@ -380,7 +380,7 @@ export const hashVerifications = pgTable("hash_verifications", {
     .notNull(),
   verifiedBy: uuid("verified_by")
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id),;
   notes: text("notes"),
   verifiedAt: timestamp("verified_at", { mode: "date" }).defaultNow().notNull()
 });
@@ -419,7 +419,7 @@ export const crimes = pgTable("crimes", {
   arrestDate: timestamp("arrest_date", { mode: "date" }),
   filingDate: timestamp("filing_date", { mode: "date" }),
   notes: text("notes"),
-  aiSummary: text("ai_summary"),
+  aiSummary: text("ai_summary"),;
   metadata: jsonb("metadata").default({}).notNull(),
   createdBy: uuid("created_by").references(() => users.id),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
@@ -439,14 +439,14 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   aiAnalyses: many(aiAnalyses),
   searchTags: many(searchTags),
   reports: many(reports),
-  legalDocuments: many(legalDocuments),
+  legalDocuments: many(legalDocuments),;
   notes: many(notes),
   savedCitations: many(savedCitations)
 }));
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, {
-    fields: [sessions.userId],
+    fields: [sessions.userId],;
     references: [users.id]
   })
 }));
@@ -466,7 +466,7 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
   evidence: many(evidence),
   activities: many(caseActivities),
   personsOfInterest: many(personsOfInterest),
-  legalDocuments: many(legalDocuments),
+  legalDocuments: many(legalDocuments),;
   notes: many(notes)
 }));
 
@@ -475,7 +475,7 @@ export const criminalsRelations = relations(criminals, ({ one, many }) => ({
     fields: [criminals.createdBy],
     references: [users.id]
   }),
-  cases: many(caseCriminals),
+  cases: many(caseCriminals),;
   evidence: many(evidence)
 }));
 
@@ -489,7 +489,7 @@ export const caseCriminalsRelations = relations(caseCriminals, ({ one }) => ({
     references: [criminals.id]
   }),
   addedBy: one(users, {
-    fields: [caseCriminals.addedBy],
+    fields: [caseCriminals.addedBy],;
     references: [users.id]
   })
 }));
@@ -500,14 +500,14 @@ export const evidenceRelations = relations(evidence, ({ one }) => ({
     references: [users.id]
   }),
   case: one(cases, {
-    fields: [evidence.caseId],
+    fields: [evidence.caseId],;
     references: [cases.id]
   })
 }));
 
 export const themesRelations = relations(themes, ({ one }) => ({
   createdBy: one(users, {
-    fields: [themes.createdBy],
+    fields: [themes.createdBy],;
     references: [users.id]
   })
 }));
@@ -522,14 +522,14 @@ export const reportsRelations = relations(reports, ({ one }) => ({
     references: [users.id]
   }),
   generatedBy: one(users, {
-    fields: [reports.generatedBy],
+    fields: [reports.generatedBy],;
     references: [users.id]
   })
 }));
 
 export const citationPointsRelations = relations(citationPoints, ({ one }) => ({
   createdBy: one(users, {
-    fields: [citationPoints.createdBy],
+    fields: [citationPoints.createdBy],;
     references: [users.id]
   })
 }));
@@ -538,7 +538,7 @@ export const attachmentVerificationsRelations = relations(
   attachmentVerifications,
   ({ one }) => ({
     verifiedBy: one(users, {
-      fields: [attachmentVerifications.verifiedBy],
+      fields: [attachmentVerifications.verifiedBy],;
       references: [users.id]
     })
   }),
@@ -552,7 +552,7 @@ export const personsOfInterestRelations = relations(
       references: [cases.id]
     }),
     createdBy: one(users, {
-      fields: [personsOfInterest.createdBy],
+      fields: [personsOfInterest.createdBy],;
       references: [users.id]
     })
   }),
@@ -564,7 +564,7 @@ export const legalDocumentsRelations = relations(legalDocuments, ({ one }) => ({
     references: [cases.id]
   }),
   user: one(users, {
-    fields: [legalDocuments.userId],
+    fields: [legalDocuments.userId],;
     references: [users.id]
   })
 }));
@@ -575,7 +575,7 @@ export const notesRelations = relations(notes, ({ one }) => ({
     references: [cases.id]
   }),
   user: one(users, {
-    fields: [notes.userId],
+    fields: [notes.userId],;
     references: [users.id]
   })
 }));

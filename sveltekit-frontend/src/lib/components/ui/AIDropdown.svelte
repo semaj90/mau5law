@@ -48,28 +48,28 @@
       name: "Case Summary Report",
       icon: FileText,
       shortcut: "Ctrl+Shift+C",
-      description: "Comprehensive case overview and analysis",
+      description: "Comprehensive case overview and analysis",;
     },
     {
       id: "evidence-analysis",
       name: "Evidence Analysis",
       icon: Brain,
       shortcut: "Ctrl+Shift+E",
-      description: "Detailed evidence evaluation and admissibility",
+      description: "Detailed evidence evaluation and admissibility",;
     },
     {
       id: "legal-brief",
       name: "Legal Brief",
       icon: Wand2,
       shortcut: "Ctrl+Shift+L",
-      description: "Structured legal arguments with precedents",
+      description: "Structured legal arguments with precedents",;
     },
     {
       id: "investigation-report",
       name: "Investigation Report",
-      icon: Sparkles,
-      shortcut: "Ctrl+Shift+I",
-      description: "Investigation documentation and findings",
+      icon: Sparkles,;
+      shortcut: "Ctrl+Shift+I",;
+      description: "Investigation documentation and findings",;
     },
   ];
 
@@ -81,15 +81,15 @@
       icon: FileText,
       shortcut: "Ctrl+Shift+S",
       description: "Generate AI summary of current content",
-      requiresContent: true,
+      requiresContent: true,;
     },
     {
       id: "analyze",
       name: "Analyze Report",
-      icon: Brain,
-      shortcut: "Ctrl+Shift+A",
+      icon: Brain,;
+      shortcut: "Ctrl+Shift+A",;
       description: "Comprehensive AI analysis with insights",
-      requiresContent: true,
+      requiresContent: true,;
     },
   ];
 
@@ -264,7 +264,7 @@
   /* @unocss-include */
 
   /* Trigger Button */
-  .ai-trigger {
+  .ai-trigger {;
     position: relative;
     display: flex;
     align-items: center;
@@ -416,7 +416,7 @@
     cursor: not-allowed;
   }
 
-  .ai-menu__item: not(.ai-menu__item--disabled):hover {
+  .ai-menu__item:not(.ai-menu__item--disabled):hover {
     background: linear-gradient(to right, #fefcff, #fefcff);
   }
 

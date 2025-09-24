@@ -30,7 +30,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
         maxTokens: 200
       },
       metadata: {
-        source: 'api' as const,
+        source: 'api' as const,;
         timestamp: Date.now()
       }
     };
@@ -41,7 +41,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
       success: chatResult.success,
       orchestrator: chatResult.orchestratorUsed,
       model: chatResult.modelUsed,
-      latency: chatResult.executionMetrics.totalLatency,
+      latency: chatResult.executionMetrics.totalLatency,;
       response: chatResult.response.substring(0, 100) + '...'
     });
 
@@ -55,7 +55,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
     console.log(`❌ Chat test error: ${error instanceof Error ? error.message: 'Unknown error'}`);
     results.push({
       test: 'Basic Chat',
-      success: false,
+      success: false,;
       error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
@@ -81,7 +81,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
         maxTokens: 300
       },
       metadata: {
-        source: 'api' as const,
+        source: 'api' as const,;
         timestamp: Date.now()
       }
     };
@@ -93,7 +93,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
       orchestrator: legalResult.orchestratorUsed,
       model: legalResult.modelUsed,
       latency: legalResult.executionMetrics.totalLatency,
-      confidence: legalResult.confidence,
+      confidence: legalResult.confidence,;
       response: legalResult.response.substring(0, 100) + '...'
     });
 
@@ -109,7 +109,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
     );
     results.push({
       test: 'Legal Analysis',
-      success: false,
+      success: false,;
       error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
@@ -132,7 +132,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
         priority: 'normal'
       },
       metadata: {
-        source: 'api' as const,
+        source: 'api' as const,;
         timestamp: Date.now()
       }
     };
@@ -143,7 +143,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
       success: embeddingResult.success,
       orchestrator: embeddingResult.orchestratorUsed,
       model: embeddingResult.modelUsed,
-      latency: embeddingResult.executionMetrics.totalLatency,
+      latency: embeddingResult.executionMetrics.totalLatency,;
       response:
         typeof embeddingResult.response === 'string'
           ? `Generated ${embeddingResult.response.length} chars`
@@ -162,7 +162,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
     );
     results.push({
       test: 'Embedding Generation',
-      success: false,
+      success: false,;
       error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
@@ -188,7 +188,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
         maxTokens: 150
       },
       metadata: {
-        source: 'api' as const,
+        source: 'api' as const,;
         timestamp: Date.now()
       }
     };
@@ -200,7 +200,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
       orchestrator: realtimeResult.orchestratorUsed,
       model: realtimeResult.modelUsed,
       latency: realtimeResult.executionMetrics.totalLatency,
-      metLatencyTarget: realtimeResult.executionMetrics.totalLatency < 500,
+      metLatencyTarget: realtimeResult.executionMetrics.totalLatency < 500,;
       response: realtimeResult.response.substring(0, 100) + '...'
     });
 
@@ -218,7 +218,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
     );
     results.push({
       test: 'Realtime Chat',
-      success: false,
+      success: false,;
       error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
@@ -232,7 +232,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
     const metrics = llmOrchestratorBridge.getPerformanceMetrics();
 
     results.push({
-      test: 'Bridge Status',
+      test: 'Bridge Status',;
       success: true,
       bridgeStatus: status.bridge.status,
       totalRequests: metrics.totalRequests,
@@ -254,7 +254,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
     );
     results.push({
       test: 'Bridge Status',
-      success: false,
+      success: false,;
       error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
@@ -291,7 +291,7 @@ export async function quickHealthCheck(): Promise<any> {
   } catch (error) {
     return {
       healthy: false,
-      status: { error: error instanceof Error ? error.message: 'Unknown error' },
+      status: { error: error instanceof Error ? error.message: 'Unknown error' },;
       timestamp: new Date().toISOString()
     };
   }
@@ -322,7 +322,7 @@ export async function testSpecificOrchestrator(
       maxTokens: 200
     },
     metadata: {
-      source: 'api' as const,
+      source: 'api' as const,;
       timestamp: Date.now()
     }
   };
@@ -342,7 +342,7 @@ export async function testSpecificOrchestrator(
     };
   } catch (error) {
     return {
-      success: false,
+      success: false,;
       error: error instanceof Error ? error.message: 'Unknown error',
       expectedOrchestrator: orchestratorType
     };

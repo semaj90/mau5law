@@ -84,7 +84,7 @@ class CacheWorker {
       self.postMessage({
         type: 'result',
         id,
-        result,
+        result,;
         success: true
       });
 
@@ -92,7 +92,7 @@ class CacheWorker {
       self.postMessage({
         type: 'error',
         id,
-        error: error instanceof Error ? error.message: String(error),
+        error: error instanceof Error ? error.message: String(error),;
         success: false
       });
     }

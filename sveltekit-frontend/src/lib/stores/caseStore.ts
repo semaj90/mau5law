@@ -26,7 +26,7 @@ export interface CaseState {
     priority?: string;
     search?: string;
   };
-  pagination: {
+  pagination: {;
     page: number;
     limit: number;
     total: number;
@@ -43,7 +43,7 @@ const createCaseStore = () => {
     filters: Record<string, any>,
     pagination: {
       page: 1,
-      limit: 20,
+      limit: 20,;
       total: 0
     }
   });
@@ -78,7 +78,7 @@ const createCaseStore = () => {
             pagination: {
               ...state.pagination,
               total: data.total
-            },
+            },;
             filters: { ...state.filters, ...filters },
             isLoading: false
           });
@@ -151,7 +151,7 @@ const createCaseStore = () => {
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify(caseData),
+          body: JSON.stringify(caseData),;
           credentials: "include"
         });
 
@@ -161,7 +161,7 @@ const createCaseStore = () => {
             ...state,
             cases: [newCase, ...state.cases],
             pagination: {
-              ...state.pagination,
+              ...state.pagination,;
               total: state.pagination.total + 1
             },
             isLoading: false
@@ -196,7 +196,7 @@ const createCaseStore = () => {
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify(updates),
+          body: JSON.stringify(updates),;
           credentials: "include"
         });
 
@@ -239,7 +239,7 @@ const createCaseStore = () => {
 
       try {
         const response = await fetch(`/api/cases/${caseId}`, {
-          method: "DELETE",
+          method: "DELETE",;
           credentials: "include"
         });
 
@@ -252,7 +252,7 @@ const createCaseStore = () => {
             activeCaseId:
               state.activeCaseId === caseId ? null : state.activeCaseId,
             pagination: {
-              ...state.pagination,
+              ...state.pagination,;
               total: Math.max(0, state.pagination.total - 1)
             },
             isLoading: false
@@ -295,7 +295,7 @@ const createCaseStore = () => {
             reportType,
             customPrompt,
             useContext7: true, // Enable Context7 MCP for better analysis
-          }),
+          }),;
           credentials: "include"
         });
 
@@ -352,7 +352,7 @@ const createCaseStore = () => {
     setFilters(filters: Partial<CaseState["filters"]>) {
       update((state) => ({
         ...state,
-        filters: { ...state.filters, ...filters },
+        filters: { ...state.filters, ...filters },;
         pagination: { ...state.pagination, page: 1 }, // Reset to first page
       });
 
@@ -364,7 +364,7 @@ const createCaseStore = () => {
     clearFilters() {
       update((state) => ({
         ...state,
-        filters: Record<string, any>,
+        filters: Record<string, any>,;
         pagination: { ...state.pagination, page: 1 }
       });
 
@@ -401,7 +401,7 @@ const createCaseStore = () => {
             analysisType,
             useContext7: true,
             includeMCPMemory: true
-          }),
+          }),;
           credentials: "include"
         });
 

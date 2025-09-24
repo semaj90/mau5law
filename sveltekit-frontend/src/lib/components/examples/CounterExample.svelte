@@ -122,7 +122,7 @@ export default ;
     transition: background 0.2s;
   }
   
-  button:hover {
+  button:hover {;
     background: #0056b3;
   }
 </style>

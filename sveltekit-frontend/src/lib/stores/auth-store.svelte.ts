@@ -42,7 +42,7 @@ export interface RegisterData {
 const loginService = fromPromise(async ({ input }: { input: { email: string; password: string } }) => {
     const response = await fetch('/api/auth/login', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },;
       body: JSON.stringify(input)
     });
 
@@ -58,7 +58,7 @@ const loginService = fromPromise(async ({ input }: { input: { email: string; pas
 const registerService = fromPromise(async ({ input }: { input: RegisterData }) => {
   const response = await fetch('/api/auth/register', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' },;
     body: JSON.stringify(input)
   });
 
@@ -113,7 +113,7 @@ const authMachine = createMachine({
       invoke: {
         src: checkAuthService,
         onDone: {
-          target: 'authenticated',
+          target: 'authenticated',;
           actions: [;
             assign({
               user: ({ event }) => event.output.user,
@@ -156,7 +156,7 @@ const authMachine = createMachine({
         isLoading: true,
         error: null
       }),
-      invoke: {
+      invoke: {;
         src: loginService,
         // fromPromise passes original event as event in invoke meta; route it via event for LOGIN;
         input: ({ event }: { event: any }) => ({
@@ -164,12 +164,12 @@ const authMachine = createMachine({
           password: event.password
         }),
         onDone: {
-          target: 'authenticated',
+          target: 'authenticated',;
           actions: [;
             assign({
               user: ({ event }) => event.output.user,
               isAuthenticated: true,
-              isLoading: false,
+              isLoading: false,;
               error: null
             }),
             // Handle redirect after successful login;
@@ -201,12 +201,12 @@ const authMachine = createMachine({
         src: registerService,
         input: ({ event }: { event: any }) => event.userData,
         onDone: {
-          target: 'authenticated',
+          target: 'authenticated',;
           actions: [;
             assign({
               user: ({ event }) => event.output.user,
               isAuthenticated: true,
-              isLoading: false,
+              isLoading: false,;
               error: null
             }),
             // Redirect to dashboard after registration;
@@ -252,12 +252,12 @@ const authMachine = createMachine({
       invoke: {
         src: logoutService,
         onDone: {
-          target: 'unauthenticated',
+          target: 'unauthenticated',;
           actions: [;
             assign({
               user: null,
               isAuthenticated: false,
-              isLoading: false,
+              isLoading: false,;
               error: null
             }),
             // Redirect to home after logout;
@@ -283,7 +283,7 @@ const authMachine = createMachine({
     CLEAR_ERROR: {
       actions: assign({ error: null })
     },
-    CHECK_AUTH: {
+    CHECK_AUTH: {;
       target: '.checking'
     }
   }
@@ -298,7 +298,7 @@ class AuthStore {
       isLoading: false,
       error: null,
       redirectPath: null
-    },
+    },;
     value: 'checking'
   });
   #actor: any = $state();
@@ -314,7 +314,7 @@ class AuthStore {
         this.#actor.subscribe((state: any) => {
           // Update reactive state;
           this.#machineState = {
-            context: state.context,
+            context: state.context,;
             value: state.value
           };
         });
@@ -391,7 +391,7 @@ class AuthStore {
     const rolePermissions = {
       admin: ['read', 'write', 'delete', 'manage_users', 'manage_cases', 'manage_evidence'],
       prosecutor: ['read', 'write', 'manage_cases', 'manage_evidence'],
-      detective: ['read', 'write', 'manage_evidence'],
+      detective: ['read', 'write', 'manage_evidence'],;
       user: ['read']
     };
 

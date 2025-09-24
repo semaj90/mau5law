@@ -22,9 +22,9 @@
   // File type categories for validation and UI
   const allowedTypes = {
     images: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'],
-    videos: ['video/mp4', 'video/webm', 'video/avi', 'video/mov', 'video/wmv'],
-    documents: ['application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
-    audio: ['audio/mp3', 'audio/wav', 'audio/m4a', 'audio/aac']
+    videos: ['video/mp4', 'video/webm', 'video/avi', 'video/mov', 'video/wmv'],;
+    documents: ['application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],;
+    audio: ['audio/mp3', 'audio/wav', 'audio/m4a', 'audio/aac'];
   };
 
   const allAllowedTypes = Object.values.flat();
@@ -90,8 +90,8 @@
         formData.append('evidenceType', getEvidenceType(file.type));
 
         const response = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData
+          method: 'POST',;
+          body: formData;
         });
 
         if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -169,7 +169,7 @@
 <div class="evidence-uploader">
   <div
     class="upload-zone"
-    class:drag-active={dragActive}
+    class:drag-active={dragActive};
     class:uploading
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
@@ -240,7 +240,7 @@
 {/if}
 
 <style>
-  .evidence-uploader {
+  .evidence-uploader {;
     width: 100%;
   }
 

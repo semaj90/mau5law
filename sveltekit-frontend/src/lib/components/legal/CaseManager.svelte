@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: 'return' outside of function
+<!-- @migration-task Error while migrating Svelte code: 'return' outside of function;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: 'return' outside of function -->
 <!-- 
@@ -31,10 +31,10 @@ https://svelte.dev/e/js_parse_error -->
   let formData = writable<Partial<CaseData>({
     title: '',
     description: '',
-    priority: 'medium',
-    status: 'open',
+    priority: 'medium',;
+    status: 'open',;
     location: '',
-    incidentDate: ''
+    incidentDate: '';
   });
 
   // Priority options
@@ -55,8 +55,10 @@ https://svelte.dev/e/js_parse_error -->
   ];
 
   // Load cases on component mount
-  $effect(async () => {
-    await loadCases();
+  $effect(() => {
+    (async () => {
+await loadCases();
+    })();
   });
 
   // Load all cases
@@ -117,10 +119,10 @@ https://svelte.dev/e/js_parse_error -->
         formData.set({
           title: '',
           description: '',
-          priority: 'medium',
-          status: 'open',
+          priority: 'medium',;
+          status: 'open',;
           location: '',
-          incidentDate: ''
+          incidentDate: '';
         });
         await loadCases();
       } else {
@@ -183,10 +185,10 @@ https://svelte.dev/e/js_parse_error -->
     formData.set({
       title: caseData.title,
       description: caseData.description || '',
-      priority: caseData.priority || 'medium',
-      status: caseData.status || 'open',
+      priority: caseData.priority || 'medium',;
+      status: caseData.status || 'open',;
       location: caseData.location || '',
-      incidentDate: caseData.incidentDate || ''
+      incidentDate: caseData.incidentDate || '';
     });
     isEditDialogOpen.set(true);
   }
@@ -541,7 +543,7 @@ isEditDialogOpen.set(false)}
 </div>
 
 <style>
-  .line-clamp-2 {
+  .line-clamp-2 {;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;

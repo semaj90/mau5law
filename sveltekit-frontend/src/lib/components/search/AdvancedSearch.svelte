@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -342,7 +342,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-.advanced-search {
+.advanced-search {;
   position: relative;
   width: 100%;
 }
@@ -643,7 +643,7 @@ https://svelte.dev/e/js_parse_error -->
   transition: background-color 0.15s ease;
 }
 
-.active-filter button:hover {
+.active-filter button:hover {;
   background: rgba(255, 255, 255, 0.5);
 }
 

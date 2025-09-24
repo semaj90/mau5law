@@ -83,7 +83,7 @@ export class Base64FP32Quantizer {
         blockId: Math.floor(i / this.CUDA_BLOCK_SIZE),
         gridSize: Math.ceil(maxThreads / this.CUDA_BLOCK_SIZE),
         blockSize: this.CUDA_BLOCK_SIZE,
-        sharedMemory: new ArrayBuffer(48 * 1024), // 48KB shared memory per block
+        sharedMemory: new ArrayBuffer(48 * 1024), // 48KB shared memory per block;
         registers: new Map()
       };
       
@@ -229,7 +229,7 @@ export class Base64FP32Quantizer {
   private async quantizationKernel(
     data: Uint8Array,
     blockId: number,
-    threadsPerBlock: number,
+    threadsPerBlock: number,;
     config: QuantizationOptions;
   ): Promise<Float32Array> {
     // Simulate CUDA kernel execution
@@ -415,7 +415,7 @@ export class Base64FP32Quantizer {
       hash: this.simpleHash(base64Data),
       bits: config.quantizationBits,
       scaling: config.scalingMethod,
-      length: config.targetLength,
+      length: config.targetLength,;
       format: config.outputFormat
     };
     
@@ -467,7 +467,7 @@ export class Base64FP32Quantizer {
     try {
       await enhancedCachingRevolutionaryBridge.processUnifiedQuery({
         query: cacheKey,
-        type: 'query',
+        type: 'query',;
         options: { cacheStrategy: 'enhanced_first' }
       });
     } catch (error) {
@@ -506,7 +506,7 @@ export class Base64FP32Quantizer {
         quantizedTokens: quantizationResult.quantizedData as Float32Array,
         attentionWeights,
         logits,
-        perplexity,
+        perplexity,;
         confidence: Math.max(0, 1 - perplexity / 100), // Rough confidence estimate
         legalClassification
       };

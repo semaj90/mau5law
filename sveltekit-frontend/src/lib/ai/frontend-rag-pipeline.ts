@@ -17,7 +17,7 @@ export interface SemanticChunk {
   id: string;
   text: string;
   embedding: Float32Array;
-  metadata: {
+  metadata: {;
     timestamp: number;
     source: string;
     relevance: number;
@@ -54,13 +54,13 @@ class FrontendRAGPipeline {
 
   private initializeLoki() {
     this.lokiDb = new Loki('frontend-rag.db', {
-      adapter: browser ? new (Loki as any).LokiMemoryAdapter() : undefined,
+      adapter: browser ? new (Loki as any).LokiMemoryAdapter() : undefined,;
       autoload: true,
       autoloadCallback: () => {
         this.semanticCollection = this.lokiDb.getCollection('semantic_chunks');
         if (!this.semanticCollection) {
           this.semanticCollection = this.lokiDb.addCollection('semantic_chunks', {
-            indices: ['semanticGroup', 'relevance', 'timestamp'],
+            indices: ['semanticGroup', 'relevance', 'timestamp'],;
             unique: ['id']
           });
         }
@@ -104,7 +104,7 @@ class FrontendRAGPipeline {
       const embedding = new Float32Array((result as { data?: any; dims?: any }).data);
       
       return {
-        data: this.simdProcessor.optimize(embedding),
+        data: this.simdProcessor.optimize(embedding),;
         shape: (result as { data?: any; dims?: any }).dims,
         simdOps: this.simdProcessor.getOperations()
       };
@@ -117,7 +117,7 @@ class FrontendRAGPipeline {
   // Context-switched semantic search
   async semanticSearch(
     query: string, 
-    context: 'legal' | 'technical' | 'general' = 'legal',
+    context: 'legal' | 'technical' | 'general' = 'legal',;
     limit: number = 10;
   ): Promise<SemanticChunk[]> {
     const queryEmbedding = await this.generateEmbedding(query);
@@ -160,7 +160,7 @@ class FrontendRAGPipeline {
       documentsIndexed: this.semanticCollection?.count() || 0,
       memoryUsage: browser ? (performance as any).memory?.usedJSHeapSize || 0 : 0,
       pipelineStatus: {
-        embedding: !!this.embeddingPipeline,
+        embedding: !!this.embeddingPipeline,;
         generation: !!this.generationPipeline
       },
       simdOptimizations: this.simdProcessor.isOptimized()
@@ -180,7 +180,7 @@ class ContextSwitcher {
       boost: { technical: 1.5, development: 1.3, documentation: 1.2, general: 0.8 }
     },
     general: {
-      groups: ['general', 'legal', 'technical'],
+      groups: ['general', 'legal', 'technical'],;
       boost: { general: 1.0, legal: 1.0, technical: 1.0 }
     }
   };
@@ -274,7 +274,7 @@ class G0llamaService {
   private async checkAvailability() {
     try {
       const response = await fetch(`${this.baseUrl}/health`, {
-        method: 'GET',
+        method: 'GET',;
         signal: AbortSignal.timeout(2000)
       });
       this.isAvailable = (response as { ok?: any; json?: any }).ok;
@@ -285,7 +285,7 @@ class G0llamaService {
 
   async generate(
     query: string,
-    context: string,
+    context: string,;
     options: {
       maxTokens?: number;
       temperature?: number;
@@ -303,7 +303,7 @@ class G0llamaService {
           prompt: `Context: ${context}\n\nQuery: ${query}\n\nResponse:`,
           max_tokens: options.maxTokens || 150,
           temperature: options.temperature || 0.7
-        }),
+        }),;
         signal: AbortSignal.timeout(10000)
       });
 

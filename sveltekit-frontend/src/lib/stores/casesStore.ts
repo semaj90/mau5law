@@ -6,7 +6,7 @@ import { writable } from "svelte/store";
 export interface CaseStoreData {
   cases: any[];
   stats: any[];
-  filters: {
+  filters: {;
     search: string;
     status: string;
     priority: string;
@@ -21,7 +21,7 @@ const initialData: CaseStoreData = {
     search: "",
     status: "all",
     priority: "all",
-    sort: "openedAt",
+    sort: "openedAt",;
     order: "desc"
   }
 };
@@ -46,7 +46,7 @@ casesStore.subscribe((data) => {
 export const casesActions = {
   updateCase: (caseId: string, updates: Partial<any>) => {
     casesStore.update((store) => ({
-      ...store,
+      ...store,;
       cases: store.cases.map((c) =>
         c.id === caseId ? { ...c, ...updates } : c,
       )

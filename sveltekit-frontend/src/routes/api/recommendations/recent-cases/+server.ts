@@ -3,28 +3,28 @@
  * Returns the most recent 5 cases with priority scoring
  */
 
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
-import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem';
-import { calculateDocumentPriority } from '$lib/config/legal-priorities';
+import type { RequestHandler } from './$types'
+import { json } from '@sveltejs/kit'
+import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem'
+import { calculateDocumentPriority } from '$lib/config/legal-priorities'
 
 interface CaseRecommendation {
-  id: string;
-  title: string;
-  status: 'active' | 'pending' | 'closed';
-  lastAccessed: string;
-  confidence: number;
-  priority: number;
-  caseType: string;
-  urgency: 'low' | 'normal' | 'high' | 'critical';
-  glyphSignature?: string;
+  id: string
+  title: string
+  status: 'active' | 'pending' | 'closed'
+  lastAccessed: string
+  confidence: number
+  priority: number
+  caseType: string
+  urgency: 'low' | 'normal' | 'high' | 'critical'
+  glyphSignature?: string
   metadata: {
-    clientName: string;
-    practiceArea: string;
-    daysOpen: number;
-    documentCount: number;
-    lastActivity: string;
-  };
+    clientName: string
+    practiceArea: string
+    daysOpen: number
+    documentCount: number
+    lastActivity: string
+  }
 }
 
 // Mock database - in production this would query PostgreSQL
@@ -131,22 +131,22 @@ const mockCases: CaseRecommendation[] = [
       lastActivity: 'Witness interviews'
     }
   }
-];
+]
 
 export const GET: RequestHandler = async ({ url, request }) => {
-  const limit = parseInt(url.searchParams.get('limit') || '5');
-  const cacheKey = `recent-cases-${limit}`;
+  const limit = parseInt(url.searchParams.get('limit') || '5')
+  const cacheKey = `recent-cases-${limit}`
 
   try {
     // Check cache first (60-second TTL for recent cases)
-    const cached = await multiLayerCache.get<CaseRecommendation[]>(cacheKey);
+    const cached = await multiLayerCache.get<CaseRecommendation[]>(cacheKey)
     if (cached) {
       return json({
         success: true,
         data: cached,
         fromCache: true,
         timestamp: new Date().toISOString()
-      });
+      })
     }
 
     // Calculate priorities for each case
@@ -160,35 +160,35 @@ export const GET: RequestHandler = async ({ url, request }) => {
         lastAccessed: new Date(caseItem.lastAccessed),
         fileSize: caseItem.metadata.documentCount * 1024 * 50, // Estimate file size
         isEvidenceCritical: caseItem.caseType === 'criminal' || caseItem.caseType === 'litigation'
-      });
+      })
 
       // Generate simple glyph signature based on case ID
       const glyphSignature = Array.from(caseItem.id)
         .map(char => char.charCodeAt(0).toString(16))
         .join('')
-        .substring(0, 8);
+        .substring(0, 8)
 
       return {
         ...caseItem,
         priority,
         glyphSignature
-      };
-    });
+      }
+    })
 
     // Sort by priority (highest first) and recency
     const sortedCases = casesWithPriorities
       .sort((a, b) => {
         // Primary sort: priority
-        const priorityDiff = b.priority - a.priority;
-        if (priorityDiff !== 0) return priorityDiff;
+        const priorityDiff = b.priority - a.priority
+        if (priorityDiff !== 0) return priorityDiff
 
         // Secondary sort: recency
-        return new Date(b.lastAccessed).getTime() - new Date(a.lastAccessed).getTime();
+        return new Date(b.lastAccessed).getTime() - new Date(a.lastAccessed).getTime()
       })
-      .slice(0, limit);
+      .slice(0, limit)
 
     // Cache the results (60-second TTL, high priority)
-    await multiLayerCache.set(cacheKey, sortedCases, 60, 180);
+    await multiLayerCache.set(cacheKey, sortedCases, 60, 180)
 
     return json({
       success: true,
@@ -202,10 +202,10 @@ export const GET: RequestHandler = async ({ url, request }) => {
         algorithm: 'priority-weighted-recency',
         cacheExpiry: 60
       }
-    });
+    })
 
   } catch (error) {
-    console.error('Error fetching recent cases:', error);
+    console.error('Error fetching recent cases:', error)
 
     // Return mock data with "failure default to mock" error message
     const mockFallbackCases = [
@@ -245,7 +245,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           lastActivity: 'Mock contract review'
         }
       }
-    ];
+    ]
 
     return json({
       success: false,
@@ -260,69 +260,69 @@ export const GET: RequestHandler = async ({ url, request }) => {
         algorithm: 'mock-fallback',
         cacheExpiry: 0
       }
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json();
-    const { caseId, action } = body;
+    const body = await request.json()
+    const { caseId, action } = body
 
     if (!caseId || !action) {
       return json({
         success: false,
         error: 'Missing required fields: caseId, action'
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
     // Update case based on action
-    const caseIndex = mockCases.findIndex(c => c.id === caseId);
+    const caseIndex = mockCases.findIndex(c => c.id === caseId)
     if (caseIndex === -1) {
       return json({
         success: false,
         error: 'Case not found'
-      }, { status: 404 });
+      }, { status: 404 })
     }
 
-    const caseItem = mockCases[caseIndex];
+    const caseItem = mockCases[caseIndex]
 
     switch (action) {
       case 'access':
         // Update last accessed time
-        caseItem.lastAccessed = new Date().toISOString();
-        break;
+        caseItem.lastAccessed = new Date().toISOString()
+        break
 
       case 'boost':
         // Temporarily boost priority
-        caseItem.confidence = Math.min(1.0, caseItem.confidence + 0.1);
-        break;
+        caseItem.confidence = Math.min(1.0, caseItem.confidence + 0.1)
+        break
 
       case 'dismiss':
         // Lower priority
-        caseItem.confidence = Math.max(0.1, caseItem.confidence - 0.2);
-        break;
+        caseItem.confidence = Math.max(0.1, caseItem.confidence - 0.2)
+        break
 
       default:
         return json({
           success: false,
           error: 'Invalid action'
-        }, { status: 400 });
+        }, { status: 400 })
     }
 
     // Clear cache to force refresh
-    const cacheKey = 'recent-cases-5';
-    await multiLayerCache.clear('memory');
+    const cacheKey = 'recent-cases-5'
+    await multiLayerCache.clear('memory')
 
     return json({
       success: true,
       message: `Case ${caseId} updated with action: ${action}`,
       updatedCase: caseItem,
       timestamp: new Date().toISOString()
-    });
+    })
 
   } catch (error) {
-    console.error('Error updating case:', error);
+    console.error('Error updating case:', error)
 
     return json({
       success: false,
@@ -330,6 +330,6 @@ export const POST: RequestHandler = async ({ request }) => {
       message: 'Mock update: Case action processed locally',
       updatedCase: null,
       timestamp: new Date().toISOString()
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

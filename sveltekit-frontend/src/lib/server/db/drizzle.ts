@@ -10,7 +10,7 @@ const createMockPool = () =>
   ({
     connect: () =>
       Promise.reject(new Error("Database not available during build")),
-    end: () => Promise.resolve(),
+    end: () => Promise.resolve(),;
     query: () =>
       Promise.reject(new Error("Database not available during build"))
   }) as any;
@@ -36,7 +36,7 @@ export const pool = isBuilding
 
 // Properly typed database instance;
 export const db: NodePgDatabase<typeof schema> = drizzle(pool, {
-  schema,
+  schema,;
   logger: false
 });
 

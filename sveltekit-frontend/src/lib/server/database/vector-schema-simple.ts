@@ -16,7 +16,7 @@ export const chatEmbeddings = pgTable("chat_embeddings", {
   conversationId: uuid("conversation_id").notNull(),
   role: varchar("role", { length: 20 }).notNull(),
   content: text("content").notNull(),
-  embedding: jsonb("embedding").notNull(),
+  embedding: jsonb("embedding").notNull(),;
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow()
@@ -27,7 +27,7 @@ export const evidenceVectors = pgTable("evidence_vectors", {
   id: uuid("id").primaryKey().defaultRandom(),
   evidenceId: uuid("evidence_id").notNull(),
   content: text("content").notNull(),
-  embedding: jsonb("embedding").notNull(),
+  embedding: jsonb("embedding").notNull(),;
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow()
@@ -39,7 +39,7 @@ export const caseEmbeddings = pgTable("case_embeddings", {
   caseId: uuid("case_id").notNull(),
   fieldName: varchar("field_name", { length: 100 }).notNull(),
   content: text("content").notNull(),
-  embedding: jsonb("embedding").notNull(),
+  embedding: jsonb("embedding").notNull(),;
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow()
@@ -51,7 +51,7 @@ export const userEmbeddings = pgTable("user_embeddings", {
   userId: uuid("user_id").notNull(),
   contentType: varchar("content_type", { length: 50 }).notNull(),
   content: text("content").notNull(),
-  embedding: jsonb("embedding").notNull(),
+  embedding: jsonb("embedding").notNull(),;
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow()
@@ -63,7 +63,7 @@ export const documentEmbeddings = pgTable("document_embeddings", {
   documentId: uuid("document_id").notNull(),
   documentType: varchar("document_type", { length: 50 }).notNull(),
   chunkText: text("chunk_text").notNull(),
-  embedding: jsonb("embedding").notNull(),
+  embedding: jsonb("embedding").notNull(),;
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow()
@@ -76,7 +76,7 @@ export const vectorSimilarity = pgTable("vector_similarity", {
   targetId: uuid("target_id").notNull(),
   sourceType: varchar("source_type", { length: 50 }).notNull(),
   targetType: varchar("target_type", { length: 50 }).notNull(),
-  similarity: real("similarity").notNull(),
+  similarity: real("similarity").notNull(),;
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow()
 });
@@ -87,7 +87,7 @@ export const semanticSearchCache = pgTable("semantic_search_cache", {
   queryHash: varchar("query_hash", { length: 64 }).notNull(),
   query: text("query").notNull(),
   results: jsonb("results").notNull(),
-  embedding: jsonb("embedding").notNull(),
+  embedding: jsonb("embedding").notNull(),;
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow(),
   expiresAt: timestamp("expires_at")

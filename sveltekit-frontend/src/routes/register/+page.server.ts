@@ -23,7 +23,7 @@ export const load: PageServerLoad = async ({ locals }) => {
         name: { type: "string" },
         role: { type: "string" },
         terms: { type: "boolean" }
-      },
+      },;
       required: ["email", "password", "confirmPassword", "name", "role"]
     } as JSONSchema7
   });
@@ -43,7 +43,7 @@ export const actions: Actions = {
           name: { type: "string" },
           role: { type: "string" },
           terms: { type: "boolean" }
-        },
+        },;
         required: ["email", "password", "confirmPassword", "name", "role"]
       } as JSONSchema7
     });
@@ -82,7 +82,7 @@ export const actions: Actions = {
           email: form.data.email,
           hashed_password: hashedPassword,
           first_name: nameValue.split(" ")[0] || "",
-          last_name: nameValue.split(" ").slice(1).join(" ") || "",
+          last_name: nameValue.split(" ").slice(1).join(" ") || "",;
           role: form.data.role,
           is_active: true
         })

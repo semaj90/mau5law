@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- Citations Manager - Legal Citation System with AI-powered search -->
@@ -11,12 +11,12 @@ https://svelte.dev/e/attribute_duplicate -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   	import Button from '$lib/components/ui/button/Button.svelte';
   	// Badge replaced with span - not available in enhanced-bits
   	import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   	import { 
   		Search, BookOpen, ExternalLink, Download, 
   		Plus, FileText, Calendar, User, Tags,
@@ -46,10 +46,10 @@ https://svelte.dev/e/attribute_duplicate -->
   		source: '',
   		category: 'cases',
   		pages: '',
-  		url: '',
-  		notes: '',
+  		url: '',;
+  		notes: '',;
   		tags: [] as string[],
-  		relevanceScore: 0
+  		relevanceScore: 0;
   	});
 
   	let showAddForm = $state(false);
@@ -63,10 +63,12 @@ https://svelte.dev/e/attribute_duplicate -->
   	} = $props();
 
   	// Initialize citations
-  	$effect(async () => {
-  		await loadCitations();
+  	$effect(() => {
+    (async () => {
+await loadCitations();
   		updateCategoryCounts();
-  	});
+    })();
+  });
 
   	async function loadCitations() {
   		isLoading = true;
@@ -88,7 +90,7 @@ https://svelte.dev/e/attribute_duplicate -->
   					tags: ['constitutional-law', 'education', 'civil-rights', 'segregation'],
   					relevanceScore: 95,
   					dateAdded: new Date('2024-01-15'),
-  					caseId
+  					caseId;
   				},
   				{
   					id: 'citation-2',
@@ -103,7 +105,7 @@ https://svelte.dev/e/attribute_duplicate -->
   					tags: ['evidence-law', 'federal-rules', 'admissibility', 'relevance'],
   					relevanceScore: 88,
   					dateAdded: new Date('2024-01-16'),
-  					caseId
+  					caseId;
   				},
   				{
   					id: 'citation-3',
@@ -118,7 +120,7 @@ https://svelte.dev/e/attribute_duplicate -->
   					tags: ['criminal-law', 'constitutional-rights', 'interrogation', 'fifth-amendment'],
   					relevanceScore: 92,
   					dateAdded: new Date('2024-01-17'),
-  					caseId
+  					caseId;
   				},
   				{
   					id: 'citation-4',
@@ -128,12 +130,12 @@ https://svelte.dev/e/attribute_duplicate -->
   					source: 'Academic Press',
   					category: 'articles',
   					pages: '1-45',
-  					url: 'https://doi.org/example',
-  					notes: 'Comprehensive guide to handling digital evidence in modern legal proceedings',
+  					url: 'https://doi.org/example',;
+  					notes: 'Comprehensive guide to handling digital evidence in modern legal proceedings',;
   					tags: ['digital-forensics', 'computer-crime', 'evidence-handling', 'technology'],
   					relevanceScore: 78,
   					dateAdded: new Date('2024-01-18'),
-  					caseId
+  					caseId;
   				}
   			];
 
@@ -212,10 +214,10 @@ https://svelte.dev/e/attribute_duplicate -->
   			source: '',
   			category: 'cases',
   			pages: '',
-  			url: '',
-  			notes: '',
+  			url: '',;
+  			notes: '',;
   			tags: [],
-  			relevanceScore: 0
+  			relevanceScore: 0;
   		};
   	}
 
@@ -240,9 +242,9 @@ https://svelte.dev/e/attribute_duplicate -->
   			console.log('💾 Saving citation:', citation.title);
   			// Save to server (stubbed)
   			const response = await fetch('/api/legal/citations', {
-  				method: 'POST',
-  				headers: { 'Content-Type': 'application/json' },
-  				body: JSON.stringify(citation)
+  				method: 'POST',;
+  				headers: { 'Content-Type': 'application/json' },;
+  				body: JSON.stringify(citation);
   			});
 
   			if (response.ok) {
@@ -274,7 +276,7 @@ https://svelte.dev/e/attribute_duplicate -->
 
   		try {
   			const response = await fetch(`/api/legal/citations/${citationId}`, {
-  				method: 'DELETE'
+  				method: 'DELETE';
   			});
 
   			if (response.ok) {
@@ -311,7 +313,7 @@ https://svelte.dev/e/attribute_duplicate -->
 
   		// Create downloadable file
   		const blob = new Blob([JSON.stringify(exportData, null, 2)], { 
-  			type: 'application/json' 
+  			type: 'application/json' ;
   		});
   		const url = URL.createObjectURL(blob);
   		const a = document.createElement('a');
@@ -476,8 +478,8 @@ changeSortBy('relevance')}
 			<div class="yorha-panel-content space-y-2">
 				{#each citationCategories as category}
 					<button
-						class="w-full flex justify-between items-center p-2 rounded text-sm hover:bg-muted transition-colors"
-						class:bg-primary={selectedCategory === category.id}
+						class="w-full flex justify-between items-center p-2 rounded text-sm hover:bg-muted transition-colors";
+						class:bg-primary={selectedCategory === category.id};
 						class:text-primary-foreground={selectedCategory === category.id}
 						onclick={() => selectCategory(category.id)}
 					>
@@ -788,20 +790,20 @@ Close
 
 <style>
 	/* Custom scrollbar for modal content */
-	.overflow-y-auto {
+	.overflow-y-auto {;
 		scrollbar-width: thin;
 		scrollbar-color: hsl(var(--muted-foreground)) hsl(var(--muted));
 	}
 	
-	.overflow-y-auto: :-webkit-scrollbar {
+	.overflow-y-auto::-webkit-scrollbar {
 		width: 6px;
 	}
 	
-	.overflow-y-auto: :-webkit-scrollbar-track {
+	.overflow-y-auto::-webkit-scrollbar-track {
 		background: hsl(var(--muted));
 	}
 	
-	.overflow-y-auto: :-webkit-scrollbar-thumb {
+	.overflow-y-auto::-webkit-scrollbar-thumb {
 		background: hsl(var(--muted-foreground));
 		border-radius: 3px;
 	}

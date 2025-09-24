@@ -69,7 +69,7 @@ export class EmbeddingBackfillWorker {
       const result: BackfillResult = {
         processed: 0,
         success: 0,
-        failed: 0,
+        failed: 0,;
         errors: []
       };
 
@@ -202,7 +202,7 @@ export class EmbeddingBackfillWorker {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         text: text.substring(0, 50000), // Limit text length
-        model: 'mock', // Use mock for testing - change to 'openai' or 'nomic' when ready
+        model: 'mock', // Use mock for testing - change to 'openai' or 'nomic' when ready;
         dimensions: 768
       })
     });

@@ -26,7 +26,24 @@ export interface LokiDB {
 declare global {
   interface Window {
     lokiDB?: LokiDB;
+    SpeechRecognition?: {
+      new (): SpeechRecognition;
+    };
+    webkitSpeechRecognition?: {
+      new (): SpeechRecognition;
+    };
   }
+}
+
+// Minimal SpeechRecognition interface for browser APIs
+interface SpeechRecognition {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  start: () => void;
+  stop: () => void;
+  onresult?: (event: { results: ArrayLike<{ 0: { transcript: string } }> }) => void;
+  onerror?: (event: { error?: string }) => void;
 }
 
 // Common model descriptor returned by Ollama / model registries;

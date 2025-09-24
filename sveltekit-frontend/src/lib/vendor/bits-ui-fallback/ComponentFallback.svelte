@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class'
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class';
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <script lang="ts">
@@ -57,7 +57,7 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
 </div>
 
-<style>/* Enhanced fallback styling for better compatibility */ :global(.bits-ui-fallback) {
+<style>/* Enhanced fallback styling for better compatibility */ :global(.bits-ui-fallback) {;
     display: contents;
   }
 

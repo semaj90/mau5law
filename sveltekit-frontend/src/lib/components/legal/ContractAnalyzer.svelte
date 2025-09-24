@@ -42,7 +42,7 @@
   const contractBuilder = createLegalEvidenceAnalyzer({
     caseType: 'corporate',
     urgency: contract?.riskScore > 7 ? 'critical' : 'medium',
-    aiModel: 'gemma3'
+    aiModel: 'gemma3';
   });
 
   let isAnalyzing = $state(false);
@@ -56,7 +56,7 @@
     type: 'service',
     status: 'review',
     riskScore: 6.5,
-    lastModified: '2025-09-21 14:30:00',
+    lastModified: '2025-09-21 14:30:00',;
     clauses: [
       {
         id: 'clause-1',
@@ -64,7 +64,7 @@
         content: 'Either party may terminate this agreement with 30 days written notice...',
         riskLevel: 'medium',
         confidence: 0.87,
-        recommendations: ['Consider adding specific termination triggers', 'Add transition period clause']
+        recommendations: ['Consider adding specific termination triggers', 'Add transition period clause'];
       },
       {
         id: 'clause-2',
@@ -72,14 +72,14 @@
         content: 'Contractor liability shall be limited to the total amount paid under this agreement...',
         riskLevel: 'high',
         confidence: 0.93,
-        recommendations: ['Review liability caps', 'Consider mutual liability limitations']
+        recommendations: ['Review liability caps', 'Consider mutual liability limitations'];
       },
       {
         id: 'clause-3',
-        type: 'confidentiality',
+        type: 'confidentiality',;
         content: 'All confidential information shall be protected for a period of 5 years...',
-        riskLevel: 'low',
-        confidence: 0.95
+        riskLevel: 'low',;
+        confidence: 0.95;
       }
     ]
   });
@@ -97,7 +97,7 @@
   let riskStyles = $derived(() => ({
     low: { color: '#10b981', border: '2px solid #10b981', background: 'rgba(16, 185, 129, 0.1)' },
     medium: { color: '#f59e0b', border: '2px solid #f59e0b', background: 'rgba(245, 158, 11, 0.1)' },
-    high: { color: '#ef4444', border: '2px solid #ef4444', background: 'rgba(239, 68, 68, 0.1)' },
+    high: { color: '#ef4444', border: '2px solid #ef4444', background: 'rgba(239, 68, 68, 0.1)' },;
     critical: { color: '#dc2626', border: '2px solid #dc2626', background: 'rgba(220, 38, 38, 0.2)' }
   }));
 
@@ -133,10 +133,10 @@
   function getClauseIcon(type: ContractClause['type']): string {
     const icons = {
       termination: '🔚',
-      compensation: '💰',
-      confidentiality: '🔒',
+      compensation: '💰',;
+      confidentiality: '🔒',;
       liability: '⚠️',
-      governing_law: '⚖️'
+      governing_law: '⚖️';
     };
     return icons[type] || '📄';
   }
@@ -220,7 +220,7 @@
               <div class="risk-track">
                 <div
                   class="risk-fill"
-                  style="
+                  style=";
                     width: {(count / contractData.clauses.length) * 100}%;
                     background: {getRiskBadgeStyle(riskLevel).color};
                   "
@@ -240,7 +240,7 @@
             <div
               class="clause-card"
               class:selected={selectedClause === clause.id}
-              onclick={() => selectClause(clause.id)}
+              onclick={() => selectClause(clause.id)};
               transition:scale={contractBuilder.animations.enter}
               style="border-color: {getRiskBadgeStyle(clause.riskLevel).color};"
             >
@@ -301,7 +301,7 @@
 </div>
 
 <style>
-  .contract-analyzer {
+  .contract-analyzer {;
     max-width: 1200px;
     margin: 0 auto;
     padding: 1rem;
@@ -406,7 +406,7 @@
     text-align: left;
   }
 
-  .export-menu button:hover {
+  .export-menu button:hover {;
     background: var(--enhanced-bits-muted);
   }
 

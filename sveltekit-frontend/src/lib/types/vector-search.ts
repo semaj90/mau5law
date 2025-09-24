@@ -2,7 +2,7 @@
 // Legal AI Platform - Vector Similarity Search Types
 
 export interface VectorSearchResult {
-  results: Array<{
+  results: Array<{;
     id: string;
     content: string;
     metadata: Record<string, any>;
@@ -14,7 +14,7 @@ export interface VectorSearchResult {
   searchStrategy: string;
   indexUsed: string;
   threshold: number;
-  embedding: {
+  embedding: {;
     dimensions: number;
     model: string;
     format: string;
@@ -192,7 +192,7 @@ export interface VectorSearchStats {
   };
   
   /** Vector dimensions by entity type */;
-  dimensions: {
+  dimensions: {;
     evidence: number;
     cases?: number;
     chunks?: number;

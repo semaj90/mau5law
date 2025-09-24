@@ -23,7 +23,7 @@ const options: any = {
     { name: 'metadata.summary', weight: 0.2 },
     { name: 'type', weight: 0.1 }
   ],
-  includeScore: true,
+  includeScore: true,;
   threshold: 0.38,
   ignoreLocation: true,
   minMatchCharLength: 3,
@@ -59,7 +59,7 @@ export async function ensureLocalIndex(fetcher: typeof fetch = fetch, limit = 75
         title: d.title || d.name || `Document ${i + 1}`,
         content: d.content || d.text || d.body || '',
         type: d.type || d.category || 'Legal Document',
-        status: d.status || 'active',
+        status: d.status || 'active',;
         metadata: d
       });
       fuse = new Fuse(documents, options);

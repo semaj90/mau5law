@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -77,7 +77,7 @@ https://svelte.dev/e/js_parse_error -->
       validationErrors.description = 'Case description is required';
     }
 
-    return Object.keys.length === 0;
+    return Object.keys(errors).length === 0;
   }
 
   function addKeyDate() {
@@ -126,7 +126,7 @@ https://svelte.dev/e/js_parse_error -->
         id="title"
         type="text"
         bind:value={formData.title}
-        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
         class:border-red-500={validationErrors.title}
         placeholder="e.g., Smith vs. Jones Contract Dispute"
       />
@@ -144,7 +144,7 @@ https://svelte.dev/e/js_parse_error -->
         id="client_name"
         type="text"
         bind:value={formData.client_name}
-        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
         class:border-red-500={validationErrors.client_name}
         placeholder="Enter client's full name"
       />
@@ -160,9 +160,9 @@ https://svelte.dev/e/js_parse_error -->
           Case Type *
         </label>
         <select
-          id="case_type"
+          id="case_type";
           bind:value={formData.case_type}
-          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
           class:border-red-500={validationErrors.case_type}
         >
           <option value="">Select case type</option>
@@ -205,7 +205,7 @@ https://svelte.dev/e/js_parse_error -->
       <select
         id="jurisdiction"
         bind:value={formData.jurisdiction}
-        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
         class:border-red-500={validationErrors.jurisdiction}
       >
         <option value="">Select jurisdiction</option>
@@ -227,7 +227,7 @@ https://svelte.dev/e/js_parse_error -->
         id="description"
         bind:value={formData.description}
         rows="4"
-        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
         class:border-red-500={validationErrors.description}
         placeholder="Provide a detailed description of the case, including key issues, parties involved, and relevant background information..."
       ></textarea>
@@ -254,12 +254,12 @@ https://svelte.dev/e/js_parse_error -->
       {#each formData.key_dates as keyDate, index}
         <div class="flex gap-3 mb-3" transition:fade>
           <input
-            type="date"
+            type="date";
             bind:value={keyDate.date}
             class="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
           <input
-            type="text"
+            type="text";
             bind:value={keyDate.description}
             placeholder="Event description"
             class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"

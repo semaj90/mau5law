@@ -6,13 +6,13 @@ Showcases the service worker-based AI orchestration system
   // Svelte 5 runes are auto-imported
 
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { Textarea } from '$lib/components/ui/textarea';
   import {
@@ -45,7 +45,7 @@ Showcases the service worker-based AI orchestration system
     {
       name: 'Legal Document Analysis',
       description: 'Parallel analysis across multiple AI models',
-      prompt: 'Analyze this contract for potential legal issues, key terms, and compliance requirements.',
+      prompt: 'Analyze this contract for potential legal issues, key terms, and compliance requirements.',;
       tasks: [
         { provider: 'ollama', model: 'gemma3-legal', focus: 'Legal compliance analysis' },
         { provider: 'vllm', model: 'vllm-gemma3-legal', focus: 'Risk assessment' },
@@ -55,7 +55,7 @@ Showcases the service worker-based AI orchestration system
     {
       name: 'Evidence Processing',
       description: 'Multi-stage evidence analysis pipeline',
-      prompt: 'Process and categorize evidence files for case preparation.',
+      prompt: 'Process and categorize evidence files for case preparation.',;
       tasks: [
         { provider: 'ollama', model: 'nomic-embed-text', focus: 'Text embedding generation' },
         { provider: 'ollama', model: 'gemma3-legal', focus: 'Content classification' },
@@ -64,8 +64,8 @@ Showcases the service worker-based AI orchestration system
     },
     {
       name: 'Case Research',
-      description: 'Comprehensive legal research workflow',
-      prompt: 'Research relevant case law and statutes for this legal matter.',
+      description: 'Comprehensive legal research workflow',;
+      prompt: 'Research relevant case law and statutes for this legal matter.',;
       tasks: [
         { provider: 'autogen', model: 'autogen-agents', focus: 'Legal research coordination' },
         { provider: 'crewai', model: 'crewai-agents', focus: 'Case law analysis' },
@@ -75,8 +75,8 @@ Showcases the service worker-based AI orchestration system
   ];
 
   $effect(() => {
-        capabilities: ['legal-analysis', 'case-research', 'document-review'],
-        endpoint: 'http://localhost:11434'
+        capabilities: ['legal-analysis', 'case-research', 'document-review'],;
+        endpoint: 'http://localhost:11434';
       };
     }
   });
@@ -96,9 +96,9 @@ Showcases the service worker-based AI orchestration system
           taskConfig.model,
           taskConfig.provider,
           {
-            priority: 'high',
+            priority: 'high',;
             temperature: 0.1,
-            maxTokens: 512
+            maxTokens: 512;
           }
         )
       );
@@ -147,9 +147,9 @@ Showcases the service worker-based AI orchestration system
         selectedModel.name,
         selectedModel.provider,
         {
-          priority: 'high',
+          priority: 'high',;
           temperature: 0.1,
-          maxTokens: 1024
+          maxTokens: 1024;
         }
       );
 
@@ -297,7 +297,7 @@ runDemoScenario(scenario)}
         <div class="yorha-panel-content space-y-4">
           <div>
             <label class="block text-sm font-medium mb-2">Select AI Model</label>
-            <LLMSelector
+            <LLMSelector;
               bind:selectedModel={selectedModel}
               showMetrics={true}
               filterBy="all"
@@ -306,7 +306,7 @@ runDemoScenario(scenario)}
 
           <div>
             <label class="block text-sm font-medium mb-2">Task Prompt</label>
-            <Textarea
+            <Textarea;
               bind:value={userPrompt}
               placeholder="Enter your AI task prompt..."
               rows={4}

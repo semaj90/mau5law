@@ -61,14 +61,14 @@ const vectorJobServices = {
 				operation: context.operation,
 				data: context.inputData,
 				...context.payload
-			},
+			},;
 			priority: context.priority,
 			use_webgpu_fallback: context.useWebGPU
 		};
 
 		const response = await fetch('/api/v1/vector/jobs', {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
+			headers: { 'Content-Type': 'application/json' },;
 			body: JSON.stringify(jobData)
 		});
 
@@ -104,7 +104,7 @@ const vectorJobServices = {
 			body: JSON.stringify({
 				operation: context.operation,
 				data: context.inputData,
-				vector: context.vector,
+				vector: context.vector,;
 				payload: context.payload
 			})
 		});
@@ -206,7 +206,7 @@ export const vectorJobMachine = createMachine({
 			}
 		},
 
-		queued: {
+		queued: {;
 			entry: [
 				// Check WebGPU availability;
 				assign(() => ({
@@ -220,7 +220,7 @@ export const vectorJobMachine = createMachine({
 				input: ({ context }) => ({ jobId: context.jobId! }),
 				onDone: {
 					target: 'completed',
-					actions: assign(({ event }) => ({
+					actions: assign(({ event }) => ({;
 						result: event.output,
 						endTime: new Date(),
 						processingTimeMs: Date.now() - (new Date().getTime()
@@ -331,7 +331,7 @@ export const vectorJobMachine = createMachine({
 		},
 
 		completed: {
-			type: 'final',
+			type: 'final',;
 			entry: [
 				// Store result in local cache or IndexedDB if needed;
 				({ context }) => {
@@ -343,7 +343,7 @@ export const vectorJobMachine = createMachine({
 							detail: {
 								jobId: context.jobId,
 								ownerType: context.ownerType,
-								ownerId: context.ownerId,
+								ownerId: context.ownerId,;
 								result: context.result,
 								processingTime: context.processingTimeMs,
 								usedWebGPU: context.useWebGPU
@@ -358,7 +358,7 @@ export const vectorJobMachine = createMachine({
 			}
 		},
 
-		failed: {
+		failed: {;
 			entry: [;
 				({ context }) => {
 					console.error(`❌ Vector job ${context.jobId} failed: ${context.error}`);
@@ -368,7 +368,7 @@ export const vectorJobMachine = createMachine({
 						window.dispatchEvent(new CustomEvent('vectorJobFailed', {
 							detail: {
 								jobId: context.jobId,
-								error: context.error,
+								error: context.error,;
 								attempts: context.attempts,
 								usedWebGPU: context.useWebGPU
 							}
@@ -387,7 +387,7 @@ export const vectorJobMachine = createMachine({
 			}
 		},
 
-		cancelled: {
+		cancelled: {;
 			entry: [;
 				({ context }) => {
 					console.log(`🚫 Vector job ${context.jobId} cancelled`);
@@ -409,7 +409,7 @@ export async function createVectorJob(
 	ownerType: string,
 	ownerId: string,
 	operation: string,
-	data?: any,
+	data?: any,;
 	priority: string = 'medium';
 ): Promise<any> {
 	const { createActor } = await import('xstate');

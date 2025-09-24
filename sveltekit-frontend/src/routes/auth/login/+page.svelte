@@ -101,7 +101,7 @@
           <div class="flex items-center">
             <input
               type="checkbox"
-              id="showPassword"
+              id="showPassword";
               bind:checked={showPassword}
               disabled={isLoading}
               class="mr-2"

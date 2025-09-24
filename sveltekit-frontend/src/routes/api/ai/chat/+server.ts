@@ -17,38 +17,38 @@
  */
 
 // Enhanced Chat API with LLM Orchestrator Bridge and MCP Multi-Core Integration
-import type { RequestHandler } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
-import { llmOrchestratorBridge } from '$lib/server/ai/llm-orchestrator-bridge.js';
-import type { LLMBridgeRequest } from '$lib/server/ai/llm-orchestrator-bridge.js';
-import { dev } from '$app/environment';
-import { ollamaConfig } from '$lib/services/ollama-config-service.js';
-import { ENV_CONFIG } from '$lib/config/environment.js';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from '@sveltejs/kit'
+import { json } from '@sveltejs/kit'
+import { llmOrchestratorBridge } from '$lib/server/ai/llm-orchestrator-bridge.js'
+import type { LLMBridgeRequest } from '$lib/server/ai/llm-orchestrator-bridge.js'
+import { dev } from '$app/environment'
+import { ollamaConfig } from '$lib/services/ollama-config-service.js'
+import { ENV_CONFIG } from '$lib/config/environment.js'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 
 const originalPOSTHandler: RequestHandler = async (event) => {
-  const { request, fetch, url } = event;
-  const startTime = performance.now();
+  const { request, fetch, url } = event
+  const startTime = performance.now()
   
   try {
     // Parse incoming messages
-    const requestData = await request.json();
-    const { messages, model = "auto", temperature = 0.7, stream = false } = requestData;
+    const requestData = await request.json()
+    const { messages, model = "auto", temperature = 0.7, stream = false } = requestData
     
     if (!messages || !Array.isArray(messages)) {
-      return json({ error: "Messages array is required" }, { status: 400 });
+      return json({ error: "Messages array is required" }, { status: 400 })
     }
 
     // Get the latest user message
-    const lastMessage = messages[messages.length - 1];
+    const lastMessage = messages[messages.length - 1]
     if (!lastMessage?.content) {
-      return json({ error: "Message content is required" }, { status: 400 });
+      return json({ error: "Message content is required" }, { status: 400 })
     }
 
     // Extract conversation context
-    const conversationHistory = messages.slice(0, -1).map(msg => `${msg.role}: ${msg.content}`);
+    const conversationHistory = messages.slice(0, -1).map(msg => `${msg.role}: ${msg.content}`)
 
-    // Create bridge request for intelligent routing;
+    // Create bridge request for intelligent routing
     const bridgeRequest: LLMBridgeRequest = {
       id: `chat_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
       type: 'chat',
@@ -73,23 +73,23 @@ const originalPOSTHandler: RequestHandler = async (event) => {
         userAgent: request.headers.get('user-agent') || 'unknown',
         timestamp: Date.now()
       }
-    };
+    }
 
-    // Route through orchestrator bridge for optimal processing;
+    // Route through orchestrator bridge for optimal processing
     try {
-      const result = await llmOrchestratorBridge.processRequest(bridgeRequest);
+      const result = await llmOrchestratorBridge.processRequest(bridgeRequest)
       
       if (!(result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).success) {
-        throw new Error((result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).error || 'Orchestrator processing failed');
+        throw new Error((result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).error || 'Orchestrator processing failed')
       }
 
-      const totalTime = performance.now() - startTime;
+      const totalTime = performance.now() - startTime
       
       if (dev) {
-        console.log(`🚀 Chat API completed via ${(result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).orchestratorUsed} orchestrator in ${totalTime.toFixed(2)}ms`);
+        console.log(`🚀 Chat API completed via ${(result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).orchestratorUsed} orchestrator in ${totalTime.toFixed(2)}ms`)
       }
 
-      // Return OpenAI-compatible format;
+      // Return OpenAI-compatible format
       return json({
         choices: [{
           message: {
@@ -115,31 +115,31 @@ const originalPOSTHandler: RequestHandler = async (event) => {
           gpuAccelerated: (result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).executionMetrics.gpuAccelerated
         },
         response_time_ms: totalTime
-      });
+      })
 
     } catch (orchestratorError) {
-      console.warn('Orchestrator failed, falling back to direct Ollama:', orchestratorError);
+      console.warn('Orchestrator failed, falling back to direct Ollama:', orchestratorError)
       
       // Fallback to direct Ollama call
-      return await fallbackToDirectOllama(lastMessage.content, model, temperature, startTime);
+      return await fallbackToDirectOllama(lastMessage.content, model, temperature, startTime)
     }
 
   } catch (error: any) {
-    console.error('Chat API error:', error);
+    console.error('Chat API error:', error)
     return json({ 
       error: "Failed to generate response",
       detail: error.message,
       timestamp: new Date().toISOString()
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 // Fallback function for direct Ollama calls
 async function fallbackToDirectOllama(
   prompt: string, 
-  model: string, 
+  model: string,
   temperature: number, 
-  startTime: number;
+  startTime: number
 ) {
   try {
     const ollamaResponse = await fetch(`${DEFAULT_OLLAMA_URL}/api/generate`, {
@@ -157,15 +157,15 @@ async function fallbackToDirectOllama(
           repeat_penalty: 1.1
         }
       })
-    });
+    })
 
     if (!ollamaResponse.ok) {
-      const errorText = await ollamaResponse.text();
-      throw new Error(`Ollama error: ${errorText}`);
+      const errorText = await ollamaResponse.text()
+      throw new Error(`Ollama error: ${errorText}`)
     }
 
-    const data = await ollamaResponse.json();
-    const totalTime = performance.now() - startTime;
+    const data = await ollamaResponse.json()
+    const totalTime = performance.now() - startTime
 
     return json({
       choices: [{
@@ -192,13 +192,13 @@ async function fallbackToDirectOllama(
         }
       },
       response_time_ms: totalTime
-    });
+    })
   } catch (error) {
-    throw new Error(`Fallback to direct Ollama failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
+    throw new Error(`Fallback to direct Ollama failed: ${error instanceof Error ? error.message: 'Unknown error'}`)
   }
 }
 
-// Helper function to detect legal domain from content;
+// Helper function to detect legal domain from content
 function detectLegalDomain(content: string): string | undefined {
   const legalKeywords = {
     'contract': ['contract', 'agreement', 'terms', 'clause', 'breach'],
@@ -208,18 +208,18 @@ function detectLegalDomain(content: string): string | undefined {
     'property': ['property', 'real estate', 'title', 'deed', 'mortgage'],
     'family': ['divorce', 'custody', 'marriage', 'adoption', 'alimony'],
     'employment': ['employment', 'workplace', 'discrimination', 'wage', 'termination']
-  };
+  }
 
-  const lowerContent = content.toLowerCase();
+  const lowerContent = content.toLowerCase()
   
   for (const [domain, keywords] of Object.entries(legalKeywords)) {
     if (keywords.some(keyword => lowerContent.includes(keyword))) {
-      return domain;
+      return domain
     }
   }
   
-  return undefined;
+  return undefined
 }
 
 
-export const POST = redisOptimized.aiChat(originalPOSTHandler);
+export const POST = redisOptimized.aiChat(originalPOSTHandler)

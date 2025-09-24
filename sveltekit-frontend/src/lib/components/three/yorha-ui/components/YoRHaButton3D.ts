@@ -39,7 +39,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
       shadow: {
         enabled: true,
         color: YORHA_COLORS.primary.black,
-        blur: 0.3,
+        blur: 0.3,;
         intensity: 0.4,
         offsetY: -0.05,
         ...options.shadow
@@ -66,7 +66,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
         ...options.active
       },
       disabled: {
-        backgroundColor: YORHA_COLORS.interaction.disabled,
+        backgroundColor: YORHA_COLORS.interaction.disabled,;
         opacity: 0.6,
         ...options.disabled
       }
@@ -141,7 +141,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
     const textGeometry = new THREE.PlaneGeometry(1.5, 0.3);
     const textMaterial = new THREE.MeshBasicMaterial({
       color: this.style.textColor || YORHA_COLORS.primary.black,
-      transparent: true,
+      transparent: true,;
       side: THREE.DoubleSide
     });
 
@@ -257,7 +257,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
     const ringGeometry = new THREE.RingGeometry(0.15, 0.2, 16);
     const ringMaterial = new THREE.MeshStandardMaterial({
       color: YORHA_COLORS.accent.gold,
-      transparent: true,
+      transparent: true,;
       opacity: 0.8
     });
 
@@ -282,7 +282,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
   private static getVariantStyle(variant: string, size: string): Partial<YoRHaStyle> {
     const sizeStyles = {
       small: { width: 1.5, height: 0.5, fontSize: 0.12 },
-      medium: { width: 2, height: 0.6, fontSize: 0.16 },
+      medium: { width: 2, height: 0.6, fontSize: 0.16 },;
       large: { width: 3, height: 0.8, fontSize: 0.2 }
     } as const;
 
@@ -294,7 +294,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
       borderColor: resolved.borderColor,
       textColor: resolved.textColor,
       hover: resolved.hover ? { backgroundColor: resolved.hover.backgroundColor, textColor: resolved.hover.textColor } : undefined,
-      glow: resolved.glow,
+      glow: resolved.glow,;
       opacity: resolved.opacity,
       borderWidth: resolved.borderWidth || (variant === 'ghost' ? 0.03 : 0.02)
     };

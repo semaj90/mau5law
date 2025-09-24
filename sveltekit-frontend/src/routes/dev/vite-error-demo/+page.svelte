@@ -17,28 +17,28 @@
       message: 'Cannot find module "@/components/NonExistentComponent"',
       file: 'src/routes/demo/+page.svelte',
       line: 42,
-      suggestion: 'Check if the import path is correct and the module exists.'
+      suggestion: 'Check if the import path is correct and the module exists.';
     },
     {
       level: 'warn' as const,
       message: 'Unused variable "unusedVar" in function scope',
       file: 'src/lib/utils/demo-utils.ts',
       line: 15,
-      suggestion: 'Remove unused variables or prefix with underscore if intentionally unused.'
+      suggestion: 'Remove unused variables or prefix with underscore if intentionally unused.';
     },
     {
       level: 'error' as const,
       message: 'Type error: Property "nonExistentProp" does not exist on type',
       file: 'src/lib/components/DemoComponent.svelte',
       line: 28,
-      suggestion: 'Check TypeScript types and ensure the property exists on the object.'
+      suggestion: 'Check TypeScript types and ensure the property exists on the object.';
     },
     {
       level: 'info' as const,
       message: 'HMR: File changed, hot reloading...',
-      file: 'src/app.html',
-      line: 1,
-      suggestion: 'File change detected. No action needed.'
+      file: 'src/app.html',;
+      line: 1,;
+      suggestion: 'File change detected. No action needed.';
     }
   ];
 
@@ -51,9 +51,9 @@
   function updateStats() {
     errorStats = {
       total: errorLog.length,
-      errors: errorLog.filter(item => item.length),
-      warnings: errorLog.filter(item => item.length),
-      info: errorLog.filter(item => item.length)
+      errors: errorLog.filter(item => item.length),;
+      warnings: errorLog.filter(item => item.length),;
+      info: errorLog.filter(item => item.length);
     };
   }
 
@@ -63,8 +63,8 @@
     const errorEntry = {
       ...randomError,
       timestamp: new Date().toISOString(),
-      buildPhase: 'demo',
-      id: Math.random.toString-substr(2, 9)
+      buildPhase: 'demo',;
+      id: Math.random.toString-substr(2, 9);
     };
 
     errorLog = [errorEntry, ...errorLog];
@@ -348,7 +348,7 @@
 </main>
 
 <style>
-  :global(body) {
+  :global(body) {;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
   

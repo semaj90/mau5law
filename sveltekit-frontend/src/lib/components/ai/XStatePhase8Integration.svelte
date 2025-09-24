@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class'
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
-<!-- @migration-task Error while migrating Svelte code: Cannot subscribe to stores that are not declared at the top level of the component
+<!-- @migration-task Error while migrating Svelte code: Cannot subscribe to stores that are not declared at the top level of the component;
 https://svelte.dev/e/store_invalid_scoped_subscription -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
@@ -58,15 +58,16 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
       evidenceUpload: 'step-1',
       caseDetails: 'step-2', 
       review: 'step-3',
-      submitting: 'step-4',
-      success: 'step-4',
-      error: 'step-4'
+      submitting: 'step-4',;
+      success: 'step-4',;
+      error: 'step-4';
     };
     return stateMapping[stateValue as keyof typeof stateMapping] || 'step-1';
   }
 
-  $effect(async () => {
-    // Initialize Phase 8 components
+  $effect(() => {
+    (async () => {
+// Initialize Phase 8 components
     matrixCompiler = new MatrixUICompiler();
     reranker = new LegalAIReranker();
     prefetcher = new PredictivePrefetcher();
@@ -75,42 +76,43 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     updateMatrixUINodes();
     // Set up AI-aware prefetching
     setupPredictivePrefetching();
+    })();
   });
 
   function updateMatrixUINodes(): void {
     const currentState = $state.value as string;
     matrixUINodes = [
       {
-        type: 'card',
+        type: 'card',;
         id: `state-card-${currentState}`,
-        matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+        matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],;
         styles: {
           base: `yorha-card p-6 ${getStateCardClass(currentState)}`,
           hover: 'transform scale-105 transition-transform',
-          active: 'ring-2 ring-yellow-400'
+          active: 'ring-2 ring-yellow-400';
         },
-        events: ['click', 'mouseover'],
+        events: ['click', 'mouseover'],;
         metadata: {
           priority: 'high',
           confidence: aiConfidence,
           aiGenerated: true,
-          workflowState: currentState
+          workflowState: currentState;
         }
       },
       {
         type: 'button',
         id: 'ai-help-btn',
-        matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 300, 50, 0, 1],
+        matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 300, 50, 0, 1],;
         styles: {
           base: 'yorha-button px-4 py-2 bg-blue-600 text-white',
           hover: 'bg-blue-700 transform scale-105',
-          disabled: 'opacity-50 cursor-not-allowed'
+          disabled: 'opacity-50 cursor-not-allowed';
         },
-        events: ['click'],
+        events: ['click'],;
         metadata: {
-          priority: 'medium',
+          priority: 'medium',;
           confidence: 90,
-          aiGenerated: false
+          aiGenerated: false;
         }
       }
     ];
@@ -121,9 +123,9 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
       evidenceUpload: 'border-blue-400 bg-blue-900/20',
       caseDetails: 'border-yellow-400 bg-yellow-900/20',
       review: 'border-purple-400 bg-purple-900/20',
-      submitting: 'border-orange-400 bg-orange-900/20',
-      success: 'border-green-400 bg-green-900/20',
-      error: 'border-red-400 bg-red-900/20'
+      submitting: 'border-orange-400 bg-orange-900/20',;
+      success: 'border-green-400 bg-green-900/20',;
+      error: 'border-red-400 bg-red-900/20';
     };
     return classes[state as keyof typeof classes] || 'border-gray-400 bg-gray-900/20';
   }
@@ -135,7 +137,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
       currentCase: 'NEW_CASE',
       recentActions: ['open_form', 'start_evidence_upload'],
       userRole: 'prosecutor',
-      workflowState: 'draft'
+      workflowState: 'draft';
     };
 
     // Predict and prefetch based on current state
@@ -172,9 +174,9 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 
   function handleCaseDetailsUpdate(): void {
     send({ 
-      type: 'UPDATE_CASE_DETAILS', 
-      title: caseTitle, 
-      description: caseDescription 
+      type: 'UPDATE_CASE_DETAILS', ;
+      title: caseTitle, ;
+      description: caseDescription ;
     });
     // Update matrix UI
     updateMatrixUINodes();
@@ -184,7 +186,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 
   async function performAIReranking(action: string, context: string[]): Promise<void> {
     try {
-      const userContext: UserContext = {
+      const userContext: UserContext = {;
         intent: 'create',
         timeOfDay: getTimeOfDay(),
         focusedElement: `step-${$context.currentStep}`,
@@ -404,7 +406,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
               <div>
                 <label class="block text-sm font-medium text-gray-300 mb-2" for="-priority-level-">
                   Priority Level
-                </label><select id="-priority-level-" 
+                </label><select id="-priority-level-" ;
                   bind:value={selectedPriority} onchange={() => send({ type: 'SET_PRIORITY', priority: selectedPriority })}
                   class="yorha-select w-full p-2 bg-gray-800 border border-gray-600 rounded"
                 >

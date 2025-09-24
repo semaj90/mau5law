@@ -25,7 +25,7 @@ export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
   client.on('connect', () => {
     console.log('✅ Redis connected successfully', {
       host: finalConfig.host,
-      port: finalConfig.port,
+      port: finalConfig.port,;
       db: finalConfig.db
     });
   });
@@ -118,7 +118,7 @@ export async function getRedisInfo(): Promise<any> {
     return {
       connected: true,
       info: parseRedisInfo(info),
-      memory: parseRedisInfo(memory),
+      memory: parseRedisInfo(memory),;
       stats: parseRedisInfo(stats)
     };
   } catch (error) {

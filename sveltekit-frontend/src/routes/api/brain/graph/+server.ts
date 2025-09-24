@@ -1,6 +1,6 @@
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 // Lightweight in-memory topology extractor (would be replaced by real scanners / registries)
 const backendServices = [
@@ -10,22 +10,22 @@ const backendServices = [
   { id: 'ollama', type: 'llm' },
   { id: 'go-grpc', type: 'service' },
   { id: 'quic-gateway', type: 'edge' }
-];
+]
 
 const frontendModules = [
   { id: 'yorha-ui', type: 'ui-lib' },
   { id: 'autosolve', type: 'automation' },
   { id: 'unified-router', type: 'routing' }
-];
+]
 
 const dbEntities = [
   { id: 'users', type: 'table' },
   { id: 'legal_documents', type: 'table' },
   { id: 'embedding_cache', type: 'table' }
-];
+]
 
 export const GET: RequestHandler = async () => {
-  const nodes = [...backendServices, ...frontendModules, ...dbEntities];
+  const nodes = [...backendServices, ...frontendModules, ...dbEntities]
   const links = [
     { source: 'frontend', target: 'yorha-ui', kind: 'uses' },
     { source: 'yorha-ui', target: 'unified-router', kind: 'fetches' },
@@ -36,6 +36,6 @@ export const GET: RequestHandler = async () => {
     { source: 'go-grpc', target: 'redis', kind: 'cache' },
     { source: 'autosolve', target: 'legal_documents', kind: 'analyzes' },
     { source: 'autosolve', target: 'embedding_cache', kind: 'updates' }
-  ];
-  return json({ nodes, links, generatedAt: new Date().toISOString() });
-};
+  ]
+  return json({ nodes, links, generatedAt: new Date().toISOString() })
+}

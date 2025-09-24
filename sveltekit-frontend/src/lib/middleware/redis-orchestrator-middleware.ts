@@ -71,7 +71,7 @@ export function withRedisOrchestrator(
       const result = await appRedisOrchestrator.processAIQuery(aiQuery.query, sessionId, {
         endpoint: config.endpointName,
         ...aiQuery.context,
-        requiresFresh: config.requiresFresh,
+        requiresFresh: config.requiresFresh,;
         priority: calculatePriority(config.cacheStrategy, config.endpointName),
         memoryBank: config.memoryBank,
       });
@@ -91,7 +91,7 @@ export function withRedisOrchestrator(
             processing_time: r.processing_time,
             cache_strategy: config.cacheStrategy,
             memory_bank: config.memoryBank,
-            session_id: sessionId,
+            session_id: sessionId,;
             timestamp: new Date().toISOString(),
           },
         });
@@ -108,7 +108,7 @@ export function withRedisOrchestrator(
 
       // Add Redis metadata to response;
       return addRedisMetadata(originalResult, {
-        endpoint: config.endpointName,
+        endpoint: config.endpointName,;
         source: 'fresh',
         processing_time: performance.now() - startTime,
         cache_strategy: config.cacheStrategy,
@@ -143,7 +143,7 @@ export const redisOptimized = {
         const userId = typeof body['userId'] === 'string' ? (body['userId'] as string) : undefined;
         const useRAG = typeof body['useRAG'] === 'boolean' ? (body['useRAG'] as boolean) : true;
         return {
-          query: msg,
+          query: msg,;
           context: { caseId, userId, useRAG },
         };
       },
@@ -236,7 +236,7 @@ export const redisOptimized = {
         const method = typeof body['method'] === 'string' ? (body['method'] as string) : 'standard';
         const criteria = isRecord(body['criteria']) ? (body['criteria'] as Record<string, unknown>) : {};
         return {
-          query: JSON.stringify(caseData).substring(0, 1000),
+          query: JSON.stringify(caseData).substring(0, 1000),;
           context: { caseId, scoringMethod: method, criteria },
         };
       },
@@ -257,7 +257,7 @@ export const redisOptimized = {
 export function optimizeEndpoints(
   endpoints: Record<
     string,
-    {
+    {;
       handler: RequestHandler;
       type: keyof typeof redisOptimized;
       customName?: string;
@@ -305,7 +305,7 @@ function recreateRequest(originalRequest: Request, body: unknown): Request {
 
   return new Request(originalRequest.url, {
     method: originalRequest.method,
-    headers: originalRequest.headers,
+    headers: originalRequest.headers,;
     body: JSON.stringify(body),
   });
 }
@@ -321,7 +321,7 @@ function extractStandardAIQuery(body: unknown, _endpoint: string): AIQuery | nul
     const value = obj[field];
     if (typeof value === 'string') {
       return {
-        query: value,
+        query: value,;
         context: {
           ...obj,
           [field]: undefined,
@@ -378,7 +378,7 @@ function parseRedisResult(result: unknown): Record<string, unknown> {
 
     return {
       response: (rr as RedisResult).response,
-      sources: (rr as RedisResult).sources || [],
+      sources: (rr as RedisResult).sources || [],;
       confidence: (rr as RedisResult).confidence ?? 0.8,
       processing_time: (rr as RedisResult).processing_time,
     };
@@ -400,7 +400,7 @@ async function cacheOriginalResult(
     // Avoid consuming the original response body here (may be streaming)
     // Trigger a low-priority background cache/store side-effect instead
     await appRedisOrchestrator.processAIQuery(query, sessionId, {
-      endpoint: `${config.endpointName}_cache_store`,
+      endpoint: `${config.endpointName}_cache_store`,;
       priority: 50, // Low priority for cache storage
       useRAG: false,
       requiresFresh: false,

@@ -30,7 +30,7 @@ export function isLegalDocument(value: any): value is LegalDocumentUnified {
 }
 
 export function mergeLegalDocuments<T extends Partial<LegalDocumentUnified>(
-  base: LegalDocumentUnified,
+  base: LegalDocumentUnified,;
   patch: T;
 ): LegalDocumentUnified {
   return { ...base, ...patch };

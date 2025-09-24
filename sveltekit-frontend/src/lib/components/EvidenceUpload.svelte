@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -18,7 +18,7 @@ https://svelte.dev/e/js_parse_error -->
     resetProcessor,
     type EvidenceUploadProps
   } from '$lib/stores/evidence-workflow';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import { Progress } from '$lib/components/ui/progress';
   import { Alert, AlertDescription } from '$lib/components/ui/alert';
   import { Badge } from '$lib/components/ui/badge';
@@ -39,22 +39,26 @@ https://svelte.dev/e/js_parse_error -->
   let processingStartTime: Date;
 
   // Reactive state from xState machine
-  // TODO: Convert to $derived: state = $currentState
-  // TODO: Convert to $derived: processing = $isProcessing
-  // TODO: Convert to $derived: progress = $processingProgress
-  // TODO: Convert to $derived: error = state.context.error
-  // TODO: Convert to $derived: processingSteps = state.context.processingSteps
-  // TODO: Convert to $derived: completed = state.matches('completed')
-  // TODO: Convert to $derived: artifactUrl = state.context.artifactUrl
+  let state = $derived($currentState);
+  let processing = $derived($isProcessing);
+  let progress = $derived($processingProgress);
+  let error = $derived(state.context.error);
+  let processingSteps = $derived(state.context.processingSteps);
+  let completed = $derived(state.matches('completed'));
+  let artifactUrl = $derived(state.context.artifactUrl);
 
   // Watch for state changes
-  // TODO: Convert to $derived: if (completed && artifactUrl && onUploadComplete) {
-    onUploadComplete(artifactUrl)
-  }
+  $effect(() => {
+    if (completed && artifactUrl && onUploadComplete) {
+      onUploadComplete(artifactUrl);
+    }
+  });
 
-  // TODO: Convert to $derived: if (error && onError) {
-    onError(error)
-  }
+  $effect(() => {
+    if (error && onError) {
+      onError(error);
+    }
+  });
 
   // File handling
   const handleFileSelect = (event: Event) => {
@@ -310,7 +314,7 @@ Reset
 </div>
 
 <style>
-  .drop-zone {
+  .drop-zone {;
     cursor: pointer;
     transition: all 0.2s ease;
   }

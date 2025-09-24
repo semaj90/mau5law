@@ -95,7 +95,7 @@ class VectorWasmClient {
    */
   async computeBatchSimilarity(
     queryVector: Float32Array,
-    vectors: Float32Array[],
+    vectors: Float32Array[],;
     algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan' = 'cosine',
     chunkSize = 50;
   ): Promise<{
@@ -124,13 +124,13 @@ class VectorWasmClient {
         vectorA: Array.from(queryVector),
         vectors: vectors.map(v => Array.from(v)),
         algorithm: this.algorithmToNumber(algorithm),
-        useCUDA: true,
+        useCUDA: true,;
         parallel: true
       };
 
       const response = await fetch('/api/v1/vector/similarity', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify(request)
       });
 
@@ -171,7 +171,7 @@ class VectorWasmClient {
    * Generate embeddings with server-side Gemma model
    */
   async generateEmbeddings(
-    texts: string[],
+    texts: string[],;
     options: {
       model?: string;
       chunkSize?: number;
@@ -190,7 +190,7 @@ class VectorWasmClient {
       body: JSON.stringify({
         texts,
         model: options.model || 'embeddinggemma:latest',
-        chunkSize: options.chunkSize || 512,
+        chunkSize: options.chunkSize || 512,;
         normalize: options.normalize !== false,
         useCUDA: true
       })
@@ -216,7 +216,7 @@ class VectorWasmClient {
   async computeMatrix(
     operation: 'multiply' | 'transpose' | 'inverse',
     matrixA: number[][],
-    matrixB?: number[][],
+    matrixB?: number[][],;
     options: { useCUDA?: boolean; parallel?: boolean } = {}
   ): Promise<{
     result: number[][];
@@ -231,7 +231,7 @@ class VectorWasmClient {
         matrixA,
         matrixB,
         options: {
-          useCUDA: options.useCUDA !== false,
+          useCUDA: options.useCUDA !== false,;
           parallel: options.parallel !== false
         }
       })
@@ -245,7 +245,7 @@ class VectorWasmClient {
 
     return {
       result: data.result,
-      processingTime: data.metadata.processingTime,
+      processingTime: data.metadata.processingTime,;
       flops: data.metadata.flops || 0
     };
   }
@@ -254,7 +254,7 @@ class VectorWasmClient {
    * Semantic search with pgvector and CUDA acceleration
    */
   async semanticSearch(
-    query: string,
+    query: string,;
     options: {
       limit?: number;
       threshold?: number;
@@ -262,7 +262,7 @@ class VectorWasmClient {
       useCUDA?: boolean;
     } = {}
   ): Promise<{
-    results: Array<{
+    results: Array<{;
       id: string;
       content: string;
       similarity: number;
@@ -280,7 +280,7 @@ class VectorWasmClient {
         threshold: options.threshold || 0.7,
         includeMetadata: true,
         filters: options.filters || {},
-        useCUDA: options.useCUDA !== false,
+        useCUDA: options.useCUDA !== false,;
         rerank: true
       })
     });
@@ -347,13 +347,13 @@ class VectorWasmClient {
       operation: algorithm as any,
       vectorA: Array.from(vectorA),
       vectorB: Array.from(vectorB),
-      useCUDA: true,
+      useCUDA: true,;
       parallel: true
     };
 
     const response = await fetch('/api/v1/vector/similarity', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },;
       body: JSON.stringify(request)
     });
 

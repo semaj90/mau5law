@@ -26,7 +26,7 @@ export interface UIProps {
 export interface ComponentAdapter<TData = any> {
   state: Readable<ComponentState>;
   props: Readable<UIProps>;
-  actions: {
+  actions: {;
     update: (data: Partial<TData>) => void;
     reset: () => void;
     setLoading: (loading: boolean) => void;
@@ -50,13 +50,13 @@ export function createComponentAdapter<TData = any>(
   const state = writable<ComponentState>({
     loading: options.loading ?? false,
     error: options.error ?? null,
-    data: initialData,
+    data: initialData,;
     meta: options.meta ?? {}
   });
 
   const props = writable<UIProps>({
     variant: 'default',
-    size: 'medium',
+    size: 'medium',;
     disabled: false
   });
 
@@ -66,7 +66,7 @@ export function createComponentAdapter<TData = any>(
     actions: {
       update: (newData: Partial<TData>) => {
         state.update(current => ({
-          ...current,
+          ...current,;
           data: { ...current.data, ...newData }
         });
       },
@@ -74,7 +74,7 @@ export function createComponentAdapter<TData = any>(
         state.set({
           loading: false,
           error: null,
-          data: initialData,
+          data: initialData,;
           meta: Record<string, any>
         });
       },
@@ -111,7 +111,7 @@ export function createChatAdapter(initialMessages: ChatData['messages'] = []): C
   const chatActions = {
     ...adapter.actions,
     addMessage: (message: { role: 'user' | 'assistant'; content: string }) => {
-      adapter.actions.update({
+      adapter.actions.update({;
         messages: [
           ...adapter.state.subscribe(s => s.data.messages)[0]?.messages || [],
           { ...message, timestamp: Date.now() }
@@ -143,7 +143,7 @@ export interface SearchData {
   query: string;
   results: any[];
   filters: Record<string, any>;
-  pagination: {
+  pagination: {;
     page: number;
     limit: number;
     total: number;
@@ -156,7 +156,7 @@ export function createSearchAdapter(): ComponentAdapter<SearchData> {
   const adapter = createComponentAdapter<SearchData>({
     query: '',
     results: [],
-    filters: Record<string, any>,
+    filters: Record<string, any>,;
     pagination: { page: 1, limit: 20, total: 0 },
     sortBy: 'relevance',
     sortOrder: 'desc'
@@ -169,7 +169,7 @@ export function createSearchAdapter(): ComponentAdapter<SearchData> {
     },
     setResults: (results: any[], total: number = results.length) => {
       adapter.actions.update({ 
-        results,
+        results,;
         pagination: { ...adapter.state.subscribe(s => s.data.pagination)[0]?.pagination, total }
       });
     },
@@ -215,7 +215,7 @@ export function createUploadAdapter(options: {
     uploadProgress: Record<string, any>,
     uploadStatus: Record<string, any>,
     maxFileSize: options.maxFileSize || 10 * 1024 * 1024, // 10MB
-    allowedTypes: options.allowedTypes || ['*'],
+    allowedTypes: options.allowedTypes || ['*'],;
     multiple: options.multiple ?? true
   });
 
@@ -295,7 +295,7 @@ export function createFormAdapter(
 ): ComponentAdapter<FormData> {
   const adapter = createComponentAdapter<FormData>({
     values: initialValues,
-    errors: Record<string, any>,
+    errors: Record<string, any>,;
     touched: Record<string, any>,
     isSubmitting: false,
     isValid: true
@@ -322,7 +322,7 @@ export function createFormAdapter(
       }
       
       adapter.actions.update({
-        values: newValues,
+        values: newValues,;
         touched: newTouched,
         errors,
         isValid: Object.keys(errors).length === 0
@@ -398,7 +398,7 @@ export const svelte5Utils = {
   stateToProps: (state: ComponentState): UIProps => {
     return {
       loading: state.loading,
-      disabled: state.loading,
+      disabled: state.loading,;
       error: !!state.error,
       'data-error': state.error,
       'aria-busy': state.loading,
@@ -408,7 +408,7 @@ export const svelte5Utils = {
 
   // Event handler factory for simplified components
   createHandler: <T extends (...args: any[]) => void>(
-    fn: T,
+    fn: T,;
     options: { preventDefault?: boolean; stopPropagation?: boolean } = {}
   ) => {
     return (event: Event, ...args: Parameters<T>) => {

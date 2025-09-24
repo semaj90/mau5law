@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name
+<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name;
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <!-- Gemma3LegalChat.svelte -->
@@ -13,14 +13,14 @@ https://svelte.dev/e/attribute_invalid_name -->
   import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service';
   import { enhancedRAGService } from '$lib/services/enhanced-rag-service';
   import { natsMessaging } from '$lib/services/nats-messaging-service';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import { Textarea } from '$lib/components/ui/textarea';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { Alert, AlertDescription } from '$lib/components/ui/alert';
   import N64ProgressBar from '$lib/components/ui/gaming/n64/N64ProgressBar.svelte';
@@ -44,7 +44,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     tokensPerSecond: 0,
     latency: 0,
     cacheHitRate: 0,
-    gpuUtilization: 0
+    gpuUtilization: 0;
   });
   // Gemma3 Bridge Instance
   let gemma3Bridge = $state<Gemma3WASMBridge | null >(null);
@@ -86,33 +86,33 @@ https://svelte.dev/e/attribute_invalid_name -->
   // State machine for chat workflow
   const chatMachine = createMachine({
     id: 'gemma3Chat',
-    initial: 'idle',
+    initial: 'idle',;
     context: {
       currentQuery: '',
       useRAG: true,
       useGPU: true,
       streamResponse: true,
       maxTokens: 2000,
-      temperature: 0.1
+      temperature: 0.1;
     },
     states: {
       idle: {
         on: {
           SEND_MESSAGE: {
             target: 'processing',
-            actions: ['storeQuery']
+            actions: ['storeQuery'];
           }
         }
       },
       processing: {
-        initial: 'embedding',
+        initial: 'embedding',;
         states: {
           embedding: {
             invoke: {
               src: 'generateEmbeddings',
               onDone: {
                 target: 'searching',
-                actions: ['storeEmbeddings']
+                actions: ['storeEmbeddings'];
               },
               onError: 'error'
             }
@@ -122,7 +122,7 @@ https://svelte.dev/e/attribute_invalid_name -->
               src: 'searchDocuments',
               onDone: {
                 target: 'generating',
-                actions: ['storeSources']
+                actions: ['storeSources'];
               },
               onError: 'generating' // Continue without RAG if search fails
             }
@@ -132,21 +132,21 @@ https://svelte.dev/e/attribute_invalid_name -->
               src: 'generateResponse',
               onDone: {
                 target: '#gemma3Chat.idle',
-                actions: ['addMessage', 'updateMetrics']
+                actions: ['addMessage', 'updateMetrics'];
               },
               onError: 'error'
             }
           },
           error: {
-            entry: ['logError'],
-            always: '#gemma3Chat.idle'
+            entry: ['logError'],;
+            always: '#gemma3Chat.idle';
           }
         }
       }
     }
   });
   // Initialize on mount
-  $effect(async () => {
+  $effect(() => {
     try {
       // Initialize Gemma3 WASM Bridge
       if (typeof window !== 'undefined' && 'gpu' in navigator) {
@@ -160,13 +160,13 @@ https://svelte.dev/e/attribute_invalid_name -->
           maxContextLength: 4096,
           temperature: 0.1,
           topK: 40,
-          topP: 0.9
+          topP: 0.9;
         });
         await gemma3Bridge.initialize();
         gpuStatus.set({
-          available: true,
-          layers: 35,
-          memory: 8192
+          available: true,;
+          layers: 35,;
+          memory: 8192;
         });
       }
       // Connect to NATS for real-time updates
@@ -183,8 +183,8 @@ https://svelte.dev/e/attribute_invalid_name -->
             }
             // Fallback to server-side embedding
             return await fetch('/api/embeddings', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              method: 'POST',;
+              headers: { 'Content-Type': 'application/json' },;
               body: JSON.stringify({ text: context.currentQuery })
             }).then(r => r.json());
           },
@@ -192,9 +192,9 @@ https://svelte.dev/e/attribute_invalid_name -->
             const response = await enhancedRAGService.search({
               query: context.currentQuery,
               embedding: event.data,
-              caseId,
-              limit: 10,
-              threshold: 0.7
+              caseId,;
+              limit: 10,;
+              threshold: 0.7;
             });
             return (response as { results?: any; json?: any; body?: any }).results;
           },
@@ -205,12 +205,12 @@ https://svelte.dev/e/attribute_invalid_name -->
               // Use local WebAssembly model
               const result = await gemma3Bridge.processLegalText(augmentedPrompt, {
                 maxLength: context.maxTokens,
-                temperature: context.temperature,
-                stream: context.streamResponse
+                temperature: context.temperature,;
+                stream: context.streamResponse;
               });
               return {
                 content: (result as { text?: any; processingTime?: any; analysis?: any }).text,
-                metadata: {
+                metadata: {;
                   model: 'gemma3-legal-wasm',
                   processingTime: (result as { text?: any; processingTime?: any; analysis?: any }).processingTime,
                   sources,
@@ -220,13 +220,13 @@ https://svelte.dev/e/attribute_invalid_name -->
             } else {
               // Fallback to server API
               const response = await fetch('/api/ai/gemma3-chat', {
-                method: 'POST',
+                method: 'POST',;
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                   prompt: augmentedPrompt,
-                  maxTokens: context.maxTokens,
-                  temperature: context.temperature,
-                  stream: context.streamResponse
+                  maxTokens: context.maxTokens,;
+                  temperature: context.temperature,;
+                  stream: context.streamResponse;
                 })
               });
               if (context.streamResponse) {
@@ -242,17 +242,17 @@ https://svelte.dev/e/attribute_invalid_name -->
       // Add welcome message
       messages.update(m => [...m, {
         id: crypto.randomUUID(),
-        role: 'system',
-        content: 'Gemma3 Legal AI Assistant initialized. GPU acceleration enabled with 35 layers loaded. How can I help you with your legal analysis today?',
-        timestamp: new Date()
+        role: 'system',;
+        content: 'Gemma3 Legal AI Assistant initialized. GPU acceleration enabled with 35 layers loaded. How can I help you with your legal analysis today?',;
+        timestamp: new Date();
       }]);
     } catch (error) {
       console.error('Failed to initialize Gemma3:', error);
       messages.update(m => [...m, {
         id: crypto.randomUUID(),
-        role: 'system',
-        content: 'Running in CPU mode. GPU acceleration unavailable.',
-        timestamp: new Date()
+        role: 'system',;
+        content: 'Running in CPU mode. GPU acceleration unavailable.',;
+        timestamp: new Date();
       }]);
     }
   });
@@ -274,9 +274,9 @@ https://svelte.dev/e/attribute_invalid_name -->
     if (!userInput.trim() || $isProcessing) return;
     const userMessage: Message = {
       id: crypto.randomUUID(),
-      role: 'user',
-      content: userInput,
-      timestamp: new Date()
+      role: 'user',;
+      content: userInput,;
+      timestamp: new Date();
     };
     messages.update(m => [...m, userMessage]);
     isProcessing.set(true);
@@ -298,8 +298,8 @@ https://svelte.dev/e/attribute_invalid_name -->
       messages.update(m => [...m, {
         id: crypto.randomUUID(),
         role: 'assistant',
-        content: 'I encountered an error processing your request. Please try again.',
-        timestamp: new Date(),
+        content: 'I encountered an error processing your request. Please try again.',;
+        timestamp: new Date(),;
         metadata: { model: 'error' }
       }]);
     } finally {
@@ -330,8 +330,8 @@ https://svelte.dev/e/attribute_invalid_name -->
     const assistantMessage: Message = {
       id: crypto.randomUUID(),
       role: 'assistant',
-      content: '',
-      timestamp: new Date(),
+      content: '',;
+      timestamp: new Date(),;
       metadata: { model: 'gemma3-legal' }
     };
     messages.update(m => [...m, assistantMessage]);
@@ -375,7 +375,7 @@ https://svelte.dev/e/attribute_invalid_name -->
         : 0,
       cacheHitRate: gemma3Bridge?.metrics?.cacheHits 
         ? gemma3Bridge.metrics.cacheHits / (gemma3Bridge.metrics.cacheHits + gemma3Bridge.metrics.cacheMisses)
-        : 0
+        : 0;
     }));
   }
   // UI state
@@ -489,7 +489,7 @@ https://svelte.dev/e/attribute_invalid_name -->
       <!-- Input Area -->
       <div class="p-4 border-t">
         <form onsubmit|preventDefault={sendMessage} class="flex gap-2">
-          <Textarea
+          <Textarea;
             bind:value={userInput}
             placeholder="Ask a legal question..."
             class="flex-1"

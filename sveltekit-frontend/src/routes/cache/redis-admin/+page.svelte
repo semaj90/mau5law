@@ -386,7 +386,7 @@
         <div.Content class="nes-container">
           <form method="POST" action="?/setKey" use:enhance class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Input
+              <Input;
                 bind:value={newKey}
                 name="key"
                 placeholder="Key name"
@@ -398,7 +398,7 @@
                 placeholder="Value"
                 required
               />
-              <Input
+              <Input;
                 bind:value={newTtl}
                 name="ttl"
                 type="number"
@@ -508,4 +508,4 @@
       </NesCardContent>
     </OrchestratedCard.Analysis>
   {/if}
-</div>
+</div>;

@@ -104,7 +104,7 @@
     error,
     success,
 
-    class: className = ''
+    class: className = '';
   }: Props = $props();
 
   
@@ -340,7 +340,7 @@
       secondary: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748', border: '#6c757d' },
       success: { base: '#2d5016', highlight: '#38a169', shadow: '#1a365d', border: '#28a745' },
       warning: { base: '#744210', highlight: '#d69e2e', shadow: '#452f06', border: '#ffc107' },
-      error: { base: '#742a2a', highlight: '#e53e3e', shadow: '#451b1b', border: '#dc3545' },
+      error: { base: '#742a2a', highlight: '#e53e3e', shadow: '#451b1b', border: '#dc3545' },;
       info: { base: '#2a4365', highlight: '#3182ce', shadow: '#1a202c', border: '#17a2b8' }
     };
 
@@ -367,7 +367,7 @@
           0 4px 8px rgba(0,0,0,0.3)
         `
       },
-      pbr: {
+      pbr: {;
         background: `
           linear-gradient(145deg, ${colors.highlight} 0%, ${colors.base} 30%, ${colors.shadow} 70%, ${colors.base} 100%),
           radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1) 0%, transparent 50%)
@@ -390,7 +390,7 @@
     const sizeMap = {
       small: { padding: '12px 16px', fontSize: '12px', minHeight: '40px' },
       medium: { padding: '16px 20px', fontSize: '14px', minHeight: '48px' },
-      large: { padding: '20px 24px', fontSize: '16px', minHeight: '56px' },
+      large: { padding: '20px 24px', fontSize: '16px', minHeight: '56px' },;
       xl: { padding: '24px 28px', fontSize: '18px', minHeight: '64px' }
     };
     return sizeMap[size as keyof typeof sizeMap] || sizeMap.medium;
@@ -450,10 +450,10 @@
     class:open={isOpen}
     class:focused={isFocused}
     class:hovered={isHovered}
-    class:disabled
+    class:disabled;
     class:error={hasError}
     class:success={hasSuccess}
-    style="
+    style=";
       --material-bg: {materialStyles.background};
       --material-border: {materialStyles.borderColor};
       --material-shadow: {materialStyles.boxShadow};
@@ -588,7 +588,7 @@
 </div>
 
 <style>
-  .n64-select-container {
+  .n64-select-container {;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -779,7 +779,7 @@
     border-color: var(--material-border);
   }
 
-  .search-input: :placeholder {
+  .search-input::placeholder {
     color: rgba(255, 255, 255, 0.5);
   }
 

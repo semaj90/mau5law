@@ -43,7 +43,7 @@ interface TensorProcessingJob {
     operation: 'normalize' | 'similarity' | 'compress' | 'batch_process';
     algorithm?: 'cosine' | 'euclidean' | 'dot' | 'manhattan';
   };
-  metadata: {
+  metadata: {;
     priority: number;
     timestamp: number;
     source: 'rabbitmq' | 'direct_api' | 'service_worker';
@@ -150,7 +150,7 @@ export class RabbitMQTensorIntegration {
         },
         metadata: {
           priority: message.priority || 2,
-          timestamp: Date.now(),
+          timestamp: Date.now(),;
           source: 'rabbitmq'
         }
       };
@@ -171,7 +171,7 @@ export class RabbitMQTensorIntegration {
         },
         metadata: {
           priority: message.priority || 1,
-          timestamp: Date.now(),
+          timestamp: Date.now(),;
           source: 'rabbitmq'
         }
       };
@@ -200,7 +200,7 @@ export class RabbitMQTensorIntegration {
         },
         metadata: {
           priority: message.priority || 2,
-          timestamp: Date.now(),
+          timestamp: Date.now(),;
           source: 'rabbitmq'
         }
       };
@@ -275,7 +275,7 @@ export class RabbitMQTensorIntegration {
           data: {
             operation: job.data.operation,
             vectors: job.data.vectors,
-            query: job.data.query,
+            query: job.data.query,;
             algorithm: job.data.algorithm
           }
         });
@@ -342,7 +342,7 @@ export class RabbitMQTensorIntegration {
    */
   async submitTensorJob(
     type: JobType,
-    data: TensorProcessingJob['data'],
+    data: TensorProcessingJob['data'],;
     priority: number = 2;
   ): Promise<string> {
     const job: TensorProcessingJob = {
@@ -351,7 +351,7 @@ export class RabbitMQTensorIntegration {
       data,
       metadata: {
         priority,
-        timestamp: Date.now(),
+        timestamp: Date.now(),;
         source: 'direct_api'
       }
     };
@@ -378,7 +378,7 @@ export class RabbitMQTensorIntegration {
       bridge: bridgeStatus,
       activeJobs: this.processingJobs.size,
       ports: WASM_SERVICE_PORTS,
-      queues: WASM_QUEUE_ROUTING,
+      queues: WASM_QUEUE_ROUTING,;
       timestamp: Date.now()
     };
   }
@@ -411,7 +411,7 @@ export async function initializeIntegration(): Promise<boolean> {
 }
 
 export async function submitDirectTensorJob(
-  type: JobType,
+  type: JobType,;
   data: TensorProcessingJob['data'],
   priority?: number;
 ): Promise<string> {

@@ -36,7 +36,7 @@
     citations: Citation[];
     categories: string[];
     jurisdictions: string[];
-    stats: {
+    stats: {;
       total: number;
       verified: number;
       pending: number;
@@ -58,7 +58,7 @@
   const citationBuilder = createLegalEvidenceAnalyzer({
     caseType: 'civil',
     urgency: 'medium',
-    aiModel: 'gemma3'
+    aiModel: 'gemma3';
   });
 
   let citationData = $state<CitationDatabase>({
@@ -81,7 +81,7 @@
         parentheticals: ['holding that separate educational facilities are inherently unequal'],
         status: 'active',
         dateAdded: '2025-09-15T10:00:00Z',
-        lastChecked: '2025-09-21T14:30:00Z'
+        lastChecked: '2025-09-21T14:30:00Z';
       },
       {
         id: 'cit-002',
@@ -97,7 +97,7 @@
         notes: 'Civil action for deprivation of rights under color of law',
         status: 'active',
         dateAdded: '2025-09-10T15:20:00Z',
-        lastChecked: '2025-09-21T12:15:00Z'
+        lastChecked: '2025-09-21T12:15:00Z';
       },
       {
         id: 'cit-003',
@@ -112,14 +112,14 @@
         tags: ['ADA', 'disability', 'employment'],
         notes: 'Definition of disability under ADA regulations',
         status: 'pending',
-        dateAdded: '2025-09-20T09:45:00Z'
+        dateAdded: '2025-09-20T09:45:00Z';
       }
     ],
     categories: ['Constitutional Law', 'Civil Rights', 'Employment Law', 'Contract Law'],
-    jurisdictions: ['Federal', 'California', 'New York', 'Texas'],
+    jurisdictions: ['Federal', 'California', 'New York', 'Texas'],;
     stats: {
-      total: 0,
-      verified: 0,
+      total: 0,;
+      verified: 0,;
       pending: 0,
       byType: {},
       byJurisdiction: {}
@@ -138,8 +138,8 @@
   // Calculate statistics
   $effect(() => {
     const stats = {
-      total: citationData.citations.length,
-      verified: citationData.citations.filter(c => c.verified).length,
+      total: citationData.citations.length,;
+      verified: citationData.citations.filter(c => c.verified).length,;
       pending: citationData.citations.filter(c => !c.verified).length,
       byType: {} as Record<string, number>,
       byJurisdiction: {} as Record<string, number>
@@ -274,10 +274,10 @@
       verified: false,
       accuracy: 0,
       relevanceScore: 0,
-      usageCount: 0,
-      tags: [],
+      usageCount: 0,;
+      tags: [],;
       status: 'pending',
-      dateAdded: new Date().toISOString()
+      dateAdded: new Date().toISOString();
     };
 
     citationData.citations.unshift(newCitation);
@@ -294,9 +294,9 @@
       case: '⚖️',
       statute: '📜',
       regulation: '📋',
-      constitutional: '🏛️',
-      secondary: '📚',
-      foreign: '🌍'
+      constitutional: '🏛️',;
+      secondary: '📚',;
+      foreign: '🌍';
     };
     return icons[type] || '📄';
   }
@@ -304,9 +304,9 @@
   function getStatusColor(status: Citation['status']) {
     const colors = {
       active: '#10b981',
-      superseded: '#f59e0b',
-      overruled: '#ef4444',
-      pending: '#6b7280'
+      superseded: '#f59e0b',;
+      overruled: '#ef4444',;
+      pending: '#6b7280';
     };
     return colors[status] || colors.pending;
   }
@@ -495,7 +495,7 @@
         {#each filteredCitations as citation (citation.id)}
           <div
             class="citation-item"
-            class:selected={selectedCitations.has(citation.id)}
+            class:selected={selectedCitations.has(citation.id)};
             transition:scale={citationBuilder.animations.enter}
           >
             <div class="citation-header">
@@ -614,7 +614,7 @@
                   <div class="metric-bar">
                     <div
                       class="metric-fill"
-                      style="
+                      style=";
                         width: {citation.relevanceScore * 100}%;
                         background: {citationBuilder.styling.colors.evidence};
                       "

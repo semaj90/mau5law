@@ -40,7 +40,7 @@
     aiSuggestions: true,
     maxResults,
     similarityThreshold: 0.7,
-    includeMetadata: true
+    includeMetadata: true;
   });
 
   // Modern Svelte 5 event handling - props instead of dispatcher
@@ -108,18 +108,18 @@
     try {
       // Use the new unified search API endpoint with Loki.js fuzzy search
       const response = await fetch('/api/search/unified', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          query: searchInput,
+          query: searchInput,;
           categories: selectedCategories,
           enableVectorSearch: searchOptions.enableVectorSearch,
           aiSuggestions: searchOptions.aiSuggestions,
           maxResults: searchOptions.maxResults,
           similarityThreshold: searchOptions.similarityThreshold,
-          includeMetadata: searchOptions.includeMetadata
+          includeMetadata: searchOptions.includeMetadata;
         })
       });
 
@@ -137,7 +137,7 @@
           content: (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).content,
           score: (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).score || (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).similarity || 0,
           metadata: {
-            ...result.metadata,
+            ...result.metadata,;
             date: (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).createdAt ? new Date((result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).createdAt).toISOString.split('T')[0] : new Date().toISOString.split('T')[0]
           }
         }));
@@ -187,29 +187,29 @@
       // Mock legal entity search - would integrate with actual API
       const mockResults: SearchResult[] = [
         {
-          id: 'case-001',
+          id: 'case-001',;
           title: `Case: ${query} Investigation`,
-          type: 'case',
+          type: 'case',;
           content: `Legal case involving ${query} with multiple evidence items and witness testimonies.`,
-          score: 0.9,
+          score: 0.9,;
           metadata: {
             date: '2024-08-24',
             jurisdiction: 'Federal',
             status: 'Active',
             caseId: 'CASE-001',
-            tags: ['investigation', 'active']
+            tags: ['investigation', 'active'];
           }
         },
         {
-          id: 'poi-001',
+          id: 'poi-001',;
           title: `Person of Interest: Related to ${query}`,
-          type: 'criminal',
+          type: 'criminal',;
           content: `Individual connected to ${query} case with documented criminal history.`,
-          score: 0.8,
+          score: 0.8,;
           metadata: {
-            date: '2024-08-20',
-            status: 'Under Investigation',
-            tags: ['person-of-interest', 'suspect']
+            date: '2024-08-20',;
+            status: 'Under Investigation',;
+            tags: ['person-of-interest', 'suspect'];
           }
         }
       ];
@@ -230,7 +230,7 @@
       content: (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).description,
       score: 1 - (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).score, // Convert score to similarity
       metadata: {
-        date: new Date().toISOString.split('T')[0],
+        date: new Date().toISOString.split('T')[0],;
         tags: (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).tags,
         ...result.metadata
       }
@@ -308,15 +308,15 @@
 
   // Theme classes
   let themeClasses = $derived({
-    light: 'bg-white text-gray-900 border-gray-300',
-    dark: 'bg-gray-800 text-white border-gray-600',
-    yorha: 'bg-black/90 text-yellow-400 border-yellow-400/50 shadow-[0_0_10px_rgba(255,255,0,0.3)]'
+    light: 'bg-white text-gray-900 border-gray-300',;
+    dark: 'bg-gray-800 text-white border-gray-600',;
+    yorha: 'bg-black/90 text-yellow-400 border-yellow-400/50 shadow-[0_0_10px_rgba(255,255,0,0.3)]';
   }[theme]);
 
   let inputClasses = $derived({
-    light: 'bg-white text-gray-900 border-gray-300 focus:border-blue-500',
-    dark: 'bg-gray-700 text-white border-gray-600 focus:border-blue-400',
-    yorha: 'bg-black/80 text-yellow-400 border-yellow-400/50 focus:border-yellow-400 focus:shadow-[0_0_15px_rgba(255,255,0,0.5)]'
+    light: 'bg-white text-gray-900 border-gray-300 focus:border-blue-500',;
+    dark: 'bg-gray-700 text-white border-gray-600 focus:border-blue-400',;
+    yorha: 'bg-black/80 text-yellow-400 border-yellow-400/50 focus:border-yellow-400 focus:shadow-[0_0_15px_rgba(255,255,0,0.5)]';
   }[theme]);
 </script>
 
@@ -392,7 +392,7 @@
               class:text-black={selectedCategories.includes(category.id) && theme === 'yorha'}
               class:bg-gray-100={!selectedCategories.includes(category.id) && theme === 'light'}
               class:bg-gray-700={!selectedCategories.includes(category.id) && theme === 'dark'}
-              class:bg-black={!selectedCategories.includes(category.id) && theme === 'yorha'}
+              class:bg-black={!selectedCategories.includes(category.id) && theme === 'yorha'};
               class:bg-opacity-50={!selectedCategories.includes(category.id) && theme === 'yorha'}
               onclick={() => toggleCategory(category.id)}
             >
@@ -535,7 +535,7 @@
 
 <style>
   /* NES.css Legal AI Search Bar Integration */
-  .nes-search-bar {
+  .nes-search-bar {;
     font-family: 'Courier New', monospace;
   }
 
@@ -560,7 +560,7 @@
     background: transparent;
   }
 
-  :global(.nes-search-bar input::placeholder) {
+  :global(.nes-search-bar input::placeholder) {;
     color: #666;
     font-style: italic;
   }
@@ -608,7 +608,7 @@
     transition: all 0.2s ease;
   }
 
-  :global(.nes-search-bar .search-dropdown button:hover) {
+  :global(.nes-search-bar .search-dropdown button:hover) {;
     background: linear-gradient(135deg, #e3f2fd, #bbdefb) !important;
     transform: translateX(4px);
     box-shadow: inset 3px 0 0 rgba(33, 150, 243, 0.5);

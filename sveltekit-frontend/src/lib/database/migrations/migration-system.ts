@@ -22,7 +22,7 @@ export const migrations = pgTable('schema_migrations', {
   execution_time_ms: integer('execution_time_ms').notNull(),
   success: boolean('success').notNull().default(true),
   error_message: text('error_message'),
-  rollback_sql: text('rollback_sql'),
+  rollback_sql: text('rollback_sql'),;
   metadata: json('metadata')
 });
 }
@@ -171,7 +171,7 @@ export class DatabaseMigrator {
     return {
       version,
       name,
-      up: upSQL.trim(),
+      up: upSQL.trim(),;
       down: downSQL.trim() || undefined
     };
   }
@@ -226,7 +226,7 @@ export class DatabaseMigrator {
         return {
           success: true,
           version: migration.version,
-          executionTime: 0,
+          executionTime: 0,;
           applied: false
         };
       }
@@ -274,7 +274,7 @@ export class DatabaseMigrator {
       return {
         success: true,
         version: migration.version,
-        executionTime,
+        executionTime,;
         applied: true
       };
 
@@ -293,7 +293,7 @@ export class DatabaseMigrator {
           execution_time_ms: executionTime,
           success: false,
           error_message: errorMessage,
-          rollback_sql: migration.down || null,
+          rollback_sql: migration.down || null,;
           metadata: migration.metadata || {}
         });
       } catch (recordError) {
@@ -304,7 +304,7 @@ export class DatabaseMigrator {
         success: false,
         version: migration.version,
         executionTime,
-        error: errorMessage,
+        error: errorMessage,;
         applied: false
       };
     }
@@ -379,7 +379,7 @@ export class DatabaseMigrator {
         return {
           success: true,
           version: '',
-          executionTime: 0,
+          executionTime: 0,;
           applied: false
         };
       }
@@ -411,7 +411,7 @@ export class DatabaseMigrator {
       return {
         success: true,
         version: migration.version,
-        executionTime,
+        executionTime,;
         applied: true
       };
 
@@ -423,7 +423,7 @@ export class DatabaseMigrator {
         success: false,
         version: '',
         executionTime: 0,
-        error: errorMessage,
+        error: errorMessage,;
         applied: false
       };
     }
@@ -577,7 +577,7 @@ export class DatabaseMigrator {
 export const generateInitialMigrations = async (migrator: DatabaseMigrator) => {
   const migrations = [;
     {
-      name: 'create_enhanced_cases_table',
+      name: 'create_enhanced_cases_table',;
       sql: `-- Migration: create_enhanced_cases_table
 -- Up
 CREATE TABLE IF NOT EXISTS cases (
@@ -607,7 +607,7 @@ CREATE INDEX IF NOT EXISTS idx_cases_vector_embedding ON cases USING ivfflat (ve
 DROP TABLE IF EXISTS cases;`
     },
     {
-      name: 'create_enhanced_evidence_table',
+      name: 'create_enhanced_evidence_table',;
       sql: `-- Migration: create_enhanced_evidence_table
 -- Up
 CREATE TABLE IF NOT EXISTS evidence (
@@ -644,7 +644,7 @@ CREATE INDEX IF NOT EXISTS idx_evidence_vector_embedding ON evidence USING ivffl
 DROP TABLE IF EXISTS evidence;`
     },
     {
-      name: 'create_background_jobs_table',
+      name: 'create_background_jobs_table',;
       sql: `-- Migration: create_background_jobs_table
 -- Up
 CREATE TABLE IF NOT EXISTS background_jobs (
@@ -675,7 +675,7 @@ CREATE INDEX IF NOT EXISTS idx_background_jobs_entity ON background_jobs(entity_
 DROP TABLE IF EXISTS background_jobs;`
     },
     {
-      name: 'add_vector_extension',
+      name: 'add_vector_extension',;
       sql: `-- Migration: add_vector_extension
 -- Up
 CREATE EXTENSION IF NOT EXISTS vector;

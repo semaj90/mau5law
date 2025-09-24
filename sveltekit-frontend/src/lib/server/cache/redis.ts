@@ -356,7 +356,7 @@ export const cacheEmbedding = (text: string, embedding: number[], model?: string
 export const getCachedEmbedding = (text: string, model?: string) => cache.getEmbedding(text, model);
 export const cacheSearchResults = (
   query: string,
-  searchType: string,
+  searchType: string,;
   results: any[],
   filters?: unknown
 ) => cache.setSearchResults(query, searchType, results, filters as any);

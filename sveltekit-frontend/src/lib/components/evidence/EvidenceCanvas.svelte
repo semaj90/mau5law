@@ -49,22 +49,24 @@
   });
 
   // Initialize canvas
-  $effect(async () => {
-    await embeddingsService.initialize();
+  $effect(() => {
+    (async () => {
+await embeddingsService.initialize();
     updateCanvasSize();
     window.addEventListener('resize', updateCanvasSize);
 
     return () => {
       window.removeEventListener('resize', updateCanvasSize);
     };
+    })();
   });
 
   function updateCanvasSize() {
     if (canvasElement) {
       const rect = canvasElement.getBoundingClientRect();
       canvasSize = {
-        width: Math.max(1200, rect.width),
-        height: Math.max(800, rect.height)
+        width: Math.max(1200, rect.width),;
+        height: Math.max(800, rect.height);
       };
     }
   }
@@ -125,10 +127,10 @@
         fromId,
         toId,
         type: connectionType,
-        strength: similarity,
+        strength: similarity,;
         metadata: {
-          reason: `${connectionType} connection`,
-          confidence: similarity
+          reason: `${connectionType} connection`,;
+          confidence: similarity;
         }
       };
 
@@ -136,10 +138,10 @@
 
       // Update evidence with connection references
       evidenceStore.updateEvidence(fromId, {
-        connections: [...(fromEvidence.connections || []), toId]
+        connections: [...(fromEvidence.connections || []), toId];
       });
       evidenceStore.updateEvidence(toId, {
-        connections: [...(toEvidence.connections || []), fromId]
+        connections: [...(toEvidence.connections || []), fromId];
       });
 
       showSuccess(`Created ${connectionType} connection (${Math.round(similarity * 100)}% similarity)`);
@@ -177,10 +179,10 @@
               fromId: evidenceList[i].id,
               toId: evidenceList[j].id,
               type: 'similarity',
-              strength: similarity,
+              strength: similarity,;
               metadata: {
-                reason: 'AI-detected similarity',
-                confidence: similarity
+                reason: 'AI-detected similarity',;
+                confidence: similarity;
               }
             });
           }
@@ -191,8 +193,8 @@
       for (let i = 0; i < evidenceList.length; i++) {
         evidenceStore.updateEvidence(evidenceList[i].id, {
           metadata: {
-            ...evidenceList[i].metadata,
-            embeddings: embeddingResults.embeddings[i]
+            ...evidenceList[i].metadata,;
+            embeddings: embeddingResults.embeddings[i];
           }
         });
       }
@@ -269,9 +271,9 @@
           // Add new evidence to canvas
           const newEvidence = {
             ...evidence,
-            id: evidence.id || crypto.randomUUID(),
-            x: Math.max(0, Math.min(x - 128, canvasSize.width - 256)),
-            y: Math.max(0, Math.min(y - 100, canvasSize.height - 200))
+            id: evidence.id || crypto.randomUUID(),;
+            x: Math.max(0, Math.min(x - 128, canvasSize.width - 256)),;
+            y: Math.max(0, Math.min(y - 100, canvasSize.height - 200));
           };
 
           evidenceStore.addEvidence(newEvidence);
@@ -287,7 +289,7 @@
   async function exportCanvasData() {
     const canvasData = {
       evidence: evidenceList,
-      connections,
+      connections,;
       metadata: {
         caseId,
         exportedAt: new Date().toISOString(),
@@ -297,7 +299,7 @@
     };
 
     const blob = new Blob([JSON.stringify(canvasData, null, 2)], {
-      type: 'application/json'
+      type: 'application/json';
     });
 
     const url = URL.createObjectURL(blob);
@@ -381,7 +383,7 @@
 
   <!-- Canvas -->
   <Card class="relative overflow-hidden">
-    <div
+    <div;
       bind:this={canvasElement}
       class="relative bg-slate-50 dark:bg-slate-900 min-h-[600px] overflow-auto"
       style="width: {canvasSize.width}px; height: {canvasSize.height}px;"

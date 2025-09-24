@@ -6,7 +6,7 @@ export const load: PageServerLoad = async () => {
   return {};
 };
 
-export const actions: Actions = {
+export const actions: Actions = {;
   register: async ({ request, cookies, getClientAddress }) => {
     const data = await request.formData();
     const email = (data as { get?: any }).get('email') as string;
@@ -39,7 +39,7 @@ export const actions: Actions = {
         email: email.toLowerCase(),
         password: password,
         firstName: firstName,
-        lastName: lastName,
+        lastName: lastName,;
         role: role || 'user'
       }, { request, cookies, getClientAddress } as any);
 
@@ -51,7 +51,7 @@ export const actions: Actions = {
       const clientIP = getClientAddress();
       const userAgent = request.headers.get('user-agent') || '';
       const loginResult = await authService.login({
-        email: email.toLowerCase(),
+        email: email.toLowerCase(),;
         password: password,
         ipAddress: clientIP,
         userAgent: userAgent
@@ -61,7 +61,7 @@ export const actions: Actions = {
         // Set session cookie;
         cookies.set('session_id', loginResult.session.id, {
           path: '/',
-          httpOnly: true,
+          httpOnly: true,;
           secure: import.meta.env.NODE_ENV === 'production',
           sameSite: 'strict',
           maxAge: 60 * 60 * 24 // 1 day

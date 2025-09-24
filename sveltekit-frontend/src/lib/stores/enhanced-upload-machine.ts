@@ -92,7 +92,7 @@ type EnhancedUploadEvent =
 // Enhanced Upload and processing state machine with comprehensive legal AI pipeline
 export const enhancedUploadMachine = createMachine({
   id: 'enhanced-upload',
-  types: {} as {
+  types: {} as {;
     context: EnhancedUploadContext;
     events: EnhancedUploadEvent;
   },
@@ -543,7 +543,7 @@ export const enhancedUploadMachine = createMachine({
     },
 
     completed: {
-      type: 'final',
+      type: 'final',;
       entry: () => {
         console.log('🎉 Enhanced upload and AI processing completed successfully!');
       }
@@ -590,7 +590,7 @@ export const enhancedUploadMachine = createMachine({
     // Enhanced actors with comprehensive legal AI pipeline
 
     // RabbitMQ queue integration
-    queueInRabbitMQ: fromPromise(async ({ input }: {
+    queueInRabbitMQ: fromPromise(async ({ input }: {;
       input: { uploadId: string; caseId: string; metadata: any }
     }) => {
       const { uploadId, caseId, metadata } = input;
@@ -603,7 +603,7 @@ export const enhancedUploadMachine = createMachine({
           caseId,
           metadata,
           queueName: 'legal-document-processing',
-          routingKey: `legal.document.${metadata.documentType || 'general'}`,
+          routingKey: `legal.document.${metadata.documentType || 'general'}`,;
           priority: metadata.documentType === 'evidence' ? 'high' : 'normal'
         })
       });
@@ -629,7 +629,7 @@ export const enhancedUploadMachine = createMachine({
       formData.append('confidenceThreshold', '0.8');
 
       const response = await fetch('/api/processing/ocr', {
-        method: 'POST',
+        method: 'POST',;
         body: formData
       });
 
@@ -651,7 +651,7 @@ export const enhancedUploadMachine = createMachine({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           uploadId,
-          caseId,
+          caseId,;
           filename: metadata.filename,
           contentType: metadata.contentType,
           ocrText, // Include OCR results for hybrid extraction
@@ -683,7 +683,7 @@ export const enhancedUploadMachine = createMachine({
           uploadId,
           text: combinedText,
           model: model, // embeddinggemma:latest
-          chunkSize: 512, // Optimal for legal documents
+          chunkSize: 512, // Optimal for legal documents;
           overlap: 50,
           normalizeEmbeddings: true,
           includeMetadata: true
@@ -716,7 +716,7 @@ export const enhancedUploadMachine = createMachine({
           uploadId,
           text: extractedText,
           ocrText,
-          embeddings,
+          embeddings,;
           model: model || 'gemma3:legal-latest',
           analysisType: 'comprehensive',
           includeRisks: true,
@@ -751,7 +751,7 @@ export const enhancedUploadMachine = createMachine({
         body: JSON.stringify({
           uploadId,
           caseId,
-          documentData: {
+          documentData: {;
             text: extractedText,
             ocrText,
             aiAnalysis,
@@ -793,7 +793,7 @@ export const enhancedUploadMachine = createMachine({
           caseId,
           document: {
             extractedText,
-            ocrText,
+            ocrText,;
             metadata: {
               ...metadata,
               neo4jNodeId,
@@ -834,7 +834,7 @@ export const enhancedUploadMachine = createMachine({
           documentId: postgresqlId,
           metadata,
           indexType: 'hnsw', // Hierarchical Navigable Small World for fast search
-          distanceMetric: 'cosine',
+          distanceMetric: 'cosine',;
           dimensions: embeddings?.[0]?.length || 768,
           efConstruction: 200,
           mLinks: 16
@@ -874,7 +874,7 @@ export const enhancedUploadMachine = createMachine({
           embeddings,
           pgvectorId,
           ragConfig: {
-            chunkSize: 512,
+            chunkSize: 512,;
             overlap: 50,
             retrievalK: 10,
             rerankTop: 5,
@@ -902,7 +902,7 @@ export const enhancedUploadMachine = createMachine({
       const response = await fetch('/api/upload/presign', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({;
           filename: file.name,
           fileSize: file.size,
           caseId,
@@ -934,7 +934,7 @@ export const enhancedUploadMachine = createMachine({
 
         const response = await fetch(url, {
           method: 'PUT',
-          body: chunk,
+          body: chunk,;
           headers: {
             'Content-Type': file.type
           }
@@ -953,7 +953,7 @@ export const enhancedUploadMachine = createMachine({
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          uploadId,
+          uploadId,;
           etags: etags.map((etag, index) => ({ ETag: etag, PartNumber: index + 1 }))
         })
       });
@@ -987,7 +987,7 @@ export const enhancedUploadMachine = createMachine({
             dimensions: [batchSize, depth, height, width],
             halo_size: 2,
             data: tensorData
-          },
+          },;
           operation: 'som_cluster'
         })
       });

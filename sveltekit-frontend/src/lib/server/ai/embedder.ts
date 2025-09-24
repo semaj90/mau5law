@@ -26,7 +26,7 @@ async function embedWithLocal(text: string): Promise<number[]> {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        text: text,
+        text: text,;
         model: EMBEDDING_CONFIG.defaultModel
       })
     });
@@ -60,7 +60,7 @@ async function embedWithNomic(text: string): Promise<number[]> {
           Authorization: `Bearer ${EMBEDDING_CONFIG.nomicApiKey}`
         },
         body: JSON.stringify({
-          text,
+          text,;
           model: EMBEDDING_CONFIG.defaultModel
         })
       });
@@ -158,7 +158,7 @@ export async function embedTexts(texts: string[], model?: string): Promise<numbe
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          texts: texts,
+          texts: texts,;
           model: model || EMBEDDING_CONFIG.defaultModel
         })
       });
@@ -202,7 +202,7 @@ export async function getEmbeddingServiceStatus(): Promise<any> {
       const timeoutId = setTimeout(() => controller.abort(), 2000);
 
       const response = await fetch(EMBEDDING_CONFIG.localUrl + '/health', {
-        method: 'GET',
+        method: 'GET',;
         signal: controller.signal
       });
 
@@ -224,7 +224,7 @@ export async function getEmbeddingServiceStatus(): Promise<any> {
   }
 
   return {
-    local: localAvailable,
+    local: localAvailable,;
     nomic: nomicAvailable,
     activeService
   };

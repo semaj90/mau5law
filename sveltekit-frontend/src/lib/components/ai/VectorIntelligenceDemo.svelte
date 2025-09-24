@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
 
   import { Search, Database, Brain, FileText, AlertCircle, CheckCircle2, Loader2, Star, Clock } from "lucide-svelte";
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import Input from "$lib/components/ui/Input.svelte";
   // Badge replaced with span - not available in enhanced-bits
   import {
@@ -10,12 +10,12 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
 
   type SearchResult = {
     id: string
-    title: string
-    content: string
+    title: string;
+    content: string;
     similarity: number
     documentType: 'deed' | 'contract' | 'evidence' | 'case_law';
     metadata?: {
@@ -55,12 +55,12 @@
 
     try {
       const response = await fetch('/api/semantic-search', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          query: query.trim()
+        body: JSON.stringify({;
+          query: query.trim();
         })
       });
 
@@ -74,11 +74,11 @@
 
       // Align with the simpler API response
       results = (data as { results?: any }).results.map((r: any) => ({
-        id: r.id,
+        id: r.id,;
         title: `Document ${r.id}`, // API doesn't provide title, create one
-        content: r.content,
+        content: r.content,;
         similarity: r.similarity,
-        documentType: 'deed' // Mock type
+        documentType: 'deed' // Mock type;
       }));
 
       metrics = {
@@ -138,11 +138,11 @@
       title: "Property Deed - 123 Main Street",
       content: "This warranty deed transfers ownership of the property located at 123 Main Street from John Smith to Jane Doe. The property includes all fixtures and improvements...",
       similarity: 0.92,
-      documentType: 'deed',
+      documentType: 'deed',;
       metadata: {
         caseId: "CASE-2024-001",
         uploadDate: "2024-01-15",
-        tags: ["property", "transfer", "warranty"]
+        tags: ["property", "transfer", "warranty"];
       }
     },
     {
@@ -150,11 +150,11 @@
       title: "Employment Contract - Tech Corp",
       content: "This employment agreement establishes the terms of employment between Tech Corp and the employee. The position includes responsibilities for software development...",
       similarity: 0.87,
-      documentType: 'contract',
+      documentType: 'contract',;
       metadata: {
         caseId: "CASE-2024-002",
-        uploadDate: "2024-01-10",
-        tags: ["employment", "technology", "intellectual property"]
+        uploadDate: "2024-01-10",;
+        tags: ["employment", "technology", "intellectual property"];
       }
     }
   ];

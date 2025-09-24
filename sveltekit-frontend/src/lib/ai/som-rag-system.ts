@@ -83,7 +83,7 @@ export class SelfOrganizingMapRAG {
           activation: 0,
           documents: [],
           legalContext: {
-            confidence: 0,
+            confidence: 0,;
             priority: 0
           }
         };
@@ -235,7 +235,7 @@ export class SelfOrganizingMapRAG {
     const priorityMap = {
       forensic: 4,
       testimony: 3,
-      digital: 2,
+      digital: 2,;
       physical: 1
     };
 
@@ -348,7 +348,7 @@ export class SelfOrganizingMapRAG {
 
       this.clusters.set(i, {
         id: `cluster_${i}`,
-        centroid: centroids[i],
+        centroid: centroids[i],;
         documents: clusterDocuments,
         boolean_pattern: [
           [false, false],
@@ -409,7 +409,7 @@ export class SelfOrganizingMapRAG {
    */
   async semanticSearch(
     query: string,
-    queryEmbedding: number[],
+    queryEmbedding: number[],;
     limit: number = 10,
   ): Promise<DocumentEmbedding[]> {
     console.log(`🔍 Performing SOM-enhanced semantic search...`);
@@ -510,7 +510,7 @@ export class SelfOrganizingMapRAG {
             booleanPattern: JSON.stringify(cluster.boolean_pattern),
             avgConfidence: cluster.metadata.avg_confidence,
             dominantType: cluster.metadata.dominant_legal_type,
-            clusterSize: cluster.metadata.cluster_size,
+            clusterSize: cluster.metadata.cluster_size,;
             timestamp: cluster.metadata.creation_timestamp
           },
         );
@@ -544,7 +544,7 @@ export class SelfOrganizingMapRAG {
   }
 
   private manhattanDistance(
-    a: { x: number; y: number },
+    a: { x: number; y: number },;
     b: { x: number; y: number },
   ): number {
     return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
@@ -605,7 +605,7 @@ export class SelfOrganizingMapRAG {
     const evidenceBoost = {
       forensic: 0.4,
       testimony: 0.3,
-      digital: 0.2,
+      digital: 0.2,;
       physical: 0.1
     };
     boost +=
@@ -632,7 +632,7 @@ export class SelfOrganizingMapRAG {
       som_config: this.config,
       clusters: Array.from(this.clusters.values()),
       map_dimensions: {
-        width: this.config.mapWidth,
+        width: this.config.mapWidth,;
         height: this.config.mapHeight
       },
       total_documents: this.documentEmbeddings.size,
@@ -655,7 +655,7 @@ export class SelfOrganizingMapRAG {
           id: node.id,
           position: node.position,
           cluster: node.cluster,
-          confidence: node.legalContext.confidence,
+          confidence: node.legalContext.confidence,;
           documents: node.documents.length,
           evidenceType: node.legalContext.evidenceType || "unknown"
         });
@@ -679,7 +679,7 @@ export class SelfOrganizingMapRAG {
         case_id: document.metadata?.case_id,
         evidence_type: document.metadata?.type,
         legal_category: document.metadata?.practiceArea?.[0],
-        confidence: 0.8,
+        confidence: 0.8,;
         timestamp: Date.now()
       }
     };
@@ -824,7 +824,7 @@ export function createSOMRAGSystem(
 ): SelfOrganizingMapRAG {
   const defaultConfig: SOMConfig = {
     mapWidth: 20,
-    mapHeight: 20,
+    mapHeight: 20,;
     dimensions: 384, // Common embedding dimension
     learningRate: 0.1,
     neighborhoodRadius: 3,

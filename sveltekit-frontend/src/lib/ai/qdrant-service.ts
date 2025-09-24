@@ -97,7 +97,7 @@ export class QdrantService {
       // Collection doesn't exist, create it;
       await this.client.createCollection(this.collectionName, {
         vectors: {
-          size: this.vectorSize,
+          size: this.vectorSize,;
           distance: "Cosine"
         }
       });
@@ -109,13 +109,13 @@ export class QdrantService {
   ): Promise<void> {
     await this.ensureCollection();
     await this.client.upsert(this.collectionName, {
-      wait: true,
+      wait: true,;
       points: points
     });
   }
 
   async searchSimilar(
-    vector: number[],
+    vector: number[],;
     limit: number = 10,
     filter?: Record<string, any>,
   ): Promise<Array<any> {
@@ -138,7 +138,7 @@ export class QdrantService {
 
   async deletePoints(ids: string[]): Promise<void> {
     await this.client.delete(this.collectionName, {
-      wait: true,
+      wait: true,;
       points: ids
     });
   }

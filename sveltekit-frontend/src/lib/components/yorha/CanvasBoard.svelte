@@ -80,8 +80,8 @@
     if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
     return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
+      x: e.clientX - rect.left,;
+      y: e.clientY - rect.top;
     };
   }
 
@@ -226,7 +226,7 @@
         <div class="color-palette">
           {#each yorhaColors as yorhaColor}
             <button
-              class="color-btn"
+              class="color-btn";
               class:active={color === yorhaColor}
               style="background-color: {yorhaColor};"
               onclick={() => setColor(yorhaColor)}
@@ -258,7 +258,7 @@
       bind:this={canvas as any}
       {width}
       {height}
-      class="yorha-canvas"
+      class="yorha-canvas";
       class:drawing
       onmousedown={startDrawing}
       onmousemove={draw}
@@ -281,26 +281,26 @@
 
 <style>
   .yorha-canvas-board {
-    position: fixed
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: 1000;
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
     border: 2px solid #00ff88;
     border-radius: 0; /* YoRHa sharp edges */
     font-family: 'Courier New', monospace;
     color: #00ff88;
-    overflow: hidden
+    overflow: hidden;
   }
 
   .canvas-header {
-    display: flex
+    display: flex;
     justify-content: space-between;
-    align-items: center
+    align-items: center;
     padding: 1rem 2rem;
     background: rgba(0, 255, 136, 0.1);
     border-bottom: 2px solid #00ff88;
@@ -308,24 +308,24 @@
 
   .canvas-title {
     font-size: 1.5rem;
-    font-weight: bold
+    font-weight: bold;
     margin: 0;
     text-shadow: 0 0 10px #00ff88;
     letter-spacing: 2px;
   }
 
   .close-btn {
-    background: transparent
+    background: transparent;
     border: 2px solid #00ff88;
     color: #00ff88;
     font-size: 1.5rem;
     width: 40px;
     height: 40px;
-    cursor: pointer
+    cursor: pointer;
     transition: all 0.3s ease;
-    display: flex
-    align-items: center
-    justify-content: center
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .close-btn:hover {
@@ -337,28 +337,28 @@
   }
 
   .canvas-toolbar {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     justify-content: space-between;
     padding: 1rem;
     background: rgba(0, 0, 0, 0.8);
     border-bottom: 1px solid #00ff88;
     gap: 2rem;
-    flex-wrap: wrap
+    flex-wrap: wrap;
   }
 
   .tool-section,
   .color-section,
   .size-section {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 0.5rem;
-    align-items: center
+    align-items: center;
   }
 
   .tool-section h3,
   .color-section h3,
-  .size-section h3 {
+  .size-section h3 {;
     font-size: 0.8rem;
     margin: 0;
     color: #00ff88;
@@ -366,7 +366,7 @@
   }
 
   .tool-buttons {
-    display: flex
+    display: flex;
     gap: 0.5rem;
   }
 
@@ -375,17 +375,17 @@
     border: 1px solid #333;
     color: #00ff88;
     padding: 0.5rem;
-    cursor: pointer
+    cursor: pointer;
     transition: all 0.3s ease;
     font-size: 1.2rem;
     width: 40px;
     height: 40px;
     display: flex
     align-items: center
-    justify-content: center
+    justify-content: center;
   }
 
-  .tool-btn:hover {
+  .tool-btn:hover {;
     border-color: #00ff88;
     background: rgba(0, 255, 136, 0.1);
     box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
@@ -398,16 +398,16 @@
   }
 
   .color-palette {
-    display: flex
+    display: flex;
     gap: 0.25rem;
-    flex-wrap: wrap
+    flex-wrap: wrap;
   }
 
-  .color-btn {
+  .color-btn {;
     width: 30px;
     height: 30px;
     border: 2px solid #333;
-    cursor: pointer
+    cursor: pointer;
     transition: all 0.3s ease;
   }
 
@@ -427,30 +427,30 @@
     height: 20px;
     background: #333;
     outline: none
-    cursor: pointer
+    cursor: pointer;
   }
 
-  .size-slider: :-webkit-slider-thumb {
-    appearance: none
+  .size-slider::-webkit-slider-thumb {
+    appearance: none;
     width: 20px;
     height: 20px;
     background: #00ff88;
-    cursor: pointer
+    cursor: pointer;
     border-radius: 0;
   }
 
   .size-display {
-    font-weight: bold
+    font-weight: bold;
     color: #00ff88;
     text-shadow: 0 0 5px #00ff88;
   }
 
   .canvas-container {
-    position: relative
+    position: relative;
     flex: 1;
     display: flex
-    justify-content: center
-    align-items: center
+    justify-content: center;
+    align-items: center;
     background: #000;
   }
 
@@ -463,18 +463,18 @@
   }
 
   .canvas-overlay {
-    position: absolute
+    position: absolute;
     top: 1rem;
     right: 1rem;
     background: rgba(0, 0, 0, 0.8);
     border: 1px solid #00ff88;
     padding: 0.5rem;
-    pointer-events: none
+    pointer-events: none;
   }
 
   .canvas-info {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 0.25rem;
   }
 
@@ -487,7 +487,7 @@
   /* Responsive design */
   @media (max-width: 768px) {
     .canvas-toolbar {
-      flex-direction: column
+      flex-direction: column;
       gap: 1rem;
     }
 
@@ -495,10 +495,10 @@
     .color-section,
     .size-section {
       flex-direction: row
-      align-items: center
+      align-items: center;
     }
 
-    .color-palette {
+    .color-palette {;
       max-width: 200px;
     }
   }

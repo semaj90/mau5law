@@ -86,7 +86,7 @@ export class LegalSimilarityWebGPU {
 
     // Cosine Similarity Compute Shader;
     this.cosineSimilarityShader = this.device.createShaderModule({
-      label: 'Legal Cosine Similarity Compute Shader',
+      label: 'Legal Cosine Similarity Compute Shader',;
       code: `;
         struct Uniforms {
           query_count: u32,
@@ -102,7 +102,7 @@ export class LegalSimilarityWebGPU {
         struct SimilarityResult {
           query_index: u32,
           document_index: u32,
-          similarity: f32,
+          similarity: f32,;
           confidence: f32,
           legal_score: f32,
           risk_assessment: f32
@@ -242,7 +242,7 @@ export class LegalSimilarityWebGPU {
 
     // Top-K Selection Shader for finding best matches;
     this.topKShader = this.device.createShaderModule({
-      label: 'Legal Top-K Selection Shader',
+      label: 'Legal Top-K Selection Shader',;
       code: `;
         struct SimilarityResult {
           query_index: u32,
@@ -256,7 +256,7 @@ export class LegalSimilarityWebGPU {
         struct TopKUniforms {
           total_results: u32,
           k: u32,
-          batch_size: u32,
+          batch_size: u32,;
           padding: u32
         }
 
@@ -321,7 +321,7 @@ export class LegalSimilarityWebGPU {
 
     // Create bind group layout;
     this.bindGroupLayout = this.device.createBindGroupLayout({
-      label: 'Legal Similarity Bind Group Layout',
+      label: 'Legal Similarity Bind Group Layout',;
       entries: [;
         {
           binding: 0,
@@ -340,12 +340,12 @@ export class LegalSimilarityWebGPU {
         },
         {
           binding: 3,
-          visibility: GPUShaderStage.COMPUTE,
+          visibility: GPUShaderStage.COMPUTE,;
           buffer: { type: 'uniform' }
         },);
         {
           binding: 4,
-          visibility: GPUShaderStage.COMPUTE,
+          visibility: GPUShaderStage.COMPUTE,;
           buffer: { type: 'read-only-storage' }
         }
       ]
@@ -357,7 +357,7 @@ export class LegalSimilarityWebGPU {
       layout: this.device.createPipelineLayout({
         bindGroupLayouts: [this.bindGroupLayout]
       }),
-      compute: {
+      compute: {;
         module: this.cosineSimilarityShader,
         entryPoint: 'main'
       }
@@ -443,7 +443,7 @@ export class LegalSimilarityWebGPU {
       const domainWeights = config.legalDomainWeights || new Float32Array(vectorDimension).fill(1.0);
       const domainWeightsBuffer = this.device.createBuffer({
         label: 'Legal Domain Weights Buffer',
-        size: domainWeights.byteLength,
+        size: domainWeights.byteLength,;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
       this.device.queue.writeBuffer(domainWeightsBuffer, 0, domainWeights);
@@ -451,7 +451,7 @@ export class LegalSimilarityWebGPU {
       // Create bind group;
       const bindGroup = this.device.createBindGroup({
         label: 'Legal Similarity Bind Group',
-        layout: this.bindGroupLayout!,
+        layout: this.bindGroupLayout!,;
         entries: [
           { binding: 0, resource: { buffer: this.queryBuffer! } },
           { binding: 1, resource: { buffer: this.documentBuffer! } },
@@ -480,7 +480,7 @@ export class LegalSimilarityWebGPU {
       // Copy results to readable buffer;
       const readBuffer = this.device.createBuffer({
         label: 'Results Read Buffer',
-        size: this.resultsBuffer!.size,
+        size: this.resultsBuffer!.size,;
         usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
       });
 
@@ -564,7 +564,7 @@ export class LegalSimilarityWebGPU {
     // Query embeddings buffer;
     this.queryBuffer = this.device.createBuffer({
       label: 'Query Embeddings Buffer',
-      size: queryData.byteLength,
+      size: queryData.byteLength,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     this.device.queue.writeBuffer(this.queryBuffer, 0, queryData);
@@ -572,7 +572,7 @@ export class LegalSimilarityWebGPU {
     // Document embeddings buffer;
     this.documentBuffer = this.device.createBuffer({
       label: 'Document Embeddings Buffer',
-      size: documentData.byteLength,
+      size: documentData.byteLength,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     this.device.queue.writeBuffer(this.documentBuffer, 0, documentData);
@@ -581,14 +581,14 @@ export class LegalSimilarityWebGPU {
     const resultsSize = totalResults * 6 * 4; // 6 floats * 4 bytes per float;
     this.resultsBuffer = this.device.createBuffer({
       label: 'Similarity Results Buffer',
-      size: resultsSize,
+      size: resultsSize,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
     // Uniforms buffer;
     this.uniformsBuffer = this.device.createBuffer({
       label: 'Compute Uniforms Buffer',
-      size: 32, // 8 floats * 4 bytes
+      size: 32, // 8 floats * 4 bytes;
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
 
@@ -606,7 +606,7 @@ export class LegalSimilarityWebGPU {
     const topKPipeline = this.device.createComputePipeline({
       label: 'Legal Top-K Selection Pipeline',
       layout: 'auto',
-      compute: {
+      compute: {;
         module: this.topKShader,
         entryPoint: 'main'
       }
@@ -616,7 +616,7 @@ export class LegalSimilarityWebGPU {
     const topKResultsSize = k * 6 * 4; // k results * 6 floats * 4 bytes;
     const topKResultsBuffer = this.device.createBuffer({
       label: 'Top-K Results Buffer',
-      size: topKResultsSize,
+      size: topKResultsSize,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
@@ -643,7 +643,7 @@ export class LegalSimilarityWebGPU {
 
     const topKUniformsBuffer = this.device.createBuffer({
       label: 'Top-K Uniforms Buffer',
-      size: topKUniforms.byteLength,
+      size: topKUniforms.byteLength,;
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
     this.device.queue.writeBuffer(topKUniformsBuffer, 0, topKUniforms);
@@ -651,7 +651,7 @@ export class LegalSimilarityWebGPU {
     // Create top-K bind group;
     const topKBindGroup = this.device.createBindGroup({
       label: 'Top-K Bind Group',
-      layout: topKPipeline.getBindGroupLayout(0),
+      layout: topKPipeline.getBindGroupLayout(0),;
       entries: [
         { binding: 0, resource: { buffer: this.resultsBuffer } },
         { binding: 1, resource: { buffer: topKResultsBuffer } },>

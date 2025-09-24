@@ -10,7 +10,7 @@ Manages AutoGen and CrewAI multi-agent workflows
 
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import { Card } from '$lib/components/ui/enhanced-bits';
   import CardContent from '$lib/components/ui/CardContent.svelte';
   import CardHeader from '$lib/components/ui/CardHeader.svelte';
@@ -89,7 +89,7 @@ Manages AutoGen and CrewAI multi-agent workflows
       description: 'Comprehensive case analysis with multiple legal experts',
       icon: Gavel,
       providers: ['autogen', 'crewai'],
-      estimatedTime: '2-3 minutes'
+      estimatedTime: '2-3 minutes';
     },
     {
       id: 'evidence_review',
@@ -97,7 +97,7 @@ Manages AutoGen and CrewAI multi-agent workflows
       description: 'Forensic evidence analysis and admissibility assessment',
       icon: Shield,
       providers: ['autogen', 'crewai'],
-      estimatedTime: '1-2 minutes'
+      estimatedTime: '1-2 minutes';
     },
     {
       id: 'legal_research',
@@ -105,23 +105,25 @@ Manages AutoGen and CrewAI multi-agent workflows
       description: 'Precedent research and statute analysis',
       icon: Search,
       providers: ['autogen'],
-      estimatedTime: '2-4 minutes'
+      estimatedTime: '2-4 minutes';
     },
     {
       id: 'contract_analysis',
       name: 'Contract Analysis',
-      description: 'Contract review, risk assessment, and negotiation strategy',
-      icon: FileText,
+      description: 'Contract review, risk assessment, and negotiation strategy',;
+      icon: FileText,;
       providers: ['crewai'],
-      estimatedTime: '1-2 minutes'
+      estimatedTime: '1-2 minutes';
     }
   ];
 
-  $effect(async () => {
-    if (autoStartServices) {
+  $effect(() => {
+    (async () => {
+if (autoStartServices) {
       await checkServiceStatus();
       startStatusMonitoring();
     }
+    })();
   });
 
   onDestroy(() => {
@@ -195,7 +197,7 @@ Manages AutoGen and CrewAI multi-agent workflows
             recipient: 'legal_researcher',
             content: 'Please research precedents for this case type.',
             timestamp: Date.now() - 60000,
-            messageType: 'text'
+            messageType: 'text';
           },
           {
             id: '2',
@@ -203,15 +205,15 @@ Manages AutoGen and CrewAI multi-agent workflows
             recipient: 'prosecutor',
             content: 'I found several relevant precedents. The strongest cases support prosecution.',
             timestamp: Date.now() - 30000,
-            messageType: 'text'
+            messageType: 'text';
           },
           {
             id: '3',
             sender: 'coordinator',
-            recipient: 'all',
-            content: caseResult.content,
+            recipient: 'all',;
+            content: caseResult.content,;
             timestamp: Date.now(),
-            messageType: 'text'
+            messageType: 'text';
           }
         ];
 
@@ -229,10 +231,10 @@ Manages AutoGen and CrewAI multi-agent workflows
           {
             id: '1',
             sender: 'evidence_analyst',
-            recipient: 'prosecutor',
-            content: evidenceResult.content,
+            recipient: 'prosecutor',;
+            content: evidenceResult.content,;
             timestamp: Date.now(),
-            messageType: 'text'
+            messageType: 'text';
           }
         ];
 
@@ -249,10 +251,10 @@ Manages AutoGen and CrewAI multi-agent workflows
           {
             id: '1',
             sender: 'legal_researcher',
-            recipient: 'coordinator',
-            content: researchResult.content,
+            recipient: 'coordinator',;
+            content: researchResult.content,;
             timestamp: Date.now(),
-            messageType: 'text'
+            messageType: 'text';
           }
         ];
 
@@ -280,28 +282,28 @@ Manages AutoGen and CrewAI multi-agent workflows
             agentId: 'case-investigator',
             output: 'Initial investigation completed. Key evidence identified and timeline established.',
             executionTime: 45000,
-            status: 'completed'
+            status: 'completed';
           },
           {
             taskId: 'legal-research',
             agentId: 'legal-analyst',
             output: 'Legal research completed. Found 5 relevant precedents and applicable statutes.',
             executionTime: 60000,
-            status: 'completed'
+            status: 'completed';
           },
           {
             taskId: 'evidence-analysis',
             agentId: 'evidence-specialist',
             output: 'Evidence analysis completed. All evidence meets admissibility standards.',
             executionTime: 30000,
-            status: 'completed'
+            status: 'completed';
           },
           {
             taskId: 'final-report',
             agentId: 'report-writer',
             output: caseResult.content,
-            executionTime: 25000,
-            status: 'completed'
+            executionTime: 25000,;
+            status: 'completed';
           }
         ];
 
@@ -321,21 +323,21 @@ Manages AutoGen and CrewAI multi-agent workflows
             agentId: 'contract-reviewer',
             output: 'Contract review completed. Identified 3 high-risk clauses and 2 missing provisions.',
             executionTime: 40000,
-            status: 'completed'
+            status: 'completed';
           },
           {
             taskId: 'compliance-check',
             agentId: 'compliance-officer',
             output: 'Compliance analysis completed. Contract meets regulatory requirements with minor updates needed.',
             executionTime: 35000,
-            status: 'completed'
+            status: 'completed';
           },
           {
             taskId: 'negotiation-strategy',
             agentId: 'negotiation-advisor',
             output: contractResult.content,
-            executionTime: 20000,
-            status: 'completed'
+            executionTime: 20000,;
+            status: 'completed';
           }
         ];
 
@@ -392,7 +394,7 @@ Manages AutoGen and CrewAI multi-agent workflows
       : executionResults;
 
     const blob = new Blob([JSON.stringify(results, null, 2)], {
-      type: 'application/json'
+      type: 'application/json';
     });
 
     const url = URL.createObjectURL(blob);
@@ -520,7 +522,7 @@ Manages AutoGen and CrewAI multi-agent workflows
       <div>
         <label for="orchestrator-input" class="block text-sm font-medium mb-2">Input</label>
         <Textarea
-          id="orchestrator-input"
+          id="orchestrator-input";
           bind:value={inputText}
           placeholder="Enter your legal case description, evidence details, or contract text..."
           rows={4}

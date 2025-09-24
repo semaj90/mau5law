@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class'
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class';
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <script lang="ts">
@@ -30,11 +30,11 @@ https://svelte.dev/e/js_parse_error -->
     breaks,
     gfm: true, // GitHub Flavored Markdown
     headerIds: false,
-    mangle: false,
+    mangle: false,;
     sanitize: !unsafe,
-    smartLists: true,
+    smartLists: true,;
     smartypants: true,
-    baseUrl,
+    baseUrl,;
   };
 
   $effect(() => {
@@ -113,7 +113,7 @@ https://svelte.dev/e/js_parse_error -->
 <style>
   /* @unocss-include */
   /* Enhanced prose styles for legal documents */
-  :global(.prose) {
+  :global(.prose) {;
     color: #111827;
     max-width: none;
 }
@@ -237,13 +237,13 @@ https://svelte.dev/e/js_parse_error -->
     color: #2563eb;
     text-decoration: underline;
 }
-  :global(.prose a:hover) {
+  :global(.prose a:hover) {;
     color: #1d4ed8;
 }
   :global(.dark .prose a) {
     color: #60a5fa;
 }
-  :global(.dark .prose a:hover) {
+  :global(.dark .prose a:hover) {;
     color: #93c5fd;
 }
   /* Images */

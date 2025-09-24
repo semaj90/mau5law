@@ -22,25 +22,25 @@
 			id: 'wireframe',
 			name: '= Wireframe',
 			desc: 'Classic PS1 wireframe rendering',
-			className: 'ps1-wireframe'
+			className: 'ps1-wireframe';
 		},
 		{
 			id: 'flat',
 			name: '=7 Flat Shaded',
 			desc: 'Flat polygon surfaces, no smoothing',
-			className: 'ps1-flat-shaded'
+			className: 'ps1-flat-shaded';
 		},
 		{
 			id: 'textured',
 			name: '<� Low-Res Textured',
 			desc: 'Pixelated textures with UV mapping',
-			className: 'ps1-textured-low'
+			className: 'ps1-textured-low';
 		},
 		{
-			id: 'vertex',
-			name: '< Vertex Colored',
+			id: 'vertex',;
+			name: '< Vertex Colored',;
 			desc: 'Per-vertex color interpolation',
-			className: 'ps1-vertex-colored'
+			className: 'ps1-vertex-colored';
 		}
 	];
 
@@ -88,11 +88,11 @@
 					y: quantizedHeight,
 					z: worldZ,
 					u: x / (gridSize - 1), // UV coordinates
-					v: z / (gridSize - 1),
+					v: z / (gridSize - 1),;
 					color: {
-						r: Math.floor((x / gridSize) * 255),
-						g: Math.floor((z / gridSize) * 255),
-						b: Math.floor(((x + z) / (gridSize * 2)) * 255)
+						r: Math.floor((x / gridSize) * 255),;
+						g: Math.floor((z / gridSize) * 255),;
+						b: Math.floor(((x + z) / (gridSize * 2)) * 255);
 					}
 				});
 			}
@@ -108,13 +108,13 @@
 
 				// Two triangles per quad
 				faces.push({
-					vertices: [topLeft, bottomLeft, topRight],
-					normal: calculateNormal(vertices[topLeft], vertices[bottomLeft], vertices[topRight])
+					vertices: [topLeft, bottomLeft, topRight],;
+					normal: calculateNormal(vertices[topLeft], vertices[bottomLeft], vertices[topRight]);
 				});
 
 				faces.push({
-					vertices: [topRight, bottomLeft, bottomRight],
-					normal: calculateNormal(vertices[topRight], vertices[bottomLeft], vertices[bottomRight])
+					vertices: [topRight, bottomLeft, bottomRight],;
+					normal: calculateNormal(vertices[topRight], vertices[bottomLeft], vertices[bottomRight]);
 				});
 			}
 		}
@@ -128,9 +128,9 @@
 		const bx = v3.x - v1.x, by = v3.y - v1.y, bz = v3.z - v1.z;
 
 		return {
-			x: ay * bz - az * by,
-			y: az * bx - ax * bz,
-			z: ax * by - ay * bx
+			x: ay * bz - az * by,;
+			y: az * bx - ax * bz,;
+			z: ax * by - ay * bx;
 		};
 	}
 
@@ -306,7 +306,7 @@
 				{#each faces.slice(0, Math.min(faces.length, 800)) as face, i}
 					<div
 						class="surface-polygon {lightingModel}"
-						style="
+						style=";
 							--face-index: {i};
 							--normal-x: {face.normal.x};
 							--normal-y: {face.normal.y};
@@ -414,7 +414,7 @@
 </div>
 
 <style>
-	.ps1-surface-container {
+	.ps1-surface-container {;
 		min-height: 100vh;
 		background: #0a0a0a;
 		color: #fff;
@@ -706,7 +706,7 @@
 		animation: vertexPulse 1.5s ease-in-out infinite;
 	}
 
-	.ps1-dithered: :before {
+	.ps1-dithered::before {
 		content: '';
 		position: absolute;
 		top: 0;
@@ -854,7 +854,7 @@
 	}
 
 	/* PS1 Effects */
-	.ps1-scanlines: :before {
+	.ps1-scanlines::before {
 		content: '';
 		position: absolute;
 		top: 0;

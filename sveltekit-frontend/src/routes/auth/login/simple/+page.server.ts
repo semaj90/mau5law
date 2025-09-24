@@ -23,7 +23,7 @@ import { db, users, helpers } from '$lib/server/db';
       if (errorMessage.includes('Invalid email or password') || errorMessage.includes('Account is deactivated')) {
         return fail(400, {
           form: {
-            ...form,
+            ...form,;
             errors: { email: [errorMessage] }
           }
         });
@@ -31,7 +31,7 @@ import { db, users, helpers } from '$lib/server/db';
 
       return fail(500, {
         form: {
-          ...form,
+          ...form,;
           errors: { email: ['An error occurred during login. Please try again.'] }
         }
       });

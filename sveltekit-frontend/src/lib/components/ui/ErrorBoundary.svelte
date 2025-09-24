@@ -25,10 +25,10 @@
   let errorDetails = $derived(error ? {
     name: error.name,
     message: error.message,
-    stack: error.stack,
+    stack: error.stack,;
     timestamp: new Date().toISOString(),
-    userAgent: typeof navigator !== 'undefined' ? navigator.userAgent: 'Unknown',
-    url: typeof window !== 'undefined' ? window.location.href : 'Unknown'
+    userAgent: typeof navigator !== 'undefined' ? navigator.userAgent: 'Unknown',;
+    url: typeof window !== 'undefined' ? window.location.href : 'Unknown';
   } : null);
 
   function handleError(event: ErrorEvent | PromiseRejectionEvent) {
@@ -71,8 +71,8 @@
       // Create error report
       const report = {
         ...errorDetails,
-        component: 'ErrorBoundary',
-        severity: 'high'
+        component: 'ErrorBoundary',;
+        severity: 'high';
       };
 
       // Log to console (could be sent to monitoring service)
@@ -142,17 +142,20 @@
           <!-- Actions -->
           <div class="flex flex-wrap gap-3 mb-6">
             <Button
-              onclick={disabled}
+              onclick={retryAction}
               class="flex items-center gap-2"
             >
               <RefreshCw class="w-4 h-4 {isRetrying ? 'animate-spin' : ''}" />
               {isRetrying ? 'Retrying...' : 'Try Again'}
+            </Button>
             <Button variant="ghost" onclick={goHome} class="flex items-center gap-2">
               <Home class="w-4 h-4" />
               Go Home
+            </Button>
             <Button variant="ghost" onclick={reportError} class="flex items-center gap-2">
               <Bug class="w-4 h-4" />
               Report Issue
+            </Button>
           </div>
 
           <!-- Technical Details (Collapsible) -->
@@ -189,7 +192,7 @@
 {/if}
 
 <style>
-  .error-boundary {
+  .error-boundary {;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
       'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   }

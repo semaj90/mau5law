@@ -41,7 +41,7 @@
       y: 350,
       connections: ['witness-statement'],
       description: 'CCTV footage from the main entrance',
-      icon: '📹'
+      icon: '📹';
     },
     {
       id: 'witness-statement',
@@ -50,21 +50,21 @@
       status: 'complete',
       x: 490,
       y: 410,
-      connections: ['security-camera'],
-      description: 'Detailed written statement from key witness',
-      icon: '📄'
+      connections: ['security-camera'],;
+      description: 'Detailed written statement from key witness',;
+      icon: '📄';
     }
   ]);
 
   let caseInfo = $state<CaseInfo>({
-    title: 'Corporate Espionage Investigation',
-    status: 'active',
+    title: 'Corporate Espionage Investigation',;
+    status: 'active',;
     items: [
       'Corporate Espionage Investigation',
       'Missing Person: Dr. Sarah Chen',
       'Financial Fraud Analysis',
       'Security Breach Analysis'
-    ]
+    ];
   });
 
   let selectedEvidence = $state<string | null>(null);
@@ -75,9 +75,9 @@
   let evidenceBuilders = $derived(() => {
     return evidenceItems.reduce((builders, item) => {
       builders[item.id] = createEnhancedEvidenceCard({
-        priority: item.status === 'active' ? 'high' : 'medium',
+        priority: item.status === 'active' ? 'high' : 'medium',;
         interactive: true,
-        webGpuAcceleration: true
+        webGpuAcceleration: true;
       });
       return builders;
     }, {} as Record<string, any>);
@@ -132,9 +132,9 @@
       status: 'pending',
       x: Math.random() * 600 + 200,
       y: Math.random() * 400 + 300,
-      connections: [],
-      description: 'Newly added evidence item',
-      icon: '📋'
+      connections: [],;
+      description: 'Newly added evidence item',;
+      icon: '📋';
     };
 
     evidenceItems.push(newEvidence);
@@ -223,7 +223,7 @@
       <div
         class="evidence-item {item.type}"
         class:selected={selectedEvidence === item.id}
-        style="
+        style=";
           left: {item.x}px;
           top: {item.y}px;
           border-color: {builder.styling.colors.primary};
@@ -265,7 +265,7 @@
 </div>
 
 <style>
-  .gaming-evidence-board {
+  .gaming-evidence-board {;
     width: 100%;
     height: 100vh;
     background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);

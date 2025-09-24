@@ -19,9 +19,11 @@
   	// Demo case ID - in real app this would come from the route
   	const caseId = page.params.caseId || 'demo-case-123';
 
-  	$effect(async () => {
-  		await loadDemoData();
-  	});
+  	$effect(() => {
+    (async () => {
+await loadDemoData();
+    })();
+  });
 
   	async function loadDemoData() {
   		try {
@@ -62,7 +64,7 @@
   					canvasPosition: ,
   					uploadedBy: '1',
   					uploadedAt: new Date(),
-  					updatedAt: new Date()
+  					updatedAt: new Date();
   				},
   				{
   					id: '2',
@@ -93,7 +95,7 @@
   					canvasPosition: ,
   					uploadedBy: '1',
   					uploadedAt: new Date(),
-  					updatedAt: new Date()
+  					updatedAt: new Date();
   				},
   				{
   					id: '3',
@@ -112,19 +114,19 @@
   					tags: [],
   					chainOfCustody: [],
   					collectedAt: null,
-  					collectedBy: null,
+  					collectedBy: null,;
   					location: null,
   					labAnalysis: ,
   					aiAnalysis: ,
   					aiTags: [],
-  					aiSummary: null,
+  					aiSummary: null,;
   					summary: null,
   					isAdmissible: true,
   					confidentialityLevel: 'standard',
   					canvasPosition: ,
   					uploadedBy: '1',
   					uploadedAt: new Date(),
-  					updatedAt: new Date()
+  					updatedAt: new Date();
   }
   			];
 
@@ -208,7 +210,7 @@
 				📝 Report Editor
 			</button>
 			<button 
-				class="space-y-4"
+				class="space-y-4";
 			 class:active={activeTab === 'canvas'}
 				onclick={() => activeTab = 'canvas'}
 			>

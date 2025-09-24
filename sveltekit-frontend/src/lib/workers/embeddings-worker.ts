@@ -29,7 +29,7 @@ class EmbeddingsWorker {
         env: {
           memory: new WebAssembly.Memory({ initial: 256, maximum: 512 }),
           __linear_memory_base: 0,
-          __table_base: 0,
+          __table_base: 0,;
           abort: () => { throw new Error('WASM abort'); },
           _emscripten_memcpy_big: (dest: number, src: number, num: number) => {
             const memory = new Uint8Array(this.wasmModule!.memory.buffer);
@@ -189,7 +189,7 @@ self.addEventListener('message', async (event) => {
         const { text } = data as EmbeddingRequest;
         const embedding = await embeddingsWorker.generateEmbedding(text);
         const response: EmbeddingResponse = {
-          embedding: Array.from(embedding),
+          embedding: Array.from(embedding),;
           dimension: embedding.length,
           processingTime: performance.now() - (data.startTime || 0)
         };
@@ -201,7 +201,7 @@ self.addEventListener('message', async (event) => {
         const embeddings = await embeddingsWorker.generateBatchEmbeddings(texts);
         const batchResponse = {
           embeddings: embeddings.map(emb => Array.from(emb)),
-          count: embeddings.length,
+          count: embeddings.length,;
           dimension: embeddings[0]?.length || 0,
           processingTime: performance.now() - (data.startTime || 0)
         };
@@ -220,7 +220,7 @@ self.addEventListener('message', async (event) => {
     console.error('❌ Worker error:', error);
     self.postMessage({
       type: 'error',
-      id,
+      id,;
       error: error instanceof Error ? error.message: 'Unknown error'
     });
   }

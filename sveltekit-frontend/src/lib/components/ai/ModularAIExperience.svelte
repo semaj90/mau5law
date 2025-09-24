@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -43,7 +43,7 @@ https://svelte.dev/e/js_parse_error -->
   let results = $state<any >(null);
   let error = $state<string | null >(null);
 
-  $effect(async () => {
+  $effect(() => {
     // Initialize AI computation machine
     aiActor = createActor(aiComputationMachine, {
       input: {
@@ -54,10 +54,10 @@ https://svelte.dev/e/js_parse_error -->
         isOnline: true,
         rabbitMQConnected: true,
         recommendations: {
-          similar: [],
+          similar: [],;
           suggestions: [],
           didYouMean: [],
-          othersSearched: []
+          othersSearched: [];
         },
         computationResults: []
       }
@@ -102,8 +102,8 @@ https://svelte.dev/e/js_parse_error -->
           // Fallback to CPU processing
           results = {
             result: `Processed: ${t5Text.substring(0, 50)}... (${t5Task})`,
-            processingTime: Math.random() * 100 + 50,
-            recommendations: ['Use WebGPU for faster processing', 'Try different T5 tasks']
+            processingTime: Math.random() * 100 + 50,;
+            recommendations: ['Use WebGPU for faster processing', 'Try different T5 tasks'];
           };
         }
       } else {
@@ -138,8 +138,8 @@ https://svelte.dev/e/js_parse_error -->
           results = {
             result: dimensionalArray.data,
             processingTime: Math.random() * 50 + 20,
-            gpuMemoryUsed: dataArray.byteLength,
-            recommendations: ['Enable WebGPU for GPU acceleration', 'Try different kernel sizes']
+            gpuMemoryUsed: dataArray.byteLength,;
+            recommendations: ['Enable WebGPU for GPU acceleration', 'Try different kernel sizes'];
           };
         }
       }
@@ -148,23 +148,23 @@ https://svelte.dev/e/js_parse_error -->
 
       // Send to state machine
       aiActor.send({
-        type: 'COMPUTATION_COMPLETE',
-        result: results
+        type: 'COMPUTATION_COMPLETE',;
+        result: results;
       });
 
     } catch (err: any) {
       error = err.message;
       aiActor.send({
-        type: 'COMPUTATION_ERROR',
-        error: err.message
+        type: 'COMPUTATION_ERROR',;
+        error: err.message;
       });
     }
   }
 
   async function loadRecommendations() {
     aiActor.send({
-      type: 'GET_RECOMMENDATIONS',
-      context: initialContext
+      type: 'GET_RECOMMENDATIONS',;
+      context: initialContext;
     });
 
     // Also get modular recommendations
@@ -220,7 +220,7 @@ https://svelte.dev/e/js_parse_error -->
       const lastComputation = computationHistory[computationHistory.length - 1];
       console.log('🔄 Resuming from:', lastComputation);
       aiActor.send({
-        type: 'PICK_UP_WHERE_LEFT_OFF'
+        type: 'PICK_UP_WHERE_LEFT_OFF';
       });
     }
   }
@@ -480,7 +480,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .modular-ai-container {
+  .modular-ai-container {;
     font-family: 'Inter', system-ui, sans-serif;
   }
   

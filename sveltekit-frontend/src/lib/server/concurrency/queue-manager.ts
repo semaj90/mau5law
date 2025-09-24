@@ -32,7 +32,7 @@ export const QueueJobSchema = z.object({
   maxRetries: z.number().default(3),
   createdAt: z.date().default(() => new Date()),
   scheduledFor: z.date().optional(),
-  dependencies: z.array(z.string().uuid()).default([]),
+  dependencies: z.array(z.string().uuid()).default([]),;
   metadata: z.record(z.any()).default({})
 });
 
@@ -41,7 +41,7 @@ export type QueueJob = z.infer<typeof QueueJobSchema>;
 export const QueueStatsSchema = z.object({
   pending: z.number(),
   processing: z.number(), 
-  completed: z.number(),
+  completed: z.number(),;
   failed: z.number(),
   totalThroughput: z.number(),
   avgProcessingTime: z.number(),
@@ -202,7 +202,7 @@ export class QueueManager {
         {
           timeout: job.timeout,
           userId: job.userId,
-          sessionId: job.sessionId,
+          sessionId: job.sessionId,;
           metadata: { jobId: job.id, jobType: job.type }
         }
       );
@@ -256,7 +256,7 @@ export class QueueManager {
     return {
       evidenceId,
       analysisType,
-      findings: ['Pattern identified', 'Metadata extracted', 'Classification complete'],
+      findings: ['Pattern identified', 'Metadata extracted', 'Classification complete'],;
       confidence: 0.87,
       processedAt: new Date()
     };
@@ -296,7 +296,7 @@ export class QueueManager {
     return {
       caseId,
       evidenceCount: evidenceIds.length,
-      synthesis: 'Generated case synthesis...',
+      synthesis: 'Generated case synthesis...',;
       recommendations: ['Review additional evidence', 'Consider expert testimony'],
       processedAt: new Date()
     };
@@ -347,7 +347,7 @@ export class QueueManager {
     const stats = {
       pending: this.pendingJobs.size,
       processing: this.processingJobs.size,
-      completed: this.completedJobs.size,
+      completed: this.completedJobs.size,;
       failed: this.failedJobs.size,
       totalThroughput: this.completedJobs.size + this.failedJobs.size,
       avgProcessingTime: this.calculateAverageProcessingTime(),

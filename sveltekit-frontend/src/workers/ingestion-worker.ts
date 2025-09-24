@@ -111,13 +111,13 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
 
         this.postResponse({
           taskId,
-          success: true,
+          success: true,;
           data: result
         });
       } catch (error: any) {
         this.postResponse({
           taskId,
-          success: false,
+          success: false,;
           error: error instanceof Error ? error.message: 'Unknown error'
         });
       } finally {
@@ -133,7 +133,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         taskId: id,
         success: true,
         progress: 10,
-        stage: 'Starting file uploads',
+        stage: 'Starting file uploads',;
         data: { filesCount: files.length }
       });
 
@@ -155,13 +155,13 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           taskId: id,
           success: true,
           progress: 20 + (i / files.length) * 30,
-          stage: `Uploaded ${i + 1}/${files.length} files`,
+          stage: `Uploaded ${i + 1}/${files.length} files`,;
           data: { uploaded: i + 1, total: files.length }
         });
       }
 
       const result: IngestionResult = {
-        taskId: id,
+        taskId: id,;
         success: true,
         uploadResults,
         totalProcessingTime: 0
@@ -173,7 +173,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           taskId: id,
           success: true,
           progress: 50,
-          stage: 'Generating embeddings',
+          stage: 'Generating embeddings',;
           data: { stage: 'embeddings' }
         });
 
@@ -184,7 +184,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           taskId: id,
           success: true,
           progress: 70,
-          stage: 'Embeddings generated',
+          stage: 'Embeddings generated',;
           data: embeddingResult
         });
       }
@@ -195,7 +195,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           taskId: id,
           success: true,
           progress: 80,
-          stage: 'Performing SOM clustering',
+          stage: 'Performing SOM clustering',;
           data: { stage: 'som_clustering' }
         });
 
@@ -209,7 +209,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           taskId: id,
           success: true,
           progress: 90,
-          stage: 'Applying RTX compression',
+          stage: 'Applying RTX compression',;
           data: { stage: 'rtx_compression' }
         });
 
@@ -223,7 +223,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         taskId: id,
         success: true,
         progress: 100,
-        stage: 'Ingestion completed',
+        stage: 'Ingestion completed',;
         data: { stage: 'completed', processingTime: (result as { embeddings?: any; somClustering?: any; rtxCompression?: any; totalProcessingTime?: any; success?: any; size?: any }).totalProcessingTime }
       });
 
@@ -232,7 +232,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
 
     private async simulateMinIOUpload(
       file: File | Buffer,
-      originalName: string,
+      originalName: string,;
       options: any;
     ): Promise<UploadResult> {
       // Simulate MinIO upload process
@@ -253,7 +253,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           fileName: `${fileId}_${originalName}`,
           fileSize,
           mimeType: this.getMimeType(originalName),
-          fileType: this.determineFileType(originalName),
+          fileType: this.determineFileType(originalName),;
           bucket: options.bucket || 'legal-documents',
           uploadedAt: new Date(),
           uploadedBy: options.uploadedBy,
@@ -347,7 +347,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         await new Promise((resolve) => setTimeout(resolve, 100);
         embeddings.push({
           text,
-          embedding: new Array(384).fill(0).map(() => Math.random() - 0.5),
+          embedding: new Array(384).fill(0).map(() => Math.random() - 0.5),;
           metadata: {
             tokenCount: Math.ceil(text.length / 4),
             processingTime: Math.random() * 100
@@ -367,7 +367,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       return {
         clusters: Math.floor(Math.random() * 10) + 2,
         quality: 0.8 + Math.random() * 0.15,
-        convergence: true,
+        convergence: true,;
         epochs: Math.floor(Math.random() * 50) + 25
       };
     }
@@ -389,7 +389,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       return {
         originalSize: totalOriginal,
         compressedSize: totalCompressed,
-        ratio: `${Math.floor(totalOriginal / totalCompressed)}:1`,
+        ratio: `${Math.floor(totalOriginal / totalCompressed)}:1`,;
         quality: 0.98 + Math.random() * 0.02
       };
     }
@@ -400,7 +400,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         processing: this.processing,
         currentTask: this.currentTask,
         cacheSize: this.cache.size,
-        memoryUsage: this.getMemoryUsage(),
+        memoryUsage: this.getMemoryUsage(),;
         timestamp: new Date().toISOString()
       };
     }
@@ -437,7 +437,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         pdf: 'application/pdf',
         doc: 'application/msword',
         docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        txt: 'text/plain',
+        txt: 'text/plain',;
         json: 'application/json'
       };
       return mimeTypes[ext || ''] || 'application/octet-stream';
@@ -458,7 +458,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         const memory = (performance as any).memory;
         return {
           used: Math.round(memory.usedJSHeapSize / 1024 / 1024),
-          total: Math.round(memory.totalJSHeapSize / 1024 / 1024),
+          total: Math.round(memory.totalJSHeapSize / 1024 / 1024),;
           limit: Math.round(memory.jsHeapSizeLimit / 1024 / 1024)
         };
       }
@@ -542,7 +542,7 @@ export class IngestionWorkerManager {
   }
 
   public async generateEmbeddings(
-    texts: string[],
+    texts: string[],;
     options: EmbeddingOptions = {},
     onProgress?: (progress: number, stage?: string, data?: any) => void
   ): Promise<any> {
@@ -550,7 +550,7 @@ export class IngestionWorkerManager {
   }
 
   public async performSOMClustering(
-    embeddings: number[][],
+    embeddings: number[][],;
     config: SOMConfig,
     onProgress?: (progress: number, stage?: string, data?: any) => void
   ): Promise<any> {
@@ -570,7 +570,7 @@ export class IngestionWorkerManager {
   }
 
   private async executeTask(
-    type: WorkerMessage['type'],
+    type: WorkerMessage['type'],;
     data: any,
     onProgress?: (progress: number, stage?: string, data?: any) => void
   ): Promise<any> {

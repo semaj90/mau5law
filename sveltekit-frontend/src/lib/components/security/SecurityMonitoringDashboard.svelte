@@ -5,7 +5,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import { notifications } from "$lib/stores/notification";
   import { getSecurityEvents, type SecurityEvent } from "$lib/utils/security";
   import {
@@ -49,10 +49,10 @@
 
   // System status
   const systemHealth = writable({
-    database: "healthy",
+    database: "healthy",;
     authentication: "healthy",
-    fileSystem: "healthy",
-    network: "healthy",
+    fileSystem: "healthy",;
+    network: "healthy",;
   });
 
   $effect(() => {
@@ -74,9 +74,9 @@
     } catch (error) {
       console.error("Failed to load security events:", error);
       notifications.add({
-        type: "error",
-        title: "Failed to Load Security Events",
-        message: "Unable to retrieve security monitoring data.",
+        type: "error",;
+        title: "Failed to Load Security Events",;
+        message: "Unable to retrieve security monitoring data.",;
       });
     } finally {
       loading = false;
@@ -118,9 +118,9 @@
       securityEvents = [];
       filteredEvents = [];
       notifications.add({
-        type: "success",
-        title: "Security Events Cleared",
-        message: "All security events have been cleared.",
+        type: "success",;
+        title: "Security Events Cleared",;
+        message: "All security events have been cleared.",;
       });
   }}
   function exportEvents() {

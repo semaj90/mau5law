@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -11,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
     CardTitle,
     CardContent,
     Button
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import type { UploadFile } from '$lib/components/ui/modular/types';
   import FileUploadProgress from './upload/FileUploadProgress.svelte';
 
@@ -74,8 +74,9 @@ https://svelte.dev/e/js_parse_error -->
   let summaryType = $state<'key_points' | 'narrative' | 'prosecutorial' >('narrative');
 
   // Load available tags
-  $effect(async () => {
-    if (browser) {
+  $effect(() => {
+    (async () => {
+if (browser) {
       loadAvailableTags();
       aiSystem = new ComprehensiveAISystemIntegration();
       await aiSystem.initializeComponents();
@@ -86,6 +87,7 @@ https://svelte.dev/e/js_parse_error -->
         docs = null;
       }
     }
+    })();
   });
 
   	async function loadAvailableTags() {
@@ -121,7 +123,7 @@ https://svelte.dev/e/js_parse_error -->
   		// Check file size
   		if (file.size > maxFileSize) {
   			return {
-  				valid: false,
+  				valid: false,;
   				error: `File size exceeds ${formatFileSize(maxFileSize)} limit`
   			};
   		}
@@ -129,7 +131,7 @@ https://svelte.dev/e/js_parse_error -->
   		const fileExtension = '.' + file.name.split.pop()?.toLowerCase();
   		if (!acceptedTypes.some(type => type.toLowerCase() === fileExtension)) {
   			return {
-  				valid: false,
+  				valid: false,;
   				error: `File type not supported. Accepted types: ${acceptedTypes.join(', ')}`
   			};
   		}
@@ -158,9 +160,9 @@ https://svelte.dev/e/js_parse_error -->
       status: file.status === 'pending' ? 'pending' as const :
               file.status === 'uploading' ? 'uploading' as const :
               file.status === 'completed' ? 'success' as const :
-              'error' as const,
-      error: file.error,
-      hash: undefined
+              'error' as const,;
+      error: file.error,;
+      hash: undefined;
     }));
     onfilesChanged?.(legacyUploads);
   }
@@ -178,7 +180,7 @@ https://svelte.dev/e/js_parse_error -->
         caseId: reportId,
         userId: 'current-user', // TODO: get from auth context
         filename: file.name,
-        content: await file.file.arrayBuffer(),
+        content: await file.file.arrayBuffer(),;
         metadata: {
           filename: file.name,
           mimeType: file.type,
@@ -186,15 +188,15 @@ https://svelte.dev/e/js_parse_error -->
           uploadDate: new Date(),
           caseId: reportId,
           userId: 'current-user',
-          tags: [], // Will be updated later
+          tags: [], // Will be updated later;
           classification: 'evidence',
           confidentialityLevel: 'internal',
           retentionPolicy: 'standard',
           customFields: },
         stages: [],
         currentStage: 0,
-        startTime: new Date(),
-        status: 'pending'
+        startTime: new Date(),;
+        status: 'pending';
       };
 
       // Simulate upload progress

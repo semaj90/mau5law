@@ -127,13 +127,13 @@
       // Step 3: Send to AI server for analysis (75%)
       analysisProgress = 75;
       const aiResponse = await fetch('/api/ai/analyze-evidence', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           evidenceId: evidence.id,
-          text: preprocessed.cleanText,
-          embeddings: embeddingResult.embedding,
-          metadata: evidence.metadata
+          text: preprocessed.cleanText,;
+          embeddings: embeddingResult.embedding,;
+          metadata: evidence.metadata;
         })
       });
 
@@ -148,14 +148,14 @@
       evidence.analysis = analysis;
       evidence.metadata = {
         ...evidence.metadata,
-        embeddings: embeddingResult.embedding,
-        confidence: analysis.confidence || 0.8
+        embeddings: embeddingResult.embedding,;
+        confidence: analysis.confidence || 0.8;
       };
 
       // Update store
       evidenceStore.updateEvidence(evidence.id, {
-        analysis: evidence.analysis,
-        metadata: evidence.metadata
+        analysis: evidence.analysis,;
+        metadata: evidence.metadata;
       });
 
       showSuccess(`Analysis complete for ${evidence.title}`);
@@ -197,9 +197,9 @@
   function handleDragStart_Connection(event: DragEvent) {
     if (event.dataTransfer) {
       event.dataTransfer.setData('text/plain', JSON.stringify({
-        id: evidence.id,
-        title: evidence.title,
-        type: evidence.type
+        id: evidence.id,;
+        title: evidence.title,;
+        type: evidence.type;
       }));
     }
   }
@@ -214,8 +214,8 @@
     id: evidence.id,
     onDrag: handlePositionUpdate,
     onDragStart: handleDragStart,
-    onDragEnd: handleDragEnd,
-    handle: '.drag-handle',
+    onDragEnd: handleDragEnd,;
+    handle: '.drag-handle',;
     constraint: canvasContainer ? { container: canvasContainer } : undefined
   }}
   onclick={handleNodeClick}

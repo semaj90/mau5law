@@ -9,10 +9,10 @@
   let { open = $bindable(),
     onOpenChange = $bindable(),
     placeholder = $bindable(),
-    class: className = $bindable()
+    class: className = $bindable();
     }: { open = $bindable(),
     onOpenChange = $bindable(),
-    placeholder = $bindable(),
+    placeholder = $bindable(),;
     class: className = $bindable()
   : unknown } = $props();
 
@@ -22,7 +22,7 @@
   const mockCommands = [
     {
       group: 'Cases',
-      icon: Gavel,
+      icon: Gavel,;
       items: [
         { id: 'case-1', title: 'State v. Johnson', description: 'Active criminal case', keywords: ['criminal', 'theft', 'johnson'] },
         { id: 'case-2', title: 'Smith v. Corporation', description: 'Civil litigation', keywords: ['civil', 'corporate', 'smith'] },
@@ -31,7 +31,7 @@
     },
     {
       group: 'Evidence',
-      icon: FileText,
+      icon: FileText,;
       items: [
         { id: 'evidence-1', title: 'Security Footage 2024-01-15', description: 'Video evidence', keywords: ['video', 'security', 'footage'] },
         { id: 'evidence-2', title: 'Financial Records', description: 'Bank statements', keywords: ['financial', 'bank', 'records'] },
@@ -40,7 +40,7 @@
     },
     {
       group: 'People',
-      icon: Users,
+      icon: Users,;
       items: [
         { id: 'person-1', title: 'John Smith', description: 'Defendant in case #2024-001', keywords: ['defendant', 'smith'] },
         { id: 'person-2', title: 'Detective Rodriguez', description: 'Lead investigator', keywords: ['detective', 'rodriguez', 'investigator'] },
@@ -48,8 +48,8 @@
       ]
     },
     {
-      group: 'Documents',
-      icon: FileText,
+      group: 'Documents',;
+      icon: FileText,;
       items: [
         { id: 'doc-1', title: 'Motion to Dismiss', description: 'Filed 2024-01-20', keywords: ['motion', 'dismiss', 'filing'] },
         { id: 'doc-2', title: 'Search Warrant', description: 'Authorized 2024-01-18', keywords: ['warrant', 'search', 'authorized'] },

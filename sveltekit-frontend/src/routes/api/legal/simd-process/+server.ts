@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { unifiedLegalProcessor } from '$lib/services/unified-legal-simd-pgvector';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { unifiedLegalProcessor } from '$lib/services/unified-legal-simd-pgvector'
 
 /*
  * SIMD GPU + PGVector Legal Document Processing API
@@ -9,16 +9,16 @@ import { unifiedLegalProcessor } from '$lib/services/unified-legal-simd-pgvector
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { content, title, documentType, metadata, action } = await request.json();
+    const { content, title, documentType, metadata, action } = await request.json()
 
-    console.log(`📝 Processing legal document via SIMD + PGVector API: ${action}`);
+    console.log(`📝 Processing legal document via SIMD + PGVector API: ${action}`)
 
     switch (action) {
       case 'process': {
         if (!content || !title || !documentType) {
           return json({
             error: 'Missing required fields: content, title, documentType'
-          }, { status: 400 });
+          }, { status: 400 })
         }
 
         const result = await unifiedLegalProcessor.processAndStoreLegalDocument(
@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
           title,
           documentType,
           metadata || {}
-        );
+        )
 
         return json({
           success: true,
@@ -38,19 +38,19 @@ export const POST: RequestHandler = async ({ request }) => {
           simdStats: (result as { documentId?: any; parsedDocument?: any; processingStats?: any; vectorized?: any }).parsedDocument.processingTime,
           gpuAccelerated: true,
           vectorized: (result as { documentId?: any; parsedDocument?: any; processingStats?: any; vectorized?: any }).vectorized
-        });
+        })
       }
 
       case 'search': {
-        const { query, options = {} } = await request.json();
+        const { query, options = {} } = await request.json()
         
         if (!query) {
           return json({
             error: 'Query is required for semantic search'
-          }, { status: 400 });
+          }, { status: 400 })
         }
 
-        const searchResults = await unifiedLegalProcessor.semanticSearch(query, options);
+        const searchResults = await unifiedLegalProcessor.semanticSearch(query, options)
 
         return json({
           success: true,
@@ -58,43 +58,43 @@ export const POST: RequestHandler = async ({ request }) => {
           results: searchResults,
           totalResults: searchResults.length,
           processingMethod: 'pgvector_similarity'
-        });
+        })
       }
 
       case 'stats': {
-        const systemStats = await unifiedLegalProcessor.getSystemStats();
+        const systemStats = await unifiedLegalProcessor.getSystemStats()
 
         return json({
           success: true,
           systemStats,
           timestamp: new Date().toISOString()
-        });
+        })
       }
 
       default: {
         return json({
           error: 'Invalid action. Supported actions: process, search, stats'
-        }, { status: 400 });
+        }, { status: 400 })
       }
     }
 
   } catch (error) {
-    console.error('❌ SIMD + PGVector API error:', error);
+    console.error('❌ SIMD + PGVector API error:', error)
     
     return json({
       error: 'Internal server error',
       message: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const action = url.searchParams.get('action') || 'stats';
+    const action = url.searchParams.get('action') || 'stats'
 
     if (action === 'stats') {
-      const systemStats = await unifiedLegalProcessor.getSystemStats();
+      const systemStats = await unifiedLegalProcessor.getSystemStats()
       
       return json({
         success: true,
@@ -111,11 +111,11 @@ export const GET: RequestHandler = async ({ url }) => {
           threadSafe: true
         },
         timestamp: new Date().toISOString()
-      });
+      })
     }
 
     if (action === 'health') {
-      // Basic health check;
+      // Basic health check
       return json({
         success: true,
         status: 'healthy',
@@ -126,20 +126,20 @@ export const GET: RequestHandler = async ({ url }) => {
           cognitive_cache: 'operational'
         },
         timestamp: new Date().toISOString()
-      });
+      })
     }
 
     return json({
       error: 'Invalid action parameter'
-    }, { status: 400 });
+    }, { status: 400 })
 
   } catch (error) {
-    console.error('❌ Health check failed:', error);
+    console.error('❌ Health check failed:', error)
     
     return json({
       success: false,
       status: 'degraded',
       error: error instanceof Error ? error.message: 'Unknown error'
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

@@ -41,4 +41,4 @@
       <button class="nes-btn is-primary">View Full Dashboard</button>
     </div>
   </main>
-</div>
+</div>;

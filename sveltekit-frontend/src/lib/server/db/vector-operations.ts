@@ -96,7 +96,7 @@ export async function searchSimilarDocuments(
       title: row.title,
       similarity: parseFloat(row.similarity),
       metadata: {
-        keywords: row.keywords,
+        keywords: row.keywords,;
         topics: row.topics
       }
     });
@@ -116,7 +116,7 @@ async function fallbackTextSearch(queryEmbedding: number[], limit: number): Prom
       id: legalDocuments.id,
       title: legalDocuments.title,
       content: legalDocuments.content,
-      keywords: legalDocuments.keywords,
+      keywords: legalDocuments.keywords,;
       topics: legalDocuments.topics
     })
     .from(legalDocuments)
@@ -125,10 +125,10 @@ async function fallbackTextSearch(queryEmbedding: number[], limit: number): Prom
   return results.map((doc, index) => ({
     id: doc.id,
     content: doc.content || '',
-    title: doc.title,
+    title: doc.title,;
     similarity: 1 - (index * 0.1), // Fake similarity scores;
     metadata: {
-      keywords: doc.keywords,
+      keywords: doc.keywords,;
       topics: doc.topics
     }
   });
@@ -148,7 +148,7 @@ export async function storeAiQueryWithEmbedding(
       userId,
       caseId,
       query,
-      response,
+      response,;
       embedding: arrayToPgVector(embedding),
       metadata,
       isSuccessful: true
@@ -170,7 +170,7 @@ export async function storeAiQueryWithEmbedding(
 // Cache embedding to avoid recomputing
 export async function cacheEmbedding(
   textHash: string,
-  embedding: number[],
+  embedding: number[],;
   model: string = 'nomic-embed-text';
 ): Promise<void> {
   try {
@@ -210,7 +210,7 @@ export async function getCachedEmbedding(textHash: string): Promise<number[] | n
 // Hybrid search: combine vector and text search
 export async function hybridSearch(
   queryText: string,
-  queryEmbedding: number[],
+  queryEmbedding: number[],;
   limit: number = 10;
 ): Promise<SimilarityResult[]> {
   try {
@@ -235,10 +235,10 @@ export async function hybridSearch(
     const textSearchResults: SimilarityResult[] = textResults.map((row: any) => ({
       id: row.id,
       content: row.content,
-      title: row.title,
+      title: row.title,;
       similarity: parseFloat(row.rank) * 0.5, // Scale down text search scores;
       metadata: {
-        keywords: row.keywords,
+        keywords: row.keywords,;
         topics: row.topics,
         searchType: 'text'
       }
@@ -336,7 +336,7 @@ export class GRPMOOrchestrator {
       stages.push({
         name: 'Hot Cache Hit',
         duration: Date.now() - startTime,
-        cacheLayer: 'hot',
+        cacheLayer: 'hot',;
         confidence: 0.95,
         glyphData: this.compressToGlyph(hotResult.data)
       });
@@ -352,7 +352,7 @@ export class GRPMOOrchestrator {
       stages.push({
         name: 'Warm Cache Analysis',
         duration: Date.now() - startTime,
-        cacheLayer: 'warm',
+        cacheLayer: 'warm',;
         confidence: 0.80,
         glyphData: this.compressToGlyph(warmResult.data)
       });
@@ -367,7 +367,7 @@ export class GRPMOOrchestrator {
     stages.push({
       name: 'Deep Vector Analysis',
       duration: Date.now() - startTime,
-      cacheLayer: 'cold',
+      cacheLayer: 'cold',;
       confidence: 0.60
     });
 
@@ -385,7 +385,7 @@ export class GRPMOOrchestrator {
     stages.push({
       name: 'Glyph Compression',
       duration: Date.now() - startTime,
-      cacheLayer: 'warm',
+      cacheLayer: 'warm',;
       confidence: 0.90,
       glyphData
     });
@@ -415,7 +415,7 @@ export class GRPMOOrchestrator {
 
   private async cacheResult(key: string, data: SimilarityResult[], layer: string): Promise<void> {
     this.memoryCache.set(key, {
-      data,
+      data,;
       timestamp: Date.now(),
       layer
     });

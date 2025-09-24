@@ -114,7 +114,7 @@ const initialState: ChatContext = {
   contextInjection: {
     enabled: false,
     documents: [],
-    vectorResults: [],
+    vectorResults: [],;
     precedents: [],
     caseContext: null
   }
@@ -126,7 +126,7 @@ export const chatStore = writable<ChatContext>(initialState);
 // === SERVICE STATUS ===
 export const serviceStatus = writable<ServiceStatus>({
   ollama: "unknown",
-  qdrant: "unknown",
+  qdrant: "unknown",;
   database: "unknown",
   gemma3: "unknown"
 });
@@ -165,7 +165,7 @@ export const chatActions = {
       updated: new Date(),
       metadata: {
         caseType: caseType || "general",
-        jurisdiction: "federal",
+        jurisdiction: "federal",;
         precedents: []
       }
     };
@@ -173,7 +173,7 @@ export const chatActions = {
     chatStore.update((state) => ({
       ...state,
       currentConversation: conversation,
-      conversations: [conversation, ...state.conversations],
+      conversations: [conversation, ...state.conversations],;
       messages: []
     }));
 
@@ -209,7 +209,7 @@ export const chatActions = {
           updated: new Date(),
           metadata: {
             caseType: "general",
-            jurisdiction: "federal",
+            jurisdiction: "federal",;
             precedents: []
           }
         };
@@ -220,7 +220,7 @@ export const chatActions = {
       const message: ChatMessage = {
         id: randomId(),
         content,
-        role,
+        role,;
         timestamp: new Date(),
         conversationId: state.currentConversation!.id,
         metadata
@@ -259,7 +259,7 @@ export const chatActions = {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: content,
-          conversationId: getCurrentConversationId(),
+          conversationId: getCurrentConversationId(),;
           settings: getSettings(),
           contextInjection: getContextInjection()
         })
@@ -278,7 +278,7 @@ export const chatActions = {
         chatActions.addMessage(data.response, "assistant", {
           model: data?.model || "unknown",
           tokensUsed: data.tokensUsed,
-          references: data.references,
+          references: data.references,;
           confidence: data.confidence,
           legalContext: data.legalContext
         });
@@ -329,7 +329,7 @@ export const chatActions = {
       contextInjection: {
         ...state.contextInjection,
         enabled: true,
-        documents,
+        documents,;
         precedents: precedents || [],
         caseContext: caseContext ?? null
       }
@@ -354,7 +354,7 @@ export const chatActions = {
       contextInjection: {
         enabled: false,
         documents: [],
-        vectorResults: [],
+        vectorResults: [],;
         precedents: [],
         caseContext: null
       }
@@ -391,7 +391,7 @@ export const chatActions = {
     chatStore.update((state) => ({
       ...state,
       currentConversation: null,
-      messages: [],
+      messages: [],;
       error: null,
       isLoading: false,
       isTyping: false,
@@ -416,7 +416,7 @@ export const chatActions = {
 // === SERVICE ACTIONS ===
 export const serviceActions = {
   updateStatus: (
-    service: keyof ServiceStatus,
+    service: keyof ServiceStatus,;
     status: ServiceStatus[keyof ServiceStatus]
   ) => {
     serviceStatus.update((current) => ({ ...current, [service]: status }));
@@ -524,7 +524,7 @@ async function handleStreamingResponse(response: Response): Promise<void> {
           messages.push({
             id: randomId(),
             content: assistantMessage,
-            role: "assistant",
+            role: "assistant",;
             timestamp: new Date(),
             conversationId: state.currentConversation?.id
           });
@@ -549,7 +549,7 @@ export interface XStateCompatibleState {
 }
 
 export const xstateCompatibleStore = derived(chatStore, ($chatStore): XStateCompatibleState => ({
-  context: $chatStore,
+  context: $chatStore,;
   matches: (state: string) => {
     switch (state) {
       case "loading":
@@ -610,7 +610,7 @@ export const persistenceHelpers = {
           content: typeof u["content"] === "string" ? (u["content"] as string) : "",
           role: roleVal,
           timestamp: asDate(u["timestamp"]),
-          conversationId: typeof u["conversationId"] === "string" ? (u["conversationId"] as string) : undefined,
+          conversationId: typeof u["conversationId"] === "string" ? (u["conversationId"] as string) : undefined,;
           metadata: isRecord(u["metadata"]) ? (u["metadata"] as Record<string, unknown>) : undefined
         } as ChatMessage;
       };
@@ -621,7 +621,7 @@ export const persistenceHelpers = {
             id: randomId(),
             title: "Conversation",
             messages: [],
-            created: new Date(),
+            created: new Date(),;
             updated: new Date()
           };
         }
@@ -632,7 +632,7 @@ export const persistenceHelpers = {
           title: typeof u["title"] === "string" ? (u["title"] as string) : "Conversation",
           messages: msgs,
           created: asDate(u["created"]),
-          updated: asDate(u["updated"]),
+          updated: asDate(u["updated"]),;
           metadata: isRecord(u["metadata"]) ? (u["metadata"] as Record<string, unknown>) : undefined
         } as Conversation;
       };

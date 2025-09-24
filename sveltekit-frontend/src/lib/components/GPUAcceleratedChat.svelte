@@ -56,7 +56,7 @@
         // Send handshake
         ws?.send(JSON.stringify({
           type: 'handshake',
-          clientId: sessionStorage.getItem('clientId') || generateClientId()
+          clientId: sessionStorage.getItem('clientId') || generateClientId();
         }));
       };
 
@@ -94,7 +94,7 @@
     // Try primary port first
     try {
       const response = await fetch(`http://localhost:${PRIMARY_PORT}/api/health`, {
-        signal: AbortSignal.timeout(1000)
+        signal: AbortSignal.timeout(1000);
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         return PRIMARY_PORT;
@@ -107,7 +107,7 @@
     for (const port of FALLBACK_PORTS) {
       try {
         const response = await fetch(`http://localhost:${port}/api/health`, {
-          signal: AbortSignal.timeout(1000)
+          signal: AbortSignal.timeout(1000);
         });
         if ((response as { ok?: unknown; json?: unknown }).ok) {
           console.log(`Using fallback port ${port}`);
@@ -140,10 +140,10 @@
 
       case 'chat_response':
         const message: GPUChatMessage = {
-          id: crypto.randomUUID(),
-          role: 'assistant',
+          id: crypto.randomUUID(),;
+          role: 'assistant',;
           content: (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).response || (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).content,
-          timestamp: new Date(),
+          timestamp: new Date(),;
           metadata: (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).metadata
         };
         messages = [...messages, message];
@@ -192,9 +192,9 @@
 
     const userMessage: GPUChatMessage = {
       id: crypto.randomUUID(),
-      role: 'user',
-      content: inputMessage,
-      timestamp: new Date()
+      role: 'user',;
+      content: inputMessage,;
+      timestamp: new Date();
     };
 
     messages = [...messages, userMessage];
@@ -205,19 +205,19 @@
     // Send via WebSocket if connected
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({
-        type: 'chat',
-        content: messageContent,
-        room: currentRoom
+        type: 'chat',;
+        content: messageContent,;
+        room: currentRoom;
       }));
     } else {
       // Fallback to HTTP API
       try {
         const response = await fetch(`http://localhost:${currentPort}/api/gpu-chat`, {
-          method: 'POST',
+          method: 'POST',;
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          body: JSON.stringify({;
             message: messageContent,
-            sessionId: sessionStorage.getItem('sessionId') || crypto.randomUUID()
+            sessionId: sessionStorage.getItem('sessionId') || crypto.randomUUID();
           })
         });
 
@@ -225,10 +225,10 @@
 
         const data = await (response as { ok?: unknown; json?: unknown }).json();
         const aiMessage: GPUChatMessage = {
-          id: crypto.randomUUID(),
-          role: 'assistant',
+          id: crypto.randomUUID(),;
+          role: 'assistant',;
           content: (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).response,
-          timestamp: new Date(),
+          timestamp: new Date(),;
           metadata: (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).metadata
         };
 
@@ -260,8 +260,8 @@
 
     try {
       const response = await fetch(`http://localhost:${currentPort}/api/document/upload`, {
-        method: 'POST',
-        body: formData
+        method: 'POST',;
+        body: formData;
       });
 
       if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -269,10 +269,10 @@
 
         // Add system message about upload
         messages = [...messages, {
-          id: crypto.randomUUID(),
-          role: 'system',
+          id: crypto.randomUUID(),;
+          role: 'system',;
           content: `Document "${file.name}" uploaded and processed. ${(result as { summary?: unknown; content?: unknown; embeddings?: unknown }).summary || ''}`,
-          timestamp: new Date()
+          timestamp: new Date();
         }];
 
         // Send to WebSocket for processing
@@ -309,8 +309,8 @@
       // Request TTS from server
       ws.send(JSON.stringify({
         type: 'tts_request',
-        text,
-        voice: selectedVoice
+        text,;
+        voice: selectedVoice;
       }));
     }
   }
@@ -328,8 +328,8 @@
 
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({
-        type: 'batch',
-        items: batchItems
+        type: 'batch',;
+        items: batchItems;
       }));
 
       showNotification(`Processing ${batchItems.length} items in batch...`, 'info');
@@ -343,8 +343,8 @@
 
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({
-        type: 'join_room',
-        room: roomId
+        type: 'join_room',;
+        room: roomId;
       }));
     }
   }
@@ -352,7 +352,7 @@
   function leaveRoom() {
     if (currentRoom && ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({
-        type: 'leave_room'
+        type: 'leave_room';
       }));
     }
 
@@ -363,10 +363,10 @@
   // Handle document processing result
   function handleDocumentResult(data: unknown) {
     messages = [...messages, {
-      id: crypto.randomUUID(),
-      role: 'system',
+      id: crypto.randomUUID(),;
+      role: 'system',;
       content: `Document analysis complete:\n${(data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).summary || 'Processing complete'}`,
-      timestamp: new Date(),
+      timestamp: new Date(),;
       metadata: {
         documentId: (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).documentId,
         embeddings: (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).embeddings?.length || 0
@@ -381,8 +381,8 @@
     messages = [...messages, {
       id: crypto.randomUUID(),
       role: 'system',
-      content: summary,
-      timestamp: new Date(),
+      content: summary,;
+      timestamp: new Date(),;
       metadata: {
         batchSize: results.length
       }
@@ -423,8 +423,8 @@
     const notification = {
       id: crypto.randomUUID(),
       message,
-      type,
-      timestamp: new Date()
+      type,;
+      timestamp: new Date();
     };
 
     // You could store notifications in state and display them
@@ -460,7 +460,7 @@
     // Add welcome message
     messages = [{
       id: crypto.randomUUID(),
-      role: 'system',
+      role: 'system',;
       content: `🚀 GPU-Accelerated Legal AI Chat
 
   • CUDA acceleration enabled
@@ -470,8 +470,8 @@
   • Batch processing supported
   • Document upload enabled
 
-  Type your legal question or upload a document to begin!`,
-      timestamp: new Date()
+  Type your legal question or upload a document to begin!`,;
+      timestamp: new Date();
     }];
   });
 
@@ -679,7 +679,7 @@
 </div>
 
 <style>
-  .gpu-chat-container {
+  .gpu-chat-container {;
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -974,11 +974,11 @@
     animation: typing 1.4s infinite;
   }
 
-  .typing-indicator span:nth-child(2) {
+  .typing-indicator span:nth-child(2) {;
     animation-delay: 0.2s;
   }
 
-  .typing-indicator span:nth-child(3) {
+  .typing-indicator span:nth-child(3) {;
     animation-delay: 0.4s;
   }
 
@@ -1157,21 +1157,21 @@
   }
 
   /* Scrollbar Styling */
-  .messages-scroll: :-webkit-scrollbar {
+  .messages-scroll::-webkit-scrollbar {
     width: 8px;
   }
 
-  .messages-scroll: :-webkit-scrollbar-track {
+  .messages-scroll::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 4px;
   }
 
-  .messages-scroll: :-webkit-scrollbar-thumb {
+  .messages-scroll::-webkit-scrollbar-thumb {
     background: linear-gradient(135deg, #00ff88 0%, #00ccff 100%);
     border-radius: 4px;
   }
 
-  .messages-scroll: :-webkit-scrollbar-thumb:hover {
+  .messages-scroll::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(135deg, #00ff88 20%, #00ccff 80%);
   }
 </style>

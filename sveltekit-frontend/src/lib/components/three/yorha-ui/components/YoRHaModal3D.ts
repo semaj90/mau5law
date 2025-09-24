@@ -58,7 +58,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
       },
       // Initial state (hidden)
       opacity: 0,
-      transform: {
+      transform: {;
         scale: new THREE.Vector3(0.8, 0.8, 0.8)
       }
     });
@@ -141,28 +141,28 @@ export class YoRHaModal3D extends YoRHa3DComponent {
       case 'blur':;
         backdropMaterial = new THREE.MeshBasicMaterial({
           color: YORHA_COLORS.primary.white,
-          transparent: true,
+          transparent: true,;
           opacity: 0.2
         });
         break;
       case 'dark':;
         backdropMaterial = new THREE.MeshBasicMaterial({
           color: YORHA_COLORS.primary.black,
-          transparent: true,
+          transparent: true,;
           opacity: 0.7
         });
         break;
       case 'transparent':;
         backdropMaterial = new THREE.MeshBasicMaterial({
           color: YORHA_COLORS.primary.black,
-          transparent: true,
+          transparent: true,;
           opacity: 0.3
         });
         break;
       default:;
         backdropMaterial = new THREE.MeshBasicMaterial({
           color: YORHA_COLORS.primary.black,
-          transparent: true,
+          transparent: true,;
           opacity: 0.5
         });
     }
@@ -190,7 +190,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     const headerMaterial = new THREE.MeshStandardMaterial({
       color: this.options.variant === 'terminal' 
         ? YORHA_COLORS.primary.black: YORHA_COLORS.primary.grey,
-      transparent: true,
+      transparent: true,;
       opacity: 0.9
     });
     
@@ -222,7 +222,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     );
     const titleMaterial = new THREE.MeshBasicMaterial({
       color: this.options.variant === 'terminal' 
-        ? YORHA_COLORS.accent.gold: YORHA_COLORS.primary.white,
+        ? YORHA_COLORS.accent.gold: YORHA_COLORS.primary.white,;
       transparent: true
     });
     
@@ -247,7 +247,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     // Create X shape with two crossed lines
     const lineGeometry = new THREE.PlaneGeometry(buttonSize * 0.8, 0.03);
     const lineMaterial = new THREE.MeshBasicMaterial({
-      color: YORHA_COLORS.status.error,
+      color: YORHA_COLORS.status.error,;
       transparent: true
     });
     
@@ -298,7 +298,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     const footerGeometry = new THREE.PlaneGeometry(width - 0.1, footerHeight);
     const footerMaterial = new THREE.MeshStandardMaterial({
       color: YORHA_COLORS.primary.grey,
-      transparent: true,
+      transparent: true,;
       opacity: 0.8
     });
     
@@ -322,7 +322,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
       );
       const lineMaterial = new THREE.MeshBasicMaterial({
         color: YORHA_COLORS.accent.gold,
-        transparent: true,
+        transparent: true,;
         opacity: 0.1
       });
       
@@ -396,7 +396,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
         },
         animation: {
           type: 'scan' as const,
-          duration: 1000,
+          duration: 1000,;
           loop: true
         }
       }
@@ -409,7 +409,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     const sizes = {
       small: 3,
       medium: 5,
-      large: 7,
+      large: 7,;
       fullscreen: 12
     };
     return sizes[size as keyof typeof sizes] || sizes.medium;
@@ -419,7 +419,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     const sizes = {
       small: 2,
       medium: 3.5,
-      large: 5,
+      large: 5,;
       fullscreen: 8
     };
     return sizes[size as keyof typeof sizes] || sizes.medium;

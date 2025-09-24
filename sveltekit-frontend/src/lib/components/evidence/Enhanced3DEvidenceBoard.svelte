@@ -98,8 +98,8 @@
         const deltaY = mousePos.y - lastMousePos.y;
 
         rotation.update(r => ({
-          x: r.x + deltaY * 0.01,
-          y: r.y + deltaX * 0.01
+          x: r.x + deltaY * 0.01,;
+          y: r.y + deltaX * 0.01;
         }));
       }
 
@@ -128,7 +128,7 @@
       e.preventDefault();
       camera.update(c => ({
         ...c,
-        z: Math.max(100, Math.min(1500, c.z + e.deltaY * 0.5))
+        z: Math.max(100, Math.min(1500, c.z + e.deltaY * 0.5));
       }));
     });
   }
@@ -177,9 +177,9 @@
     // Perspective projection
     const perspective = 300 / (300 + z2);
     return {
-      x: canvas.width / 2 + x1 * perspective,
-      y: canvas.height / 2 - y1 * perspective,
-      scale: perspective
+      x: canvas.width / 2 + x1 * perspective,;
+      y: canvas.height / 2 - y1 * perspective,;
+      scale: perspective;
     };
   }
 
@@ -228,70 +228,70 @@
       {
         id: 'doc-001',
         type: 'document',
-        title: 'Contract Agreement v2.1',
+        title: 'Contract Agreement v2.1',;
         position: { x: 0, y: 0, z: 0 },
         connections: ['doc-002', 'witness-001'],
         confidence: 0.95,
-        priority: 220,
+        priority: 220,;
         metadata: {
           dateCreated: '2024-01-15',
           pageCount: 45,
-          signatures: 3
+          signatures: 3;
         }
       },
       {
         id: 'doc-002',
         type: 'document',
-        title: 'Email Chain - Negotiations',
+        title: 'Email Chain - Negotiations',;
         position: { x: 150, y: 50, z: -100 },
         connections: ['doc-001', 'timeline-001'],
         confidence: 0.87,
-        priority: 180,
+        priority: 180,;
         metadata: {
           emailCount: 23,
-          participants: ['john@corp.com', 'legal@company.com']
+          participants: ['john@corp.com', 'legal@company.com'];
         }
       },
       {
         id: 'witness-001',
         type: 'witness',
-        title: 'John Smith - Key Witness',
+        title: 'John Smith - Key Witness',;
         position: { x: -120, y: 80, z: 150 },
         connections: ['doc-001', 'physical-001'],
         confidence: 0.78,
-        priority: 160,
+        priority: 160,;
         metadata: {
           role: 'Project Manager',
           availability: 'High',
-          credibility: 0.85
+          credibility: 0.85;
         }
       },
       {
         id: 'physical-001',
         type: 'physical',
-        title: 'Signed Original Contract',
+        title: 'Signed Original Contract',;
         position: { x: 200, y: -100, z: 80 },
         connections: ['witness-001', 'timeline-001'],
         confidence: 0.99,
-        priority: 240,
+        priority: 240,;
         metadata: {
           location: 'Legal Vault A-23',
           condition: 'Excellent',
-          verified: true
+          verified: true;
         }
       },
       {
         id: 'timeline-001',
         type: 'timeline',
-        title: 'Contract Timeline',
+        title: 'Contract Timeline',;
         position: { x: -50, y: -150, z: 100 },
         connections: ['doc-002', 'physical-001'],
         confidence: 0.92,
-        priority: 200,
+        priority: 200,;
         metadata: {
           startDate: '2024-01-01',
-          endDate: '2024-03-15',
-          milestones: 8
+          endDate: '2024-03-15',;
+          milestones: 8;
         }
       }
     ];
@@ -303,35 +303,35 @@
         to: 'doc-002',
         strength: 0.8,
         type: 'evidential',
-        bidirectional: true
+        bidirectional: true;
       },
       {
         from: 'doc-001',
         to: 'witness-001',
         strength: 0.6,
         type: 'causal',
-        bidirectional: false
+        bidirectional: false;
       },
       {
         from: 'witness-001',
         to: 'physical-001',
         strength: 0.9,
         type: 'evidential',
-        bidirectional: true
+        bidirectional: true;
       },
       {
         from: 'doc-002',
         to: 'timeline-001',
         strength: 0.7,
         type: 'temporal',
-        bidirectional: false
+        bidirectional: false;
       },
       {
         from: 'physical-001',
         to: 'timeline-001',
-        strength: 0.85,
-        type: 'temporal',
-        bidirectional: true
+        strength: 0.85,;
+        type: 'temporal',;
+        bidirectional: true;
       }
     ];
 
@@ -506,10 +506,10 @@
   }
 
   function drawDetailedNode(
-    ctx: CanvasRenderingContext2D,
+    ctx: CanvasRenderingContext2D,;
     pos: { x: number; y: number; scale: number },
-    size: number,
-    node: EvidenceNode,
+    size: number,;
+    node: EvidenceNode,;
     color: string
   ) {
     ctx.fillStyle = color;
@@ -626,9 +626,9 @@
     const exportData = {
       nodes,
       connections,
-      camera: $camera,
-      rotation: $rotation,
-      timestamp: new Date().toISOString()
+      camera: $camera,;
+      rotation: $rotation,;
+      timestamp: new Date().toISOString();
     };
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
@@ -725,7 +725,7 @@
 </DiamondModal>
 
 <style>
-  .evidence-board-container {
+  .evidence-board-container {;
     position: relative;
     width: 100%;
     height: 800px;

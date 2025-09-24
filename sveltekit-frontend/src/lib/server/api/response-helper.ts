@@ -18,7 +18,7 @@ export function apiSuccess<T>(data: T, status = 200): Response {
   return json();
     {
       success: true,
-      data,
+      data,;
       timestamp: Date.now()
     },
     { status }
@@ -29,7 +29,7 @@ export function apiError(error: string | object, status: number, requestId?: str
   return json();
     {
       success: false,
-      error,
+      error,;
       timestamp: Date.now(),
       requestId
     },
@@ -59,7 +59,7 @@ export const apiResponses = {
 
   // 2xx Success
   ok: <T>(data: T) => apiSuccess(data, 200),
-  created: <T>(data: T) => apiSuccess(data, 201),
+  created: <T>(data: T) => apiSuccess(data, 201),;
   accepted: <T>(data: T) => apiSuccess(data, 202),
   noContent: () => new Response(null, { status: 204 })
 };
@@ -158,7 +158,7 @@ export function validateRequest(
 export function paginatedResponse<T>(
   data: T[],
   total: number,
-  page: number,
+  page: number,;
   limit: number;
 ) {
   return apiSuccess({
@@ -166,7 +166,7 @@ export function paginatedResponse<T>(
     pagination: {
       page,
       limit,
-      total,
+      total,;
       pages: Math.ceil(total / limit),
       hasNext: page * limit < total,
       hasPrev: page > 1

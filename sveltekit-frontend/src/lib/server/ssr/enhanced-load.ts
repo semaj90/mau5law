@@ -45,7 +45,7 @@ class SSRCache {
 
   static set(key: string, data: any, ttl = SSRCache.DEFAULT_TTL): void {
     this.cache.set(key, {
-      data,
+      data,;
       expires: Date.now() + ttl
     });
   }
@@ -68,7 +68,7 @@ class SSRCache {
 
   static getStats(): { size: number; entries: number } {
     return {
-      size: this.cache.size,
+      size: this.cache.size,;
       entries: Array.from(this.cache.values()).filter((entry) => Date.now() <= entry.expires)
         .length
     };
@@ -123,7 +123,7 @@ export const createEnhancedLayoutLoad = () => {
         caseStats: {
           total: 0,
           open: 0,
-          investigating: 0,
+          investigating: 0,;
           closed: 0
         },
         systemStatus: {
@@ -139,7 +139,7 @@ export const createEnhancedLayoutLoad = () => {
           // Get user's recent cases;
           const { cases: userCases } = await CaseOperations.search({
             assignedTo: user.id,
-            limit: 10,
+            limit: 10,;
             offset: 0
           });
           metrics.dbQueries++;
@@ -153,7 +153,7 @@ export const createEnhancedLayoutLoad = () => {
 
           // Get recent evidence;
           const { evidence: recentEvidence } = await EvidenceOperations.search({
-            limit: 5,
+            limit: 5,;
             offset: 0
           });
           metrics.dbQueries++;
@@ -198,7 +198,7 @@ export const createEnhancedLayoutLoad = () => {
         dbHealth: {
           connected: false,
           pgvectorEnabled: false,
-          queryTime: 0,
+          queryTime: 0,;
           errors: ['Database unavailable']
         },
         userCases: [],
@@ -258,13 +258,13 @@ export const createEnhancedCasePageLoad = () => {
       // Load additional case data;
       const { evidence: caseEvidence } = await EvidenceOperations.search({
         caseId,
-        limit: 50,
+        limit: 50,;
         offset: 0
       });
       metrics.dbQueries++;
 
       const caseData = {
-        case: caseWithRelations,
+        case: caseWithRelations,;
         evidence: caseEvidence,
         canEdit:
           caseWithRelations.createdBy === user.id || caseWithRelations.leadProsecutor === user.id
@@ -293,7 +293,7 @@ export const createEnhancedCasePageLoad = () => {
 // Helper function to create hydration context;
 function createHydrationContext(url: URL, request: Request, user: User | null) {
   return {
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString(),;
     route: url.pathname,
     userAgent: request.headers.get('user-agent') || 'unknown',
     userId: user?.id || null,
@@ -314,7 +314,7 @@ function createHydrationContext(url: URL, request: Request, user: User | null) {
     // Theme and UI preferences;
     uiPreferences: {
       theme: 'auto',
-      language: 'en',
+      language: 'en',;
       accessibility: {
         highContrast: false,
         reducedMotion: false,
@@ -334,7 +334,7 @@ async function getCaseStatistics(userId: string): Promise<any> {
     return {
       total: 15,
       open: 8,
-      investigating: 4,
+      investigating: 4,;
       closed: 3
     };
   } catch (error: any) {
@@ -342,7 +342,7 @@ async function getCaseStatistics(userId: string): Promise<any> {
     return {
       total: 0,
       open: 0,
-      investigating: 0,
+      investigating: 0,;
       closed: 0
     };
   }

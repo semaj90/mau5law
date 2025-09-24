@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared
+<!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared -->
 <!--
@@ -28,13 +28,13 @@ https://svelte.dev/e/js_parse_error -->
   // Neural sprite rendering
   import NeuralSpriteRenderer from '$lib/components/three/NeuralSpriteRenderer.svelte';
   // YoRHa UI components
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   // Props
   
   
@@ -46,7 +46,7 @@ https://svelte.dev/e/js_parse_error -->
   const { state, send } = useMachine(chatMachine, {
     context: {
       userId,
-      sessionId,
+      sessionId,;
       messages: [],
       userDictionary: ssrContext?.userDictionary || ,
       systemStatus: ssrContext?.systemStatus || }
@@ -66,29 +66,32 @@ https://svelte.dev/e/js_parse_error -->
   const statusIndicator = derived(systemStatus, ($status) => ({
     nes: $status.nesMemoryReady ? '🟢' : '🔴',
     gpu: $status.gpuCacheReady ? '🟢' : '🔴', 
-    qlora: $status.qloraReady ? '🟢' : '🟡',
-    wasm: $status.wasmBridgeReady ? '🟢' : '🔴',
-    ollama: $status.ollamaReady ? '🟢' : '🔴'
+    qlora: $status.qloraReady ? '🟢' : '🟡',;
+    wasm: $status.wasmBridgeReady ? '🟢' : '🔴',;
+    ollama: $status.ollamaReady ? '🟢' : '🔴';
   }));
   // Event source for streaming
   let eventSource: EventSource | null = null;
   let chatContainer: HTMLElement;
   let messageInput: HTMLInputElement;
-  $effect(async () => {
+  $effect(() => {
     if (!browser) return;
-    // Initialize session if not provided
-    if (!sessionId) {
-      sessionId = `session_${Date.now()}_${Math.random.toString-substr(2, 9)}`;
-    }
-    // Load SSR context if not provided
-    if (!ssrContext) {
-      await loadSSRContext();
-    }
-    // Initialize XState machine
-    send({ type: 'INITIALIZE', userId, sessionId });
-    // Focus input
-    messageInput?.focus();
-    console.log('🚀 SSR QLoRA Chat Interface initialized');
+
+    (async () => {
+      // Initialize session if not provided
+      if (!sessionId) {
+        sessionId = `session_${Date.now()}_${Math.random().toString().substr(2, 9)}`;
+      }
+      // Load SSR context if not provided
+      if (!ssrContext) {
+        await loadSSRContext();
+      }
+      // Initialize XState machine
+      send({ type: 'INITIALIZE', userId, sessionId });
+      // Focus input
+      messageInput?.focus();
+      console.log('🚀 SSR QLoRA Chat Interface initialized');
+    })();
   });
   async function loadSSRContext() {
     try {
@@ -112,9 +115,9 @@ https://svelte.dev/e/js_parse_error -->
     const userMessage = {
       id: `msg_${Date.now()}`,
       role: 'user',
-      content: message,
-      timestamp: new Date(),
-      processed: false
+      content: message,;
+      timestamp: new Date(),;
+      processed: false;
     };
     messages.update(msgs => [...msgs, userMessage]);
     currentMessage.set('');
@@ -130,10 +133,10 @@ https://svelte.dev/e/js_parse_error -->
         role: 'assistant', 
         content: '',
         timestamp: new Date(),
-        streaming: true,
+        streaming: true,;
         chunks: [],
-        neuralSprite: null,
-        source: 'qlora'
+        neuralSprite: null,;
+        source: 'qlora';
       };
       messages.update(msgs => [...msgs, aiMessage]);
       // Start streaming response
@@ -144,9 +147,9 @@ https://svelte.dev/e/js_parse_error -->
       messages.update(msgs => [...msgs, {
         id: `error_${Date.now()}`,
         role: 'system',
-        content: 'Sorry, I encountered an error. Please try again.',
-        timestamp: new Date(),
-        error: true
+        content: 'Sorry, I encountered an error. Please try again.',;
+        timestamp: new Date(),;
+        error: true;
       }]);
       send({ type: 'ERROR', error: error.message });
     } finally {
@@ -164,9 +167,9 @@ https://svelte.dev/e/js_parse_error -->
     });
     // Use fetch with streaming instead
     const response = await fetch('/api/chat/ssr-qlora', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify.toISOString()
+      method: 'POST',;
+      headers: { 'Content-Type': 'application/json' },;
+      body: JSON.stringify(toISOString)();
         }
       })
     });
@@ -242,9 +245,9 @@ https://svelte.dev/e/js_parse_error -->
   function provideFeedback(messageId: string, feedback: number) {
     // Send feedback to server
     fetch('/api/chat/ssr-qlora', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify.toISOString()
+      method: 'PUT',;
+      headers: { 'Content-Type': 'application/json' },;
+      body: JSON.stringify(toISOString)();
       })
     });
     // Update XState machine
@@ -399,7 +402,7 @@ Clear
 </div>
 
 <style>
-  .ssr-qlora-chat-interface {
+  .ssr-qlora-chat-interface {;
     display: flex;
     flex-direction: column;
     height: 100vh;

@@ -70,7 +70,7 @@
       label: 'CASE TITLE', 
       type: 'text', 
       required: true, 
-      placeholder: 'e.g., The Missing Android' 
+      placeholder: 'e.g., The Missing Android' ;
     },
     { 
       name: 'description', 
@@ -78,13 +78,13 @@
       type: 'textarea', 
       required: true, 
       placeholder: 'Initial details of the investigation...',
-      rows: 4
+      rows: 4;
     },
     { 
       name: 'priority', 
       label: 'PRIORITY LEVEL', 
-      type: 'select', 
-      required: true,
+      type: 'select', ;
+      required: true,;
       options: [
         { value: 'low', label: 'Low' },
         { value: 'medium', label: 'Medium' },
@@ -108,10 +108,10 @@
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
+      hour: '2-digit',;
+      minute: '2-digit',;
       second: '2-digit',
-      hour12: false
+      hour12: false;
     });
   }
 
@@ -145,9 +145,9 @@
 
       // Simulate API call to create new case
       const response = await fetch('/api/yorha/cases', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
+        body: JSON.stringify(formData);
       });
 
       if ((response as { ok?: unknown; json?: unknown }).ok) {

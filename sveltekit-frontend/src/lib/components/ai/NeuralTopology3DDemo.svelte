@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -29,9 +29,9 @@ https://svelte.dev/e/js_parse_error -->
   let performanceMetrics = $state( );
   let neuralTopologyStatus = $state({
     transformer: 'idle',
-    autoencoder: 'idle', 
-    cnn: 'idle',
-    rnn: 'idle'
+    autoencoder: 'idle', ;
+    cnn: 'idle',;
+    rnn: 'idle';
   });
   
   // User interaction simulation
@@ -47,8 +47,9 @@ https://svelte.dev/e/js_parse_error -->
     cacheHitRatio: 0
   });
 
-  $effect(async () => {
-    console.log('🚀 Initializing Neural Topology 3D Prediction Demo...');
+  $effect(() => {
+    (async () => {
+console.log('🚀 Initializing Neural Topology 3D Prediction Demo...');
     
     // Initialize all systems
     await initializeNeuralTopologies();
@@ -56,6 +57,7 @@ https://svelte.dev/e/js_parse_error -->
     
     demoStage = 'ready';
     console.log('✅ Neural Topology Demo ready!');
+    })();
   });
 
   async function initializeNeuralTopologies() {
@@ -95,7 +97,7 @@ https://svelte.dev/e/js_parse_error -->
     for (const asset of legalAssets) {
       const patternId = `demo_${asset.id}`;
       await nesGPUBridge.storeCHRROMPattern(patternId, {/* JSX syntax converted to Svelte */}`,
-        priority: asset.complexity === 'high' ? 10 : 5
+        priority: asset.complexity === 'high' ? 10 : 5;
       });
     }
     
@@ -142,9 +144,9 @@ https://svelte.dev/e/js_parse_error -->
     if (predicted3D) {
       predictions = [...predictions, {
         step: step + 1,
-        action: userAction,
-        prediction: predicted3D,
-        confidence: predicted3D.predictedUsage
+        action: userAction,;
+        prediction: predicted3D,;
+        confidence: predicted3D.predictedUsage;
       }];
       asset3DMetrics.predictedComponents++;
     }
@@ -160,8 +162,8 @@ https://svelte.dev/e/js_parse_error -->
       animations = [...animations, {
         step: step + 1,
         componentId: `component_${step}`,
-        animationType: predicted3D?.animationType || 'transform',
-        compressed: true
+        animationType: predicted3D?.animationType || 'transform',;
+        compressed: true;
       }];
       asset3DMetrics.prerenderedAnimations++;
     }
@@ -172,14 +174,14 @@ https://svelte.dev/e/js_parse_error -->
     const assetSearchResults = await searchPredictive3DAssets(searchQuery, {
       documentType: step % 2 === 0 ? 'contract' : 'evidence',
       complexity: predicted3D?.geometryComplexity || 'medium',
-      interactionType: userAction.split('_')[0]
+      interactionType: userAction.split('_')[0];
     });
     
     searchResults = [...searchResults, {
       step: step + 1,
-      query: searchQuery,
-      results: assetSearchResults,
-      count: assetSearchResults.length
+      query: searchQuery,;
+      results: assetSearchResults,;
+      count: assetSearchResults.length;
     }];
     
     // STEP 4: CNN Topology - Visual pattern recognition and WebGPU processing
@@ -203,10 +205,10 @@ https://svelte.dev/e/js_parse_error -->
       ...performanceMetrics,
       [`step_${step + 1}`]: {
         processingTime: Math.round(processingTime),
-        prediction: !!predicted3D,
+        prediction: !!predicted3D,;
         animation: animations.length > asset3DMetrics.prerenderedAnimations - 1,
         searchResults: assetSearchResults.length,
-        chrRomHit: !!chrRomPattern
+        chrRomHit: !!chrRomPattern;
       }
     };
     
@@ -217,8 +219,8 @@ https://svelte.dev/e/js_parse_error -->
     // Simulate calling our 3D asset search API
     try {
       const response = await fetch('/api/brain/3d-assets/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({
           query,
           context,
@@ -246,9 +248,9 @@ https://svelte.dev/e/js_parse_error -->
     // CNN-like visual pattern processing simulation
     const patterns = {
       geometric: predicted3D?.geometryComplexity === 'high' ? 0.9 : 0.6,
-      textural: userAction.includes('hover') ? 0.8 : 0.5,
-      motion: userAction.includes('drag') ? 0.9 : 0.3,
-      lighting: predicted3D?.animationType === 'particle' ? 0.7 : 0.4
+      textural: userAction.includes('hover') ? 0.8 : 0.5,;
+      motion: userAction.includes('drag') ? 0.9 : 0.3,;
+      lighting: predicted3D?.animationType === 'particle' ? 0.7 : 0.4;
     };
     
     console.log('👁️ Visual patterns processed:', patterns);
@@ -263,7 +265,7 @@ https://svelte.dev/e/js_parse_error -->
       averageCacheHitRatio: asset3DMetrics.cacheHitRatio,
       neuralTopologiesActive: Object.values.filter-length,
       avgProcessingTime: Object.values.map((m: any) => m.processingTime)
-        .reduce((sum: number, time: number) => sum + time, 0) / Object.keys.length
+        .reduce((sum: number, time: number) => sum + time, 0) / Object.keys(errors).length;
     };
     
     performanceMetrics = { ...performanceMetrics, summary };

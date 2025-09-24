@@ -128,7 +128,7 @@ async function ensureQdrantCollection(
           memmap_threshold: 20000,
           indexing_threshold: 20000
         },
-        hnsw_config: {
+        hnsw_config: {;
           m: 16,
           ef_construct: 64,
           full_scan_threshold: 10000
@@ -184,7 +184,7 @@ async function hybridVectorSearch(
         results.push({
           id: row.id,
           score: row.similarity,
-          document: row as DocumentMetadata,
+          document: row as DocumentMetadata,;
           source: 'postgresql'
         });
       }
@@ -205,7 +205,7 @@ async function hybridVectorSearch(
         with_payload: true,
         filter: Object.keys(filter).length > 0 ? {
           must: Object.entries(filter).map(([key, value]) => ({
-            key,
+            key,;
             match: { value }
           }))
         } : undefined
@@ -214,7 +214,7 @@ async function hybridVectorSearch(
       qdrantTime = Date.now() - qdrantStart;
 
       // Get corresponding PostgreSQL records
-      const qdrantIds = qdrantResults.map((r) => r.id.toString();
+      const qdrantIds = qdrantResults.map((r) => r.id.toString());
 
       if (qdrantIds.length > 0) {
         const db = await getDrizzleDb();
@@ -226,10 +226,10 @@ async function hybridVectorSearch(
         const docMap = new Map(pgDocuments.map((doc) => [doc.id, doc]);
 
         for (const result of qdrantResults) {
-          const document = docMap.get((result as { id?: any; score?: any }).id.toString();
+          const document = docMap.get((result as { id?: any; score?: any }).id.toString());
           if (document) {
             results.push({
-              id: (result as { id?: any; score?: any }).id.toString(),
+              id: (result as { id?: any; score?: any }).id.toString()),
               score: (result as { id?: any; score?: any }).score,
               document,
               source: 'qdrant'
@@ -256,7 +256,7 @@ async function hybridVectorSearch(
     .slice(0, limit);
 
   return {
-    results: finalResults,
+    results: finalResults,;
     performance: {
       postgresqlTime,
       qdrantTime,
@@ -272,7 +272,7 @@ async function hybridVectorSearch(
 async function healthCheck(): Promise<any> {
   const health = {
     postgresql: false,
-    qdrant: false,
+    qdrant: false,;
     pgvector: false,
     overallHealth: false
   };
@@ -324,7 +324,7 @@ export const qdrant = () => qdrantClient;
 export const unifiedDb = {
   // Core database access
   runtime: () => getDrizzleDb(),
-  postgres: () => getPostgresJsClient(),
+  postgres: () => getPostgresJsClient(),;
   qdrant: () => qdrantClient,
 
   // Operations

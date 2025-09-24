@@ -175,17 +175,17 @@ export interface SystemConfig {
     timeout: number;
     retries: number;
   };
-  models: {
+  models: {;
     default: string;
     available: string[];
   };
-  features: {
+  features: {;
     streaming: boolean;
     contextInjection: boolean;
     vectorSearch: boolean;
     multimodal: boolean;
   };
-  ui: {
+  ui: {;
     theme: "light" | "dark" | "system";
     animations: boolean;
     notifications: boolean;

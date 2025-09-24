@@ -24,7 +24,7 @@ export interface RecommendationContext {
     currentQueue?: string;
     messageId?: string;
   };
-  recommendations: {
+  recommendations: {;
     legal: LegalRecommendation[];
     documents: DocumentRecommendation[];
     actions: ActionRecommendation[];
@@ -106,7 +106,7 @@ type RecommendationEvent =
 // Smart routing recommendation engine with RabbitMQ
 export const recommendationRoutingMachine = createMachine({
   id: 'recommendation-routing',
-  types: {} as {
+  types: {} as {;
     context: RecommendationContext;
     events: RecommendationEvent;
   },
@@ -366,7 +366,7 @@ export const recommendationRoutingMachine = createMachine({
         },
 
         recommendations_ready: {
-          type: 'final',
+          type: 'final',;
           entry: () => {
             console.log('✅ Recommendations ready and served');
           }
@@ -416,7 +416,7 @@ export const recommendationRoutingMachine = createMachine({
 }, {
   actors: {
     // Analyze routing requirements based on document type and system load
-    analyzeRoutingRequirements: fromPromise(async ({ input }: {
+    analyzeRoutingRequirements: fromPromise(async ({ input }: {;
       input: {
         sessionId: string;
         userId: string;
@@ -433,7 +433,7 @@ export const recommendationRoutingMachine = createMachine({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           document: currentDocument,
-          metrics: processingMetrics,
+          metrics: processingMetrics,;
           timestamp: new Date().toISOString()
         })
       });
@@ -447,7 +447,7 @@ export const recommendationRoutingMachine = createMachine({
 
     // Route message to appropriate RabbitMQ queue
     routeMessageToQueue: fromPromise(async ({ input }: {
-      input: {
+      input: {;
         exchange: string;
         routingKey: string;
         message: any;
@@ -463,7 +463,7 @@ export const recommendationRoutingMachine = createMachine({
           routingKey,
           message,
           options: {
-            persistent: true,
+            persistent: true,;
             timestamp: Date.now(),
             messageId: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
           }
@@ -492,7 +492,7 @@ export const recommendationRoutingMachine = createMachine({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          keys: cacheKeys,
+          keys: cacheKeys,;
           operation: 'mget' // Multi-get for efficiency
         })
       });
@@ -506,7 +506,7 @@ export const recommendationRoutingMachine = createMachine({
 
     // Serve cached recommendations
     serveCachedData: fromPromise(async ({ input }: {
-      input: {
+      input: {;
         recommendations: any;
         sessionId: string;
       }
@@ -514,7 +514,7 @@ export const recommendationRoutingMachine = createMachine({
       // Optionally enrich cached data or perform additional processing
       return {
         served: true,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString(),;
         source: 'cache'
       };
     }),
@@ -542,7 +542,7 @@ export const recommendationRoutingMachine = createMachine({
           caseId,
           document,
           model,
-          messageId,
+          messageId,;
           options: {
             includeLegal: true,
             includeDocuments: true,
@@ -563,7 +563,7 @@ export const recommendationRoutingMachine = createMachine({
 
     // Cache recommendations in Redis
     cacheRecommendations: fromPromise(async ({ input }: {
-      input: {
+      input: {;
         recommendations: any;
         cacheKeys: string[];
         ttl: number;
@@ -577,7 +577,7 @@ export const recommendationRoutingMachine = createMachine({
         body: JSON.stringify({
           data: recommendations,
           keys: cacheKeys,
-          ttl,
+          ttl,;
           compression: true // SIMD JSON compression
         })
       });

@@ -39,12 +39,12 @@
       const segments = pathForLink.split.filter(Boolean);
       const group = segments[0] || 'root';
       return {
-        path: pathForLink,
+        path: pathForLink,;
         label: deriveLabel(pathForLink, mod),
         dynamic,
         segments,
-        group,
-        kind: 'page' as const
+        group,;
+        kind: 'page' as const;
       };
     });
     const apis = Object.keys.map((filePath) => {
@@ -55,12 +55,12 @@
       const segments = pathForLink.split.filter(Boolean);
       const group = segments[1] ? `api:${segments[1]}` : 'api';
       return {
-        path: pathForLink,
+        path: pathForLink,;
         label: `API ${humanize(segments.slice(-1)[0] || 'endpoint')}`,
         dynamic,
         segments,
-        group,
-        kind: 'api' as const
+        group,;
+        kind: 'api' as const;
       };
     });
     // Deduplicate by path preferring page over api for same path
@@ -84,9 +84,9 @@
           path: pr.path,
             label: pr.label,
             dynamic: /:\w+/.test(pr.path),
-            segments: pr.path.split.filter(Boolean),
-            group: pr.path.split.filter(Boolean)[0] || 'external',
-            kind: 'page'
+            segments: pr.path.split.filter(Boolean),;
+            group: pr.path.split.filter(Boolean)[0] || 'external',;
+            kind: 'page';
         });
       }
     }

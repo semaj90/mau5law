@@ -25,7 +25,7 @@ const meta = {
       control: { type: 'select' },
       options: ['none', 'sm', 'default', 'lg']
     }
-  },
+  },;
   tags: ['autodocs']
 } satisfies Meta<Card>;
 
@@ -34,7 +34,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    variant: 'default',
+    variant: 'default',;
     size: 'default'
   }
 };
@@ -46,7 +46,7 @@ export const Legal: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Legal-themed card variant for law-related content'
       }
     }
@@ -60,7 +60,7 @@ export const Evidence: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Evidence-themed card for evidence display'
       }
     }
@@ -74,7 +74,7 @@ export const Case: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Case-themed card for case management'
       }
     }
@@ -88,7 +88,7 @@ export const Elevated: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Elevated card with enhanced shadow'
       }
     }
@@ -102,7 +102,7 @@ export const Outlined: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Outlined card with border styling'
       }
     }
@@ -111,28 +111,28 @@ export const Outlined: Story = {
 
 export const Large: Story = {
   args: {
-    variant: 'default',
+    variant: 'default',;
     size: 'lg'
   }
 };
 
 export const ExtraLarge: Story = {
   args: {
-    variant: 'default',
+    variant: 'default',;
     size: 'xl'
   }
 };
 
 export const SmallPadding: Story = {
   args: {
-    variant: 'default',
+    variant: 'default',;
     padding: 'sm'
   }
 };
 
 export const LargePadding: Story = {
   args: {
-    variant: 'default',
+    variant: 'default',;
     padding: 'lg'
   }
 };

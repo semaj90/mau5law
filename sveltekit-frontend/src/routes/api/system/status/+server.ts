@@ -1,17 +1,17 @@
-import { json } from '@sveltejs/kit';
-import { apiRegistry } from '$lib/server/api/service-registry';
-import type { RequestHandler } from './$types.js';
-import { URL } from "url";
+import { json } from '@sveltejs/kit'
+import { apiRegistry } from '$lib/server/api/service-registry'
+import type { RequestHandler } from './$types.js'
+import { URL } from "url"
 
 export const GET: RequestHandler = async ({ url }) => {
-  const showDetails = url.searchParams.has('details');
-  const checkRoutes = url.searchParams.has('routes');
+  const showDetails = url.searchParams.has('details')
+  const checkRoutes = url.searchParams.has('routes')
 
   try {
     // Get all service statuses
-    const serviceStatuses = await apiRegistry.checkAllServices();
+    const serviceStatuses = await apiRegistry.checkAllServices()
 
-    // Basic system info;
+    // Basic system info
     const systemInfo = {
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
@@ -19,13 +19,13 @@ export const GET: RequestHandler = async ({ url }) => {
       nodeVersion: process.version,
       memory: process.memoryUsage(),
       pid: process.pid
-    };
+    }
 
     // Service summary
-    const services = Array.from(serviceStatuses.values();
-    const healthyServices = services.filter((s) => s.status === 'healthy');
-    const requiredServices = services.filter((s) => s.required);
-    const healthyRequiredServices = requiredServices.filter((s) => s.status === 'healthy');
+    const services = Array.from(serviceStatuses.values()
+    const healthyServices = services.filter((s) => s.status === 'healthy')
+    const requiredServices = services.filter((s) => s.required)
+    const healthyRequiredServices = requiredServices.filter((s) => s.status === 'healthy')
 
     const summary = {
       overall: {
@@ -53,14 +53,14 @@ export const GET: RequestHandler = async ({ url }) => {
         objectStorage: serviceStatuses.get('minio')?.status === 'healthy',
         caching: serviceStatuses.get('redis')?.status === 'healthy'
       }
-    };
+    }
 
-    // Build response based on query parameters;
+    // Build response based on query parameters
     let response: any = {
       system: systemInfo,
       summary,
       services: Object.fromEntries(serviceStatuses)
-    };
+    }
 
     if (showDetails) {
       response.details = {
@@ -72,11 +72,11 @@ export const GET: RequestHandler = async ({ url }) => {
           REDIS_URL: import.meta.env.REDIS_URL ? 'configured' : 'missing',
           QDRANT_URL: import.meta.env.QDRANT_URL ? 'configured' : 'missing'
         }
-      };
+      }
     }
 
     if (checkRoutes) {
-      response.routes = await apiRegistry.validateApiRoutes();
+      response.routes = await apiRegistry.validateApiRoutes()
     }
 
     // Set appropriate HTTP status
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ url }) => {
         ? 200
         : summary.overall.status === 'degraded'
           ? 206
-          : 503;
+          : 503
 
     return json(response, {
       status: httpStatus,
@@ -96,17 +96,17 @@ export const GET: RequestHandler = async ({ url }) => {
         'X-Required-Services': `${summary.overall.requiredHealthy}/${summary.overall.requiredTotal}`,
         'Cache-Control': 'no-cache, must-revalidate'
       }
-    });
+    })
   } catch (error: unknown) {
-    const msg = error instanceof Error ? error.message: 'Unknown system status error';
-    console.error('System status check failed:', error);
-    return json();
+    const msg = error instanceof Error ? error.message: 'Unknown system status error'
+    console.error('System status check failed:', error)
+    return json()
       {
         system: { timestamp: new Date().toISOString() },
         summary: { overall: { status: 'error', error: msg } },
         services: Record<string, any>
       },
       { status: 500 }
-    );
+    )
   }
-};
+}

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class'
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class';
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <!--
@@ -46,7 +46,7 @@ https://svelte.dev/e/js_parse_error -->
     frameTime: 0,
     nodeCount: 0,
     edgeCount: 0,
-    gpuMemoryUsage: 0
+    gpuMemoryUsage: 0;
   });
 
   const renderState = writable({
@@ -55,7 +55,7 @@ https://svelte.dev/e/js_parse_error -->
     filterType: 'all' as 'all' | 'document' | 'case' | 'entity' | 'precedent',
     cameraPosition: [0, 0, 10] as [number, number, number],
     zoom: 1.0,
-    autoRotate: false
+    autoRotate: false;
   });
 
   // Document details interaction state
@@ -85,8 +85,9 @@ https://svelte.dev/e/js_parse_error -->
   // INITIALIZATION
   // ============================================================================
 
-  $effect(async () => {
-    try {
+  $effect(() => {
+    (async () => {
+try {
       await initializeWebGPU();
       await loadGraphData();
       startRenderLoop();
@@ -96,6 +97,7 @@ https://svelte.dev/e/js_parse_error -->
       console.error('[Graph Viewer] Initialization failed:', err);
       $error = err instanceof Error ? err.message: 'Unknown error occurred';
     }
+    })();
   });
 
   onDestroy(() => {
@@ -137,10 +139,10 @@ https://svelte.dev/e/js_parse_error -->
     if (!adapter) throw new Error('No WebGPU adapter found');
     const device = await adapter.requestDevice();
     tensorStore = new DimensionalTensorStore(device, {
-      documents: maxNodes,
-      chunks: 100,
+      documents: maxNodes,;
+      chunks: 100,;
       representations: 8,
-      maxLOD: 4
+      maxLOD: 4;
     }, {
       maxGPUMemory: 256 * 1024 * 1024, // 256MB
       streamingDistance: 100,
@@ -253,7 +255,7 @@ https://svelte.dev/e/js_parse_error -->
       const delta = e.deltaY > 0 ? 1 + zoomSpeed : 1 - zoomSpeed;
       renderState.update(state => ({
         ...state,
-        zoom: Math.max(0.1, Math.min(10, state.zoom * delta))
+        zoom: Math.max(0.1, Math.min(10, state.zoom * delta));
       }));
     });
 
@@ -408,8 +410,8 @@ https://svelte.dev/e/js_parse_error -->
     // Simplified animation
     renderState.update(state => ({
       ...state,
-      cameraPosition: [0, 0, 8], // Move closer
-      zoom: 1.2 // Slight zoom in
+      cameraPosition: [0, 0, 8], // Move closer;
+      zoom: 1.2 // Slight zoom in;
     }));
   }
 
@@ -447,7 +449,7 @@ https://svelte.dev/e/js_parse_error -->
     renderState.update(state => ({
       ...state,
       cameraPosition: [0, 0, 10],
-      zoom: 1.0
+      zoom: 1.0;
     }));
   }
 
@@ -505,16 +507,16 @@ https://svelte.dev/e/js_parse_error -->
         graphId,
         graphType: 'legal-entities',
         nodes: [], // Would get from engine
-        edges: [], // Would get from engine
+        edges: [], // Would get from engine;
         layout: {
           algorithm: 'force-directed',
           parameters: ,
-          dimensions: 3
+          dimensions: 3;
         },
         cameraPosition: {
-          x: $renderState.cameraPosition[0],
-          y: $renderState.cameraPosition[1],
-          z: $renderState.cameraPosition[2]
+          x: $renderState.cameraPosition[0],;
+          y: $renderState.cameraPosition[1],;
+          z: $renderState.cameraPosition[2];
         },
         createdAt: new Date(),
         lastAccessed: new Date(),
@@ -624,7 +626,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
       
       <button onclick={() => $renderState.autoRotate = !$renderState.autoRotate} 
-              title="Auto Rotate" 
+              title="Auto Rotate" ;
               class:active={$renderState.autoRotate}>
         🔄
       </button>
@@ -756,7 +758,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
   }
 
-  .error-overlay button:hover {
+  .error-overlay button:hover {;
     background: #2563eb;
   }
 
@@ -816,7 +818,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   .controls-panel button:hover,
-  .controls-panel select:hover {
+  .controls-panel select:hover {;
     background: rgba(0, 0, 0, 0.9);
     border-color: rgba(255, 255, 255, 0.4);
   }

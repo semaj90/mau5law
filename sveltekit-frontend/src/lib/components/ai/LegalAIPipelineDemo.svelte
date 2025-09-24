@@ -25,13 +25,13 @@ https://svelte.dev/e/expected_token -->
     lastAccessed: Date.now(),
     bankId: 1,
     compressed: false,
-    content: 'This contract contains provisions under 15 U.S.C. § 1001 and references Supreme Court case 456 U.S. 789. The parties agree to binding arbitration in the District Court.',
+    content: 'This contract contains provisions under 15 U.S.C. § 1001 and references Supreme Court case 456 U.S. 789. The parties agree to binding arbitration in the District Court.',;
     metadata: {
       document_type: 'contract',
       jurisdiction: 'federal',
       confidence: 0.95,
       content: 'This contract contains provisions under 15 U.S.C. § 1001 and references Supreme Court case 456 U.S. 789. The parties agree to binding arbitration in the District Court.',
-      vectorEmbedding: Array(384).fill.map(() => Math.random() * 2 - 1),
+      vectorEmbedding: Array(384).fill.map(() => Math.random() * 2 - 1),;
       entities: [
         { type: 'statute', text: '15 U.S.C. § 1001', confidence: 0.9 }
       ]
@@ -100,7 +100,7 @@ https://svelte.dev/e/expected_token -->
 
       // Update performance chart
       performanceChart = [...performanceChart, {
-        time: Date.now(),
+        time: Date.now(),;
         throughput: (result as { metadata?: any; metrics?: any }).metrics.megabytesPerSecond || 0
       }].slice(-20); // Keep last 20 measurements
 
@@ -131,13 +131,13 @@ https://svelte.dev/e/expected_token -->
         confidenceLevel: 0.8,
         riskLevel: 'low',
         lastAccessed: Date.now(),
-        content: doc.content,
+        content: doc.content,;
         metadata: {
           document_type: 'brief',
-          jurisdiction: 'federal',
+          jurisdiction: 'federal',;
           confidence: 0.8,
           content: doc.content,
-          vectorEmbedding: Array(384).fill.map(() => Math.random() * 2 - 1)
+          vectorEmbedding: Array(384).fill.map(() => Math.random() * 2 - 1);
         }
       }));
 
@@ -291,7 +291,7 @@ https://svelte.dev/e/expected_token -->
 
       <div class="custom-document">
         <h4>Custom Document (JSON)</h4>
-        <textarea
+        <textarea;
           bind:value={lastProcessedDoc}
           placeholder="Enter legal document JSON..."
           rows="6"

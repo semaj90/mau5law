@@ -24,13 +24,15 @@
   let isLoading = $state(true);
   let lastUpdated = $state<string>('');
 
-  $effect(async () => {
-    if (!browser) return;
+  $effect(() => {
+    (async () => {
+if (!browser) return;
     await loadSystemStatus();
 
     // Auto-refresh every 30 seconds
     const interval = setInterval(loadSystemStatus, 30000);
     return () => clearInterval(interval);
+    })();
   });
 
   async function loadSystemStatus() {
@@ -79,20 +81,20 @@
 
       if (loadedVars.length === gpuVars.length) {
         integrationTests['gpu-cache'] = {
-          status: 'success',
-          message: 'GPU cache CSS integration fully loaded',
+          status: 'success',;
+          message: 'GPU cache CSS integration fully loaded',;
           details: { loadedVars: loadedVars.length, totalVars: gpuVars.length }
         };
       } else {
         integrationTests['gpu-cache'] = {
-          status: 'warning',
-          message: `GPU cache CSS partially loaded: ${loadedVars.length}/${gpuVars.length} variables`,
+          status: 'warning',;
+          message: `GPU cache CSS partially loaded: ${loadedVars.length}/${gpuVars.length} variables`,;
           details: { loadedVars, missingVars: gpuVars.filter(v => !loadedVars.includes(v)) }
         };
       }
     } catch (error) {
       integrationTests['gpu-cache'] = {
-        status: 'error',
+        status: 'error',;
         message: `GPU cache integration error: ${error}`
       };
     }
@@ -105,22 +107,22 @@
 
       if (NES_COLOR_PALETTE && N64_TEXTURE_PRESETS) {
         integrationTests['gaming'] = {
-          status: 'success',
-          message: 'Gaming components and constants loaded successfully',
+          status: 'success',;
+          message: 'Gaming components and constants loaded successfully',;
           details: {
-            nesColors: Object.keys.length,
-            n64Presets: Object.keys.length
+            nesColors: Object.keys(errors).length,
+            n64Presets: Object.keys(errors).length
           }
         };
       } else {
         integrationTests['gaming'] = {
-          status: 'error',
-          message: 'Gaming constants not properly loaded'
+          status: 'error',;
+          message: 'Gaming constants not properly loaded';
         };
       }
     } catch (error) {
       integrationTests['gaming'] = {
-        status: 'error',
+        status: 'error',;
         message: `Gaming components error: ${error}`
       };
     }
@@ -135,25 +137,25 @@
 
         if (pgStatus === 'healthy') {
           integrationTests['postgresql'] = {
-            status: 'success',
-            message: 'PostgreSQL + pgvector connected and healthy',
+            status: 'success',;
+            message: 'PostgreSQL + pgvector connected and healthy',;
             details: { host: (data as { services?: unknown }).services.databases.postgres.host, port: (data as { services?: unknown }).services.databases.postgres.port }
           };
         } else {
           integrationTests['postgresql'] = {
-            status: 'error',
-            message: 'PostgreSQL connection failed or unhealthy'
+            status: 'error',;
+            message: 'PostgreSQL connection failed or unhealthy';
           };
         }
       } else {
         integrationTests['postgresql'] = {
-          status: 'error',
-          message: 'Unable to check PostgreSQL status'
+          status: 'error',;
+          message: 'Unable to check PostgreSQL status';
         };
       }
     } catch (error) {
       integrationTests['postgresql'] = {
-        status: 'error',
+        status: 'error',;
         message: `PostgreSQL test error: ${error}`
       };
     }
@@ -178,13 +180,13 @@
       }
 
       integrationTests['api-endpoints'] = {
-        status: successCount >= endpoints.length / 2 ? 'success' : 'warning',
-        message: `API endpoints: ${successCount}/${endpoints.length} accessible`,
+        status: successCount >= endpoints.length / 2 ? 'success' : 'warning',;
+        message: `API endpoints: ${successCount}/${endpoints.length} accessible`,;
         details: { endpoints, successCount }
       };
     } catch (error) {
       integrationTests['api-endpoints'] = {
-        status: 'error',
+        status: 'error',;
         message: `API endpoints test error: ${error}`
       };
     }
@@ -284,7 +286,7 @@
               <details class="text-xs text-gray-400">
                 <summary class="cursor-pointer">Details</summary>
                 <pre class="mt-2 p-2 bg-gray-900 rounded text-xs overflow-auto">
-{JSON.stringify.details, null, 2)}
+{JSON.stringify(details), null, 2)}
                 </pre>
               </details>
             {/if}
@@ -475,7 +477,7 @@
 </div>
 
 <style>
-  .status-page {
+  .status-page {;
     font-family: 'Inter', sans-serif;
   }
 

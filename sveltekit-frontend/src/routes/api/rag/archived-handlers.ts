@@ -1,20 +1,20 @@
 /// <reference types="vite/client" />
-import crypto from "crypto";
+import crypto from "crypto"
 // Archived non-essential handlers preserved for reference/reuse
 // Moved out of +server.ts to keep the active endpoint lean and focused.
 
-import { librarySyncService } from "$lib/services/library-sync-service";
+import { librarySyncService } from "$lib/services/library-sync-service"
 // TODO: Fix import - // Orphaned content: import { error, json  // Local copy of backend config and forwarder to keep this module self-contained
-const RAG_BACKEND_URL = import.meta.env.RAG_BACKEND_URL || "http://localhost:8000";
-const RAG_TIMEOUT = 30000;
+const RAG_BACKEND_URL = import.meta.env.RAG_BACKEND_URL || "http://localhost:8000"
+const RAG_TIMEOUT = 30000
 
-// Safe error message extractor to avoid using "any";
+// Safe error message extractor to avoid using "any"
 function errorMessage(err: any): string {
-  if (err instanceof Error) return err.message;
+  if (err instanceof Error) return err.message
   try {
-    return JSON.stringify(err);
+    return JSON.stringify(err)
   } catch {
-    return String(err);
+    return String(err)
   }
 }
 
@@ -22,9 +22,9 @@ async function forwardToRAGBackend(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<any> {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), RAG_TIMEOUT);
-  const startTime = Date.now();
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), RAG_TIMEOUT)
+  const startTime = Date.now()
 
   try {
     const response = await fetch(`${RAG_BACKEND_URL}${endpoint}`, {
@@ -34,13 +34,13 @@ async function forwardToRAGBackend(
         "User-Agent": "SvelteKit-Frontend/1.0.0",
         ...(options.headers || {})
       }
-    });
+    })
 
-    clearTimeout(timeoutId);
-    const duration = Date.now() - startTime;
+    clearTimeout(timeoutId)
+    const duration = Date.now() - startTime
 
     if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
-      const errorText = await (response as { ok?: any; text?: any; status?: any; json?: any }).text().catch(() => "Unknown error");
+      const errorText = await (response as { ok?: any; text?: any; status?: any; json?: any }).text().catch(() => "Unknown error")
 
       await librarySyncService.logAgentCall({
         id: crypto.randomUUID(),
@@ -52,12 +52,12 @@ async function forwardToRAGBackend(
         duration,
         success: false,
         error: `HTTP ${(response as { ok?: any; text?: any; status?: any; json?: any }).status}: ${errorText}`
-      });
+      })
 
-      throw new Error(`RAG Backend Error (${(response as { ok?: any; text?: any; status?: any; json?: any }).status}): ${errorText}`);
+      throw new Error(`RAG Backend Error (${(response as { ok?: any; text?: any; status?: any; json?: any }).status}): ${errorText}`)
     }
 
-    const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
+    const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json()
 
     await librarySyncService.logAgentCall({
       id: crypto.randomUUID(),
@@ -68,12 +68,12 @@ async function forwardToRAGBackend(
       output: { success: true, resultKeys: Object.keys(result) },
       duration,
       success: true
-    });
+    })
 
-    return result;
+    return result
   } catch (err: any) {
-    clearTimeout(timeoutId);
-    const duration = Date.now() - startTime;
+    clearTimeout(timeoutId)
+    const duration = Date.now() - startTime
 
     await librarySyncService.logAgentCall({
       id: crypto.randomUUID(),
@@ -85,53 +85,53 @@ async function forwardToRAGBackend(
       duration,
       success: false,
       error: errorMessage(err)
-    });
+    })
 
     if (
       typeof err === "object" &&
       err &&
       "name" in err &&
-      (err as { name?: string }).name === "AbortError";
+      (err as { name?: string }).name === "AbortError"
     ) {
-      throw new Error("RAG Backend request timed out");
+      throw new Error("RAG Backend request timed out")
     }
-    throw err;
+    throw err
   }
 }
 
-// Full preserved implementations;
+// Full preserved implementations
 export async function handleUpload(request: Request): Promise<any> {
   try {
-    const formData = await request.formData();
-    const file = formData.get("file") as File;
-    const title = formData.get("title") as string;
-    const documentType = formData.get("documentType") as string;
-    const caseId = formData.get("caseId") as string;
+    const formData = await request.formData()
+    const file = formData.get("file") as File
+    const title = formData.get("title") as string
+    const documentType = formData.get("documentType") as string
+    const caseId = formData.get("caseId") as string
 
     if (!file) {
-      throw error(400, "No file provided");
+      throw error(400, "No file provided")
     }
 
-    const ragFormData = new FormData();
-    ragFormData.append("document", file);
-    if (title) ragFormData.append("title", title);
-    if (documentType) ragFormData.append("documentType", documentType);
-    if (caseId) ragFormData.append("caseId", caseId);
+    const ragFormData = new FormData()
+    ragFormData.append("document", file)
+    if (title) ragFormData.append("title", title)
+    if (documentType) ragFormData.append("documentType", documentType)
+    if (caseId) ragFormData.append("caseId", caseId)
 
     const result = await forwardToRAGBackend("/api/v1/rag/upload", {
       method: "POST",
       body: ragFormData
-    });
+    })
 
     return json({
       success: true,
       document: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).document,
       processing: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).processing,
       metadata: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).metadata
-    });
+    })
   } catch (err: any) {
-    console.error("Upload error:", err);
-    throw error(500, `Document upload failed: ${errorMessage(err)}`);
+    console.error("Upload error:", err)
+    throw error(500, `Document upload failed: ${errorMessage(err)}`)
   }
 }
 
@@ -143,10 +143,10 @@ export async function handleCrawl(request: Request): Promise<any> {
       depth = 2,
       caseId,
       documentType = "web_content"
-    } = await request.json();
+    } = await request.json()
 
     if (!crawlUrl) {
-      throw error(400, "URL is required");
+      throw error(400, "URL is required")
     }
 
     const result = await forwardToRAGBackend("/api/v1/rag/crawl", {
@@ -159,26 +159,26 @@ export async function handleCrawl(request: Request): Promise<any> {
         caseId,
         documentType
       })
-    });
+    })
 
     return json({
       success: true,
       document: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).document,
       crawlStats: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).crawlStats,
       processingTime: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).processingTime
-    });
+    })
   } catch (err: any) {
-    console.error("Crawl error:", err);
-    throw error(500, `Web crawling failed: ${errorMessage(err)}`);
+    console.error("Crawl error:", err)
+    throw error(500, `Web crawling failed: ${errorMessage(err)}`)
   }
 }
 
 export async function handleWorkflow(request: Request): Promise<any> {
   try {
-    const { workflowType, input, options = {} } = await request.json();
+    const { workflowType, input, options = {} } = await request.json()
 
     if (!workflowType || !input) {
-      throw error(400, "Workflow type and input are required");
+      throw error(400, "Workflow type and input are required")
     }
 
     const result = await forwardToRAGBackend("/api/v1/agents/workflow", {
@@ -189,25 +189,25 @@ export async function handleWorkflow(request: Request): Promise<any> {
         input,
         options
       })
-    });
+    })
 
     return json({
       success: true,
       workflow: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).result,
       metadata: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).metadata
-    });
+    })
   } catch (err: any) {
-    console.error("Workflow error:", err);
-    throw error(500, `Workflow execution failed: ${errorMessage(err)}`);
+    console.error("Workflow error:", err)
+    throw error(500, `Workflow execution failed: ${errorMessage(err)}`)
   }
 }
 
 export async function handleChat(request: Request): Promise<any> {
   try {
-    const { messages, options = {} } = await request.json();
+    const { messages, options = {} } = await request.json()
 
     if (!messages || !Array.isArray(messages)) {
-      throw error(400, "Messages array is required");
+      throw error(400, "Messages array is required")
     }
 
     const result = await forwardToRAGBackend("/api/v1/agents/chat", {
@@ -217,28 +217,28 @@ export async function handleChat(request: Request): Promise<any> {
         messages,
         options
       })
-    });
+    })
 
     return json({
       success: true,
       response: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response,
       metadata: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).metadata
-    });
+    })
   } catch (err: any) {
-    console.error("Chat error:", err);
-    throw error(500, `AI chat failed: ${errorMessage(err)}`);
+    console.error("Chat error:", err)
+    throw error(500, `AI chat failed: ${errorMessage(err)}`)
   }
 }
 
 export async function handlePgaiProcess(request: Request): Promise<any> {
   try {
-    const { documentId } = await request.json();
+    const { documentId } = await request.json()
 
     if (!documentId) {
-      throw error(400, "Document ID is required");
+      throw error(400, "Document ID is required")
     }
 
-    const ollamaUrl = import.meta.env.OLLAMA_URL || "http://localhost:11434";
+    const ollamaUrl = import.meta.env.OLLAMA_URL || "http://localhost:11434"
 
     const response = await fetch(`${ollamaUrl}/api/generate`, {
       method: "POST",
@@ -246,7 +246,7 @@ export async function handlePgaiProcess(request: Request): Promise<any> {
       body: JSON.stringify({
         model: "gemma3-summary",
         prompt: `Process this legal document and provide structured analysis in JSON format:
-);
+)
         {
           "summary": "2-3 sentence overview",
           "key_points": ["point1", "point2", "point3"],
@@ -265,13 +265,13 @@ export async function handlePgaiProcess(request: Request): Promise<any> {
           num_predict: 1500
         }
       })
-    });
+    })
 
-    const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
+    const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json()
 
-    let parsedResult;
+    let parsedResult
     try {
-      parsedResult = JSON.parse((result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response);
+      parsedResult = JSON.parse((result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response)
     } catch {
       parsedResult = {
         summary: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response,
@@ -280,7 +280,7 @@ export async function handlePgaiProcess(request: Request): Promise<any> {
         legal_issues: [],
         risk_level: "medium",
         recommended_actions: []
-      };
+      }
     }
 
     return json({
@@ -291,22 +291,22 @@ export async function handlePgaiProcess(request: Request): Promise<any> {
         chunks_created: 5,
         processing_time_ms: 2500
       }
-    });
+    })
   } catch (err: any) {
-    console.error("pgai process error:", err);
-    throw error(500, `Document processing failed: ${errorMessage(err)}`);
+    console.error("pgai process error:", err)
+    throw error(500, `Document processing failed: ${errorMessage(err)}`)
   }
 }
 
 export async function handlePgaiCustomAnalysis(request: Request): Promise<any> {
   try {
-    const { content, prompt, model = "gemma3-legal" } = await request.json();
+    const { content, prompt, model = "gemma3-legal" } = await request.json()
 
     if (!content || !prompt) {
-      throw error(400, "Content and prompt are required");
+      throw error(400, "Content and prompt are required")
     }
 
-    const ollamaUrl = import.meta.env.OLLAMA_URL || "http://localhost:11434";
+    const ollamaUrl = import.meta.env.OLLAMA_URL || "http://localhost:11434"
 
     const response = await fetch(`${ollamaUrl}/api/generate`, {
       method: "POST",
@@ -319,17 +319,17 @@ export async function handlePgaiCustomAnalysis(request: Request): Promise<any> {
           num_predict: 2000
         }
       })
-    });
+    })
 
-    const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
+    const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json()
 
     return json({
       success: true,
       data: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response
-    });
+    })
   } catch (err: any) {
-    console.error("pgai custom analysis error:", err);
-    throw error(500, `Custom analysis failed: ${errorMessage(err)}`);
+    console.error("pgai custom analysis error:", err)
+    throw error(500, `Custom analysis failed: ${errorMessage(err)}`)
   }
 }
 
@@ -339,13 +339,13 @@ export async function handlePgaiComparison(request: Request): Promise<any> {
       document1,
       document2,
       model = "gemma3-legal"
-    } = await request.json();
+    } = await request.json()
 
     if (!document1 || !document2) {
-      throw error(400, "Both documents are required for comparison");
+      throw error(400, "Both documents are required for comparison")
     }
 
-    const ollamaUrl = import.meta.env.OLLAMA_URL || "http://localhost:11434";
+    const ollamaUrl = import.meta.env.OLLAMA_URL || "http://localhost:11434"
 
     const response = await fetch(`${ollamaUrl}/api/generate`, {
       method: "POST",
@@ -368,17 +368,17 @@ Provide analysis covering:
           num_predict: 2500
         }
       })
-    });
+    })
 
-    const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
+    const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json()
 
     return json({
       success: true,
       data: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response
-    });
+    })
   } catch (err: any) {
-    console.error("pgai comparison error:", err);
-    throw error(500, `Document comparison failed: ${errorMessage(err)}`);
+    console.error("pgai comparison error:", err)
+    throw error(500, `Document comparison failed: ${errorMessage(err)}`)
   }
 }
 
@@ -388,13 +388,13 @@ export async function handlePgaiExtraction(request: Request): Promise<any> {
       content,
       extractionPrompt,
       model = "gemma3-legal"
-    } = await request.json();
+    } = await request.json()
 
     if (!content || !extractionPrompt) {
-      throw error(400, "Content and extraction prompt are required");
+      throw error(400, "Content and extraction prompt are required")
     }
 
-    const ollamaUrl = import.meta.env.OLLAMA_URL || "http://localhost:11434";
+    const ollamaUrl = import.meta.env.OLLAMA_URL || "http://localhost:11434"
 
     const response = await fetch(`${ollamaUrl}/api/generate`, {
       method: "POST",
@@ -409,16 +409,16 @@ Document content: ${content.substring(0, 4000)}`,
           num_predict: 1500
         }
       })
-    });
+    })
 
-    const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
+    const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json()
 
     return json({
       success: true,
       data: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response
-    });
+    })
   } catch (err: any) {
-    console.error("pgai extraction error:", err);
-    throw error(500, `Information extraction failed: ${errorMessage(err)}`);
+    console.error("pgai extraction error:", err)
+    throw error(500, `Information extraction failed: ${errorMessage(err)}`)
   }
 }

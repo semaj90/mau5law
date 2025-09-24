@@ -47,7 +47,7 @@ export interface KeyboardNavigationParams {
  * Handles mouse, keyboard, and touch interactions with full accessibility
  */
 export function accessibleClick(
-  element: HTMLElement,
+  element: HTMLElement,;
   params: AccessibleClickParams
 ): { update: (params: AccessibleClickParams) => void; destroy: () => void } {
   
@@ -124,7 +124,7 @@ export function accessibleClick(
  * Handles focus trapping, restoration, and skip links
  */
 export function focusManagement(
-  element: HTMLElement,
+  element: HTMLElement,;
   params: FocusManagementParams = {}
 ): { update: (params: FocusManagementParams) => void; destroy: () => void } {
   
@@ -261,7 +261,7 @@ export function focusManagement(
  * Dynamically manages ARIA attributes based on component state
  */
 export function ariaState(
-  element: HTMLElement,
+  element: HTMLElement,;
   params: ARIAStateParams
 ): { update: (params: ARIAStateParams) => void; destroy: () => void } {
   
@@ -332,7 +332,7 @@ export function ariaState(
  * Handles complex keyboard interactions with customizable key mappings
  */
 export function keyboardNavigation(
-  element: HTMLElement,
+  element: HTMLElement,;
   params: KeyboardNavigationParams
 ): { update: (params: KeyboardNavigationParams) => void; destroy: () => void } {
   
@@ -377,7 +377,7 @@ export interface LiveRegionParams {
 }
 
 export function liveRegion(
-  element: HTMLElement,
+  element: HTMLElement,;
   params: LiveRegionParams = {}
 ): { update: (params: LiveRegionParams) => void; announce: (message: string) => void; destroy: () => void } {
   
@@ -532,7 +532,7 @@ export const compositeActions = {
 
     const ariaAction = ariaState(element, {
       role: 'dialog',
-      hidden: false,
+      hidden: false,;
       label: options.title,
       describedBy: options.description ? descId : undefined
     });
@@ -563,7 +563,7 @@ export const compositeActions = {
 
     const ariaAction = ariaState(element, {
       role: 'combobox',
-      expanded: options.isOpen,
+      expanded: options.isOpen,;
       controls: listboxId
     });
 

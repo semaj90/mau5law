@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -72,7 +72,7 @@ https://svelte.dev/e/js_parse_error -->
     onOpenChange,
     onClose,
     class: className = '',
-    ...restProps
+    ...restProps;
    }: Props = $props();
 
   // Melt UI dialog
@@ -130,10 +130,10 @@ https://svelte.dev/e/js_parse_error -->
       // Create simple compute shader for background effects
       const computeShaderCode = `
         struct Uniforms {
-          time: f32,
-          intensity: f32,
+          time: f32,;
+          intensity: f32,;
           variant: f32,
-          legal_confidence: f32,
+          legal_confidence: f32,;
         }
         @group(0) @binding(0) var<uniform> uniforms: Uniforms;
         @group(0) @binding(1) var outputTex: texture_storage_2d<rgba8unorm, write>;
@@ -167,8 +167,8 @@ https://svelte.dev/e/js_parse_error -->
 
       // Create compute pipeline (memory efficient)
       const computePipeline = device.createComputePipeline({
-        layout: 'auto',
-        compute: {
+        layout: 'auto',;
+        compute: {;
           module: device.createShaderModule({ code: computeShaderCode }),
           entryPoint: 'main'
         }
@@ -189,7 +189,7 @@ https://svelte.dev/e/js_parse_error -->
 
     context.configure({
       device,
-      format: 'bgra8unorm'
+      format: 'bgra8unorm';
     });
 
     function animate(currentTime: number) {
@@ -211,8 +211,8 @@ https://svelte.dev/e/js_parse_error -->
       ]);
 
       const uniformBuffer = device.createBuffer({
-        size: uniformData.byteLength,
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
+        size: uniformData.byteLength,;
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST;
       });
 
       device.queue.writeBuffer(uniformBuffer, 0, uniformData);
@@ -220,13 +220,13 @@ https://svelte.dev/e/js_parse_error -->
       // Create output texture
       const outputTexture = device.createTexture({
         size: { width: canvas.width, height: canvas.height, depthOrArrayLayers: 1 },
-        format: 'rgba8unorm',
-        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC
+        format: 'rgba8unorm',;
+        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC;
       });
 
       // Create bind group
       const bindGroup = device.createBindGroup({
-        layout: pipeline.getBindGroupLayout(0),
+        layout: pipeline.getBindGroupLayout(0),;
         entries: [
           { binding: 0, resource: { buffer: uniformBuffer } },
           { binding: 1, resource: outputTexture.createView() }
@@ -278,9 +278,9 @@ https://svelte.dev/e/js_parse_error -->
     return collaboration.users.map(user => ({
       id: user.id,
       x: user.cursor?.x || 0,
-      y: user.cursor?.y || 0,
-      color: user.color,
-      name: user.name
+      y: user.cursor?.y || 0,;
+      color: user.color,;
+      name: user.name;
     }));
   }
 
@@ -338,9 +338,9 @@ https://svelte.dev/e/js_parse_error -->
         
         class={contentClasses}
         transitiscale={{ 
-          duration: 200, 
-          easing: cubicInOut,
-          start: 0.95
+          duration: 200, ;
+          easing: cubicInOut,;
+          start: 0.95;
         }}
         {...restProps}
       >
@@ -382,7 +382,7 @@ https://svelte.dev/e/js_parse_error -->
                   class:text-green-800={legalContext.aiAnalysis.riskLevel === 'low'}
                   class:bg-yellow-100={legalContext.aiAnalysis.riskLevel === 'medium'}
                   class:text-yellow-800={legalContext.aiAnalysis.riskLevel === 'medium'}
-                  class:bg-red-100={legalContext.aiAnalysis.riskLevel === 'high'}
+                  class:bg-red-100={legalContext.aiAnalysis.riskLevel === 'high'};
                   class:text-red-800={legalContext.aiAnalysis.riskLevel === 'high'}
                 >
                   AI: {Math.round(legalContext.aiAnalysis.confidence * 100)}%

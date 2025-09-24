@@ -50,7 +50,7 @@ export const aiResponses = pgTable('ai_responses', {
   lastUpdated: timestamp('last_updated').defaultNow(),
   
   // Metadata for advanced features
-  metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
+  metadata: jsonb('metadata').default(sql`'{}'::jsonb`),;
   tags: jsonb('tags').default(sql`'[]'::jsonb`), // Searchable tags array
   
   // Quality indicators
@@ -76,7 +76,7 @@ export const recommendationScores = pgTable('recommendation_scores', {
   finalScore: decimal('final_score', { precision: 8, scale: 6 }).notNull(),
   
   // Recommendation metadata
-  algorithm: text('algorithm').notNull(), // 'semantic', 'collaborative', 'hybrid'
+  algorithm: text('algorithm').notNull(), // 'semantic', 'collaborative', 'hybrid';
   confidence: decimal('confidence', { precision: 5, scale: 4 }),
   
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -98,7 +98,7 @@ export const grpoFeedback = pgTable('grpo_feedback', {
   // Specific aspects rated
   accuracy: integer('accuracy'), // Legal accuracy (1-5)
   clarity: integer('clarity'), // Response clarity (1-5)
-  completeness: integer('completeness'), // Answer completeness (1-5)
+  completeness: integer('completeness'), // Answer completeness (1-5);
   relevance: integer('relevance'), // Query relevance (1-5)
   
   // Context for feedback
@@ -121,7 +121,7 @@ export const similarityCache = pgTable('similarity_cache', {
   embedding2Id: uuid('embedding2_id').references(() => aiResponses.id).notNull(),
   
   // Cached similarity score
-  similarity: decimal('similarity', { precision: 8, scale: 6 }).notNull(),
+  similarity: decimal('similarity', { precision: 8, scale: 6 }).notNull(),;
   algorithm: text('algorithm').notNull(), // 'cosine', 'euclidean', 'dot'
   
   // Cache metadata
@@ -146,7 +146,7 @@ export const legalEntityRelations = pgTable('legal_entity_relations', {
   jurisdiction: text('jurisdiction'),
   
   // Discovery metadata
-  discoveredBy: text('discovered_by'), // 'nlp', 'manual', 'graph_algorithm'
+  discoveredBy: text('discovered_by'), // 'nlp', 'manual', 'graph_algorithm';
   confidence: decimal('confidence', { precision: 5, scale: 4 }),
   
   createdAt: timestamp('created_at').defaultNow().notNull()
@@ -156,7 +156,7 @@ export const legalEntityRelations = pgTable('legal_entity_relations', {
 export const recommendationAnalytics = pgTable('recommendation_analytics', {
   id: uuid('id').defaultRandom().primaryKey(),
   
-  // Recommendation context
+  // Recommendation context;
   algorithm: text('algorithm').notNull(),
   queryType: text('query_type'), // classification from query analysis
   

@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 // Simple GPU test endpoint without auth dependencies
 
@@ -10,8 +10,8 @@ export const GET: RequestHandler = async () => {
       embedding: 'nomic-embed-text:latest'
     },
     timestamp: new Date().toISOString()
-  });
-};
+  })
+}
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -21,12 +21,12 @@ export const POST: RequestHandler = async ({ request }) => {
       'src/test3.ts(20,1): error TS2307: Cannot find module "./missing".',
       'src/test4.ts(25,1): error TS2457: Type alias name cannot be "type".',
       'src/test5.ts(30,1): error TS1005: ";" expected.'
-    ];
+    ]
 
     const processedErrors = mockErrors.map((line, index) => {
-      const match = line.match(/^(.+?)\((\d+),(\d+)\):\s+error\s+(TS\d+):\s+(.+)$/);
+      const match = line.match(/^(.+?)\((\d+),(\d+)\):\s+error\s+(TS\d+):\s+(.+)$/)
       if (match) {
-        const [, file, lineNum, col, code, message] = match;
+        const [, file, lineNum, col, code, message] = match
         return {
           id: `error_${index}`,
           file: file.trim(),
@@ -37,10 +37,10 @@ export const POST: RequestHandler = async ({ request }) => {
           confidence: 0.8 + Math.random() * 0.2,
           gpuProcessed: true,
           model: 'gemma3-legal:latest'
-        };
+        }
       }
-      return null;
-    }).filter(Boolean);
+      return null
+    }).filter(Boolean)
 
     return json({
       success: true,
@@ -54,9 +54,9 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       errors: processedErrors,
       message: `GPU processed ${processedErrors.length} errors successfully`
-    });
+    })
 
   } catch (error: any) {
-    return json({ error: 'Processing failed' }, { status: 500 });
+    return json({ error: 'Processing failed' }, { status: 500 })
   }
-};
+}

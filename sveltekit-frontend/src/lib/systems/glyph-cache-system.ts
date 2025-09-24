@@ -184,7 +184,7 @@ export class GlyphCacheSystem {
     const font: GlyphFont = {
       fontName: fontKey,
       fontSize,
-      fontStyle: fontStyle as any,
+      fontStyle: fontStyle as any,;
       glyphs: new Map(),
       totalGlyphs: 0,
       cacheSize: 0,
@@ -224,7 +224,7 @@ export class GlyphCacheSystem {
       cacheTimestamp: Date.now(),
       accessCount: 1,
       renderMetrics: {
-        width: this.GLYPH_SIZE,
+        width: this.GLYPH_SIZE,;
         height: this.GLYPH_SIZE,
         pixelDensity: 1,
         colorDepth: 32 // RGBA
@@ -385,7 +385,7 @@ export class GlyphCacheSystem {
     const styleColors = {
       classic: [255, 255, 255, 255], // White
       modern: [0, 255, 0, 255],      // Green
-      legal: [255, 215, 0, 255],     // Gold
+      legal: [255, 215, 0, 255],     // Gold;
       retro: [255, 0, 255, 255]      // Magenta
     };
 
@@ -620,7 +620,7 @@ export class GlyphCacheSystem {
           model: 'gemma3:legal-latest',
           prompt: `Given the text "${inputText}", provide 3-5 "did you mean" suggestions for legal terminology. Focus on legal terms, case names, and professional language. Respond only with suggestions separated by commas.`,
           stream: false,
-          options: {
+          options: {;
             temperature: 0.3,
             top_p: 0.9,
             max_tokens: 100
@@ -659,7 +659,7 @@ export class GlyphCacheSystem {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'gemma3:legal-latest',
+          model: 'gemma3:legal-latest',;
           prompt: text
         })
       });
@@ -693,7 +693,7 @@ export class GlyphCacheSystem {
         synthesized: combo,
         confidence: this.calculateConfidence(combo, inputGlyphs),
         didYouMean,
-        llmGenerated: true,
+        llmGenerated: true,;
         embeddings: embedding
       });
     }
@@ -774,7 +774,7 @@ export class GlyphCacheSystem {
     try {
       const textureData = glyphs.map(glyph => ({
         char: glyph.char,
-        pattern: Array.from(glyph.nesPattern),
+        pattern: Array.from(glyph.nesPattern),;
         quantized: Array.from(glyph.quantizedData),
         bankId: glyph.chrRomBankId
       });
@@ -812,7 +812,7 @@ export const glyphCacheSystem = new GlyphCacheSystem();
  */
 
 export async function getCachedGlyph(
-  char: string,
+  char: string,;
   style: 'classic' | 'modern' | 'legal' | 'retro' = 'legal';
 ): Promise<GlyphTexture> {
   return await glyphCacheSystem.getGlyph(char, style);

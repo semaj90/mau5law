@@ -6,7 +6,7 @@
 
   let { 
     children, 
-    class: className = ''
+    class: className = '';
   }: Props = $props();
 </script>
 

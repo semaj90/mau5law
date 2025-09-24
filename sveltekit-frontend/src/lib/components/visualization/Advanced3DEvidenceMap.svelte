@@ -5,7 +5,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import { onMount, onDestroy } from 'svelte';
+  import { onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { websocketStore } from '$lib/stores/websocket-store';
   import * as THREE from 'three';
@@ -52,17 +52,18 @@
   let isLoading = $state(true);
 
   // Evidence visualization objects
-  let evidenceNodes = $state<Map<string, THREE.Object3D>(new Map());
+  let evidenceNodes = $state<Map<string, THREE.Object3D>>(new Map());
   let relationshipLines = $state<THREE.Group>(new THREE.Group());
   let timelineVisualization = $state<THREE.Group>(new THREE.Group());
 
   // Collaborative features
-  let collaboratorCursors = $state<Map<string, THREE.Object3D>(new Map());
-  let sharedSelections = $state<Map<string, string>(new Map());
+  let collaboratorCursors = $state<Map<string, THREE.Object3D>>(new Map());
+  let sharedSelections = $state<Map<string, string>>(new Map());
 
   // Lifecycle
-  $effect(async () => {
-    if (!browser) return;
+  $effect(() => {
+    (async () => {
+if (!browser) return;
 
     try {
       await initializeVisualization();
@@ -78,6 +79,7 @@
       console.error('Failed to initialize 3D visualization:', error);
       isLoading = false;
     }
+    })();
   });
 
   onDestroy(() => {
@@ -107,9 +109,9 @@
 
     // Create WebGL renderer
     renderer = new THREE.WebGLRenderer({
-      antialias: true,
+      antialias: true,;
       alpha: true,
-      powerPreference: 'high-performance'
+      powerPreference: 'high-performance';
     });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -305,15 +307,15 @@
       case 'document':
         geometry = new THREE.BoxGeometry(1, 1.4, 0.1);
         material = new THREE.MeshLambertMaterial({
-          color: evidence.aiSummary ? 0x4CAF50 : 0xFFC107
+          color: evidence.aiSummary ? 0x4CAF50 : 0xFFC107;
         });
         break;
       case 'photo':
         geometry = new THREE.PlaneGeometry(1.2, 0.8);
         material = new THREE.MeshLambertMaterial({
-          color: 0x2196F3,
-          transparent: true,
-          opacity: 0.8
+          color: 0x2196F3,;
+          transparent: true,;
+          opacity: 0.8;
         });
         break;
       case 'video':
@@ -366,9 +368,9 @@
     const importance = evidence.aiSummary ? 1.0 : 0.7;
     const geometry = new THREE.SphereGeometry(importance * 0.5, 16, 16);
     const material = new THREE.MeshLambertMaterial({
-      color: getEvidenceColor(evidence),
-      transparent: true,
-      opacity: 0.8
+      color: getEvidenceColor(evidence),;
+      transparent: true,;
+      opacity: 0.8;
     });
 
     const mesh = new THREE.Mesh(geometry, material);
@@ -386,7 +388,7 @@
     // Create timeline marker
     const geometry = new THREE.CylinderGeometry(0.2, 0.2, 2, 8);
     const material = new THREE.MeshLambertMaterial({
-      color: getEvidenceColor(evidence)
+      color: getEvidenceColor(evidence);
     });
 
     const mesh = new THREE.Mesh(geometry, material);
@@ -444,9 +446,9 @@
     ]);
 
     const material = new THREE.LineBasicMaterial({
-      color: 0x4CAF50,
-      transparent: true,
-      opacity: 0.6
+      color: 0x4CAF50,;
+      transparent: true,;
+      opacity: 0.6;
     });
 
     return new THREE.Line(geometry, material);
@@ -462,8 +464,8 @@
     const geometry = new THREE.BufferGeometry();
     geometry.setFromPoints(points);
     const material = new THREE.LineBasicMaterial({
-      color: 0x2196F3,
-      linewidth: 3
+      color: 0x2196F3,;
+      linewidth: 3;
     });
 
     const timelinePath = new THREE.Line(geometry, material);
@@ -678,7 +680,7 @@
     </div>
 
     <div class="filter-controls">
-      <select bind:value={filterType} onchange={(e) => applyFilter(e.target.value)}>
+      <select bind:value={filterType} onchange={(e) => applyFilter((e.target as HTMLSelectElement).value)}>
         <option value="all">All Types</option>
         <option value="document">Documents</option>
         <option value="photo">Photos</option>
@@ -688,8 +690,8 @@
     </div>
 
     <div class="action-controls">
-      <Button variant="ghost" onclick={resetView} size="sm">🔄 Reset View</Button>
-      <Button variant="ghost" onclick={exportVisualization} size="sm">📤 Export</Button>
+  <Button variant="ghost" onclick={resetView} size="sm">🔄 Reset View</Button>
+  <Button variant="ghost" onclick={exportVisualization} size="sm">📤 Export</Button>
     </div>
   </div>
 
@@ -721,7 +723,7 @@
 </div>
 
 <style>
-  .visualization-container {
+  .visualization-container {;
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
     border-radius: 8px;
     overflow: hidden;

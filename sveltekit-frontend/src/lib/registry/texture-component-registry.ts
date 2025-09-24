@@ -353,7 +353,7 @@ class ComponentTextureRegistry {
         .filter(item => item.length),
       totalTextures: this.textureSlots.size,
       memoryBanks,
-      conflicts: this.conflictLog.length,
+      conflicts: this.conflictLog.length,;
       evictions: this.evictionCount,
       lastDefrag: this.lastDefragTime
     };

@@ -128,7 +128,7 @@ class VectorMetadataAutoEncoder {
    * Main encoding pipeline: Convert LOD cache entry to searchable vector metadata
    */
   async encodeToVectorMetadata(
-    lodEntry: LODCacheEntry,
+    lodEntry: LODCacheEntry,;
     options: {
       target_indexes?: string[];
       preserve_original?: boolean;
@@ -220,7 +220,7 @@ class VectorMetadataAutoEncoder {
    * Enhanced retrieval with compressed glyph-based RAG
    */
   async retrieveWithGlyphRAG(
-    query: string,
+    query: string,;
     options: {
       max_results?: number;
       lod_preference?: 'glyph' | 'tile' | 'block' | 'section' | 'document';
@@ -308,7 +308,7 @@ class VectorMetadataAutoEncoder {
       glyph: new Float32Array(this.config.embedding_dimensions),
       tile: new Float32Array(this.config.embedding_dimensions),
       block: new Float32Array(this.config.embedding_dimensions),
-      section: new Float32Array(this.config.embedding_dimensions),
+      section: new Float32Array(this.config.embedding_dimensions),;
       document: new Float32Array(this.config.embedding_dimensions)
     };
 
@@ -341,7 +341,7 @@ class VectorMetadataAutoEncoder {
       glyph: 1.0 + Math.sin(position * 0.1) * 0.2,
       tile: 0.8 + Math.cos(position * 0.2) * 0.3,
       block: 0.6 + Math.sin(position * 0.3) * 0.4,
-      section: 0.4 + Math.cos(position * 0.4) * 0.5,
+      section: 0.4 + Math.cos(position * 0.4) * 0.5,;
       document: 0.2 + Math.sin(position * 0.5) * 0.6
     };
     return weights[level as keyof typeof weights] || 1.0;
@@ -557,14 +557,14 @@ class VectorMetadataAutoEncoder {
         const operation = await this.performIndexOperation(indexId, entryId, encodedMetadata, indexConfig);
         operations.push({
           index_id: indexId,
-          operation: operation.operation,
+          operation: operation.operation,;
           status: operation.success ? 'success' : 'failed'
         });
       } catch (error) {
         console.error(`Failed to update index ${indexId}:`, error);
         operations.push({
           index_id: indexId,
-          operation: 'upsert',
+          operation: 'upsert',;
           status: 'failed'
         });
       }
@@ -576,7 +576,7 @@ class VectorMetadataAutoEncoder {
   private async performIndexOperation(
     indexId: string,
     entryId: string,
-    metadata: EncodedVectorMetadata,
+    metadata: EncodedVectorMetadata,;
     config: SearchIndexIntegration;
   ): Promise<any> {
     // Simulate index operations - would integrate with actual search engines
@@ -600,7 +600,7 @@ class VectorMetadataAutoEncoder {
         glyph: Array.from(metadata.lod_embeddings.glyph),
         tile: Array.from(metadata.lod_embeddings.tile),
         block: Array.from(metadata.lod_embeddings.block),
-        section: Array.from(metadata.lod_embeddings.section),
+        section: Array.from(metadata.lod_embeddings.section),;
         document: Array.from(metadata.lod_embeddings.document)
       },
       contextual_anchors: metadata.rag_metadata.contextual_anchors,

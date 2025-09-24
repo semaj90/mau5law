@@ -402,7 +402,7 @@
             <input
               type="text"
               name="collectedBy"
-              id="collectedBy"
+              id="collectedBy";
               bind:value={$form.collectedBy}
               disabled={$submitting}
               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -417,7 +417,7 @@
             <input
               type="text"
               name="location"
-              id="location"
+              id="location";
               bind:value={$form.location}
               disabled={$submitting}
               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -432,7 +432,7 @@
             <input
               type="datetime-local"
               name="collectedAt"
-              id="collectedAt"
+              id="collectedAt";
               bind:value={$form.collectedAt}
               disabled={$submitting}
               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -444,7 +444,7 @@
             <input
               type="checkbox"
               name="isAdmissible"
-              id="isAdmissible"
+              id="isAdmissible";
               bind:checked={$form.isAdmissible}
               disabled={$submitting}
               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
@@ -462,7 +462,7 @@
                 <input
                   type="checkbox"
                   name="enableOcr"
-                  id="enableOcr"
+                  id="enableOcr";
                   bind:checked={$form.enableOcr}
                   disabled={$submitting}
                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
@@ -476,7 +476,7 @@
                 <input
                   type="checkbox"
                   name="enableAiAnalysis"
-                  id="enableAiAnalysis"
+                  id="enableAiAnalysis";
                   bind:checked={$form.enableAiAnalysis}
                   disabled={$submitting}
                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
@@ -490,7 +490,7 @@
                 <input
                   type="checkbox"
                   name="enableEmbeddings"
-                  id="enableEmbeddings"
+                  id="enableEmbeddings";
                   bind:checked={$form.enableEmbeddings}
                   disabled={$submitting}
                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
@@ -504,7 +504,7 @@
                 <input
                   type="checkbox"
                   name="enableSummarization"
-                  id="enableSummarization"
+                  id="enableSummarization";
                   bind:checked={$form.enableSummarization}
                   disabled={$submitting}
                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"

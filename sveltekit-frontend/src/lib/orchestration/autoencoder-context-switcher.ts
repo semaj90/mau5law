@@ -18,7 +18,7 @@ interface ContextVector {
   sessionId: string;
   timestamp: number;
   embedding: Float32Array; // 256-dimensional context embedding;
-  metadata: {
+  metadata: {;
     domain: string;
     complexity: number;
     urgency: number;
@@ -153,7 +153,7 @@ export class AutoencoderContextSwitcher {
    */
   private async generateContextVector(
     userId: string,
-    query: string,
+    query: string,;
     context: any;
   ): Promise<ContextVector> {
     // Extract features for autoencoder input
@@ -172,7 +172,7 @@ export class AutoencoderContextSwitcher {
       embedding: compressedEmbedding,
       metadata: {
         domain: this.classifyDomain(query),
-        complexity: this.calculateComplexity(query),
+        complexity: this.calculateComplexity(query),;
         urgency: context.urgency || 0.5,
         memoryPressure: 1.0 - (memoryState.freeVRAM / memoryState.totalVRAM),
         gpuUtilization: context.gpuUtilization || 0.5
@@ -387,7 +387,7 @@ export class AutoencoderContextSwitcher {
     // This would interface with the QLoRA training system
     const adapterConfig = {
       name: adapterName,
-      rank: this.calculateOptimalRank(trainingData.examples.length),
+      rank: this.calculateOptimalRank(trainingData.examples.length),;
       alpha: this.calculateOptimalAlpha(trainingData.patterns),
       targetModules: this.selectTargetModules(trainingData.domain),
       trainingData: trainingData.examples
@@ -416,7 +416,7 @@ export class AutoencoderContextSwitcher {
       name: modelName,
       domain: domain,
       created: Date.now(),
-      version: '1.0',
+      version: '1.0',;
       compression: 'lz4', // Fast compression for quick loading;
       metadata: {
         usagePattern: this.modelUsagePatterns.get(modelName),
@@ -588,7 +588,7 @@ export class AutoencoderContextSwitcher {
     // Mock analysis;
     return {
       coherence: 0.85,
-      uniqueness: 0.72,
+      uniqueness: 0.72,;
       domain: 'specialized_contract_analysis'
     };
   }
@@ -596,7 +596,7 @@ export class AutoencoderContextSwitcher {
   private extractTrainingData(modelId: string, clusters: any) {
     return {
       domain: clusters.domain,
-      examples: [], // Would extract from usage history
+      examples: [], // Would extract from usage history;
       patterns: new Float32Array(256)
     };
   }

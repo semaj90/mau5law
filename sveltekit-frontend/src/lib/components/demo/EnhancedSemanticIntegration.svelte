@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -53,12 +53,12 @@ https://svelte.dev/e/js_parse_error -->
   	const systemStatus = writable<SystemStatus>({
   		postgresql: false,
   		redis: false,
-  		ollama: false,
-  		minio: false,
+  		ollama: false,;
+  		minio: false,;
   		qdrant: false,
   		neo4j: false,
   		enhanced_rag: false,
-  		semantic_architecture: false
+  		semantic_architecture: false;
   	});
 
   	// WebGPU-accelerated processing states
@@ -93,7 +93,7 @@ https://svelte.dev/e/js_parse_error -->
   			category,
   			count: todos.length,
   			avgPriority: todos.reduce((sum, todo) => sum + todo.priority, 0) / todos.length,
-  			avgPageRank: todos.reduce((sum, todo) => sum + (todo.pagerank_score || 0), 0) / todos.length
+  			avgPageRank: todos.reduce((sum, todo) => sum + (todo.pagerank_score || 0), 0) / todos.length;
   		}));
   		return stats.sort((a, b) => b.count - a.count);
   	});
@@ -108,7 +108,7 @@ https://svelte.dev/e/js_parse_error -->
   		processingProgress.set(10);
   		try {
   			const response = await fetch('/api/enhanced-semantic/intelligent-todos', {
-  				method: 'GET',
+  				method: 'GET',;
   				headers: {
   					'Content-Type': 'application/json'
   				}
@@ -116,7 +116,7 @@ https://svelte.dev/e/js_parse_error -->
   			processingProgress.set(50);
   			if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
   				const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
-  				todos.set.data || []);
+  				todos.set(data) || []);
   				processingProgress.set(100);
   				// Update system status
   				systemStatus.update(status => ({
@@ -141,7 +141,7 @@ https://svelte.dev/e/js_parse_error -->
   		processingProgress.set(20);
   		try {
   			const response = await fetch(`/api/enhanced-semantic/analyze?text=${encodeURIComponent(text)}`, {
-  				method: 'GET',
+  				method: 'GET',;
   				headers: {
   					'Content-Type': 'application/json'
   				}
@@ -149,7 +149,7 @@ https://svelte.dev/e/js_parse_error -->
   			processingProgress.set(70);
   			if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
   				const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
-  				semanticAnalysis.set.data);
+  				semanticAnalysis.set(data));
   				processingProgress.set(100);
   				ondispatch?.({ 
   					text, 
@@ -172,7 +172,7 @@ https://svelte.dev/e/js_parse_error -->
   			const response = await fetch('/api/enhanced-semantic/cache-stats');
   			if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
   				const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
-  				cacheStats.set.data);
+  				cacheStats.set(data));
   			}
   		} catch (error) {
   			console.error('Error fetching cache stats:', error);
@@ -261,8 +261,8 @@ https://svelte.dev/e/js_parse_error -->
   		const som = Array(20).fill.map((_, x) => 
   			Array(20).fill.map((_, y) => ({
   				x, y,
-  				active: x === analysis.som_cluster.x && y === analysis.som_cluster.y,
-  				intensity: Math.random() // Placeholder for actual weights
+  				active: x === analysis.som_cluster.x && y === analysis.som_cluster.y,;
+  				intensity: Math.random() // Placeholder for actual weights;
   			}))
   		);
   		return som;
@@ -275,9 +275,9 @@ https://svelte.dev/e/js_parse_error -->
   			title: todo.title,
   			category: todo.category,
   			priority: todo.priority,
-  			pagerank: todo.pagerank_score || 0,
-  			x: Math.random() * 400,
-  			y: Math.random() * 300
+  			pagerank: todo.pagerank_score || 0,;
+  			x: Math.random() * 400,;
+  			y: Math.random() * 300;
   		}));
   		const edges = [];
   		// Create edges based on category similarity
@@ -285,9 +285,9 @@ https://svelte.dev/e/js_parse_error -->
   			for (let j = i + 1; j < nodes.length; j++) {
   				if (nodes[i].category === nodes[j].category) {
   					edges.push({
-  						from: nodes[i].id,
-  						to: nodes[j].id,
-  						weight: Math.random()
+  						from: nodes[i].id,;
+  						to: nodes[j].id,;
+  						weight: Math.random();
   					});
   				}
   			}
@@ -314,15 +314,17 @@ https://svelte.dev/e/js_parse_error -->
   	}
 
   	// Lifecycle
-  	$effect(async () => {
-  		await initializeWebGPU();
+  	$effect(() => {
+    (async () => {
+await initializeWebGPU();
   		await checkSystemStatus();
   		await fetchCacheStats();
   		startRealTimeUpdates();
   		return () => {
   			stopRealTimeUpdates();
   		};
-  	});
+    })();
+  });
 
   	// Reactive statements for automatic updates
   	// TODO: Convert to $derived: if ($todos.length > 0 && showPageRankGraph) {
@@ -383,7 +385,7 @@ https://svelte.dev/e/js_parse_error -->
 				<div class="stats text-sm">
 					<p>Total Todos: <span class="font-bold text-green-400">{$todos.length}</span></p>
 					<p>High Priority: <span class="font-bold text-red-400">{$topPriorityTodos.length}</span></p>
-					<p>Categories: <span class="font-bold text-blue-400">{Object.keys.length}</span></p>
+					<p>Categories: <span class="font-bold text-blue-400">{Object.keys(errors).length}</span></p>
 				</div>
 
 				{#if $todos.length > 0}
@@ -652,7 +654,7 @@ https://svelte.dev/e/js_parse_error -->
 		<div class="text-center text-xs text-slate-400">
 			<p>🧠 Enhanced Semantic Architecture - Integrating pgvector, SOM, PageRank, WebGPU, Redis, Neo4j & MinIO</p>
 			<p class="mt-1">
-				Status: {Object.values.filter-length}/{Object.keys.length} services online
+				Status: {Object.values.filter-length}/{Object.keys(errors).length} services online
 				| Cache: {$webGPUSupported ? 'WebGPU Accelerated' : 'CPU Optimized'}
 				| Todos: {$todos.length} generated
 			</p>
@@ -661,7 +663,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-	.enhanced-semantic-dashboard {
+	.enhanced-semantic-dashboard {;
 		font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 	}
 	
@@ -693,23 +695,23 @@ https://svelte.dev/e/js_parse_error -->
 	}
 	
 	/* Custom scrollbar */
-	.todo-preview: :-webkit-scrollbar,
+	.todo-preview::-webkit-scrollbar,
 	.category-list::-webkit-scrollbar {
 		width: 4px;
 	}
 	
-	.todo-preview: :-webkit-scrollbar-track,
+	.todo-preview::-webkit-scrollbar-track,
 	.category-list::-webkit-scrollbar-track {
 		background: rgba(51, 65, 85, 0.5);
 	}
 	
-	.todo-preview: :-webkit-scrollbar-thumb,
+	.todo-preview::-webkit-scrollbar-thumb,
 	.category-list::-webkit-scrollbar-thumb {
 		background: rgba(139, 92, 246, 0.5);
 		border-radius: 2px;
 	}
 	
-	.todo-preview: :-webkit-scrollbar-thumb:hover,
+	.todo-preview::-webkit-scrollbar-thumb:hover,
 	.category-list::-webkit-scrollbar-thumb:hover {
 		background: rgba(139, 92, 246, 0.8);
 	}

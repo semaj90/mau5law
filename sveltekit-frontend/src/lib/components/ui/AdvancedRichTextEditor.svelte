@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared
+<!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared -->
 <!-- Advanced Rich Text Editor with Google Slides/Photoshop-like Features -->
@@ -101,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
       "#3b82f6",
       "#8b5cf6",
       "#ec4899",
-    ],
+    ],;
     highlight: [
       "transparent",
       "#fef3c7",
@@ -112,7 +112,7 @@ https://svelte.dev/e/js_parse_error -->
       "#fce7f3",
       "#fed7d7",
       "#f0f9ff",
-    ],
+    ],;
     legal: [
       "#1e40af",
       "#7c2d12",
@@ -122,7 +122,7 @@ https://svelte.dev/e/js_parse_error -->
       "#831843",
       "#92400e",
       "#166534",
-    ],
+    ],;
   };
 
   // Font options
@@ -159,29 +159,29 @@ https://svelte.dev/e/js_parse_error -->
 
   function initializeEditor() {
     editor = new Editor({
-      element: editorElement,
+      element: editorElement,;
       extensions: [
         StarterKit.configure({
           history: {
-            depth: 100,
+            depth: 100,;
           },
         }),
         Image.configure({
           inline: true,
-          allowBase64: true,
+          allowBase64: true,;
         }),
         TextAlign.configure({
-          types: ["heading", "paragraph"],
+          types: ["heading", "paragraph"],;
         }),
         Highlight.configure({
-          multicolor: true,
+          multicolor: true,;
         }),
         Typography,
         Placeholder.configure({
-          placeholder: placeholder,
+          placeholder: placeholder,;
         }),
         Table.configure({
-          resizable: true,
+          resizable: true,;
         }),
         TableRow,
         TableHeader,
@@ -189,9 +189,9 @@ https://svelte.dev/e/js_parse_error -->
         TextStyle,
         Color,
         FontFamily.configure({
-          types: ["textStyle"],
+          types: ["textStyle"],;
         }),
-      ],
+      ],;
       content: content,
       onTransaction: updateEditorState,
       onUpdate: ({ editor }) => {
@@ -201,9 +201,9 @@ https://svelte.dev/e/js_parse_error -->
         }
       },
       editorProps: {
-        attributes: {
+        attributes: {;
           class:
-            "prose prose-lg max-w-none focus:outline-none min-h-[400px] p-6",
+            "prose prose-lg max-w-none focus:outline-none min-h-[400px] p-6",;
         },
       },
     });
@@ -212,7 +212,7 @@ https://svelte.dev/e/js_parse_error -->
   function updateEditorState() {
     if (!editor) return;
 
-    editorState.set.undo(),
+    editorState.set(undo)(),
       canRedo: editor.can.redo(),
       isBold: editor.isActive("bold"),
       isItalic: editor.isActive("italic"),
@@ -262,10 +262,10 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const response = await fetch("/api/reports/save", {
-        method: "POST",
+        method: "POST",;
         headers: {
           "Content-Type": "application/json",
-        },
+        },;
         body: JSON.stringify({
           reportId,
           caseId,
@@ -398,7 +398,7 @@ https://svelte.dev/e/js_parse_error -->
 
     const content = format === "json" ? editor.getJSON() : editor.getHTML();
     const blob = new Blob([JSON.stringify(content, null, 2)], {
-      type: format === "json" ? "application/json" : "text/html",
+      type: format === "json" ? "application/json" : "text/html",;
     });
 
     const url = URL.createObjectURL(blob);
@@ -775,26 +775,26 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   /* Remove all @apply rules. Use Tailwind/UnoCSS classes in markup instead. */
-  .advanced-editor {
+  .advanced-editor {;
     min-height: 500px;
     border: 1px solid #d1d5db;
     border-radius: 0.5rem;
-    overflow: hidden
+    overflow: hidden;
     background: #fff;
   }
   .advanced-editor.fullscreen {
-    position: fixed
+    position: fixed;
     inset: 0;
     z-index: 50;
   }
   .toolbar {
-    position: sticky
+    position: sticky;
     top: 0;
     z-index: 10;
   }
   .toolbar-group {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     gap: 0.25rem;
   }
   .toolbar-btn {
@@ -804,8 +804,8 @@ https://svelte.dev/e/js_parse_error -->
     background: transparent
     cursor: pointer
     display: flex
-    align-items: center
-    justify-content: center
+    align-items: center;
+    justify-content: center;
     min-width: 36px;
     height: 36px;
     transition: background 0.2s;
@@ -829,15 +829,15 @@ https://svelte.dev/e/js_parse_error -->
     margin: 0 0.25rem;
   }
   .dropdown {
-    position: relative
+    position: relative;
   }
   .dropdown-toggle {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     gap: 0.25rem;
   }
   .dropdown-menu {
-    position: absolute
+    position: absolute;
     top: 100%;
     left: 0;
     background: #fff;
@@ -847,25 +847,25 @@ https://svelte.dev/e/js_parse_error -->
     padding: 0.25rem 0;
     z-index: 20;
     min-width: 150px;
-    display: none
+    display: none;
   }
   .dropdown:hover .dropdown-menu {
-    display: block
+    display: block;
   }
-  .dropdown-menu button {
+  .dropdown-menu button {;
     width: 100%;
-    text-align: left
+    text-align: left;
     padding: 0.5rem 0.75rem;
     background: transparent
-    border: none
-    cursor: pointer
+    border: none;
+    cursor: pointer;
     transition: background 0.2s;
   }
-  .dropdown-menu button:hover {
+  .dropdown-menu button:hover {;
     background: #f3f4f6;
   }
   .color-palette {
-    display: grid
+    display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 0.25rem;
     padding: 0.5rem;
@@ -876,18 +876,18 @@ https://svelte.dev/e/js_parse_error -->
     height: 1.5rem;
     border-radius: 0.375rem;
     border: 1px solid #d1d5db;
-    cursor: pointer
+    cursor: pointer;
   }
   .color-picker {
-    position: relative
+    position: relative;
   }
   .color-picker input[type="color"] {
-    position: absolute
+    position: absolute;
     inset: 0;
     opacity: 0;
-    cursor: pointer
+    cursor: pointer;
   }
-  .font-selector select {
+  .font-selector select {;
     border: 1px solid #d1d5db;
     border-radius: 0.375rem;
     padding: 0.25rem 0.5rem;
@@ -897,9 +897,9 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.875rem;
     color: #4b5563;
     min-width: 40px;
-    text-align: center
+    text-align: center;
   }
-  .ruler {
+  .ruler {;
     background: repeating-linear-gradient(
       90deg,
       transparent,
@@ -913,7 +913,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .editor-container {
     flex: 1;
-    overflow: auto
+    overflow: auto;
     min-height: 400px;
   }
   .editor-container.show-grid {
@@ -927,17 +927,17 @@ https://svelte.dev/e/js_parse_error -->
   }
   /* Tiptap specific styles */
   :global(.ProseMirror) {
-    outline: none
+    outline: none;
   }
-  :global(.ProseMirror p.is-editor-empty:first-child::before) {
+  :global(.ProseMirror p.is-editor-empty:first-child::before) {;
     color: #9ca3af;
     content: attr(data-placeholder);
-    float: left
+    float: left;
     height: 0;
-    pointer-events: none
+    pointer-events: none;
   }
   :global(.ProseMirror table) {
-    border-collapse: collapse
+    border-collapse: collapse;
     border: 1px solid #d1d5db;
   }
   :global(.ProseMirror table td),
@@ -952,9 +952,9 @@ https://svelte.dev/e/js_parse_error -->
   :global(.ProseMirror blockquote) {
     border-left: 4px solid #d1d5db;
     padding-left: 1rem;
-    font-style: italic
+    font-style: italic;
   }
-  :global(.ProseMirror code) {
+  :global(.ProseMirror code) {;
     background: #f3f4f6;
     padding: 0.25rem;
     border-radius: 0.375rem;
@@ -964,11 +964,11 @@ https://svelte.dev/e/js_parse_error -->
     background: #f3f4f6;
     padding: 1rem;
     border-radius: 0.5rem;
-    overflow-x: auto
+    overflow-x: auto;
   }
-  :global(.ProseMirror img) {
+  :global(.ProseMirror img) {;
     max-width: 100%;
-    height: auto
+    height: auto;
     border-radius: 0.5rem;
   }
 </style>

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:onclick) and new syntaxes for event handling is not allowed. Use only the ononclick syntax
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:onclick) and new syntaxes for event handling is not allowed. Use only the ononclick syntax;
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:onclick) and new syntaxes for event handling is not allowed. Use only the ononclick syntax -->
 <!--
@@ -22,12 +22,14 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   let isExecuting = $state(false);
   let cacheStats = $state(null);
 
-  $effect(async () => {
-    await loadEngineData();
+  $effect(() => {
+    (async () => {
+await loadEngineData();
 
     // Refresh data periodically
     const interval = setInterval(loadEngineData, 3000);
     return () => clearInterval(interval);
+    })();
   });
 
   async function loadEngineData() {
@@ -51,9 +53,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       // Add to history
       queryHistory.unshift({
         query: queryInput,
-        result,
+        result,;
         timestamp: new Date(),
-        executionTime
+        executionTime;
       });
 
       // Keep only last 5 queries in history
@@ -64,11 +66,11 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       await loadEngineData();
     } catch (error) {
       queryResult = {
-        error: error.message,
-        metadata: {
+        error: error.message,;
+        metadata: {;
           source: 'error',
           queryTime: Date.now() - startTime,
-          resultCount: 0
+          resultCount: 0;
         }
       };
     } finally {
@@ -246,7 +248,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       <div>
         <label class="block text-sm font-medium text-nier-text-secondary mb-2" for="-cypher-query-">
           Cypher Query
-        </label><textarea id="-cypher-query-"
+        </label><textarea id="-cypher-query-";
           bind:value={queryInput}
           placeholder="Enter your Cypher query..."
           rows="3"
@@ -335,9 +337,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
                     <span class="font-mono text-xs text-nier-text-muted">{node.id}</span>
                   </div>
                   <div class="text-sm text-nier-text-primary">{node.label}</div>
-                  {#if Object.keys.length > 0}
+                  {#if Object.keys(errors).length > 0}
                     <div class="text-xs text-nier-text-muted mt-2">
-                      {JSON.stringify.substring(0, 100)}...
+                      {JSON.stringify(substring)(0, 100)}...
                     </div>
                   {/if}
                 </div>
@@ -417,20 +419,20 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
 <style>
   /* Custom scrollbar for query results */
-  .overflow-y-auto: :-webkit-scrollbar {
+  .overflow-y-auto::-webkit-scrollbar {;
     width: 6px;
   }
 
-  .overflow-y-auto: :-webkit-scrollbar-track {
+  .overflow-y-auto::-webkit-scrollbar-track {
     background: var(--nier-bg-tertiary);
   }
 
-  .overflow-y-auto: :-webkit-scrollbar-thumb {
+  .overflow-y-auto::-webkit-scrollbar-thumb {
     background: var(--nier-accent-warm);
     border-radius: 3px;
   }
 
-  .overflow-y-auto: :-webkit-scrollbar-thumb:hover {
+  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
     background: var(--nier-accent-cool);
   }
 </style>

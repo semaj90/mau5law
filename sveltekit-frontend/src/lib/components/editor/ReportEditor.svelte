@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
@@ -43,9 +43,9 @@ https://svelte.dev/e/js_parse_error -->
 
   // State
   let editorComponent = $state({}) {
-        single: "layout-single",
-        dual: "layout-dual",
-        masonry: "layout-masonry",
+        single: "layout-single",;
+        dual: "layout-dual",;
+        masonry: "layout-masonry",;
       }[$report.settings.layout]
     : "layout-single"
   );
@@ -96,8 +96,8 @@ https://svelte.dev/e/js_parse_error -->
         formData.append("id", evidence.id);
 
         const response = await fetch("/api/evidence/delete", {
-          method: "POST",
-          body: formData,
+          method: "POST",;
+          body: formData,;
         });
 
         if (response.ok) {
@@ -371,7 +371,7 @@ https://svelte.dev/e/js_parse_error -->
           <MasonryGrid
             items={$report.attachedEvidence}
             columnWidth={200}
-            gutter={8}
+            gutter={8};
             let:item
           >
             <EvidenceCard
@@ -426,7 +426,7 @@ https://svelte.dev/e/js_parse_error -->
 </Modal>
 
 <style>
-  .report-editor {
+  .report-editor {;
     display: flex;
     flex-direction: column;
     height: 100vh;

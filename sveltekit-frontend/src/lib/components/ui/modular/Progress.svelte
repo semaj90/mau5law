@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Modular Progress Component - Bits UI + UnoCSS + Svelte 5 -->
@@ -29,7 +29,7 @@ https://svelte.dev/e/js_parse_error -->
     showPercentage = false,
     label,
     class: className = '',
-    ...restProps
+    ...restProps;
   }: Props = $props();
 
   // Calculate percentage
@@ -49,17 +49,17 @@ https://svelte.dev/e/js_parse_error -->
           error: 'bg-red-100 dark:bg-red-900/20',
           info: 'bg-blue-100 dark:bg-blue-900/20',
           yorha: 'bg-black border-2 border-yellow-400/30 rounded-none',
-          legal: 'bg-blue-50 border border-blue-200 dark:bg-blue-950/50 dark:border-blue-800'
+          legal: 'bg-blue-50 border border-blue-200 dark:bg-blue-950/50 dark:border-blue-800';
         },
         size: {
           sm: 'h-2',
           default: 'h-3',
-          lg: 'h-4'
+          lg: 'h-4';
         }
       },
       defaultVariants: {
-        variant: 'default',
-        size: 'default'
+        variant: 'default',;
+        size: 'default';
       }
     }
   );
@@ -74,9 +74,9 @@ https://svelte.dev/e/js_parse_error -->
           success: 'bg-green-600',
           warning: 'bg-yellow-500',
           error: 'bg-red-600',
-          info: 'bg-blue-600',
-          yorha: 'bg-gradient-to-r from-yellow-400/80 to-yellow-400 shadow-lg shadow-yellow-400/20',
-          legal: 'bg-blue-600'
+          info: 'bg-blue-600',;
+          yorha: 'bg-gradient-to-r from-yellow-400/80 to-yellow-400 shadow-lg shadow-yellow-400/20',;
+          legal: 'bg-blue-600';
         }
       }
     }
@@ -118,7 +118,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   @keyframes indeterminate {
-    0% {
+    0% {;
       transform: translateX(-100%);
       width: 100%;
     }
@@ -137,7 +137,7 @@ https://svelte.dev/e/js_parse_error -->
     position: relative;
   }
 
-  :global(.yorha-progress: :after) {
+  :global(.yorha-progress::after) {
     content: '';
     position: absolute;
     top: 0;

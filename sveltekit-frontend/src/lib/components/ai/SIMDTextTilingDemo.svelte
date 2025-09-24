@@ -25,22 +25,22 @@ https://svelte.dev/e/expected_token -->
     {
       title: 'Legal Contract Analysis',
       text: 'Software License Agreement grants licensee non-exclusive rights to use proprietary software. The license fee is $50,000 annually with maintenance support included. Reverse engineering and redistribution are prohibited without written consent. This agreement includes confidentiality clauses and performance guarantees.',
-      type: 'legal'
+      type: 'legal';
     },
     {
       title: 'Technical Documentation',
       text: 'The SIMD GPU tiling engine processes text embeddings using 7-bit NES-style compression, achieving ratios of 109:1. WebGPU compute shaders enable parallel processing across multiple GPU cores, with vertex buffer caching for instantaneous UI component generation.',
-      type: 'technical'
+      type: 'technical';
     },
     {
       title: 'Medical Report Extract',
       text: 'Patient presents with acute symptoms including elevated blood pressure (150/90 mmHg), irregular heartbeat, and chest pain. Recommended treatment includes beta-blockers, lifestyle modifications, and follow-up examination in 2 weeks. Laboratory results show elevated troponin levels.',
-      type: 'medical'
+      type: 'medical';
     },
     {
-      title: 'Financial Analysis',
-      text: 'Quarterly revenue increased 23% to $45.2M, driven by strong software license sales and recurring subscription revenue. Operating margin improved to 18.5%, with EBITDA of $8.3M. Cash flow from operations was $12.1M, supporting continued investment in R&D and market expansion.',
-      type: 'financial'
+      title: 'Financial Analysis',;
+      text: 'Quarterly revenue increased 23% to $45.2M, driven by strong software license sales and recurring subscription revenue. Operating margin improved to 18.5%, with EBITDA of $8.3M. Cash flow from operations was $12.1M, supporting continued investment in R&D and market expansion.',;
+      type: 'financial';
     }
   ];
 
@@ -65,8 +65,8 @@ https://svelte.dev/e/expected_token -->
       addLog(`📊 Target compression: ${compressionTarget}:1, Quality: ${qualityTier.toUpperCase()}`);
 
       const requestData = {
-        text: sample.text,
-        model: 'nomic-embed-text',
+        text: sample.text,;
+        model: 'nomic-embed-text',;
         type: sample.type,
         simd_config: {
           compressionRatio: compressionTarget,
@@ -85,9 +85,9 @@ https://svelte.dev/e/expected_token -->
 
       const startTime = Date.now();
       const response = await fetch(apiEndpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestData)
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
+        body: JSON.stringify(requestData);
       });
 
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
@@ -103,8 +103,8 @@ https://svelte.dev/e/expected_token -->
         if (simdData) {
           const newResult = {
             id: `result-${Date.now()}`,
-            timestamp: new Date().toISOString(),
-            title: sample.title,
+            timestamp: new Date().toISOString(),;
+            title: sample.title,;
             type: sample.type,
             originalText: sample.text,
             processingMode: selectedMode,
@@ -126,7 +126,7 @@ https://svelte.dev/e/expected_token -->
 
             // Performance stats
             memoryEfficiency: calculateMemoryEfficiency(sample.text.length, simdData),
-            cacheHits: simdData.processing_stats?.cache_hits || 0
+            cacheHits: simdData.processing_stats?.cache_hits || 0;
           };
 
           results = [newResult, ...results.slice(0, 9)]; // Keep last 10 results
@@ -234,8 +234,8 @@ https://svelte.dev/e/expected_token -->
         id: `live-${(result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).id}`,
         title: (result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).title,
         css: (result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).cssOptimized,
-        html: generateLiveHTML(result),
-        timestamp: Date.now()
+        html: generateLiveHTML(result),;
+        timestamp: Date.now();
       };
 
       liveRenderedComponents = [liveComponent, ...liveRenderedComponents.slice(0, 4)]; // Keep last 5
@@ -609,7 +609,7 @@ processingLogs = []} variant="ghost" size="sm">
     transition: transform 0.2s ease-in-out;
   }
 
-  .grid > div:hover {
+  .grid > div:hover {;
     transform: scale(1.05);
   }
 
@@ -629,15 +629,15 @@ processingLogs = []} variant="ghost" size="sm">
     scrollbar-color: #22c55e #000;
   }
 
-  .bg-black: :-webkit-scrollbar {
+  .bg-black::-webkit-scrollbar {
     width: 8px;
   }
 
-  .bg-black: :-webkit-scrollbar-track {
+  .bg-black::-webkit-scrollbar-track {
     background: #000;
   }
 
-  .bg-black: :-webkit-scrollbar-thumb {
+  .bg-black::-webkit-scrollbar-thumb {
     background: #22c55e;
     border-radius: 4px;
   }

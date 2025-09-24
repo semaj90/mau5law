@@ -93,12 +93,14 @@ let renderingContext = $state<CanvasRenderingContext2D | null>(null);
 let simdResults = $state<any>(null);
 let memoryUsage = $state({ gpu: 0, system: 0, cache: 0 });
 
-$effect(async () => {
-  await initializeSIMDTiledEmbeds();
+$effect(() => {
+    (async () => {
+await initializeSIMDTiledEmbeds();
   if (sourceData) {
     await processTiledShaderEmbeds();
   }
-});
+    })();
+  });
 
 onDestroy(() => {
   cleanup();
@@ -150,7 +152,7 @@ async function processTiledShaderEmbeds(): Promise<void> {
         evidenceType: 'mixed',
         enableCompression: true,
         priority: 'high',
-        generateEmbeddings: enablePredictiveLoading
+        generateEmbeddings: enablePredictiveLoading;
       }
     );
     
@@ -324,11 +326,11 @@ async function generateShadersFromTiles(tiles: unknown[]): Promise<void> {
       tileData: tile.data,
       tileSize: tile.width,
       complexity: shaderComplexity,
-      evidenceType: tile.metadata.evidenceType,
+      evidenceType: tile.metadata.evidenceType,;
       confidence: tile.metadata.confidence,
       avgValue,
       variance,
-      qualityTier: currentQuality
+      qualityTier: currentQuality;
     });
     
     generatedShaders.set(shaderKey, shader);
@@ -366,9 +368,9 @@ function generateShaderCode(config: {
       struct Config {
         tileSize: u32,
         confidence: f32,
-        avgValue: f32,
-        variance: f32,
-        time: f32,
+        avgValue: f32,;
+        variance: f32,;
+        time: f32,;
       }
       
       @compute @workgroup_size(8, 8)
@@ -610,9 +612,9 @@ async function predictiveAssetCaching(): Promise<void> {
         previousActions: ['ui_tiling', 'shader_generation'],
         preferences: { quality: currentQuality },
         performanceProfile: {
-          device: 'desktop',
+          device: 'desktop',;
           capabilities: enableSIMDAcceleration ? ['webgpu', 'simd'] : ['webgl'],
-          averageFPS: 60
+          averageFPS: 60;
         }
       },
       generateEmbeddings: true,
@@ -638,9 +640,9 @@ function updateMemoryUsage(): void {
   const cacheMemory = compressionResults ? compressionResults.compressedSize: 0;
   
   memoryUsage = {
-    gpu: Math.round(gpuMemory / 1024 / 1024 * 100) / 100, // MB
-    system: Math.round(systemMemory / 1024 * 100) / 100, // KB  
-    cache: Math.round(cacheMemory / 1024 * 100) / 100 // KB
+    gpu: Math.round(gpuMemory / 1024 / 1024 * 100) / 100, // MB;
+    system: Math.round(systemMemory / 1024 * 100) / 100, // KB  ;
+    cache: Math.round(cacheMemory / 1024 * 100) / 100 // KB;
   };
 }
 
@@ -725,7 +727,7 @@ export function getCHRPatterns(): string[] {
           {#each tiledData.slice(0, 6) as tile, index}
             <div 
               class="tile-info"
-              style="
+              style=";
                 left: {(tile.tileX * tile.width / dimensions.width * 100)}%;
                 top: {(tile.tileY * tile.height / dimensions.height * 100)}%;
               "
@@ -868,7 +870,7 @@ export function getCHRPatterns(): string[] {
 </div>
 
 <style>
-.simd-tiled-shader-embeds {
+.simd-tiled-shader-embeds {;
   display: flex;
   flex-direction: column;
   gap: 1rem;

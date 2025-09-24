@@ -41,18 +41,18 @@
     documentId: '',
     analysisType: 'semantic',
     priority: 'normal',
-    useGPU: true,
-    errors: []
+    useGPU: true,;
+    errors: [];
   });
   let selectedBankView = $state('RAM');
   let realTimeStats = $state(true);
 
-  $effect(async () => {
-    await initializeNESGPUBridge();
+  $effect(() => {
+    initializeNESGPUBridge();
     if (realTimeStats) {
       startRealtimeMonitoring();
     }
-    await loadProcessingHistory();
+    loadProcessingHistory();
   });
 
   async function initializeNESGPUBridge() {
@@ -97,7 +97,7 @@
         gpuUtilization: Math.max(0, Math.min(100, systemMetrics.gpuUtilization + (Math.random() - 0.5) * 10)),
         vectorProcessingRate: Math.max(0, systemMetrics.vectorProcessingRate + (Math.random() - 0.5) * 500),
         glyphCacheHitRate: glyphStats.cacheHitRate * 100,
-        bankSwitchingFreq: nesGPUMetrics.activeBankMappings ? Object.keys.length: 0,
+        bankSwitchingFreq: nesGPUMetrics.activeBankMappings ? Object.keys(errors).length: 0,
         chrRomPatterns: nesGPUMetrics.textureCacheSize
       };
 
@@ -148,7 +148,7 @@
         status: 'completed',
         progress: 100,
         startedAt: new Date(Date.now() - 3600000).toISOString(),
-        completedAt: new Date(Date.now() - 3300000).toISOString(),
+        completedAt: new Date(Date.now() - 3300000).toISOString(),;
         results: { confidence: 0.94, entities: 12, risks: 2 }
       },
       {
@@ -156,10 +156,10 @@
         documentId: 'evidence_2024_047',
         analysisType: 'entity_extraction',
         priority: 'normal',
-        status: 'completed',
+        status: 'completed',;
         progress: 100,
         startedAt: new Date(Date.now() - 7200000).toISOString(),
-        completedAt: new Date(Date.now() - 6900000).toISOString(),
+        completedAt: new Date(Date.now() - 6900000).toISOString(),;
         results: { confidence: 0.87, entities: 8, risks: 0 }
       }
     ];
@@ -169,12 +169,12 @@
         id: 'job_003',
         documentId: 'brief_2024_023',
         analysisType: 'precedent_matching',
-        priority: 'high',
-        status: 'processing',
+        priority: 'high',;
+        status: 'processing',;
         progress: 67,
         startedAt: new Date(Date.now() - 900000).toISOString(),
         bankId: 2,
-        gpuLayers: 23
+        gpuLayers: 23;
       }
     ];
   }
@@ -194,12 +194,12 @@
         id: `job_${Date.now()}`,
         documentId: newJobForm.documentId,
         analysisType: newJobForm.analysisType,
-        priority: newJobForm.priority,
-        status: 'queued',
+        priority: newJobForm.priority,;
+        status: 'queued',;
         progress: 0,
         createdAt: new Date().toISOString(),
         useGPU: newJobForm.useGPU,
-        bankId: newJobForm.useGPU ? Math.floor(Math.random() * 6) : null
+        bankId: newJobForm.useGPU ? Math.floor(Math.random() * 6) : null;
       };
 
       // Store in CHR-ROM pattern cache if high priority
@@ -215,9 +215,9 @@
         documentId: '',
         analysisType: 'semantic',
         priority: 'normal', 
-        useGPU: true,
+        useGPU: true,;
         errors: []
-
+;
     } catch (error) {
       console.error('Failed to submit job:', error);
       newJobForm.errors = { general: ['Failed to submit processing job'] };
@@ -572,7 +572,7 @@
             name="documentId"
             type="text"
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            placeholder="contract_2024_001"
+            placeholder="contract_2024_001";
             bind:value={newJobForm.documentId}
             required
           />
@@ -584,7 +584,7 @@
           </label>
           <select
             id="analysisType"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500";
             bind:value={newJobForm.analysisType}
           >
             <option value="semantic">Semantic Analysis</option>
@@ -601,7 +601,7 @@
           </label>
           <select
             id="priority"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500";
             bind:value={newJobForm.priority}
           >
             <option value="low">Low Priority</option>
@@ -614,7 +614,7 @@
           <input
             id="useGPU"
             type="checkbox"
-            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded";
             bind:checked={newJobForm.useGPU}
           />
           <label for="useGPU" class="ml-2 block text-sm text-gray-900">
@@ -650,4 +650,4 @@
       </form>
     </div>
   </div>
-</HeadlessDialog>
+</HeadlessDialog>;

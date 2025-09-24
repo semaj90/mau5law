@@ -32,7 +32,7 @@
       textColor: '#FFFFFF',
       borderColor: '#D3D3D3',
       fontFamily: '"Courier New", monospace'
-    },
+    },;
     snes: {
       bgColor: '#5A4FCF',
       accentColor: '#FF6B9D',
@@ -52,8 +52,8 @@
 
     try {
       const response = await fetch('/api/ai/phase4/prediction', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ caseId, consoleTheme })
       });
 
@@ -270,7 +270,7 @@
 </div>
 
 <style>
-  .prediction-display {
+  .prediction-display {;
     border: 3px solid;
     border-radius: 8px;
     padding: 1.5rem;

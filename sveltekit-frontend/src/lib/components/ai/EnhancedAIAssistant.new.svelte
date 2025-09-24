@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- Enhanced AI Assistant - Simplified Version -->
@@ -21,7 +21,7 @@ https://svelte.dev/e/attribute_duplicate -->
   let { maxHeight = $bindable()  }: { maxHeight = $bindable() : any } = $props(); // "400px";
   let { showReferences = $bindable()  }: { showReferences = $bindable() : any } = $props(); // true;
 
-  // TODO: Replace createEventDispatcher with callback props in Svelte 5
+
 
   // State
   let query = $state("");
@@ -48,7 +48,7 @@ https://svelte.dev/e/attribute_duplicate -->
     // Mock AI response
     setTimeout(() => {
       const aiResponse = {
-        role: "assistant",
+        role: "assistant",;
         content: `Based on your query about "${userMessage.content}", here's my analysis:
 
   This is a legal matter that requires careful consideration of relevant statutes, case law, and regulatory frameworks. The key factors to consider include:
@@ -58,17 +58,17 @@ https://svelte.dev/e/attribute_duplicate -->
   3. Statutory framework
   4. Regulatory compliance
 
-  I can provide more specific guidance if you share additional details about your case context.`,
+  I can provide more specific guidance if you share additional details about your case context.`,;
         references: [
           {
             title: "Relevant Case Law",
             citation: "Example v. Case, 123 F.3d 456 (2023)",
-            relevance: 0.9,
+            relevance: 0.9,;
           },
           {
-            title: "Statutory Reference",
-            citation: "42 U.S.C. § 1983",
-            relevance: 0.8,
+            title: "Statutory Reference",;
+            citation: "42 U.S.C. § 1983",;
+            relevance: 0.8,;
           },
         ],
       };
@@ -218,7 +218,7 @@ https://svelte.dev/e/attribute_duplicate -->
             id="max"
             type="number"
             min="1"
-            max="20"
+            max="20";
             bind:value={maxResults}
           />
         </div>
@@ -285,7 +285,7 @@ https://svelte.dev/e/attribute_duplicate -->
 
 <style>
   /* @unocss-include */
-  .ai-assistant {
+  .ai-assistant {;
     position: relative;
     border: 1px solid #e5e7eb;
     border-radius: 8px;

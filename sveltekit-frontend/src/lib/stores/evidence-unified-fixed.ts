@@ -62,7 +62,7 @@ export interface EvidenceStoreState {
 class UnifiedEvidenceStore {
   public store = writable<EvidenceStoreState>({
     evidence: [],
-    isLoading: false,
+    isLoading: false,;
     error: null,
     isConnected: false
   });
@@ -111,7 +111,7 @@ class UnifiedEvidenceStore {
       this.websocket.onopen = () => {
         this.store.update((s) => ({ ...s, isConnected: true });
         this.websocket?.send(JSON.stringify({
-            type: "subscribe",
+            type: "subscribe",;
             channels: ["evidence_update"]
           }),
         );
@@ -221,7 +221,7 @@ class UnifiedEvidenceStore {
     try {
       const response = await fetch("/api/evidence", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },;
         body: JSON.stringify({ ...newEvidenceData, caseId: currentCaseId })
       });
 
@@ -261,7 +261,7 @@ class UnifiedEvidenceStore {
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },;
         body: JSON.stringify(updates)
       });
 
@@ -275,7 +275,7 @@ class UnifiedEvidenceStore {
           ...s,
           evidence: s.evidence.map((e: any) =>
             e.id === evidenceId ? originalEvidence! : e,
-          ),
+          ),;
           error: error.message
         });
       }
@@ -306,7 +306,7 @@ class UnifiedEvidenceStore {
       if (originalEvidence) {
         this.store.update((s) => ({
           ...s,
-          evidence: [...s.evidence, originalEvidence!],
+          evidence: [...s.evidence, originalEvidence!],;
           error: error.message
         });
       }

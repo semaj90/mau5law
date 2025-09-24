@@ -36,7 +36,7 @@ export interface AcceleratedAnalysisRequest {
 
 export interface AcceleratedAnalysisResult {
   similarities: LegalSimilarityResult[];
-  recommendations: Array<{
+  recommendations: Array<{;
     type: 'case_similarity' | 'evidence_match' | 'risk_assessment' | 'legal_precedent';
     confidence: number;
     description: string;
@@ -246,7 +246,7 @@ export class AcceleratedLegalAssistant {
           results.push({
             queryIndex: qIdx,
             documentIndex: result.index,
-            similarity: result.similarity,
+            similarity: result.similarity,;
             confidence: result.confidence,
             riskAssessment: 1.0 - result.confidence // Inverse relationship
           });
@@ -260,7 +260,7 @@ export class AcceleratedLegalAssistant {
   private async generateRecommendations(
     similarities: LegalSimilarityResult[],
     caseDocuments: any[],
-    evidenceDocuments: any[],
+    evidenceDocuments: any[],;
     options: any;
   ): Promise<AcceleratedAnalysisResult['recommendations']> {
     const recommendations: AcceleratedAnalysisResult['recommendations'] = [];
@@ -272,7 +272,7 @@ export class AcceleratedLegalAssistant {
       if (document) {
         recommendations.push({
           type: match.similarity > 0.8 ? 'legal_precedent' : 'evidence_match',
-          confidence: match.confidence,
+          confidence: match.confidence,;
           description: `High similarity match: "${document.title}" (${(match.similarity * 100).toFixed(1)}% similarity)`,
           documentId: document.id,
           relevanceScore: match.similarity,
@@ -288,7 +288,7 @@ export class AcceleratedLegalAssistant {
       if (document) {
         recommendations.push({
           type: 'risk_assessment',
-          confidence: 1.0 - riskMatch.riskAssessment,
+          confidence: 1.0 - riskMatch.riskAssessment,;
           description: `Risk factor identified in "${document.title}" - requires attention`,
           documentId: document.id,
           relevanceScore: riskMatch.similarity,
@@ -326,7 +326,7 @@ export class AcceleratedLegalAssistant {
   ): AcceleratedAnalysisResult['riskAssessment'] {
     const riskThresholds = {
       low: 0.3,
-      medium: 0.5,
+      medium: 0.5,;
       high: 0.7
     };
 

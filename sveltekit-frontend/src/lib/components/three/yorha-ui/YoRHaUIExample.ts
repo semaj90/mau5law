@@ -157,7 +157,7 @@ export class YoRHaUIExample {
       showCloseButton: false,
       glow: {
         enabled: true,
-        color: YORHA_COLORS.accent.gold,
+        color: YORHA_COLORS.accent.gold,;
         intensity: 0.3
       }
     });
@@ -169,7 +169,7 @@ export class YoRHaUIExample {
     // System status indicators;
     const statusButton = new YoRHaButton3D({
       text: 'System Status: OPERATIONAL',
-      variant: 'ghost',
+      variant: 'ghost',;
       size: 'small',
       textColor: YORHA_COLORS.status.success
     });
@@ -177,7 +177,7 @@ export class YoRHaUIExample {
     const settingsButton = new YoRHaButton3D({
       text: 'Settings',
       variant: 'secondary',
-      size: 'small',
+      size: 'small',;
       icon: 'gear'
     });
 
@@ -194,7 +194,7 @@ export class YoRHaUIExample {
       variant: 'default',
       width: 8,
       height: 4.5,
-      scrollable: true,
+      scrollable: true,;
       resizable: true
     });
 
@@ -209,7 +209,7 @@ export class YoRHaUIExample {
       size: 'medium',
       icon: 'user',
       iconPosition: 'left',
-      clearable: true,
+      clearable: true,;
       width: 6
     });
 
@@ -219,7 +219,7 @@ export class YoRHaUIExample {
       variant: 'outlined',
       size: 'medium',
       icon: 'lock',
-      iconPosition: 'left',
+      iconPosition: 'left',;
       width: 6
     });
 
@@ -230,7 +230,7 @@ export class YoRHaUIExample {
       size: 'medium',
       icon: 'email',
       iconPosition: 'left',
-      clearable: true,
+      clearable: true,;
       width: 6
     });
 
@@ -239,7 +239,7 @@ export class YoRHaUIExample {
       variant: 'filled',
       multiline: true,
       rows: 3,
-      maxLength: 500,
+      maxLength: 500,;
       width: 6
     });
 
@@ -265,21 +265,21 @@ export class YoRHaUIExample {
     const submitButton = new YoRHaButton3D({
       text: 'Execute Command',
       variant: 'primary',
-      size: 'large',
+      size: 'large',;
       icon: 'play',
       iconPosition: 'left'
     });
 
     const cancelButton = new YoRHaButton3D({
       text: 'Abort',
-      variant: 'danger',
+      variant: 'danger',;
       size: 'large'
     });
 
     const helpButton = new YoRHaButton3D({
       text: 'System Manual',
       variant: 'secondary',
-      size: 'medium',
+      size: 'medium',;
       icon: 'help'
     });
 
@@ -312,7 +312,7 @@ export class YoRHaUIExample {
       rounded: true,
       glow: {
         enabled: true,
-        color: YORHA_COLORS.accent.gold,
+        color: YORHA_COLORS.accent.gold,;
         intensity: 0.5
       }
     });
@@ -332,7 +332,7 @@ export class YoRHaUIExample {
     this.modal = new YoRHaModal3D({
       title: 'Command Execution',
       variant: 'confirm',
-      size: 'medium',
+      size: 'medium',;
       closable: true,
       showHeader: true,
       showFooter: true
@@ -343,19 +343,19 @@ export class YoRHaUIExample {
     
     const messagePanel = new YoRHaPanel3D({
       variant: 'glass',
-      width: 4,
+      width: 4,;
       height: 1.5
     });
 
     const confirmButton = new YoRHaButton3D({
       text: 'Confirm Execution',
-      variant: 'primary',
+      variant: 'primary',;
       size: 'medium'
     });
 
     const cancelButton = new YoRHaButton3D({
       text: 'Cancel',
-      variant: 'secondary',
+      variant: 'secondary',;
       size: 'medium'
     });
 
@@ -389,7 +389,7 @@ export class YoRHaUIExample {
     this.modal = new YoRHaModal3D({
       title: 'Abort Operation',
       variant: 'alert',
-      size: 'small',
+      size: 'small',;
       closable: true
     });
 
@@ -397,7 +397,7 @@ export class YoRHaUIExample {
     
     const confirmButton = new YoRHaButton3D({
       text: 'Abort',
-      variant: 'danger',
+      variant: 'danger',;
       size: 'medium'
     });
 
@@ -423,7 +423,7 @@ export class YoRHaUIExample {
     this.modal = new YoRHaModal3D({
       title: 'System Documentation',
       variant: 'terminal',
-      size: 'large',
+      size: 'large',;
       closable: true
     });
 
@@ -431,7 +431,7 @@ export class YoRHaUIExample {
     
     const helpPanel = new YoRHaPanel3D({
       variant: 'terminal',
-      width: 6,
+      width: 6,;
       height: 4
     });
 
@@ -453,7 +453,7 @@ export class YoRHaUIExample {
     this.modal = new YoRHaModal3D({
       title: 'Command Executed Successfully',
       variant: 'default',
-      size: 'medium',
+      size: 'medium',;
       closable: true
     });
 

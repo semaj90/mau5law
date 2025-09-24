@@ -222,7 +222,7 @@ Automatically handles server upload with localStorage fallback
   </div>
 
   <!-- Hidden file input -->
-  <input
+  <input;
     bind:this={fileInput}
     type="file"
     {accept}

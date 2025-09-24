@@ -1,98 +1,98 @@
 // SvelteKit HTTP Streaming Chat Proxy for CUDA GPU Server Integration
 // Bridges frontend to CUDA server with PostgreSQL persistence and vector embeddings
-import { json } from '@sveltejs/kit';
-import { readBodyFast } from '$lib/server/utils/json-fast';
-import { randomUUID } from 'crypto';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/db/client';
-import { chatSessions, chatMessages } from '$lib/server/db/schema-unified';
-import type { InferInsertModel } from 'drizzle-orm';
-import { eq, desc } from 'drizzle-orm';
-import { buildUserContextPrompt } from '$lib/server/prompt/contextual-engine';
+import { json } from '@sveltejs/kit'
+import { readBodyFast } from '$lib/server/utils/json-fast'
+import { randomUUID } from 'crypto'
+import type { RequestHandler } from './$types.js'
+import { db } from '$lib/server/db/client'
+import { chatSessions, chatMessages } from '$lib/server/db/schema-unified'
+import type { InferInsertModel } from 'drizzle-orm'
+import { eq, desc } from 'drizzle-orm'
+import { buildUserContextPrompt } from '$lib/server/prompt/contextual-engine'
 
 // Type aliases for insert operations
-type NewChatSession = InferInsertModel<typeof chatSessions>;
-type NewChatMessage = InferInsertModel<typeof chatMessages>;
+type NewChatSession = InferInsertModel<typeof chatSessions>
+type NewChatMessage = InferInsertModel<typeof chatMessages>
 // Local ID helper to avoid missing import issues
-const generateId = () => randomUUID();
+const generateId = () => randomUUID()
 
-const CUDA_SERVER_URL = 'http://localhost:8096';
-const TRITON_SERVER_URL = 'http://localhost:8000';
-const ENHANCED_GRPO_ENDPOINT = '/api/v1/submit';
-const TRITON_ENDPOINT = '/generate';
+const CUDA_SERVER_URL = 'http://localhost:8096'
+const TRITON_SERVER_URL = 'http://localhost:8000'
+const ENHANCED_GRPO_ENDPOINT = '/api/v1/submit'
+const TRITON_ENDPOINT = '/generate'
 
 interface ChatRequest {
-  messages: Array<any>;
-  sessionId?: string;
-  model?: string;
-  stream?: boolean;
-  useProfile?: boolean;
+  messages: Array<any>
+  sessionId?: string
+  model?: string
+  stream?: boolean
+  useProfile?: boolean
 }
 
 interface CudaStreamResponse {
-  success: boolean;
-  response: string;
-  confidence: number;
-  tokensPerSecond: number;
-  vectorSimilarity?: number;
-  grpoScore?: number;
-  reasoning?: string;
-  recommendations?: string[];
+  success: boolean
+  response: string
+  confidence: number
+  tokensPerSecond: number
+  vectorSimilarity?: number
+  grpoScore?: number
+  reasoning?: string
+  recommendations?: string[]
 }
 
-// GET: Retrieve chat session messages;
+// GET: Retrieve chat session messages
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
-    const sessionId = url.searchParams.get('sessionId');
+    const sessionId = url.searchParams.get('sessionId')
 
     if (!sessionId) {
-      return json({ error: 'Session ID required' }, { status: 400 });
+      return json({ error: 'Session ID required' }, { status: 400 })
     }
 
-    // Get chat session;
+    // Get chat session
     const session = await db.query.chatSessions.findFirst({
       where: eq(chatSessions.id, sessionId)
-    });
+    })
 
     if (!session) {
-      return json({ error: 'Session not found' }, { status: 404 });
+      return json({ error: 'Session not found' }, { status: 404 })
     }
 
-    // Get messages for session;
+    // Get messages for session
     const messages = await db.query.chatMessages.findMany({
       where: eq(chatMessages.sessionId, sessionId),
       orderBy: [desc(chatMessages.timestamp)]
-    });
+    })
 
     return json({
       session,
       messages: messages.reverse(), // Return in chronological order
-    });
+    })
   } catch (error) {
-    console.error('Error retrieving chat session:', error);
-    return json({ error: 'Failed to retrieve chat session' }, { status: 500 });
+    console.error('Error retrieving chat session:', error)
+    return json({ error: 'Failed to retrieve chat session' }, { status: 500 })
   }
-};
+}
 
-// POST: Handle streaming chat with CUDA server integration;
+// POST: Handle streaming chat with CUDA server integration
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    const body: ChatRequest = await readBodyFast(request);
-    const { messages, sessionId, model = 'gemma3-legal', stream = true, useProfile = true } = body;
+    const body: ChatRequest = await readBodyFast(request)
+    const { messages, sessionId, model = 'gemma3-legal', stream = true, useProfile = true } = body
 
     if (!messages || messages.length === 0) {
-      return json({ error: 'Messages array required' }, { status: 400 });
+      return json({ error: 'Messages array required' }, { status: 400 })
     }
 
-    const lastUserMessage = messages.filter((msg) => msg.role === 'user').pop();
+    const lastUserMessage = messages.filter((msg) => msg.role === 'user').pop()
     if (!lastUserMessage) {
-      return json({ error: 'No user message found' }, { status: 400 });
+      return json({ error: 'No user message found' }, { status: 400 })
     }
 
     // Get or create chat session
-    let currentSessionId = sessionId;
+    let currentSessionId = sessionId
     if (!currentSessionId) {
-      currentSessionId = generateId();
+      currentSessionId = generateId()
       const newSession: NewChatSession = {
         id: currentSessionId,
         userId: (locals.user as any)?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747',
@@ -103,28 +103,28 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           userAgent: request.headers.get('user-agent'),
           messageCount: 0
         }
-      };
-      await db.insert(chatSessions).values(newSession);
+      }
+      await db.insert(chatSessions).values(newSession)
     }
 
     // Store user message in database
-    const userMessageId = generateId();
+    const userMessageId = generateId()
     const newUserMessage: NewChatMessage = {
       id: userMessageId,
       sessionId: currentSessionId,
       content: lastUserMessage.content,
       role: 'user',
-      embedding: null, // Will be populated by embedding worker later;
+      embedding: null, // Will be populated by embedding worker later
       metadata: {
         model,
         userId: (locals.user as any)?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747'
       }
-    };
-    await db.insert(chatMessages).values(newUserMessage);
+    }
+    await db.insert(chatMessages).values(newUserMessage)
 
     // Update session with new message count in metadata
     await db
-      .update(chatSessions);
+      .update(chatSessions)
       .set({
         metadata: {
           model,
@@ -133,32 +133,32 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         },
         updatedAt: new Date()
       })
-      .where(eq(chatSessions.id, currentSessionId);
+      .where(eq(chatSessions.id, currentSessionId)
 
     if (!stream) {
       // Non-streaming response
-      const personalization = useProfile;
+      const personalization = useProfile
         ? await buildUserContextPrompt((locals.user as any)?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747', {
             jurisdictionHint: true,
             practiceAreasHint: true,
             tone: 'concise'
           })
-        : '';
+        : ''
       const enrichedQuery = personalization
         ? `${personalization}\n\nUser: ${lastUserMessage.content}`
-        : lastUserMessage.content;
+        : lastUserMessage.content
 
-      let cudaResponse: CudaStreamResponse;
+      let cudaResponse: CudaStreamResponse
       try {
         // Try CUDA server first
-        cudaResponse = await fetchCudaResponse(enrichedQuery, false);
+        cudaResponse = await fetchCudaResponse(enrichedQuery, false)
       } catch (cudaError) {
-        console.log('🔄 CUDA failed, trying Triton server...');
+        console.log('🔄 CUDA failed, trying Triton server...')
         try {
           // Fallback to Triton server
-          cudaResponse = await fetchTritonResponse(enrichedQuery);
+          cudaResponse = await fetchTritonResponse(enrichedQuery)
         } catch (tritonError) {
-          console.error('❌ Both CUDA and Triton failed:', tritonError);
+          console.error('❌ Both CUDA and Triton failed:', tritonError)
           // Final fallback
           cudaResponse = {
             success: false,
@@ -167,18 +167,18 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             tokensPerSecond: 0,
             reasoning: 'All AI services offline',
             recommendations: ['Try again later when services are restored']
-          };
+          }
         }
       }
 
       // Store AI response in database
-      const aiMessageId = generateId();
+      const aiMessageId = generateId()
       const newAiMessage: NewChatMessage = {
         id: aiMessageId,
         sessionId: currentSessionId,
         content: cudaResponse.response,
         role: 'assistant',
-        embedding: null, // Will be populated by embedding worker later;
+        embedding: null, // Will be populated by embedding worker later
         metadata: {
           model,
           confidence: cudaResponse.confidence,
@@ -188,8 +188,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           reasoning: cudaResponse.reasoning,
           recommendations: cudaResponse.recommendations
         }
-      };
-      await db.insert(chatMessages).values(newAiMessage);
+      }
+      await db.insert(chatMessages).values(newAiMessage)
 
       return json({
         sessionId: currentSessionId,
@@ -197,41 +197,41 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         confidence: cudaResponse.confidence,
         tokensPerSecond: cudaResponse.tokensPerSecond,
         metadata: newAiMessage.metadata
-      });
+      })
     }
 
-    // HTTP Streaming response (preferred for AI chat);
+    // HTTP Streaming response (preferred for AI chat)
     const readable = new ReadableStream({
       async start(controller) {
         try {
-          let fullResponse = '';
-          let confidence = 0;
-          let tokensPerSecond = 0;
-          let metadata: any = {};
-          let aiMessageId = generateId();
+          let fullResponse = ''
+          let confidence = 0
+          let tokensPerSecond = 0
+          let metadata: any = {}
+          let aiMessageId = generateId()
 
-          // Send initial session info;
+          // Send initial session info
           const sessionInfo = {
             type: 'session',
             sessionId: currentSessionId,
             model,
             timestamp: new Date().toISOString()
-          };
-          controller.enqueue(`data: ${JSON.stringify(sessionInfo)}\n\n`);
+          }
+          controller.enqueue(`data: ${JSON.stringify(sessionInfo)}\n\n`)
 
           // Build contextual query again in stream scope
-          const personalization = useProfile;
+          const personalization = useProfile
             ? await buildUserContextPrompt((locals.user as any)?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747', {
                 jurisdictionHint: true,
                 practiceAreasHint: true,
                 tone: 'concise'
               })
-            : '';
+            : ''
           const enrichedQuery = personalization
             ? `${personalization}\n\nUser: ${lastUserMessage.content}`
-            : lastUserMessage.content;
+            : lastUserMessage.content
 
-          // Stream from CUDA server;
+          // Stream from CUDA server
           const response = await fetch(`${CUDA_SERVER_URL}${ENHANCED_GRPO_ENDPOINT}`, {
             method: 'POST',
             headers: {
@@ -249,87 +249,87 @@ export const POST: RequestHandler = async ({ request, locals }) => {
                 stream: true
               }
             })
-          });
+          })
 
           if (!(response as { ok?: any; status?: any; body?: any }).ok) {
-            throw new Error(`CUDA server error: ${(response as { ok?: any; status?: any; body?: any }).status}`);
+            throw new Error(`CUDA server error: ${(response as { ok?: any; status?: any; body?: any }).status}`)
           }
 
-          const reader = (response as { ok?: any; status?: any; body?: any }).body?.getReader();
+          const reader = (response as { ok?: any; status?: any; body?: any }).body?.getReader()
           if (!reader) {
-            throw new Error('No response body from CUDA server');
+            throw new Error('No response body from CUDA server')
           }
 
-          const decoder = new TextDecoder();
-          let buffer = '';
+          const decoder = new TextDecoder()
+          let buffer = ''
 
           while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
+            const { done, value } = await reader.read()
+            if (done) break
 
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split('\n');
-            buffer = lines.pop() || '';
+            buffer += decoder.decode(value, { stream: true })
+            const lines = buffer.split('\n')
+            buffer = lines.pop() || ''
 
             for (const line of lines) {
               if (line.startsWith('data: ')) {
-                const data = line.slice(6);
+                const data = line.slice(6)
                 if (data === '[DONE]') {
-                  continue;
+                  continue
                 }
 
                 try {
-                  const parsed = JSON.parse(data);
+                  const parsed = JSON.parse(data)
 
                   if (parsed.type === 'token') {
-                    fullResponse += parsed.content;
+                    fullResponse += parsed.content
                     // Forward token to client
-                    controller.enqueue(`data: ${data}\n\n`);
+                    controller.enqueue(`data: ${data}\n\n`)
                   } else if (parsed.type === 'metrics') {
-                    confidence = parsed.confidence || confidence;
-                    tokensPerSecond = parsed.tokensPerSecond || tokensPerSecond;
+                    confidence = parsed.confidence || confidence
+                    tokensPerSecond = parsed.tokensPerSecond || tokensPerSecond
                     metadata = {
                       ...metadata,
                       vectorSimilarity: parsed.vectorSimilarity,
                       grpoScore: parsed.grpoScore,
                       reasoning: parsed.reasoning,
                       recommendations: parsed.recommendations
-                    };
+                    }
                     // Forward metrics to client
-                    controller.enqueue(`data: ${data}\n\n`);
+                    controller.enqueue(`data: ${data}\n\n`)
                   } else if (parsed.type === 'complete') {
                     metadata = {
                       ...metadata,
                       ...parsed.metadata
-                    };
+                    }
                   }
                 } catch (parseError) {
-                  console.warn('Failed to parse streaming data:', data);
+                  console.warn('Failed to parse streaming data:', data)
                 }
               }
             }
           }
 
-          // Store complete AI response in database;
+          // Store complete AI response in database
           if (fullResponse) {
             const newAiMessage: NewChatMessage = {
               id: aiMessageId,
               sessionId: currentSessionId,
               content: fullResponse,
               role: 'assistant',
-              embedding: null, // Will be populated by embedding worker later;
+              embedding: null, // Will be populated by embedding worker later
               metadata: {
                 model,
                 confidence,
                 tokensPerSecond,
                 ...metadata
               }
-            };
-            await db.insert(chatMessages).values(newAiMessage);
+            }
+            await db.insert(chatMessages).values(newAiMessage)
 
             // Update session message count in metadata
             await db
-              .update(chatSessions);
+              .update(chatSessions)
               .set({
                 metadata: {
                   model,
@@ -338,10 +338,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
                 },
                 updatedAt: new Date()
               })
-              .where(eq(chatSessions.id, currentSessionId);
+              .where(eq(chatSessions.id, currentSessionId)
           }
 
-          // Send completion signal;
+          // Send completion signal
           const completion = {
             type: 'complete',
             sessionId: currentSessionId,
@@ -350,21 +350,21 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             confidence,
             tokensPerSecond,
             metadata
-          };
-          controller.enqueue(`data: ${JSON.stringify(completion)}\n\n`);
-          controller.enqueue(`data: [DONE]\n\n`);
+          }
+          controller.enqueue(`data: ${JSON.stringify(completion)}\n\n`)
+          controller.enqueue(`data: [DONE]\n\n`)
         } catch (error) {
-          console.error('Streaming error:', error);
+          console.error('Streaming error:', error)
           const errorMessage = {
             type: 'error',
             error: error instanceof Error ? error.message: 'Unknown streaming error'
-          };
-          controller.enqueue(`data: ${JSON.stringify(errorMessage)}\n\n`);
+          }
+          controller.enqueue(`data: ${JSON.stringify(errorMessage)}\n\n`)
         } finally {
-          controller.close();
+          controller.close()
         }
       }
-    });
+    })
 
     return new Response(readable, {
       headers: {
@@ -375,22 +375,22 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         'Access-Control-Allow-Headers': 'Content-Type',
         'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
       }
-    });
+    })
   } catch (error) {
-    console.error('Chat API error:', error);
+    console.error('Chat API error:', error)
     return json({
         error: 'Failed to process chat request',
         details: error instanceof Error ? error.message: 'Unknown error'
       },)
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 // Helper function for Triton server requests (AWQ4 fallback)
 async function fetchTritonResponse(query: string): Promise<CudaStreamResponse> {
   try {
-    console.log('🚀 Trying Triton server fallback:', TRITON_SERVER_URL);
+    console.log('🚀 Trying Triton server fallback:', TRITON_SERVER_URL)
     const response = await fetch(`${TRITON_SERVER_URL}${TRITON_ENDPOINT}`, {
       method: 'POST',
       headers: {
@@ -402,13 +402,13 @@ async function fetchTritonResponse(query: string): Promise<CudaStreamResponse> {
         temperature: 0.3
       }),
       signal: AbortSignal.timeout(30000)
-    });
+    })
 
     if (!response.ok) {
-      throw new Error(`Triton server error: ${response.status}`);
+      throw new Error(`Triton server error: ${response.status}`)
     }
 
-    const result = await response.json();
+    const result = await response.json()
     return {
       success: true,
       response: result.text || result.response || 'Generated response from Triton',
@@ -418,16 +418,16 @@ async function fetchTritonResponse(query: string): Promise<CudaStreamResponse> {
       grpoScore: 0.85,
       reasoning: 'Triton Flash Attention with AWQ4 quantization',
       recommendations: ['Using Gemma3 AWQ4 model via Triton']
-    };
+    }
   } catch (error) {
-    console.error('❌ Triton server failed:', error);
-    throw error;
+    console.error('❌ Triton server failed:', error)
+    throw error
   }
 }
 
-// Helper function for non-streaming CUDA requests;
+// Helper function for non-streaming CUDA requests
 async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaStreamResponse> {
-  // Submit task to CUDA service;
+  // Submit task to CUDA service
   const submitResponse = await fetch(`${CUDA_SERVER_URL}${ENHANCED_GRPO_ENDPOINT}`, {
     method: 'POST',
     headers: {
@@ -443,38 +443,38 @@ async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaSt
         stream
       }
     })
-  });
+  })
 
   if (!submitResponse.ok) {
-    throw new Error(`CUDA server error: ${submitResponse.status}`);
+    throw new Error(`CUDA server error: ${submitResponse.status}`)
   }
 
-  const submitData = await submitResponse.json();
-  const taskId = submitData.task_id;
+  const submitData = await submitResponse.json()
+  const taskId = submitData.task_id
 
   if (!taskId) {
-    throw new Error('No task ID returned from CUDA service');
+    throw new Error('No task ID returned from CUDA service')
   }
 
   // Poll for result (simple polling for now)
-  let attempts = 0;
+  let attempts = 0
   const maxAttempts = 30; // 30 seconds max wait
 
   while (attempts < maxAttempts) {
     await new Promise((resolve) => setTimeout(resolve, 1000); // Wait 1 second
-    attempts++;
+    attempts++
 
-    const resultResponse = await fetch(`${CUDA_SERVER_URL}/api/v1/result/${taskId}`);
+    const resultResponse = await fetch(`${CUDA_SERVER_URL}/api/v1/result/${taskId}`)
 
     if (!resultResponse.ok) {
       continue; // Keep trying
     }
 
-    const resultData = await resultResponse.json();
+    const resultData = await resultResponse.json()
 
     if (resultData.completed_at && resultData.result) {
       // Task completed successfully
-      const result = resultData.result;
+      const result = resultData.result
       return {
         success: true,
         response: (result as { text?: any; tokens_per_second?: any }).text || 'Generated response',
@@ -484,20 +484,20 @@ async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaSt
         grpoScore: 0.9, // Mock GRPO score
         reasoning: 'CUDA GPU inference completed',
         recommendations: ['Response generated using RTX 3060 Ti']
-      };
+      }
     }
 
     if (resultData.error) {
-      throw new Error(`CUDA task failed: ${resultData.error}`);
+      throw new Error(`CUDA task failed: ${resultData.error}`)
     }
 
     // Task is still processing, continue polling
   }
 
-  throw new Error('CUDA task timed out');
+  throw new Error('CUDA task timed out')
 }
 
-// OPTIONS: CORS preflight;
+// OPTIONS: CORS preflight
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {
     status: 200,
@@ -507,27 +507,27 @@ export const OPTIONS: RequestHandler = async () => {
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       'Access-Control-Max-Age': '86400'
     }
-  });
-};
+  })
+}
 
-// DELETE: Delete chat session;
+// DELETE: Delete chat session
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
-    const sessionId = url.searchParams.get('sessionId');
+    const sessionId = url.searchParams.get('sessionId')
 
     if (!sessionId) {
-      return json({ error: 'Session ID required' }, { status: 400 });
+      return json({ error: 'Session ID required' }, { status: 400 })
     }
 
     // Delete all messages in session
-    await db.delete(chatMessages).where(eq(chatMessages.sessionId, sessionId);
+    await db.delete(chatMessages).where(eq(chatMessages.sessionId, sessionId)
 
     // Delete session
-    await db.delete(chatSessions).where(eq(chatSessions.id, sessionId);
+    await db.delete(chatSessions).where(eq(chatSessions.id, sessionId)
 
-    return json({ success: true, sessionId });
+    return json({ success: true, sessionId })
   } catch (error) {
-    console.error('Error deleting chat session:', error);
-    return json({ error: 'Failed to delete chat session' }, { status: 500 });
+    console.error('Error deleting chat session:', error)
+    return json({ error: 'Failed to delete chat session' }, { status: 500 })
   }
-};
+}

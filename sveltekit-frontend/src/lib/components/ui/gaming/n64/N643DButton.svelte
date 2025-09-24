@@ -74,7 +74,7 @@
     class: className = '',
     onClick,
     onHover,
-    onFocus
+    onFocus;
   }: Props = $props();
 
   // Events now handled via props in Svelte 5
@@ -251,7 +251,7 @@
       secondary: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' },
       success: { base: '#28a745', highlight: '#48c662', shadow: '#1e7e34' },
       warning: { base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00' },
-      error: { base: '#dc3545', highlight: '#e85563', shadow: '#c82333' },
+      error: { base: '#dc3545', highlight: '#e85563', shadow: '#c82333' },;
       info: { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496' }
     };
 
@@ -271,7 +271,7 @@
           0 8px 16px rgba(0,0,0,0.3)
         `
       },
-      pbr: {
+      pbr: {;
         background: `
           linear-gradient(145deg, ${colors.highlight} 0%, ${colors.base} 30%, ${colors.shadow} 70%, ${colors.base} 100%),
           radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0%, transparent 50%)
@@ -293,7 +293,7 @@
     const sizeMap = {
       small: { padding: '12px 20px', fontSize: '12px', minHeight: '40px' },
       medium: { padding: '16px 24px', fontSize: '14px', minHeight: '48px' },
-      large: { padding: '20px 28px', fontSize: '16px', minHeight: '56px' },
+      large: { padding: '20px 28px', fontSize: '16px', minHeight: '56px' },;
       xl: { padding: '24px 32px', fontSize: '18px', minHeight: '64px' }
     };
     return sizeMap[size as keyof typeof sizeMap] || sizeMap.medium;
@@ -352,7 +352,7 @@
   onfocus={handleFocus}
   onblur={handleBlur}
   class="n64-3d-button {className} {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
-  style="
+  style=";
     --material-bg: {materialStyles.background};
     --material-shadow: {materialStyles.boxShadow};
     --button-padding: {sizeStyles.padding};
@@ -543,7 +543,7 @@ box-shadow: var(--material-shadow), 0 0 20px rgba(255, 255, 255, calc(var(--glow
   :global(.n64-3d-button.anisotropic-16x) {
     filter: sharpen(0.8px) contrast(1.08) brightness(1.02);
   }
-/* Fog effects */ :global(.n64-3d-button: :before) {
+/* Fog effects */ :global(.n64-3d-button::before) {
     content: '';
     position: absolute;
     top: 0;
@@ -565,7 +565,7 @@ background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040)
       display: none;
     }
     
-    :global(.n64-3d-button: :before) {
+    :global(.n64-3d-button::before) {
       display: none;
     }
   }
@@ -595,7 +595,7 @@ background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040)
       transform: none;
       box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3);
     }
-.lighting-overlay, .reflection-overlay, :global(.n64-3d-button: :before) {
+.lighting-overlay, .reflection-overlay, :global(.n64-3d-button::before) {
       display: none;
     }
   }

@@ -12,7 +12,7 @@ export const POST: RequestHandler = async ({ cookies }) => {
     // Create session cookie manually;
     cookies.set('auth-session', sessionId, {
       path: '/',
-      httpOnly: true,
+      httpOnly: true,;
       secure: false, // dev mode
       sameSite: 'strict',
       maxAge: 60 * 60 * 24 * 7 // 7 days
@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ cookies }) => {
       message: 'Test session created without database',
       redirectTo: '/dashboard'
     }), { 
-      status: 200,
+      status: 200,;
       headers: { 'Content-Type': 'application/json' }
     });
   } catch (error: any) {
@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ cookies }) => {
     return new Response(JSON.stringify({ 
       error: 'Test failed: ' + (error instanceof Error ? error.message: 'Unknown error')
     }), { 
-      status: 500,
+      status: 500,;
       headers: { 'Content-Type': 'application/json' }
     });
   }

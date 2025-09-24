@@ -4,49 +4,49 @@
  * POST /api/v1/evidence - Create new evidence
  */
 
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import { EvidenceCRUDService, CreateEvidenceSchema, type CreateEvidenceData } from '$lib/server/services/user-scoped-crud';
-import { queueEvidenceAnalysis } from '$lib/server/services/background-job-queue';
-import { z } from 'zod';
+import { json, error, type RequestHandler } from '@sveltejs/kit'
+import { EvidenceCRUDService, CreateEvidenceSchema, type CreateEvidenceData } from '$lib/server/services/user-scoped-crud'
+import { queueEvidenceAnalysis } from '$lib/server/services/background-job-queue'
+import { z } from 'zod'
 
-// Query parameters schema for GET requests;
+// Query parameters schema for GET requests
 const EvidenceQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(100).default(20),
   caseId: z.string().uuid().optional(),
   evidenceType: z.string().optional(),
   isPublic: z.coerce.boolean().optional()
-});
+})
 
 /*
  * GET /api/v1/evidence
  * List user's evidence with pagination and filtering
- */;
+ */
 export const GET: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication;
+    // Check authentication
     if (!locals.session || !locals.user) {
-      return json({ message: 'Authentication required', code: 'AUTH_REQUIRED' }, { status: 401 });
+      return json({ message: 'Authentication required', code: 'AUTH_REQUIRED' }, { status: 401 })
     }
 
     // Parse query parameters
-    const url = new URL(request.url);
-    const queryParams = Object.fromEntries(url.searchParams.entries();
-    const validatedQuery = EvidenceQuerySchema.parse(queryParams);
+    const url = new URL(request.url)
+    const queryParams = Object.fromEntries(url.searchParams.entries()
+    const validatedQuery = EvidenceQuerySchema.parse(queryParams)
 
     // Create service instance
-    const evidenceService = new EvidenceCRUDService(locals.user.id);
+    const evidenceService = new EvidenceCRUDService(locals.user.id)
 
     // Get evidence with pagination - filter by case if specified
-    const result = validatedQuery.caseId;
+    const result = validatedQuery.caseId
       ? await evidenceService.listByCase(validatedQuery.caseId, {
           page: validatedQuery.page,
           limit: validatedQuery.limit
-        });
+        })
       : await evidenceService.list({
           page: validatedQuery.page,
           limit: validatedQuery.limit
-        });
+        })
 
     return json({
       success: true,
@@ -74,60 +74,60 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         caseId: validatedQuery.caseId || null,
         timestamp: new Date().toISOString()
       }
-    });
+    })
   } catch (err: any) {
-    console.error('Error fetching evidence:', err);
+    console.error('Error fetching evidence:', err)
 
     if (err instanceof z.ZodError) {
       return json(
         { message: 'Invalid query parameters', code: 'INVALID_QUERY', details: err.errors },)
         { status: 400 }
-      );
+      )
     }
     if (err?.message?.includes('not found') || err?.message?.includes('access denied')) {
-      return json({ message: err.message, code: 'ACCESS_DENIED' }, { status: 403 });
+      return json({ message: err.message, code: 'ACCESS_DENIED' }, { status: 403 })
     }
     return json(
       { message: 'Failed to fetch evidence', code: 'FETCH_FAILED', details: err?.message },)
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 /*
  * POST /api/v1/evidence
  * Create new evidence
- */;
+ */
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication;
+    // Check authentication
     if (!locals.session || !locals.user) {
-      return json({ message: 'Authentication required', code: 'AUTH_REQUIRED' }, { status: 401 });
+      return json({ message: 'Authentication required', code: 'AUTH_REQUIRED' }, { status: 401 })
     }
 
     // Parse request body
-    const body = await request.json();
-    const validatedData = CreateEvidenceSchema.parse(body) as CreateEvidenceData;
+    const body = await request.json()
+    const validatedData = CreateEvidenceSchema.parse(body) as CreateEvidenceData
 
     // Create service instance
-    const evidenceService = new EvidenceCRUDService(locals.user.id);
+    const evidenceService = new EvidenceCRUDService(locals.user.id)
 
     // Create evidence
-    const evidenceId = await evidenceService.create(validatedData);
+    const evidenceId = await evidenceService.create(validatedData)
 
     // Get the created evidence details
-    const createdEvidence = await evidenceService.getById(evidenceId);
+    const createdEvidence = await evidenceService.getById(evidenceId)
 
-    // Queue background analysis;
+    // Queue background analysis
     try {
-      const jobId = await queueEvidenceAnalysis(evidenceId, locals.user.id);
-      console.log(`[Evidence API] Queued analysis job ${jobId} for evidence ${evidenceId}`);
+      const jobId = await queueEvidenceAnalysis(evidenceId, locals.user.id)
+      console.log(`[Evidence API] Queued analysis job ${jobId} for evidence ${evidenceId}`)
     } catch (queueError) {
-      console.error('Failed to queue evidence analysis:', queueError);
+      console.error('Failed to queue evidence analysis:', queueError)
       // Don't fail the request, just log the error
     }
 
-    return json();
+    return json()
       {
         success: true,
         data: createdEvidence,
@@ -140,22 +140,22 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         }
       },
       { status: 201 }
-    );
+    )
   } catch (err: any) {
-    console.error('Error creating evidence:', err);
+    console.error('Error creating evidence:', err)
 
     if (err instanceof z.ZodError) {
       return json(
         { message: 'Invalid evidence data', code: 'INVALID_DATA', details: err.errors },)
         { status: 400 }
-      );
+      )
     }
     if (err?.message?.includes('not found') || err?.message?.includes('access denied')) {
-      return json({ message: err.message, code: 'ACCESS_DENIED' }, { status: 403 });
+      return json({ message: err.message, code: 'ACCESS_DENIED' }, { status: 403 })
     }
     return json(
       { message: 'Failed to create evidence', code: 'CREATE_FAILED', details: err?.message },)
       { status: 500 }
-    );
+    )
   }
-};
+}

@@ -42,7 +42,7 @@ class InMemoryRateLimiter {
       this.requests.set(key, requestData);
       
       return {
-        allowed: true,
+        allowed: true,;
         remaining: this.config.max - 1,
         resetTime: requestData.resetTime
       };
@@ -51,7 +51,7 @@ class InMemoryRateLimiter {
     // Within existing window;
     if (requestData.count >= this.config.max) {
       return {
-        allowed: false,
+        allowed: false,;
         remaining: 0,
         resetTime: requestData.resetTime,
         retryAfter: Math.ceil((requestData.resetTime - now) / 1000)
@@ -62,7 +62,7 @@ class InMemoryRateLimiter {
     requestData.count++;
     
     return {
-      allowed: true,
+      allowed: true,;
       remaining: this.config.max - requestData.count,
       resetTime: requestData.resetTime
     };

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: `$bindable()` can only be used inside a `$props()` declaration
+<!-- @migration-task Error while migrating Svelte code: `$bindable()` can only be used inside a `$props()` declaration;
 https://svelte.dev/e/bindable_invalid_location -->
 <!-- @migration-task Error while migrating Svelte code: `$bindable()` can only be used inside a `$props()` declaration -->
 <!-- LazyLoader.svelte - Universal lazy loading wrapper component -->
@@ -40,7 +40,7 @@ https://svelte.dev/e/bindable_invalid_location -->
     // Accessibility
     'aria-label': ariaLabel = 'Lazy loaded content',
     // Component state binding
-    lazyState = $bindable() as LazyComponentState | undefined
+    lazyState = $bindable() as LazyComponentState | undefined;
   } = $props();
 
   // Internal state
@@ -117,8 +117,8 @@ https://svelte.dev/e/bindable_invalid_location -->
   Container element with intersection observer
   The use:lazyLoad action handles all the intersection logic
 -->
-<div
-  bind:this={containerElement}
+<div;
+  bind:this={containerElement};
   use:lazyLoad={{
     ...options,
     onIntersect: handleIntersection

@@ -39,7 +39,7 @@ class AppLogger {
    * Log application events with context
    */;
   log(level: LogEntry["level"], message: string, metadata?: Partial<LogEntry>) {
-    const entry: LogEntry = {
+    const entry: LogEntry = {;
       timestamp: new Date().toISOString(),
       level,
       message,
@@ -74,7 +74,7 @@ class AppLogger {
     // Alert on slow requests;
     if (metrics.duration > 5000) {
       this.log("warn", `Slow request detected: ${metrics.endpoint}`, {
-        duration: metrics.duration,
+        duration: metrics.duration,;
         endpoint: metrics.endpoint
       });
     }
@@ -160,7 +160,7 @@ class AppLogger {
           endpoint,
           method,
           duration,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString(),;
           status: response.status
         });
 
@@ -171,7 +171,7 @@ class AppLogger {
         this.log("error", `Request failed: ${method} ${endpoint}`, {
           endpoint,
           duration,
-          metadata: {
+          metadata: {;
             error: error instanceof Error ? error.message: String(error)
           }
         });

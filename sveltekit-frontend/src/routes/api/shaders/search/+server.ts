@@ -1,12 +1,12 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager';
-import type { ShaderSearchQuery, ShaderSearchResult } from '$lib/webgpu/shader-cache-manager';
+import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
+import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager'
+import type { ShaderSearchQuery, ShaderSearchResult } from '$lib/webgpu/shader-cache-manager'
 
-// GET endpoint - Get shader search capabilities info;
+// GET endpoint - Get shader search capabilities info
 export const GET: RequestHandler = async () => {
   try {
-    const stats = await shaderCacheManager.getShaderStats();
+    const stats = await shaderCacheManager.getShaderStats()
     
     const capabilities = {
       endpoint: '/api/shaders/search',
@@ -28,7 +28,7 @@ export const GET: RequestHandler = async () => {
           query: 'object - Original search query'
         }
       },
-      examples: [;
+      examples: [
         {
           description: 'Search for vector similarity shaders',
           query: { text: 'vector similarity', operation: 'vector_similarity' }
@@ -42,37 +42,37 @@ export const GET: RequestHandler = async () => {
           query: { tags: ['optimization', 'tensor'], limit: 10 }
         }
       ]
-    };
+    }
 
-    return json(capabilities);
+    return json(capabilities)
   } catch (error: any) {
-    return json({ error: 'Failed to get shader search capabilities' }, { status: 500 });
+    return json({ error: 'Failed to get shader search capabilities' }, { status: 500 })
   }
-};
+}
 
-// POST endpoint - Search shaders;
+// POST endpoint - Search shaders
 export const POST: RequestHandler = async ({ request }) => {
-  const startTime = performance.now();
+  const startTime = performance.now()
 
   try {
-    const query: ShaderSearchQuery = await request.json();
+    const query: ShaderSearchQuery = await request.json()
 
-    // Validate query;
+    // Validate query
     if (query.limit && (query.limit < 1 || query.limit > 100)) {
       return json({
         error: 'limit must be between 1 and 100'
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
     if (query.sortBy && !['relevance', 'performance', 'usage', 'recent'].includes(query.sortBy)) {
       return json({
         error: 'sortBy must be one of: relevance, performance, usage, recent'
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
     // Execute search
-    const results = await shaderCacheManager.searchShaders(query);
-    const searchTime = performance.now() - startTime;
+    const results = await shaderCacheManager.searchShaders(query)
+    const searchTime = performance.now() - startTime
 
     const response = {
       shaders: results.map(shader => ({
@@ -96,14 +96,14 @@ export const POST: RequestHandler = async ({ request }) => {
         query: query,
         timestamp: new Date().toISOString()
       }
-    };
+    }
 
-    return json(response);
+    return json(response)
 
   } catch (error: any) {
-    const searchTime = performance.now() - startTime;
+    const searchTime = performance.now() - startTime
     
-    console.error('Shader search error:', error);
+    console.error('Shader search error:', error)
     
     return json({
       shaders: [],
@@ -113,6 +113,6 @@ export const POST: RequestHandler = async ({ request }) => {
         query: Record<string, any>,
         error: error.message || 'Search failed'
       }
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

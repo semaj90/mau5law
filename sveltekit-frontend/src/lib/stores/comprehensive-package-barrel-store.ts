@@ -13,7 +13,7 @@ import type {
 /* ================= SVELTE 5 RUNES + UTILITIES ================= */
 
 export const svelte5RunesStore = {
-  runes: {
+  runes: {;
     state: <T>(initial: T) => {
       if (typeof globalThis !== 'undefined' && '$state' in globalThis) {
         return (globalThis as any).$state(initial);
@@ -64,7 +64,7 @@ export const svelte5RunesStore = {
     createChildren: (content: any): Snippet => (() => content) as any
   },
 
-  attachments: {
+  attachments: {;
     create: <T = any>(handler: (el: HTMLElement, params?: T) => void | (() => void)) =>;
       (el: HTMLElement, params?: T) => {
         if (typeof globalThis !== 'undefined' && '$effect' in globalThis) {
@@ -79,19 +79,19 @@ export const svelte5RunesStore = {
       }
   },
 
-  transitions: {
+  transitions: {;
     fade: (_: HTMLElement, p: { duration?: number; easing?: (t: number) => number } = {}): TransitionConfig => ({
       duration: p.duration ?? 400,
       easing: p.easing ?? ((t: number) => t),
       css: (t: number) => `opacity:${t}`
-    }),
+    }),;
     fly: (_: HTMLElement, p: { x?: number; y?: number; duration?: number } = {}): TransitionConfig => ({
       duration: p.duration ?? 400,
       css: (_t: number, u: number) =>
         `transform:translate(${u * (p.x ?? 0)}px,${u * (p.y ?? 0)}px)`
-    }),
+    }),;
     scale: (_: HTMLElement, p: { start?: number; duration?: number } = {}): TransitionConfig => ({
-      duration: p.duration ?? 400,
+      duration: p.duration ?? 400,;
       css: (t: number) => {
         const start = p.start ?? 0.8;
         return `transform:scale(${start + (1 - start) * t})`;
@@ -103,7 +103,7 @@ export const svelte5RunesStore = {
 /* ================= SVELTEKIT 2 LAYER (LIGHT MOCKS) ================= */
 
 export const svelteKitStore = {
-  navigation: {
+  navigation: {;
     goto: async (url: string, _opts?: { replaceState?: boolean; invalidateAll?: boolean }) => {
       if (typeof location !== 'undefined') location.href = url;
     },
@@ -131,13 +131,13 @@ export const svelteKitStore = {
     version: '1.0.0'
   },
   forms: {
-    enhance: (_f: HTMLFormElement, _cb?: Function) => ({ destroy: () => { } }),
+    enhance: (_f: HTMLFormElement, _cb?: Function) => ({ destroy: () => { } }),;
     deserialize: (raw: string) => {
       try { return JSON.parse(raw); } catch { return {}; }
     },
     applyAction: async (_r: any) => { }
   },
-  server: {
+  server: {;
     error: (status: number, message?: string) => {
       const err = new Error(message || 'Error') as any;
       err.status = status;
@@ -153,7 +153,7 @@ export const svelteKitStore = {
       new Response(JSON.stringify(data), {
         ...init,
         headers: { 'Content-Type': 'application/json', ...(init?.headers || {}) }
-      }),
+      }),;
     text: (data: string, init?: ResponseInit) =>;
       new Response(data, {
         ...init,
@@ -183,7 +183,7 @@ export const databaseStore = {
     vector: {
       similarity: {
         cosine: (a: number[], b: number[]) =>
-          `<(${a.join(',')}) <-> (${b.join(',')})>`,
+          `<(${a.join(',')}) <-> (${b.join(',')})>`,;
         euclidean: (a: number[], b: number[]) =>
           `<(${a.join(',')}) <=> (${b.join(',')})>`
       },
@@ -218,7 +218,7 @@ export const databaseStore = {
   },
   query: {
     select: <T = any>() => ({
-      from: (_t: any) => ({
+      from: (_t: any) => ({;
         where: (_c: any) => ({
           async execute(): Promise<T[]> { return []; }
         })
@@ -231,12 +231,12 @@ export const databaseStore = {
 
 export const aiStore = {
   ollama: {
-    client: (baseURL = 'http://localhost:11434') => ({
+    client: (baseURL = 'http://localhost:11434') => ({;
       generate: async (o: { model: string; prompt: string }) => ({
         model: o?.model || "unknown" // @ts-ignore - Model property access,
         response: `Mock response for: ${o.prompt}`,
         done: true
-      }),
+      }),;
       embeddings: async (_o: { model: string; prompt: string }) => ({
         embedding: Array.from({ length: 384 }, () => Math.random()
       }),
@@ -250,7 +250,7 @@ export const aiStore = {
       legal: 'gemma3-legal:latest',
       embedding: 'nomic-embed-text:latest',
       chat: 'llama3:latest'
-    },
+    },;
     streaming: {
       parseResponse: (chunk: string) => { try { return JSON.parse(chunk); } catch { return null; } },
       async *processStream(_res: Response) { /* mock empty stream */ }
@@ -259,7 +259,7 @@ export const aiStore = {
   vectorSearch: {
     embed: async (_text: string, _model = 'nomic-embed-text:latest') =>
       Array.from({ length: 384 }, () => Math.random()),
-    similarity: {
+    similarity: {;
       cosine: (a: number[], b: number[]) => {
         const dot = a.reduce((s, v, i) => s + v * b[i], 0);
         const ma = Math.hypot(...a);
@@ -272,18 +272,18 @@ export const aiStore = {
       void embedding;
       return documents.slice(0, opts.limit ?? 10).map((d, i) => ({
         id: d.id ?? String(i),
-        document: d,
+        document: d,;
         score: Math.random()
       });
     }
   },
-  rag: {
+  rag: {;
     pipeline: async (query: string, _opts?: any) => {
       const context = await aiStore.vectorSearch.search(query, []);
       return {
         response: 'Mock RAG response',
         context,
-        sources: context.map(c => c.document),
+        sources: context.map(c => c.document),;
         confidence: Math.random()
       };
     },
@@ -309,7 +309,7 @@ export const testingStore = {
     toBeTruthy: () => !!value,
     toBeFalsy: () => !value
   })),
-  vi: {
+  vi: {;
     fn: (impl?: Function) => {
       const fn = impl || (() => { });
       (fn as any).mockReturnValue = (v: any) => { (fn as any).mockImplementation = () => v; return fn; };
@@ -320,7 +320,7 @@ export const testingStore = {
     goto: async (_u: string) => { },
     click: async (_s: string) => { },
     fill: async (_s: string, _v: string) => { },
-    waitForSelector: async (_s: string) => { },
+    waitForSelector: async (_s: string) => { },;
     screenshot: async () => new Uint8Array()
   }
 };
@@ -340,7 +340,7 @@ export const comprehensivePackageBarrelStore = {
     test: typeof process !== 'undefined' && process.env?.NODE_ENV === 'test',
     production: typeof process !== 'undefined' && process.env?.NODE_ENV === 'production'
   },
-  utils: {
+  utils: {;
     get: <T>(obj: any, path: string, defaultValue?: T): T => {
       return path.split('.').reduce<any>((acc, key) =>
         (acc && typeof acc === 'object' && key in acc) ? acc[key] : undefined

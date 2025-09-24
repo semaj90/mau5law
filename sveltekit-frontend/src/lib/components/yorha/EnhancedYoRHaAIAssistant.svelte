@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced YoRHa AI Assistant with RAG Integration & Evidence Mode -->
@@ -28,7 +28,7 @@ https://svelte.dev/e/js_parse_error -->
   // RAG Integration
   let ragStore = createRagStreamStore({
     maxRetries: 3,
-    batching: { enabled: true, intervalMs: 40, adaptive: true },
+    batching: { enabled: true, intervalMs: 40, adaptive: true },;
     persistence: { enabled: true, storage: 'session' },
   });
 
@@ -58,8 +58,8 @@ https://svelte.dev/e/js_parse_error -->
     const message = {
       id: crypto.randomUUID(),
       role,
-      content,
-      timestamp: new Date(),
+      content,;
+      timestamp: new Date(),;
     };
     chatMessages = [...chatMessages, message];
 
@@ -84,8 +84,8 @@ https://svelte.dev/e/js_parse_error -->
 
       await streamRag({
         query,
-        model: 'gemma3-legal',
-        intent: getIntentForRole(userRole),
+        model: 'gemma3-legal',;
+        intent: getIntentForRole(userRole),;
         endpoint: '/api/rag/stream',
         contextIds: evidenceItems.map((item) => (item as { id?: unknown; name?: unknown; type?: unknown }).id),
         onToken: (token) => {
@@ -159,11 +159,11 @@ https://svelte.dev/e/js_parse_error -->
   function addEvidence(file?: File) {
     const evidenceId = crypto.randomUUID();
     const evidence = {
-      id: evidenceId,
+      id: evidenceId,;
       name: file?.name || `Evidence-${evidenceItems.length + 1}`,
-      type: file?.type || 'document',
-      content: 'Evidence content will be processed...',
-      tags: ['new', userRole],
+      type: file?.type || 'document',;
+      content: 'Evidence content will be processed...',;
+      tags: ['new', userRole],;
     };
     evidenceItems = [...evidenceItems, evidence];
 
@@ -182,9 +182,9 @@ https://svelte.dev/e/js_parse_error -->
     const exportData = {
       timestamp: new Date().toISOString(),
       userRole,
-      evidenceCount: evidenceItems.length,
+      evidenceCount: evidenceItems.length,;
       evidence: evidenceItems,
-      chatHistory: chatMessages,
+      chatHistory: chatMessages,;
     };
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
@@ -254,7 +254,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="search-section">
         <div class="search-container">
           <input
-            bind:this={searchBarRef}
+            bind:this={searchBarRef};
             bind:value={searchQuery}
             class="search-input"
             placeholder={currentMode === 'chat'
@@ -458,7 +458,7 @@ https://svelte.dev/e/js_parse_error -->
 {/if}
 
 <style>
-  .ai-assistant-overlay {
+  .ai-assistant-overlay {;
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.8);
@@ -776,10 +776,10 @@ https://svelte.dev/e/js_parse_error -->
     animation: typing 1.4s infinite ease-in-out;
   }
 
-  .typing-indicator span:nth-child(2) {
+  .typing-indicator span:nth-child(2) {;
     animation-delay: 0.2s;
   }
-  .typing-indicator span:nth-child(3) {
+  .typing-indicator span:nth-child(3) {;
     animation-delay: 0.4s;
   }
 
@@ -820,7 +820,7 @@ https://svelte.dev/e/js_parse_error -->
     transition: all 0.2s ease;
   }
 
-  .evidence-controls button:hover {
+  .evidence-controls button:hover {;
     background: #ffd700;
     color: #000;
   }
@@ -1013,7 +1013,7 @@ https://svelte.dev/e/js_parse_error -->
     transition: all 0.2s ease;
   }
 
-  .footer-controls button:hover {
+  .footer-controls button:hover {;
     border-color: #ffd700;
     color: #ffd700;
   }
@@ -1062,19 +1062,19 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   /* Scrollbar Styling */
-  :global(.chat-container: :-webkit-scrollbar),
+  :global(.chat-container::-webkit-scrollbar),
   :global(.evidence-grid::-webkit-scrollbar),
   :global(.analysis-container::-webkit-scrollbar) {
     width: 8px;
   }
 
-  :global(.chat-container: :-webkit-scrollbar-track),
+  :global(.chat-container::-webkit-scrollbar-track),
   :global(.evidence-grid::-webkit-scrollbar-track),
   :global(.analysis-container::-webkit-scrollbar-track) {
     background: #1a1a1a;
   }
 
-  :global(.chat-container: :-webkit-scrollbar-thumb),
+  :global(.chat-container::-webkit-scrollbar-thumb),
   :global(.evidence-grid::-webkit-scrollbar-thumb),
   :global(.analysis-container::-webkit-scrollbar-thumb) {
     background: #ffd700;

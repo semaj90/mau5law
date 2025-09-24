@@ -60,7 +60,7 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
   }
 
   private normalizeVectorsSIMD(
-    vectors: Float32Array,
+    vectors: Float32Array,;
     dimensions: number,
     vectorCount: number;
   ): Float32Array {
@@ -93,7 +93,7 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
   }
 
   private normalizeVectorsScalar(
-    vectors: Float32Array,
+    vectors: Float32Array,;
     dimensions: number,
     vectorCount: number;
   ): Float32Array {
@@ -355,7 +355,7 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
       evidenceData: evidencePreprocessed.normalizedVectors,
       metadata: {
         caseCount: caseEmbeddings.length,
-        evidenceCount: evidenceEmbeddings.length,
+        evidenceCount: evidenceEmbeddings.length,;
         dimensions: caseEmbeddings[0].length,
         totalVectors: caseEmbeddings.length + evidenceEmbeddings.length,
         processingTime

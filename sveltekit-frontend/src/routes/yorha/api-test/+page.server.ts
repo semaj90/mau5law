@@ -101,7 +101,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         method: 'POST',
         type: 'standard',
         description: 'Test Ollama AI model inference',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: { prompt: 'Analyze this legal contract', model: 'gemma3-legal' },
       },
     ];
@@ -135,7 +135,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
       {
         id: 'smoke-test',
         name: 'Smoke Test',
-        description: 'Quick health check of critical endpoints',
+        description: 'Quick health check of critical endpoints',;
         endpoints: ['system-status', 'multicore-status', 'database-health'],
       },
     ];
@@ -155,7 +155,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
         { name: 'YoRHa API', description: 'Custom APIs for YoRHa 3D interface components' },
         { name: 'Context7', description: 'Multicore processing and AI analysis services' },
         { name: 'Standard REST', description: 'Traditional HTTP REST API endpoints' },
-      ],
+      ],;
       metrics: [
         'Total test executions',
         'Pass/fail rates',
@@ -169,7 +169,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
       endpoints: apiEndpoints,
       testSuites,
       documentation: testDocumentation,
-      initialLoad: true,
+      initialLoad: true,;
       timestamp: new Date().toISOString(),
     };
   } catch (error: unknown) {
@@ -180,7 +180,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
       testSuites: [],
       documentation: { overview: '', features: [], protocols: [], metrics: [] },
       initialLoad: false,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString(),;
       error: 'Failed to load API test configuration',
     };
   }

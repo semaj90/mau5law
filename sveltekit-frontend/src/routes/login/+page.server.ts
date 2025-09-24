@@ -13,7 +13,7 @@ import type { Actions, PageServerLoad } from './$types.js';
 
 // removed: import { URL } from "url";
 
-export // Melt UI component creation removed - replace with bits-ui declarative components
+      // Melt UI component creation removed - replace with bits-ui declarative components
       setSessionCookie(cookies, sessionId, expiresAt);
 
       // Dev debug: print short session id to server logs for quick verification;

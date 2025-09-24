@@ -23,7 +23,7 @@ async function ensure() {
 }
 
 export interface EmbeddingShard {
-  id: string; // e.g., doc:chunk:hash,
+  id: string; // e.g., doc:chunk:hash,;
   dim: number;
   vec: number[]; // small shards or PQ codebooks in future
   createdAt: string;
@@ -36,7 +36,7 @@ export interface RankingBitmap {
 }
 
 export interface CHRManifest {
-  id: string; // e.g., chr:bundle:<query-hash>
+  id: string; // e.g., chr:bundle:<query-hash>;
   keys: string[]; // list of CHR keys persisted elsewhere
   ttlSec: number;
   createdAt: string;

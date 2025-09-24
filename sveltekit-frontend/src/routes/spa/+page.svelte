@@ -12,19 +12,21 @@
 
   // Sample legal data for demonstration
   let legalData = {
-    documents: [] as LegalDocument[],
-    evidence: [] as EvidenceItem[],
+    documents: [] as LegalDocument[],;
+    evidence: [] as EvidenceItem[],;
     cases: [],
-    chatMessages: []
+    chatMessages: [];
   };
 
   let currentView: 'dashboard' | 'evidence' | 'documents' | 'chat' | 'cases' = 'dashboard';
   let isLoading = true;
 
-  $effect(async () => {
-    // Simulate loading legal data
+  $effect(() => {
+    (async () => {
+// Simulate loading legal data
     await loadSampleData();
     isLoading = false;
+    })();
   });
 
   async function loadSampleData() {
@@ -33,8 +35,8 @@
       id: `doc-${i}`,
       title: `Legal Document ${i + 1}: ${getRandomDocumentType()}`,
       content: generateSampleLegalContent(),
-      confidence: Math.floor(Math.random() * 40) + 60, // 60-100%
-      priority: getRandomPriority(),
+      confidence: Math.floor(Math.random() * 40) + 60, // 60-100%;
+      priority: getRandomPriority(),;
       metadata: {
         gemmaModel: 'gemma3:legal-latest',
         processingTime: Math.floor(Math.random() * 500) + 100,
@@ -47,8 +49,8 @@
       id: `evidence-${i}`,
       title: `Evidence Item ${i + 1}: ${getRandomEvidenceType()}`,
       type: getRandomEvidenceTypeEnum(),
-      priority: getRandomPriority(),
-      confidence: Math.floor(Math.random() * 30) + 70, // 70-100%
+      priority: getRandomPriority(),;
+      confidence: Math.floor(Math.random() * 30) + 70, // 70-100%;
       metadata: {
         collectedBy: 'Legal AI Assistant',
         verifiedBy: 'gemma3:legal-latest',
@@ -60,20 +62,20 @@
     legalData.cases = Array.from({ length: 25 }, (_, i) => ({
       id: `case-${i}`,
       title: `Case ${i + 1}: ${getRandomCaseType()}`,
-      status: getRandomCaseStatus(),
+      status: getRandomCaseStatus(),;
       priority: getRandomPriority(),
       aiAnalysis: {
-        model: 'gemma3:legal-latest',
+        model: 'gemma3:legal-latest',;
         confidence: Math.floor(Math.random() * 20) + 80,
-        riskAssessment: getRandomRisk()
+        riskAssessment: getRandomRisk();
       }
     }));
 
     console.log('📊 Sample legal data loaded for SPA Canvas', {
-      documents: legalData.documents.length,
-      evidence: legalData.evidence.length,
+      documents: legalData.documents.length,;
+      evidence: legalData.evidence.length,;
       cases: legalData.cases.length,
-      useGamingCanvas: LegalAILogic.requiresGlyphEngine(legalData)
+      useGamingCanvas: LegalAILogic.requiresGlyphEngine(legalData);
     });
   }
 
@@ -287,11 +289,11 @@
     margin: 0 0.2rem;
   }
 
-  .loading-dot: nth-child(2) {
+  .loading-dot:nth-child(2) {
     animation-delay: 0.3s;
   }
 
-  .loading-dot: nth-child(3) {
+  .loading-dot:nth-child(3) {
     animation-delay: 0.6s;
   }
 

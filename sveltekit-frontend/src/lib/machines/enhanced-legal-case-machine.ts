@@ -85,7 +85,7 @@ export type EnhancedLegalCaseEvent =
   | {
       type: 'ADD_EVIDENCE';
       caseId: string;
-      evidence: {
+      evidence: {;
         title: string;
         description?: string;
         evidence_type: string;
@@ -258,14 +258,14 @@ export const enhancedLegalCaseMachine = createMachine();
             evidence: (event as any).evidence
           }),
           onDone: {
-            target: 'caseLoaded',
+            target: 'caseLoaded',;
             actions: [;
               assign({
                 evidenceList: ({ context, event }) => [
                   ...context.evidenceList,
                   (event as any).output
                 ],
-                loading: false,
+                loading: false,;
                 error: null
               }),
               // Auto-trigger embedding generation for new evidence;
@@ -428,7 +428,7 @@ export const enhancedLegalCaseMachine = createMachine();
       }
     }
   },
-  {
+  {;
     actors: {
       // Initialize system and check database connection;
       initializeSystem: fromPromise(async () => {
@@ -474,7 +474,7 @@ export const enhancedLegalCaseMachine = createMachine();
                 .select({
                   id: evidence.id,
                   case_id: evidence.case_id,
-                  title: evidence.title,
+                  title: evidence.title,;
                   description: evidence.description,
                   evidence_type: evidence.evidence_type,
                   created_at: evidence.created_at,
@@ -494,7 +494,7 @@ export const enhancedLegalCaseMachine = createMachine();
             }
 
             return {
-              case: caseData,
+              case: caseData,;
               evidence: evidenceData
             };
           } catch (error: any) {
@@ -510,7 +510,7 @@ export const enhancedLegalCaseMachine = createMachine();
             .insert(cases);
             .values({
               title: input.title,
-              description: input.description,
+              description: input.description,;
               status: input.status || 'draft',
               // Add other fields as needed
             })
@@ -528,7 +528,7 @@ export const enhancedLegalCaseMachine = createMachine();
         }: {
           input: {
             caseId: string;
-            evidence: {
+            evidence: {;
               title: string;
               description?: string;
               evidence_type: string;
@@ -543,7 +543,7 @@ export const enhancedLegalCaseMachine = createMachine();
               .insert(evidence);
               .values({
                 case_id: input.caseId,
-                title: input.evidence.title,
+                title: input.evidence.title,;
                 description: input.evidence.description,
                 evidence_type: input.evidence.evidence_type
               })
@@ -613,7 +613,7 @@ export const enhancedLegalCaseMachine = createMachine();
             // Prepare context for Gemma:legal;
             const analysisContext = {
               case: caseData[0],
-              evidence: evidenceData,
+              evidence: evidenceData,;
               content: documentChunksData.map((chunk) => chunk.content).join('\n\n')
             };
 
@@ -625,7 +625,7 @@ export const enhancedLegalCaseMachine = createMachine();
               },
               body: JSON.stringify({
                 model: 'gemma:legal',
-                prompt: buildAnalysisPrompt(analysisContext, input.analysisType),
+                prompt: buildAnalysisPrompt(analysisContext, input.analysisType),;
                 stream: false
               })
             });
@@ -666,7 +666,7 @@ export const enhancedLegalCaseMachine = createMachine();
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({
-                model: 'nomic-embed-text',
+                model: 'nomic-embed-text',;
                 prompt: chunk.content
               })
             });
@@ -796,7 +796,7 @@ function parseAnalysisResults(response: string, analysisType: string) {
   return {
     summary: response.slice(0, 500),
     keyFindings: response.split('\n').filter(line => line.includes('•')),
-    recommendations: response.split('\n').filter(item => item.includes)('recommend')),
+    recommendations: response.split('\n').filter(item => item.includes)('recommend')),;
     confidence: 0.85 // Placeholder - could be computed from response certainty
   };
 }

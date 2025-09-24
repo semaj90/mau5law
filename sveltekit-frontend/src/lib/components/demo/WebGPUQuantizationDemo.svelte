@@ -49,36 +49,38 @@ https://svelte.dev/e/expected_token -->
       id: 'basic',
       name: 'Basic Legal Document Processing',
       description: 'Upload legal document embeddings with different quantization profiles',
-      icon: '📄'
+      icon: '📄';
     },
     {
       id: 'comparison',
       name: 'Quantization Comparison',
       description: 'Compare FP32, FP16, and INT8 compression for legal documents',
-      icon: '📊'
+      icon: '📊';
     },
     {
       id: 'batch',
       name: 'Batch Legal Processing',
       description: 'Process multiple legal document types with optimized profiles',
-      icon: '📦'
+      icon: '📦';
     },
     {
       id: 'pipeline',
       name: 'Full Legal AI Pipeline',
       description: 'Complete workflow: contracts → case law → citations',
-      icon: '🏛️'
+      icon: '🏛️';
     },
     {
       id: 'cache',
-      name: 'Smart Caching Demo',
-      description: 'Demonstrate buffer caching and reuse optimization',
-      icon: '🗄️'
+      name: 'Smart Caching Demo',;
+      description: 'Demonstrate buffer caching and reuse optimization',;
+      icon: '🗄️';
     }
   ];
 
-  $effect(async () => {
-    await initializeWebGPU();
+  $effect(() => {
+    (async () => {
+await initializeWebGPU();
+    })();
   });
 
   async function initializeWebGPU() {
@@ -158,8 +160,8 @@ https://svelte.dev/e/expected_token -->
     const uploadTime = performance.now() - startTime;
 
     results.push({
-      step: 'Buffer upload complete',
-      details: {
+      step: 'Buffer upload complete',;
+      details: {;
         profile: selectedProfile,
         uploadTime: `${uploadTime.toFixed(2)}ms`,
         compressionRatio: `${uploadResult.uploadStats.compressionRatio.toFixed(2)}x`,
@@ -200,15 +202,15 @@ https://svelte.dev/e/expected_token -->
         compressionRatio: uploadResult.uploadStats.compressionRatio.toFixed(2),
         originalSize: (uploadResult.uploadStats.originalSize / 1024).toFixed(2),
         compressedSize: (uploadResult.uploadStats.uploadedSize / 1024).toFixed(2),
-        spaceSavings: (((uploadResult.uploadStats.originalSize - uploadResult.uploadStats.uploadedSize) / uploadResult.uploadStats.originalSize) * 100).toFixed(1)
+        spaceSavings: (((uploadResult.uploadStats.originalSize - uploadResult.uploadStats.uploadedSize) / uploadResult.uploadStats.originalSize) * 100).toFixed(1);
       });
 
       uploadResult.buffer.destroy();
     }
 
     results.push({
-      step: 'Quantization comparison complete',
-      details: comparisonResults
+      step: 'Quantization comparison complete',;
+      details: comparisonResults;
     });
   }
 
@@ -241,7 +243,7 @@ https://svelte.dev/e/expected_token -->
         documentType: doc.name,
         profile: `legal_${doc.profile}`,
         uploadTime: uploadTime.toFixed(2),
-        compressionRatio: uploadResult.uploadStats.compressionRatio.toFixed(2),
+        compressionRatio: uploadResult.uploadStats.compressionRatio.toFixed(2),;
         size: `${(uploadResult.uploadStats.uploadedSize / 1024).toFixed(2)} KB`
       });
 
@@ -264,25 +266,25 @@ https://svelte.dev/e/expected_token -->
         name: 'Contract Analysis',
         data: generateLegalDocumentEmbeddings(10, 512),
         profile: 'critical',
-        description: 'High-stakes contract terms analysis'
+        description: 'High-stakes contract terms analysis';
       },
       {
         name: 'Case Law Search',
         data: generateLegalDocumentEmbeddings(50, 768),
         profile: 'standard',
-        description: 'Semantic search through legal precedents'
+        description: 'Semantic search through legal precedents';
       },
       {
         name: 'Citation Network',
         data: generateLegalDocumentEmbeddings(200, 384),
         profile: 'compressed',
-        description: 'Legal citation relationship mapping'
+        description: 'Legal citation relationship mapping';
       },
       {
         name: 'Document Storage',
-        data: generateLegalDocumentEmbeddings(500, 256),
-        profile: 'storage',
-        description: 'Bulk legal document archival'
+        data: generateLegalDocumentEmbeddings(500, 256),;
+        profile: 'storage',;
+        description: 'Bulk legal document archival';
       }
     ];
 
@@ -300,10 +302,10 @@ https://svelte.dev/e/expected_token -->
 
       pipelineResults.push({
         step: step.name,
-        description: step.description,
+        description: step.description,;
         profile: `legal_${step.profile}`,
         time: `${stepTime.toFixed(2)}ms`,
-        compressionRatio: `${uploadResult.uploadStats.compressionRatio.toFixed(2)}x`,
+        compressionRatio: `${uploadResult.uploadStats.compressionRatio.toFixed(2)}x`,;
         efficiency: `${(uploadResult.uploadStats.uploadedSize / stepTime).toFixed(0)} bytes/ms`
       });
 
@@ -311,8 +313,8 @@ https://svelte.dev/e/expected_token -->
     }
 
     results.push({
-      step: 'Legal AI pipeline complete',
-      details: {
+      step: 'Legal AI pipeline complete',;
+      details: {;
         steps: pipelineResults,
         totalTime: `${totalPipelineTime.toFixed(2)}ms`,
         averageEfficiency: `${(pipelineResults.reduce((sum, step) => sum + parseFloat(step.efficiency), 0) / pipelineResults.length).toFixed(0)} bytes/ms`
@@ -348,12 +350,12 @@ https://svelte.dev/e/expected_token -->
     const cacheStats = uploader!.getCacheStats();
 
     results.push({
-      step: 'Cache performance analysis',
+      step: 'Cache performance analysis',;
       details: {
         firstUpload: `${firstUploadTime.toFixed(2)}ms (cache miss)`,
         averageRepeat: `${averageRepeatTime.toFixed(2)}ms (cache hit)`,
         speedupRatio: `${cacheSpeedup.toFixed(2)}x faster`,
-        cacheStats: {
+        cacheStats: {;
           entries: cacheStats.entryCount,
           totalSize: `${cacheStats.totalSizeKB} KB`,
           estimatedHitRate: `${((repeatUploads.length / (repeatUploads.length + 1)) * 100).toFixed(1)}%`
@@ -429,7 +431,7 @@ https://svelte.dev/e/expected_token -->
           <label class="block text-sm font-medium text-gray-700 mb-2" for="-document-count-">
             Document Count
           </label><input id="-document-count-" 
-            type="number" 
+            type="number" ;
             bind:value={documentCount} 
             min="1" 
             max="1000"
@@ -439,7 +441,7 @@ https://svelte.dev/e/expected_token -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2" for="-embedding-dimension">
             Embedding Dimensions
-          </label><select id="-embedding-dimension" 
+          </label><select id="-embedding-dimension" ;
             bind:value={embeddingDimensions}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
@@ -453,7 +455,7 @@ https://svelte.dev/e/expected_token -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2" for="-legal-ai-profile-">
             Legal AI Profile
-          </label><select id="-legal-ai-profile-" 
+          </label><select id="-legal-ai-profile-" ;
             bind:value={selectedProfile}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >

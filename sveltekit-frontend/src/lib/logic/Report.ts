@@ -50,7 +50,7 @@ export class Report {
     // Initialize with default content if none provided
     const initialContent: ContentNode[] = data.content || [;
       {
-        type: "paragraph",
+        type: "paragraph",;
         children: [{ type: "text", text: "" }]
       }
     ];
@@ -58,7 +58,7 @@ export class Report {
     this.content = writable(initialContent);
     this.position = writable({ x: data.posX || 50, y: data.posY || 50 });
     this.size = writable({
-      width: data.width || 650,
+      width: data.width || 650,;
       height: data.height || 450
     });
     this.isDirty = writable(false);
@@ -175,7 +175,7 @@ export class Report {
       posX: currentPosition.x,
       posY: currentPosition.y,
       width: currentSize.width,
-      height: currentSize.height,
+      height: currentSize.height,;
       version: currentVersion,
       caseId: this.caseId,
       createdAt: this.createdAt,
@@ -196,7 +196,7 @@ export class Report {
       posY: parseFloat(data.posY) || 50,
       width: parseFloat(data.width) || 650,
       height: parseFloat(data.height) || 450,
-      caseId: data.caseId,
+      caseId: data.caseId,;
       version: data.version,
       createdBy: createdBy
     });
@@ -245,7 +245,7 @@ export class Report {
       content: [],
       posX: 0,
       posY: 0,
-      width: 0,
+      width: 0,;
       height: 0,
       caseId: this.caseId,
       createdBy: this.createdBy

@@ -61,22 +61,22 @@
     {
       value: 'case-analysis',
       label: '⚖️ Case Analysis',
-      description: 'Deep analysis of current case strategy and opportunities'
+      description: 'Deep analysis of current case strategy and opportunities';
     },
     {
       value: 'search-suggestion',
       label: '🔍 Search Optimization',
-      description: 'AI-powered search query suggestions and filters'
+      description: 'AI-powered search query suggestions and filters';
     },
     {
       value: 'workflow-optimization',
       label: '⚡ Workflow Efficiency',
-      description: 'Identify bottlenecks and optimization opportunities'
+      description: 'Identify bottlenecks and optimization opportunities';
     },
     {
-      value: 'precedent-discovery',
-      label: '📚 Precedent Discovery',
-      description: 'Find relevant precedents and emerging legal trends'
+      value: 'precedent-discovery',;
+      label: '📚 Precedent Discovery',;
+      description: 'Find relevant precedents and emerging legal trends';
     }
   ] as const;
 
@@ -97,12 +97,12 @@
       await simulateAIThinking();
 
       const response = await fetch('/api/ai/recommendation-assistant', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           context,
-          query: customQuery || undefined,
-          type: selectedType
+          query: customQuery || undefined,;
+          type: selectedType;
         })
       });
 
@@ -133,7 +133,7 @@
           title: 'Employment Dispute Analysis',
           description: 'Similar pattern detected in 3 recent cases with 85% success rate',
           confidence: 0.87,
-          priority: 220,
+          priority: 220,;
           metadata: { caseType: 'employment', successRate: 0.85 },
           aiInsight: 'Focus on wrongful termination precedents and timeline discrepancies'
         },
@@ -143,7 +143,7 @@
           title: 'Recent 9th Circuit Decision',
           description: 'New precedent strengthens constructive dismissal claims',
           confidence: 0.91,
-          priority: 240,
+          priority: 240,;
           metadata: { court: '9th Circuit', date: '2024-02-15' },
           aiInsight: 'Martinez v. TechSolutions establishes new standard for at-will employment'
         }
@@ -152,10 +152,10 @@
       suggestedActions = [
         {
           action: 'Document Discovery Request',
-          description: 'Subpoena HR files including contract amendments',
+          description: 'Subpoena HR files including contract amendments',;
           priority: 'high',
-          estimatedTime: '3-5 business days',
-          tools: ['Subpoena Generator', 'Document Templates']
+          estimatedTime: '3-5 business days',;
+          tools: ['Subpoena Generator', 'Document Templates'];
         }
       ];
 
@@ -205,8 +205,8 @@
     try {
       // In real app, this would trigger the actual action through API
       const response = await fetch('/api/ai/execute-action', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ action: action.action, context })
       });
 
@@ -328,7 +328,7 @@
         <div class="processing-steps">
           {#each processingSteps as step, i}
             <div
-              class="processing-step"
+              class="processing-step";
               transition:slide={{ duration: 200, delay: i * 100 }}
             >
               ✓ {step}
@@ -361,7 +361,7 @@
           <div class="recommendations-grid">
             {#each recommendations as recommendation, i (recommendation.id)}
               <div
-                class="recommendation-card"
+                class="recommendation-card";
                 transition:fly={{ y: 20, delay: i * 100, duration: 300, easing: elasticOut }}
               >
                 <div class="rec-header">
@@ -419,7 +419,7 @@
             <div class="actions-list">
               {#each suggestedActions as action, i (action.action)}
                 <div
-                  class="action-card"
+                  class="action-card";
                   transition:slide={{ duration: 200, delay: i * 50 }}
                 >
                   <div class="action-header">
@@ -488,7 +488,7 @@
 </DiamondModal>
 
 <style>
-  .ai-assistant-modal {
+  .ai-assistant-modal {;
     max-height: 85vh;
     overflow: hidden;
     display: flex;

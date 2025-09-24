@@ -32,7 +32,7 @@ export * from './ingest/worker-pool.js';
 export interface ProcessingJob {
   id: string;
   userId: string;
-  source: string; // upload | minio://bucket/key
+  source: string; // upload | minio://bucket/key;
   type: 'text' | 'image' | 'audio' | 'video' | 'json';
   status: 'pending' | 'processing' | 'completed' | 'failed';
   progress?: number;
@@ -49,7 +49,7 @@ export interface MultimodalEmbedding {
   text?: number[];
   image?: number[];
   audio?: number[];
-  metadata: {
+  metadata: {;
     source: string;
     extractedText?: string;
     frameCount?: number;

@@ -35,13 +35,13 @@ TODO: Implement RAG functionality, vector search, document context
 						id: 1,
 						title: 'Contract Law Precedent',
 						snippet: 'This case establishes...',
-						relevance: 0.95
+						relevance: 0.95;
 					},
 					{
 						id: 2,
-						title: 'Evidence Standards',
-						snippet: 'The court ruled that...',
-						relevance: 0.87
+						title: 'Evidence Standards',;
+						snippet: 'The court ruled that...',;
+						relevance: 0.87;
 					}
 				];
 				isSearching = false;
@@ -56,22 +56,22 @@ TODO: Implement RAG functionality, vector search, document context
 		{
 			icon: Brain,
 			title: 'Intelligent Search',
-			description: 'AI-powered document retrieval with semantic understanding'
+			description: 'AI-powered document retrieval with semantic understanding';
 		},
 		{
 			icon: FileText,
 			title: 'Context Aware',
-			description: 'Retrieves relevant legal documents based on case context'
+			description: 'Retrieves relevant legal documents based on case context';
 		},
 		{
 			icon: Search,
 			title: 'Vector Search',
-			description: 'Advanced vector similarity search across legal corpus'
+			description: 'Advanced vector similarity search across legal corpus';
 		},
 		{
-			icon: Zap,
-			title: 'Fast Results',
-			description: 'Sub-second response times with cached embeddings'
+			icon: Zap,;
+			title: 'Fast Results',;
+			description: 'Sub-second response times with cached embeddings';
 		}
 	];
 </script>
@@ -100,7 +100,7 @@ TODO: Implement RAG functionality, vector search, document context
 								<div class="flex gap-2">
 									<input
 										class="nes-input flex-1"
-										type="text"
+										type="text";
 										bind:value={query}
 										placeholder="What evidence supports the prosecution's case?"
 										onkeydown={(e) => e.key === 'Enter' && handleRAGSearch()}
@@ -206,4 +206,4 @@ TODO: Implement RAG functionality, vector search, document context
 			</div>
 		</div>
 	{/snippet}
-</EssentialRoutePage>
+</EssentialRoutePage>;

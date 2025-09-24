@@ -5,32 +5,32 @@
  * Ready for gRPC, Caddy, QUIC, Vite, parallelism integration
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { unifiedSearchService } from '$lib/server/services/unified-search-service.js';
-import { neo4jService } from '$lib/server/services/neo4j-service.js';
-import { ingestionService } from '$lib/server/workflows/ingestion-service.js';
-import { cache } from '$lib/server/cache/redis.js';
-import { jobTracker } from '$lib/services/job-tracker.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { unifiedSearchService } from '$lib/server/services/unified-search-service.js'
+import { neo4jService } from '$lib/server/services/neo4j-service.js'
+import { ingestionService } from '$lib/server/workflows/ingestion-service.js'
+import { cache } from '$lib/server/cache/redis.js'
+import { jobTracker } from '$lib/services/job-tracker.js'
 
 // Initialize all services
 await Promise.all([
   unifiedSearchService.initialize(),
   neo4jService.initialize(),
   ingestionService.initialize()
-]);
+])
 
 export const POST: RequestHandler = async ({ request, url }) => {
-  const startTime = Date.now();
+  const startTime = Date.now()
 
   try {
-    const data = await request.json();
-    const { action, ...params } = data;
+    const data = await request.json()
+    const { action, ...params } = data
 
     switch (action) {
-      // === DOCUMENT INGESTION ===;
+      // === DOCUMENT INGESTION ===
       case 'ingest_document': {
-        const { title, content, filePath, mimeType, fileSize, metadata } = params;
+        const { title, content, filePath, mimeType, fileSize, metadata } = params
 
         if (!title || !content) {
           return json({
@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
               error: 'Missing required fields: title, content'
             },)
             { status: 400 }
-          );
+          )
         }
 
         const result = await unifiedSearchService.ingestDocument({
@@ -57,9 +57,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
             userId: metadata?.userId,
             priority: metadata?.priority || 'normal'
           }
-        });
+        })
 
-        // Async Neo4j sync if document ingestion succeeded;
+        // Async Neo4j sync if document ingestion succeeded
         if ((result as { success?: any; documentId?: any; jobId?: any; error?: any }).success && (result as { success?: any; documentId?: any; jobId?: any; error?: any }).documentId) {
           // Queue for background Neo4j sync
           await cache.rpush(
@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
               action: 'sync_document',
               timestamp: new Date().toISOString()
             })
-          );
+          )
         }
 
         return json({
@@ -78,12 +78,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
           jobId: (result as { success?: any; documentId?: any; jobId?: any; error?: any }).jobId,
           error: (result as { success?: any; documentId?: any; jobId?: any; error?: any }).error,
           processingTime: Date.now() - startTime
-        });
+        })
       }
 
-      // === FILE UPLOAD PROCESSING ===;
+      // === FILE UPLOAD PROCESSING ===
       case 'process_file': {
-        const { file, userId, metadata } = params;
+        const { file, userId, metadata } = params
 
         if (!file || !file.buffer) {
           return json({
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
               error: 'No file provided'
             },)
             { status: 400 }
-          );
+          )
         }
 
         const result = await unifiedSearchService.processUploadedFile({
@@ -99,17 +99,17 @@ export const POST: RequestHandler = async ({ request, url }) => {
           buffer: Buffer.from(file.buffer),
           mimeType: file.mimeType,
           userId
-        });
+        })
 
         return json({
           ...result,
           processingTime: Date.now() - startTime
-        });
+        })
       }
 
-      // === UNIFIED SEARCH ===;
+      // === UNIFIED SEARCH ===
       case 'search': {
-        const { query, filters, options } = params;
+        const { query, filters, options } = params
 
         if (!query?.text && !query?.vector) {
           return json({
@@ -117,7 +117,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
               error: 'Query text or vector required'
             },)
             { status: 400 }
-          );
+          )
         }
 
         const searchResult = await unifiedSearchService.search({
@@ -138,15 +138,15 @@ export const POST: RequestHandler = async ({ request, url }) => {
             useCache: options?.useCache !== false,
             neo4jRecommendations: options?.neo4jRecommendations || false
           }
-        });
+        })
 
-        // Enhance with Neo4j recommendations if requested;
+        // Enhance with Neo4j recommendations if requested
         if (options?.neo4jRecommendations && searchResult.documents.length > 0) {
           try {
-            const recommendations = await neo4jService.getRecommendations(searchResult.documents);
-            searchResult.recommendations = recommendations;
+            const recommendations = await neo4jService.getRecommendations(searchResult.documents)
+            searchResult.recommendations = recommendations
           } catch (error) {
-            console.warn('⚠️ Neo4j recommendations failed:', error);
+            console.warn('⚠️ Neo4j recommendations failed:', error)
           }
         }
 
@@ -154,12 +154,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: true,
           ...searchResult,
           processingTime: Date.now() - startTime
-        });
+        })
       }
 
-      // === SEMANTIC SIMILARITY ===;
+      // === SEMANTIC SIMILARITY ===
       case 'find_similar': {
-        const { documentId, threshold, limit } = params;
+        const { documentId, threshold, limit } = params
 
         if (!documentId) {
           return json({
@@ -167,20 +167,20 @@ export const POST: RequestHandler = async ({ request, url }) => {
               error: 'Document ID required'
             },)
             { status: 400 }
-          );
+          )
         }
 
         // Get document embedding and find similar
-        const cacheKey = `similar:${documentId}:${threshold || 0.7}:${limit || 10}`;
-        let similarDocs = await cache.get(cacheKey);
+        const cacheKey = `similar:${documentId}:${threshold || 0.7}:${limit || 10}`
+        let similarDocs = await cache.get(cacheKey)
 
         if (!similarDocs) {
-          // Would implement vector similarity search;
+          // Would implement vector similarity search
           similarDocs = {
             documents: [],
             similarities: [],
             method: 'cosine_similarity'
-          };
+          }
 
           await cache.set(cacheKey, similarDocs, 600); // 10 minutes
         }
@@ -190,12 +190,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
           similar: similarDocs,
           cached: similarDocs !== null,
           processingTime: Date.now() - startTime
-        });
+        })
       }
 
-      // === NEO4J OPERATIONS ===;
+      // === NEO4J OPERATIONS ===
       case 'sync_to_graph': {
-        const { documentIds, force } = params;
+        const { documentIds, force } = params
 
         if (!documentIds || !Array.isArray(documentIds)) {
           return json({
@@ -203,14 +203,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
               error: 'Document IDs array required'
             },)
             { status: 400 }
-          );
+          )
         }
 
         // Get documents to sync
         // In production, this would fetch from database
         const documents: any[] = []; // Would populate from documentIds
 
-        const syncResult = await neo4jService.bulkSyncDocuments(documents as any);
+        const syncResult = await neo4jService.bulkSyncDocuments(documents as any)
 
         return json({
           success: syncResult.success,
@@ -218,11 +218,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
           failed: syncResult.failed,
           errors: syncResult.errors,
           processingTime: Date.now() - startTime
-        });
+        })
       }
 
       case 'get_recommendations': {
-        const { documentIds, types } = params;
+        const { documentIds, types } = params
 
         if (!documentIds || !Array.isArray(documentIds)) {
           return json({
@@ -230,20 +230,20 @@ export const POST: RequestHandler = async ({ request, url }) => {
               error: 'Document IDs array required'
             },)
             { status: 400 }
-          );
+          )
         }
 
         // Check cache first
-        const cacheKey = `recommendations:${documentIds.join(',')}:${types?.join(',') || 'all'}`;
-        let recommendations = await neo4jService.getCachedRecommendations(cacheKey);
+        const cacheKey = `recommendations:${documentIds.join(',')}:${types?.join(',') || 'all'}`
+        let recommendations = await neo4jService.getCachedRecommendations(cacheKey)
 
         if (!recommendations) {
           // Get documents and generate recommendations
           const documents: any[] = []; // Would fetch from database
-          recommendations = await neo4jService.getRecommendations(documents as any);
+          recommendations = await neo4jService.getRecommendations(documents as any)
 
           // Cache results
-          await neo4jService.setCachedRecommendations(cacheKey, recommendations);
+          await neo4jService.setCachedRecommendations(cacheKey, recommendations)
         }
 
         return json({
@@ -251,11 +251,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
           recommendations,
           cached: recommendations !== null,
           processingTime: Date.now() - startTime
-        });
+        })
       }
 
       case 'analyze_network': {
-        const { documentIds, analysisType } = params;
+        const { documentIds, analysisType } = params
 
         if (!documentIds || !Array.isArray(documentIds)) {
           return json({
@@ -263,22 +263,22 @@ export const POST: RequestHandler = async ({ request, url }) => {
               error: 'Document IDs array required'
             },)
             { status: 400 }
-          );
+          )
         }
 
-        const networkAnalysis = await neo4jService.getDocumentNetworkAnalysis(documentIds);
+        const networkAnalysis = await neo4jService.getDocumentNetworkAnalysis(documentIds)
 
         return json({
           success: true,
           analysis: networkAnalysis,
           analysisType: analysisType || 'full',
           processingTime: Date.now() - startTime
-        });
+        })
       }
 
-      // === WORKFLOW MANAGEMENT ===;
+      // === WORKFLOW MANAGEMENT ===
       case 'get_workflow_status': {
-        const dashboardData = ingestionService.getDashboardData();
+        const dashboardData = ingestionService.getDashboardData()
 
         return json({
           success: true,
@@ -295,11 +295,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
           },
           system: dashboardData.system,
           processingTime: Date.now() - startTime
-        });
+        })
       }
 
       case 'submit_batch_job': {
-        const { documents, priority, metadata } = params;
+        const { documents, priority, metadata } = params
 
         if (!documents || !Array.isArray(documents)) {
           return json({
@@ -307,10 +307,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
               error: 'Documents array required'
             },)
             { status: 400 }
-          );
+          )
         }
 
-        const results = [];
+        const results = []
         for (const doc of documents) {
           try {
             const result = await ingestionService.submitDocument(
@@ -321,18 +321,18 @@ export const POST: RequestHandler = async ({ request, url }) => {
                 priority: priority || 'normal',
                 batchId: `batch_${Date.now()}`
               }
-            );
-            results.push(result);
+            )
+            results.push(result)
           } catch (error) {
             results.push({
               success: false,
               error: error instanceof Error ? error.message: String(error)
-            });
+            })
           }
         }
 
-        const successful = results.filter((r) => r.success).length;
-        const failed = results.length - successful;
+        const successful = results.filter((r) => r.success).length
+        const failed = results.length - successful
 
         return json({
           success: failed === 0,
@@ -341,14 +341,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
           failed,
           results,
           processingTime: Date.now() - startTime
-        });
+        })
       }
 
-      // === ANALYTICS & MONITORING ===;
+      // === ANALYTICS & MONITORING ===
       case 'get_analytics': {
-        const { timeRange, metrics } = params;
+        const { timeRange, metrics } = params
 
-        // Get comprehensive analytics;
+        // Get comprehensive analytics
         const analytics = {
           system: {
             uptime: process.uptime(),
@@ -360,17 +360,17 @@ export const POST: RequestHandler = async ({ request, url }) => {
           neo4j: await neo4jService.getHealthStatus(),
           cache: await getCacheStats(),
           performance: await getPerformanceMetrics(timeRange)
-        };
+        }
 
         return json({
           success: true,
           analytics,
           timeRange: timeRange || '1h',
           processingTime: Date.now() - startTime
-        });
+        })
       }
 
-      // === HEALTH CHECK ===;
+      // === HEALTH CHECK ===
       case 'health': {
         const health = {
           status: 'healthy',
@@ -383,19 +383,19 @@ export const POST: RequestHandler = async ({ request, url }) => {
           },
           timestamp: new Date().toISOString(),
           uptime: process.uptime()
-        };
+        }
 
-        const allHealthy = Object.values(health.services).every((s) => s === true);
-        health.status = allHealthy ? 'healthy' : 'degraded';
+        const allHealthy = Object.values(health.services).every((s) => s === true)
+        health.status = allHealthy ? 'healthy' : 'degraded'
 
         return json({
           success: true,
           health,
           processingTime: Date.now() - startTime
-        });
+        })
       }
 
-      default:;
+      default:
         return json({
             success: false,
             error: `Unknown action: ${action}`,
@@ -414,12 +414,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
             ]
           },)
           { status: 400 }
-        );
+        )
     }
   } catch (error) {
-    console.error('❌ Unified API error:', error);
+    console.error('❌ Unified API error:', error)
 
-    return json();
+    return json()
       {
         success: false,
         error: 'Internal server error',
@@ -427,13 +427,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
         processingTime: Date.now() - startTime
       },
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const action = url.searchParams.get('action');
+    const action = url.searchParams.get('action')
 
     if (action === 'health') {
       return new Response(null, {
@@ -442,10 +442,10 @@ export const GET: RequestHandler = async ({ url }) => {
           Location: '/api/unified',
           'Content-Type': 'application/json'
         }
-      });
+      })
     }
 
-    // API documentation;
+    // API documentation
     return json({
       success: true,
       api: {
@@ -502,25 +502,25 @@ export const GET: RequestHandler = async ({ url }) => {
           ]
         }
       }
-    });
+    })
   } catch (error) {
-    console.error('❌ Unified API GET error:', error);
+    console.error('❌ Unified API GET error:', error)
 
-    return json();
+    return json()
       {
         success: false,
         error: 'Internal server error',
         details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 // === ANALYTICS HELPERS ===
 
 async function getSearchAnalytics(timeRange: string) {
-  // Would implement search analytics from query_analytics table;
+  // Would implement search analytics from query_analytics table
   return {
     totalQueries: Math.floor(Math.random() * 1000) + 500,
     averageResponseTime: Math.floor(Math.random() * 200) + 50,
@@ -531,17 +531,17 @@ async function getSearchAnalytics(timeRange: string) {
       fulltext: 0.3,
       hybrid: 0.1
     }
-  };
+  }
 }
 
 async function getCacheStats() {
-  // Would get Redis cache statistics;
+  // Would get Redis cache statistics
   return {
     hitRate: Math.random() * 0.2 + 0.8,
     memoryUsage: Math.floor(Math.random() * 512) + 256, // MB
     keyCount: Math.floor(Math.random() * 10000) + 5000,
     evictionRate: Math.random() * 0.1
-  };
+  }
 }
 
 async function getPerformanceMetrics(timeRange: string) {
@@ -554,5 +554,5 @@ async function getPerformanceMetrics(timeRange: string) {
       memory: Math.random() * 0.3 + 0.4,
       disk: Math.random() * 0.2 + 0.2
     }
-  };
+  }
 }

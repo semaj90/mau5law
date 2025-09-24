@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -50,7 +50,7 @@ https://svelte.dev/e/js_parse_error -->
   let currentMessage = $state('');
   let isLoading = $state(false);
   let isStreaming = $state(false);
-  let conversationId = $state(`conv_${Date.now()}_${Math.random.toString-slice(2)}`);
+  let conversationId = $state(`conv_${Date.now()}_${Math.random().toString().slice(2)}`);
   let webAssemblyMode = $state(false);
   let ollamaConnected = $state(false);
 
@@ -74,33 +74,35 @@ https://svelte.dev/e/js_parse_error -->
   let messageInput: HTMLTextAreaElement;
 
   // Initialize system message for legal context
-  $effect(async () => {
-    // Check Ollama connectivity
-    await checkOllamaConnection();
+  $effect(() => {
+    (async () => {
+      // Check Ollama connectivity
+      await checkOllamaConnection();
 
-    // Add initial system message
-    const systemMessage: ChatMessage = {
-      id: `system_${Date.now()}`,
-      role: 'system',
-      content: buildSystemPrompt(),
-      timestamp: new Date(),
-      metadata: { type: 'system' }
-    };
+      // Add initial system message
+      const systemMessage: ChatMessage = {
+        id: `system_${Date.now()}`,
+        role: 'system',
+        content: buildSystemPrompt(),;
+        timestamp: new Date(),;
+        metadata: { type: 'system' }
+      };
 
-    messages.update(msgs => [systemMessage, ...msgs]);
+      messages.update(msgs => [systemMessage, ...msgs]);
 
-    // Add welcome message
-    const welcomeMessage: ChatMessage = {
-      id: `assistant_${Date.now()}`,
-      role: 'assistant',
-      content: buildWelcomeMessage(),
-      timestamp: new Date(),
-      metadata: { type: 'welcome' }
-    };
+      // Add welcome message
+      const welcomeMessage: ChatMessage = {
+        id: `assistant_${Date.now()}`,
+        role: 'assistant',
+        content: buildWelcomeMessage(),;
+        timestamp: new Date(),;
+        metadata: { type: 'welcome' }
+      };
 
-    messages.update(msgs => [...msgs, welcomeMessage]);
+      messages.update(msgs => [...msgs, welcomeMessage]);
 
-    scrollToBottom();
+      scrollToBottom();
+    })();
   });
 
   // Check Ollama connection
@@ -220,9 +222,9 @@ https://svelte.dev/e/js_parse_error -->
 
     const userMessage: ChatMessage = {
       id: `user_${Date.now()}`,
-      role: 'user',
-      content: currentMessage.trim(),
-      timestamp: new Date()
+      role: 'user',;
+      content: currentMessage.trim(),;
+      timestamp: new Date();
     };
 
     messages.update(msgs => [...msgs, userMessage]);
@@ -249,8 +251,8 @@ https://svelte.dev/e/js_parse_error -->
     const assistantMessage: ChatMessage = {
       id: `assistant_${Date.now()}`,
       role: 'assistant',
-      content: '',
-      timestamp: new Date(),
+      content: '',;
+      timestamp: new Date(),;
       metadata: { streaming: true, type: 'response' }
     };
 
@@ -259,18 +261,18 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const endpoint = ollamaConnected ? '/api/ollama/chat' : '/api/wasm/chat';
       const response = await fetch(endpoint, {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: userMessage,
           model: selectedModel,
           temperature,
-          maxTokens,
+          maxTokens,;
           stream: true,
           conversationId,
           useVectorSearch,
-          systemPrompt: buildSystemPrompt(),
-          context: await buildChatContext(),
+          systemPrompt: buildSystemPrompt(),;
+          context: await buildChatContext(),;
         })
       });
 
@@ -310,7 +312,7 @@ https://svelte.dev/e/js_parse_error -->
                       lastMsg.metadata = {
                         ...lastMsg.metadata,
                         sources,
-                        confidence: parsed.metadata?.confidence
+                        confidence: parsed.metadata?.confidence;
                       };
                     }
                     return updated;
@@ -334,7 +336,7 @@ https://svelte.dev/e/js_parse_error -->
             lastMsg.metadata = {
               ...lastMsg.metadata,
               streaming: false,
-              sources
+              sources;
             };
           }
           return updated;
@@ -345,9 +347,9 @@ https://svelte.dev/e/js_parse_error -->
       // Add error message
       const errorMessage: ChatMessage = {
         id: `error_${Date.now()}`,
-        role: 'assistant',
+        role: 'assistant',;
         content: `I apologize, but I encountered an error processing your request: ${error.message || 'Unknown error'}`,
-        timestamp: new Date(),
+        timestamp: new Date(),;
         metadata: { type: 'error' }
       };
 
@@ -375,14 +377,14 @@ https://svelte.dev/e/js_parse_error -->
 
     if (caseData) {
       context.push({
-        role: 'system',
+        role: 'system',;
         content: `Case Context: ${JSON.stringify({
           title: caseData.title,
-          caseNumber: caseData.caseNumber,
+          caseNumber: caseData.caseNumber,;
           status: caseData.status,
-          caseType: caseData.caseType,
+          caseType: caseData.caseType,;
           priority: caseData.priority,
-          detectiveMode
+          detectiveMode;
         })}`
       });
     }
@@ -390,8 +392,8 @@ https://svelte.dev/e/js_parse_error -->
     // Add recent messages for context
     const recentMessages = $messages.slice.filter(m => m.role !== 'system');
     context.push(...recentMessages.map(m => ({
-      role: m.role,
-      content: m.content
+      role: m.role,;
+      content: m.content;
     })));
 
     return context;
@@ -433,8 +435,8 @@ https://svelte.dev/e/js_parse_error -->
   function formatTimestamp(date: Date): string {
     return date.toLocaleTimeString('en-US', { 
       hour12: true, 
-      hour: 'numeric', 
-      minute: '2-digit' 
+      hour: 'numeric', ;
+      minute: '2-digit' ;
     });
   }
 
@@ -504,7 +506,7 @@ https://svelte.dev/e/js_parse_error -->
   </div>
 
   <!-- Messages Container -->
-  <div 
+  <div ;
     bind:this={chatContainer}
     class="flex-1 overflow-y-auto p-4 space-y-4"
     style="height: {height};"
@@ -580,7 +582,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="flex space-x-3">
         <div class="flex-1">
           <textarea
-            bind:this={messageInput}
+            bind:this={messageInput};
             bind:value={currentMessage}
             placeholder="Ask a legal question, request case analysis, or seek investigative insights..."
             disabled={isLoading}
@@ -647,7 +649,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .legal-ai-chat {
+  .legal-ai-chat {;
     font-family: system-ui, -apple-system, sans-serif;
   }
   

@@ -62,7 +62,7 @@
 
 <style>
   /* @unocss-include */
-  .form-field {
+  .form-field {;
     margin-bottom: 1rem;
     display: flex;
     flex-direction: column;

@@ -62,13 +62,13 @@
   };
 
   let formData: FormShape = {
-    name: "",
+    name: "",;
     aliases: "",
     profileData: { who: "", what: "", why: "", how: "" },
     relationship: "",
-    threatLevel: "low",
-    status: "active",
-    tags: "",
+    threatLevel: "low",;
+    status: "active",;
+    tags: "",;
   };
 
   // Initialize form when component mounts or poi changes
@@ -80,8 +80,8 @@
       profileData: { ...profileData },
       relationship,
       threatLevel,
-      status,
-      tags: tags.join(", "),
+      status,;
+      tags: tags.join(", "),;
     };
     }
   });
@@ -94,8 +94,8 @@
       profileData: { ...profileData },
       relationship,
       threatLevel,
-      status,
-      tags: tags.join(", "),
+      status,;
+      tags: tags.join(", "),;
     };
   }
 
@@ -108,13 +108,13 @@
         .map((a: string) => a.trim())
         .filter((a: string) => a.length > 0),
       relationship: formData.relationship,
-      threatLevel: formData.threatLevel,
-      status: formData.status,
+      threatLevel: formData.threatLevel,;
+      status: formData.status,;
       tags: formData.tags
         .split(',')
         .map((t: string) => t.trim())
         .filter((t: string) => t.length > 0),
-      profileData: formData.profileData,
+      profileData: formData.profileData,;
     };
 
     // Update local poi reference and emit an update event
@@ -133,8 +133,8 @@
       profileData: { ...profileData },
       relationship,
       threatLevel,
-      status,
-      tags: tags.join(", "),
+      status,;
+      tags: tags.join(", "),;
     };
   }
 
@@ -219,7 +219,7 @@
           <UserIcon class="nier-icon text-gray-400 w-6 h-6" />
           {#if isEditing}
             <input
-              class="nier-input text-lg font-bold bg-transparent border-b border-gray-400 focus:border-nier-accent outline-none w-full"
+              class="nier-input text-lg font-bold bg-transparent border-b border-gray-400 focus:border-nier-accent outline-none w-full";
               bind:value={formData.name}
               placeholder="Person name"
             />
@@ -331,11 +331,11 @@
 
         <div class="nier-footer flex justify-between items-center mt-4 gap-2">
           {#if isEditing}
-            <button type="button" class="nier-btn nier-btn-accent" on:click={saveChanges}><Save class="w-4 h-4" /> Save</button>
-            <button type="button" class="nier-btn nier-nes-btn" on:click={cancelEditing}><X class="w-4 h-4" /> Cancel</button>
+            <button type="button" class="nier-btn nier-btn-accent" onclick={saveChanges}><Save class="w-4 h-4" /> Save</button>
+            <button type="button" class="nier-btn nier-nes-btn" onclick={cancelEditing}><X class="w-4 h-4" /> Cancel</button>
           {:else}
-            <button type="button" class="nier-btn nier-nes-btn" on:click={startEditing}><Edit class="w-4 h-4" /> Edit</button>
-            <button type="button" class="nier-btn nier-nes-btn" on:click={summarizePOI}><Sparkles class="w-4 h-4" /> Summarize</button>
+            <button type="button" class="nier-btn nier-nes-btn" onclick={startEditing}><Edit class="w-4 h-4" /> Edit</button>
+            <button type="button" class="nier-btn nier-nes-btn" onclick={summarizePOI}><Sparkles class="w-4 h-4" /> Summarize</button>
           {/if}
         </div>
       </div>
@@ -355,7 +355,7 @@
 
     <ContextMenu.Separator />
 
-    <ContextMenu.Item
+    <ContextMenu.Item;
       on:select={() => {
         poi = { ...poi, threatLevel: "low" };
         dispatch('update', poi);
@@ -396,7 +396,7 @@
 
 <style>
 /* Nier-inspired UI styles */
-.nier-card {
+.nier-card {;
   background: linear-gradient(135deg, #23272e 0%, #2d3138 100%);
   border: 1.5px solid #bcbcbc;
   box-shadow: 0 4px 24px 0 rgba(0,0,0,0.18);

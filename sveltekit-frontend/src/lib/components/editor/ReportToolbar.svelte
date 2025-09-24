@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unterminated string constant
+<!-- @migration-task Error while migrating Svelte code: Unterminated string constant;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <script lang="ts">
@@ -278,7 +278,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   /* @unocss-include */
-  .report-toolbar {
+  .report-toolbar {;
     display: flex;
     align-items: center;
     justify-content: space-between;

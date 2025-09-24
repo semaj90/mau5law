@@ -37,7 +37,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
         id: doc.id,
         title: doc.title,
         type: doc.type,
-        uploadedAt: doc.uploaded_at,
+        uploadedAt: doc.uploaded_at,;
         processed: doc.processed
       })),
       ragHistory: ragHistory || []
@@ -48,7 +48,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
   }
 };
 
-export const actions: Actions = {
+export const actions: Actions = {;
   query: async ({ request, params, locals }) => {
     if (!locals.user) {
       throw error(401, 'Authentication required');
@@ -75,7 +75,7 @@ export const actions: Actions = {
         query,
         response: response.answer,
         sources: response.sources,
-        userId: locals.user.id,
+        userId: locals.user.id,;
         timestamp: new Date()
       });
 
@@ -83,7 +83,7 @@ export const actions: Actions = {
         success: true,
         response: {
           answer: response.answer,
-          sources: response.sources,
+          sources: response.sources,;
           confidence: response.confidence,
           processingTime: response.processingTime
         }

@@ -133,7 +133,7 @@ export class GlyphEmbedsClient {
           evidence_id: request.evidence_id,
           prompt: request.prompt,
           style: request.style || 'detective',
-          dimensions: request.dimensions || [512, 512],
+          dimensions: request.dimensions || [512, 512],;
           seed: request.seed,
           conditioning_tensors: request.conditioning_tensors,
           neural_sprite_config: request.neural_sprite_config,
@@ -168,7 +168,7 @@ export class GlyphEmbedsClient {
     } catch (error) {
       console.error('SIMD glyph generation failed:', error);
       return {
-        success: false,
+        success: false,;
         error: error instanceof Error ? error.message: 'Unknown error occurred'
       };
     }
@@ -192,7 +192,7 @@ export class GlyphEmbedsClient {
     } catch (error) {
       console.error('Health check failed:', error);
       return {
-        success: false,
+        success: false,;
         error: error instanceof Error ? error.message: 'Health check failed'
       };
     }
@@ -224,7 +224,7 @@ export class GlyphEmbedsClient {
    * Fetch articles and process with RAG chunking for glyph synthesis
    */
   async processArticlesWithRAG(
-    articles: Array<any>,
+    articles: Array<any>,;
     options: {
       chunk_size?: number;
       overlap_size?: number;
@@ -277,7 +277,7 @@ export class GlyphEmbedsClient {
               const summaryResponse = await fetch(`${this.baseUrl}/api/llm/gemma3-legal/summarize`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
+                body: JSON.stringify({;
                   content: chunk,
                   max_tokens: 150,
                   legal_context: true
@@ -299,7 +299,7 @@ export class GlyphEmbedsClient {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                text: summary || chunk,
+                text: summary || chunk,;
                 model: 'embeddinggemma:latest'
               })
             });
@@ -322,7 +322,7 @@ export class GlyphEmbedsClient {
                   id: chunkId,
                   content: chunk,
                   summary: summary,
-                  embedding: embedding,
+                  embedding: embedding,;
                   metadata: {
                     ...article.metadata,
                     source_url: article.url,
@@ -341,7 +341,7 @@ export class GlyphEmbedsClient {
             id: chunkId,
             content: chunk,
             embedding,
-            summary,
+            summary,;
             metadata: {
               ...article.metadata,
               source_url: article.url,
@@ -352,14 +352,14 @@ export class GlyphEmbedsClient {
       }
 
       return {
-        success: true,
+        success: true,;
         chunks: processedChunks
       };
 
     } catch (error) {
       console.error('RAG processing failed:', error);
       return {
-        success: false,
+        success: false,;
         error: error instanceof Error ? error.message: 'RAG processing failed'
       };
     }
@@ -370,7 +370,7 @@ export class GlyphEmbedsClient {
    */
   async synthesizeGlyphs(
     baseGlyphIds: string[],
-    prompt: string,
+    prompt: string,;
     options: {
       enable_did_you_mean?: boolean;
       max_suggestions?: number;
@@ -389,7 +389,7 @@ export class GlyphEmbedsClient {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          base_glyph_ids: baseGlyphIds,
+          base_glyph_ids: baseGlyphIds,;
           prompt: prompt,
           synthesis_config: {
             enable_neural_blending: true,
@@ -411,7 +411,7 @@ export class GlyphEmbedsClient {
         try {
           const suggestionsResponse = await fetch(`${this.baseUrl}/api/llm/gemma3-legal/suggest`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' },;
             body: JSON.stringify({
               original_prompt: prompt,
               base_glyphs: baseGlyphIds,
@@ -440,7 +440,7 @@ export class GlyphEmbedsClient {
               glyph_data: synthesisResult.synthesized_glyph,
               synthesis_metadata: {
                 base_glyphs: baseGlyphIds,
-                prompt: prompt,
+                prompt: prompt,;
                 suggestions: didYouMeanSuggestions,
                 cached_at: new Date().toISOString()
               }
@@ -460,7 +460,7 @@ export class GlyphEmbedsClient {
     } catch (error) {
       console.error('Glyph synthesis failed:', error);
       return {
-        success: false,
+        success: false,;
         error: error instanceof Error ? error.message: 'Synthesis failed'
       };
     }
@@ -470,7 +470,7 @@ export class GlyphEmbedsClient {
    * Search cached glyphs using semantic similarity
    */
   async searchGlyphsSemanticly(
-    query: string,
+    query: string,;
     options: {
       limit?: number;
       threshold?: number;
@@ -489,7 +489,7 @@ export class GlyphEmbedsClient {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: query,
+          text: query,;
           model: 'embeddinggemma:latest'
         })
       });
@@ -507,7 +507,7 @@ export class GlyphEmbedsClient {
         body: JSON.stringify({
           embedding: embedding,
           limit: limit,
-          threshold: threshold,
+          threshold: threshold,;
           filter: {
             content_type: include_synthesized ? ['glyph', 'synthesized_glyph'] : ['glyph']
           }
@@ -521,14 +521,14 @@ export class GlyphEmbedsClient {
       const searchResults = await searchResponse.json();
 
       return {
-        success: true,
+        success: true,;
         matches: searchResults.matches || []
       };
 
     } catch (error) {
       console.error('Semantic glyph search failed:', error);
       return {
-        success: false,
+        success: false,;
         error: error instanceof Error ? error.message: 'Search failed'
       };
     }
@@ -591,7 +591,7 @@ export class GlyphEmbedsClient {
 
     } catch (error) {
       return {
-        success: false,
+        success: false,;
         error: error instanceof Error ? error.message: 'Shader creation failed'
       };
     }
@@ -620,7 +620,7 @@ export class GlyphEmbedsClient {
 
     } catch (error) {
       return {
-        success: false,
+        success: false,;
         error: error instanceof Error ? error.message: 'Download failed'
       };
     }
@@ -656,7 +656,7 @@ export const GLYPH_PRESETS = {
       compression_target: 100
     }
   },
-  modern: {
+  modern: {;
     style: 'modern',
     simd_config: {
       performance_tier: 'n64' as const,
@@ -668,7 +668,7 @@ export const GLYPH_PRESETS = {
 
 export function createGlyphRequest(
   evidenceId: string | number,
-  prompt: string,
+  prompt: string,;
   preset: keyof typeof GLYPH_PRESETS = 'detective';
 ): GlyphEmbedRequest {
   return {

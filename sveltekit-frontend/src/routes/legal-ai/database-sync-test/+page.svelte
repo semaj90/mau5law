@@ -1,6 +1,6 @@
 <!--
   Database Sync Integration Test
-  
+
   Demonstrates complete end-to-end database synchronization with:
   1. SSR initial data loading
   2. Reactive store updates from API
@@ -12,164 +12,164 @@
   // Svelte 5 runes are auto-imported
 
   import { onMount } from 'svelte';
-  
+
   // Logic Layer imports - our decoupled stores
-  import { 
-    langchainService, 
-    documentProcessing, 
-    langchainServiceLogic 
+  import {
+    langchainService,
+    documentProcessing,
+    langchainServiceLogic
   } from '$lib/stores/langchain-service-store.js';
-  
+
   // Presentation Layer imports - accessibility actions
-  import { 
-    accessibleClick, 
+  import {
+    accessibleClick,
     ariaState,
     a11yUtils
   } from '$lib/actions/accessibility-actions.js';
-  
+
   // Type imports
   import type { PageData } from './$types.js';
-  
+
   // Component props - receives SSR data
-  let { data } = $props();: PageData;
-  
+  let { data }: { data: PageData } = $props();
+
   // ===== LOGIC LAYER =====
   // Pure reactive state derived from stores
-  
+
   let langchainState = $derived($langchainService);
   let documentState = $derived($documentProcessing);
-  let serviceStatus = $derived((data as { initialState?: unknown); meta?: unknown }).initialState.serviceStatus;
-  let recentSessions = $derived((data as { initialState?: unknown); meta?: unknown }).initialState.recentSessions;
-  let recentDocuments = $derived((data as { initialState?: unknown); meta?: unknown }).initialState.recentDocuments;
-  
+  let serviceStatus = $derived((data as { initialState: any; meta: any }).initialState.serviceStatus);
+  let recentSessions = $derived((data as { initialState: any; meta: any }).initialState.recentSessions);
+  let recentDocuments = $derived((data as { initialState: any; meta: any }).initialState.recentDocuments);
+
   // Local component state for testing
   let testDocument = `
     LEGAL SERVICES AGREEMENT
-    
+
     This Agreement is entered into on January 15, 2024, between:
-    
+
     Client: TechStart Inc., a Delaware corporation
     Attorney: Legal Partners LLP
-    
+
     SCOPE OF SERVICES:
     1. Corporate formation and governance advice
     2. Contract review and negotiation
     3. Intellectual property protection
     4. Regulatory compliance consulting
-    
+
     TERMS:
     - Hourly rate: $450/hour
     - Retainer: $10,000
     - Billing cycle: Monthly
-    
+
     This agreement shall be governed by Delaware law.
   `;
-  
+
   let selectedSession: string | null = null;
   let testResults: unknown = null;
   let testLog: string[] = [];
-  
+
   // ===== DATABASE SYNC TESTING FUNCTIONS =====
-  
+
   async function testDocumentProcessing() {
     addToLog('Starting document processing test...');
-    
+
     try {
       // Test the database sync via our decoupled store
       await langchainServiceLogic.processDocument(
-        testDocument, 
-        'contract', 
+        testDocument,
+        'contract',
         'corporate-law'
       );
-      
+
       addToLog('✅ Document processed successfully');
       addToLog(`Result stored with ID: ${$documentProcessing.result?.id}`);
       addToLog(`Session ID: ${$documentProcessing.sessionId}`);
-      
+
       testResults = $documentProcessing.result;
-      
+
     } catch (error) {
       addToLog(`❌ Processing failed: ${error}`);
     }
   }
-  
+
   async function testSessionLoading() {
     if (!selectedSession) {
       addToLog('❌ No session selected for loading test');
       return;
     }
-    
+
     addToLog(`Loading session: ${selectedSession}`);
-    
+
     try {
       await langchainServiceLogic.loadSession(selectedSession);
       addToLog('✅ Session loaded successfully');
       addToLog(`Loaded ${$documentProcessing.result ? 'with results' : 'empty session'}`);
-      
+
     } catch (error) {
       addToLog(`❌ Session loading failed: ${error}`);
     }
   }
-  
+
   async function testDocumentDeletion() {
     if (!testResults?.id) {
       addToLog('❌ No document to delete');
       return;
     }
-    
+
     addToLog(`Deleting document: ${testResults.id}`);
-    
+
     try {
       await langchainServiceLogic.deleteDocument(testResults.id);
       addToLog('✅ Document deleted successfully');
       testResults = null;
-      
+
     } catch (error) {
       addToLog(`❌ Deletion failed: ${error}`);
     }
   }
-  
+
   async function testServiceAvailability() {
     addToLog('Testing service availability...');
-    
+
     try {
       await langchainServiceLogic.initialize();
       addToLog(`✅ LangChain available: ${$langchainService.isAvailable}`);
       addToLog(`✅ Models found: ${$langchainService.models.length}`);
-      
+
       if ($langchainService.models.length > 0) {
         addToLog(`Available models: ${$langchainService.models.join(', ')}`);
       }
-      
+
     } catch (error) {
       addToLog(`❌ Service test failed: ${error}`);
     }
   }
-  
+
   function addToLog(message: string) {
     const timestamp = new Date().toLocaleTimeString();
     testLog = [`[${timestamp}] ${message}`, ...testLog];
   }
-  
+
   function clearLog() {
     testLog = [];
     testResults = null;
   }
-  
+
   // ===== PRESENTATION LAYER =====
   // ARIA state management
-  
+
   let ariaProps = $derived({
     expanded: false,
     disabled: $documentProcessing.isProcessing,
     label: $documentProcessing.isProcessing ? 'Processing...' : 'Test database sync',
     live: $documentProcessing.isProcessing ? 'polite' : 'off'
   });
-  
+
   $effect(() => {
     addToLog('🚀 Database sync test component mounted');
     addToLog(`📊 SSR loaded ${recentSessions.length} sessions, ${recentDocuments.length} documents`);
-    
+
     // Announce initial state
     if (langchainState.isAvailable) {
       a11yUtils.announce('Legal AI services are ready for testing');
@@ -196,20 +196,20 @@
         <strong>PostgreSQL</strong>
         <span>{serviceStatus.postgresql ? 'Online' : 'Offline'}</span>
       </div>
-      
+
       <div class="status-nier-bits-card" class:online={serviceStatus.ollama}>
         <span class="status-indicator" aria-label="Ollama status"></span>
         <strong>Ollama</strong>
         <span>{serviceStatus.ollama ? 'Online' : 'Offline'}</span>
       </div>
-      
+
       <div class="status-nier-bits-card" class:online={serviceStatus.redis}>
         <span class="status-indicator" aria-label="Redis status"></span>
         <strong>Redis</strong>
         <span>{serviceStatus.redis ? 'Online' : 'Offline'}</span>
       </div>
     </div>
-    
+
     <p class="last-checked">
       Last checked: {new Date(serviceStatus.lastChecked).toLocaleString()}
       <br>
@@ -229,7 +229,7 @@
               <li>
                 <button
                   use:accessibleClick={{
-                    handler: () => selectedSession = session.id,
+                    handler: () => (selectedSession = session.id),
                     label: `Select session ${session.sessionName}`
                   }}
                   class="session-item"
@@ -246,7 +246,7 @@
           <p class="empty-state">No recent sessions found</p>
         {/if}
       </div>
-      
+
       <div class="data-nier-bits-card">
         <h3>Recent Documents ({recentDocuments.length})</h3>
         {#if recentDocuments.length > 0}
@@ -279,7 +279,7 @@
   <!-- Database Sync Testing Controls -->
   <section class="test-controls">
     <h2>Database Sync Tests</h2>
-    
+
     <div class="test-actions">
       <button
         use:accessibleClick={{
@@ -292,7 +292,7 @@
       >
         🔍 Test Services
       </button>
-      
+
       <button
         use:accessibleClick={{
           handler: testDocumentProcessing,
@@ -304,7 +304,7 @@
       >
         📄 Process Document
       </button>
-      
+
       <button
         use:accessibleClick={{
           handler: testSessionLoading,
@@ -316,7 +316,7 @@
       >
         📂 Load Session
       </button>
-      
+
       <button
         use:accessibleClick={{
           handler: testDocumentDeletion,
@@ -328,7 +328,7 @@
       >
         🗑️ Delete Document
       </button>
-      
+
       <button
         use:accessibleClick={{
           handler: clearLog,
@@ -344,22 +344,22 @@
   <!-- Live Results Display -->
   <section class="live-results">
     <h2>Live Database Sync Results</h2>
-    
+
     <!-- Processing State -->
     {#if $documentProcessing.isProcessing}
       <div class="processing-state" aria-live="polite">
         <div class="spinner" aria-hidden="true"></div>
         <span>Processing document...</span>
         <div class="progress-bar">
-          <div 
-            class="progress-fill" 
+          <div
+            class="progress-fill"
             style="width: {$documentProcessing.progress}%"
             aria-label="Processing progress"
           ></div>
         </div>
       </div>
     {/if}
-    
+
     <!-- Test Results -->
     {#if testResults}
       <div class="result-display" role="region" aria-labelledby="results-heading">
@@ -384,11 +384,11 @@
             </span>
           </div>
         </div>
-        
+
         <div class="result-content">
           <h4>Summary</h4>
           <p>{testResults.summary}</p>
-          
+
           {#if testResults.keyTerms?.length}
             <h4>Key Terms</h4>
             <div class="key-terms">
@@ -397,7 +397,7 @@
               {/each}
             </div>
           {/if}
-          
+
           {#if testResults.entities?.length}
             <h4>Legal Entities</h4>
             <ul class="entities-list">
@@ -409,7 +409,7 @@
         </div>
       </div>
     {/if}
-    
+
     <!-- Error Display -->
     {#if langchainState.error || $documentProcessing.error}
       <div class="error-display" role="alert" aria-live="assertive">
@@ -436,7 +436,7 @@
   <!-- Sample Document -->
   <section class="sample-document">
     <h2>Sample Test Document</h2>
-    <textarea 
+    <textarea
       bind:value={testDocument}
       class="document-editor"
       rows="12"
@@ -454,17 +454,17 @@
     font-family: system-ui, sans-serif;
     line-height: 1.6;
   }
-  
+
   header {
     text-align: center;
     margin-bottom: 3rem;
   }
-  
+
   .subtitle {
     color: #666;
     font-size: 1.1rem;
   }
-  
+
   section {
     margin: 3rem 0;
     padding: 2rem;
@@ -472,14 +472,14 @@
     border-radius: 8px;
     background: #fafafa;
   }
-  
+
   section h2 {
     margin-top: 0;
     color: #333;
     border-bottom: 2px solid #0066cc;
     padding-bottom: 0.5rem;
   }
-  
+
   /* Status Dashboard */
   .status-grid {
     display: grid;
@@ -487,7 +487,7 @@
     gap: 1rem;
     margin: 1.5rem 0;
   }
-  
+
   .status-card {
     display: flex;
     align-items: center;
@@ -498,47 +498,47 @@
     border-radius: 6px;
     transition: border-color 0.2s;
   }
-  
+
   .status-card.online {
     border-color: #28a745;
   }
-  
+
   .status-indicator {
     width: 12px;
     height: 12px;
     border-radius: 50%;
     background: #dc3545;
   }
-  
+
   .status-card.online .status-indicator {
     background: #28a745;
   }
-  
+
   .last-checked {
     color: #666;
     font-size: 0.9rem;
     margin-top: 1rem;
   }
-  
+
   /* Data Grid */
   .data-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
   }
-  
+
   .data-card {
     background: white;
     padding: 1.5rem;
     border-radius: 6px;
     border: 1px solid #ddd;
   }
-  
+
   .data-card h3 {
     margin-top: 0;
     color: #0066cc;
   }
-  
+
   .session-item {
     display: block;
     width: 100%;
@@ -551,17 +551,17 @@
     cursor: pointer;
     transition: all 0.2s;
   }
-  
+
   .session-item:hover {
     border-color: #0066cc;
     background: #f8f9fa;
   }
-  
-  .session-.selected {
+
+  .session-item.selected {
     border-color: #0066cc;
     background: #e3f2fd;
   }
-  
+
   .document-item {
     padding: 1rem;
     margin: 0.75rem 0;
@@ -569,7 +569,7 @@
     border-radius: 4px;
     background: white;
   }
-  
+
   .doc-meta {
     display: flex;
     justify-content: space-between;
@@ -578,7 +578,7 @@
     font-size: 0.9rem;
     color: #666;
   }
-  
+
   .doc-type {
     background: #e3f2fd;
     padding: 0.25rem 0.5rem;
@@ -586,14 +586,14 @@
     font-size: 0.8rem;
     text-transform: uppercase;
   }
-  
+
   .key-terms {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     margin-top: 0.75rem;
   }
-  
+
   .term {
     background: #f0f0f0;
     padding: 0.25rem 0.5rem;
@@ -601,14 +601,14 @@
     font-size: 0.85rem;
     color: #555;
   }
-  
+
   .empty-state {
     color: #999;
     font-style: italic;
     text-align: center;
     padding: 2rem;
   }
-  
+
   /* Test Controls */
   .test-actions {
     display: flex;
@@ -616,7 +616,7 @@
     gap: 1rem;
     margin: 1.5rem 0;
   }
-  
+
   .test-btn {
     padding: 0.75rem 1.5rem;
     border: none;
@@ -628,40 +628,40 @@
     align-items: center;
     gap: 0.5rem;
   }
-  
+
   .test-btn.primary {
     background: #0066cc;
     color: white;
   }
-  
+
   .test-btn.danger {
     background: #dc3545;
     color: white;
   }
-  
+
   .test-btn.secondary {
     background: #6c757d;
     color: white;
   }
-  
-  .test-btn: not(.primary):not(.danger):not(.secondary) {
+
+  .test-btn:not(.primary):not(.danger):not(.secondary) {
     background: #f8f9fa;
     border: 1px solid #ddd;
     color: #333;
   }
-  
+
   .test-btn:hover:not(:disabled) {
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   }
-  
+
   .test-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
   }
-  
+
   /* Processing State */
   .processing-state {
     display: flex;
@@ -672,7 +672,7 @@
     border-radius: 6px;
     margin: 1rem 0;
   }
-  
+
   .spinner {
     width: 24px;
     height: 24px;
@@ -681,7 +681,7 @@
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-  
+
   .progress-bar {
     flex: 1;
     height: 8px;
@@ -689,18 +689,18 @@
     border-radius: 4px;
     overflow: hidden;
   }
-  
+
   .progress-fill {
     height: 100%;
     background: #0066cc;
     transition: width 0.3s ease;
   }
-  
+
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-  
+
   /* Results Display */
   .result-display {
     background: white;
@@ -709,14 +709,14 @@
     border: 1px solid #ddd;
     margin: 1.5rem 0;
   }
-  
+
   .result-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
     margin: 1rem 0;
   }
-  
+
   .result-item {
     display: flex;
     justify-content: space-between;
@@ -725,12 +725,12 @@
     background: #f8f9fa;
     border-radius: 4px;
   }
-  
+
   .result-item label {
     font-weight: 600;
     color: #555;
   }
-  
+
   .result-item code {
     background: #e9ecef;
     padding: 0.25rem 0.5rem;
@@ -738,26 +738,26 @@
     font-family: monospace;
     font-size: 0.9rem;
   }
-  
+
   .cache-status.hit {
     color: #28a745;
     font-weight: 600;
   }
-  
+
   .result-content {
     margin-top: 2rem;
   }
-  
+
   .result-content h4 {
     color: #0066cc;
     margin: 1.5rem 0 0.75rem 0;
   }
-  
+
   .entities-list {
     columns: 2;
     column-gap: 2rem;
   }
-  
+
   /* Error Display */
   .error-display {
     background: #ffebee;
@@ -767,7 +767,7 @@
     color: #c62828;
     margin: 1rem 0;
   }
-  
+
   /* Test Log */
   .log-container {
     background: #1e1e1e;
@@ -779,19 +779,19 @@
     max-height: 400px;
     overflow-y: auto;
   }
-  
+
   .log-entry {
     margin: 0.25rem 0;
     padding: 0.25rem 0;
     border-bottom: 1px solid #333;
   }
-  
+
   .empty-log {
     color: #888;
     text-align: center;
     font-style: italic;
   }
-  
+
   /* Sample Document */
   .document-editor {
     width: 100%;
@@ -803,17 +803,17 @@
     resize: vertical;
     background: white;
   }
-  
+
   /* Responsive Design */
   @media (max-width: 768px) {
     .data-grid {
       grid-template-columns: 1fr;
     }
-    
+
     .test-actions {
       flex-direction: column;
     }
-    
+
     .test-btn {
       width: 100%;
       justify-content: center;

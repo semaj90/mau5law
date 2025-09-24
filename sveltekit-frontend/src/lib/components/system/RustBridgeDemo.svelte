@@ -30,8 +30,9 @@
   let isLoading = $state(false);
   let errorMessage = $state<string | null>(null);
 
-  $effect(async () => {
-    try {
+  $effect(() => {
+    (async () => {
+try {
       isLoading = true;
       errorMessage = null;
       // Initialize the Rust WASM bridge
@@ -50,6 +51,7 @@
     } finally {
       isLoading = false;
     }
+    })();
   });
 
   async function loadSystemData() {
@@ -286,7 +288,7 @@
 </div>
 
 <style>
-  .rust-bridge-demo {
+  .rust-bridge-demo {;
     padding: 2rem;
     max-width: 1200px;
     margin: 0 auto;
@@ -469,11 +471,11 @@
     transition: background 0.2s;
   }
 
-  button:hover:not(:disabled) {
+  button:hover:not(:disabled) {;
     background: #e67e22;
   }
 
-  button:disabled {
+  button:disabled {;
     background: #7f8c8d;
     cursor: not-allowed;
   }

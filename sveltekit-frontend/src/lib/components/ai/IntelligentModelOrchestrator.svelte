@@ -33,9 +33,9 @@
   const modelStatusDisplay = derived(
     [currentModelInfo, performanceMetrics],
     ([$model, $metrics]) => ({
-      current: $model,
+      current: $model,;
       metrics: $metrics,
-      isHealthy: $model && $metrics.some(m => m.modelId === $model.id && m.successRate > 0.7)
+      isHealthy: $model && $metrics.some(m => m.modelId === $model.id && m.successRate > 0.7);
     })
   );
 
@@ -43,9 +43,9 @@
     memoryOptimization,
     ($memory) => $memory ? {
       totalUsed: $memory.totalMemoryUsed,
-      fragmentation: $memory.fragmentationRatio,
-      efficiency: 1 - $memory.fragmentationRatio,
-      layout: Array.from($memory.layout.entries())
+      fragmentation: $memory.fragmentationRatio,;
+      efficiency: 1 - $memory.fragmentationRatio,;
+      layout: Array.from($memory.layout.entries());
     } : null
   );
 
@@ -54,7 +54,7 @@
     ($suggestions) => $suggestions.sort((a, b) => b.confidence - a.confidence)
   );
 
-  $effect(async () => {
+  $effect(() => {
     mounted = true;
 
     // Initialize worker for communication with the intelligent system
@@ -130,10 +130,10 @@
       // Send to worker for additional processing if available
       if (worker) {
         worker.postMessage({
-          type: 'SMART_MODEL_SELECT',
+          type: 'SMART_MODEL_SELECT',;
           payload: {
             query: queryInput,
-            userContext: { sessionId: 'demo' },
+            userContext: { sessionId: 'demo' },;
             intent: { category: 'general', confidence: 0.8 }
           }
         });
@@ -530,7 +530,7 @@
 </div>
 
 <style>
-  .intelligent-orchestrator-dashboard {
+  .intelligent-orchestrator-dashboard {;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 
@@ -545,21 +545,21 @@
   }
 
   /* Custom scrollbar for overflow areas */
-  .overflow-x-auto: :-webkit-scrollbar {
+  .overflow-x-auto::-webkit-scrollbar {
     height: 6px;
   }
 
-  .overflow-x-auto: :-webkit-scrollbar-track {
+  .overflow-x-auto::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 3px;
   }
 
-  .overflow-x-auto: :-webkit-scrollbar-thumb {
+  .overflow-x-auto::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 3px;
   }
 
-  .overflow-x-auto: :-webkit-scrollbar-thumb:hover {
+  .overflow-x-auto::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
   }
 </style>

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -36,8 +36,9 @@ https://svelte.dev/e/js_parse_error -->
   let animationFrame = $state<number//  | null>(null); const data = >(======================================================================
   // LIFECYCLE
   // ========================================================================
-  $effect(async () => {
-    try {
+  $effect(() => {
+    (async () => {
+try {
       console.log('🚀 Initializing Graph Explorer...')));
       // Initialize all systems
       await Promise.all([
@@ -55,6 +56,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error('❌ Failed to initialize Graph Explorer:', error);
     }
+    })();
   });
   onDestroy(() => {
     if (animationFrame) {
@@ -80,22 +82,22 @@ https://svelte.dev/e/js_parse_error -->
       // Add sample chat message
       await db.addChatMessage({
         role: 'user',
-        content: searchQuery || 'Sample legal query about contract liability',
+        content: searchQuery || 'Sample legal query about contract liability',;
         metadata: {
           legalContext: {
-            documentType: 'contract',
+            documentType: 'contract',;
             jurisdiction: 'california',
-            practiceArea: 'corporate'
+            practiceArea: 'corporate';
           }
         }
       });
       // Add sample graph node
       await db.addGraphNode({
         nodeId: `node_${Date.now()}`,
-        label: 'Sample Legal Node',
+        label: 'Sample Legal Node',;
         position: { 
           x: Math.random() * viewport.width, 
-          y: Math.random() * viewport.height 
+          y: Math.random() * viewport.height ;
         },
         embedding: Array.from({ length: 384 }, () => Math.random() * 2 - 1),
         rankingMatrix: Array.from({ length: 16 }, () => Math.random()),
@@ -105,9 +107,9 @@ https://svelte.dev/e/js_parse_error -->
           jurisdiction: 'california',
           practiceArea: 'corporate',
           confidence: 0.85,
-          lastUpdated: new Date()
-        },
-        connections: []
+          lastUpdated: new Date();
+        },;
+        connections: [];
       });
       console.log('✅ Sample data added');
       await updatePerformanceStats();
@@ -124,8 +126,8 @@ https://svelte.dev/e/js_parse_error -->
     try {
       // Add search to chat history
       await db.addChatMessage({
-        role: 'user',
-        content: searchQuery,
+        role: 'user',;
+        content: searchQuery,;
         metadata: {
           legalContext: {
             documentType: 'search',
@@ -135,10 +137,10 @@ https://svelte.dev/e/js_parse_error -->
       });
       // Perform integrated search
       const result = await integratedSearch.search({
-        text: searchQuery,
+        text: searchQuery,;
         filters: {
           confidenceThreshold: 0.7
-        },
+        },;
         options: {
           searchStrategy: 'hybrid',
           useQuantizedVectors: true,
@@ -160,7 +162,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error('Search failed:', error);
       await db.addChatMessage({
-        role: 'system',
+        role: 'system',;
         content: `Search failed: ${error.message}`
       });
     } finally {
@@ -217,9 +219,9 @@ https://svelte.dev/e/js_parse_error -->
       performanceStats = {
         database: dbStats,
         search: searchStats,
-        gpu: gpuStats,
-        storage: storageStats,
-        quantization: quantizationStats
+        gpu: gpuStats,;
+        storage: storageStats,;
+        quantization: quantizationStats;
       };
     } catch (error) {
       console.error('Failed to update performance stats:', error);
@@ -339,7 +341,7 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Graph Visualization Canvas -->
     <section class="graph-section">
       <h3>Interactive Graph ({nodes.length} nodes)</h3>
-      <canvas 
+      <canvas ;
         bind:this={canvas as any}
         onclick={handleCanvasInteraction}
         width="800"

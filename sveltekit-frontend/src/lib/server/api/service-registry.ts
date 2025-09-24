@@ -27,7 +27,7 @@ export class ApiServiceRegistry {
       },
       users: {
         endpoints: ['/api/users', '/api/user/profile'],
-        description: 'User account management',
+        description: 'User account management',;
         required: true
       },
 
@@ -49,7 +49,7 @@ export class ApiServiceRegistry {
       },
       reports: {
         endpoints: ['/api/reports', '/api/reports/generate'],
-        description: 'Report generation',
+        description: 'Report generation',;
         required: true
       },
 
@@ -69,7 +69,7 @@ export class ApiServiceRegistry {
       embeddings: {
         endpoints: ['/api/embed', '/api/embeddings/generate'],
         description: 'Text embeddings with nomic-embed-text',
-        dependencies: ['ollama'],
+        dependencies: ['ollama'],;
         required: true
       },
 
@@ -83,7 +83,7 @@ export class ApiServiceRegistry {
       vector: {
         endpoints: ['/api/vector', '/api/vectors/index'],
         description: 'Vector database operations',
-        dependencies: ['qdrant', 'postgresql'],
+        dependencies: ['qdrant', 'postgresql'],;
         required: false
       },
 
@@ -97,7 +97,7 @@ export class ApiServiceRegistry {
       'enhanced-rag': {
         endpoints: ['/api/enhanced-rag', '/api/enhanced-rag/process'],
         description: 'Advanced RAG processing',
-        dependencies: ['enhanced_rag'],
+        dependencies: ['enhanced_rag'],;
         required: false
       },
 
@@ -110,7 +110,7 @@ export class ApiServiceRegistry {
       },
       documents: {
         endpoints: ['/api/documents', '/api/documents/[id]', '/api/documents/process'],
-        description: 'Document management and processing',
+        description: 'Document management and processing',;
         required: true
       },
 
@@ -127,7 +127,7 @@ export class ApiServiceRegistry {
       },
       metrics: {
         endpoints: ['/api/metrics'],
-        description: 'Performance metrics',
+        description: 'Performance metrics',;
         required: false
       },
 
@@ -140,7 +140,7 @@ export class ApiServiceRegistry {
       },
       process: {
         endpoints: ['/api/process', '/api/process-legal-document'],
-        description: 'Document processing pipeline',
+        description: 'Document processing pipeline',;
         required: true
       },
 
@@ -158,7 +158,7 @@ export class ApiServiceRegistry {
       },
       laws: {
         endpoints: ['/api/laws'],
-        description: 'Legal laws database',
+        description: 'Legal laws database',;
         required: false
       },
 
@@ -175,7 +175,7 @@ export class ApiServiceRegistry {
       },
       'voice-to-text': {
         endpoints: ['/api/voice-to-text'],
-        description: 'Speech to text conversion',
+        description: 'Speech to text conversion',;
         required: false
       },
 
@@ -187,7 +187,7 @@ export class ApiServiceRegistry {
       },
       debug: {
         endpoints: ['/api/debug', '/api/debug-users'],
-        description: 'Debug and troubleshooting',
+        description: 'Debug and troubleshooting',;
         required: false
       }
     };
@@ -202,7 +202,7 @@ export class ApiServiceRegistry {
       name: 'PostgreSQL',
       port: 5433,
       host: 'localhost',
-      type: 'database',
+      type: 'database',;
       required: true,
       healthCheck: () => this.checkPort(5432)
     });
@@ -211,7 +211,7 @@ export class ApiServiceRegistry {
       name: 'Redis Cache',
       port: 6379,
       host: 'localhost', 
-      type: 'cache',
+      type: 'cache',;
       required: false,
       healthCheck: () => this.checkPort(6379)
     });
@@ -220,7 +220,7 @@ export class ApiServiceRegistry {
       name: 'Ollama AI',
       port: 11434,
       host: 'localhost',
-      type: 'ai',
+      type: 'ai',;
       required: true,
       healthCheck: () => this.checkHttp('http://localhost:11434/api/tags')
     });
@@ -229,7 +229,7 @@ export class ApiServiceRegistry {
       name: 'Qdrant Vector DB',
       port: 6333,
       host: 'localhost',
-      type: 'database',
+      type: 'database',;
       required: false,
       healthCheck: () => this.checkHttp('http://localhost:6333/collections')
     });
@@ -238,7 +238,7 @@ export class ApiServiceRegistry {
       name: 'MinIO Object Storage',
       port: 9000,
       host: 'localhost',
-      type: 'storage',
+      type: 'storage',;
       required: false,
       healthCheck: () => this.checkHttp('http://localhost:9000/minio/health/live')
     });
@@ -247,7 +247,7 @@ export class ApiServiceRegistry {
       name: 'Enhanced RAG Service',
       port: 8094,
       host: 'localhost',
-      type: 'microservice',
+      type: 'microservice',;
       required: false,
       healthCheck: () => this.checkHttp('http://localhost:8094/health')
     });
@@ -256,7 +256,7 @@ export class ApiServiceRegistry {
       name: 'GPU Orchestrator',
       port: 8095,
       host: 'localhost',
-      type: 'microservice',
+      type: 'microservice',;
       required: false,
       healthCheck: () => this.checkHttp('http://localhost:8095/health')
     });
@@ -302,7 +302,7 @@ export class ApiServiceRegistry {
       const timeoutId = setTimeout(() => controller.abort(), timeout);
       
       const response = await fetch(url, {
-        method: 'GET',
+        method: 'GET',;
         signal: controller.signal
       });
       
@@ -327,7 +327,7 @@ export class ApiServiceRegistry {
       } catch (error) {
         results.set(name, {
           ...service,
-          status: 'error',
+          status: 'error',;
           error: error.message,
           lastCheck: new Date().toISOString()
         });
@@ -369,7 +369,7 @@ export class ApiServiceRegistry {
     const results = {
       registered: Array.from(this.routes.keys()),
       existing: [],
-      missing: [],
+      missing: [],;
       extra: []
     };
 
@@ -427,7 +427,7 @@ export class ApiServiceRegistry {
       requiredServices: this.getRequiredServices().length,
       optionalServices: this.getOptionalServices().length,
       routes: Object.fromEntries(this.routes),
-      services: Object.fromEntries(this.services),
+      services: Object.fromEntries(this.services),;
       timestamp: new Date().toISOString()
     };
   }

@@ -53,7 +53,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
       ...options,
       // Input-specific defaults
       width: options.width || (options.size === 'small' ? 2.5 : options.size === 'large' ? 4 : 3),
-      height: options.height || (options.multiline ? (options.rows || 3) * 0.4 : 0.5),
+      height: options.height || (options.multiline ? (options.rows || 3) * 0.4 : 0.5),;
       depth: options.depth || 0.08,
       backgroundColor: options.backgroundColor || YORHA_COLORS.primary.white,
       borderColor: options.borderColor || YORHA_COLORS.primary.grey,
@@ -74,7 +74,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
         borderWidth: 0.03,
         glow: {
           enabled: true,
-          color: YORHA_COLORS.accent.gold,
+          color: YORHA_COLORS.accent.gold,;
           intensity: 0.4
         },
         ...options.active
@@ -171,7 +171,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     const textMaterial = new THREE.MeshBasicMaterial({
       color: this.options.readonly 
         ? YORHA_COLORS.interaction.disabled: (this.style.textColor || YORHA_COLORS.primary.black),
-      transparent: true,
+      transparent: true,;
       side: THREE.DoubleSide
     });
 
@@ -195,7 +195,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     const placeholderMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.primary.grey,
       transparent: true,
-      opacity: 0.6,
+      opacity: 0.6,;
       side: THREE.DoubleSide
     });
 
@@ -213,7 +213,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     const cursorGeometry = new THREE.PlaneGeometry(0.02, 0.25);
     const cursorMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.accent.gold,
-      transparent: true,
+      transparent: true,;
       opacity: 0
     });
 
@@ -233,7 +233,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     const iconGeometry = this.getIconGeometry(this.options.icon);
     const iconMaterial = new THREE.MeshBasicMaterial({
       color: this.options.readonly 
-        ? YORHA_COLORS.interaction.disabled: YORHA_COLORS.primary.grey,
+        ? YORHA_COLORS.interaction.disabled: YORHA_COLORS.primary.grey,;
       transparent: true
     });
 
@@ -253,7 +253,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     const clearGeometry = new THREE.CircleGeometry(0.08, 8);
     const clearMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.primary.grey,
-      transparent: true,
+      transparent: true,;
       opacity: 0.7
     });
 
@@ -293,7 +293,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     );
     const highlightMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.accent.gold,
-      transparent: true,
+      transparent: true,;
       opacity: 0
     });
 
@@ -343,7 +343,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
   }
 
   private static getVariantStyle(
-    variant: string,
+    variant: string,;
     size: string,
     error?: boolean,
     success?: boolean;
@@ -351,7 +351,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     // Size-based styles;
     const sizeStyles = {
       small: { fontSize: 0.12 },
-      medium: { fontSize: 0.16 },
+      medium: { fontSize: 0.16 },;
       large: { fontSize: 0.2 }
     };
     
@@ -387,7 +387,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
         textColor: YORHA_COLORS.accent.gold,
         glow: {
           enabled: true,
-          color: YORHA_COLORS.accent.gold,
+          color: YORHA_COLORS.accent.gold,;
           intensity: 0.2
         }
       }

@@ -1,47 +1,47 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 /*
  * AI Summary Save Endpoint
  * Saves legal AI analysis results to PostgreSQL with audit trail
  */
 
-import { json } from '@sveltejs/kit';
-import { getUser } from '$lib/server/auth';
-import { db } from '$lib/server/db';
-import { cases, aiAnalyses } from '$lib/server/db/schema-unified';
-import { eq } from 'drizzle-orm';
+import { json } from '@sveltejs/kit'
+import { getUser } from '$lib/server/auth'
+import { db } from '$lib/server/db'
+import { cases, aiAnalyses } from '$lib/server/db/schema-unified'
+import { eq } from 'drizzle-orm'
 }
 
 export interface SaveSummaryRequest {
-  caseId: string;
-  summary: string;
+  caseId: string
+  summary: string
   metadata?: {
-    analysisType?: string;
-    model?: string;
-    confidence?: number;
-    processingTime?: number;
-    tokenCount?: number;
-    sources?: any[];
-  };
+    analysisType?: string
+    model?: string
+    confidence?: number
+    processingTime?: number
+    tokenCount?: number
+    sources?: any[]
+  }
 }
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
     // Authentication check
-    const { user } = await getUser({ request, cookies } as any);
+    const { user } = await getUser({ request, cookies } as any)
     if (!user) {
-      return json({ error: 'Authentication required' }, { status: 401 });
+      return json({ error: 'Authentication required' }, { status: 401 })
     }
 
     // Parse request body
-    const body: SaveSummaryRequest = await request.json();
-    const { caseId, summary, metadata = {} } = body;
+    const body: SaveSummaryRequest = await request.json()
+    const { caseId, summary, metadata = {} } = body
 
-    // Validate required fields;
+    // Validate required fields
     if (!caseId || !summary) {
       return json({
         error: 'Missing required fields: caseId, summary'
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
     // Verify case exists and user has access
@@ -49,21 +49,21 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       .select()
       .from(cases)
       .where(eq(cases.id, caseId)
-      .limit(1);
+      .limit(1)
 
     if (caseRecord.length === 0) {
-      return json({ error: 'Case not found' }, { status: 404 });
+      return json({ error: 'Case not found' }, { status: 404 })
     }
 
     // Check if user has access to this case
-    const userCase = caseRecord[0];
+    const userCase = caseRecord[0]
     if (userCase.userId !== user.id && user.role !== 'admin') {
-      return json({ error: 'Access denied' }, { status: 403 });
+      return json({ error: 'Access denied' }, { status: 403 })
     }
 
     // Save AI analysis to database
     const analysisRecord = await db
-      .insert(aiAnalyses);
+      .insert(aiAnalyses)
       .values({
         caseId,
         userId: user.id,
@@ -81,38 +81,38 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
           ...metadata
         }
       })
-      .returning();
+      .returning()
 
     // Update case with latest analysis timestamp
     await db
-      .update(cases);
+      .update(cases)
       .set({
         updatedAt: new Date(),
         lastAnalysisAt: new Date()
       })
-      .where(eq(cases.id, caseId);
+      .where(eq(cases.id, caseId)
 
-    // Log the save operation;
+    // Log the save operation
     console.log('AI analysis saved:', {
       analysisId: analysisRecord[0].id,
       caseId,
       userId: user.id,
       model: metadata?.model || "unknown" // @ts-ignore - Model property access,
       confidence: metadata.confidence
-    });
+    })
 
     return json({
       success: true,
       analysisId: analysisRecord[0].id,
       message: 'Summary saved successfully'
-    });
+    })
 
   } catch (error: any) {
-    console.error('Summary save error:', error);
+    console.error('Summary save error:', error)
 
     return json({
       error: 'Failed to save summary',
       details: error instanceof Error ? error.message: 'Unknown error'
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

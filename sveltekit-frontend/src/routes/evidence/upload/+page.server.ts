@@ -24,7 +24,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       .select({
         id: cases.id,
         title: cases.title,
-        case_number: cases.case_number,
+        case_number: cases.case_number,;
         status: cases.status
       })
       .from(cases)
@@ -44,7 +44,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   }
 };
 
-export const actions: Actions = {
+export const actions: Actions = {;
   upload: async ({ request, locals }) => {
     const formData = await request.formData();
     const form = await superValidate(formData, zod(evidenceUploadSchema));
@@ -59,7 +59,7 @@ export const actions: Actions = {
     if (!file || file.size === 0) {
       return fail(400, {
         form: {
-          ...form,
+          ...form,;
           errors: { file: ['Please select a file to upload'] }
         }
       });
@@ -69,7 +69,7 @@ export const actions: Actions = {
     if (!validateFileSize(file)) {
       return fail(400, {
         form: {
-          ...form,
+          ...form,;
           errors: { file: ['File size exceeds the maximum limit of 100MB'] }
         }
       });
@@ -85,7 +85,7 @@ export const actions: Actions = {
     if (!validateFileType(file, evidenceType)) {
       return fail(400, {
         form: {
-          ...form,
+          ...form,;
           errors: { file: [`File type ${file.type} is not supported for ${evidenceType} evidence`] }
         }
       });
@@ -103,7 +103,7 @@ export const actions: Actions = {
         if (caseRecord.length === 0) {
           return fail(400, {
             form: {
-              ...form,
+              ...form,;
               errors: { case_id: ['Selected case not found'] }
             }
           });
@@ -142,14 +142,14 @@ export const actions: Actions = {
           ocrFormData.append('file', new Blob([fileBuffer], { type: file.type }), file.name);
 
           const ocrResponse = await fetch('/api/ocr/extract', {
-            method: 'POST',
+            method: 'POST',;
             body: ocrFormData
           });
 
           if (ocrResponse.ok) {
             ocrResult = await ocrResponse.json();
             console.log('OCR processing completed:', {
-              filename: ocrResult.filename,
+              filename: ocrResult.filename,;
               pages: ocrResult.pages,
               averageConfidence: ocrResult.averageConfidence,
               legalConceptsFound: ocrResult.legalConcepts?.length || 0,
@@ -164,7 +164,7 @@ export const actions: Actions = {
       }
 
       // Generate rich metadata based on file type;
-      let metadata: any = {
+      let metadata: any = {;
         kind: evidenceType,
         uploadedAt: new Date().toISOString(),
         fileSize: file.size,
@@ -185,7 +185,7 @@ export const actions: Actions = {
             isEncrypted: false,
             title: file.name,
             extractedText: ocrResult?.text,
-            legalConcepts: ocrResult?.legalConcepts || [],
+            legalConcepts: ocrResult?.legalConcepts || [],;
             citations: ocrResult?.citations || [],
             ocrConfidence: ocrResult?.averageConfidence
           };
@@ -195,7 +195,7 @@ export const actions: Actions = {
           metadata = {
             ...metadata,
             kind: 'IMAGE',
-            resolution: { width: 0, height: 0 }, // Would be extracted with sharp
+            resolution: { width: 0, height: 0 }, // Would be extracted with sharp;
             format: file.type.split('/')[1] || 'unknown',
             hasAlphaChannel: file.type === 'image/png',
             extractedText: ocrResult?.text,
@@ -207,7 +207,7 @@ export const actions: Actions = {
           metadata = {
             kind: 'VIDEO',
             durationSeconds: 0, // Would be extracted with ffprobe
-            resolution: { width: 0, height: 0 },
+            resolution: { width: 0, height: 0 },;
             codec: 'unknown',
             frameRate: 0,
             fileSize: file.size,
@@ -220,7 +220,7 @@ export const actions: Actions = {
             kind: 'AUDIO',
             durationSeconds: 0, // Would be extracted with ffprobe
             codec: 'unknown',
-            sampleRate: 44100,
+            sampleRate: 44100,;
             channels: 2,
             fileSize: file.size,
             uploadedAt: new Date().toISOString()
@@ -233,7 +233,7 @@ export const actions: Actions = {
           metadata = {
             kind: 'TEXT',
             wordCount: textContent.split(/\s+/).filter(item => item.length),
-            characterCount: textContent.length,
+            characterCount: textContent.length,;
             language: 'unknown', // Could detect with a language detection library
             fileSize: file.size,
             uploadedAt: new Date().toISOString()
@@ -274,7 +274,7 @@ export const actions: Actions = {
             ocrResult: ocrResult ? {
               extractedText: ocrResult.text,
               confidence: ocrResult.averageConfidence,
-              legalConcepts: ocrResult.legalConcepts,
+              legalConcepts: ocrResult.legalConcepts,;
               citations: ocrResult.citations,
               pageCount: ocrResult.pages
             } : null
@@ -286,7 +286,7 @@ export const actions: Actions = {
         id: evidenceRecord[0].id,
         title: evidenceRecord[0].title,
         type: evidenceRecord[0].evidence_type,
-        size: file.size,
+        size: file.size,;
         hash: fileHash.substring(0, 8) + '...'
       });
 
@@ -302,7 +302,7 @@ export const actions: Actions = {
         uploadFormData.append('evidenceType', evidenceType);
 
         const goServiceResponse = await fetch('http://localhost:5173/api/upload/go-service', {
-          method: 'POST',
+          method: 'POST',;
           body: uploadFormData
         });
 
@@ -315,7 +315,7 @@ export const actions: Actions = {
             metadata = {
               ...metadata,
               goServiceProcessing: {
-                embeddings: goResult.embeddings,
+                embeddings: goResult.embeddings,;
                 analysis: goResult.analysis,
                 processedAt: new Date().toISOString()
               }
@@ -335,7 +335,7 @@ export const actions: Actions = {
       console.error('Evidence upload error:', error);
       return fail(500, {
         form: {
-          ...form,
+          ...form,;
           errors: { file: ['Failed to upload file. Please try again.'] }
         }
       });

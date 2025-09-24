@@ -20,11 +20,11 @@
     const errorData = {
       id: errorId,
       message: err.message,
-      stack: err.stack,
-      url: $page.url.pathname,
+      stack: err.stack,;
+      url: $page.url.pathname,;
       timestamp: new Date().toISOString(),
       userAgent: globalThis.navigator?.userAgent,
-      context
+      context;
     };
     console.error('YoRHa Error Boundary:', errorData);
     // In production, send to error tracking service
@@ -170,17 +170,17 @@
   {@render children()}
 {/if}
 
-<style>/* Ensure error boundary styles don't interfere with global styles */ details summary::-webkit-details-marker {
+<style>/* Ensure error boundary styles don't interfere with global styles */ details summary::-webkit-details-marker {;
     display: none;
   }
   
-  details summary::before {
+  details summary::before {;
     content: '▶';
     margin-right: 0.5rem;
     transition: transform 0.2s ease;
   }
   
-  details[open] summary::before {
+  details[open] summary::before {;
     transform: rotate(90deg);
   }
 </style>

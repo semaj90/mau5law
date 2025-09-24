@@ -21,7 +21,7 @@
     type = 'button',
     class: className = '',
     onclick,
-    ...restProps
+    ...restProps;
   }: Props = $props();
 
   
@@ -29,15 +29,15 @@
   let variantClass = $derived({
     primary: 'is-primary',
     success: 'is-success',
-    warning: 'is-warning',
-    error: 'is-error',
-    default: ''
+    warning: 'is-warning',;
+    error: 'is-error',;
+    default: '';
   }[variant]);
 
   let sizeClass = $derived({
-    small: 'is-small',
-    normal: '',
-    large: 'is-large'
+    small: 'is-small',;
+    normal: '',;
+    large: 'is-large';
   }[size]);
 
   let finalClass = $derived([

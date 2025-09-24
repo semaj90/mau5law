@@ -212,7 +212,7 @@ export function generateRouteMetadata(path: string, category: DiscoveredRoute['c
 
   return {
     title,
-    description: `${category.replace('-', ' ')} route - ${title}`,
+    description: `${category.replace('-', ' ')} route - ${title}`,;
     icon: icons[category],
     tags
   };
@@ -233,7 +233,7 @@ export function convertToRouteDefinition(discovered: DiscoveredRoute): RouteDefi
     category: mapCategoryToRouteDefinitionCategory(discovered.category),
     status: discovered.priority === 'production' ? 'active' :
             discovered.priority === 'testing' ? 'beta' :
-            discovered.priority === 'demo' ? 'experimental' : 'development',
+            discovered.priority === 'demo' ? 'experimental' : 'development',;
     tags: metadata.tags || ['auto-discovered']
   };
 }
@@ -274,7 +274,7 @@ export function getConsolidatableRoutes(): RouteDefinition[] {
       category,
       priority,
       hasServer: false, // Would need file system check in real implementation
-      hasLayout: false, // Would need file system check in real implementation
+      hasLayout: false, // Would need file system check in real implementation;
       framework: 'sveltekit',
       metadata
     };
@@ -317,7 +317,7 @@ export function enhanceRouteDiscovery() {
 
   return {
     consolidatableRoutes: getConsolidatableRoutes(),
-    statistics: getRouteStatistics(),
+    statistics: getRouteStatistics(),;
     categories: [...new Set(getConsolidatableRoutes().map(r => r.category))],
     isEnhanced: true
   };

@@ -54,7 +54,7 @@ export class LegalVectorService {
       content: document.content,
       documentType: document.documentType,
       embedding: sql`${JSON.stringify(document.embedding)}::vector`,
-      practiceArea: document.practiceArea,
+      practiceArea: document.practiceArea,;
       jurisdiction: document.jurisdiction,
       caseId: document.caseId,
       clientId: document.clientId,
@@ -110,7 +110,7 @@ export class LegalVectorService {
         mimeType: legalDocuments.mimeType,
         createdAt: legalDocuments.createdAt,
         updatedAt: legalDocuments.updatedAt,
-        lastAccessedAt: legalDocuments.lastAccessedAt,
+        lastAccessedAt: legalDocuments.lastAccessedAt,;
         similarity: sql<number>`1 - (${legalDocuments.embedding} <=> ${sql`${JSON.stringify(queryEmbedding)}::vector`})`
       })
       .from(legalDocuments);
@@ -302,7 +302,7 @@ export class LegalVectorService {
         this.findSimilarDocuments(
           query.embedding,);
           {
-            threshold: query.threshold || 0.7,
+            threshold: query.threshold || 0.7,;
             limit: query.limit || 10,
             ...query.filters
           }

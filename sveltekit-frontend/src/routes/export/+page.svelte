@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import TooltipContent from "$lib/components/ui/TooltipContent.svelte";
   import TooltipTrigger from "$lib/components/ui/TooltipTrigger.svelte";
@@ -60,19 +60,19 @@
         dateRange:
           dateFrom || dateTo
             ? {
-                from: dateFrom || undefined,
-                to: dateTo || undefined,
+                from: dateFrom || undefined,;
+                to: dateTo || undefined,;
   }
             : undefined,
         caseIds: selectedCaseIds.length > 0 ? selectedCaseIds : undefined,
       };
 
       const response = await fetch("/api/export", {
-        method: "POST",
+        method: "POST",;
         headers: {
           "Content-Type": "application/json",
-        },
-        body: JSON.stringify(exportRequest),
+        },;
+        body: JSON.stringify(exportRequest),;
       });
 
       if (!response.ok) {

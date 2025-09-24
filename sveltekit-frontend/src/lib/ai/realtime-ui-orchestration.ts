@@ -48,7 +48,7 @@ export class LegalCanvasManager {
     this.canvas = new fabric.Canvas(canvasElement, {
       width: config.width || 1920,
       height: config.height || 1080,
-      backgroundColor: '#1a1a1a',
+      backgroundColor: '#1a1a1a',;
       selection: true,
       preserveObjectStacking: true,
       renderOnAddRemove: false, // Manual rendering for 60fps control
@@ -96,7 +96,7 @@ export class LegalCanvasManager {
    * Create real-time progress indicator
    */
   createProgressIndicator(
-    id: string,
+    id: string,;
     config: ProgressConfig;
   ): ProgressIndicator {
     if (!this.canvas) throw new Error('Canvas not initialized');
@@ -112,7 +112,7 @@ export class LegalCanvasManager {
    * Update progress with smooth animation
    */
   updateProgress(
-    id: string,
+    id: string,;
     progress: number,
     details?: ProgressDetails;
   ): void {
@@ -320,7 +320,7 @@ class ProgressIndicator {
       fill: '#333333',
       stroke: '#555555',
       strokeWidth: 1,
-      rx: 4,
+      rx: 4,;
       ry: 4
     });
 
@@ -331,7 +331,7 @@ class ProgressIndicator {
       width: 0,
       height: config.height - 4,
       fill: config.color || '#00ff88',
-      rx: 2,
+      rx: 2,;
       ry: 2
     });
 
@@ -340,7 +340,7 @@ class ProgressIndicator {
       left: config.x + config.width / 2,
       top: config.y + config.height / 2,
       fontSize: 12,
-      fontFamily: 'monospace',
+      fontFamily: 'monospace',;
       fill: '#ffffff',
       textAlign: 'center',
       originX: 'center',
@@ -349,7 +349,7 @@ class ProgressIndicator {
 
     // Group elements;
     this.progressGroup = new fabric.Group([background, this.progressBar, this.progressText], {
-      selectable: false,
+      selectable: false,;
       evented: false
     });
 
@@ -426,7 +426,7 @@ class VectorVisualization {
         stroke: '#ffffff',
         strokeWidth: 1,
         originX: 'center',
-        originY: 'center',
+        originY: 'center',;
         selectable: false
       });
 
@@ -435,7 +435,7 @@ class VectorVisualization {
         object: point,
         originalX: x,
         originalY: y,
-        similarity: vector.similarity,
+        similarity: vector.similarity,;
         phase: Math.random() * Math.PI * 2
       });
 
@@ -464,7 +464,7 @@ class VectorVisualization {
       stroke: '#444444',
       strokeWidth: 1,
       opacity: 0.3,
-      selectable: false,
+      selectable: false,;
       evented: false
     });
 
@@ -515,7 +515,7 @@ export class LokiCacheManager {
       const LokiIndexedAdapter = Loki.LokiIndexedAdapter;
 
       this.db = new Loki('legal-ai-cache', {
-        adapter: new LokiIndexedAdapter(),
+        adapter: new LokiIndexedAdapter(),;
         autoload: true,
         autoloadCallback: () => {
           this.setupCollections();
@@ -540,7 +540,7 @@ export class LokiCacheManager {
 
     // Vector embeddings cache;
     const vectorsCollection = this.db.addCollection('vectors', {
-      indices: ['document_id', 'similarity', 'timestamp'],
+      indices: ['document_id', 'similarity', 'timestamp'],;
       unique: ['document_id']
     });
 
@@ -587,7 +587,7 @@ export class LokiCacheManager {
           similarity: result.similarity,
           metadata: result.metadata
         })),
-        timestamp: Date.now(),
+        timestamp: Date.now(),;
         ttl: Date.now() + 3600000 // 1 hour TTL
       };
 
@@ -653,7 +653,7 @@ export class LokiCacheManager {
         canvas_id: canvasId,
         user_id: userId,
         canvas_data: canvasData,
-        timestamp: Date.now(),
+        timestamp: Date.now(),;
         version: Date.now() // Simple versioning
       };
 
@@ -905,7 +905,7 @@ export class RabbitMQRealtimeMessenger {
     const routingKey = `progress.${progressId}`;
     const message = {
       ...progressData,
-      timestamp: Date.now(),
+      timestamp: Date.now(),;
       id: progressId
     };
 
@@ -1168,7 +1168,7 @@ export const realTimeUIMachine = createMachine({
       }
     }
   }
-}, {
+}, {;
   actions: {
     initializeComponents: assign((context, event) => {
       console.log('🚀 Initializing real-time UI components');

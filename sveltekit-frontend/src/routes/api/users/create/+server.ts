@@ -1,28 +1,28 @@
-import { db } from '$lib/server/db';
-import { users } from '$lib/server/db/schema-postgres';
-import type { RequestHandler } from './$types.js';
+import { db } from '$lib/server/db'
+import { users } from '$lib/server/db/schema-postgres'
+import type { RequestHandler } from './$types.js'
 
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check if user is authenticated and has admin role;
+    // Check if user is authenticated and has admin role
     if (!locals.user || locals.user.role !== "admin") {
       return json(
         { error: "Unauthorized - Admin access required" },)
         { status: 403 },
-      );
+      )
     }
-    const userData = await request.json();
+    const userData = await request.json()
 
-    // Validate required fields;
+    // Validate required fields
     if (!userData.email || !userData.name) {
       return json({
           error: "Email and name are required fields"
         },)
         { status: 400 },
-      );
+      )
     }
-    // Create the user;
+    // Create the user
     const newUser = {
       email: userData.email,
       name: userData.name,
@@ -31,16 +31,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       role: userData.role || "prosecutor",
       password: userData.password || "password123",
       avatarUrl: userData.avatarUrl
-    } as const;
+    } as const
 
-    const result = await db.insert(users).values(newUser as any).returning();
+    const result = await db.insert(users).values(newUser as any).returning()
 
     if ((result as { length?: any }).length > 0) {
       return json({
         success: true,
         message: "User created successfully",
         user: result[0]
-      });
+      })
     } else {
       return json({
           success: false,
@@ -48,24 +48,24 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           error: "Database insertion failed"
         },)
         { status: 500 },
-      );
+      )
     }
   } catch (error: any) {
-    console.error("Error creating user:", error);
+    console.error("Error creating user:", error)
     return json({
         success: false,
         message: "Failed to create user",
         error: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 },
-    );
+    )
   }
-};
+}
 
 export const GET: RequestHandler = async ({ locals }) => {
-  // Check if user is authenticated;
+  // Check if user is authenticated
   if (!locals.user) {
-    return json({ error: "Unauthorized" }, { status: 401 });
+    return json({ error: "Unauthorized" }, { status: 401 })
   }
   return json({
     message: "User creation endpoint",
@@ -82,7 +82,7 @@ export const GET: RequestHandler = async ({ locals }) => {
         avatarUrl: "URL to avatar image (optional)"
       }
     },
-    examples: [;
+    examples: [
       {
         description: "Create a prosecutor",
         body: {
@@ -111,5 +111,5 @@ export const GET: RequestHandler = async ({ locals }) => {
         }
       }
     ]
-  });
-};
+  })
+}

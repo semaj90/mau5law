@@ -9,10 +9,10 @@
   let user = $state(page.data.user);
   let userStats = $state(page.data.userStats);
   let profileForm = $state({
-    name: "",
+    name: "",;
     email: "",
     firstName: "",
-    lastName: "",
+    lastName: "",;
   });
 
   let isUpdating = $state(false);
@@ -21,10 +21,10 @@
   $effect(() => {
     if (user) {
       profileForm = {
-        name: user?.name || "",
+        name: user?.name || "",;
         email: user?.email || "",
         firstName: "", // Not available in SessionUser
-        lastName: "", // Not available in SessionUser
+        lastName: "", // Not available in SessionUser;
       };
     }
     // Load avatar
@@ -37,11 +37,11 @@
 
     try {
       const response = await fetch("/api/user/profile", {
-        method: "PUT",
+        method: "PUT",;
         headers: {
           "Content-Type": "application/json",
-        },
-        body: JSON.stringify(profileForm),
+        },;
+        body: JSON.stringify(profileForm),;
       });
 
       const data = await response.json();
@@ -206,7 +206,7 @@
 
 <style>
   /* @unocss-include */
-  .profile-container {
+  .profile-container {;
     max-width: 800px;
     margin: 0 auto;
     padding: 24px;
@@ -228,7 +228,7 @@
 
   .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 16px;
     margin-top: 16px;
   }

@@ -1,15 +1,15 @@
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { json, type RequestHandler } from '@sveltejs/kit'
 
 // Minimal recommendations endpoint to restore route integrity
 export const GET: RequestHandler = async ({ url }) => {
-  const caseId = url.searchParams.get('caseId') ?? undefined;
-  const page = Number(url.searchParams.get('page') ?? '1');
-  const limit = Number(url.searchParams.get('limit') ?? '10');
+  const caseId = url.searchParams.get('caseId') ?? undefined
+  const page = Number(url.searchParams.get('page') ?? '1')
+  const limit = Number(url.searchParams.get('limit') ?? '10')
 
   const data = [
     { id: 'rec-1', caseId, type: 'legal_strategy', title: 'Stub: Review strategy', priority: 'medium', confidence: 0.5 },
     { id: 'rec-2', caseId, type: 'evidence_collection', title: 'Stub: Gather more evidence', priority: 'low', confidence: 0.4 }
-  ];
+  ]
 
   return json({
     data,
@@ -17,28 +17,28 @@ export const GET: RequestHandler = async ({ url }) => {
     analytics: { totalRecommendations: data.length },
     success: true,
     timestamp: new Date().toISOString()
-  });
-};
+  })
+}
 
 export const POST: RequestHandler = async ({ request }) => {
-  let body: unknown = {};
+  let body: unknown = {}
   try {
-    body = await request.json();
+    body = await request.json()
   } catch {
-    body = {};
+    body = {}
   }
 
-  const obj = body && typeof body === 'object' ? (body as Record<string, unknown>) : {};
-  const recommendationId = typeof obj.recommendationId === 'string' ? obj.recommendationId : undefined;
-  const rating = typeof obj.rating === 'number' ? obj.rating : undefined;
-  const feedback = typeof obj.feedback === 'string' ? obj.feedback : undefined;
+  const obj = body && typeof body === 'object' ? (body as Record<string, unknown>) : {}
+  const recommendationId = typeof obj.recommendationId === 'string' ? obj.recommendationId : undefined
+  const rating = typeof obj.rating === 'number' ? obj.rating : undefined
+  const feedback = typeof obj.feedback === 'string' ? obj.feedback : undefined
 
   if (!recommendationId || typeof rating !== 'number') {
-    return json({ success: false, error: 'recommendationId (string) and rating (number) are required' }, { status: 400 });
+    return json({ success: false, error: 'recommendationId (string) and rating (number) are required' }, { status: 400 })
   }
 
   return json({
     success: true,
     data: { id: crypto.randomUUID(), recommendationId, rating, feedback, ratedAt: new Date().toISOString() }
-  }, { status: 201 });
-};
+  }, { status: 201 })
+}

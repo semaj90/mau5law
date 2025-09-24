@@ -137,7 +137,7 @@ export const COMPONENT_REGISTRY = {
   layout: 12,
   ai: 8,
   legal: 15,
-  realtime: 6,
+  realtime: 6,;
   total: 154
 } as const;
 

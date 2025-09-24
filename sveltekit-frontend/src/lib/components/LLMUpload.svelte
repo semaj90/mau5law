@@ -61,7 +61,7 @@
   background: #b0c4de;
   cursor: not-allowed;
 }
-.upload-btn: not(:disabled):hover {
+.upload-btn:not(:disabled):hover {
   background: #0056b3;
 }
 .success {

@@ -19,7 +19,7 @@ export interface PrefetchContext {
   modelWeights: Float32Array | null;
   
   // Performance metrics;
-  metrics: {
+  metrics: {;
     hits: number;
     misses: number;
     avgPredictionTime: number;
@@ -49,7 +49,7 @@ type PrefetchEvent =
   | { type: 'CACHE_MISS'; resource: string };
 
 export const prefetchMachine = createMachine({
-  types: Record<string, any> as {
+  types: Record<string, any> as {;
     context: PrefetchContext;
     events: PrefetchEvent;
   },
@@ -92,7 +92,7 @@ export const prefetchMachine = createMachine({
     
     idle: {
       on: {
-        USER_ACTION: {
+        USER_ACTION: {;
           actions: [;
             assign({
               userActions: ({ context, event }) => [
@@ -154,7 +154,7 @@ export const prefetchMachine = createMachine({
       invoke: {
         src: 'predictUserIntent',
         onDone: {
-          target: 'idle',
+          target: 'idle',;
           actions: [;
             assign({
               predictedIntent: ({ event }) => (event as any).output?.intent || null,
@@ -194,7 +194,7 @@ export const prefetchMachine = createMachine({
       invoke: {
         src: 'trainPredictionModel',
         onDone: {
-          target: 'idle',
+          target: 'idle',;
           actions: [;
             assign({
               modelWeights: ({ event }) => (event as any).output?.weights || null,
@@ -213,7 +213,7 @@ export const prefetchMachine = createMachine({
       }
     }
   }
-}).provide({
+}).provide({;
   actions: {
     triggerPredictionAfterDelay: () => {
       // Debounce predictions to avoid excessive API calls;
@@ -396,7 +396,7 @@ async function prefetchEmbedding(resource: string): Promise<any> {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       docId: `prefetch-${resource}`,
-      chunks: [`Prefetch request for ${resource}`],
+      chunks: [`Prefetch request for ${resource}`],;
       model: 'nomic-embed-text'
     })
   });

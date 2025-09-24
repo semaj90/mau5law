@@ -1,24 +1,24 @@
-import { getSustainedP99Info } from "$lib/services/alert-center";
+import { getSustainedP99Info } from "$lib/services/alert-center"
 import {
   loadObservabilityState,
   saveObservabilityState
-} from '$lib/services/observability-persistence';
-import { getBudgetCounters } from '$lib/services/pipeline-metrics';
-import fs from 'fs';
-import path from 'path';
-import type { RequestHandler } from './$types.js';
+} from '$lib/services/observability-persistence'
+import { getBudgetCounters } from '$lib/services/pipeline-metrics'
+import fs from 'fs'
+import path from 'path'
+import type { RequestHandler } from './$types.js'
 
 
-// GET /api/v1/observability/state - Get current observability state with enhanced persistence;
+// GET /api/v1/observability/state - Get current observability state with enhanced persistence
 export const GET: RequestHandler = async () => {
   try {
     // Load enhanced persistent state
-    const persistedState = await loadObservabilityState();
+    const persistedState = await loadObservabilityState()
 
     // Get legacy runtime data
-    const runtimeDir = path.resolve(process.cwd(), '.runtime');
-    const file = path.join(runtimeDir, 'observability-state.json');
-    let legacyPersisted: any = null;
+    const runtimeDir = path.resolve(process.cwd(), '.runtime')
+    const file = path.join(runtimeDir, 'observability-state.json')
+    let legacyPersisted: any = null
     if(fs.existsSync(file)){
       try { legacyPersisted = JSON.parse(fs.readFileSync(file,'utf8'); } catch {}
     }
@@ -33,20 +33,20 @@ export const GET: RequestHandler = async () => {
       persisted: legacyPersisted,
       // Additional metadata
       timestamp: new Date().toISOString()
-    });
+    })
   } catch(error: any){
-    console.error('[observability-state] GET error:', error);
-    return json({ ok: false, error: error.message }, { status: 500 });
+    console.error('[observability-state] GET error:', error)
+    return json({ ok: false, error: error.message }, { status: 500 })
   }
-};
+}
 
-// POST /api/v1/observability/state - Update observability state;
+// POST /api/v1/observability/state - Update observability state
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const updates = await request.json();
-    const currentState = await loadObservabilityState();
+    const updates = await request.json()
+    const currentState = await loadObservabilityState()
 
-    // Merge updates with current state;
+    // Merge updates with current state
     const newState = {
       ...currentState,
       ...updates,
@@ -57,17 +57,17 @@ export const POST: RequestHandler = async ({ request }) => {
         ...currentState.metadata,
         last_updated: new Date().toISOString()
       }
-    };
+    }
 
-    await saveObservabilityState(newState);
+    await saveObservabilityState(newState)
 
     return json({
       success: true,
       state: newState,
       timestamp: new Date().toISOString()
-    });
+    })
   } catch (error: any) {
-    console.error('[observability-state] POST error:', error);
-    return json({ error: 'Failed to update observability state' }, { status: 500 });
+    console.error('[observability-state] POST error:', error)
+    return json({ error: 'Failed to update observability state' }, { status: 500 })
   }
-};
+}

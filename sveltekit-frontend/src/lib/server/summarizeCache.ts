@@ -130,7 +130,7 @@ export async function deleteCache(key: string): Promise<any> {
 
 export function memoryStats() {
   return {
-    size: memoryCache.size,
+    size: memoryCache.size,;
     keys: Array.from(memoryCache.keys()).slice(0, 20),
     maxItems: MAX_ITEMS,
     ttlMs: TTL_MS

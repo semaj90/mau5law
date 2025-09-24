@@ -249,7 +249,7 @@ const orchestratorMachine = createMachine<OptimizationContext, OrchestratorEvent
         initial: 'monitoring',
 
         states: {
-          monitoring: {
+          monitoring: {;
             invoke: [;
               {
                 id: 'performanceMonitor',
@@ -331,7 +331,7 @@ const orchestratorMachine = createMachine<OptimizationContext, OrchestratorEvent
       }
     }
   },
-  {
+  {;
     actions: {
       initializeOptimizationRules: assign({
         optimization_rules: () => createDefaultOptimizationRules()
@@ -457,7 +457,7 @@ const orchestratorMachine = createMachine<OptimizationContext, OrchestratorEvent
           workers.forEach((worker) => {
             callback({
               type: 'WORKER_HEARTBEAT',
-              workerId: worker.id,
+              workerId: worker.id,;
               metrics: worker.metrics
             });
           });
@@ -520,7 +520,7 @@ export class OptimizedRabbitMQOrchestrator {
       payload: job.payload || {},
       dependencies: job.dependencies || [],
       retryConfig: job.retryConfig || this.getDefaultRetryConfig(job.type!),
-      routing: job.routing || this.getDefaultRouting(job.type!),
+      routing: job.routing || this.getDefaultRouting(job.type!),;
       optimization: job.optimization || this.inferOptimizationHints(job.type!),
       expectedDuration: job.expectedDuration || this.estimateDuration(job.type!),
       resourceRequirements: job.resourceRequirements || this.getDefaultResources(job.type!)
@@ -781,7 +781,7 @@ class LegalDocumentProcessor extends JobProcessor {
     await new Promise((resolve) => setTimeout(resolve, 2000);
 
     return {
-      entities: ['contract', 'party', 'clause'],
+      entities: ['contract', 'party', 'clause'],;
       confidence: 0.92,
       legal_categories: ['commercial', 'intellectual_property'],
       risk_assessment: 'medium'
@@ -836,7 +836,7 @@ class VectorEmbeddingProcessor extends JobProcessor {
 
     return {
       embeddings: new Array(384).fill(0).map(() => Math.random() - 0.5),
-      model: 'all-MiniLM-L6-v2',
+      model: 'all-MiniLM-L6-v2',;
       dimensions: 384,
       similarity_ready: true
     };
@@ -953,7 +953,7 @@ function getPriorityValue(priority: JobPriority): number {
     critical: 5,
     high: 4,
     normal: 3,
-    low: 2,
+    low: 2,;
     background: 1
   };
   return values[priority];
@@ -967,7 +967,7 @@ function createDefaultOptimizationRules(): OptimizationRule[] {
       action: (context) => [
         { type: 'redirect_queue', parameters: { target: 'gpu_workers' }, estimated_impact: 0.3 }
       ],
-      priority: 1,
+      priority: 1,;
       enabled: true
     }
   ];
@@ -984,7 +984,7 @@ async function discoverSystemCapabilities(): Promise<SystemResources> {
         model: 'RTX 3060 Ti',
         memory_gb: 8,
         cuda_capability: 'sm_86',
-        utilization: 0,
+        utilization: 0,;
         temperature: 45
       }
     ],

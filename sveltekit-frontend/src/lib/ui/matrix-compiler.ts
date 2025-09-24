@@ -74,7 +74,7 @@ export interface CSSOutput {
 
 export interface EventMapping {
   nodeId: string;
-  events: {
+  events: {;
     type: string;
     handler: string;
     matrix: number[];
@@ -98,7 +98,7 @@ export class MatrixUICompiler {
   private unoCache: Map<string, string> = new Map();
   private lodThresholds = {
     low: { maxVertices: 1000, maxNodes: 50 },
-    mid: { maxVertices: 5000, maxNodes: 200 },
+    mid: { maxVertices: 5000, maxNodes: 200 },;
     high: { maxVertices: 20000, maxNodes: 1000 }
   };
 
@@ -111,7 +111,7 @@ export class MatrixUICompiler {
   /**
    * Enhanced compilation with full Phase 8 features: JSON → WebGL + CSS + Events
    */
-  async compileEnhanced(
+  async compileEnhanced(;
     nodes: MatrixUINode[],
     xstateContext?: unknown,
   ): Promise<any> {
@@ -149,7 +149,7 @@ export class MatrixUICompiler {
     return {
       compiled: compiledNodes,
       webgl: webglBuffer,
-      css: cssOutput,
+      css: cssOutput,;
       events: eventMappings,
       optimizations
     };
@@ -293,7 +293,7 @@ export class MatrixUICompiler {
       events: node.events?.map((eventType: any) => ({
         type: eventType,
         handler: `handle${eventType.charAt(0).toUpperCase() + eventType.slice(1)}`,
-        matrix: node.matrix || [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1],
+        matrix: node.matrix || [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1],;
         bounds: node.bounds || { x: 0, y: 0, width: 100, height: 100 }
       })) || []
     });
@@ -490,7 +490,7 @@ export class MatrixUICompiler {
    * Create WebGL buffer for GPU acceleration
    */
   private createWebGLBuffer(
-    node: MatrixUINode,
+    node: MatrixUINode,;
     matrix: Float32Array,
   ): WebGLBuffer | undefined {
     if (!this.gl) return undefined;
@@ -582,7 +582,7 @@ export class MatrixUICompiler {
         originalEvent: event,
         nodeId: node.id,
         nodeType: node.type,
-        matrix: node.matrix,
+        matrix: node.matrix,;
         metadata: node.metadata
       }
     });

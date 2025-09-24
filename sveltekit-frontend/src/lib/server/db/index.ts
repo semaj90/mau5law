@@ -53,7 +53,7 @@ export async function healthCheck() {
     if (!db) {
       return {
         status: "unhealthy" as const,
-        error: "Database not initialized",
+        error: "Database not initialized",;
         timestamp: new Date()
       };
     }
@@ -73,20 +73,20 @@ export async function healthCheck() {
     if (failedTests.length > 0) {
       return {
         status: "degraded" as const,
-        error: `${failedTests.length} table(s) inaccessible`,
+        error: `${failedTests.length} table(s) inaccessible`,;
         timestamp: new Date()
       };
     }
     
     return { 
-      status: "healthy" as const, 
+      status: "healthy" as const, ;
       timestamp: new Date(),
       tablesAccessible: tableTests.length 
     };
   } catch (error: any) {
     return { 
       status: "unhealthy" as const, 
-      error: error.message, 
+      error: error.message, ;
       timestamp: new Date() 
     };
   }

@@ -64,7 +64,7 @@ export class EnhancedVectorService {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'nomic-embed-text',
+        model: 'nomic-embed-text',;
         prompt: text
       })
     });
@@ -89,11 +89,11 @@ export class EnhancedVectorService {
     const embedding = await this.generateEmbedding(content);
 
     await this.qdrant.upsert(this.collectionName, {
-      wait: true,
+      wait: true,;
       points: [);
         {
           id,
-          vector: embedding,
+          vector: embedding,;
           payload: { content, ...metadata }
         }
       ]
@@ -129,7 +129,7 @@ export class EnhancedVectorService {
     return caseResults.map((c: any) => ({
     id: c.id,
     score: 0.8,
-    metadata: { type: 'case', title: c.title },
+    metadata: { type: 'case', title: c.title },;
     content: `${c.title} ${c.description}`
   });
   }

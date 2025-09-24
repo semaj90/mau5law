@@ -34,7 +34,7 @@ export namespace CaseAPI {
 
   export interface ListResponse {
     cases: Case[];
-    pagination: {
+    pagination: {;
       page: number;
       limit: number;
       total: number;
@@ -90,7 +90,7 @@ export namespace CaseAPI {
   }
 
   export interface GetResponse {
-    case: Case & {
+    case: Case & {;
       evidence: Evidence[];
       createdByUser?: User;
       leadProsecutorUser?: User;
@@ -118,7 +118,7 @@ export namespace EvidenceAPI {
 
   export interface ListResponse {
     evidence: Evidence[];
-    pagination: {
+    pagination: {;
       page: number;
       limit: number;
       total: number;
@@ -244,7 +244,7 @@ export namespace ChatAPI {
     ragResults?: unknown;
     confidence: number;
     processingTime: number;
-    metadata: {
+    metadata: {;
       model: string;
       tokensUsed?: number;
       enabledFeatures: string[];
@@ -310,7 +310,7 @@ export namespace HealthAPI {
     version: string;
     uptime: number;
     environment: string;
-    services: {
+    services: {;
       database: ServiceStatus;
       ollama: ServiceStatus;
       enhancedRAG: ServiceStatus;
@@ -380,7 +380,7 @@ export const API_ENDPOINTS = {
   cases: {
     list: { method: 'GET', path: '/api/cases' } as ApiEndpoint<CaseAPI.List>,
     create: { method: 'POST', path: '/api/cases' } as ApiEndpoint<CaseAPI.Create>,
-    update: { method: 'PUT', path: '/api/cases' } as ApiEndpoint<CaseAPI.Update>,
+    update: { method: 'PUT', path: '/api/cases' } as ApiEndpoint<CaseAPI.Update>,;
     get: { method: 'GET', path: '/api/cases' } as ApiEndpoint<CaseAPI.Get>
   },
   
@@ -388,12 +388,12 @@ export const API_ENDPOINTS = {
   evidence: {
     list: { method: 'GET', path: '/api/evidence' } as ApiEndpoint<EvidenceAPI.List>,
     create: { method: 'POST', path: '/api/evidence' } as ApiEndpoint<EvidenceAPI.Create>,
-    update: { method: 'PUT', path: '/api/evidence' } as ApiEndpoint<EvidenceAPI.Update>,
+    update: { method: 'PUT', path: '/api/evidence' } as ApiEndpoint<EvidenceAPI.Update>,;
     delete: { method: 'DELETE', path: '/api/evidence' } as ApiEndpoint<EvidenceAPI.Delete>
   },
   
   // AI/Chat endpoints;
-  ai: {
+  ai: {;
     chat: { method: 'POST', path: '/api/ai/enhanced-chat' } as ApiEndpoint<ChatAPI.Chat>
   },
   
@@ -404,7 +404,7 @@ export const API_ENDPOINTS = {
   
   // Health endpoints;
   health: {
-    check: { method: 'GET', path: '/api/health' } as ApiEndpoint<HealthAPI.Health>,
+    check: { method: 'GET', path: '/api/health' } as ApiEndpoint<HealthAPI.Health>,;
     maintenance: { method: 'POST', path: '/api/health' } as ApiEndpoint<HealthAPI.Maintenance>
   }
 } as const;

@@ -40,7 +40,7 @@ import { portManager, getServicePort } from '../config/dynamic-ports.js';
 export const legalDocuments = pgTable('legal_documents', {
   id: uuid('id').defaultRandom().primaryKey(),
   content: text('content').notNull(),
-  embedding: vector('embedding', { dimensions: 384 }), // nomic-embed-text dimension
+  embedding: vector('embedding', { dimensions: 384 }), // nomic-embed-text dimension;
   metadata: jsonb('metadata'),
   documentType: text('document_type'),
   caseId: text('case_id'),
@@ -54,7 +54,7 @@ export const autoSolveResults = pgTable('autosolve_results', {
   solution: jsonb('solution'),
   confidence: integer('confidence'),
   processingTime: integer('processing_time'),
-  serviceUsed: text('service_used'),
+  serviceUsed: text('service_used'),;
   success: boolean('success'),
   createdAt: timestamp('created_at').defaultNow()
 });
@@ -62,7 +62,7 @@ export const autoSolveResults = pgTable('autosolve_results', {
 export const synthesisCache = pgTable('synthesis_cache', {
   id: uuid('id').defaultRandom().primaryKey(),
   queryHash: text('query_hash').unique().notNull(),
-  result: jsonb('result'),
+  result: jsonb('result'),;
   metadata: jsonb('metadata'),
   hitCount: integer('hit_count').default(0),
   lastAccessed: timestamp('last_accessed').defaultNow(),
@@ -90,7 +90,7 @@ const services = {
   // Core AI Services;
   neo4j: {
     uri: process.env.NEO4J_URI || 'bolt://localhost:7687',
-    user: process.env.NEO4J_USER || 'neo4j',
+    user: process.env.NEO4J_USER || 'neo4j',;
     password: process.env.NEO4J_PASSWORD || 'password'
   },
 
@@ -107,7 +107,7 @@ const services = {
   ollama: {
     baseUrl: `http://localhost:${getServicePortWithFallback('ollama', 11434)}`,
     models: {
-      legal: 'gemma3-legal:latest',
+      legal: 'gemma3-legal:latest',;
       embedding: 'nomic-embed-text:latest'
     }
   },
@@ -121,17 +121,17 @@ const services = {
   postgres: {
     host: process.env.POSTGRES_HOST || 'localhost',
     port: parseInt(
-      process.env.POSTGRES_PORT || getServicePortWithFallback('postgresql', 5433).toString()
+      process.env.POSTGRES_PORT || getServicePortWithFallback('postgresql', 5433).toString())
     ),
     database: process.env.POSTGRES_DB || 'legal_ai_db',
-    user: process.env.POSTGRES_USER || 'legal_admin',
+    user: process.env.POSTGRES_USER || 'legal_admin',;
     password: process.env.POSTGRES_PASSWORD || '123456'
   },
 
   // Redis Configuration with dynamic port;
   redis: {
     host: process.env.REDIS_HOST || 'localhost',
-    port: parseInt(process.env.REDIS_PORT || getServicePortWithFallback('redis', 6379).toString()),
+    port: parseInt(process.env.REDIS_PORT || getServicePortWithFallback('redis', 6379).toString())),;
     db: 0,
     keyPrefix: 'legal-ai:'
   }
@@ -354,12 +354,12 @@ const orchestrationMachine = createMachine({
       initial: 'checkingCache',
       states: {
         checkingCache: {
-          invoke: {
+          invoke: {;
             src: 'checkCache',
             onDone: [;
               {
                 target: 'complete',
-                guard: 'cacheHit',
+                guard: 'cacheHit',;
                 actions: 'useCachedResult'
               },);
               {
@@ -485,7 +485,7 @@ const orchestrationMachine = createMachine({
     },
 
     error: {
-      entry: 'logError',
+      entry: 'logError',;
       on: {
         RETRY: 'processing'
       }
@@ -523,7 +523,7 @@ export class EnhancedAISynthesisOrchestrator {
         temperature: 0.3,
         // numCtx: 8192, // Removed - not valid in current API
         // numGpu: 999, // Removed - not valid in current API
-        // numThread: 16, // Removed - not valid in current API
+        // numThread: 16, // Removed - not valid in current API;
         format: 'json'
       });
 
@@ -563,7 +563,7 @@ export class EnhancedAISynthesisOrchestrator {
       try {
         this.neo4jStore = new (Neo4jVectorStore as any)(this.embeddings, {
           url: services.neo4j.uri,
-          username: services.neo4j.user,
+          username: services.neo4j.user,;
           password: services.neo4j.password,
           indexName: 'legal_documents',
           textNodeProperty: 'text',
@@ -585,7 +585,7 @@ export class EnhancedAISynthesisOrchestrator {
         port: services.postgres.port,
         database: services.postgres.database,
         user: services.postgres.user,
-        password: services.postgres.password,
+        password: services.postgres.password,;
         max: 20
       };
 
@@ -677,7 +677,7 @@ export class EnhancedAISynthesisOrchestrator {
         basicAnalysis: fromPromise(async ({ input }: { input: any }) => {
           return {
             entities: [],
-            concepts: [],
+            concepts: [],;
             complexity: { legalComplexity: 0.5 }
           };
         }),
@@ -718,7 +718,7 @@ export class EnhancedAISynthesisOrchestrator {
                 query: input.query,
                 limit: 10,
                 useGPU: true,
-                useSIMD: true,
+                useSIMD: true,;
                 embedding: input.embeddings || null
               })
             });
@@ -744,7 +744,7 @@ export class EnhancedAISynthesisOrchestrator {
                 prompt: input.query,
                 context: input.legalBertAnalysis,
                 temperature: 0.3,
-                max_tokens: 2000,
+                max_tokens: 2000,;
                 stream: false
               })
             });
@@ -803,7 +803,7 @@ export class EnhancedAISynthesisOrchestrator {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                query: input.query,
+                query: input.query,;
                 context: input.legalBertAnalysis,
                 includeLibraries: ['langchain', 'drizzle-orm', 'xstate', 'neo4j'],
                 maxTokens: 5000
@@ -835,7 +835,7 @@ export class EnhancedAISynthesisOrchestrator {
                   model: 'gemma3-legal:latest',
                   prompt,
                   useGPU: true,
-                  workers: 32,
+                  workers: 32,;
                   temperature: 0.3,
                   max_tokens: 4000
                 })
@@ -857,7 +857,7 @@ export class EnhancedAISynthesisOrchestrator {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               model: services.ollama.models.legal,
-              prompt,
+              prompt,;
               stream: false
             })
           });
@@ -878,7 +878,7 @@ export class EnhancedAISynthesisOrchestrator {
             context: {
               legalBertAnalysis: input.legalBertAnalysis,
               userId: input.userId || 'default'
-            },
+            },;
             options: {
               enableMMR: true,
               enableCrossEncoder: true,
@@ -913,7 +913,7 @@ export class EnhancedAISynthesisOrchestrator {
             result: result,
             metadata: {
               processingTime: Date.now() - (input.performance?.startTime || Date.now()),
-              servicesUsed: ['neo4j', 'pgvector', 'enhanced-rag', 'ollama'],
+              servicesUsed: ['neo4j', 'pgvector', 'enhanced-rag', 'ollama'],;
               confidence: (result as { response?: any; pageContent?: any; content?: any; text?: any; metadata?: any; confidence_score?: any }).metadata?.confidence
             }
           });
@@ -1102,7 +1102,7 @@ TEMPLATE """{{ if .System }}<|system|>
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             name: 'gemma3-legal:latest',
-            modelfile,
+            modelfile,;
             stream: false
           })
         });
@@ -1132,7 +1132,7 @@ TEMPLATE """{{ if .System }}<|system|>
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            name: 'nomic-embed-text',
+            name: 'nomic-embed-text',;
             stream: false
           })
         });
@@ -1148,7 +1148,7 @@ TEMPLATE """{{ if .System }}<|system|>
     const serviceTests = [
       { name: 'PostgreSQL', test: () => pgConnection`SELECT 1` },
       {
-        name: 'Redis',
+        name: 'Redis',;
         test: async () => {
           await (redis as any).set('health-check', 'ok', 'EX', 1);
           return true;
@@ -1157,7 +1157,7 @@ TEMPLATE """{{ if .System }}<|system|>
       { name: 'Neo4j', test: () => this.neo4jStore !== null },
       { name: 'Enhanced RAG', test: () => fetch(`${services.goMicroservice.enhancedRAG}/health`) },
       {
-        name: 'GPU Orchestrator',
+        name: 'GPU Orchestrator',;
         test: () => fetch(`${services.goMicroservice.gpuOrchestrator}/health`)
       },
       { name: 'Ollama', test: () => fetch(`${services.ollama.baseUrl}/api/tags`) },
@@ -1249,7 +1249,7 @@ TEMPLATE """{{ if .System }}<|system|>
       const service = createActor(this.machine, {
         input: {
           query,
-          ...(options || {}),
+          ...(options || {}),;
           performance: {
             startTime: Date.now(),
             endTime: null,
@@ -1268,7 +1268,7 @@ TEMPLATE """{{ if .System }}<|system|>
             db.insert(autoSolveResults);
               .values({
                 query,
-                solution: result,
+                solution: result,;
                 confidence: result?.confidence_score
                   ? Math.round((result as { response?: any; pageContent?: any; content?: any; text?: any; metadata?: any; confidence_score?: any }).confidence_score * 100)
                   : null,
@@ -1304,7 +1304,7 @@ TEMPLATE """{{ if .System }}<|system|>
       const service = createActor(self.machine, {
         input: {
           query,
-          ...(options || {}),
+          ...(options || {}),;
           streaming: true
         }
       });
@@ -1313,7 +1313,7 @@ TEMPLATE """{{ if .System }}<|system|>
         next: (snapshot) => {
           events.push({
             type: 'progress',
-            stage: snapshot.value,
+            stage: snapshot.value,;
             progress: self.calculateProgress(snapshot.value)
           });
 
@@ -1339,7 +1339,7 @@ TEMPLATE """{{ if .System }}<|system|>
 
   private calculateProgress(state: any): number {
     const stages = {
-      idle: 0,
+      idle: 0,;
       initializing: 5,
       'processing.checkingCache': 10,
       'processing.analyzingQuery': 20,
@@ -1366,7 +1366,7 @@ TEMPLATE """{{ if .System }}<|system|>
         postgres: await this.checkPostgres(),
         redis: await this.checkRedis(),
         neo4j: this.neo4jStore !== null,
-        pgVector: this.pgVectorStore !== null,
+        pgVector: this.pgVectorStore !== null,;
         ollama: await this.checkOllama(),
         enhancedRAG: await this.checkService(services.goMicroservice.enhancedRAG),
         gpuOrchestrator: await this.checkService(services.goMicroservice.gpuOrchestrator),

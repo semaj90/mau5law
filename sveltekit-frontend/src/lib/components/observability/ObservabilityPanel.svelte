@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Observability Panel: Real-time alerts + sustained monitoring dashboard -->
@@ -33,7 +33,7 @@ https://svelte.dev/e/js_parse_error -->
       count,
       budget,
       ratio,
-      status: ratio >= 1 ? 'critical' : ratio >= 0.8 ? 'warning' : 'normal'
+      status: ratio >= 1 ? 'critical' : ratio >= 0.8 ? 'warning' : 'normal';
     };
   });
   let errorBadge = $derived(() => {
@@ -45,7 +45,7 @@ https://svelte.dev/e/js_parse_error -->
       count,
       budget, 
       ratio,
-      status: ratio >= 1 ? 'critical' : ratio >= 0.8 ? 'warning' : 'normal'
+      status: ratio >= 1 ? 'critical' : ratio >= 0.8 ? 'warning' : 'normal';
     };
   });
   let anomalyBadge = $derived(() => {
@@ -57,7 +57,7 @@ https://svelte.dev/e/js_parse_error -->
       count,
       budget,
       ratio, 
-      status: ratio >= 1 ? 'critical' : ratio >= 0.8 ? 'warning' : 'normal'
+      status: ratio >= 1 ? 'critical' : ratio >= 0.8 ? 'warning' : 'normal';
     };
   });
   // Functions
@@ -88,9 +88,9 @@ https://svelte.dev/e/js_parse_error -->
               type: data.alert_type,
               message: data.message,
               timestamp: new Date().toISOString(),
-              severity: data.severity || 'info',
-              value: data.value,
-              threshold: data.threshold
+              severity: data.severity || 'info',;
+              value: data.value,;
+              threshold: data.threshold;
             };
             alerts = [alert, ...alerts].slice(0, 100); // Keep last 100 alerts
             // Auto-scroll if enabled
@@ -144,14 +144,16 @@ https://svelte.dev/e/js_parse_error -->
       default: return 'alert-info';
     }
   }
-  $effect(async () => {
-    await loadState();
+  $effect(() => {
+    (async () => {
+await loadState();
     connectWebSocket();
     // Refresh state every 30 seconds
     const stateInterval = setInterval(loadState, 30000);
     return () => {
       clearInterval(stateInterval);
     };
+    })();
   });
   onDestroy(() => {
     if (ws) {

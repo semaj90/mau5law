@@ -21,7 +21,7 @@ const initialContext: GoMicroserviceContext = {
   userId: undefined,
   sessionId: '',
   retryCount: 0,
-  timestamp: Date.now(),
+  timestamp: Date.now(),;
   endpoint: 'http://localhost:8080',
   connectionStatus: 'disconnected',
   healthCheck: { lastCheck: 0, status: 'unhealthy' }
@@ -43,7 +43,7 @@ export const goMicroserviceMachine = createMachine({
     connecting: {
       entry: assign(() => ({ connectionStatus: 'connecting' as any })),
       invoke: {
-        id: 'initialConnect',
+        id: 'initialConnect',;
         src: fromPromise(async ({ input }) => {
           const { endpoint } = input as { endpoint: string };
           const start = Date.now();
@@ -85,14 +85,14 @@ export const goMicroserviceMachine = createMachine({
         },
         requesting: {
           invoke: {
-            id: 'doRequest',
+            id: 'doRequest',;
             src: fromPromise(async ({ input }) => {
               const { request, endpoint } = input as { request: GoServiceRequest; endpoint: string };
               if (!request) throw new Error('No request provided');
               const start = Date.now();
               const res = await fetch(`${endpoint}${request.path}`, {
                 method: request.method,
-                headers: { 'Content-Type': 'application/json', ...(request.headers || {}) },
+                headers: { 'Content-Type': 'application/json', ...(request.headers || {}) },;
                 body: request.body ? JSON.stringify(request.body) : undefined
               } as RequestInit);
               if (!res.ok) throw new Error(`Request failed: ${res.status}`);
@@ -117,7 +117,7 @@ export const goMicroserviceMachine = createMachine({
         },
         healthChecking: {
           invoke: {
-            id: 'periodicHealth',
+            id: 'periodicHealth',;
             src: fromPromise(async ({ input }) => {
               const { endpoint } = input as { endpoint: string };
               const start = Date.now();
@@ -148,7 +148,7 @@ export const goMicroserviceMachine = createMachine({
       on: { CONNECT: { target: 'connecting' }, DISCONNECT: { target: 'disconnected' } }
     }
   }
-}, {
+}, {;
   actions: {
     startHealthCheckTimer: () => { },
     stopHealthCheckTimer: () => { }
@@ -167,7 +167,7 @@ export const goMicroserviceServices = {
         format: 'json',
         options: {
           parallel: options?.parallel ?? false,
-          chunk_size: options?.chunkSize ?? 1024,
+          chunk_size: options?.chunkSize ?? 1024,;
           compression: true
         }
       }
@@ -181,7 +181,7 @@ export const goMicroserviceServices = {
       body: {
         vectors,
         labels,
-        dimensions: { width: options?.width ?? 10, height: options?.height ?? 10 },
+        dimensions: { width: options?.width ?? 10, height: options?.height ?? 10 },;
         iterations: options?.iterations ?? 1000,
         learning_rate: options?.learningRate ?? 0.1
       }
@@ -202,7 +202,7 @@ export const goMicroserviceServices = {
     }
   }),
   getMetrics: () => ({
-    type: 'MAKE_REQUEST' as const,
+    type: 'MAKE_REQUEST' as const,;
     request: { method: 'GET' as const, path: '/metrics' }
   }),
   healthCheck: () => ({ type: 'HEALTH_CHECK' as const })
@@ -216,6 +216,6 @@ export const getConnectionStatus = (state: any) => ({
   endpoint: state.context.endpoint,
   lastHealthCheck: state.context.healthCheck.lastCheck,
   healthStatus: state.context.healthCheck.status,
-  responseTime: state.context.healthCheck.responseTime,
+  responseTime: state.context.healthCheck.responseTime,;
   error: state.context.error
 });

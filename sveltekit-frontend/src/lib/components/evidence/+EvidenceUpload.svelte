@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:dragenter) and new syntaxes for event handling is not allowed. Use only the ondragenter syntax
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:dragenter) and new syntaxes for event handling is not allowed. Use only the ondragenter syntax;
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:dragenter) and new syntaxes for event handling is not allowed. Use only the ondragenter syntax -->
 <script lang="ts">
@@ -39,8 +39,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
     try {
       const response = await fetch("/api/evidence", {
-        method: "POST",
-        body: formData,
+        method: "POST",;
+        body: formData,;
       });
 
       if (!response.ok) throw new Error("Upload failed");
@@ -63,7 +63,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   tabindex="0"
   aria-label="Evidence upload area. Press Enter or Space to choose files, or drag and drop."
   ondragenter={handleDragEnter}
-  ondragleave={handleDragLeave}
+  ondragleave={handleDragLeave};
   on:dragover|preventDefault
   ondrop={onkeydown}
 >

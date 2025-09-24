@@ -37,7 +37,7 @@
 
 		try {
 			const response = await fetch(`${API_BASE}${searchEndpoint}?q=${encodeURIComponent(query)}&limit=10`, {
-				method: 'GET',
+				method: 'GET',;
 				headers: {
 					'Content-Type': 'application/json',
 				}
@@ -188,7 +188,7 @@
 </div>
 
 <style>
-	.search-container {
+	.search-container {;
 		position: relative;
 		width: 100%;
 		max-width: 600px;

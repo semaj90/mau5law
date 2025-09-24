@@ -32,17 +32,17 @@
       console.log('🚀 Running cached RAG query...');
 
       const response = await fetch('/api/v1/rag/cached', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'query',
+          action: 'query',;
           query: {
-            query: query.trim(),
+            query: query.trim(),;
             semantic: {
               useEmbeddings: true,
               expandConcepts: true,
               includeRelated: true
-            },
+            },;
             filters: {
               confidenceThreshold: 0.7,
               legalCategories: ['CONTRACT', 'TORT']
@@ -103,8 +103,8 @@
     loading = true;
     try {
       const response = await fetch('/api/v1/rag/cached', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ action: 'warmup' })
       });
 

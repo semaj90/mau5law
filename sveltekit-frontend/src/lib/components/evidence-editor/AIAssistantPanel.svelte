@@ -2,16 +2,16 @@
   // Svelte 5 runes are auto-imported
 
   import { Badge } from '$lib/components/ui/badge';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Search, Bot, Sparkles, FileText, Users, Clock, Tags } from 'lucide-svelte';
   import { onMount,   } from "svelte";
   import Fuse from 'fuse.js';
@@ -37,18 +37,18 @@
   let fuse = $state<Fuse<any>(null) | null >(null);
   let aiInsights = $state({
     connections: [],
-    similarEvidence: [],
+    similarEvidence: [],;
     timeline: [],
-    suggestedActions: []
+    suggestedActions: [];
   });
 
   // Initialize search index when evidence list changes
   $effect(() => {
     if (evidenceList.length > 0) {
       fuse = new Fuse(evidenceList, {
-        keys: ['name', 'tags', 'title', 'description'],
+        keys: ['name', 'tags', 'title', 'description'],;
         threshold: 0.4,
-        includeScore: true
+        includeScore: true;
       });
     }
   });
@@ -76,12 +76,12 @@
 
     try {
       const response = await fetch('/api/ai/analyze-evidence', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          caseId,
+          caseId,;
           evidence: selectedNode,
-          analysisType: 'comprehensive'
+          analysisType: 'comprehensive';
         })
       });
 
@@ -97,9 +97,9 @@
         // Update insights
         aiInsights = {
           connections: analysis.connections || [],
-          similarEvidence: analysis.similarEvidence || [],
+          similarEvidence: analysis.similarEvidence || [],;
           timeline: analysis.timeline || [],
-          suggestedActions: analysis.suggestedActions || []
+          suggestedActions: analysis.suggestedActions || [];
         };
 
         ondispatch?.(analysis);
@@ -124,12 +124,12 @@
 
     try {
       const response = await fetch('/api/ai/generate-insights', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           caseId,
-          evidenceId: selectedNode?.id,
-          context: evidenceList
+          evidenceId: selectedNode?.id,;
+          context: evidenceList;
         })
       });
 
@@ -181,7 +181,7 @@
     </div>
     <div class="yorha-panel-content space-y-4">
       <div class="flex gap-2">
-        <Input
+        <Input;
           bind:value={searchQuery}
           placeholder="Search evidence by name, tags, or description..."
           class="flex-1"
@@ -399,7 +399,7 @@ Generate Insights
 </div>
 
 <style>
-  .line-clamp-2 {
+  .line-clamp-2 {;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;

@@ -6,7 +6,7 @@ export const gpuInferenceSessions = pgTable("gpu_inference_sessions", {
   userId: text("user_id"),
   engineUsed: text("engine_used").notNull(), // ollama, webgpu, vllm, fastembed, etc.
   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),;
   metadata: jsonb("metadata"), // Session settings, preferences
   isActive: boolean("is_active").default(true)
 });
@@ -20,7 +20,7 @@ export const gpuInferenceMessages = pgTable("gpu_inference_messages", {
   engineUsed: text("engine_used"), // Which AI engine was used for this response
   responseTime: integer("response_time"), // Response time in milliseconds  
   tokensGenerated: integer("tokens_generated"),
-  cacheHit: boolean("cache_hit").default(false),
+  cacheHit: boolean("cache_hit").default(false),;
   metadata: jsonb("metadata"), // Engine-specific metadata, performance stats
   createdAt: timestamp("created_at").defaultNow()
 });
@@ -35,7 +35,7 @@ export const gpuPerformanceMetrics = pgTable("gpu_performance_metrics", {
   tokensPerSecond: real("tokens_per_second"),
   gpuUtilization: real("gpu_utilization"),
   memoryUsage: real("memory_usage"),
-  errorCount: integer("error_count"),
+  errorCount: integer("error_count"),;
   metadata: jsonb("metadata"), // Detailed performance data
   measuredAt: timestamp("measured_at").defaultNow()
 });
@@ -49,6 +49,6 @@ export const aiEngineStatus = pgTable("ai_engine_status", {
   version: text("version"),
   capabilities: jsonb("capabilities"), // What features this engine supports
   configuration: jsonb("configuration"), // Engine-specific config
-  errorStatus: text("error_status"),
+  errorStatus: text("error_status"),;
   metadata: jsonb("metadata")
 });

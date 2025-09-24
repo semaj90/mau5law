@@ -61,13 +61,13 @@ export interface YoRHaEvent {
 }
 
 export interface YoRHaSystemStatus {
-  database: {
+  database: {;
     connected: boolean;
     latency: number;
     activeConnections: number;
     queryCount: number;
   };
-  backend: {
+  backend: {;
     healthy: boolean;
     uptime: number;
     activeServices: number;
@@ -161,7 +161,7 @@ export class YoRHaAPIClient {
           const interval = setInterval(() => {
             const data = {
               value: Math.random(),
-              updatedAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),;
               name: ds.name
             };
             this.pushData(ds.name, data);
@@ -207,7 +207,7 @@ export class YoRHaAPIClient {
 
   async updateComponentConfig(componentId: string, config: any): Promise<void> {
     await this.apiCall(`/components/${componentId}`, {
-      method: 'PUT',
+      method: 'PUT',;
       body: JSON.stringify(config)
     });
 
@@ -250,7 +250,7 @@ export class YoRHaAPIClient {
       text: data.config.text,
       variant: data.config.variant,
       size: data.config.size,
-      icon: data.config.icon,
+      icon: data.config.icon,;
       loading: data.data?.loading || false,
       ...data.config
     };
@@ -262,7 +262,7 @@ export class YoRHaAPIClient {
       title: data.config.title,
       variant: data.config.variant,
       width: data.config.width,
-      height: data.config.height,
+      height: data.config.height,;
       scrollable: data.config.scrollable,
       ...data.config
     };
@@ -274,7 +274,7 @@ export class YoRHaAPIClient {
       placeholder: data.config.placeholder,
       type: data.config.type,
       variant: data.config.variant,
-      value: data.data?.value || '',
+      value: data.data?.value || '',;
       error: data.data?.error || false,
       ...data.config
     };
@@ -285,7 +285,7 @@ export class YoRHaAPIClient {
     return {
       title: data.config.title,
       variant: data.config.variant,
-      size: data.config.size,
+      size: data.config.size,;
       closable: data.config.closable,
       ...data.config
     };
@@ -299,7 +299,7 @@ export class YoRHaAPIClient {
     };
 
     await this.apiCall('/events', {
-      method: 'POST',
+      method: 'POST',;
       body: JSON.stringify(fullEvent)
     });
   }

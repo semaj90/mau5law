@@ -1,18 +1,15 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import { onMount } from 'svelte';
   import { browser } from '$app/environment';
-  import { page } from '$app/stores';
   import {
-    Brain, Activity, Zap, Shield, Search, Users, BarChart3,
-    Database, Folder, Eye, TrendingUp, Clock, AlertCircle,
-    CheckCircle, FileText, MapPin, Calendar, Edit3
+    Brain, Activity, Zap, Shield, Search, Users,
+    Database, Folder, Eye, TrendingUp, Clock,
+    CheckCircle, FileText, MapPin, Calendar, Pencil, Edit3
   } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   import EvidenceBoardLayout from '$lib/components/layout/EvidenceBoardLayout.svelte';
   import EvidenceCard from '$lib/components/ui/EvidenceCard.svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits';
   import Card from '$lib/components/ui/enhanced-bits/Card.svelte';
   import RAGAssistantChat from '$lib/components/ai/RAGAssistantChat.svelte';
 
@@ -35,7 +32,7 @@
       title: 'New case opened: Corporate Fraud Investigation',
       timestamp: '2 minutes ago',
       priority: 'high',
-      icon: Folder
+      icon: Folder;
     },
     {
       id: 2,
@@ -43,7 +40,7 @@
       title: 'Person of interest added: Marcus Chen',
       timestamp: '15 minutes ago',
       priority: 'medium',
-      icon: Users
+      icon: Users;
     },
     {
       id: 3,
@@ -51,7 +48,7 @@
       title: 'Evidence uploaded: Financial records batch',
       timestamp: '1 hour ago',
       priority: 'medium',
-      icon: FileText
+      icon: FileText;
     },
     {
       id: 4,
@@ -118,7 +115,7 @@
       title: 'Text Editor',
       description: 'NieR-themed rich text editor',
       href: '/text-editor',
-      icon: Edit3,
+      icon: Pencil,
       gradient: 'from-red-600 to-red-700',
       stats: 'Legal documents'
     }
@@ -250,20 +247,30 @@
     { path: '/demo/system-summary', title: 'System Summary', description: 'System summary and status overview for development.', category: 'Development' }
   ]);
 
-  $effect(async () => {
+  $effect(() => {
     if (!browser) return;
+
+    let cancelled = false;
     isLoading = true;
+    console.debug('Initializing dashboard; isLoading =', isLoading);
 
-    try {
-      // Simulate loading dashboard data
-      await new Promise(resolve => setTimeout(resolve, 500));
-    } catch (error) {
-      console.error('Failed to initialize dashboard:', error);
-    } finally {
-      isLoading = false;
-    }
+    (async () => {
+      try {
+        // Simulate loading dashboard data
+        await new Promise(resolve => setTimeout(resolve, 500));
+      } catch (error) {
+        console.error('Failed to initialize dashboard:', error);
+      } finally {
+        if (!cancelled) {
+          isLoading = false;
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   });
-
   function getPriorityColor(priority: string) {
     switch (priority) {
       case 'high': return 'text-red-400';
@@ -296,22 +303,7 @@
     }
   }
 
-  function getCategoryIcon(category: string) {
-    switch (category) {
-      case 'AI': return Brain;
-      case 'GPU': return Zap;
-      case 'UI': return Edit3;
-      case 'Search': return Search;
-      case 'Integration': return Activity;
-      case 'Performance': return TrendingUp;
-      case 'Advanced': return Shield;
-      case 'Development': return FileText;
-      default: return Eye;
-    }
-  }
-
-  // derive user id (slug) from the page load data (falls back to demo)
-  let userId = $derived($page?.data?.userId ?? $page?.data?.sessionId ?? 'demo-user');
+  // removed unused getCategoryIcon and userId to prevent TypeScript noUnusedLocals
 
   function handleCaseCreated(caseId: string | number) {
     console.log('New case created:', caseId);
@@ -321,6 +313,31 @@
   function handleCaseCreatedEvent(e: CustomEvent<string | number>) {
     console.log('New case created (event):', e.detail);
   }
+
+  // reference to RAGAssistantChat instance for event wiring
+  let ragAssistantRef: any = null;
+
+  // wire up caseCreated event without relying on typed on: directive
+  $effect(() => {
+    if (!browser) return;
+    if (!ragAssistantRef) return;
+
+    const off = ragAssistantRef.$on('caseCreated', (e: CustomEvent<string | number>) => {
+      const caseId = e.detail;
+      // ignore invalid sentinel id "0"
+      if (String(caseId) === '0') {
+        console.warn('Received invalid case id "0" — ignoring.');
+        return;
+      }
+      handleCaseCreated(caseId);
+      // Also call the event handler
+      handleCaseCreatedEvent(e);
+    });
+
+    return () => {
+      off && off();
+    };
+  });
 </script>
 
 <svelte:head>
@@ -395,11 +412,11 @@
             <a
               href={action.href}
               class="group relative overflow-hidden rounded-lg bg-gradient-to-br {action.gradient} p-6 text-white hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
-              aria-label="{action.title}: {action.description}"
+              aria-label={`${action.title}: ${action.description}`}
             >
               <div class="relative z-10">
                 <div class="flex items-center justify-between mb-4">
-                  <action.icon class="w-8 h-8" />
+                  <svelte:component this={action.icon} class="w-8 h-8" />
                   <div class="text-xs opacity-75 font-medium">{action.stats}</div>
                 </div>
                 <h3 class="font-bold text-lg mb-2">{action.title}</h3>
@@ -496,7 +513,7 @@
             {#each recentActivity as activity}
               <div class="flex items-start gap-4 p-4 bg-gray-800/50 rounded-lg border border-gray-600 hover:border-yellow-600/50 transition-colors">
                 <div class="p-2 bg-gray-700 rounded-lg">
-                  <activity.icon class="w-4 h-4 {getPriorityColor(activity.priority)}" />
+                  <svelte:component this={activity.icon} class="w-4 h-4 {getPriorityColor(activity.priority)}" />
                 </div>
                 <div class="flex-1">
                   <p class="text-white text-sm font-medium mb-1">{activity.title}</p>
@@ -622,7 +639,7 @@
             <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-2">
                 <Edit3 class="w-5 h-5 text-purple-400" />
-                <span class="font-semibold text-purple-400">UI Demos</span>
+                <Pencil class="w-5 h-5 text-purple-400" />
               </div>
               <div class="text-2xl font-bold text-purple-300">20+</div>
             </div>
@@ -696,64 +713,65 @@
         </div>
 
         <!-- 3-Column CSS Flexbox Grid -->
-        <div class="demo-routes-grid">
-          {#each demoRoutes as route (route.path)}
-            <div class="demo-route-modal">
-              <Card class="demo-route-card bg-gradient-to-br {getCategoryColor(route.category)} border-2 hover:scale-105 transition-all duration-300 cursor-pointer p-4 rounded-lg shadow-lg" clickable={true}>
-                <a href={route.path} class="block p-6 group">
-                  <div class="flex items-start justify-between mb-4">
-                    <div class="flex items-center gap-3">
-                      <div class="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
-{#if route.category === 'AI'}<Brain class="w-5 h-5 text-white" />
-                        {:else if route.category === 'GPU'}<Zap class="w-5 h-5 text-white" />
-                        {:else if route.category === 'UI'}<Edit3 class="w-5 h-5 text-white" />
-                        {:else if route.category === 'Search'}<Search class="w-5 h-5 text-white" />
-                        {:else if route.category === 'Integration'}<Activity class="w-5 h-5 text-white" />
-                        {:else if route.category === 'Performance'}<TrendingUp class="w-5 h-5 text-white" />
-                        {:else if route.category === 'Advanced'}<Shield class="w-5 h-5 text-white" />
-                        {:else if route.category === 'Development'}<FileText class="w-5 h-5 text-white" />
-                        {:else}<Eye class="w-5 h-5 text-white" />
-                        {/if}
-                      </div>
-                      <div>
-                        <h4 class="text-white font-bold text-lg group-hover:text-amber-200 transition-colors">
-                          {route.title}
-                        </h4>
-                        <div class="text-xs text-white/70 font-medium uppercase tracking-wide">
-                          {route.category}
-                        </div>
-                      </div>
-                    </div>
-                    <div class="text-white/50 group-hover:text-white/80 transition-colors">
-                      <Eye class="w-4 h-4" />
-                    </div>
-                  </div>
-
-                  <p class="text-white/90 text-sm leading-relaxed group-hover:text-white transition-colors">
-                    {route.description}
-                  </p>
-
-                  <div class="mt-4 pt-4 border-t border-white/10">
-                    <div class="flex items-center justify-between">
-                      <span class="text-xs text-white/60 uppercase tracking-wide font-medium">
-                        Live Demo
-                      </span>
-                      <div class="flex items-center gap-1">
-                        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                        <span class="text-xs text-green-300 font-medium">Active</span>
-                      </div>
-                    </div>
-                  </div>
-                </a>
-              </Card>
+<!-- 3-Column CSS Flexbox Grid -->
+<div class="demo-routes-grid">
+  {#each demoRoutes as route (route.path)}
+    <div class="demo-route-modal">
+      <a href={route.path} class="block">
+        <Card class="demo-route-card bg-gradient-to-br {getCategoryColor(route.category)} border-2 hover:scale-105 transition-all duration-300 cursor-pointer p-4 rounded-lg shadow-lg">
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
+              {#if route.category === 'AI'}<Brain class="w-5 h-5 text-white" />
+              {:else if route.category === 'GPU'}<Zap class="w-5 h-5 text-white" />
+              {:else if route.category === 'UI'}<Pencil class="w-5 h-5 text-white" />
+              {:else if route.category === 'Search'}<Search class="w-5 h-5 text-white" />
+              {:else if route.category === 'Integration'}<Activity class="w-5 h-5 text-white" />
+              {:else if route.category === 'Performance'}<TrendingUp class="w-5 h-5 text-white" />
+              {:else if route.category === 'Advanced'}<Shield class="w-5 h-5 text-white" />
+              {:else if route.category === 'Development'}<FileText class="w-5 h-5 text-white" />
+              {:else}<Eye class="w-5 h-5 text-white" />
+              {/if}
             </div>
-          {/each}
+            <div>
+              <h4 class="text-white font-bold text-lg group-hover:text-amber-200 transition-colors">
+                {route.title}
+              </h4>
+              <div class="text-xs text-white/70 font-medium uppercase tracking-wide">
+                {route.category}
+              </div>
+            </div>
+          </div>
+          <div class="text-white/50 group-hover:text-white/80 transition-colors">
+            <Eye class="w-4 h-4" />
+          </div>
         </div>
-      </div>
+
+        <p class="text-white/90 text-sm leading-relaxed group-hover:text-white transition-colors">
+          {route.description}
+        </p>
+
+        <div class="mt-4 pt-4 border-t border-white/10">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-white/60 uppercase tracking-wide font-medium">
+              Live Demo
+            </span>
+            <div class="flex items-center gap-1">
+              <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <span class="text-xs text-green-300 font-medium">Active</span>
+            </div>
+          </div>
+        </div>
+        </Card>
+      </a>
+    </div>
+  {/each}
+</div>
     </div>
     </section>
 
     <!-- AI Intelligence Summary -->
+    <section aria-label="AI Intelligence Summary">
     <div class="yorha-3d-panel">
       <div class="p-6">
         <div class="flex items-center justify-between mb-6">
@@ -786,29 +804,9 @@
             <div class="text-xs text-green-300 mt-1">+2.1% improvement</div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- AI Assistant RAG Chat Section -->
-    <section aria-label="AI Legal Assistant with RAG Capabilities" class="mt-12">
-      <div class="yorha-3d-panel">
-        <div class="p-6">
-          <div class="flex items-center gap-3 mb-6">
-            <Brain class="w-6 h-6 text-emerald-400" />
-            <h2 class="text-xl font-semibold text-emerald-400 tracking-wide">🤖 AI Legal Assistant</h2>
-            <div class="ml-auto flex items-center gap-2 text-emerald-400">
-              <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-              <span class="text-sm font-medium">RAG + Who/What/Why/How</span>
-            </div>
-          </div>
-
-          <div class="mb-4 p-4 bg-gradient-to-r from-emerald-900/20 to-teal-900/20 rounded-lg border border-emerald-500/20">
-            <p class="text-emerald-100 text-sm leading-relaxed">
-              <strong>🚀 Advanced Legal AI:</strong> Start a conversation to begin systematic case building.
-              I'll guide you through our proven "Who, What, Why, How" prosecution methodology with
-              <strong>RAG-powered</strong> legal research integration. Just describe your situation and watch the magic happen!
-            </p>
-          </div>
+        <!-- AI Assistant Section -->
+        <div class="mt-6 pt-6 border-t border-gray-600">
           {#if systemMetrics.totalCases === 0}
             <div class="p-6">
               <div class="text-yellow-300 font-medium">No cases yet</div>
@@ -816,25 +814,13 @@
               <a href="/cases/create" class="mt-3 inline-block text-emerald-400 hover:underline">Create a case →</a>
             </div>
           {:else}
-            <RAGAssistantChat
-              userId={userId}
-              onCaseCreated={(caseId) => {
-                // ignore invalid sentinel id "0"
-                if (caseId === '0' || caseId === 0) {
-                  console.warn('Received invalid case id "0" — ignoring.');
-                  return;
-                }
-                handleCaseCreated(caseId);
-                // Also call the event handler
-                handleCaseCreatedEvent({ detail: caseId } as CustomEvent<string | number>);
-              }}
-            />
+            <RAGAssistantChat bind:this={ragAssistantRef} />
           {/if}
+        </div>
+      </div>
+    </section>
 
-              </div>
-              </div>
-            </section>
-  {/snippet}
+    {/snippet}
 
   {#snippet rightPanel()}
     <!-- Right Status Panel (matching Evidence Board) -->
@@ -848,34 +834,54 @@
             description="Investigation active"
             status="active"
             type="case"
-          />
+          >
+            {#snippet children()}
+              <!-- no extra child content -->
+            {/snippet}
+          </EvidenceCard>
           <EvidenceCard
             title="Missing Person: Dr. Sarah Chen"
             description="Person of interest located"
             status="active"
             type="person"
-          />
+          >
+            {#snippet children()}
+              <!-- no extra child content -->
+            {/snippet}
+          </EvidenceCard>
           <EvidenceCard
             title="Financial Fraud Analysis"
             description="Analysis in progress"
             status="pending"
             type="analysis"
-          />
+          >
+            {#snippet children()}
+              <!-- no extra child content -->
+            {/snippet}
+          </EvidenceCard>
           <EvidenceCard
             title="Security Breach Analysis"
             description="Completed investigation"
             status="active"
             type="security"
-          />
+          >
+            {#snippet children()}
+              <!-- no extra child content -->
+            {/snippet}
+          </EvidenceCard>
         </div>
       </div>
 
       <!-- System Status -->
       <div class="nes-container is-rounded">
-        <h3 class="nes-text is-success mb-4">⚡ SYSTEM STATUS</h3>
-        <div class="space-y-3 text-sm">
+        <h3 class="nes-text is-primary mb-4">🛡 SYSTEM STATUS</h3>
+        <div class="space-y-2">
           <div class="flex justify-between">
-            <span>Cases Active:</span>
+            <span>Total Cases:</span>
+            <span class="nes-text is-primary">{systemMetrics.totalCases}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Active Cases:</span>
             <span class="nes-text is-primary">{systemMetrics.activeCases}</span>
           </div>
           <div class="flex justify-between">
@@ -893,13 +899,15 @@
         </div>
       </div>
     </div>
-  {/snippet}
-</EvidenceBoardLayout>
+    </div>
+    </div>
+    {/snippet}
+  </EvidenceBoardLayout>
 
-<style>
+  <style>
   .yorha-3d-panel {
-    /* Professional card styling with modern glass morphism */
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(51, 65, 85, 0.85) 100%);
+      /* Professional card styling with modern glass morphism */
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(51, 65, 85, 0.85) 100%);
     border: 1px solid rgba(148, 163, 184, 0.2);
     border-radius: 0.75rem;
     backdrop-filter: blur(12px);

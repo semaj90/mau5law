@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name
+<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name;
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script lang="ts">
@@ -16,7 +16,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     open = $bindable(false)
    }: {
     item: {
-      jsonData: {
+      jsonData: {;
         title: string;
         description: string;
         tags?: string[];
@@ -35,10 +35,10 @@ https://svelte.dev/e/attribute_invalid_name -->
   // XState machine for tag/type grouping
   const evidenceMachine = createMachine({
     id: 'evidence',
-    initial: 'view',
+    initial: 'view',;
     context: { item },
     states: {
-      view: { on: { EDIT: 'edit' } },
+      view: { on: { EDIT: 'edit' } },;
       edit: { on: { SAVE: 'view', CANCEL: 'view' } }
     }
   });
@@ -47,8 +47,11 @@ https://svelte.dev/e/attribute_invalid_name -->
 
   // Use zod adapter for superValidate
   import { zod } from 'sveltekit-superforms/adapters';
-  $effect(async () => {
-    form = await superValidate(zod(evidenceSchema), { initialValues: item });
+  $effect(() => {
+    (async () => {
+form = await superValidate(zod(evidenceSchema), { initialValues: item
+    })();
+  });
     if (form && form.values && form.values.jsonData) {
       title = form.values.jsonData.title || '';
       description = form.values.jsonData.description || '';
@@ -121,7 +124,7 @@ Cancel
 
 <style>
   /* @unocss-include */
-  .uno-shadow {
+  .uno-shadow {;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   }
   .input.input-bordered {

@@ -7,7 +7,7 @@
 export function safeWriteBuffer(
   queue: GPUQueue,
   buffer: GPUBuffer,
-  offset: number,
+  offset: number,;
   data: ArrayBufferView | ArrayBuffer;
 ): void {
   if (data instanceof ArrayBuffer) {
@@ -25,13 +25,13 @@ export function getAdapterInfo(adapter: GPUAdapter): { name: string; vendor?: st
   const info = (adapter as any).info;
   if (info) {
     return {
-      name: info.device || info.description || 'Unknown GPU',
+      name: info.device || info.description || 'Unknown GPU',;
       vendor: info.vendor
     };
   }
 
   return {
-    name: 'Unknown GPU Device',
+    name: 'Unknown GPU Device',;
     vendor: 'Unknown'
   };
 }

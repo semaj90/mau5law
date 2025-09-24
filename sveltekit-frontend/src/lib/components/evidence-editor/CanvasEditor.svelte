@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousemove) and new syntaxes for event handling is not allowed. Use only the onmousemove syntax
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousemove) and new syntaxes for event handling is not allowed. Use only the onmousemove syntax;
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousemove) and new syntaxes for event handling is not allowed. Use only the onmousemove syntax -->
 <script lang="ts">
@@ -396,9 +396,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         y: y - 25,
         width: 150,
         height: 80,
-        aiTags: null,
-        metadata: null,
-        connections: []
+        aiTags: null,;
+        metadata: null,;
+        connections: [];
       };
 
       fileNodes.push(node);
@@ -416,13 +416,13 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   async function autoTagFileEnhanced(node: unknown) {
     try {
       const response = await fetch('/api/ai/tag', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           content: node.content,
           fileName: node.name,
-          fileType: node.type,
-          enhanced: true // Request enhanced analysis
+          fileType: node.type,;
+          enhanced: true // Request enhanced analysis;
         })
       });
 
@@ -474,27 +474,27 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         nodeConnections.push({
           fromId: newNode.id,
           toId: existingNode.id,
-          type: 'person',
-          strength: sharedPeople.length / Math.max(people?.length || 1, 1),
-          label: sharedPeople[0]
+          type: 'person',;
+          strength: sharedPeople.length / Math.max(people?.length || 1, 1),;
+          label: sharedPeople[0];
         });
   }
       if (sharedLocations.length > 0) {
         nodeConnections.push({
           fromId: newNode.id,
           toId: existingNode.id,
-          type: 'location',
-          strength: sharedLocations.length / Math.max(locations?.length || 1, 1),
-          label: sharedLocations[0]
+          type: 'location',;
+          strength: sharedLocations.length / Math.max(locations?.length || 1, 1),;
+          label: sharedLocations[0];
         });
   }
       if (sharedOrganizations.length > 0) {
         nodeConnections.push({
           fromId: newNode.id,
           toId: existingNode.id,
-          type: 'organization',
-          strength: sharedOrganizations.length / Math.max(organizations?.length || 1, 1),
-          label: sharedOrganizations[0]
+          type: 'organization',;
+          strength: sharedOrganizations.length / Math.max(organizations?.length || 1, 1),;
+          label: sharedOrganizations[0];
         });
   }
     });
@@ -502,8 +502,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   function getMousePosition(event: MouseEvent) {
     const rect = canvas.getBoundingClientRect();
     return {
-      x: (event.clientX - rect.left - panOffset.x) / zoomLevel,
-      y: (event.clientY - rect.top - panOffset.y) / zoomLevel
+      x: (event.clientX - rect.left - panOffset.x) / zoomLevel,;
+      y: (event.clientY - rect.top - panOffset.y) / zoomLevel;
     };
   }
   function handleCanvasClick(event: MouseEvent) {
@@ -663,8 +663,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     isAutoSaving = true;
     try {
       const canvasState = {
-        nodes: fileNodes,
-        connections: nodeConnections,
+        nodes: fileNodes,;
+        connections: nodeConnections,;
         viewport: { zoomLevel, panOffset },
         caseId,
         lastModified: new Date().toISOString()
@@ -672,10 +672,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
       // Save to API
       await fetch('/api/evidence/save-node', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'auto_save',
+          action: 'auto_save',;
           data: { canvasState, caseId }
         })
       });
@@ -698,9 +698,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       y,
       width: 150,
       height: 80,
-      aiTags: null,
-      metadata: null,
-      connections: []
+      aiTags: null,;
+      metadata: null,;
+      connections: [];
     };
 
     fileNodes.push(node);
@@ -719,8 +719,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
   export function exportCanvasState() {
     return {
-      nodes: fileNodes,
-      connections: nodeConnections,
+      nodes: fileNodes,;
+      connections: nodeConnections,;
       viewport: { zoomLevel, panOffset }
     };
   }
@@ -783,7 +783,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
 <style>
   /* @unocss-include */
-  .enhanced-canvas-editor {
+  .enhanced-canvas-editor {;
     background:
       radial-gradient(circle at 25% 25%, #f0f9ff 0%, transparent 50%),
       radial-gradient(circle at 75% 75%, #f0fdf4 0%, transparent 50%),

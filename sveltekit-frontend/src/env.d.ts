@@ -73,7 +73,7 @@ declare global {
     };
   }
 
-  // Nintendo Memory Architecture Types;
+  // Nintendo Memory Architecture Types
   namespace Nintendo {
     interface MemoryBank {
       id: number;
@@ -92,7 +92,7 @@ declare global {
     }
   }
 
-  // Enhanced Telemetry Events;
+  // Enhanced Telemetry Events
   namespace Telemetry {
     interface BaseEvent {
       timestamp: number;

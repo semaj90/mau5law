@@ -11,7 +11,7 @@ const pool = new Pool({
   port: 5433, // Your PostgreSQL port
   user: "legal_admin",
   password: "123456",
-  database: "legal_ai_db",
+  database: "legal_ai_db",;
   max: 10, // Maximum number of clients in the pool
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000
@@ -35,7 +35,7 @@ export class EmbeddingsService {
    */
   static async searchSimilar(
     queryEmbedding: number[],
-    limit: number = 5,
+    limit: number = 5,;
     threshold: number = 0.7;
   ): Promise<Array<Embedding & { similarity: number }> {
 
@@ -67,7 +67,7 @@ export class EmbeddingsService {
       metadata: row.metadata,
       source: row.source,
       createdAt: row.created_at,
-      updatedAt: row.updated_at,
+      updatedAt: row.updated_at,;
       similarity: parseFloat(row.similarity)
     });
   }

@@ -14,24 +14,27 @@ https://svelte.dev/e/expected_token -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { FileText, Save, Download, Share2, Settings } from 'lucide-svelte';
   import { NesCard } from '$lib/components/ui/nes-ui';
-  
+
   // Editor state
   let editorValue = $state('');
   let documentTitle = $state('Untitled Document');
   let lastSaved = $state<Date | null>(null);
   let isModified = $state(false);
-  
+
   // Document metadata
-  let documentStats = $derived(() => ({
-    words: editorValue.trim() ? editorValue.trim.split-length: 0,
-    characters: editorValue.length,
-    charactersNoSpaces: editorValue.replace.length,
-    paragraphs: editorValue.trim() ? editorValue.split.length : 0
-  }));
+  let documentStats = $derived(() => {
+    const trimmed = editorValue.trim();
+    return {
+      words: trimmed ? trimmed.split(/\s+/).length : 0,
+      characters: editorValue.length,
+      charactersNoSpaces: editorValue.replace(/\s+/g, '').length,
+      paragraphs: trimmed ? trimmed.split(/\n{2,}/).length : 0
+    };
+  });
 
   function handleEditorChange(value: string) {
     editorValue = value;
@@ -41,7 +44,7 @@ https://svelte.dev/e/expected_token -->
   function handleSave() {
     // In a real app, this would save to backend
     console.log('Saving document:', { title: documentTitle, content: editorValue });
-    lastSaved = new Date());
+  lastSaved = new Date();
     isModified = false;
   }
 
@@ -59,7 +62,7 @@ https://svelte.dev/e/expected_token -->
     if (navigator.share) {
       navigator.share({
         title: documentTitle,
-        text: editorValue,
+        text: editorValue
       });
     } else {
       // Fallback: copy to clipboard
@@ -104,7 +107,7 @@ https://svelte.dev/e/expected_token -->
 
     <!-- Document Title -->
     <div class="document-title-section">
-      <input 
+      <input
         bind:value={documentTitle}
         class="document-title-input"
         placeholder="Document title..."
@@ -241,7 +244,7 @@ https://svelte.dev/e/expected_token -->
     cursor: not-allowed;
   }
 
-  .save-btn: not(:disabled) {
+  .save-btn:not(:disabled) {
     background: var(--nes-green, #92cc41);
     border-color: var(--nes-green, #92cc41);
     color: #000;

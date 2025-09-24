@@ -101,7 +101,7 @@ export interface SOMVisualization {
 	grid: SOMNeuronViz[][];
 	performance: SOMPerformanceMetrics;
 	timestamp: number;
-	metadata: {
+	metadata: {;
 		domain: string;
 		practiceAreas: string[];
 		totalDocuments: number;
@@ -150,7 +150,7 @@ export interface TensorMetadata {
 	processingType: 'chunk' | 'sentence' | 'paragraph' | 'document';
 	legalEntities: string[];
 	context: Record<string, any>;
-	quality: {
+	quality: {;
 		completeness: number;
 		accuracy: number;
 		relevance: number;
@@ -187,7 +187,7 @@ export interface TricubicInterpolation {
 	result: Float32Array;
 	confidence: number;
 	interpolationMethod: 'tricubic' | 'trilinear' | 'nearest';
-	parameters: {
+	parameters: {;
 		smoothness: number;
 		boundaryCondition: 'zero' | 'periodic' | 'mirror';
 		accuracy: 'low' | 'medium' | 'high';
@@ -272,7 +272,7 @@ export interface RiskFactor {
 	description: string;
 	mitigation?: string;
 	confidence: number;
-	impact: {
+	impact: {;
 		financial: number;
 		operational: number;
 		reputational: number;
@@ -358,12 +358,12 @@ export interface WebSocketEvent {
 
 export interface SystemMetrics {
 	timestamp: number;
-	cpu: {
+	cpu: {;
 		usage: number;
 		cores: number;
 		frequency: number;
 	};
-	memory: {
+	memory: {;
 		used: number;
 		available: number;
 		total: number;
@@ -371,24 +371,24 @@ export interface SystemMetrics {
 	};
 	gpu?: {
 		usage: number;
-		memory: {
+		memory: {;
 			used: number;
 			total: number;
 		};
 		temperature: number;
 		power: number;
 	};
-	network: {
+	network: {;
 		latency: number;
 		throughput: number;
 		packetLoss: number;
 	};
-	storage: {
+	storage: {;
 		read: number;
 		write: number;
 		usage: number;
 	};
-	services: {
+	services: {;
 		redis: 'healthy' | 'degraded' | 'down';
 		postgres: 'healthy' | 'degraded' | 'down';
 		quic: 'healthy' | 'degraded' | 'down';

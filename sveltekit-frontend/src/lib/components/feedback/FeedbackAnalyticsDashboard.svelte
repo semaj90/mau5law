@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components
+<!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components;
 https://svelte.dev/e/component_invalid_directive -->
 <!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components -->
 <!--
@@ -44,10 +44,10 @@ https://svelte.dev/e/component_invalid_directive -->
     },
     breakdown: [],
     insights: [],
-    recommendations: [],
+    recommendations: [],;
     trends: {
-      daily: [],
-      hourly: []
+      daily: [],;
+      hourly: [];
     },
     userSegments: [],
     topIssues: []
@@ -467,7 +467,7 @@ https://svelte.dev/e/component_invalid_directive -->
 </div>
 
 <style>
-  .feedback-analytics-dashboard {
+  .feedback-analytics-dashboard {;
     min-height: 100vh;
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     padding: 2rem;

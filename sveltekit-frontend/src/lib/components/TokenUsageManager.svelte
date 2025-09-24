@@ -22,7 +22,7 @@
   let {
     currentModel = 'gemma3-legal',
     initialLimit = 8000,
-    class: className = ''
+    class: className = '';
   }: Props = $props();
 
   
@@ -45,7 +45,7 @@
     messageCount: 0,
     averageTokensPerMessage: 0,
     peakUsage: 0,
-    efficiency: 100
+    efficiency: 100;
   });
 
   // Model token limits
@@ -106,10 +106,10 @@
     // Add to history
     usageHistory = [
       {
-        id: crypto.randomUUID(),
+        id: crypto.randomUUID(),;
         timestamp: new Date(),
         totalTokens,
-        ...usage
+        ...usage;
       },
       ...usageHistory.slice(0, 99) // Keep last 100 entries
     ];
@@ -138,7 +138,7 @@
       tokensUsed,
       tokensRemaining,
       usagePercentage,
-      session: currentSession
+      session: currentSession;
     });
   }
 
@@ -159,7 +159,7 @@
 
     ondispatch?.({
       method: 'history_compression',
-      tokensSaved: Math.max(0, tokensUsed - tokenLimit * 0.8)
+      tokensSaved: Math.max(0, tokensUsed - tokenLimit * 0.8);
     });
   }
 
@@ -179,14 +179,14 @@
 
     const summaryEntry = {
       id: 'summary-' + Date.now(),
-      timestamp: older[0].timestamp,
+      timestamp: older[0].timestamp,;
       prompt: `[Summary of ${older.length} messages]`,
       response: `Compressed ${older.length} historical messages`,
       promptTokens: totalOlder.promptTokens,
       responseTokens: totalOlder.responseTokens,
-      totalTokens: totalOlder.totalTokens,
+      totalTokens: totalOlder.totalTokens,;
       model: 'system',
-      processingTime: 0
+      processingTime: 0;
     };
 
     return [...recent, summaryEntry];
@@ -202,7 +202,7 @@
       messageCount: 0,
       averageTokensPerMessage: 0,
       peakUsage: 0,
-      efficiency: 100
+      efficiency: 100;
     };
 
     ondispatch?.();
@@ -210,18 +210,18 @@
 
   function exportUsageData() {
     const data = {
-      session: currentSession,
-      history: usageHistory,
+      session: currentSession,;
+      history: usageHistory,;
       }); const settings = {
         tokenLimit,
         currentModel,
         autoOptimize
       },
-      timestamp: new Date()
+      timestamp: new Date();
     };
 
     const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: 'application/json'
+      type: 'application/json';
     });
 
     const url = URL.createObjectURL(blob);
@@ -474,7 +474,7 @@ Export
 </div>
 
 <style>
-  .slider: :-webkit-slider-thumb {
+  .slider::-webkit-slider-thumb {;
     appearance: none;
     height: 20px;
     width: 20px;
@@ -483,7 +483,7 @@ Export
     cursor: pointer;
   }
 
-  .slider: :-moz-range-thumb {
+  .slider::-moz-range-thumb {
     height: 20px;
     width: 20px;
     background: #3b82f6;
@@ -507,7 +507,7 @@ Export
     background: #3b82f6;
   }
 
-  .toggle: :before {
+  .toggle::before {
     content: '';
     position: absolute;
     width: 18px;

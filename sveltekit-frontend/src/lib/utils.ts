@@ -13,7 +13,8 @@ export function cn(...inputs: ClassValue[]) {
 export type WithoutChild<T> = T extends { child?: any } ? Omit<T, "child"> : T;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type WithoutChildren<T> = T extends { children?: any } ? Omit<T, "children"> : T;
-export type WithoutChildrenOrChild<T> = WithoutChildren<WithoutChild<T>;
+// Combined type helper that removes both children and child props
+export type WithoutChildrenOrChild<T> = Omit<T, 'children' | 'child'>;
 export type WithElementRef<T, U extends HTMLElement = HTMLElement> = T & { 
   ref?: U | null;
 };
@@ -25,7 +26,7 @@ export function formatFileSize(bytes: number): string {
   
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k);
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
@@ -54,7 +55,7 @@ export function generateId(): string {
  * Debounce function
  */
 export function debounce<T extends (...args: any[]) => any>(
-  func: T,
+  func: T,;
   delay: number;
 ): (...args: Parameters<T>) => void {
   let timeoutId: NodeJS.Timeout;
@@ -68,7 +69,7 @@ export function debounce<T extends (...args: any[]) => any>(
  * Throttle function
  */
 export function throttle<T extends (...args: any[]) => any>(
-  func: T,
+  func: T,;
   delay: number;
 ): (...args: Parameters<T>) => void {
   let lastCall = 0;
@@ -87,35 +88,35 @@ export function throttle<T extends (...args: any[]) => any>(
 export function getConfidenceLevel(confidence: number) {
   if (confidence >= 0.9) {
     return {
-      label: 'Very High',
+      label: 'Very High',;
       color: 'text-legal-success',
       bgColor: 'bg-legal-success/10',
       borderColor: 'border-legal-success'
     };
   } else if (confidence >= 0.8) {
     return {
-      label: 'High',
+      label: 'High',;
       color: 'text-legal-info',
       bgColor: 'bg-legal-info/10',
       borderColor: 'border-legal-info'
     };
   } else if (confidence >= 0.7) {
     return {
-      label: 'Good',
+      label: 'Good',;
       color: 'text-legal-warning',
       bgColor: 'bg-legal-warning/10',
       borderColor: 'border-legal-warning'
     };
   } else if (confidence >= 0.6) {
     return {
-      label: 'Fair',
+      label: 'Fair',;
       color: 'text-harvard-crimson',
       bgColor: 'bg-harvard-crimson/10',
       borderColor: 'border-harvard-crimson'
     };
   } else {
     return {
-      label: 'Low',
+      label: 'Low',;
       color: 'text-legal-error',
       bgColor: 'bg-legal-error/10',
       borderColor: 'border-legal-error'
@@ -146,7 +147,7 @@ export function getCaseStatusStyling(status: string) {
       borderColor: 'border-muted'
     },
     'archived': {
-      label: 'Archived',
+      label: 'Archived',;
       color: 'text-legal-document',
       bgColor: 'bg-legal-document/10',
       borderColor: 'border-legal-document'
@@ -185,7 +186,7 @@ export function getEvidenceTypeStyling(type: string) {
       borderColor: 'border-harvard-gold'
     },
     'physical': {
-      label: 'Physical',
+      label: 'Physical',;
       color: 'text-legal-evidence',
       bgColor: 'bg-legal-evidence/10',
       borderColor: 'border-legal-evidence'
@@ -320,7 +321,7 @@ export const theme = {
   gradients: {
     crimson: 'linear-gradient(135deg, #A51C30 0%, #C42847 100%)',
     gold: 'linear-gradient(135deg, #C9A96E 0%, #B8965A 100%)',
-    nier: 'linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 50%, #3A3A3A 100%)',
+    nier: 'linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 50%, #3A3A3A 100%)',;
     hero: 'linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 50%, #A51C30 100%)'
   }
 };

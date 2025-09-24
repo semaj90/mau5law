@@ -59,7 +59,7 @@ interface TextExtractionResult {
 // MinIO client configuration;
 const createMinIOClient = (): InstanceType<typeof S3Client> => {
   const config: MinIOConfig = {
-    endpoint: process.env.MINIO_ENDPOINT || 'http://localhost:9000',
+    endpoint: process.env.MINIO_ENDPOINT || 'http://localhost:9000',;
     region: process.env.MINIO_REGION || 'us-east-1',
     accessKeyId: process.env.MINIO_ACCESS_KEY || 'minioadmin',
     secretAccessKey: process.env.MINIO_SECRET_KEY || 'minioadmin',
@@ -68,7 +68,7 @@ const createMinIOClient = (): InstanceType<typeof S3Client> => {
 
   return new S3Client({
     endpoint: config.endpoint,
-    region: config.region,
+    region: config.region,;
     credentials: {
       accessKeyId: config.accessKeyId,
       secretAccessKey: config.secretAccessKey
@@ -186,7 +186,7 @@ export class MinIOService {
       const processingTime = Date.now() - startTime;
 
       return {
-        content: extractedContent,
+        content: extractedContent,;
         metadata: {
           originalSize: rawContent.length,
           extractedSize: extractedContent.length,
@@ -252,7 +252,7 @@ export class MinIOService {
    */
   static async storeTextContent(
     bucket: string,
-    key: string,
+    key: string,;
     content: string,
     metadata?: Record<string, string>;
   ): Promise<string> {
@@ -279,13 +279,13 @@ export class MinIOService {
    */
   static async uploadLargeFile(
     bucket: string,
-    key: string,
+    key: string,;
     content: Buffer | Uint8Array | string,
     contentType?: string;
   ): Promise<string> {
     try {
       const upload = new Upload({
-        client: this.client,
+        client: this.client,;
         params: {
           Bucket: bucket,
           Key: key,
@@ -321,7 +321,7 @@ export class MinIOService {
       const response = await this.client.send(command);
 
       return (response.Contents || []).map(obj => ({
-        key: obj.Key!,
+        key: obj.Key!,;
         size: obj.Size || 0,
         lastModified: obj.LastModified || new Date(),
         bucket

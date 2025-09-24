@@ -27,11 +27,11 @@ import type { DocumentMetadata } from './schema-unified.js';
 // ============================================================================
 
 interface DatabaseConfig {
-  runtime: {
+  runtime: {;
     url: string;
     poolSize: number;
   };
-  admin: {
+  admin: {;
     url: string;
     poolSize: number;
   };
@@ -78,7 +78,7 @@ const config: DatabaseConfig = {
   qdrant: process.env.QDRANT_URL ? {
     url: process.env.QDRANT_URL,
     apiKey: process.env.QDRANT_API_KEY
-  } : undefined,
+  } : undefined,;
   environment: isDev ? 'development' : 'production'
 };
 
@@ -113,12 +113,12 @@ class DatabaseManager {
         max_lifetime: 60 * 30, // 30 minutes
         prepare: !isDev, // Disable in dev for better DX
         ssl: false,
-        transform: { undefined: null },
+        transform: { undefined: null },;
         types: {
           // Custom pgvector type support;
           vector: {
             to: 1184,
-            from: [1184],
+            from: [1184],;
             serialize: (x: number[]) => {
               if (Array.isArray(x)) {
                 return `[${x.join(',')}]`;
@@ -152,7 +152,7 @@ class DatabaseManager {
         max_lifetime: 60 * 10, // 10 minutes
         prepare: false, // Admin operations don't need prepared statements
         ssl: false,
-        transform: { undefined: null },
+        transform: { undefined: null },;
         debug: isDev ? (connection: any, query: string, parameters: any[]) => {
           console.log('👑 Admin PostgreSQL Query:', query);
           if (parameters?.length) {
@@ -277,7 +277,7 @@ class DatabaseManager {
             memmap_threshold: 20000,
             indexing_threshold: 20000
           },
-          hnsw_config: {
+          hnsw_config: {;
             m: 16,
             ef_construct: 64,
             full_scan_threshold: 10000
@@ -333,7 +333,7 @@ class DatabaseManager {
           results.push({
             id: row.id,
             score: row.similarity,
-            document: row as DocumentMetadata,
+            document: row as DocumentMetadata,;
             source: 'postgresql'
           });
         }
@@ -356,7 +356,7 @@ class DatabaseManager {
             with_payload: true,
             filter: Object.keys(filter).length > 0 ? {
               must: Object.entries(filter).map(([key, value]) => ({
-                key,
+                key,;
                 match: { value }
               }))
             } : undefined
@@ -365,7 +365,7 @@ class DatabaseManager {
           qdrantTime = Date.now() - qdrantStart;
 
           // Get corresponding PostgreSQL records
-          const qdrantIds = qdrantResults.map((r) => r.id.toString();
+          const qdrantIds = qdrantResults.map((r) => r.id.toString());
 
           if (qdrantIds.length > 0) {
             const db = this.getRuntimeDb();
@@ -377,10 +377,10 @@ class DatabaseManager {
             const docMap = new Map(pgDocuments.map((doc) => [doc.id, doc]);
 
             for (const result of qdrantResults) {
-              const document = docMap.get((result as { id?: any; score?: any }).id.toString();
+              const document = docMap.get((result as { id?: any; score?: any }).id.toString());
               if (document) {
                 results.push({
-                  id: (result as { id?: any; score?: any }).id.toString(),
+                  id: (result as { id?: any; score?: any }).id.toString()),
                   score: (result as { id?: any; score?: any }).score,
                   document,
                   source: 'qdrant'
@@ -408,7 +408,7 @@ class DatabaseManager {
       .slice(0, limit);
 
     return {
-      results: finalResults,
+      results: finalResults,;
       performance: {
         postgresqlTime,
         qdrantTime,
@@ -424,7 +424,7 @@ class DatabaseManager {
   async healthCheck(): Promise<any> {
     const health = {
       postgresql: false,
-      qdrant: false,
+      qdrant: false,;
       pgvector: false,
       overallHealth: false
     };
@@ -506,7 +506,7 @@ export const unifiedDb = {
 
   // Operations
   initialize: () => dbManager.initialize(),
-  healthCheck: () => dbManager.healthCheck(),
+  healthCheck: () => dbManager.healthCheck(),;
   cleanup: () => dbManager.cleanup(),
 
   // Vector operations

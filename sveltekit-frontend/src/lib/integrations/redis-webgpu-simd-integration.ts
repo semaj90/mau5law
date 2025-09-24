@@ -12,7 +12,7 @@ import type { JobType } from '$lib/orchestration/optimized-rabbitmq-orchestrator
 // Redis connection configuration;
 const REDIS_CONFIG = {
   host: 'localhost',
-  port: 6379,
+  port: 6379,;
   db: 0,
   keyPrefix: 'legal_ai:',
   defaultTTL: 3600 // 1 hour
@@ -156,7 +156,7 @@ export class RedisWebGPUSIMDIntegration {
             processingPath,
             performance: {
               totalTime: performance.now() - startTime,
-              cacheHit: true,
+              cacheHit: true,;
               source: 'redis'
             }
           };
@@ -198,7 +198,7 @@ export class RedisWebGPUSIMDIntegration {
         processingPath,
         performance: {
           totalTime,
-          cacheHit: false,
+          cacheHit: false,;
           source: processingPath.includes('WEBGPU_COMPUTE') ? 'webgpu' : 'cpu'
         }
       };
@@ -244,7 +244,7 @@ export class RedisWebGPUSIMDIntegration {
             processingPath,
             performance: {
               totalTime: performance.now() - startTime,
-              cacheHit: true,
+              cacheHit: true,;
               source: 'redis'
             }
           };
@@ -282,7 +282,7 @@ export class RedisWebGPUSIMDIntegration {
         processingPath,
         performance: {
           totalTime: performance.now() - startTime,
-          cacheHit: false,
+          cacheHit: false,;
           source: processingPath.includes('WEBGPU_SIMILARITY') ? 'webgpu' : 'cpu'
         }
       };
@@ -326,7 +326,7 @@ export class RedisWebGPUSIMDIntegration {
             processingPath,
             performance: {
               totalTime: performance.now() - startTime,
-              cacheHit: true,
+              cacheHit: true,;
               source: 'redis'
             }
           };
@@ -349,7 +349,7 @@ export class RedisWebGPUSIMDIntegration {
         processingPath,
         performance: {
           totalTime: performance.now() - startTime,
-          cacheHit: false,
+          cacheHit: false,;
           source: 'webgpu_som'
         }
       };
@@ -435,7 +435,7 @@ export class RedisWebGPUSIMDIntegration {
     const analysis = {
       entities: await this.extractEntitiesWebGPU(documentData.content),
       sentiment: await this.analyzeSentimentWebGPU(documentData.content),
-      embeddings: await this.generateEmbeddingsWebGPU(documentData.content),
+      embeddings: await this.generateEmbeddingsWebGPU(documentData.content),;
       similarity: await this.findSimilarDocumentsWebGPU(documentData),
       risk_assessment: await this.assessRiskWebGPU(documentData),
       webgpu_accelerated: true,
@@ -453,7 +453,7 @@ export class RedisWebGPUSIMDIntegration {
     return {
       entities: this.extractEntitiesCPU(documentData.content),
       sentiment: this.analyzeSentimentCPU(documentData.content),
-      embeddings: this.generateEmbeddingsCPU(documentData.content),
+      embeddings: this.generateEmbeddingsCPU(documentData.content),;
       similarity: await this.findSimilarDocumentsCPU(documentData),
       risk_assessment: this.assessRiskCPU(documentData),
       cpu_processed: true,
@@ -617,7 +617,7 @@ export class RedisWebGPUSIMDIntegration {
    */
   async cacheResult(
     key: string,
-    value: any,
+    value: any,;
     options: { ttl?: number; priority?: number } = {}
   ): Promise<void> {
     const ttl = options.ttl || this.config.defaultTTL;
@@ -648,7 +648,7 @@ export class RedisWebGPUSIMDIntegration {
     return {
       redis: this.redisClient !== null,
       webgpu: this.config.enableWebGPU,
-      simd: this.config.enableSIMD,
+      simd: this.config.enableSIMD,;
       som: true, // WebGPU SOM cache is initialized
     };
   }

@@ -16,9 +16,9 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 /*
  * Self-Prompting AI System for Prosecutors
@@ -27,9 +27,9 @@ import type { RequestHandler } from './$types.js';
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
-    const { caseId, context, currentPhase } = await request.json();
+    const { caseId, context, currentPhase } = await request.json()
 
-    // Generate context-aware prompts based on prosecutor workflow;
+    // Generate context-aware prompts based on prosecutor workflow
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -51,37 +51,37 @@ Return only 4 concise, actionable questions as a JSON array:
 ["Question 1", "Question 2", "Question 3", "Question 4"]`,
         stream: false
       })
-    });
+    })
 
-    const result = await (response as { json?: any }).json();
+    const result = await (response as { json?: any }).json()
     
     try {
-      const suggestions = JSON.parse((result as { response?: any }).response);
+      const suggestions = JSON.parse((result as { response?: any }).response)
       return json({ 
-        success: true, 
+        success: true,
         suggestions: Array.isArray(suggestions) ? suggestions : [
           "Analyze evidence strength for this case",
           "Find similar cases with comparable evidence", 
           "Identify potential defense arguments",
           "Review timeline for inconsistencies"
         ]
-      });
+      })
     } catch (parseError) {
-      // Fallback suggestions;
+      // Fallback suggestions
       return json({ 
-        success: true, 
+        success: true,
         suggestions: [
           "Analyze evidence strength for this case",
           "Find similar cases with comparable evidence",
           "Identify potential defense arguments", 
           "Review timeline for inconsistencies"
         ]
-      });
+      })
     }
   } catch (error: any) {
-    console.error('Self-prompt generation failed:', error);
-    return json({ error: 'Failed to generate suggestions' }, { status: 500 });
+    console.error('Self-prompt generation failed:', error)
+    return json({ error: 'Failed to generate suggestions' }, { status: 500 })
   }
-};
+}
 
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)

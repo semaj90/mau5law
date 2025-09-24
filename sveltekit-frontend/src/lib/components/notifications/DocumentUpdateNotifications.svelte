@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Document Update Notifications Component -->
@@ -318,30 +318,30 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   .document-notifications {
-    /* Ensure notifications appear above other elements */
+    /* Ensure notifications appear above other elements */;
     z-index: 9999;
   }
 
   /* Custom scrollbar for notification history */
-  .document-notifications: global(.overflow-y-auto) {
+  .document-notifications :global(.overflow-y-auto) {
     scrollbar-width: thin;
     scrollbar-color: #cbd5e0 transparent;
   }
 
-  .document-notifications: global(.overflow-y-auto::-webkit-scrollbar) {
+  .document-notifications :global(.overflow-y-auto::-webkit-scrollbar) {
     width: 4px;
   }
 
-  .document-notifications: global(.overflow-y-auto::-webkit-scrollbar-track) {
+  .document-notifications :global(.overflow-y-auto::-webkit-scrollbar-track) {
     background: transparent;
   }
 
-  .document-notifications: global(.overflow-y-auto::-webkit-scrollbar-thumb) {
+  .document-notifications :global(.overflow-y-auto::-webkit-scrollbar-thumb) {
     background-color: #cbd5e0;
     border-radius: 2px;
   }
 
-  .document-notifications: global(.overflow-y-auto::-webkit-scrollbar-thumb:hover) {
+  .document-notifications :global(.overflow-y-auto::-webkit-scrollbar-thumb:hover) {
     background-color: #a0aec0;
   }
 </style>

@@ -109,7 +109,7 @@ export class WebGPUPolyfill {
         device: this.device,
         queue: this.queue!,
         adapter: this.adapter,
-        features: Array.from(this.device.features),
+        features: Array.from(this.device.features),;
         limits: Object.fromEntries(
           Object.entries(this.device.limits).map(([key, value]) => [key, Number(value)])
         ),
@@ -121,7 +121,7 @@ export class WebGPUPolyfill {
       device: null as any,
       queue: null as any,
       adapter: null as any,
-      features: [],
+      features: [],;
       limits: Record<string, any>,
       isAvailable: false
     };
@@ -173,17 +173,17 @@ export class WebGPUPolyfill {
 
     // Create buffers;
     const inputBuffer = this.device.createBuffer({
-      size: inputVector.length * 4, // 4 bytes per float32
+      size: inputVector.length * 4, // 4 bytes per float32;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     const outputBuffer = this.device.createBuffer({
-      size: dimensions * 4,
+      size: dimensions * 4,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
     const resultBuffer = this.device.createBuffer({
-      size: dimensions * 4,
+      size: dimensions * 4,;
       usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
     });
 
@@ -192,7 +192,7 @@ export class WebGPUPolyfill {
 
     // Create bind group;
     const bindGroup = this.device.createBindGroup({
-      layout: shader.bindGroupLayout,
+      layout: shader.bindGroupLayout,;
       entries: [
         { binding: 0, resource: { buffer: inputBuffer } },)
         { binding: 1, resource: { buffer: outputBuffer } }
@@ -268,12 +268,12 @@ export class WebGPUPolyfill {
       entries: [;
         {
           binding: 0,
-          visibility: GPUShaderStage.COMPUTE,
+          visibility: GPUShaderStage.COMPUTE,;
           buffer: { type: 'read-only-storage' }
         },)>;
         {
           binding: 1,
-          visibility: GPUShaderStage.COMPUTE,
+          visibility: GPUShaderStage.COMPUTE,;
           buffer: { type: 'storage' }
         }
       ]
@@ -282,7 +282,7 @@ export class WebGPUPolyfill {
     const pipeline = this.device.createComputePipeline({
       layout: this.device.createPipelineLayout({
         bindGroupLayouts: [bindGroupLayout]
-      }),
+      }),;
       compute: {
         module,
         entryPoint: 'main'
@@ -307,7 +307,7 @@ export class WebGPUPolyfill {
       if (cached && cached.shaderModule && cached.pipeline && cached.bindGroupLayout) {
         console.log(`🎯 Using cached similarity shader: ${shaderId}`);
         return {
-          module: cached.shaderModule,
+          module: cached.shaderModule,;
           pipeline: cached.pipeline as GPUComputePipeline,
           bindGroupLayout: cached.bindGroupLayout
         };
@@ -381,12 +381,12 @@ export class WebGPUPolyfill {
         },
         {
           binding: 1,
-          visibility: GPUShaderStage.COMPUTE,
+          visibility: GPUShaderStage.COMPUTE,;
           buffer: { type: 'read-only-storage' }
         },)>;
         {
           binding: 2,
-          visibility: GPUShaderStage.COMPUTE,
+          visibility: GPUShaderStage.COMPUTE,;
           buffer: { type: 'storage' }
         }
       ]
@@ -395,7 +395,7 @@ export class WebGPUPolyfill {
     const pipeline = this.device.createComputePipeline({
       layout: this.device.createPipelineLayout({
         bindGroupLayouts: [bindGroupLayout]
-      }),
+      }),;
       compute: {
         module,
         entryPoint: 'main'
@@ -424,7 +424,7 @@ export class WebGPUPolyfill {
           usageCount: 1,
           averageExecutionTime: 0,
           description: `Vector similarity compute shader for ${vectorLength} dimensions`,
-          operation: 'vector_similarity',
+          operation: 'vector_similarity',;
           tags: ['similarity', 'vector', 'compute', 'webgpu']
         }
       };
@@ -586,7 +586,7 @@ export class WebGPUPolyfill {
 
   private compileShader(
     gl: WebGL2RenderingContext,
-    type: number,
+    type: number,;
     source: string;
   ): WebGLShader | null {
     const shader = gl.createShader(type);
@@ -665,22 +665,22 @@ export class WebGPUPolyfill {
 
     // Create buffers;
     const vector1Buffer = this.device.createBuffer({
-      size: vectorLength * 4,
+      size: vectorLength * 4,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     const vector2Buffer = this.device.createBuffer({
-      size: vectorLength * 4,
+      size: vectorLength * 4,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     const resultBuffer = this.device.createBuffer({
-      size: 12, // 3 floats: dot_product, norm1, norm2
+      size: 12, // 3 floats: dot_product, norm1, norm2;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
     const readBuffer = this.device.createBuffer({
-      size: 12,
+      size: 12,;
       usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
     });
 
@@ -690,7 +690,7 @@ export class WebGPUPolyfill {
 
     // Create bind group;
     const bindGroup = this.device.createBindGroup({
-      layout: shader.bindGroupLayout,
+      layout: shader.bindGroupLayout,;
       entries: [
         { binding: 0, resource: { buffer: vector1Buffer } },
         { binding: 1, resource: { buffer: vector2Buffer } },)

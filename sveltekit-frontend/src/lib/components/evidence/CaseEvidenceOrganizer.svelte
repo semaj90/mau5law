@@ -46,8 +46,8 @@
   let filterCriteria = $state({
     evidenceType: 'all',
     dateRange: 'all',
-    priority: 'all',
-    status: 'all'
+    priority: 'all',;
+    status: 'all';
   });
   
   // AI-powered organization state
@@ -63,12 +63,12 @@
   // Organization metrics
   let organizationMetrics = $state({
     totalEvidence: 0,
-    categorized: 0,
-    uncategorized: 0,
+    categorized: 0,;
+    uncategorized: 0,;
     duplicates: 0,
     missingMetadata: 0,
     chainOfCustodyComplete: 0,
-    aiAnalyzed: 0
+    aiAnalyzed: 0;
   });
   
   // Reactive derived values
@@ -115,8 +115,9 @@
   /**
    * Initialize component
    */
-  $effect(async () => {
-    await loadCaseEvidence();
+  $effect(() => {
+    (async () => {
+await loadCaseEvidence();
     updateOrganizationMetrics();
     
     if (enableCollaboration) {
@@ -125,6 +126,7 @@
     
     // Generate initial organization
     await reorganizeEvidence();
+    })();
   });
   
   /**
@@ -221,16 +223,16 @@
       if (wsManager) {
         wsManager.send.toISOString(),
           data: {
-            action: 'reorganized',
-            mode: organizationMode,
-            structure: organizationStructure
+            action: 'reorganized',;
+            mode: organizationMode,;
+            structure: organizationStructure;
           }
         });
       }
       
       ondispatch?.({
-        mode: organizationMode,
-        structure: organizationStructure
+        mode: organizationMode,;
+        structure: organizationStructure;
       });
       
     } catch (error) {
@@ -250,9 +252,9 @@
       if (!categories[category]) {
         categories[category] = {
           name: category,
-          evidence: [],
-          count: 0,
-          priority: calculateCategoryPriority(category)
+          evidence: [],;
+          count: 0,;
+          priority: calculateCategoryPriority(category);
         };
       }
       categories[category].evidence.push(evidence);
@@ -260,8 +262,8 @@
     });
     
     organizationStructure = {
-      type: 'category',
-      categories: Object.values.sort((a, b) => b.priority - a.priority)
+      type: 'category',;
+      categories: Object.values.sort((a, b) => b.priority - a.priority);
     };
   }
   
@@ -286,11 +288,11 @@
       if (!periods[periodKey]) {
         periods[periodKey] = {
           key: periodKey,
-          label: periodLabel,
-          evidence: [],
+          label: periodLabel,;
+          evidence: [],;
           count: 0,
           startDate: date,
-          endDate: date
+          endDate: date;
         };
       }
       
@@ -302,9 +304,9 @@
     });
     
     organizationStructure = {
-      type: 'timeline',
-      periods: Object.values.sort((a, b) => b.startDate.getTime() - a.startDate.getTime()),
-      uncategorized: filteredEvidence.filter(e => !e.collected_at && !e.uploaded_at)
+      type: 'timeline',;
+      periods: Object.values.sort((a, b) => b.startDate.getTime() - a.startDate.getTime()),;
+      uncategorized: filteredEvidence.filter(e => !e.collected_at && !e.uploaded_at);
     };
   }
   
@@ -316,7 +318,7 @@
       critical: { name: 'Critical', evidence: [], color: '#dc2626' },
       high: { name: 'High', evidence: [], color: '#ea580c' },
       medium: { name: 'Medium', evidence: [], color: '#d97706' },
-      low: { name: 'Low', evidence: [], color: '#65a30d' },
+      low: { name: 'Low', evidence: [], color: '#65a30d' },;
       unknown: { name: 'Unknown', evidence: [], color: '#6b7280' }
     };
     
@@ -338,8 +340,8 @@
     });
     
     organizationStructure = {
-      type: 'priority',
-      priorities: Object.values.filter(p => p.count > 0)
+      type: 'priority',;
+      priorities: Object.values.filter(p => p.count > 0);
     };
   }
   
@@ -367,8 +369,8 @@
       clusteringProgress = 100;
       
       organizationStructure = {
-        type: 'ai_clusters',
-        clusters: organizedClusters,
+        type: 'ai_clusters',;
+        clusters: organizedClusters,;
         metadata: {
           totalClusters: organizedClusters.length,
           clusteringMethod: 'gemma_embeddings',
@@ -402,9 +404,9 @@
         custodyChains[chainId] = {
           id: chainId,
           officer: custody[0]?.officer_name || 'Unknown Officer',
-          evidence: [],
-          status: chainStatus,
-          completeness: 0
+          evidence: [],;
+          status: chainStatus,;
+          completeness: 0;
         };
       }
       
@@ -422,8 +424,8 @@
     });
     
     organizationStructure = {
-      type: 'chain_custody',
-      chains: Object.values.sort((a, b) => b.completeness - a.completeness)
+      type: 'chain_custody',;
+      chains: Object.values.sort((a, b) => b.completeness - a.completeness);
     };
   }
   
@@ -439,20 +441,20 @@
         if (evidence.metadata?.aiAnalysis?.embeddingVector) {
           evidenceWithEmbeddings.push({
             ...evidence,
-            embedding: evidence.metadata.aiAnalysis.embeddingVector
+            embedding: evidence.metadata.aiAnalysis.embeddingVector;
           });
           continue;
         }
         
         // Generate new embeddings using MCP server
         const response = await fetch('http://localhost:3002/mcp/evidence-analyze', {
-          method: 'POST',
+          method: 'POST',;
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            evidenceId: evidence.id,
+            evidenceId: evidence.id,;
             content: evidence.title + ' ' + (evidence.description || ''),
             useGemmaEmbeddings: true,
-            analysisType: 'embedding_only'
+            analysisType: 'embedding_only';
           })
         });
         
@@ -460,7 +462,7 @@
           const analysis = await response.json();
           evidenceWithEmbeddings.push({
             ...evidence,
-            embedding: analysis.embedding
+            embedding: analysis.embedding;
           });
         } else {
           evidenceWithEmbeddings.push(evidence);
@@ -480,20 +482,20 @@
   async function generateAIClusters(evidenceWithEmbeddings) {
     try {
       const response = await fetch('http://localhost:3002/mcp/cluster-evidence', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           evidence: evidenceWithEmbeddings.map(e => ({
             id: e.id,
             title: e.title,
             type: e.evidenceType,
-            embedding: e.embedding
+            embedding: e.embedding;
           })),
           clusteringParams: {
             minClusterSize: 2,
             maxClusters: 10,
-            similarityThreshold: 0.7,
-            method: 'kmeans'
+            similarityThreshold: 0.7,;
+            method: 'kmeans';
           }
         })
       });
@@ -520,9 +522,9 @@
       description: cluster.description || generateClusterDescription(cluster.evidence),
       evidence: cluster.evidence,
       count: cluster.evidence.length,
-      similarity: cluster.averageSimilarity || 0.8,
-      keywords: cluster.keywords || extractClusterKeywords(cluster.evidence),
-      color: getClusterColor(index)
+      similarity: cluster.averageSimilarity || 0.8,;
+      keywords: cluster.keywords || extractClusterKeywords(cluster.evidence),;
+      color: getClusterColor(index);
     }));
   }
   
@@ -587,14 +589,14 @@
   function updateOrganizationMetrics() {
     organizationMetrics = {
       totalEvidence: evidenceList.length,
-      categorized: evidenceList.filter(item => item.length),
-      uncategorized: evidenceList.filter(item => item.length),
+      categorized: evidenceList.filter(item => item.length),;
+      uncategorized: evidenceList.filter(item => item.length),;
       duplicates: 0, // TODO: Implement duplicate detection
       missingMetadata: evidenceList.filter(item => item.length) === 0).length,
       chainOfCustodyComplete: evidenceList.filter(e => 
         validateChainOfCustody(e.chain_of_custody) === 'complete'
       ).length,
-      aiAnalyzed: evidenceList.filter(item => item.length)
+      aiAnalyzed: evidenceList.filter(item => item.length);
     };
   }
   
@@ -625,9 +627,9 @@
   function performSimpleClustering(evidenceWithEmbeddings: unknown[]) {
     // Simple fallback clustering
     return [{
-      evidence: evidenceWithEmbeddings,
+      evidence: evidenceWithEmbeddings,;
       name: 'All Evidence',
-      averageSimilarity: 0.5
+      averageSimilarity: 0.5;
     }];
   }
   
@@ -925,7 +927,7 @@
 </div>
 
 <style>
-  .case-evidence-organizer {
+  .case-evidence-organizer {;
     display: flex;
     flex-direction: column;
     height: 100vh;

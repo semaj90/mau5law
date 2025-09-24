@@ -197,7 +197,7 @@
 {/snippet}
 
 <style>
-  .select-wrapper {
+  .select-wrapper {;
     position: relative;
   }
 

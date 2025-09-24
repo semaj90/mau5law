@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class'
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class';
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'Props' has already been declared -->
 <!--
@@ -26,16 +26,16 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
     Settings,
     Zap,
   } from 'lucide-svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { Switch } from '$lib/components/ui/switch';
   import * as Collapsible from '$lib/components/ui/collapsible';
@@ -119,9 +119,9 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
   let currentAnalysis = $state<any>(null);
   let systemStatus = $state({
     legalBERT: 'unknown',
-    rag: 'unknown',
+    rag: 'unknown',;
     synthesis: 'unknown',
-    lastCheck: null,
+    lastCheck: null,;
   });
 
   // Reactive derived stores
@@ -129,8 +129,9 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
     $messages.some((m) => m.synthesizedInput || m.legalAnalysis || m.ragResults)
   );
 
-  $effect(async () => {
-    if (browser) {
+  $effect(() => {
+    (async () => {
+if (browser) {
       // Initialize chat session with database
       await initializeChatSession();
       // Load related reports for context
@@ -171,6 +172,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
 
     // Auto-scroll to bottom
     scrollToBottom();
+    })();
   });
 
   // System status check using production health endpoint
@@ -181,9 +183,9 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
         const status = await (response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).json();
         systemStatus = {
           legalBERT: status.checks?.ollama ? 'active' : 'inactive',
-          rag: status.checks?.database ? 'active' : 'inactive',
+          rag: status.checks?.database ? 'active' : 'inactive',;
           synthesis: status.checks?.server ? 'active' : 'inactive',
-          lastCheck: new Date().toISOString(),
+          lastCheck: new Date().toISOString(),;
         };
       }
     } catch (error) {
@@ -214,9 +216,9 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
       };
 
       const response = await fetch('/api/v1/chat/sessions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(sessionData)
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
+        body: JSON.stringify(sessionData);
       });
 
       if ((response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
@@ -250,10 +252,10 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
           timestamp: new Date(msg.created_at).getTime(),
           synthesizedInput: msg.synthesized_input,
           legalAnalysis: msg.legal_analysis,
-          ragResults: msg.rag_results,
+          ragResults: msg.rag_results,;
           confidence: msg.confidence ? parseFloat(msg.confidence) : undefined,
-          processingTime: msg.processing_time ? parseInt(msg.processing_time) : undefined,
-          metadata: msg.ai_metadata
+          processingTime: msg.processing_time ? parseInt(msg.processing_time) : undefined,;
+          metadata: msg.ai_metadata;
         }));
 
         messages.set(loadedMessages);
@@ -275,20 +277,20 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
 
       const messageData = {
         sessionId: currentSessionId,
-        role: message.role,
+        role: message.role,;
         content: message.content,
         synthesizedInput: message.synthesizedInput || null,
         legalAnalysis: message.legalAnalysis || null,
-        ragResults: message.ragResults || null,
+        ragResults: message.ragResults || null,;
         confidence: message.confidence?.toString() || null,
         processingTime: message.processingTime?.toString() || null,
-        aiMetadata: message.metadata || null
+        aiMetadata: message.metadata || null;
       };
 
       const response = await fetch('/api/v1/chat/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(messageData)
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
+        body: JSON.stringify(messageData);
       });
 
       if ((response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
@@ -326,12 +328,12 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
 
     try {
       await fetch('/api/v1/reports/chat-associations', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           reportId,
           chatSessionId: sessionId,
-          associationType: 'analysis',
+          associationType: 'analysis',;
           metadata: { userRole, caseId }
         })
       });
@@ -346,13 +348,13 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
   async function findSimilarConversations(query: string) {
     try {
       const response = await fetch('/api/v1/chat/search', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query,
           userId,
-          caseId: caseId || null,
-          limit: 5
+          caseId: caseId || null,;
+          limit: 5;
         })
       });
 
@@ -470,16 +472,16 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
 
     try {
       const response = await fetch('http://localhost:11434/api/generate', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'gemma3-legal',
           prompt: enhancedPrompt,
-          stream: true, // Enable streaming
-          options: {
+          stream: true, // Enable streaming;
+          options: {;
             temperature: 0.4,
             num_ctx: 4096,
-            top_p: 0.9
+            top_p: 0.9;
           }
         }),
       });
@@ -515,7 +517,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
 
       const processingTime = Date.now() - startTime;
       return {
-        response: fullResponse || 'Response generated successfully',
+        response: fullResponse || 'Response generated successfully',;
         confidence: 0.85,
         processingTime,
         isStreaming: true,
@@ -525,24 +527,24 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
         },
         legalAnalysis: {
           entities: [userRole, caseId].filter(Boolean),
-          concepts: ['legal_analysis', context.enhancementLevel],
+          concepts: ['legal_analysis', context.enhancementLevel],;
           complexity: { legalComplexity: 0.7 }
         },
         ragResults: {
-          sources: ['Gemma3-Legal Model (Streaming)'],
+          sources: ['Gemma3-Legal Model (Streaming)'],;
           metadata: { documentsProcessed: context.documentIds?.length || 0 }
         },
         metadata: {
-          model: 'gemma3-legal',
+          model: 'gemma3-legal',;
           streaming: true,
           userRole,
           caseId,
           enabledFeatures: {
             typewriter: settings.enableTypewriterEffect,
             streaming: settings.enableStreamingResponse,
-            legalBERT: settings.enableLegalBERT,
-            rag: settings.enableRAG,
-            synthesis: settings.enableInputSynthesis
+            legalBERT: settings.enableLegalBERT,;
+            rag: settings.enableRAG,;
+            synthesis: settings.enableInputSynthesis;
           }
         }
       };
@@ -559,9 +561,9 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
 
     const userMessage: EnhancedMessage = {
       id: generateId(),
-      role: 'user',
-      content: currentInput.trim(),
-      timestamp: Date.now(),
+      role: 'user',;
+      content: currentInput.trim(),;
+      timestamp: Date.now(),;
     };
 
     // Add user message
@@ -605,10 +607,10 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
         timestamp: Date.now(),
         synthesizedInput: processingResult.synthesizedInput,
         legalAnalysis: processingResult.legalAnalysis,
-        ragResults: processingResult.ragResults,
+        ragResults: processingResult.ragResults,;
         confidence: processingResult.confidence || 0.5,
-        processingTime: processingResult.processingTime || 0,
-        metadata: processingResult.metadata,
+        processingTime: processingResult.processingTime || 0,;
+        metadata: processingResult.metadata,;
       };
 
       messages.update((msgs) => [...msgs, assistantMessage]);
@@ -623,7 +625,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
         if (persistConversation) {
           const finalMessage = { 
             ...assistantMessage, 
-            content: processingResult.response 
+            content: processingResult.response ;
           };
           await saveMessageToDatabase(finalMessage);
         }
@@ -644,9 +646,9 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
 
       const errorMessage: EnhancedMessage = {
         id: generateId(),
-        role: 'assistant',
+        role: 'assistant',;
         content: `⚠️ I encountered an error processing your request: ${error.message}. Please try again or contact support if the issue persists.`,
-        timestamp: Date.now(),
+        timestamp: Date.now(),;
         confidence: 0.1,
       };
 
@@ -677,18 +679,18 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
   Response:`;
 
     const response = await fetch('http://localhost:11434/api/generate', {
-      method: 'POST',
+      method: 'POST',;
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         model: 'gemma3-legal',
         prompt: enhancedPrompt,
-        stream: false,
-        options: {
+        stream: false,;
+        options: {;
           temperature: 0.4,
           num_ctx: 4096,
-          top_p: 0.9
+          top_p: 0.9;
         }
       }),
     });
@@ -701,8 +703,8 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
     const processingTime = Date.now() - startTime;
     // Generate enhanced analysis structure
     const analysisData = {
-      entities: [userRole, caseId].filter(Boolean),
-      concepts: ['legal_analysis', context.enhancementLevel],
+      entities: [userRole, caseId].filter(Boolean),;
+      concepts: ['legal_analysis', context.enhancementLevel],;
       complexity: { legalComplexity: 0.7 }
     };
     return {
@@ -715,7 +717,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
       },
       legalAnalysis: analysisData,
       ragResults: {
-        sources: ['Gemma3-Legal Model'],
+        sources: ['Gemma3-Legal Model'],;
         metadata: { documentsProcessed: context.documentIds?.length || 0 }
       },
       metadata: {
@@ -724,8 +726,8 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
         caseId,
         enabledFeatures: {
           legalBERT: settings.enableLegalBERT,
-          rag: settings.enableRAG,
-          synthesis: settings.enableInputSynthesis
+          rag: settings.enableRAG,;
+          synthesis: settings.enableInputSynthesis;
         }
       }
     };
@@ -784,10 +786,10 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
 
     try {
       const response = await fetch('http://localhost:11434/api/generate', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'gemma3-legal',
+          model: 'gemma3-legal',;
           prompt: `Perform a comprehensive legal analysis of the following text. Extract and analyze:
 
   1. Legal entities (parties, courts, statutes, cases)
@@ -799,10 +801,10 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
   Text to analyze: "${text}"
 
   Provide a structured analysis:`,
-          stream: false,
-          options: {
+          stream: false,;
+          options: {;
             temperature: 0.2,
-            num_ctx: 4096
+            num_ctx: 4096;
           }
         })
       });
@@ -845,10 +847,10 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
 
     try {
       const response = await fetch('http://localhost:11434/api/generate', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'gemma3-legal',
+          model: 'gemma3-legal',;
           prompt: `Research legal topic: "${topic}" for ${userRole}
 
   Provide comprehensive analysis with:
@@ -859,10 +861,10 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
   5. Recommendations
 
   Topic: ${topic}`,
-          stream: false,
-          options: {
+          stream: false,;
+          options: {;
             temperature: 0.3,
-            num_ctx: 2048
+            num_ctx: 2048;
           }
         })
       });
@@ -945,10 +947,10 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
   // Add system message
   async function addSystemMessage(content: string) {
     const systemMessage: EnhancedMessage = {
-      id: generateId(),
+      id: generateId(),;
       role: 'system',
-      content,
-      timestamp: Date.now(),
+      content,;
+      timestamp: Date.now(),;
     };
 
     messages.update((msgs) => [...msgs, systemMessage]);
@@ -1050,11 +1052,11 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
         legalAnalysis,
         ragResults,
         confidence: 0.85,
-        processingTime,
-        metadata: {
+        processingTime,;
+        metadata: {;
           model: 'gemma3-legal',
           streamEnabled: settings.enableStreamingResponse,
-          typewriterEnabled: settings.enableTypewriterEffect
+          typewriterEnabled: settings.enableTypewriterEffect;
         }
       };
 
@@ -1066,7 +1068,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
         legalAnalysis,
         ragResults,
         confidence: 0.1,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime,;
         metadata: { error: true }
       };
     }
@@ -1077,17 +1079,17 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
     try {
       const prompt = buildEnhancedPrompt(query, context);
       const response = await fetch('/api/ollama/generate', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'gemma3-legal',
           prompt,
-          stream: true,
-          options: {
+          stream: true,;
+          options: {;
             temperature: 0.3,
             num_ctx: 4096,
             top_p: 0.9,
-            top_k: 40
+            top_k: 40;
           }
         })
       });
@@ -1313,7 +1315,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
   </div>
 
   <!-- Messages Container -->
-  <div
+  <div;
     bind:this={chatContainer}
     class="flex-1 overflow-y-auto space-y-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border">
     {#each $messages as message (message.id)}
@@ -1517,7 +1519,7 @@ copyToClipboard(message.content)}>
 </div>
 
 <style>
-  .message-bubble.user .prose {
+  .message-bubble.user .prose {;
     background: rgb(239 246 255 / 0.8);
   }
 
@@ -1617,7 +1619,7 @@ copyToClipboard(message.content)}>
     margin-left: 8px;
   }
 
-  .streaming-indicator: :after {
+  .streaming-indicator::after {
     content: '';
     width: 4px;
     height: 4px;

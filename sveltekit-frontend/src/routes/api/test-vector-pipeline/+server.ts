@@ -1,13 +1,13 @@
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 // End-to-End Vector Pipeline Test
 // Tests: Document Upload → Embedding → Search → Results
 
-import { db } from '$lib/server/db';
-import { users, cases, documents, documentVectors } from '$lib/server/db/schema-postgres';
-import { eq, sql, desc } from 'drizzle-orm';
-import { OllamaEmbeddings } from '@langchain/community/embeddings/ollama';
+import { db } from '$lib/server/db'
+import { users, cases, documents, documentVectors } from '$lib/server/db/schema-postgres'
+import { eq, sql, desc } from 'drizzle-orm'
+import { OllamaEmbeddings } from '@langchain/community/embeddings/ollama'
 
 // ============================================================================
 // TEST CONFIGURATION
@@ -16,7 +16,7 @@ import { OllamaEmbeddings } from '@langchain/community/embeddings/ollama';
 const testConfig = {
   ollamaBaseUrl: 'http://localhost:11434',
   embeddingModel: 'nomic-embed-text',
-  testDocuments: [;
+  testDocuments: [
     {
       title: 'Contract Liability Clause',
       content: 'This contract contains provisions regarding liability limitations and indemnification clauses. The contractor shall not be liable for indirect damages exceeding the contract value.',
@@ -39,73 +39,73 @@ const testConfig = {
     'employment non-compete clauses',
     'intellectual property rights'
   ]
-};
+}
 
 // ============================================================================
 // TEST PIPELINE SERVICE
 // ============================================================================
 
 class VectorPipelineTest {
-  private embeddings: OllamaEmbeddings;
-  private testResults: any = {};
+  private embeddings: OllamaEmbeddings
+  private testResults: any = {}
 
   constructor() {
     this.embeddings = new OllamaEmbeddings({
       baseUrl: testConfig.ollamaBaseUrl,
       model: testConfig.embeddingModel
-    });
+    })
   }
 
   async runFullPipeline(): Promise<any> {
-    const startTime = Date.now();
+    const startTime = Date.now()
     this.testResults = {
       timestamp: new Date().toISOString(),
       status: 'running',
       steps: Record<string, any>,
       errors: [],
       performance: Record<string, any>
-    };
+    }
 
     try {
       // Step 1: Test Ollama Connection
-      await this.testOllamaConnection();
+      await this.testOllamaConnection()
 
       // Step 2: Create Test User and Cases
-      await this.createTestData();
+      await this.createTestData()
 
       // Step 3: Upload and Embed Test Documents
-      await this.uploadAndEmbedDocuments();
+      await this.uploadAndEmbedDocuments()
 
       // Step 4: Test Vector Search
-      await this.testVectorSearch();
+      await this.testVectorSearch()
 
       // Step 5: Test MCP Integration
-      await this.testMCPIntegration();
+      await this.testMCPIntegration()
 
       // Step 6: Performance Analysis
-      await this.analyzePerformance();
+      await this.analyzePerformance()
 
-      this.testResults.status = 'completed';
-      this.testResults.totalTime = Date.now() - startTime;
+      this.testResults.status = 'completed'
+      this.testResults.totalTime = Date.now() - startTime
 
-      return this.testResults;
+      return this.testResults
 
     } catch (err: any) {
-      this.testResults.status = 'failed';
-      this.testResults.error = err instanceof Error ? err.message: 'Unknown error';
-      this.testResults.totalTime = Date.now() - startTime;
+      this.testResults.status = 'failed'
+      this.testResults.error = err instanceof Error ? err.message: 'Unknown error'
+      this.testResults.totalTime = Date.now() - startTime
       
-      console.error('❌ Pipeline test failed:', err);
-      return this.testResults;
+      console.error('❌ Pipeline test failed:', err)
+      return this.testResults
     }
   }
 
   async testOllamaConnection() {
-    const stepStart = Date.now();
-    console.log('🔍 Testing Ollama connection...');
+    const stepStart = Date.now()
+    console.log('🔍 Testing Ollama connection...')
 
     try {
-      const testEmbedding = await this.embeddings.embedQuery('test connection');
+      const testEmbedding = await this.embeddings.embedQuery('test connection')
       
       this.testResults.steps.ollama = {
         status: 'success',
@@ -113,34 +113,34 @@ class VectorPipelineTest {
         model: testConfig.embeddingModel,
         baseUrl: testConfig.ollamaBaseUrl,
         time: Date.now() - stepStart
-      };
+      }
 
-      console.log(`✅ Ollama connected: ${testEmbedding.length} dimensions`);
+      console.log(`✅ Ollama connected: ${testEmbedding.length} dimensions`)
       
     } catch (err: any) {
       this.testResults.steps.ollama = {
         status: 'failed',
         error: err instanceof Error ? err.message: 'Connection failed'
-      };
-      throw new Error(`Ollama connection failed: ${err}`);
+      }
+      throw new Error(`Ollama connection failed: ${err}`)
     }
   }
 
   async createTestData() {
-    const stepStart = Date.now();
-    console.log('👤 Creating test data...');
+    const stepStart = Date.now()
+    console.log('👤 Creating test data...')
 
     try {
-      // Create test user;
+      // Create test user
       const [testUser] = await db.insert(users).values({
         email: 'test@vector-pipeline.com',
         name: 'Vector Pipeline Test User',
         role: 'prosecutor',
         passwordHash: 'test-hash-not-real'
-      }).onConflictDoNothing().returning();
+      }).onConflictDoNothing().returning()
 
       // Create test cases
-      const testCases = [];
+      const testCases = []
       for (const doc of testConfig.testDocuments) {
         const [testCase] = await db.insert(cases).values({
           title: doc.caseTitle,
@@ -148,9 +148,9 @@ class VectorPipelineTest {
           status: 'active',
           priority: 'medium',
           createdBy: testUser.id
-        }).returning();
+        }).returning()
         
-        testCases.push(testCase);
+        testCases.push(testCase)
       }
 
       this.testResults.steps.testData = {
@@ -158,46 +158,46 @@ class VectorPipelineTest {
         userId: testUser.id,
         casesCreated: testCases.length,
         time: Date.now() - stepStart
-      };
+      }
 
-      this.testResults.testUserId = testUser.id;
-      this.testResults.testCases = testCases;
+      this.testResults.testUserId = testUser.id
+      this.testResults.testCases = testCases
 
-      console.log(`✅ Created test user and ${testCases.length} cases`);
+      console.log(`✅ Created test user and ${testCases.length} cases`)
 
     } catch (err: any) {
       this.testResults.steps.testData = {
         status: 'failed',
         error: err instanceof Error ? err.message: 'Test data creation failed'
-      };
-      throw err;
+      }
+      throw err
     }
   }
 
   async uploadAndEmbedDocuments() {
-    const stepStart = Date.now();
-    console.log('📄 Uploading and embedding documents...');
+    const stepStart = Date.now()
+    console.log('📄 Uploading and embedding documents...')
 
     try {
-      const embeddedDocs = [];
+      const embeddedDocs = []
 
       for (let i = 0; i < testConfig.testDocuments.length; i++) {
-        const doc = testConfig.testDocuments[i];
-        const testCase = this.testResults.testCases[i];
+        const doc = testConfig.testDocuments[i]
+        const testCase = this.testResults.testCases[i]
 
-        // Create document record;
+        // Create document record
         const [document] = await db.insert(documents).values({
           caseId: testCase.id,
           filename: `${doc.title}.txt`,
           filePath: `/test/documents/${doc.title.replace(/\s+/g, '_')}.txt`,
           extractedText: doc.content,
           createdBy: this.testResults.testUserId
-        }).returning();
+        }).returning()
 
         // Generate embedding
-        const embedding = await this.embeddings.embedQuery(doc.content);
+        const embedding = await this.embeddings.embedQuery(doc.content)
 
-        // Store vector;
+        // Store vector
         await db.insert(documentVectors).values({
           documentId: document.id,
           chunkIndex: 0,
@@ -208,13 +208,13 @@ class VectorPipelineTest {
             testDocument: true,
             embeddingModel: testConfig.embeddingModel
           }
-        });
+        })
 
         embeddedDocs.push({
           documentId: document.id,
           title: doc.title,
           embeddingSize: embedding.length
-        });
+        })
       }
 
       this.testResults.steps.embedding = {
@@ -222,36 +222,36 @@ class VectorPipelineTest {
         documentsProcessed: embeddedDocs.length,
         embeddingDimensions: embeddedDocs[0]?.embeddingSize || 0,
         time: Date.now() - stepStart
-      };
+      }
 
-      this.testResults.embeddedDocs = embeddedDocs;
+      this.testResults.embeddedDocs = embeddedDocs
 
-      console.log(`✅ Embedded ${embeddedDocs.length} documents`);
+      console.log(`✅ Embedded ${embeddedDocs.length} documents`)
 
     } catch (err: any) {
       this.testResults.steps.embedding = {
         status: 'failed',
         error: err instanceof Error ? err.message: 'Embedding failed'
-      };
-      throw err;
+      }
+      throw err
     }
   }
 
   async testVectorSearch() {
-    const stepStart = Date.now();
-    console.log('🔍 Testing vector search...');
+    const stepStart = Date.now()
+    console.log('🔍 Testing vector search...')
 
     try {
-      const searchResults = [];
+      const searchResults = []
 
       for (const query of testConfig.testQueries) {
-        const queryStart = Date.now();
+        const queryStart = Date.now()
         
         // Generate query embedding
-        const queryEmbedding = await this.embeddings.embedQuery(query);
+        const queryEmbedding = await this.embeddings.embedQuery(query)
 
         // Search similar documents
-        const results = await db;
+        const results = await db
           .select({
             id: documentVectors.id,
             documentId: documentVectors.documentId,
@@ -265,7 +265,7 @@ class VectorPipelineTest {
           .leftJoin(cases, eq(documents.caseId, cases.id)
           .where(sql`1 - (${documentVectors.embedding} <=> ${queryEmbedding}) > 0.5`)
           .orderBy(sql`${documentVectors.embedding} <=> ${queryEmbedding}`)
-          .limit(5);
+          .limit(5)
 
         searchResults.push({
           query,
@@ -277,7 +277,7 @@ class VectorPipelineTest {
             similarity: r.similarity,
             caseTitle: r.caseTitle
           })
-        });
+        })
       }
 
       this.testResults.steps.search = {
@@ -286,67 +286,67 @@ class VectorPipelineTest {
         avgSearchTime: searchResults.reduce((sum, r) => sum + r.searchTime, 0) / searchResults.length,
         totalResults: searchResults.reduce((sum, r) => sum + r.results, 0),
         time: Date.now() - stepStart
-      };
+      }
 
-      this.testResults.searchResults = searchResults;
+      this.testResults.searchResults = searchResults
 
-      console.log(`✅ Executed ${searchResults.length} search queries`);
+      console.log(`✅ Executed ${searchResults.length} search queries`)
 
     } catch (err: any) {
       this.testResults.steps.search = {
         status: 'failed',
         error: err instanceof Error ? err.message: 'Search failed'
-      };
-      throw err;
+      }
+      throw err
     }
   }
 
   async testMCPIntegration() {
-    const stepStart = Date.now();
-    console.log('🤖 Testing MCP integration...');
+    const stepStart = Date.now()
+    console.log('🤖 Testing MCP integration...')
 
     try {
       // Test if MCP postgres server is working
       const mcpTest = await db
         .select({ count: sql<number>`count(*)` })
-        .from(documentVectors);
+        .from(documentVectors)
 
       this.testResults.steps.mcp = {
         status: 'success',
         postgresConnected: true,
         vectorCount: mcpTest[0].count,
         time: Date.now() - stepStart
-      };
+      }
 
-      console.log(`✅ MCP integration working: ${mcpTest[0].count} vectors`);
+      console.log(`✅ MCP integration working: ${mcpTest[0].count} vectors`)
 
     } catch (err: any) {
       this.testResults.steps.mcp = {
         status: 'failed',
         error: err instanceof Error ? err.message: 'MCP integration failed'
-      };
+      }
       
       // Don't throw - MCP is optional
-      console.warn('⚠️ MCP integration test failed (optional)');
+      console.warn('⚠️ MCP integration test failed (optional)')
     }
   }
 
   async analyzePerformance() {
-    const stepStart = Date.now();
-    console.log('📊 Analyzing performance...');
+    const stepStart = Date.now()
+    console.log('📊 Analyzing performance...')
 
     try {
       // Get database stats
-      const [vectorStats] = await db;
+      const [vectorStats] = await db
         .select({ 
           count: sql<number>`count(*)`,
           avgSize: sql<number>`avg(array_length(embedding, 1))`
         })
-        .from(documentVectors);
+        .from(documentVectors)
 
       const [docStats] = await db
         .select({ count: sql<number>`count(*)` })
-        .from(documents);
+        .from(documents)
 
       this.testResults.performance = {
         vectorsStored: vectorStats.count,
@@ -358,13 +358,13 @@ class VectorPipelineTest {
           avgQueryTime: this.testResults.steps.search?.avgSearchTime || 0,
           totalQueries: this.testResults.searchResults?.length || 0
         }
-      };
+      }
 
-      console.log(`✅ Performance analysis complete`);
+      console.log(`✅ Performance analysis complete`)
 
     } catch (err: any) {
-      console.warn('⚠️ Performance analysis failed:', err);
-      this.testResults.performance = { error: 'Failed to analyze performance' };
+      console.warn('⚠️ Performance analysis failed:', err)
+      this.testResults.performance = { error: 'Failed to analyze performance' }
     }
   }
 }
@@ -375,40 +375,40 @@ class VectorPipelineTest {
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { action = 'full' } = await request.json();
+    const { action = 'full' } = await request.json()
 
-    const pipeline = new VectorPipelineTest();
+    const pipeline = new VectorPipelineTest()
     
     if (action === 'full') {
-      const results = await pipeline.runFullPipeline();
-      return json(results);
+      const results = await pipeline.runFullPipeline()
+      return json(results)
     }
 
-    return json({ error: 'Unknown action' }, { status: 400 });
+    return json({ error: 'Unknown action' }, { status: 400 })
 
   } catch (err: any) {
-    console.error('❌ Test pipeline error:', err);
+    console.error('❌ Test pipeline error:', err)
     return json({
       error: 'Pipeline test failed',
       details: err instanceof Error ? err.message: 'Unknown error'
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 export const GET: RequestHandler = async () => {
   try {
-    // Quick health check;
+    // Quick health check
     const embeddings = new OllamaEmbeddings({
       baseUrl: testConfig.ollamaBaseUrl,
       model: testConfig.embeddingModel
-    });
+    })
 
-    const testEmbedding = await embeddings.embedQuery('health check');
+    const testEmbedding = await embeddings.embedQuery('health check')
     
     // Check database connection
     const [vectorCount] = await db
       .select({ count: sql<number>`count(*)` })
-      .from(documentVectors);
+      .from(documentVectors)
 
     return json({
       status: 'ready',
@@ -426,7 +426,7 @@ export const GET: RequestHandler = async () => {
         documentsToTest: testConfig.testDocuments.length,
         queriesToTest: testConfig.testQueries.length
       }
-    });
+    })
 
   } catch (err: any) {
     return json({
@@ -437,6 +437,6 @@ export const GET: RequestHandler = async () => {
         'Verify nomic-embed-text model is installed',
         'Check PostgreSQL connection and pgvector extension'
       ]
-    }, { status: 503 });
+    }, { status: 503 })
   }
-};
+}

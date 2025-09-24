@@ -24,7 +24,7 @@ export interface UserInteraction {
 export interface SessionContext {
   page: string;
   userAgent: string;
-  viewport: {
+  viewport: {;
     width: number;
     height: number;
   };
@@ -143,7 +143,7 @@ export interface FeedbackAPIResponse {
 }
 
 export interface FeedbackBatchResponse extends FeedbackAPIResponse {
-  data: {
+  data: {;
     processed: number;
     failed: number;
     insights: FeedbackInsight[];
@@ -151,7 +151,7 @@ export interface FeedbackBatchResponse extends FeedbackAPIResponse {
 }
 
 export interface RecommendationsResponse extends FeedbackAPIResponse {
-  data: {
+  data: {;
     recommendations: FeedbackRecommendation[];
     metrics: FeedbackMetrics;
     insights: string[];
@@ -159,7 +159,7 @@ export interface RecommendationsResponse extends FeedbackAPIResponse {
 }
 
 export interface AnalyticsResponse extends FeedbackAPIResponse {
-  data: {
+  data: {;
     overview: {
       totalRatings: number;
       averageRating: number;

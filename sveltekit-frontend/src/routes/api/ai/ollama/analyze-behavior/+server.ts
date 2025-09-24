@@ -19,19 +19,19 @@
 // Behavior Analysis API Endpoint
 // Analyzes user patterns and generates insights for legal workflows
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { validateAuthSession } from '$lib/server/auth';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { validateAuthSession } from '$lib/server/auth'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
-    const session = await validateAuthSession(request);
+    const session = await validateAuthSession(request)
     if (!session) {
-      return json({ error: 'Unauthorized' }, { status: 401 });
+      return json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { userAnalytics, context, legalContext } = await request.json();
+    const { userAnalytics, context, legalContext } = await request.json()
 
     // Enhanced legal behavior analysis prompt
     const behaviorPrompt = `
@@ -54,7 +54,7 @@ Current Session:
 - Files Selected: ${context.files.length}
 - Total File Size: ${context.files.reduce((sum: number, f: any) => sum + f.size, 0)} bytes
 
-Provide analysis in JSON format:;
+Provide analysis in JSON format:
 {
   "behaviorPattern": "novice|intermediate|expert|power_user",
   "engagementLevel": "low|medium|high",
@@ -68,7 +68,7 @@ Provide analysis in JSON format:;
   "recommendations": ["string"],
   "urgencyAwareness": 0.0-1.0,
   "nextBestActions": ["string"]
-}`;
+}`
 
     const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
@@ -85,19 +85,19 @@ Provide analysis in JSON format:;
           top_p: 0.8
         }
       })
-    });
+    })
 
     if (!ollamaResponse.ok) {
-      throw new Error(`Ollama API error: ${ollamaResponse.statusText}`);
+      throw new Error(`Ollama API error: ${ollamaResponse.statusText}`)
     }
 
-    const result = await ollamaResponse.json();
-    let analysis;
+    const result = await ollamaResponse.json()
+    let analysis
 
     try {
-      analysis = JSON.parse((result as { response?: any }).response);
+      analysis = JSON.parse((result as { response?: any }).response)
     } catch (error) {
-      // Fallback analysis;
+      // Fallback analysis
       analysis = {
         behaviorPattern: userAnalytics.behaviorPattern,
         engagementLevel: 'medium',
@@ -111,10 +111,10 @@ Provide analysis in JSON format:;
         recommendations: ['Continue current workflow'],
         urgencyAwareness: legalContext?.urgency === 'critical' ? 1.0 : 0.7,
         nextBestActions: ['Process selected documents']
-      };
+      }
     }
 
-    // Update user analytics based on AI insights;
+    // Update user analytics based on AI insights
     const updatedAnalytics = {
       ...userAnalytics,
       behaviorPattern: analysis.behaviorPattern,
@@ -123,19 +123,19 @@ Provide analysis in JSON format:;
         preferredAIPromptStyle: analysis.behaviorPattern === 'expert' ? 'concise' : 'detailed',
         helpLevel: analysis.behaviorPattern === 'novice' ? 'extensive' : 'moderate'
       }
-    };
+    }
 
     return json({
       analytics: updatedAnalytics,
       insights: analysis,
       score: analysis.efficiencyScore
-    });
+    })
 
   } catch (error) {
-    console.error('Behavior analysis error:', error);
-    return json({ error: 'Analysis failed' }, { status: 500 });
+    console.error('Behavior analysis error:', error)
+    return json({ error: 'Analysis failed' }, { status: 500 })
   }
-};
+}
 
 
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)

@@ -72,7 +72,7 @@ export class TensorRTLegalClient {
         method: 'POST',
         body: JSON.stringify({
           text: request.text,
-          model: request.model,
+          model: request.model,;
           dimensions: request.dimensions
         })
       });
@@ -106,7 +106,7 @@ export class TensorRTLegalClient {
           prompt: analysisPrompt,
           context: request.context,
           model: request.model,
-          max_tokens: request.max_tokens || 1024,
+          max_tokens: request.max_tokens || 1024,;
           temperature: request.temperature || 0.1
         })
       });
@@ -216,7 +216,7 @@ export class TensorRTLegalClient {
 3. Termination clauses
 4. Liability limitations
 5. Performance requirements`,
-
+;
       litigation: `Provide litigation analysis covering:
 1. Legal claims and defenses
 2. Evidence requirements
@@ -247,7 +247,7 @@ Provide a detailed, professional legal analysis:`;
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         ...options.headers
-      },
+      },;
       signal: AbortSignal.timeout(this.timeout)
     };
 
@@ -298,7 +298,7 @@ Provide a detailed, professional legal analysis:`;
       if (!health) {
         return {
           connected: false,
-          latency,
+          latency,;
           error: 'Health check failed'
         };
       }
@@ -306,7 +306,7 @@ Provide a detailed, professional legal analysis:`;
       return {
         connected: health.status === 'healthy',
         latency,
-        modelLoaded: health.model_loaded,
+        modelLoaded: health.model_loaded,;
         error: health.status !== 'healthy' ? `Status: ${health.status}` : undefined
       };
 
@@ -315,7 +315,7 @@ Provide a detailed, professional legal analysis:`;
 
       return {
         connected: false,
-        latency,
+        latency,;
         error: error instanceof Error ? error.message: 'Unknown error'
       };
     }

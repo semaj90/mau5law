@@ -24,7 +24,7 @@ export class ApiClientError extends Error {
 
   constructor(
     message: string,
-    statusCode: number,
+    statusCode: number,;
     code: string = 'API_ERROR',
     details?: Record<string, any>,
     requestId?: string;
@@ -58,7 +58,7 @@ class EnhancedApiClient {
   constructor(config: ApiClientConfig = {}) {
     this.config = {
       baseUrl: config.baseUrl || (browser ? '' : 'http://localhost:5173'),
-      timeout: config.timeout || 30000,
+      timeout: config.timeout || 30000,;
       retries: config.retries || 3,
       defaultHeaders: {
         'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ class EnhancedApiClient {
   private async request<TResponse = any>(
     method: string,
     path: string,
-    data?: any,
+    data?: any,;
     options: {
       headers?: Record<string, string>;
       timeout?: number;
@@ -101,7 +101,7 @@ class EnhancedApiClient {
           headers: {
             ...this.config.defaultHeaders,
             ...options.headers
-          },
+          },;
           signal: abortController.signal
         };
         
@@ -250,7 +250,7 @@ class EnhancedApiClient {
   }
 
   public async updateCase(
-    id: string, 
+    id: string, ;
     data: RequestOf<CaseAPI.Update>;
   ): Promise<ResponseOf<CaseAPI.Update> {
     return this.put(`/api/cases?id=${id}`, data);
@@ -271,7 +271,7 @@ class EnhancedApiClient {
   }
 
   public async updateEvidence(
-    id: string, 
+    id: string, ;
     data: RequestOf<EvidenceAPI.Update>,
     custodyNotes?: string;
   ): Promise<ResponseOf<EvidenceAPI.Update> {
@@ -346,7 +346,7 @@ export const api = {
     search: (data: RequestOf<VectorSearchAPI.Search>) => apiClient.vectorSearch(data)
   },
   health: {
-    check: (detailed = false) => apiClient.healthCheck(detailed),
+    check: (detailed = false) => apiClient.healthCheck(detailed),;
     maintenance: (action: RequestOf<HealthAPI.Maintenance>['action']) => 
       apiClient.performMaintenance(action)
   }

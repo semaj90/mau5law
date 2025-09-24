@@ -11,11 +11,11 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
-  import Button from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { webGPUProcessor } from '$lib/services/webgpu-vector-processor';
   import { 
@@ -59,7 +59,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
     // Add welcome message
     messages = [{
       id: crypto.randomUUID(),
-      role: 'assistant',
+      role: 'assistant',;
       content: `Hello! I'm your AI legal assistant powered by Gemma3Legal. I can help you with:
 
   • Evidence analysis and correlation
@@ -69,11 +69,11 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
   • Timeline reconstruction
 
   ${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get started with case-specific insights.'}`,
-      timestamp: new Date(),
+      timestamp: new Date(),;
       metadata: {
-        model: 'gemma3-legal:latest',
+        model: 'gemma3-legal:latest',;
         confidence: 1.0,
-        capabilities: ['evidence_analysis', 'legal_research', 'case_strategy']
+        capabilities: ['evidence_analysis', 'legal_research', 'case_strategy'];
       }
     }];
   });
@@ -83,12 +83,12 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
     if (!caseId) return;
     try {
       const response = await fetch('/api/ai/self-prompt', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          caseId,
+          caseId,;
           context: 'prosecutor_workflow',
-          currentPhase: 'evidence_review'
+          currentPhase: 'evidence_review';
         })
       });
       const result = await (response as { json?: unknown }).json();
@@ -114,12 +114,12 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
     // Analyze element with AI for legal relevance
     try {
       const response = await fetch('/api/ai/analyze-element', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           elementType,
-          content: elementText,
-          context: 'legal_analysis'
+          content: elementText,;
+          context: 'legal_analysis';
         })
       });
       const analysis = await (response as { json?: unknown }).json();
@@ -134,9 +134,9 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
     if (!currentMessage.trim()) return;
     const userMessage = {
       id: crypto.randomUUID(),
-      role: 'user',
-      content: currentMessage,
-      timestamp: new Date()
+      role: 'user',;
+      content: currentMessage,;
+      timestamp: new Date();
     };
     messages = [...messages, userMessage];
     const userQuery = currentMessage;
@@ -148,14 +148,14 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
       // Enhanced RAG query with vector search
       if (enableEnhancedRAG) {
         const ragResponse = await fetch('/api/enhanced-rag/query', {
-          method: 'POST',
+          method: 'POST',;
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          body: JSON.stringify({;
             query: userQuery,
             caseId,
             includeEvidence: true,
             includePrecedents: true,
-            vectorSearch: true
+            vectorSearch: true;
           })
         });
         const ragResult = await ragResponse.json();
@@ -164,18 +164,18 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
 
       // Send to AI with context
       const aiResponse = await fetch('/api/ai/chat', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: messages.slice(-5), // Last 5 messages for context
           query: userQuery,
           caseId,
           ragSources,
-          enableSelfPrompting,
+          enableSelfPrompting,;
           context: {
-            role: 'prosecutor',
-            mode: 'evidence_analysis',
-            capabilities: ['legal_research', 'evidence_correlation', 'strategy_planning']
+            role: 'prosecutor',;
+            mode: 'evidence_analysis',;
+            capabilities: ['legal_research', 'evidence_correlation', 'strategy_planning'];
           }
         })
       });
@@ -188,12 +188,12 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
         role: 'assistant',
         content: aiResult.content || aiResult.answer,
         timestamp: new Date(),
-        sources: ragSources,
+        sources: ragSources,;
         metadata: {
-          model: 'gemma3-legal:latest',
+          model: 'gemma3-legal:latest',;
           confidence: aiConfidence,
           ragSources: ragSources.length,
-          processingTime: aiResult.processingTime || 0
+          processingTime: aiResult.processingTime || 0;
         }
       };
       messages = [...messages, assistantMessage];
@@ -207,9 +207,9 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
       const errorMessage = {
         id: crypto.randomUUID(),
         role: 'assistant',
-        content: 'I apologize, but I encountered an error processing your request. Please try again.',
-        timestamp: new Date(),
-        error: true
+        content: 'I apologize, but I encountered an error processing your request. Please try again.',;
+        timestamp: new Date(),;
+        error: true;
       };
       messages = [...messages, errorMessage];
     } finally {
@@ -433,7 +433,7 @@ useSelfPrompt(suggestion)}
 
 <style>
   /* Enhanced chat styling */
-  :global(.chat-message) {
+  :global(.chat-message) {;
     animation: fadeIn 0.3s ease-in-out;
   }
   

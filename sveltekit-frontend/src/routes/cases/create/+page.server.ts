@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 const caseFormSchema = z.object({
   title: z.string().min(1, 'Title is required'),
-  description: z.string().min(1, 'Description is required'),
+  description: z.string().min(1, 'Description is required'),;
   priority: z.enum(['low', 'medium', 'high'] as const)
 });
 
@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
       priority: 'medium' as const
     },
     errors: Record<string, any>,
-    valid: true,
+    valid: true,;
     posted: false
   };
 
@@ -71,7 +71,7 @@ export const actions: Actions = {
       description: formData.get('description')?.toString() || '',
       priority: formData.get('priority')?.toString() || 'medium',
       assignedTo: formData.get('assignedTo')?.toString() || null,
-      dueDate: formData.get('dueDate')?.toString() || null,
+      dueDate: formData.get('dueDate')?.toString() || null,;
       tags: formData.get('tags')?.toString()?.split(',').map(t => t.trim()).filter(Boolean) || [],
       isConfidential: formData.get('isConfidential') === 'true',
       notifyAssignee: formData.get('notifyAssignee') !== 'false'
@@ -93,7 +93,7 @@ export const actions: Actions = {
     const form = {
       data,
       errors,
-      valid: Object.keys(errors).length === 0,
+      valid: Object.keys(errors).length === 0,;
       posted: true
     };
 
@@ -117,7 +117,7 @@ export const actions: Actions = {
           attachments.push({
             file,
             originalName: file.name,
-            size: file.size,
+            size: file.size,;
             type: file.type
           });
         }
@@ -189,7 +189,7 @@ export const actions: Actions = {
           size: a.size,
           mimeType: a.type
         })),
-        storage: {
+        storage: {;
           bucket: 'case-documents',
           basePath: `cases/${caseNumber}/documents/`
         },
@@ -214,7 +214,7 @@ export const actions: Actions = {
             headers: {
               'Content-Type': 'application/json',
               ...(locals.orchestrator.apiKey ? { Authorization: `Bearer ${locals.orchestrator.apiKey}` } : Record<string, any>)
-            },
+            },;
             body: JSON.stringify(ingestionPayload)
           }).catch((err) => console.error('Ingestion service request failed:', err));
         } else {
@@ -247,7 +247,7 @@ export const actions: Actions = {
                 data: {
                   sourceType: 'case',
                   sourceKey: caseNumber,
-                  vector: vector as any,
+                  vector: vector as any,;
                   metadata: {
                     title,
                     priority,
@@ -264,7 +264,7 @@ export const actions: Actions = {
           try {
             await locals.db.ingestQueue.create({
               data: {
-                jobType: 'case_creation',
+                jobType: 'case_creation',;
                 payload: ingestionPayload
               }
             });
@@ -466,7 +466,7 @@ export const actions: Actions = {
           valid: true
         },
         success: true,
-        message: `Case ${caseNumber} created successfully`,
+        message: `Case ${caseNumber} created successfully`,;
         data: {
           caseNumber,
           title,
@@ -509,7 +509,7 @@ export const actions: Actions = {
     try {
       // Check if case exists and user has permission;
       const existingCase = await locals.db.case.findUnique({
-        where: { id: caseId },
+        where: { id: caseId },;
         include: { documents: true }
       });
 
@@ -548,7 +548,7 @@ export const actions: Actions = {
         },
         include: {
           documents: true,
-          assignedUser: {
+          assignedUser: {;
             select: { id: true, name: true, email: true }
           }
         }
@@ -564,7 +564,7 @@ export const actions: Actions = {
           details: {
             changes: {
               title:
-                existingCase.title !== title ? { from: existingCase.title, to: title } : undefined,
+                existingCase.title !== title ? { from: existingCase.title, to: title } : undefined,;
               priority:
                 existingCase.priority !== priority
                   ? { from: existingCase.priority, to: priority }
@@ -576,7 +576,7 @@ export const actions: Actions = {
 
       return message(form, {
         type: 'success',
-        text: 'Case updated successfully',
+        text: 'Case updated successfully',;
         data: { case: updatedCase }
       });
 
@@ -607,14 +607,14 @@ export const actions: Actions = {
     },
     create: {
       userId: locals.user?.id || 'anonymous',
-      draftKey: 'case_creation',
+      draftKey: 'case_creation',;
       data: form.data
     }
   });
 
       return message(form, {
         type: 'success',
-        text: 'Draft saved successfully',
+        text: 'Draft saved successfully',;
         data: { draft }
       });
 

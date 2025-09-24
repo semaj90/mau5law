@@ -43,7 +43,7 @@ class WorkflowOrchestrator {
   // Start a new document processing workflow
   async startDocumentProcessing(
     documentId: string,
-    content: string,
+    content: string,;
     metadata: Record<string, any> = {},
     parentWorkflow?: string;
   ): Promise<string> {
@@ -71,7 +71,7 @@ class WorkflowOrchestrator {
       parentWorkflow,
       childWorkflows: [],
       dependencies: [],
-      tags: ['document', 'processing', 'embeddings'],
+      tags: ['document', 'processing', 'embeddings'],;
       metadata: {
         documentId,
         ...metadata
@@ -103,7 +103,7 @@ class WorkflowOrchestrator {
     this.emitEvent({
       type: 'WORKFLOW_STARTED',
       workflowId,
-      payload: { type: 'document-processing', documentId },
+      payload: { type: 'document-processing', documentId },;
       timestamp: Date.now()
     });
 
@@ -114,7 +114,7 @@ class WorkflowOrchestrator {
   async startLegalCaseManagement(
     title: string,
     description: string,
-    caseType: string,
+    caseType: string,;
     jurisdiction: string,
     createdBy: string,
     parentWorkflow?: string;
@@ -137,7 +137,7 @@ class WorkflowOrchestrator {
       parentWorkflow,
       childWorkflows: [],
       dependencies: [],
-      tags: ['legal', 'case', 'management'],
+      tags: ['legal', 'case', 'management'],;
       metadata: {
         title,
         caseType,
@@ -173,7 +173,7 @@ class WorkflowOrchestrator {
     this.emitEvent({
       type: 'WORKFLOW_STARTED',
       workflowId,
-      payload: { type: 'legal-case-management', title, caseType },
+      payload: { type: 'legal-case-management', title, caseType },;
       timestamp: Date.now()
     });
 
@@ -199,7 +199,7 @@ class WorkflowOrchestrator {
       this.emitEvent({
         type: 'EVENT_SENT',
         workflowId,
-        payload: event,
+        payload: event,;
         timestamp: Date.now()
       });
       
@@ -260,7 +260,7 @@ class WorkflowOrchestrator {
     this.emitEvent({
       type: 'WORKFLOW_PAUSED',
       workflowId,
-      payload: Record<string, any>,
+      payload: Record<string, any>,;
       timestamp: Date.now()
     });
 
@@ -280,7 +280,7 @@ class WorkflowOrchestrator {
     this.emitEvent({
       type: 'WORKFLOW_RESUMED',
       workflowId,
-      payload: Record<string, any>,
+      payload: Record<string, any>,;
       timestamp: Date.now()
     });
 
@@ -304,7 +304,7 @@ class WorkflowOrchestrator {
     this.emitEvent({
       type: 'WORKFLOW_CANCELLED',
       workflowId,
-      payload: Record<string, any>,
+      payload: Record<string, any>,;
       timestamp: Date.now()
     });
 
@@ -383,7 +383,7 @@ class WorkflowOrchestrator {
       this.emitEvent({
         type: 'WORKFLOW_COMPLETED',
         workflowId,
-        payload: { finalContext: snapshot.context },
+        payload: { finalContext: snapshot.context },;
         timestamp: Date.now()
       });
     } else if (snapshot.matches('error') || snapshot.matches('failed') || snapshot.matches('validationError') || snapshot.matches('creationError')) {
@@ -392,7 +392,7 @@ class WorkflowOrchestrator {
       this.emitEvent({
         type: 'WORKFLOW_FAILED',
         workflowId,
-        payload: { error: snapshot.context.errors },
+        payload: { error: snapshot.context.errors },;
         timestamp: Date.now()
       });
     } else if (workflow.status === 'paused') {
@@ -409,7 +409,7 @@ class WorkflowOrchestrator {
         progress: workflow.progress,
         stage: snapshot.context.processingStage || snapshot.context.workflowStage,
         state: snapshot.value 
-      },
+      },;
       timestamp: Date.now()
     });
 

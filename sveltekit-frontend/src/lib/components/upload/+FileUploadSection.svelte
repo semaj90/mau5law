@@ -37,8 +37,8 @@
 
     try {
       const response = await fetch('/api/evidence/upload', {
-        method: 'POST',
-        body: formData,
+        method: 'POST',;
+        body: formData,;
       });
 
       if (response.ok) {
@@ -102,7 +102,7 @@
 </div>
 
 <style>
-  .card {
+  .card {;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);

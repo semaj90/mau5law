@@ -7,7 +7,7 @@
     step = 0.01,
     disabled = false,
     id = undefined,
-    class: klass = '',
+    class: klass = '',;
   }: Props = $props();
 
   function onInput(e: Event) {

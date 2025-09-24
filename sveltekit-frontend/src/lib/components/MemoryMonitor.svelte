@@ -13,9 +13,9 @@
   let memoryData = $state({
     currentLOD: { name: 'medium', level: 2 },
     memoryPressure: 0.5,
-    pools: [],
+    pools: [],;
     clusters: [],
-    cacheLayers: []
+    cacheLayers: [];
   });
   let updateCount = $state(0);
   let isOptimizing = $state(false);
@@ -135,7 +135,7 @@
 </div>
 
 <style>
-  .usage-fill {
+  .usage-fill {;
     transition: width 0.3s ease;
   }
 </style>

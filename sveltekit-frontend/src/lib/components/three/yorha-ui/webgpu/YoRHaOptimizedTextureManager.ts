@@ -116,7 +116,7 @@ export class YoRHaOptimizedTextureManager {
         mipmapLevels: 8,
         compressionEnabled: true,
         rtxOptimization: true
-      },
+      },;
       textures: new Map(),
       memoryUsed: 0,
       bankSwitchCount: 0
@@ -131,7 +131,7 @@ export class YoRHaOptimizedTextureManager {
         mipmapLevels: 12,
         compressionEnabled: true,
         rtxOptimization: true
-      },
+      },;
       textures: new Map(),
       memoryUsed: 0,
       bankSwitchCount: 0
@@ -146,7 +146,7 @@ export class YoRHaOptimizedTextureManager {
         mipmapLevels: 6,
         compressionEnabled: true,
         rtxOptimization: false // Lower priority, use CPU
-      },
+      },;
       textures: new Map(),
       memoryUsed: 0,
       bankSwitchCount: 0
@@ -161,7 +161,7 @@ export class YoRHaOptimizedTextureManager {
         mipmapLevels: 10,
         compressionEnabled: false, // No compression for streaming
         rtxOptimization: true
-      },
+      },;
       textures: new Map(),
       memoryUsed: 0,
       bankSwitchCount: 0
@@ -236,7 +236,7 @@ export class YoRHaOptimizedTextureManager {
       // Create texture entry;
       const textureEntry: TextureEntry = {
         id: textureId,
-        texture: sourceTexture,
+        texture: sourceTexture,;
         mipmaps: mipmapResult ? mipmapResult.mipmapLevels: [],
         memoryBank: bankName,
         lastAccessed: Date.now(),
@@ -352,7 +352,7 @@ export class YoRHaOptimizedTextureManager {
         // Create chunk texture;
         const chunkTexture = this.device.createTexture({
           size: [chunkWidth, chunkHeight, 1],
-          format: 'rgba8unorm',
+          format: 'rgba8unorm',;
           usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.STORAGE_BINDING
         });
 
@@ -542,7 +542,7 @@ export class YoRHaOptimizedTextureManager {
 
     return {
       banks: bankStats,
-      overall: this.stats,
+      overall: this.stats,;
       streaming: streamingStats
     };
   }
@@ -576,7 +576,7 @@ export class YoRHaOptimizedTextureManager {
     // For now, create a placeholder texture;
     return this.device.createTexture({
       size: [512, 512, 1],
-      format: 'rgba8unorm',
+      format: 'rgba8unorm',;
       usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.STORAGE_BINDING
     });
   }

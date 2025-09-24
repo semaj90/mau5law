@@ -368,13 +368,13 @@
 			// Add to evidence canvas
 			evidenceCanvas.addEvidenceItem({
 				type: 'photo',
-				name: photo.filename,
+				name: photo.filename,;
 				position: { x: width / 2, y: height / 2 },
 				rotation: 0,
 				scale: 1.0,
-				textureId: photo.id,
-				metadata: photo.metadata,
-				connections: []
+				textureId: photo.id,;
+				metadata: photo.metadata,;
+				connections: [];
 			});
 
 			return texture;
@@ -394,14 +394,14 @@
 			// Add to evidence canvas
 			textures.forEach((texture, index) => {
 				evidenceCanvas.addEvidenceItem({
-					type: 'document',
+					type: 'document',;
 					name: `${scan.id}_page_${index + 1}`,
 					position: { x: 200 + index * 100, y: 200 },
 					rotation: 0,
 					scale: 1.0,
-					textureId: texture.documentId,
-					metadata: scan.metadata,
-					connections: []
+					textureId: texture.documentId,;
+					metadata: scan.metadata,;
+					connections: [];
 				});
 			});
 
@@ -469,7 +469,7 @@
 		onmouseup={handleMouseUp}
 		onwheel={handleWheel}
 		class="texture-canvas"
-		class:gpu-enabled={textureStreaming.stats().hasWebGL}
+		class:gpu-enabled={textureStreaming.stats().hasWebGL};
 		class:error={!!error}
 	/>
 
@@ -508,7 +508,7 @@
 </div>
 
 <style>
-	.legal-texture-canvas .texture-canvas {
+	.legal-texture-canvas .texture-canvas {;
 		display: block;
 		cursor: grab;
 		transition: filter 0.2s ease;
@@ -591,7 +591,7 @@
 		transition: all 0.2s ease;
 	}
 
-	.controls-overlay button:hover {
+	.controls-overlay button:hover {;
 		background: rgba(0, 0, 0, 0.9);
 		border-color: #999;
 	}

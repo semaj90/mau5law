@@ -10,74 +10,74 @@
  * @route POST /api/rag/index-document
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline';
-import { db } from '$lib/server/db/drizzle';
-import { sql } from 'drizzle-orm';
-import * as schema from '$lib/server/db/schema-postgres';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline'
+import { db } from '$lib/server/db/drizzle'
+import { sql } from 'drizzle-orm'
+import * as schema from '$lib/server/db/schema-postgres'
 import { requireAuth } from '$lib/server/auth'; // Use existing requireAuth instead of authenticate
 
 // Define document interfaces locally since schema doesn't export them
 interface LegalDocumentData {
-  id?: string;
-  title: string;
-  documentType: string;
-  jurisdiction?: string;
-  court?: string;
-  citation?: string;
-  fullCitation?: string;
-  docketNumber?: string;
-  dateDecided?: string;
-  datePublished?: string;
-  fullText?: string;
-  content: string;
-  summary?: string;
-  headnotes?: string;
-  keywords?: string[];
-  topics?: string[];
-  parties?: any;
-  judges?: string[];
-  attorneys?: any;
-  metadata?: any;
+  id?: string
+  title: string
+  documentType: string
+  jurisdiction?: string
+  court?: string
+  citation?: string
+  fullCitation?: string
+  docketNumber?: string
+  dateDecided?: string
+  datePublished?: string
+  fullText?: string
+  content: string
+  summary?: string
+  headnotes?: string
+  keywords?: string[]
+  topics?: string[]
+  parties?: any
+  judges?: string[]
+  attorneys?: any
+  metadata?: any
 }
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
-  const startTime = Date.now();
+  const startTime = Date.now()
 
   try {
     // Authentication required for document indexing
-    const { user } = await requireAuth({ cookies } as any);
+    const { user } = await requireAuth({ cookies } as any)
     if (!user) {
       return json({
         success: false,
         error: 'Authentication required'
-      }, { status: 401 });
+      }, { status: 401 })
     }
 
-    const requestData = await request.json();
-    const { documents, mode = 'single' } = requestData;
+    const requestData = await request.json()
+    const { documents, mode = 'single' } = requestData
 
     // Handle both single document and bulk processing
     const documentsToProcess = mode === 'bulk' && Array.isArray(documents)
       ? documents
-      : [requestData];
+      : [requestData]
 
-    const results = [];
-    let totalChunks = 0;
-    let successCount = 0;
-    let failureCount = 0;
+    const results = []
+    let totalChunks = 0
+    let successCount = 0
+    let failureCount = 0
 
     for (const docData of documentsToProcess) {
       try {
-        const result = await processDocument(docData, user.id);
-        results.push(result);
+        const result = await processDocument(docData, user.id)
+        results.push(result)
 
         if ((result as { success?: any; chunksCreated?: any }).success) {
-          totalChunks += (result as { success?: any; chunksCreated?: any }).chunksCreated;
-          successCount++;
+          totalChunks += (result as { success?: any; chunksCreated?: any }).chunksCreated
+          successCount++
         } else {
-          failureCount++;
+          failureCount++
         }
       } catch (error: any) {
         results.push({
@@ -85,8 +85,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
           documentId: docData.id || 'unknown',
           error: error.message,
           chunksCreated: 0
-        });
-        failureCount++;
+        })
+        failureCount++
       }
     }
 
@@ -96,60 +96,60 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       failureCount,
       totalChunksCreated: totalChunks,
       processingTime: Date.now() - startTime
-    };
+    }
 
-    console.log(`📚 Document indexing completed:`, summary);
+    console.log(`📚 Document indexing completed:`, summary)
 
     return json({
       success: failureCount === 0,
       mode,
       summary,
       results: mode === 'single' ? results[0] : results
-    });
+    })
 
   } catch (error: any) {
-    console.error('Document Indexing API Error:', error);
+    console.error('Document Indexing API Error:', error)
 
     return json({
       success: false,
       error: 'Failed to process document indexing request',
       processingTime: Date.now() - startTime
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 /**
  * Process a single document for indexing
- */;
+ */
 async function processDocument(docData: any, userId: string): Promise<any> {
   // Input validation
-  const requiredFields = ['title', 'documentType', 'content'];
+  const requiredFields = ['title', 'documentType', 'content']
   for (const field of requiredFields) {
     if (!docData[field]) {
-      throw new Error(`Missing required field: ${field}`);
+      throw new Error(`Missing required field: ${field}`)
     }
   }
 
   // Validate document type
-  const validTypes = ['contract', 'evidence', 'brief', 'citation', 'statute', 'precedent', 'regulation', 'case_law'];
+  const validTypes = ['contract', 'evidence', 'brief', 'citation', 'statute', 'precedent', 'regulation', 'case_law']
   if (!validTypes.includes(docData.documentType)) {
-    throw new Error(`Invalid document type: ${docData.documentType}. Valid types: ${validTypes.join(', ')}`);
+    throw new Error(`Invalid document type: ${docData.documentType}. Valid types: ${validTypes.join(', ')}`)
   }
 
-  let documentId = docData.id;
-  let document: LegalDocument;
+  let documentId = docData.id
+  let document: LegalDocument
 
-  // If document ID provided, update existing document, otherwise create new one;
+  // If document ID provided, update existing document, otherwise create new one
   if (documentId) {
     // Update existing document
     const existingDoc = await db
       .select()
       .from(schema.legalDocuments)
       .where(sql`id = ${documentId}`)
-      .limit(1);
+      .limit(1)
 
     if (existingDoc.length === 0) {
-      throw new Error(`Document with ID ${documentId} not found`);
+      throw new Error(`Document with ID ${documentId} not found`)
     }
 
     const updateData: Partial<NewLegalDocument> = {
@@ -180,22 +180,22 @@ async function processDocument(docData: any, userId: string): Promise<any> {
       caseId: docData.caseId,
       evidenceId: docData.evidenceId,
       updatedAt: new Date().toISOString()
-    };
+    }
 
     await db
       .update(schema.legalDocuments)
       .set(updateData)
-      .where(sql`id = ${documentId}`);
+      .where(sql`id = ${documentId}`)
 
-    document = { ...existingDoc[0], ...updateData } as LegalDocument;
+    document = { ...existingDoc[0], ...updateData } as LegalDocument
 
     // Delete existing chunks to avoid duplicates
     await db
       .delete(schema.documentChunks)
-      .where(sql`document_id = ${documentId}`);
+      .where(sql`document_id = ${documentId}`)
 
   } else {
-    // Create new document;
+    // Create new document
     const newDocData: LegalDocumentData = {
       title: docData.title,
       documentType: docData.documentType,
@@ -227,58 +227,58 @@ async function processDocument(docData: any, userId: string): Promise<any> {
       isDirty: false,
       createdBy: userId,
       embedding: null // Will be generated during chunking
-    };
+    }
 
     const insertedDocs = await db
       .insert(schema.legalDocuments)
       .values(newDocData)
-      .returning({ id: schema.legalDocuments.id });
+      .returning({ id: schema.legalDocuments.id })
 
-    documentId = insertedDocs[0].id;
-    document = { ...newDocData, id: documentId } as LegalDocument;
+    documentId = insertedDocs[0].id
+    document = { ...newDocData, id: documentId } as LegalDocument
   }
 
   // Index the document using the RAG pipeline
-  const indexResult = await enhancedRAGPipeline.indexDocument(document);
+  const indexResult = await enhancedRAGPipeline.indexDocument(document)
 
   if (!indexResult.success) {
-    throw new Error(indexResult.error || 'Failed to index document');
+    throw new Error(indexResult.error || 'Failed to index document')
   }
 
   return {
     success: true,
     documentId,
     chunksCreated: indexResult.chunksCreated
-  };
+  }
 }
 
-// GET endpoint for indexing status and statistics;
+// GET endpoint for indexing status and statistics
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const documentId = url.searchParams.get('documentId');
+    const documentId = url.searchParams.get('documentId')
 
     if (documentId) {
       // Get indexing status for specific document
-      const chunks = await db;
+      const chunks = await db
         .select({
           count: sql`COUNT(*)`,
           totalSize: sql`SUM(LENGTH(content))`,
           avgRelevance: sql`AVG(CASE WHEN metadata->>'relevanceScore' IS NOT NULL THEN (metadata->>'relevanceScore')::float ELSE NULL END)`
         })
         .from(schema.documentChunks)
-        .where(sql`document_id = ${documentId}`);
+        .where(sql`document_id = ${documentId}`)
 
       const document = await db
         .select()
         .from(schema.legalDocuments)
         .where(sql`id = ${documentId}`)
-        .limit(1);
+        .limit(1)
 
       if (document.length === 0) {
         return json({
           success: false,
           error: 'Document not found'
-        }, { status: 404 });
+        }, { status: 404 })
       }
 
       return json({
@@ -296,68 +296,68 @@ export const GET: RequestHandler = async ({ url }) => {
           averageRelevance: Number(chunks[0].avgRelevance) || 0,
           lastIndexed: document[0].updatedAt
         }
-      });
+      })
     } else {
       // Get overall indexing statistics
-      const stats = await enhancedRAGPipeline.getSystemStats();
+      const stats = await enhancedRAGPipeline.getSystemStats()
 
       return json({
         success: true,
         systemStats: stats
-      });
+      })
     }
 
   } catch (error: any) {
     return json({
       success: false,
       error: error.message
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
-// DELETE endpoint for removing document from index;
+// DELETE endpoint for removing document from index
 export const DELETE: RequestHandler = async ({ request, cookies }) => {
   try {
-    const user = await authenticate(cookies);
+    const user = await authenticate(cookies)
     if (!user) {
       return json({
         success: false,
         error: 'Authentication required'
-      }, { status: 401 });
+      }, { status: 401 })
     }
 
-    const { documentId } = await request.json();
+    const { documentId } = await request.json()
 
     if (!documentId) {
       return json({
         success: false,
         error: 'Document ID is required'
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
     // Delete document chunks
     const deletedChunks = await db
       .delete(schema.documentChunks)
       .where(sql`document_id = ${documentId}`)
-      .returning({ id: schema.documentChunks.id });
+      .returning({ id: schema.documentChunks.id })
 
     // Mark document as inactive (soft delete)
     await db
       .update(schema.legalDocuments)
       .set({ isActive: false, updatedAt: new Date().toISOString() })
-      .where(sql`id = ${documentId}`);
+      .where(sql`id = ${documentId}`)
 
     return json({
       success: true,
       documentId,
       chunksRemoved: deletedChunks.length,
       message: 'Document removed from search index'
-    });
+    })
 
   } catch (error: any) {
     return json({
       success: false,
       error: error.message
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

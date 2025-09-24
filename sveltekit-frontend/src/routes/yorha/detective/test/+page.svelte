@@ -10,14 +10,14 @@
     isLoading = true;
     try {
       const response = await fetch('/api/cases', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          title: 'Test Case from YoRHa Detective',
-          description: 'This is a test case created from the YoRHa Detective interface',
-          priority: 'medium'
+          title: 'Test Case from YoRHa Detective',;
+          description: 'This is a test case created from the YoRHa Detective interface',;
+          priority: 'medium';
         })
       });
 
@@ -25,7 +25,7 @@
       if ((response as { json?: unknown; ok?: unknown }).ok) {
         testResult = `✅ Case created successfully!\nID: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.id}\nCase Number: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.caseNumber}\nTitle: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.title}`;
       } else {
-        testResult = `❌ Error: ${(result as { data?: unknown; error?: unknown; details?: unknown }).error}\nDetails: ${JSON.stringify.details, null, 2)}`;
+        testResult = `❌ Error: ${(result as { data?: unknown; error?: unknown; details?: unknown }).error}\nDetails: ${JSON.stringify(details), null, 2)}`;
       }
     } catch (error) {
       testResult = `❌ Network error: ${error.message}`;
@@ -40,7 +40,7 @@
       const response = await fetch('/api/cases');
       const result = await (response as { json?: unknown; ok?: unknown }).json();
       if ((response as { json?: unknown; ok?: unknown }).ok) {
-        testResult = `✅ Cases retrieved successfully!\nTotal: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.length}\nFirst few cases:\n${JSON.stringify.data.slice(0, 3), null, 2)}`;
+        testResult = `✅ Cases retrieved successfully!\nTotal: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.length}\nFirst few cases:\n${JSON.stringify(data).slice(0, 3), null, 2)}`;
       } else {
         testResult = `❌ Error: ${(result as { data?: unknown; error?: unknown; details?: unknown }).error}`;
       }

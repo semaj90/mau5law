@@ -30,7 +30,7 @@ export const CaseFormSchema = z.object({
   tags: z.array(z.string()).default([]),
 
   // Step 4: Additional Details
-  aiSummary: z.string().optional(),
+  aiSummary: z.string().optional(),;
   metadata: z.record(z.any()).default({})
 });
 
@@ -71,7 +71,7 @@ export const EvidenceFormSchema = z.object({
   // Step 5: Analysis,
   aiAnalysis: z.record(z.any()).default({}),
   aiTags: z.array(z.string()).default([]),
-  aiSummary: z.string().optional(),
+  aiSummary: z.string().optional(),;
   summary: z.string().optional()
 });
 
@@ -115,7 +115,7 @@ export const CriminalFormSchema = z.object({
 
   // Step 6: Case Association
   associatedCases: z.array(z.string()).default([]),
-  notes: z.string().optional(),
+  notes: z.string().optional(),;
   metadata: z.record(z.any()).default({})
 });
 
@@ -142,7 +142,7 @@ export const CaseFormSteps = {
     tags: true
   }),
   step4: CaseFormSchema.pick({
-    aiSummary: true,
+    aiSummary: true,;
     metadata: true
   })
 };
@@ -174,7 +174,7 @@ export const EvidenceFormSteps = {
   step5: EvidenceFormSchema.pick({
     aiAnalysis: true,
     aiTags: true,
-    aiSummary: true,
+    aiSummary: true,;
     summary: true
   })
 };
@@ -213,7 +213,7 @@ export const CriminalFormSteps = {
   }),
   step6: CriminalFormSchema.pick({
     associatedCases: true,
-    notes: true,
+    notes: true,;
     metadata: true
   })
 };
@@ -300,7 +300,7 @@ const generateEmbeddings = fromPromise(async ({ input }: { input: { formType: st
           text: searchableContent,
           metadata: {
             id,
-            type: formType,
+            type: formType,;
             timestamp: new Date().toISOString()
           }
         })
@@ -321,7 +321,7 @@ const generateEmbeddings = fromPromise(async ({ input }: { input: { formType: st
 
 // Multi-step form machine setup;
 export const multiStepFormMachine = setup({
-  types: {
+  types: {;
     context: Record<string, any> as {
       formType: "case" | "evidence" | "criminal";
       currentStep: number;
@@ -392,7 +392,7 @@ export const multiStepFormMachine = setup({
             })
           })
         },
-        SET_FORM_TYPE: {
+        SET_FORM_TYPE: {;
           actions: assign({
             formType: ({ event }) => event.formType,
             currentStep: 1,
@@ -433,10 +433,10 @@ export const multiStepFormMachine = setup({
       entry: assign({
         isValid: false,
         errors: Record<string, any>
-      }),
+      }),;
       always: [;
         {
-          target: "editing",
+          target: "editing",;
           guard: ({ context }) => {
             const { formType, currentStep, stepData } = context;
 
@@ -488,7 +488,7 @@ export const multiStepFormMachine = setup({
           })
         },
         {
-          target: "editing",
+          target: "editing",;
           actions: assign(({ context }) => {
             const { formType, currentStep, stepData } = context;
 
@@ -582,7 +582,7 @@ export const multiStepFormMachine = setup({
             })
           })
         },
-        onError: {
+        onError: {;
           target: "success", // Continue even if embeddings fail;
           actions: assign({
             isSubmitting: false,
@@ -619,7 +619,7 @@ export const multiStepFormMachine = setup({
           actions: assign({
             currentStep: 1,
             formData: Record<string, any>,
-            stepData: Record<string, any>,
+            stepData: Record<string, any>,;
             errors: Record<string, any>,
             isValid: false,
             submitResult: null,

@@ -55,14 +55,14 @@ https://svelte.dev/e/expected_token -->
     maxResults = 20,
     onResultClick = null,
     onResultAction = null,
-    class: className = ''
+    class: className = '';
    }: { placeholder = 'Search legal documents, cases, evidence...',
     showFilters = true,
     showStats = true,
     showAdvanced = false,
     maxResults = 20,
     onResultClick = null,
-    onResultAction = null,
+    onResultAction = null,;
     class: className = ''
   : unknown } = $props();
 
@@ -80,7 +80,7 @@ https://svelte.dev/e/expected_token -->
     riskLevels: [],
     jurisdictions: [],
     confidenceMin: 0.5,
-    priorityMin: 50,
+    priorityMin: 50,;
   });
 
   // Stats
@@ -118,8 +118,9 @@ https://svelte.dev/e/expected_token -->
   let searchTimeout: NodeJS.Timeout | null = null;
 
   // Initialize search engine
-  $effect(async () => {
-    try {
+  $effect(() => {
+    (async () => {
+try {
       await instantSearchEngine.initialize();
       
       // Set up event listeners
@@ -128,7 +129,8 @@ https://svelte.dev/e/expected_token -->
         if (showStats) {
           searchStats = instantSearchEngine.getSearchStats();
         }
-      });
+    })();
+  });
 
       instantSearchEngine.on('indexRefreshed', (data) => {
         console.log.documentCount} documents`);
@@ -354,7 +356,7 @@ https://svelte.dev/e/expected_token -->
               </div>
               <div>
                 <label class="text-xs nes-text is-disabled" for="priority-selectedfil">Priority: {selectedFilters.priorityMin}</label><input id="priority-selectedfil"
-                  type="range"
+                  type="range";
                   bind:value={selectedFilters.priorityMin}
                   min="0"
                   max="255"

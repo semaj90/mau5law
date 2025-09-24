@@ -1,10 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Expected a `#` character immediately following the opening bracket
+<!-- @migration-task Error while migrating Svelte code: Expected a `#` character immediately following the opening bracket;
 https://svelte.dev/e/block_unexpected_character -->
 <!-- @migration-task Error while migrating Svelte code: Expected a `#` character immediately following the opening bracket -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  interface Props {
+  interface Props {;
     evidence: ExtendedEvidence;
     onView: (evidence: Evidence) => void;
     onEdit: (evidence: Evidence) => void;
@@ -123,7 +123,7 @@ https://svelte.dev/e/block_unexpected_character -->
       class:text-orange-700={ evidence.evidenceType === 'audio' || evidence.type === 'audio' }
       class:border-orange-200={ evidence.evidenceType === 'audio' || evidence.type === 'audio' }
       class:bg-indigo-50={ evidence.evidenceType === 'link' || evidence.type === 'link' }
-      class:text-indigo-700={ evidence.evidenceType === 'link' || evidence.type === 'link' }
+      class:text-indigo-700={ evidence.evidenceType === 'link' || evidence.type === 'link' };
       class:border-indigo-200={ evidence.evidenceType === 'link' || evidence.type === 'link' }
       data-type={ evidence.evidenceType || evidence.type }
     >

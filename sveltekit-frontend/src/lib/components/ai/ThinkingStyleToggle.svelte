@@ -29,9 +29,9 @@
   let thinkingDepth = $state('detailed');
   let focusAreas = $state({
     precedents: true,
-    evidence: true,
-    compliance: true,
-    alternatives: false
+    evidence: true,;
+    compliance: true,;
+    alternatives: false;
   });
 
   let iconSize = $derived(size === 'sm' ? 16 : size === 'md' ? 20 : 24);
@@ -280,7 +280,7 @@ Upgrade Now
 
 <style>
   /* @unocss-include */
-  .thinking-style-control {
+  .thinking-style-control {;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -450,7 +450,7 @@ Upgrade Now
   .nier-border-glow {
     position: relative;
 }
-  .nier-border-glow: :before {
+  .nier-border-glow::before {
     content: '';
     position: absolute;
     inset: -1px;

@@ -41,9 +41,9 @@
     processingStage: 'Ready for analysis...',
     vectorSearchActive: false,
     precedentDatabase: {
-      totalCases: 2847592,
+      totalCases: 2847592,;
       indexed: 2847592,
-      lastUpdate: '2024-09-10'
+      lastUpdate: '2024-09-10';
     },
     aiConfidence: 0
   });
@@ -114,7 +114,7 @@
     await nesMemoryBridge.initialize({
       mode: 'legal-ai',
       optimizeFor: 'vector-similarity',
-      cacheRegions: ['case-embeddings', 'precedent-patterns', 'citation-networks']
+      cacheRegions: ['case-embeddings', 'precedent-patterns', 'citation-networks'];
     });
 
     // Initialize Glyph Shader Cache for legal pattern recognition
@@ -202,7 +202,7 @@
         id: 'CASE-2023-001',
         title: 'State v. Johnson - Contract Interpretation Under Duress',
         citation: '847 F.3d 234 (5th Cir. 2023)',
-        court: '5th Circuit Court of Appeals',
+        court: '5th Circuit Court of Appeals',;
         jurisdiction: 'Federal',
         dateDecided: '2023-08-15',
         similarityScore: 0.94,
@@ -237,7 +237,7 @@
         id: 'CASE-2022-087',
         title: 'Martinez v. Global Corp - Unconscionable Contract Terms',
         citation: '623 F.Supp.3d 445 (S.D. Cal. 2022)',
-        court: 'U.S. District Court Southern District of California',
+        court: 'U.S. District Court Southern District of California',;
         jurisdiction: 'Federal',
         dateDecided: '2022-11-22',
         similarityScore: 0.87,
@@ -274,8 +274,8 @@
       {
         id: 'CASE-2021-156',
         title: 'Thompson Industries v. Allied Manufacturing - Good Faith Dealing',
-        citation: '789 F.3d 567 (9th Cir. 2021)',
-        court: '9th Circuit Court of Appeals',
+        citation: '789 F.3d 567 (9th Cir. 2021)',;
+        court: '9th Circuit Court of Appeals',;
         jurisdiction: 'Federal',
         dateDecided: '2021-03-10',
         similarityScore: 0.82,
@@ -345,7 +345,7 @@
         factualBasis: 'Valid contract requires mutual assent, consideration, and capacity',
         logicalConnection: 'Foundation for analyzing contract validity',
         strengthScore: 0.95,
-        vulnerabilities: ['Potential capacity questions', 'Consideration adequacy']
+        vulnerabilities: ['Potential capacity questions', 'Consideration adequacy'];
       },
       {
         stepNumber: 2,
@@ -354,7 +354,7 @@
         factualBasis: 'Evidence of coercive circumstances and unequal bargaining power',
         logicalConnection: 'Duress can void otherwise valid contracts',
         strengthScore: 0.87,
-        vulnerabilities: ['Subjective nature of duress', 'Burden of proof issues']
+        vulnerabilities: ['Subjective nature of duress', 'Burden of proof issues'];
       },
       {
         stepNumber: 3,
@@ -363,7 +363,7 @@
         factualBasis: 'Implied covenant exists in all contractual relationships',
         logicalConnection: 'Even valid contracts require good faith performance',
         strengthScore: 0.78,
-        vulnerabilities: ['Scope of good faith duty', 'Relationship to express terms']
+        vulnerabilities: ['Scope of good faith duty', 'Relationship to express terms'];
       },
       {
         stepNumber: 4,
@@ -371,8 +371,8 @@
         supportingCases: ['CASE-2023-001', 'CASE-2021-156'],
         factualBasis: 'Multiple remedial options available for contract violations',
         logicalConnection: 'Relief available through rescission, restitution, or damages',
-        strengthScore: 0.83,
-        vulnerabilities: ['Election of remedies', 'Mitigation requirements']
+        strengthScore: 0.83,;
+        vulnerabilities: ['Election of remedies', 'Mitigation requirements'];
       }
     ];
   }
@@ -388,13 +388,13 @@
         persuasivePrecedents: precedentMatches.filter(item => item.length),
         averageSimilarity: precedentMatches.reduce((sum, p) => sum + p.similarityScore, 0) / precedentMatches.length,
         recentAuthority: precedentMatches.filter(p => new Date(p.dateDecided) > new Date('2020-01-01')).length
-      },
+      },;
       recommendations: [
         'Focus on binding precedents from same circuit',
         'Address distinguishing factors proactively',
         'Emphasize factual similarities in briefing',
         'Consider alternative legal theories'
-      ]
+      ];
     };
   }
 
@@ -408,7 +408,7 @@
         'Limited binding authority in exact factual scenario',
         'Potential distinguishing factors in consumer context',
         'Evolving standards in unconscionability doctrine'
-      ],
+      ],;
       strengths: [
         'Clear binding precedent on core legal principles',
         'Recent favorable authority',
@@ -420,7 +420,7 @@
         'Address weaknesses through alternative arguments',
         'Emphasize policy considerations',
         'Prepare distinguishing arguments for adverse cases'
-      ]
+      ];
     };
   }
 
@@ -556,7 +556,7 @@
       <div class="grid md:grid-cols-2 gap-4">
         <div class="space-y-2">
           <label class="text-sm font-medium">Search Query</label>
-          <Input 
+          <Input ;
             bind:value={searchQuery}
             placeholder="Enter legal issue or keywords..."
             class="w-full"
@@ -975,4 +975,4 @@
       </TabsContent>
     </Tabs>
   {/if}
-</div>
+</div>;

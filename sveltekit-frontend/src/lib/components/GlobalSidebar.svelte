@@ -21,7 +21,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
 
   // Props for sidebar configuration
   let {
-    isOpen = $state(true),
+    isOpen = true,
     defaultSection = 'dashboard',
     showQuickActions = true,
     compactMode = false
@@ -33,6 +33,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   } = $props();
 
   // Sidebar state management
+  let isOpenState = $state(isOpen);
   let activeSection = $state(defaultSection);
   let searchQuery = $state('');
   let isCollapsed = $state(compactMode);
@@ -440,7 +441,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
 </aside>
 
 <style>
-  .global-sidebar {
+  .global-sidebar {;
     width: 320px;
     min-height: 100vh;
     background: #1a1a1a;

@@ -231,7 +231,7 @@ export function getBridgeStatus(): {
       'Service Monitoring',
       'Vector Operations',
       'Batch Processing'
-    ] : [],
+    ] : [],;
     performance: isRustBridgeAvailable()
   };
 }

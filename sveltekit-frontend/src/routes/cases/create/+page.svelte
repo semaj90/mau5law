@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -82,11 +82,11 @@ https://svelte.dev/e/js_parse_error -->
     autoSaveTimeout = setTimeout(async () => {
       try {
         const response = await fetch('?/saveDraft', {
-          method: 'POST',
+          method: 'POST',;
           headers: {
             'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(formData)
+          },;
+          body: JSON.stringify(formData);
         });
 
         if (response.ok) {

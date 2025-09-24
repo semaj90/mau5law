@@ -9,7 +9,7 @@
     children?: unknown;
     fallback?: unknown;
   }
-  let { 
+  let {
     loading = false,
     error = null,
     empty = false,
@@ -53,7 +53,7 @@
         </span>
       </div>
     </div>
-    
+
     <!-- Skeleton Content -->
     {#if skeleton === 'dashboard'}
       <!-- Dashboard Skeleton -->
@@ -67,7 +67,7 @@
           </div>
         {/each}
       </div>
-      
+
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-golden-xl">
         {#each Array(3) as _}
           <div class="bg-nier-bg-secondary border border-nier-border-muted rounded p-golden-lg animate-pulse">
@@ -82,7 +82,7 @@
           </div>
         {/each}
       </div>
-      
+
     {:else if skeleton === 'list'}
       <!-- List Skeleton -->
       <div class="space-y-golden-sm">
@@ -99,7 +99,7 @@
           </div>
         {/each}
       </div>
-      
+
     {:else if skeleton === 'table'}
       <!-- Table Skeleton -->
       <div class="bg-nier-bg-secondary border border-nier-border-muted rounded overflow-hidden">
@@ -120,7 +120,7 @@
           </div>
         {/each}
       </div>
-      
+
     {:else if skeleton === 'card'}
       <!-- Card Skeleton -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-golden-lg">
@@ -141,7 +141,7 @@
           </div>
         {/each}
       </div>
-      
+
     {:else if skeleton === 'custom' && fallback}
       {@render fallback()}
     {/if}
@@ -180,14 +180,14 @@
       opacity: 0.3;
     }
   }
-  
+
   .animate-pulse {
     animation: yorha-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
-/* Staggered animation for skeleton items */ .animate-pulse: nth-child(1) { animation-delay: 0ms; }
-  .animate-pulse: nth-child(2) { animation-delay: 100ms; }
-  .animate-pulse: nth-child(3) { animation-delay: 200ms; }
-  .animate-pulse: nth-child(4) { animation-delay: 300ms; }
-  .animate-pulse: nth-child(5) { animation-delay: 400ms; }
-  .animate-pulse: nth-child(6) { animation-delay: 500ms; }
+/* Staggered animation for skeleton items */ .animate-pulse:nth-child(1) { animation-delay: 0ms; }
+  .animate-pulse:nth-child(2) { animation-delay: 100ms; }
+  .animate-pulse:nth-child(3) { animation-delay: 200ms; }
+  .animate-pulse:nth-child(4) { animation-delay: 300ms; }
+  .animate-pulse:nth-child(5) { animation-delay: 400ms; }
+  .animate-pulse:nth-child(6) { animation-delay: 500ms; }
 </style>

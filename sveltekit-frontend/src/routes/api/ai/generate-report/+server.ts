@@ -17,9 +17,9 @@
  */
 
 
-import { json } from "@sveltejs/kit";
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
+import { json } from "@sveltejs/kit"
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from './$types.js'
 
 
 const REPORT_TEMPLATES = {
@@ -75,25 +75,25 @@ const REPORT_TEMPLATES = {
     prompt:
       "Generate a detailed investigation report documenting all activities, evidence collected, interviews conducted, and analytical findings."
   }
-};
+}
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const { reportType, caseId, reportId, existingContent, context } =
-      await request.json();
+      await request.json()
 
     if (
       !reportType ||
-      !REPORT_TEMPLATES[reportType as keyof typeof REPORT_TEMPLATES];
+      !REPORT_TEMPLATES[reportType as keyof typeof REPORT_TEMPLATES]
     ) {
-      return json({ error: "Invalid report type" }, { status: 400 });
+      return json({ error: "Invalid report type" }, { status: 400 })
     }
 
     const template =
-      REPORT_TEMPLATES[reportType as keyof typeof REPORT_TEMPLATES];
+      REPORT_TEMPLATES[reportType as keyof typeof REPORT_TEMPLATES]
 
     // Simulate AI processing delay
-    await new Promise((resolve) => setTimeout(resolve, 2000);
+    await new Promise((resolve) => setTimeout(resolve, 2000)
 
     // Generate structured report content
     const reportContent = generateReportContent(
@@ -102,7 +102,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       reportId,
       existingContent,
       context,
-    );
+    )
 
     return json({
       success: true,
@@ -118,12 +118,12 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         aiModel: "Legal-GPT-4",
         confidence: 0.92
       }
-    });
+    })
   } catch (error: any) {
-    console.error("AI report generation error:", error);
-    return json({ error: "Failed to generate report" }, { status: 500 });
+    console.error("AI report generation error:", error)
+    return json({ error: "Failed to generate report" }, { status: 500 })
   }
-};
+}
 
 function generateReportContent(
   template: any,
@@ -132,12 +132,12 @@ function generateReportContent(
   existingContent?: string,
   context?: unknown,
 ): string {
-  const now = new Date();
+  const now = new Date()
   const formattedDate = now.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric"
-  });
+  })
 
   let content = `
     <div style="text-align: center; margin-bottom: 40px;">
@@ -148,9 +148,9 @@ function generateReportContent(
         Generated on ${formattedDate} | Case ID: ${caseId || "N/A"} | Report ID: ${reportId || "N/A"}
       </p>
     </div>
-  `;
+  `
 
-  // Add AI-generated content for each section;
+  // Add AI-generated content for each section
   template.sections.forEach((section: string, index: number) => {
     content += `
       <div style="margin-bottom: 32px;">
@@ -159,8 +159,8 @@ function generateReportContent(
         </h2>
         ${generateSectionContent(section, template.title, existingContent, context)}
       </div>
-    `;
-  });
+    `
+  })
 
   // Add AI disclaimer
   content += `
@@ -170,9 +170,9 @@ function generateReportContent(
         Legal analysis should be verified by qualified legal professionals before use in official proceedings.
       </p>
     </div>
-  `;
+  `
 
-  return content;
+  return content
 }
 
 function generateSectionContent(
@@ -266,7 +266,7 @@ function generateSectionContent(
         <li>Schedule follow-up review in 30 days</li>
       </ol>
     `
-  };
+  }
 
   return (
     sampleContent[section] ||
@@ -275,8 +275,8 @@ function generateSectionContent(
     Please review and customize this content based on the specific case requirements.</p>
     <p><em>AI-generated content placeholder. Requires human review and customization.</em></p>
   `
-  );
+  )
 }
 
 
-export const POST = redisOptimized.documentProcessing(originalPOSTHandler);
+export const POST = redisOptimized.documentProcessing(originalPOSTHandler)

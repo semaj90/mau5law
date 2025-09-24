@@ -122,7 +122,7 @@ export class LegalBertONNXService extends EventEmitter {
         },
         poolerOutput: {
           name: 'pooler_output',
-          type: 'float32',
+          type: 'float32',;
           shape: [-1, 768], // [batch, hidden_size]
         }
       }
@@ -189,7 +189,7 @@ export class LegalBertONNXService extends EventEmitter {
     // 3. Set appropriate special tokens
     
     return {
-      encode: (text: string) => this.mockTokenize(text),
+      encode: (text: string) => this.mockTokenize(text),;
       decode: (tokens: number[]) => this.mockDetokenize(tokens),
       vocab_size: 30522, // Standard BERT vocab size
       max_length: 512
@@ -334,7 +334,7 @@ export class LegalBertONNXService extends EventEmitter {
       this.updateMetrics(processingTime, true);
       
       const result: LegalEmbeddingResult = {
-        embeddings,
+        embeddings,;
         dimensions: embeddings.length,
         processingTime,
         modelUsed: 'legal-bert-onnx'

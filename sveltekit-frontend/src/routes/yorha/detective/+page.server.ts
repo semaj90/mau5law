@@ -17,7 +17,7 @@ export const load: PageServerLoad = async () => {
         id: 'case-2',
         title: 'Missing Person: Dr. Sarah Chen',
         status: 'active',
-        createdAt: new Date('2024-01-16T14:20:00'),
+        createdAt: new Date('2024-01-16T14:20:00'),;
         priority: 'medium',
       },
     ];
@@ -31,7 +31,7 @@ export const load: PageServerLoad = async () => {
         caseTitle: 'Corporate Espionage Investigation',
       },
       {
-        id: 'evidence-2',
+        id: 'evidence-2',;
         title: 'Witness Statement - John Doe',
         evidenceType: 'document',
         createdAt: new Date('2024-01-16T14:20:00'),

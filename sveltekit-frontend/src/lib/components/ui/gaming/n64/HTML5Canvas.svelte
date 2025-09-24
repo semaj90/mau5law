@@ -116,7 +116,7 @@
     onDraw,
     onResize,
 
-    class: className = ''
+    class: className = '';
   }: Props = $props();
 
   
@@ -129,7 +129,7 @@
     fps: 60,
     frameTime: 16.67,
     lastFrame: 0,
-    frameCount: 0
+    frameCount: 0;
   });
 
   // WebGL/shader specific state
@@ -326,14 +326,14 @@
     // Set up uniforms
     const uniformLocations = {
       transform: gl.getUniformLocation(shaderProgram, 'u_transform'),
-      perspective: gl.getUniformLocation(shaderProgram, 'u_perspective'),
-      time: gl.getUniformLocation(shaderProgram, 'u_time'),
+      perspective: gl.getUniformLocation(shaderProgram, 'u_perspective'),;
+      time: gl.getUniformLocation(shaderProgram, 'u_time'),;
       resolution: gl.getUniformLocation(shaderProgram, 'u_resolution'),
       anisotropicLevel: gl.getUniformLocation(shaderProgram, 'u_anisotropicLevel'),
       glowIntensity: gl.getUniformLocation(shaderProgram, 'u_glowIntensity'),
       enableFog: gl.getUniformLocation(shaderProgram, 'u_enableFog'),
       enableDither: gl.getUniformLocation(shaderProgram, 'u_enableDither'),
-      enableBloom: gl.getUniformLocation(shaderProgram, 'u_enableBloom')
+      enableBloom: gl.getUniformLocation(shaderProgram, 'u_enableBloom');
     };
 
     // Set initial uniform values
@@ -396,9 +396,9 @@
       // Apply N64 texture filtering to Fabric.js
       fabricCanvas.setFilter('N64Filter', {
         ...effectiveRenderOptions,
-        blur: textureQuality === 'draft' ? 0.5 : 0,
-        contrast: 1.1,
-        brightness: 1.05
+        blur: textureQuality === 'draft' ? 0.5 : 0,;
+        contrast: 1.1,;
+        brightness: 1.05;
       });
 
       ondispatch?.({ fabricCanvas });
@@ -526,9 +526,9 @@
 <div 
   bind:this={containerElement}
   class="n64-canvas-container {className}"
-  class:disabled
+  class:disabled;
   class:loading
-  style="
+  style=";
     --canvas-width: {width}px;
     --canvas-height: {height}px;
     --perspective: {perspective}px;
@@ -569,7 +569,7 @@
 </div>
 
 <style>
-  .n64-canvas-container {
+  .n64-canvas-container {;
     position: relative;
     display: inline-block;
     width: var(--canvas-width);

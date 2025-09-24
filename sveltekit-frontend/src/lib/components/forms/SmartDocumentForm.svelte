@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Smart Document Form with OCR Auto-Population -->
@@ -159,7 +159,7 @@ https://svelte.dev/e/js_parse_error -->
   		}
 
   		formErrors.set(errors);
-  		isFormValid = Object.keys.length === 0 &&
+  		isFormValid = Object.keys(errors).length === 0 &&
   			populatedFields.filter(item => item.every)(f => f.value?.trim());
   	};
 
@@ -250,7 +250,7 @@ https://svelte.dev/e/js_parse_error -->
 
 				<!-- File Drop Zone -->
 				<div
-					class="border-2 border-dashed border-yorha-border rounded-lg p-8 text-center transition-colors duration-200 hover:border-yorha-primary hover:bg-yorha-bg-secondary/50"
+					class="border-2 border-dashed border-yorha-border rounded-lg p-8 text-center transition-colors duration-200 hover:border-yorha-primary hover:bg-yorha-bg-secondary/50";
 					class:border-yorha-primary={uploadedFile}
 					ondrop={handleDrop}
 					role="button" 
@@ -276,7 +276,7 @@ https://svelte.dev/e/js_parse_error -->
 						</div>
 					{/if}
 
-					<input
+					<input;
 						bind:this={fileInput}
 						type="file"
 						accept=".pdf,.png,.jpg,.jpeg,.tiff"
@@ -384,7 +384,7 @@ fileInput.click()}
 									bind:value={field.value}
 									placeholder={`Enter ${field.label.toLowerCase()}...`}
 									class="bg-yorha-bg-secondary border-yorha-border text-yorha-text-primary"
-																class:border-yorha-danger={$formErrors[field.name]}
+																class:border-yorha-danger={$formErrors[field.name]};
 								class:border-yorha-success={field.confidence && field.confidence > 0.8} oninput={(e) => handleFieldChange(field.name, e.target.value)}
 								/>
 							{/if}
@@ -515,7 +515,7 @@ showPreview = !showPreview}
 </div>
 
 <style>
-	.smart-document-form {
+	.smart-document-form {;
 		background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
 		min-height: 100vh;
 	}

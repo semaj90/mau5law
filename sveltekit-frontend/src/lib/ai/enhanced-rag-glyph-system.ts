@@ -137,7 +137,7 @@ class EnhancedRAGGlyphSystem {
    * Main RAG pipeline: Query → Glyph Retrieval → Context Synthesis → Enhanced Response
    */
   async generateWithGlyphRAG(
-    query: string,
+    query: string,;
     options: {
       max_glyphs?: number;
       force_lod_level?: string;
@@ -232,7 +232,7 @@ class EnhancedRAGGlyphSystem {
       const totalPipelineTime = Date.now() - startTime;
 
       const glyphRAGResponse: GlyphRAGResponse = {
-        response: optimizedResponse.text,
+        response: optimizedResponse.text,;
         confidence: optimizedResponse.confidence,
         processing_time: totalPipelineTime,
         glyph_context: relevantGlyphs,
@@ -263,7 +263,7 @@ class EnhancedRAGGlyphSystem {
 
       // Return fallback response with error information;
       return {
-        response: `I encountered an error while processing your query: ${error.message}. Please try rephrasing your question.`,
+        response: `I encountered an error while processing your query: ${error.message}. Please try rephrasing your question.`,;
         confidence: 0.1,
         processing_time: Date.now() - startTime,
         glyph_context: [],
@@ -630,7 +630,7 @@ class EnhancedRAGGlyphSystem {
       // Use the existing Ollama service for response generation;
       const response = await ollamaService.generate(enhancedPrompt, {
         system: this.buildSystemPrompt(queryAnalysis, optimization),
-        options: {
+        options: {;
           temperature: this.getTemperatureForOptimization(optimization),
           num_predict: Math.min(2048, queryAnalysis.predicted_response_length * 2),
           top_k: optimization === 'creativity' ? 40 : 20,
@@ -640,7 +640,7 @@ class EnhancedRAGGlyphSystem {
 
       if (response.response) {
         return {
-          text: response.response,
+          text: response.response,;
           confidence: 0.85, // Would calculate based on response characteristics
           semantic_accuracy: 0.87 // Would calculate based on context alignment
         };
@@ -653,7 +653,7 @@ class EnhancedRAGGlyphSystem {
 
       // Fallback response based on glyph context;
       return {
-        text: 'I have relevant context from compressed glyphs, but encountered an issue generating a complete response. Please try rephrasing your question.',
+        text: 'I have relevant context from compressed glyphs, but encountered an issue generating a complete response. Please try rephrasing your question.',;
         confidence: 0.3,
         semantic_accuracy: 0.4
       };
@@ -974,7 +974,7 @@ class GlyphVisualGenerator {
       const angle = (index / allNodes.size) * 2 * Math.PI;
       const radius = 100;
       nodePositions.set(node, {
-        x: width / 2 + Math.cos(angle) * radius,
+        x: width / 2 + Math.cos(angle) * radius,;
         y: height / 2 + Math.sin(angle) * radius
       });
     });
@@ -1077,7 +1077,7 @@ class GlyphPredictiveAnalyzer {
   async generateInsights(
     query: string,
     glyphs: GlyphContext[],
-    synthesizedContext: any,
+    synthesizedContext: any,;
     response: any;
   ): Promise<string[]> {
     const insights = [];
@@ -1200,7 +1200,7 @@ class GlyphResponseOptimizer {
     }
 
     return {
-      text: optimizedText,
+      text: optimizedText,;
       confidence: Math.min(1.0, llmResponse.confidence * 1.1),
       semantic_accuracy: this.calculateSemanticAccuracy(optimizedText, synthesizedContext)
     };

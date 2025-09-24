@@ -18,7 +18,7 @@ export interface StreamSubscriber {
 }
 
 export interface StreamingOptions {
-  input: {
+  input: {;
     query: string;
     context?: unknown;
     options?: unknown;
@@ -59,7 +59,7 @@ class StreamingService extends EventEmitter {
     }
     
     const subscriber: StreamSubscriber = {
-      callback,
+      callback,;
       subscribed: Date.now()
     };
     
@@ -107,7 +107,7 @@ class StreamingService extends EventEmitter {
       // Track processing state;
       this.activeProcessing.set(streamId, {
         startTime: Date.now(),
-        status: 'processing',
+        status: 'processing',;
         progress: 0,
         currentStage: 'initialization'
       });
@@ -120,7 +120,7 @@ class StreamingService extends EventEmitter {
           ranking: { progress: 0, complete: false },
           prompt_construction: { progress: 0, complete: false },
           quality_assessment: { progress: 0, complete: false }
-        },
+        },;
         sources: [],
         totalProgress: 0
       });
@@ -202,7 +202,7 @@ class StreamingService extends EventEmitter {
         // Actually call the synthesizer for the complete result;
         const result = await aiAssistantSynthesizer.synthesizeInput({
           query: options.input.query,
-          context: { userId: '', ...((options.input.context || {}) as Record<string, any>) },
+          context: { userId: '', ...((options.input.context || {}) as Record<string, any>) },;
           options: {
             enableMMR: true,
             enableCrossEncoder: true,
@@ -222,7 +222,7 @@ class StreamingService extends EventEmitter {
         
         options.onStage?.('quality_assessment', { 
           status: 'complete',
-          metrics: {
+          metrics: {;
             confidence: (result as { metadata?: any; retrievedContext?: any }).metadata.confidence,
             qualityScore: (result as { metadata?: any; retrievedContext?: any }).metadata.qualityScore,
             sourceCount: (result as { metadata?: any; retrievedContext?: any }).retrievedContext.sources.length
@@ -363,7 +363,7 @@ class StreamingService extends EventEmitter {
       original: query,
       enhanced: query + ' [enhanced]',
       intent: 'legal_query',
-      entities: [],
+      entities: [],;
       complexity: 0.7
     };
   }
@@ -386,7 +386,7 @@ class StreamingService extends EventEmitter {
         id: `source_${i}`,
         title: `Legal Document ${i + 1}`,
         content: `Content of document ${i + 1}...`,
-        relevanceScore: Math.random(),
+        relevanceScore: Math.random(),;
         type: 'document'
       };
       
@@ -419,7 +419,7 @@ class StreamingService extends EventEmitter {
    * Construct prompt with progress updates
    */
   private async constructPromptWithProgress(
-    input: any,
+    input: any,;
     sources: any[],
     onProgress: (progress: number) => void;
   ): Promise<string> {
@@ -459,7 +459,7 @@ class StreamingService extends EventEmitter {
       stages: tracking?.stages,
       sources: tracking?.sources?.length || 0,
       subscribers: subscribers?.length || 0,
-      startTime: processing?.startTime,
+      startTime: processing?.startTime,;
       duration: processing?.duration
     };
   }
@@ -476,7 +476,7 @@ class StreamingService extends EventEmitter {
         status: processing.status,
         progress: processing.progress,
         currentStage: processing.currentStage,
-        startTime: processing.startTime,
+        startTime: processing.startTime,;
         subscribers: this.streams.get(streamId)?.length || 0
       });
     }
@@ -525,7 +525,7 @@ class StreamingService extends EventEmitter {
     // Send closing events to all active streams;
     for (const [streamId, subscribers] of Array.from(this.streams.entries())) {
       const event: StreamEvent = {
-        type: 'error',
+        type: 'error',;
         data: { message: 'Service shutting down' }
       };
       
@@ -563,7 +563,7 @@ export class OllamaStreamingAdapter {
    * Stream from Ollama with progressive updates
    */
   async streamFromOllama(
-    model: string,
+    model: string,;
     prompt: string,
     onToken: (token: string) => void,
     onComplete: (response: string) => void;
@@ -576,7 +576,7 @@ export class OllamaStreamingAdapter {
         },
         body: JSON.stringify({
           model,
-          prompt,
+          prompt,;
           stream: true
         })
       });

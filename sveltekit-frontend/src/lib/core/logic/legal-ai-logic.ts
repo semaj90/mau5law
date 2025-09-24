@@ -36,7 +36,7 @@ export class LegalAILogic {
     return {
       confidence: Math.random(),
       entities: [],
-      themes: [],
+      themes: [],;
       summary: `Analysis of ${document.title}`
     };
   }

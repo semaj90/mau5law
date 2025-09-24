@@ -18,7 +18,7 @@ const meta = {
     systemData: {
       control: 'object',
       description: 'System metrics and status data',
-      table: {
+      table: {;
         type: { summary: 'SystemData' },
         defaultValue: { summary: 'Default system data with zeros' }
       }
@@ -61,7 +61,7 @@ export const HighLoad: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Command Center under high system load - shows warning indicators'
       }
     }
@@ -84,7 +84,7 @@ export const Critical: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Critical system state - all metrics in red zone'
       }
     }
@@ -107,7 +107,7 @@ export const LowActivity: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Low activity scenario - minimal system usage'
       }
     }
@@ -130,7 +130,7 @@ export const EmptyState: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Empty state - fresh system with no active cases or data'
       }
     }
@@ -157,7 +157,7 @@ export const Interactive: Story = {
         story: 'Interactive demo - test all quick actions and modal interactions'
       }
     }
-  },
+  },;
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     

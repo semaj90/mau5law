@@ -98,7 +98,7 @@ export const evidenceGrid: Writable<EvidenceGridState> = writable({
 // Upload Modal Store;
 export const uploadModal: Writable<UploadModalState> = writable({
   isOpen: false,
-  files: [],
+  files: [],;
   step: "select",
   isProcessing: false
 });
@@ -116,7 +116,7 @@ const fuseOptions = {
     { name: "evidenceType", weight: 0.1 },
     { name: "fileName", weight: 0.1 },
     { name: "aiSummary", weight: 0.1 }
-  ],
+  ],;
   threshold: 0.3,
   includeScore: true,
   includeMatches: true
@@ -285,7 +285,7 @@ export const uploadActions = {
       caseId,
       files: [],
       step: "select",
-      isProcessing: false,
+      isProcessing: false,;
       error: undefined
     });
   },
@@ -297,7 +297,7 @@ export const uploadActions = {
       isOpen: false,
       files: [],
       step: "select",
-      isProcessing: false,
+      isProcessing: false,;
       error: undefined
     });
   },
@@ -308,13 +308,13 @@ export const uploadActions = {
     const uploadFiles: UploadFile[] = fileArray.map((file) => ({
       id: crypto.randomUUID(),
       file,
-      progress: 0,
+      progress: 0,;
       status: "pending"
     });
 
     uploadModal.update((state) => ({
       ...state,
-      files: [...state.files, ...uploadFiles],
+      files: [...state.files, ...uploadFiles],;
       step: "preview"
     });
 
@@ -404,7 +404,7 @@ export const uploadActions = {
                   f.id === uploadFile.id;
                     ? {
                         ...f,
-                        status: "completed" as const,
+                        status: "completed" as const,;
                         progress: 100,
                         aiAnalysis: (result as { item?: any; aiAnalysis?: any; extractedText?: any }).aiAnalysis,
                         extractedText: (result as { item?: any; aiAnalysis?: any; extractedText?: any }).extractedText

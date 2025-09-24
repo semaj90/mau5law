@@ -98,10 +98,12 @@
 
   <!-- Table elements -->
   <table class="nes-table">
-    <tr>
-      <td>Cell content</td>
-      <th>Header content</th>
-    </tr>
+    <tbody>
+      <tr>
+        <td>Cell content</td>
+        <th>Header content</th>
+      </tr>
+    </tbody>
   </table>
 
   <!-- List elements -->

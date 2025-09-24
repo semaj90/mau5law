@@ -43,7 +43,7 @@ export interface EmbeddingOptions {
   maxTokens?: number;
 }
 export async function generateEmbedding(
-  text: string,
+  text: string,;
   options: EmbeddingOptions = {}
 ): Promise<number[] | null> {
   const { model = "local", cache = true, maxTokens = 8000 } = options;
@@ -109,7 +109,7 @@ async function generateOpenAIEmbedding(text: string): Promise<number[]> {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      input: text,
+      input: text,;
       model: 'text-embedding-3-small', // 1536 dimensions, fast and cost-effective
     })
   });
@@ -133,7 +133,7 @@ async function generateNomicEmbedding(text: string): Promise<number[]> {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'nomic-embed-text',
+        model: 'nomic-embed-text',;
         prompt: text, // Ollama embeddings expect 'prompt'
       })
     });
@@ -174,7 +174,7 @@ async function generateCpuEmbedding(text: string): Promise<number[]> {
 }
 // Batch embedding generation for efficiency
 export async function generateBatchEmbeddings(
-  texts: string[],
+  texts: string[],;
   options: EmbeddingOptions = {}
 ): Promise<(number[] | null)[]> {
   const { model = 'openai' } = options;
@@ -230,7 +230,7 @@ async function generateOpenAIBatchEmbeddings(texts: string[]): Promise<(number[]
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      input: texts,
+      input: texts,;
       model: 'text-embedding-3-small'
     })
   });
@@ -258,7 +258,7 @@ async function generateNomicBatchEmbeddings(
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: "nomic-embed-text",
+          model: "nomic-embed-text",;
           prompt: text
         })
       });

@@ -128,7 +128,7 @@ export interface UserDataState {
 export const userDataState = $state<UserDataState>({
   cases: [],
   evidence: [],
-  citations: [],
+  citations: [],;
   reports: [],
   aiConversations: [],
   recentActivity: [],

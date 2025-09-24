@@ -12,13 +12,15 @@
   let loading = $state(false);
   let error = $state('');
 
-  $effect(async () => {
-    try {
+  $effect(() => {
+    (async () => {
+try {
       models = await getAvailableModels();
       if (models.length > 0) selectedModel = models[0];
     } catch (e) {
       error = 'Failed to load models.';
   }
+    })();
   });
 
   async function handleInference() {
@@ -65,7 +67,7 @@
 
 <style>
   /* @unocss-include */
-.llm-inference-container {
+.llm-inference-container {;
   max-width: 500px;
   margin: 2rem auto;
   padding: 2rem;
@@ -105,7 +107,7 @@ select, textarea {
   background: #b0c4de;
   cursor: not-allowed;
 }
-.run-btn: not(:disabled):hover {
+.run-btn:not(:disabled):hover {
   background: #0056b3;
 }
 .result {

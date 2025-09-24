@@ -44,10 +44,10 @@
       // Add enhanced processing metadata to form
       if (preserveExistingFlow && (ocrResults || legalAnalysis || semanticEmbeddings)) {
         formData.set('enhancedAnalysis', JSON.stringify({
-          ocr: ocrResults,
-          legal: legalAnalysis,
+          ocr: ocrResults,;
+          legal: legalAnalysis,;
           semantic: semanticEmbeddings,
-          preserveFlow: true
+          preserveFlow: true;
         }));
       }
     },
@@ -150,8 +150,8 @@
         const formData = new FormData();
         formData.append('file', file);
         const ocrResponse = await fetch('/api/ocr/extract', {
-          method: 'POST',
-          body: formData
+          method: 'POST',;
+          body: formData;
         });
         if (ocrResponse.ok) {
           ocrResults = await ocrResponse.json();
@@ -163,13 +163,13 @@
         processingStage = 'Running LegalBERT analysis...';
         const textContent = ocrResults?.text || await file.text();
         const legalResponse = await fetch('/api/ai/legal-analysis', {
-          method: 'POST',
+          method: 'POST',;
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
+          body: JSON.stringify({ ;
             text: textContent,
             includeEmbeddings: true,
             includeConcepts: true,
-            includeClassification: true
+            includeClassification: true;
           })
         });
         if (legalResponse.ok) {
@@ -181,9 +181,9 @@
       if (legalAnalysis) {
         processingStage = 'Generating semantic embeddings...';
         const ragResponse = await fetch('/api/semantic-analysis', {
-          method: 'POST',
-          body: new URLSearchParams({
-            text: ocrResults?.text || await file.text()
+          method: 'POST',;
+          body: new URLSearchParams({;
+            text: ocrResults?.text || await file.text();
           })
         });
         if (ragResponse.ok) {
@@ -210,16 +210,16 @@
         documentId: uploadResult.documentId,
         caseId: $form.caseId,
         filename: selectedFile?.name,
-        preserveEnhancedFlow: preserveExistingFlow,
+        preserveEnhancedFlow: preserveExistingFlow,;
         analysis: {
           ocr: ocrResults,
           legal: legalAnalysis,
-          semantic: semanticEmbeddings,
+          semantic: semanticEmbeddings,;
           metadata: {
             title: $form.title,
             evidenceType: $form.evidenceType,
-            description: $form.description,
-            tags: $form.tags?.split.map(tag => tag.trim()).filter(Boolean),
+            description: $form.description,;
+            tags: $form.tags?.split.map(tag => tag.trim()).filter(Boolean),;
             flags: {
               enableAiAnalysis: $form.enableAiAnalysis,
               enableOcr: $form.enableOcr,
@@ -236,9 +236,9 @@
       // 1. Your enhanced semantic architecture Go service
       processingPromises.push(
         fetch('http://localhost:8095/api/intelligent-todos', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(webhookPayload)
+          method: 'POST',;
+          headers: { 'Content-Type': 'application/json' },;
+          body: JSON.stringify(webhookPayload);
         }).catch(error => console.warn('Semantic architecture processing failed:', error))
       );
 
@@ -246,14 +246,14 @@
       if (uploadResult.documentId) {
         processingPromises.push(
           fetch('http://localhost:8094/api/rag/document-ingest', {
-            method: 'POST',
+            method: 'POST',;
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               documentId: uploadResult.documentId,
               caseId: $form.caseId,
-              text: ocrResults?.text,
-              embeddings: semanticEmbeddings?.data?.embeddings,
-              metadata: webhookPayload.analysis.metadata
+              text: ocrResults?.text,;
+              embeddings: semanticEmbeddings?.data?.embeddings,;
+              metadata: webhookPayload.analysis.metadata;
             })
           }).catch(error => console.warn('RAG ingestion failed:', error))
         );
@@ -263,13 +263,13 @@
       if (legalAnalysis) {
         processingPromises.push(
           fetch('/api/webhooks/legal-processing', {
-            method: 'POST',
+            method: 'POST',;
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               event: 'legal_analysis_complete',
-              documentId: uploadResult.documentId,
+              documentId: uploadResult.documentId,;
               analysis: legalAnalysis,
-              preserveFlow: true
+              preserveFlow: true;
             })
           }).catch(error => console.warn('Legal processing webhook failed:', error))
         );
@@ -364,7 +364,7 @@
       <input
         id="caseId"
         name="caseId"
-        type="text"
+        type="text";
         bind:value={$form.caseId}
         placeholder="Enter case ID"
         required
@@ -760,7 +760,7 @@
 
 <style>
   /* bits-ui + nes.css integration styles */
-  .enhanced-legal-upload {
+  .enhanced-legal-upload {;
     max-width: 900px;
     margin: 2rem auto;
     font-family: 'Press Start 2P', monospace;

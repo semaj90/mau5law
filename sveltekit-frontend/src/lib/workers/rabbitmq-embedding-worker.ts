@@ -181,7 +181,7 @@ class RabbitMQEmbeddingWorker {
       console.error(`❌ Embedding job ${message.id} failed in ${processingTime}ms:`, error);
 
       return {
-        success: false,
+        success: false,;
         error: error instanceof Error ? error.message: String(error),
         processingTime
       };
@@ -230,7 +230,7 @@ class RabbitMQEmbeddingWorker {
               console.error(`❌ Entity ${batch[index].entity_id} failed:`, (result as { status?: any; value?: any; reason?: any }).reason);
               return {
                 success: false,
-                entity_id: batch[index].entity_id,
+                entity_id: batch[index].entity_id,;
                 error:
                   (result as { status?: any; value?: any; reason?: any }).reason instanceof Error ? (result as { status?: any; value?: any; reason?: any }).reason.message: String((result as { status?: any; value?: any; reason?: any }).reason)
               };
@@ -250,7 +250,7 @@ class RabbitMQEmbeddingWorker {
           // Add failure entries for the entire batch;
           results.push(...batch.map((entity) => ({
               success: false,
-              entity_id: entity.entity_id,
+              entity_id: entity.entity_id,;
               error: 'Batch processing failed'
             })
           );
@@ -272,7 +272,7 @@ class RabbitMQEmbeddingWorker {
         success: successCount > 0,
         result: {
           total: results.length,
-          successful: successCount,
+          successful: successCount,;
           failed: failCount,
           results,
           averageTimePerEntity: results.length > 0 ? processingTime / results.length: 0
@@ -284,7 +284,7 @@ class RabbitMQEmbeddingWorker {
       console.error(`❌ Bulk embedding job ${message.id} failed in ${processingTime}ms:`, error);
 
       return {
-        success: false,
+        success: false,;
         error: error instanceof Error ? error.message: String(error),
         processingTime
       };
@@ -336,7 +336,7 @@ class RabbitMQEmbeddingWorker {
     const updateData: any = {};
     const columnMap = {
       content: 'embedding',
-      title: 'title_embedding',
+      title: 'title_embedding',;
       summary: 'summary_embedding'
     };
 
@@ -379,7 +379,7 @@ class RabbitMQEmbeddingWorker {
       embedding_type,
       dimensions: embedding.length,
       text_length: textToEmbed.length,
-      updated: !!updatedDoc,
+      updated: !!updatedDoc,;
       cached: true
     };
   }
@@ -453,7 +453,7 @@ class RabbitMQEmbeddingWorker {
       entity_type: 'case',
       dimensions: embedding.length,
       text_length: textToEmbed.length,
-      updated: !!updatedCase,
+      updated: !!updatedCase,;
       cached: true
     };
   }
@@ -504,7 +504,7 @@ class RabbitMQEmbeddingWorker {
       entity_id,
       entity_type: 'chunk',
       dimensions: embedding.length,
-      text_length: textToEmbed.length,
+      text_length: textToEmbed.length,;
       updated: !!updatedChunk
     };
   }
@@ -545,7 +545,7 @@ class RabbitMQEmbeddingWorker {
     } catch (error) {
       return {
         success: false,
-        entity_id: entity.entity_id,
+        entity_id: entity.entity_id,;
         error: error instanceof Error ? error.message: String(error)
       };
     }
@@ -602,7 +602,7 @@ class RabbitMQEmbeddingWorker {
         rabbitmq_connected: rabbitHealth.connected,
         processed_jobs: stats.processedJobs,
         failed_jobs: stats.failedJobs,
-        success_rate: stats.successRate,
+        success_rate: stats.successRate,;
         uptime: stats.uptime
       }
     };

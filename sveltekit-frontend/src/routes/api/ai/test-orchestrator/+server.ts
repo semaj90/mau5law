@@ -3,47 +3,47 @@
  * Provides endpoints to test and verify the orchestrator bridge functionality
  */
 
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
 import { 
   testOrchestratorIntegration, 
   quickHealthCheck, 
   testSpecificOrchestrator 
-} from '$lib/server/ai/orchestrator-test.js';
-import { llmOrchestratorBridge } from '$lib/server/ai/llm-orchestrator-bridge.js';
+} from '$lib/server/ai/orchestrator-test.js'
+import { llmOrchestratorBridge } from '$lib/server/ai/llm-orchestrator-bridge.js'
 
-// GET - Quick health check;
+// GET - Quick health check
 export const GET: RequestHandler = async ({ url }) => {
-  const testType = url.searchParams.get('test');
-  const orchestrator = url.searchParams.get('orchestrator') as 'server' | 'client' | 'mcp' | null;
-  const content = url.searchParams.get('content') || 'Test message';
+  const testType = url.searchParams.get('test')
+  const orchestrator = url.searchParams.get('orchestrator') as 'server' | 'client' | 'mcp' | null
+  const content = url.searchParams.get('content') || 'Test message'
 
   try {
     if (testType === 'full') {
       // Run full integration test suite
-      const testResults = await testOrchestratorIntegration();
+      const testResults = await testOrchestratorIntegration()
       return json({
         type: 'full_integration_test',
         ...testResults,
         timestamp: new Date().toISOString()
-      });
+      })
     }
 
     if (testType === 'specific' && orchestrator) {
       // Test specific orchestrator
-      const result = await testSpecificOrchestrator(orchestrator, content);
+      const result = await testSpecificOrchestrator(orchestrator, content)
       return json({
         type: 'specific_orchestrator_test',
         orchestrator,
         ...result,
         timestamp: new Date().toISOString()
-      });
+      })
     }
 
     // Default: Quick health check
-    const healthResult = await quickHealthCheck();
-    const metrics = llmOrchestratorBridge.getPerformanceMetrics();
-    const activeRequests = llmOrchestratorBridge.getActiveRequests();
+    const healthResult = await quickHealthCheck()
+    const metrics = llmOrchestratorBridge.getPerformanceMetrics()
+    const activeRequests = llmOrchestratorBridge.getActiveRequests()
 
     return json({
       type: 'health_check',
@@ -63,24 +63,24 @@ export const GET: RequestHandler = async ({ url }) => {
         specificTest: '/api/ai/test-orchestrator?test=specific&orchestrator=server&content=Hello',
         healthCheck: '/api/ai/test-orchestrator'
       }
-    });
+    })
 
   } catch (error) {
-    return json();
+    return json()
       {
         type: 'error',
         error: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString()
       },
       { status: 500 }
-    );
+    )
   }
-};
+}
 
-// POST - Run custom test with specific parameters;
+// POST - Run custom test with specific parameters
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const testRequest = await request.json();
+    const testRequest = await request.json()
     
     const {
       type = 'chat',
@@ -89,9 +89,9 @@ export const POST: RequestHandler = async ({ request }) => {
       priority = 'normal',
       temperature = 0.3,
       maxTokens = 200
-    } = testRequest;
+    } = testRequest
 
-    // Create test request for the bridge;
+    // Create test request for the bridge
     const bridgeRequest = {
       id: `custom-test-${Date.now()}`,
       type,
@@ -113,11 +113,11 @@ export const POST: RequestHandler = async ({ request }) => {
         source: 'custom_test_api',
         timestamp: Date.now()
       }
-    };
+    }
 
-    const startTime = Date.now();
-    const result = await llmOrchestratorBridge.processRequest(bridgeRequest);
-    const apiLatency = Date.now() - startTime;
+    const startTime = Date.now()
+    const result = await llmOrchestratorBridge.processRequest(bridgeRequest)
+    const apiLatency = Date.now() - startTime
 
     return json({
       type: 'custom_test',
@@ -144,77 +144,77 @@ export const POST: RequestHandler = async ({ request }) => {
         recommendedOptimizations: getOptimizationRecommendations(result)
       },
       timestamp: new Date().toISOString()
-    });
+    })
 
   } catch (error) {
-    return json();
+    return json()
       {
         type: 'custom_test_error',
         error: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString()
       },
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 // Helper functions
 
 function getRoutingReason(orchestratorUsed: string, taskType: string, requestedOrchestrator: string): string {
   if (requestedOrchestrator !== 'auto') {
-    return `Explicitly requested ${requestedOrchestrator} orchestrator`;
+    return `Explicitly requested ${requestedOrchestrator} orchestrator`
   }
 
   switch (orchestratorUsed) {
     case 'server':
-      return `Server orchestrator chosen for ${taskType} - optimal for complex processing`;
+      return `Server orchestrator chosen for ${taskType} - optimal for complex processing`
     case 'client':
-      return `Client orchestrator chosen for ${taskType} - optimal for low latency`;
+      return `Client orchestrator chosen for ${taskType} - optimal for low latency`
     case 'mcp':
-      return `MCP multi-core chosen for ${taskType} - optimal for parallel processing`;
+      return `MCP multi-core chosen for ${taskType} - optimal for parallel processing`
     case 'hybrid':
-      return `Hybrid approach used for ${taskType} - combining multiple orchestrators`;
+      return `Hybrid approach used for ${taskType} - combining multiple orchestrators`
     default:
-      return `Routed to ${orchestratorUsed} orchestrator`;
+      return `Routed to ${orchestratorUsed} orchestrator`
   }
 }
 
 function getPerformanceGrade(latency: number): string {
-  if (latency < 100) return 'A+ (Excellent)';
-  if (latency < 300) return 'A (Very Good)';
-  if (latency < 500) return 'B (Good)';
-  if (latency < 1000) return 'C (Fair)';
-  if (latency < 2000) return 'D (Poor)';
-  return 'F (Very Poor)';
+  if (latency < 100) return 'A+ (Excellent)'
+  if (latency < 300) return 'A (Very Good)'
+  if (latency < 500) return 'B (Good)'
+  if (latency < 1000) return 'C (Fair)'
+  if (latency < 2000) return 'D (Poor)'
+  return 'F (Very Poor)'
 }
 
 function getOptimizationRecommendations(result: any): string[] {
-  const recommendations: string[] = [];
+  const recommendations: string[] = []
   
   if ((result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).executionMetrics.totalLatency > 1000) {
-    recommendations.push('Consider using client-side orchestrator for faster responses');
+    recommendations.push('Consider using client-side orchestrator for faster responses')
   }
   
   if ((result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).executionMetrics.cacheHitRate === 0) {
-    recommendations.push('Enable caching to improve repeat query performance');
+    recommendations.push('Enable caching to improve repeat query performance')
   }
   
   if (!(result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).executionMetrics.gpuAccelerated && (result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).orchestratorUsed === 'server') {
-    recommendations.push('Enable GPU acceleration for better performance');
+    recommendations.push('Enable GPU acceleration for better performance')
   }
   
   if ((result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).confidence && (result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).confidence < 0.7) {
-    recommendations.push('Consider using server orchestrator for higher quality responses');
+    recommendations.push('Consider using server orchestrator for higher quality responses')
   }
   
   if ((result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).executionMetrics.totalLatency < 50) {
-    recommendations.push('Excellent performance! Current configuration is optimal');
+    recommendations.push('Excellent performance! Current configuration is optimal')
   }
   
-  return recommendations.length > 0 ? recommendations : ['Performance is good with current configuration'];
+  return recommendations.length > 0 ? recommendations : ['Performance is good with current configuration']
 }
 
-// OPTIONS handler for CORS;
+// OPTIONS handler for CORS
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {
     status: 200,
@@ -223,5 +223,5 @@ export const OPTIONS: RequestHandler = async () => {
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization'
     }
-  });
-};
+  })
+}

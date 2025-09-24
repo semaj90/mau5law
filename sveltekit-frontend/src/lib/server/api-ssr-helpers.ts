@@ -16,7 +16,7 @@ import { cognitiveCache } from '../services/cognitive-cache-integration.js';
 export interface SSRResponse<T = any> {
   success: boolean;
   data: T;
-  meta: {
+  meta: {;
     timestamp: string;
     cached: boolean;
     source: 'ssr' | 'api';
@@ -63,7 +63,7 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
       const gpuResult = await gpuProcessJsonb({
         items: [data],
         operation: 'serialize',
-        priority: 'high',
+        priority: 'high',;
         cache: !!options?.cacheKey
       });
 
@@ -85,7 +85,7 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
     data: sanitizedData,
     meta: {
       timestamp: new Date().toISOString(),
-      cached: options?.cached ?? false,
+      cached: options?.cached ?? false,;
       source: 'ssr'
     }
   };
@@ -111,7 +111,7 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
   }
 
   return new Response(serializedResponse, {
-    status: options?.status ?? 200,
+    status: options?.status ?? 200,;
     headers: {
       'Content-Type': 'application/json',
       'Cache-Control': 'public, max-age=30',
@@ -131,7 +131,7 @@ export function createSSRErrorResponse(error: string, status: number = 500, data
     data: data ?? null,
     meta: {
       timestamp: new Date().toISOString(),
-      cached: false,
+      cached: false,;
       source: 'ssr'
     },
     error
@@ -180,7 +180,7 @@ export function sanitizeForSSR<T>(data: T): T {
  * Page data loader helper for Bits UI SSR
  */
 export async function loadWithSSR<T extends BitsUICompatibleData>(
-  loader: () => Promise<T>,
+  loader: () => Promise<T>,;
   fallback: T
 ): Promise<T> {
   try {
@@ -234,7 +234,7 @@ export function ssrErrorBoundary<T>(fn: () => Promise<T>, fallback: T): Promise<
  * Type-safe API response validator for Bits UI
  */
 export function validateSSRResponse<T>(
-  response: any,
+  response: any,;
   validator: (data: any) => data is T
 ): response is SSRResponse<T> {
   return (
@@ -333,7 +333,7 @@ export async function queryLegalDocumentsSSR(query: {
       null;
     const results = queryFn
       ? await queryFn('legal_documents', query, {
-          limit: options?.limit,
+          limit: options?.limit,;
           offset: options?.offset,
           orderBy: 'relevance',
           useGPU: options?.useGPU,
@@ -361,7 +361,7 @@ export async function queryLegalDocumentsSSR(query: {
  * Enhanced batch SSR requests with GPU acceleration
  */
 export async function batchSSRRequestsGPU<T extends Record<string, any>>(
-  requests: { [K in keyof T]: () => Promise<T[K]> },
+  requests: { [K in keyof T]: () => Promise<T[K]> },;
   options: {
     timeout?: number;
     gpuAccelerated?: boolean;
@@ -390,7 +390,7 @@ export async function batchSSRRequestsGPU<T extends Record<string, any>>(
             table: 'batch_requests',
             data: { key: String(key), requestFn: requestFn.toString() }
           })),
-          {
+          {;
             atomic: false,
             gpuSerialize: true,
             threadSafe
@@ -473,7 +473,7 @@ export async function getThreadSyncHealth(): Promise<any> {
 
     return {
       postgres: postgresHealth,
-      cognitive_cache: cacheStats,
+      cognitive_cache: cacheStats,;
       serializer: serializerStats,
       gpu_coordinator: gpuHealth,
       overall_status: overallStatus
@@ -482,7 +482,7 @@ export async function getThreadSyncHealth(): Promise<any> {
     console.error('Health check failed:', error);
     return {
       postgres: { connected: false },
-      cognitive_cache: { threadSafe: false },
+      cognitive_cache: { threadSafe: false },;
       serializer: { activeWorkers: 0 },
       gpu_coordinator: { gpuAvailable: false },
       overall_status: 'unhealthy'

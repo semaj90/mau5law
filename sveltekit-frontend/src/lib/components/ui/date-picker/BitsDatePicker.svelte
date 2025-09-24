@@ -39,22 +39,22 @@ https://svelte.dev/e/expected_token -->
     showTime = false,
     format = showTime ? 'MMM dd, yyyy HH:mm' : 'MMM dd, yyyy',
     class: className = '',
-    onValueChange
+    onValueChange;
   }: DatePickerProps = $props();
 
   const variantStyles = {
-    default: 'border-yorha-border bg-yorha-bg-tertiary text-yorha-text-primary',
-    legal: 'border-yorha-primary/30 bg-yorha-bg-secondary text-yorha-text-primary ring-yorha-primary',
-    deadline: 'border-red-500/30 bg-red-500/5 text-yorha-text-primary ring-red-500/20'
+    default: 'border-yorha-border bg-yorha-bg-tertiary text-yorha-text-primary',;
+    legal: 'border-yorha-primary/30 bg-yorha-bg-secondary text-yorha-text-primary ring-yorha-primary',;
+    deadline: 'border-red-500/30 bg-red-500/5 text-yorha-text-primary ring-red-500/20';
   };
 
   // Format date for display
   let formattedDate = $derived(() => {
     if (!value) return placeholder;
     const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+      year: 'numeric',;
+      month: 'short',;
+      day: 'numeric';
     };
 
     if (showTime) {
@@ -234,7 +234,7 @@ https://svelte.dev/e/expected_token -->
 </div>
 
 <style>
-  :global(.legal-datepicker-container) {
+  :global(.legal-datepicker-container) {;
     --date-picker-bg: rgb(var(--yorha-bg-secondary));
     --date-picker-border: rgb(var(--yorha-border));
     --date-picker-text: rgb(var(--yorha-text-primary));

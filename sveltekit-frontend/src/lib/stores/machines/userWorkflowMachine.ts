@@ -161,7 +161,7 @@ export const userWorkflowMachine = createMachine({
               })
             },
             ADD_COLLABORATOR: {
-              actions: assign({
+              actions: assign({;
                 collaborators: ({ context, event }) => {
                   const exists = context.collaborators.some((c: any) => c.id === event.collaborator.id);
                   return exists ? context.collaborators: [...context.collaborators, event.collaborator];
@@ -200,7 +200,7 @@ export const userWorkflowMachine = createMachine({
                 }
               }
             },
-            stepCompleted: {
+            stepCompleted: {;
               always: [;
                 {
                   target: '#userWorkflow.authenticated.workflowCompleted',
@@ -217,7 +217,7 @@ export const userWorkflowMachine = createMachine({
                 },
                 {
                   target: 'executingStep',
-                  actions: assign({
+                  actions: assign({;
                     workflow: ({ context }) => ({
                       ...context.workflow,
                       currentStepIndex: context.workflow.currentStepIndex + 1
@@ -244,7 +244,7 @@ export const userWorkflowMachine = createMachine({
                     workflow: ({ context }) => ({
                       ...context.workflow,
                       currentStepIndex: Math.min(context.workflow.currentStepIndex + 1, context.workflow.totalSteps - 1)
-                    }),
+                    }),;
                     errors: [],
                     currentStep: ({ context }) => {
                       const nextIndex = Math.min(context.workflow.currentStepIndex + 1, context.workflow.totalSteps - 1);
@@ -259,7 +259,7 @@ export const userWorkflowMachine = createMachine({
                     workflow: ({ context }) => ({
                       ...context.workflow,
                       currentStepIndex: Math.max(context.workflow.currentStepIndex - 1, 0)
-                    }),
+                    }),;
                     errors: [],
                     currentStep: ({ context }) => {
                       const prevIndex = Math.max(context.workflow.currentStepIndex - 1, 0);
@@ -417,7 +417,7 @@ export const userWorkflowMachine = createMachine({
             notifications: [],
             currentStep: 'idle',
             progress: 0,
-            errors: [],
+            errors: [],;
             data: Record<string, any>
           })
         }
@@ -428,7 +428,7 @@ export const userWorkflowMachine = createMachine({
   // Machine options;
   actions: {
     // Custom actions can be defined here if needed
-  },
+  },;
   guards: {
     // Custom guards can be defined here if needed
   }

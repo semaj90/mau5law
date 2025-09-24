@@ -151,7 +151,7 @@ export const ragStateMachine = createMachine({
           actions: assign({
             query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
-            retryCount: 0,
+            retryCount: 0,;
             error: null
           })
         }

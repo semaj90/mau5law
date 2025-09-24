@@ -71,8 +71,8 @@
 
       // Dispatch state change event
       ondispatch?.({
-        state: currentState,
-        context: currentContext
+        state: currentState,;
+        context: currentContext;
       });
 
       // Dispatch specific events based on state
@@ -144,9 +144,9 @@
     
     // Send typing event to machine
     typingActor.send({
-      type: 'USER_STARTED_TYPING',
-      text: newText,
-      timestamp: Date.now()
+      type: 'USER_STARTED_TYPING',;
+      text: newText,;
+      timestamp: Date.now();
     });
 
     isTyping = true;
@@ -171,15 +171,15 @@
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
       // Ctrl+Enter or Cmd+Enter - submission
       typingActor.send({
-        type: 'USER_SUBMITTED',
-        text: text,
-        timestamp: Date.now()
+        type: 'USER_SUBMITTED',;
+        text: text,;
+        timestamp: Date.now();
       });
     } else if (event.key === 'Escape') {
       // Escape - clear
       typingActor.send({
-        type: 'USER_CLEARED',
-        timestamp: Date.now()
+        type: 'USER_CLEARED',;
+        timestamp: Date.now();
       });
     }
   }
@@ -202,9 +202,9 @@
       const newText = target.value || text;
       
       typingActor.send({
-        type: 'USER_STARTED_TYPING',
-        text: newText,
-        timestamp: Date.now()
+        type: 'USER_STARTED_TYPING',;
+        text: newText,;
+        timestamp: Date.now();
       });
     }, 0);
   }
@@ -214,8 +214,8 @@
    */
   function handleFocus() {
     typingActor.send({
-      type: 'USER_RETURNED',
-      timestamp: Date.now()
+      type: 'USER_RETURNED',;
+      timestamp: Date.now();
     });
   }
 
@@ -236,17 +236,17 @@
     typingTimeout = null;
 
     typingActor.send({
-      type: 'USER_STOPPED_TYPING',
-      text: currentText,
-      timestamp: Date.now()
+      type: 'USER_STOPPED_TYPING',;
+      text: currentText,;
+      timestamp: Date.now();
     });
 
     // Check if we should trigger contextual processing
     if (currentText.length > 50 && enableContextualPrompts) {
       setTimeout(() => {
         typingActor.send({
-          type: 'PROCESS_CONTEXT',
-          text: currentText
+          type: 'PROCESS_CONTEXT',;
+          text: currentText;
         });
       }, 1000);
     }
@@ -258,13 +258,13 @@
   function handleVisibilityChange() {
     if (document.hidden) {
       typingActor.send({
-        type: 'USER_INACTIVE',
-        timestamp: Date.now()
+        type: 'USER_INACTIVE',;
+        timestamp: Date.now();
       });
     } else {
       typingActor.send({
-        type: 'USER_RETURNED',
-        timestamp: Date.now()
+        type: 'USER_RETURNED',;
+        timestamp: Date.now();
       });
     }
   }
@@ -275,8 +275,8 @@
   function handleUserActivity() {
     if (currentState === 'user_inactive') {
       typingActor.send({
-        type: 'USER_RETURNED',
-        timestamp: Date.now()
+        type: 'USER_RETURNED',;
+        timestamp: Date.now();
       });
     }
   }
@@ -287,30 +287,30 @@
   function handleStateChange(state: TypingState, context: TypingContext) {
     // Dispatch contextual prompts
     if (state === 'waiting_user' && context.contextualPrompts.length > 0 && enableContextualPrompts) {
-      ondispatch?.({
+      ondispatch?.({;
         prompts: context.contextualPrompts,
-        context
+        context;
       });
     }
 
     // Dispatch analytics updates
     if (enableAnalytics && context.analytics) {
       ondispatch?.({
-        analytics: context.analytics
+        analytics: context.analytics;
       });
     }
 
     // Dispatch user behavior updates
     if (context.userBehavior) {
       ondispatch?.({
-        behavior: context.userBehavior
+        behavior: context.userBehavior;
       });
     }
 
     // Dispatch MCP worker status
     if (context.mcpWorkerStatus) {
       ondispatch?.({
-        status: context.mcpWorkerStatus
+        status: context.mcpWorkerStatus;
       });
     }
   }
@@ -367,8 +367,8 @@
    */
   export function triggerContextualProcessing() {
     typingActor.send({
-      type: 'PROCESS_CONTEXT',
-      text: text
+      type: 'PROCESS_CONTEXT',;
+      text: text;
     });
   }
 </script>

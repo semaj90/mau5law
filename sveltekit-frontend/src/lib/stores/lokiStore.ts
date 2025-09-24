@@ -19,7 +19,7 @@ async function initLoki(): Promise<any> {
 
     lokiDb = new Loki("canvas-cache.db", {
       autoload: true,
-      autoloadCallback: databaseInitialize,
+      autoloadCallback: databaseInitialize,;
       autosave: true,
       autosaveInterval: 5000
     } as any);
@@ -32,7 +32,7 @@ function databaseInitialize() {
   evidenceCollection = lokiDb.getCollection("evidence");
   if (!evidenceCollection) {
     evidenceCollection = lokiDb.addCollection("evidence", {
-      indices: ["id", "caseId", "type", "tags"],
+      indices: ["id", "caseId", "type", "tags"],;
       unique: ["id"]
     });
   }
@@ -40,7 +40,7 @@ function databaseInitialize() {
   canvasStateCollection = lokiDb.getCollection("canvasStates");
   if (!canvasStateCollection) {
     canvasStateCollection = lokiDb.addCollection("canvasStates", {
-      indices: ["reportId"],
+      indices: ["reportId"],;
       unique: ["reportId"]
     });
   }
@@ -48,7 +48,7 @@ function databaseInitialize() {
   notesCollection = lokiDb.getCollection("notes");
   if (!notesCollection) {
     notesCollection = lokiDb.addCollection("notes", {
-      indices: ["id", "reportId", "type", "tags"],
+      indices: ["id", "reportId", "type", "tags"],;
       unique: ["id"]
     });
   }
@@ -57,7 +57,7 @@ function databaseInitialize() {
 export const lokiStore = writable({
   initialized: false,
   evidence: [] as Evidence[],
-  canvasStates: [] as any[],
+  canvasStates: [] as any[],;
   notes: [] as any[]
 });
 
@@ -268,7 +268,7 @@ export const loki = {
     lokiStore.update((state) => ({
       ...state,
       evidence: [],
-      canvasStates: [],
+      canvasStates: [],;
       notes: []
     });
   }

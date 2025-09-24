@@ -15,7 +15,7 @@
   		interactive = false,
   		children,
   		class: className = '',
-  		...props
+  		...props;
   	}: Props = $props();
 
   	let cardClasses = $derived([
@@ -37,7 +37,7 @@
 /* Base styles from UnoCSS shortcuts */ position: relative;
 	}
 	
-	.yorha-card: :before {
+	.yorha-card::before {
 		content: '';
 		position: absolute;
 		top: 0;

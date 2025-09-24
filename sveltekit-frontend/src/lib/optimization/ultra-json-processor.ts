@@ -129,7 +129,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       stringify: (obj: any) => this.ultraFastStringify(obj),
       parseStream: (input: Uint8Array) => this.streamingParse(input),
       getMemoryUsage: () => process.memoryUsage().heapUsed,
-      optimize: () => this.optimizeParser(),
+      optimize: () => this.optimizeParser(),;
       dispose: () => this.dispose()
     };
 
@@ -352,7 +352,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       arrays,
       objects,
       strings,
-      numbers,
+      numbers,;
       complexity: (maxDepth * (objects + arrays)) / input.length,
       repetition
     };
@@ -548,7 +548,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       return {
         chunks: Array.isArray(result) ? result : [result],
         totalSize: (data as { length?: any }).length,
-        parseTime,
+        parseTime,;
         errors: []
       };
     } catch (error: any) {
@@ -556,7 +556,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       return {
         chunks: [],
         totalSize: (data as { length?: any }).length,
-        parseTime,
+        parseTime,;
         errors: [error instanceof Error ? error.message: String(error)]
       };
     }
@@ -589,7 +589,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
         email: `user${i}@example.com`,
         scores: Array.from({ length: 10 }, () => Math.random() * 100),
         metadata: {
-          created: new Date().toISOString(),
+          created: new Date().toISOString(),;
           tags: [`tag${i % 10}`, `category${i % 5}`]
           }); const settings = { theme: "dark", notifications: true }
         }
@@ -635,7 +635,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
         stringify: ourStringifyTime / iterations
       },
       speedup: {
-        parse: nativeParseTime / ourParseTime,
+        parse: nativeParseTime / ourParseTime,;
         stringify: nativeStringifyTime / ourStringifyTime
       }
     };
@@ -701,7 +701,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     return {
       isSimple: jsonString.length < 1000 && this.getObjectDepth(obj) < 3,
       hasRepeatingPatterns: this.detectRepeatingPatterns(jsonString),
-      depth: this.getObjectDepth(obj),
+      depth: this.getObjectDepth(obj),;
       size: jsonString.length
     };
   }

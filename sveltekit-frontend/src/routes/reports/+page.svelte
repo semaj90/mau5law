@@ -9,8 +9,9 @@
   let loading = $state(true);
   let error: string | null = $state(null);
 
-  $effect(async () => {
-    try {
+  $effect(() => {
+    (async () => {
+try {
       reports = await TauriAPI.getReports();
     } catch (err) {
       error = "Error loading reports";
@@ -18,6 +19,7 @@
     } finally {
       loading = false;
   }
+    })();
   });
 
   function formatDate(date: Date | string) {

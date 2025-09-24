@@ -14,7 +14,7 @@ const meta: any = {
         component: 'Enterprise-grade XState 5 AI Assistant Machine with full-stack legal AI integration, multi-protocol service support, and real-time capabilities'
       }
     }
-  },
+  },;
   tags: ['autodocs'],
   // Cast argTypes to any to suppress prop name validation (alignment not critical for current story functionality);
   argTypes: {
@@ -38,7 +38,7 @@ const meta: any = {
       control: 'select',
       options: ['http', 'grpc', 'quic', 'websocket'],
       description: 'Preferred communication protocol for AI services',
-      table: {
+      table: {;
         type: { summary: 'string' },
         defaultValue: { summary: 'http' }
       }
@@ -94,7 +94,7 @@ export const Default: Story = {
       },
       preferredProtocol: 'http',
       activeProtocol: 'http',
-      serviceLoadBalancer: {
+      serviceLoadBalancer: {;
         strategy: 'round_robin',
         currentIndex: 0
       },
@@ -115,13 +115,13 @@ export const Processing: Story = {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Analyze the contractual obligations in this employment agreement',
-      isProcessing: true,
+      isProcessing: true,;
       response: 'Analyzing legal document... Please wait.',
       conversationHistory: [;
         {
           id: '1',
           type: 'user',
-          content: 'Analyze the contractual obligations in this employment agreement',
+          content: 'Analyze the contractual obligations in this employment agreement',;
           timestamp: new Date(Date.now() - 5000)
         }
       ],
@@ -141,7 +141,7 @@ export const Processing: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'AI Assistant in processing state - actively analyzing legal documents'
       }
     }
@@ -154,13 +154,13 @@ export const StreamingMode: Story = {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'What are the key provisions in this merger agreement?',
-      isProcessing: true,
+      isProcessing: true,;
       response: 'Based on my analysis of the merger agreement, I can identify several key provisions:\n\n1. **Purchase Price and Payment Terms**: The agreement specifies...',
       conversationHistory: [;
         {
           id: '1',
           type: 'user',
-          content: 'What are the key provisions in this merger agreement?',
+          content: 'What are the key provisions in this merger agreement?',;
           timestamp: new Date(Date.now() - 10000)
         }
       ],
@@ -182,7 +182,7 @@ export const StreamingMode: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Streaming mode with real-time AI response generation and WebSocket communication'
       }
     }
@@ -195,13 +195,13 @@ export const MultiDocumentAnalysis: Story = {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Compare these three contracts for common risk factors',
-      isProcessing: true,
+      isProcessing: true,;
       response: 'Comparing 3 contracts for risk analysis...',
       conversationHistory: [;
         {
           id: '1',
           type: 'user',
-          content: 'Compare these three contracts for common risk factors',
+          content: 'Compare these three contracts for common risk factors',;
           timestamp: new Date(Date.now() - 15000)
         }
       ],
@@ -226,7 +226,7 @@ export const MultiDocumentAnalysis: Story = {
         },
         {
           id: 'doc-3',
-          filename: 'NDA_Template_2024.pdf',
+          filename: 'NDA_Template_2024.pdf',;
           title: 'NDA Template 2024',
           fileSize: 156672,
           extractedText: '',
@@ -255,7 +255,7 @@ export const MultiDocumentAnalysis: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Multi-document analysis with vector search and comparative risk assessment'
       }
     }
@@ -286,7 +286,7 @@ export const HighPerformanceMode: Story = {
           'gpu-compute': { status: 'healthy', latency: 8 }
         }
       },
-      serviceLoadBalancer: {
+      serviceLoadBalancer: {;
         strategy: 'least_latency',
         currentIndex: 0
       },
@@ -311,7 +311,7 @@ export const HighPerformanceMode: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'High-performance mode using QUIC protocol with GPU acceleration and load balancing'
       }
     }
@@ -324,7 +324,7 @@ export const ErrorRecovery: Story = {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Analyze this corrupted document',
-      isProcessing: false,
+      isProcessing: false,;
       response: '',
       conversationHistory: [;
         {
@@ -347,7 +347,7 @@ export const ErrorRecovery: Story = {
         }
       ],
       serviceHealth: {
-        overallHealth: 'degraded',
+        overallHealth: 'degraded',;
         services: {
           'enhanced-rag': { status: 'healthy', latency: 45 },
           'upload-service': { status: 'degraded', latency: 250 },
@@ -373,7 +373,7 @@ export const ErrorRecovery: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Error recovery state with circuit breaker patterns and service degradation handling'
       }
     }
@@ -386,7 +386,7 @@ export const CollaborativeMode: Story = {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Draft a motion for summary judgment based on these case files',
-      isProcessing: true,
+      isProcessing: true,;
       response: 'Analyzing case precedents and drafting motion...',
       conversationHistory: [;
         {
@@ -404,7 +404,7 @@ export const CollaborativeMode: Story = {
         {
           id: '3',
           type: 'assistant',
-          content: 'I have incorporated the Johnson v. Smith precedent into the analysis...',
+          content: 'I have incorporated the Johnson v. Smith precedent into the analysis...',;
           timestamp: new Date(Date.now() - 60000)
         }
       ],
@@ -441,7 +441,7 @@ export const CollaborativeMode: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Collaborative mode with multiple users working together on legal document analysis'
       }
     }
@@ -454,7 +454,7 @@ export const Context7Integration: Story = {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Help me implement a new Svelte 5 component for case management',
-      isProcessing: true,
+      isProcessing: true,;
       response: 'Analyzing your SvelteKit architecture and generating Context7-compliant component...',
       conversationHistory: [;
         {
@@ -469,7 +469,7 @@ export const Context7Integration: Story = {
         framework: 'SvelteKit 2',
         version: 'Svelte 5',
         libraries: ['bits-ui', 'melt-ui', 'shadcn-svelte'],
-        patterns: ['runes', 'type-safety', 'barrel-exports'],
+        patterns: ['runes', 'type-safety', 'barrel-exports'],;
         recommendations: [
           'Use $state() for reactive variables',
           'Implement proper TypeScript interfaces',
@@ -495,7 +495,7 @@ export const Context7Integration: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Context7 integration for intelligent code generation and framework-specific assistance'
       }
     }

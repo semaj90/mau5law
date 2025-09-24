@@ -42,7 +42,7 @@ interface RecentCase {
 export async function getRecentCases(limit: number = 5): Promise<RecentCase[]> {
   try {
     const response = await fetch(`/api/recommendations/recent-cases?limit=${limit}`, {
-      method: 'GET',
+      method: 'GET',;
       headers: {
         'Content-Type': 'application/json'
       }
@@ -74,7 +74,7 @@ export async function getRecentCases(limit: number = 5): Promise<RecentCase[]> {
         priority: 150,
         caseType: 'litigation',
         urgency: 'high',
-        glyphSignature: 'fb001',
+        glyphSignature: 'fb001',;
         metadata: {
           clientName: 'Sample Client',
           practiceArea: 'General Practice',
@@ -99,7 +99,7 @@ export async function updateCaseRecommendation(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
-      },
+      },;
       body: JSON.stringify({
         caseId,
         action
@@ -128,7 +128,7 @@ export async function searchCases(query: string, limit: number = 10): Promise<Re
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
-      },
+      },;
       body: JSON.stringify({
         query,
         limit
@@ -164,7 +164,7 @@ export async function getContextualRecommendations(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
-      },
+      },;
       body: JSON.stringify(context)
     });
 

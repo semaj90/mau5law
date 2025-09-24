@@ -38,7 +38,7 @@ export class LokiEvidenceService {
     return new Promise((resolve, reject) => {
       try {
         this.db = new Loki('evidence_db.json', {
-          adapter: new LokiIndexedAdapter('evidence_db'),
+          adapter: new LokiIndexedAdapter('evidence_db'),;
           autoload: true,
           autoloadCallback: () => {
             this.setupCollections();
@@ -62,7 +62,7 @@ export class LokiEvidenceService {
     this.evidenceCollection =
       (this.db.getCollection('evidence') as unknown as Collection<LokiEvidence>) ||;
       (this.db.addCollection('evidence', {
-        indices: ['id', 'caseId', 'type'],
+        indices: ['id', 'caseId', 'type'],;
         unique: ['id']
       }) as unknown as Collection<LokiEvidence>);
 
@@ -99,7 +99,7 @@ export class LokiEvidenceService {
         collectionName: 'evidence',
         recordId: evidence.id,
         data: evidence,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString(),;
         synced: false,
         retryCount: 0
       });
@@ -142,7 +142,7 @@ export class LokiEvidenceService {
         collectionName: 'evidence',
         recordId: evidenceId,
         data: changes,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString(),;
         synced: false,
         retryCount: 0
       });
@@ -176,7 +176,7 @@ export class LokiEvidenceService {
         type: 'DELETE',
         collectionName: 'evidence',
         recordId: evidenceId,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString(),;
         synced: false,
         retryCount: 0
       });
@@ -319,7 +319,7 @@ export class LokiEvidenceService {
       case 'CREATE':;
         await fetch('/api/evidence', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' },;
           body: JSON.stringify(data)
         });
         break;
@@ -327,7 +327,7 @@ export class LokiEvidenceService {
       case 'UPDATE':;
         await fetch(`/api/evidence/${recordId}`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' },;
           body: JSON.stringify(data)
         });
         break;

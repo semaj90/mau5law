@@ -131,9 +131,9 @@
             id: Date.now.toString(),
             role: 'assistant',
             content: streamingResponse,
-            timestamp: new Date(),
-            confidence: data.confidence,
-            analysis: currentAnalysis
+            timestamp: new Date(),;
+            confidence: data.confidence,;
+            analysis: currentAnalysis;
           }];
           streamingResponse = '';
         }
@@ -148,9 +148,9 @@
 
     const userMessage: ChatMessage = {
       id: Date.now.toString(),
-      role: 'user',
-      content: currentMessage,
-      timestamp: new Date()
+      role: 'user',;
+      content: currentMessage,;
+      timestamp: new Date();
     };
 
     messages = [...messages, userMessage];
@@ -161,13 +161,13 @@
     // Send via WebSocket
     if (wsConnection && wsConnection.readyState === WebSocket.OPEN) {
       wsConnection.send(JSON.stringify({
-        type: 'message',
+        type: 'message',;
         content: messageToSend,
         sessionId,
         userId,
         caseId,
         enableAnalysis: showAnalysisPanel,
-        enableWebGPU
+        enableWebGPU;
       }));
     }
 
@@ -175,9 +175,9 @@
     if (!wsConnection || wsConnection.readyState !== WebSocket.OPEN) {
       try {
         const response = await fetch('/api/chat-test', {
-          method: 'POST',
+          method: 'POST',;
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          body: JSON.stringify({;
             messages: [{ role: 'user', content: messageToSend }]
           })
         });
@@ -187,19 +187,19 @@
           messages = [...messages, {
             id: Date.now.toString(),
             role: 'assistant',
-            content: data.message,
-            timestamp: new Date(),
+            content: data.message,;
+            timestamp: new Date(),;
             confidence: data.confidence,
-            tokensPerSecond: data.tokensPerSecond
+            tokensPerSecond: data.tokensPerSecond;
           }];
         }
       } catch (error) {
         console.error('Failed to send message:', error);
         messages = [...messages, {
           id: Date.now.toString(),
-          role: 'assistant',
-          content: 'Sorry, I encountered an error. Please try again.',
-          timestamp: new Date()
+          role: 'assistant',;
+          content: 'Sorry, I encountered an error. Please try again.',;
+          timestamp: new Date();
         }];
       } finally {
         isTyping = false;
@@ -234,22 +234,24 @@
     if (!enableAttentionTracking) return;
     userAttention = {
       focused: document.hasFocus(),
-      lastActivity: Date.now()
+      lastActivity: Date.now();
     };
   }
 
   // Initialize on mount
-  $effect(async () => {
-    if (!sessionId) {
-      sessionId = `session_${Date.now()}_${Math.random.toString-substr(2, 9)}`;
-    }
-    await initializeConnection();
-    await initializeWebGPU();
-    if (enableAttentionTracking) {
-      document.addEventListener('visibilitychange', trackUserAttention);
-      document.addEventListener('focus', trackUserAttention);
-      document.addEventListener('blur', trackUserAttention);
-    }
+  $effect(() => {
+    (async () => {
+      if (!sessionId) {
+        sessionId = `session_${Date.now()}_${Math.random().toString().substr(2, 9)}`;
+      }
+      await initializeConnection();
+      await initializeWebGPU();
+      if (enableAttentionTracking) {
+        document.addEventListener('visibilitychange', trackUserAttention);
+        document.addEventListener('focus', trackUserAttention);
+        document.addEventListener('blur', trackUserAttention);
+      }
+    })();
   });
 
   // Cleanup on destroy
@@ -267,7 +269,7 @@
 
 <div class="enhanced-ai-chat w-full max-w-6xl mx-auto">
   <!-- Main Chat Interface -->
-  <div.Root class="h-[700px] flex flex-col">
+  <div class="h-[700px] flex flex-col">
     <div class="chat-header border-b">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
@@ -293,15 +295,15 @@
             <Tooltip.Root>
               <Tooltip.Trigger asChild >
                 {#snippet children({ builder })}
-                                <Button 
-                    variant="ghost" 
-                    size="sm" 
+                                <Button
+                    variant="ghost"
+                    size="sm"
                     builders={[builder]}
                     class="p-2 bits-btn bits-btn"
                   >
-<MagnifyingGlassIcon class="w-4 h-4" />
-
-                                              {/snippet}
+                    <MagnifyingGlassIcon class="w-4 h-4" />
+                  </Button>
+                {/snippet}
                             </Tooltip.Trigger>
               <Tooltip.Content>
                 <p>View Analysis</p>
@@ -310,8 +312,8 @@
           {/if}
           
           <Button class="bits-btn" variant="ghost" size="sm" onclick={clearChat}>
-Clear
-
+            Clear
+          </Button>
         </div>
       </div>
     </div>
@@ -388,13 +390,13 @@ Clear
           onkeydown={handleKeydown}
           class="flex-1 min-h-[40px] max-h-[120px] resize-none"
         />
-        <Button 
+        <Button
           onclick={sendMessage}
           disabled={!currentMessage.trim() || isTyping || !isConnected}
           class="self-end bits-btn bits-btn"
         >
-<PaperPlaneIcon class="w-4 h-4" />
-
+          <PaperPlaneIcon class="w-4 h-4" />
+        </Button>
       </div>
       
       {#if processingMetrics.tokensPerSecond > 0}
@@ -405,11 +407,11 @@ Clear
         </div>
       {/if}
     </div>
-  </Card>
+  </div>
 
   <!-- Analysis Dialog -->
   {#if showAnalysisPanel}
-    <Dialog.Root bind:open={$open}>
+    <Dialog.Root>
       <Dialog.Content class="max-w-2xl">
         <Dialog.Header>
           <Dialog.Title>Message Analysis</Dialog.Title>
@@ -440,10 +442,9 @@ Clear
         </div>
         
         <Dialog.Footer>
-          <Button class="bits-btn" variant="ghost" onclick={() =>
-($open = false)}>
+          <Button class="bits-btn" variant="ghost">
             Close
-
+          </Button>
         </Dialog.Footer>
       </Dialog.Content>
     </Dialog.Root>
@@ -451,7 +452,7 @@ Clear
 </div>
 
 <style>
-  .enhanced-ai-chat {
+  .enhanced-ai-chat {;
     font-family: system-ui, -apple-system, sans-serif;
   }
 </style>

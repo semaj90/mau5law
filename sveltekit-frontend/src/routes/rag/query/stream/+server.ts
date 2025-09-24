@@ -15,7 +15,7 @@ async function* modelPipeline(query: string, signal: AbortSignal) {
   if (backend) {
     const resp = await fetch(backend, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },;
       body: JSON.stringify({ query }),
       signal
     });
@@ -56,7 +56,7 @@ async function externalSummarize(text: string, fetchFn: typeof fetch): Promise<s
   try {
     const res = await fetchFn(EXTERNAL_SUMMARIZE, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },;
       body: JSON.stringify({ text, length: 'short' })
     });
     if (!res.ok) return undefined;

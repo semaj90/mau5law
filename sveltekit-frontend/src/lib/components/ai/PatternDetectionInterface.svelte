@@ -32,7 +32,7 @@
     confidence: number;
     significance: number;
     frequency: number;
-    timeframe: {
+    timeframe: {;
       start: string;
       end: string;
       duration: string;
@@ -75,7 +75,7 @@
   async function loadExistingPatterns() {
     try {
       const response = await fetch('/api/ai/pattern-detection', {
-        method: 'GET',
+        method: 'GET',;
         headers: {
           'Content-Type': 'application/json'
         }
@@ -101,11 +101,11 @@
       };
       
       const response = await fetch('/api/ai/pattern-detection', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(analysisRequest)
+        },;
+        body: JSON.stringify(analysisRequest);
       });
       
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
@@ -533,7 +533,7 @@
 </Dialog.Root>
 
 <style>
-  .pattern-detection-interface {
+  .pattern-detection-interface {;
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;

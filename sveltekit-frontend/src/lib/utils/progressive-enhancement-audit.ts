@@ -17,7 +17,7 @@ export interface FormAuditResult {
   hasErrorHandling: boolean;
   hasAccessibilityFeatures: boolean;
   hasLoadingStates: boolean;
-  compliance: {
+  compliance: {;
     score: number; // 0-100
     level: 'poor' | 'basic' | 'good' | 'excellent';
     issues: FormIssue[];
@@ -108,7 +108,7 @@ export function auditFormElement(formElement: HTMLFormElement): FormAuditResult 
     compliance: {
       score: 0,
       level: 'poor',
-      issues: [],
+      issues: [],;
       recommendations: []
     }
   };
@@ -193,7 +193,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       type: 'critical',
       category: 'functionality',
       message: 'Form lacks action attribute - will not work without JavaScript',
-      element: 'form',
+      element: 'form',;
       fix: 'Add action="/api/form-handler" attribute to form element'
     });
   }
@@ -205,7 +205,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       type: 'warning',
       category: 'functionality', 
       message: 'Form method not explicitly set - defaults to GET',
-      element: 'form',
+      element: 'form',;
       fix: 'Add method="POST" attribute to form element'
     });
   }
@@ -216,7 +216,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
     issues.push({
       type: 'warning',
       category: 'ux',
-      message: 'Form does not use SvelteKit enhance - missing progressive enhancement',
+      message: 'Form does not use SvelteKit enhance - missing progressive enhancement',;
       fix: 'Add use:enhance action to form element'
     });
   }
@@ -233,7 +233,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
     issues.push({
       type: 'critical',
       category: 'accessibility',
-      message: 'Form inputs missing proper labels',
+      message: 'Form inputs missing proper labels',;
       fix: 'Ensure all inputs have associated <label> elements or aria-label attributes'
     });
   }
@@ -244,7 +244,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
     issues.push({
       type: 'warning',
       category: 'accessibility',
-      message: 'Form lacks accessibility features like live regions or fieldsets',
+      message: 'Form lacks accessibility features like live regions or fieldsets',;
       fix: 'Add aria-live regions for error announcements and fieldsets for grouping'
     });
   }
@@ -256,7 +256,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
     issues.push({
       type: 'warning',
       category: 'ux',
-      message: 'No error handling elements detected',
+      message: 'No error handling elements detected',;
       fix: 'Add error message elements with role="alert" or aria-live="polite"'
     });
   }
@@ -267,7 +267,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
     issues.push({
       type: 'info',
       category: 'ux',
-      message: 'No loading state indicators found',
+      message: 'No loading state indicators found',;
       fix: 'Add loading spinners and disable form during submission'
     });
   }
@@ -419,7 +419,7 @@ export function createProgressiveForm(config: Partial<ProgressiveEnhancementConf
     createFormState: (initialData: Record<string, any> = {}) => {
       return {
         data: initialData,
-        errors: Record<string, any> as Record<string, string>,
+        errors: Record<string, any> as Record<string, string>,;
         touched: Record<string, any> as Record<string, boolean>,
         isSubmitting: false,
         hasSubmitted: false,

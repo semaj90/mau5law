@@ -94,7 +94,7 @@
         noteType,
         tags,
         userId,
-        caseId,
+        caseId,;
       });
       isSaved = true;
       setTimeout(() => (isSaved = false), 2000);
@@ -126,22 +126,22 @@
 
   function handleEditorSave(event: CustomEvent) {
     const {
-      html: newHtml,
-      markdown: newMarkdown,
-      json: newJson,
+      html: newHtml,;
+      markdown: newMarkdown,;
+      json: newJson,;
     } = event.detail;
 
     const updatedNote = {
       id: noteId,
       title: editedTitle,
       content: newMarkdown || newHtml,
-      markdown: newMarkdown,
+      markdown: newMarkdown,;
       html: newHtml,
       contentJson: newJson,
-      noteType,
+      noteType,;
       tags: editedTags,
       userId,
-      caseId,
+      caseId,;
     };
 
     onSave?.(updatedNote);

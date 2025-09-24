@@ -1,17 +1,17 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 /*
  * MCP API Endpoint - Tool Call Router
  * Handles all MCP tool invocations from XState machine services
  */
 
-import { json } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit'
 
 // Import MCP Tools
-import * as casesMCP from '../../../../../lib/mcp/cases.mcp.js';
-import { URL } from "url";
+import * as casesMCP from '../../../../../lib/mcp/cases.mcp.js'
+import { URL } from "url"
 
-// MCP Tool Registry;
+// MCP Tool Registry
 const MCP_TOOLS = {
   // Cases management tools
   'cases.loadCase': casesMCP.loadCase,
@@ -26,41 +26,41 @@ const MCP_TOOLS = {
   // 'documents.processDocument': documentsMCP.processDocument,
   // 'evidence.analyzeEvidence': evidenceMCP.analyzeEvidence,
   // 'vector.semanticSearch': vectorMCP.semanticSearch
-} as const;
+} as const
 
-type MCPToolName = keyof typeof MCP_TOOLS;
+type MCPToolName = keyof typeof MCP_TOOLS
 }
 
 export interface MCPCallRequest {
-  tool: MCPToolName;
-  args: Record<string, any>;
+  tool: MCPToolName
+  args: Record<string, any>
   metadata?: {
-    requestId?: string;
-    userId?: string;
-    timestamp?: number;
-  };
+    requestId?: string
+    userId?: string
+    timestamp?: number
+  }
 }
 
 export interface MCPCallResponse {
-  success: boolean;
-  result?: any;
-  error?: string;
+  success: boolean
+  result?: any
+  error?: string
   metadata?: {
-    requestId?: string;
-    executionTime?: number;
-    tool: string;
-    timestamp: number;
-  };
+    requestId?: string
+    executionTime?: number
+    tool: string
+    timestamp: number
+  }
 }
 
 export const POST: RequestHandler = async ({ request, getClientAddress, url }) => {
-  const startTime = Date.now();
-  let requestBody: MCPCallRequest;
+  const startTime = Date.now()
+  let requestBody: MCPCallRequest
 
   try {
-    requestBody = await request.json();
+    requestBody = await request.json()
   } catch (error: any) {
-    return json();
+    return json()
       {
         success: false,
         error: 'Invalid JSON in request body',
@@ -71,14 +71,14 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
         }
       },
       { status: 400 }
-    );
+    )
   }
 
-  const { tool, args = {}, metadata = {} } = requestBody;
+  const { tool, args = {}, metadata = {} } = requestBody
 
-  // Validate tool name;
+  // Validate tool name
   if (!tool || !(tool in MCP_TOOLS)) {
-    return json();
+    return json()
       {
         success: false,
         error: `Unknown MCP tool: ${tool}. Available tools: ${Object.keys(MCP_TOOLS).join(', ')}`,
@@ -90,10 +90,10 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
         }
       },
       { status: 400 }
-    );
+    )
   }
 
-  // Add request metadata for logging and tracing;
+  // Add request metadata for logging and tracing
   const requestMetadata = {
     requestId: metadata.requestId || `mcp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
     userId: metadata.userId,
@@ -101,29 +101,29 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
     userAgent: request.headers.get('user-agent'),
     timestamp: Date.now(),
     tool
-  };
+  }
 
   console.log('🔧 MCP Tool Call:', {
     tool,
     args: Object.keys(args),
     requestId: requestMetadata.requestId,
     userId: requestMetadata.userId
-  });
+  })
 
   try {
     // Get the tool function
-    const toolFunction = MCP_TOOLS[tool];
+    const toolFunction = MCP_TOOLS[tool]
 
     // Execute the tool with arguments
-    const result = await (toolFunction as any)(args);
+    const result = await (toolFunction as any)(args)
 
-    const executionTime = Date.now() - startTime;
+    const executionTime = Date.now() - startTime
 
     console.log('✅ MCP Tool Success:', {
       tool,
       requestId: requestMetadata.requestId,
       executionTime: `${executionTime}ms`
-    });
+    })
 
     return json({
       success: true,
@@ -134,19 +134,19 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
         tool,
         timestamp: Date.now()
       }
-    });
+    })
   } catch (error: any) {
-    const executionTime = Date.now() - startTime;
-    const errorMessage = error instanceof Error ? error.message: 'Unknown error occurred';
+    const executionTime = Date.now() - startTime
+    const errorMessage = error instanceof Error ? error.message: 'Unknown error occurred'
 
     console.error('❌ MCP Tool Error:', {
       tool,
       requestId: requestMetadata.requestId,
       error: errorMessage,
       executionTime: `${executionTime}ms`
-    });
+    })
 
-    return json();
+    return json()
       {
         success: false,
         error: errorMessage,
@@ -158,15 +158,15 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
         }
       },
       { status: 500 }
-    );
+    )
   }
-};
+}
 
-// Health check endpoint for MCP tools;
+// Health check endpoint for MCP tools
 export const GET: RequestHandler = async ({ url }) => {
   try {
     // Test database connectivity through health check tool
-    const healthResult = await casesMCP.healthCheck();
+    const healthResult = await casesMCP.healthCheck()
 
     const response = {
       status: 'operational',
@@ -177,11 +177,11 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       database: healthResult,
       endpoint: url.pathname
-    };
+    }
 
-    return json(response);
+    return json(response)
   } catch (error: any) {
-    return json();
+    return json()
       {
         status: 'error',
         timestamp: Date.now(),
@@ -189,6 +189,6 @@ export const GET: RequestHandler = async ({ url }) => {
         endpoint: url.pathname
       },
       { status: 500 }
-    );
+    )
   }
-};
+}

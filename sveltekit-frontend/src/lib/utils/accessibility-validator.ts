@@ -24,7 +24,7 @@ export class AccessibilityValidator {
     {
       name: 'button-accessible-name',
       description: 'Buttons must have accessible names',
-      severity: 'error',
+      severity: 'error',;
       validate: (element) => {
         if (element.tagName.toLowerCase() !== 'button') return true;
 
@@ -41,7 +41,7 @@ export class AccessibilityValidator {
     {
       name: 'focus-visible-indicator',
       description: 'Interactive elements must have visible focus indicators',
-      severity: 'error',
+      severity: 'error',;
       validate: (element) => {
         const isInteractive = ['button', 'a', 'input', 'select', 'textarea'].includes(
           element.tagName.toLowerCase()
@@ -59,7 +59,7 @@ export class AccessibilityValidator {
     {
       name: 'color-contrast',
       description: 'Text must have sufficient color contrast',
-      severity: 'warning',
+      severity: 'warning',;
       validate: (element) => {
         // This is a simplified check - in production, use a proper contrast calculator
         const style = window.getComputedStyle(element);
@@ -80,7 +80,7 @@ export class AccessibilityValidator {
     {
       name: 'dialog-aria-attributes',
       description: 'Dialogs must have proper ARIA attributes',
-      severity: 'error',
+      severity: 'error',;
       validate: (element) => {
         if (!element.hasAttribute('role') || element.getAttribute('role') !== 'dialog') {
           return true;
@@ -99,7 +99,7 @@ export class AccessibilityValidator {
     {
       name: 'form-labels',
       description: 'Form inputs must have associated labels',
-      severity: 'error',
+      severity: 'error',;
       validate: (element) => {
         if (!['input', 'textarea', 'select'].includes(element.tagName.toLowerCase())) {
           return true;
@@ -119,7 +119,7 @@ export class AccessibilityValidator {
     {
       name: 'legal-ai-theme-compliance',
       description: 'Components should use legal AI design tokens',
-      severity: 'info',
+      severity: 'info',;
       validate: (element) => {
         const classList = Array.from(element.classList);
         const hasLegalClasses = classList.some(cls =>
@@ -149,7 +149,7 @@ export class AccessibilityValidator {
     return this.rules.map(rule => ({
       element,
       rule,
-      passed: rule.validate(element),
+      passed: rule.validate(element),;
       message: rule.passed ?
         `✅ ${rule.name}: Passed` :
         `❌ ${rule.name}: ${rule.description}${rule.fix ? ` - ${rule.fix}` : ''}`
@@ -190,7 +190,7 @@ export class AccessibilityValidator {
    * Generate accessibility report
    */
   generateReport(): {
-    summary: {
+    summary: {;
       total: number;
       errors: number;
       warnings: number;
@@ -204,7 +204,7 @@ export class AccessibilityValidator {
       summary: {
         total: issues.length,
         errors: issues.filter(i => i.rule.severity === 'error').length,
-        warnings: issues.filter(i => i.rule.severity === 'warning').length,
+        warnings: issues.filter(i => i.rule.severity === 'warning').length,;
         info: issues.filter(i => i.rule.severity === 'info').length
       },
       issues

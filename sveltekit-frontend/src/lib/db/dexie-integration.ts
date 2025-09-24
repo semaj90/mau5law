@@ -189,7 +189,7 @@ export class LegalAIDatabase extends Dexie {
   async addLegalDocument(document: Omit<LegalDocument, 'id' | 'created' | 'modified'>): Promise<number> {
     return await this.legalDocuments.add({
       ...document,
-      created: new Date(),
+      created: new Date(),;
       modified: new Date()
     });
   }
@@ -399,7 +399,7 @@ export class LegalAIDatabase extends Dexie {
       graphNodes: nodesCount,
       graphEdges: edgesCount,
       userSessions: sessionsCount,
-      cache: {
+      cache: {;
         entries: cacheCount,
         totalSize: cacheSize
       },

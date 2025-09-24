@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import { readBodyFast } from '$lib/server/utils/json-fast';
-import { INGEST_SERVICE_URL } from '$env/static/private';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import { readBodyFast } from '$lib/server/utils/json-fast'
+import { INGEST_SERVICE_URL } from '$env/static/private'
+import type { RequestHandler } from './$types.js'
 
 /*
  * SvelteKit API proxy to Go Ingest Service (port 8227)
@@ -9,48 +9,48 @@ import type { RequestHandler } from './$types.js';
  * Follows your established patterns from Enhanced RAG service
  */
 
-const SERVICE_URL = INGEST_SERVICE_URL || 'http://localhost:8227';
-const TIMEOUT = 30000; // 30 seconds for document processing;
+const SERVICE_URL = INGEST_SERVICE_URL || 'http://localhost:8227'
+const TIMEOUT = 30000; // 30 seconds for document processing
 }
 
 export interface DocumentIngestRequest {
-  title: string;
-  content: string;
-  case_id?: string;
-  metadata?: Record<string, any>;
+  title: string
+  content: string
+  case_id?: string
+  metadata?: Record<string, any>
 }
 
 export interface BatchIngestRequest {
-  documents: DocumentIngestRequest[];
+  documents: DocumentIngestRequest[]
 }
 
 export interface IngestResponse {
-  id: string;
-  status: string;
-  document_id: string;
-  embedding_id: string;
-  process_time_ms: number;
-  timestamp: string;
+  id: string
+  status: string
+  document_id: string
+  embedding_id: string
+  process_time_ms: number
+  timestamp: string
 }
 
-// Single document ingestion;
+// Single document ingestion
 export const POST: RequestHandler = async ({ request, fetch }) => {
   try {
-    const requestData = await readBodyFast(request);
+    const requestData = await readBodyFast(request)
 
-    // Validate request structure;
+    // Validate request structure
     if (!requestData.title || !requestData.content) {
       return json(
         { error: 'Missing required fields: title and content are required' },)
         { status: 400 }
-      );
+      )
     }
 
-    // Transform to Go service format;
+    // Transform to Go service format
     const ingestRequest: DocumentIngestRequest = {
       title: requestData.title,
       content: requestData.content,
-      case_id: requestData.case_id || requestData.caseId, // Support both formats;
+      case_id: requestData.case_id || requestData.caseId, // Support both formats
       metadata: {
         ...requestData.metadata,
         // Add SvelteKit-specific metadata
@@ -61,13 +61,13 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         user_agent: request.headers.get('user-agent') || 'unknown',
         ip_address: request.headers.get('x-forwarded-for') || 'unknown'
       }
-    };
+    }
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), TIMEOUT)
 
     try {
-      // Call Go ingest service using SvelteKit's enhanced fetch;
+      // Call Go ingest service using SvelteKit's enhanced fetch
       const response = await fetch(`${SERVICE_URL}/api/ingest`, {
         method: 'POST',
         headers: {
@@ -75,24 +75,24 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         },
         body: JSON.stringify(ingestRequest),
         signal: controller.signal
-      });
+      })
 
-      clearTimeout(timeoutId);
+      clearTimeout(timeoutId)
 
       if (!response.ok) {
-        const errorText = await response.text();
+        const errorText = await response.text()
         return json({
             error: `Ingest service error: ${response.status} - ${errorText}`,
             service: 'ingest-service',
             port: '8227'
           },)
           { status: response.status }
-        );
+        )
       }
 
-      const result: IngestResponse = await response.json();
+      const result: IngestResponse = await response.json()
 
-      // Enhanced response with SvelteKit metadata;
+      // Enhanced response with SvelteKit metadata
       return json({
         ...result,
         service_info: {
@@ -104,21 +104,21 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         // Follow your established success pattern
         success: true,
         api_version: 'v1'
-      });
+      })
     } catch (fetchError: any) {
-      clearTimeout(timeoutId);
+      clearTimeout(timeoutId)
 
       if ((fetchError as any)?.name === 'AbortError') {
         return json(
           { error: 'Request timeout - document processing took too long' },)
           { status: 504 }
-        );
+        )
       }
 
-      throw fetchError;
+      throw fetchError
     }
   } catch (error: any) {
-    console.error('Ingest API error:', error);
+    console.error('Ingest API error:', error)
 
     return json({
         error: 'Internal server error',
@@ -126,17 +126,17 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         service: 'sveltekit-ingest-proxy'
       },)
       { status: 500 }
-    );
+    )
   }
-};
+}
 
-// Health check endpoint;
+// Health check endpoint
 export const GET: RequestHandler = async ({ fetch }) => {
   try {
     const response = await fetch(`${SERVICE_URL}/api/health`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
-    });
+    })
 
     if (!response.ok) {
       return json({
@@ -146,10 +146,10 @@ export const GET: RequestHandler = async ({ fetch }) => {
           error: `Service unreachable: ${response.status}`
         },)
         { status: 503 }
-      );
+      )
     }
 
-    const health = await response.json();
+    const health = await response.json()
 
     return json({
       status: 'healthy',
@@ -160,7 +160,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
       // Follow your health check pattern
       timestamp: new Date().toISOString(),
       architecture: 'go-microservice'
-    });
+    })
   } catch (error: any) {
     return json({
         status: 'error',
@@ -168,6 +168,6 @@ export const GET: RequestHandler = async ({ fetch }) => {
         error: error instanceof Error ? error.message: 'Connection failed'
       },)
       { status: 503 }
-    );
+    )
   }
-};
+}

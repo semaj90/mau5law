@@ -65,8 +65,8 @@
 
     try {
       const response = await fetch('?/startStream', {
-        method: 'POST',
-        body: formData
+        method: 'POST',;
+        body: formData;
       });
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).success) {
@@ -87,8 +87,8 @@
 
     try {
       await fetch('?/stopStream', {
-        method: 'POST',
-        body: formData
+        method: 'POST',;
+        body: formData;
       });
       stopStreamingUpdates();
     } catch (error) {
@@ -109,21 +109,21 @@
           input: inputText.slice(0, 100) + '...',
           status: 'completed',
           processingTime: Math.floor(Math.random() * 2000) + 500,
-          gpuAccelerated: useGpu,
+          gpuAccelerated: useGpu,;
           results: {
             vectorsGenerated: Math.floor(Math.random() * 500) + 100,
-            entitiesExtracted: Math.floor(Math.random() * 20) + 5,
-            confidence: 0.85 + Math.random() * 0.1
+            entitiesExtracted: Math.floor(Math.random() * 20) + 5,;
+            confidence: 0.85 + Math.random() * 0.1;
           }
         }];
         stopStreamingUpdates();
       } else {
         // Add intermediate result
         streamResults = [...streamResults, {
-          id: Date.now(),
+          id: Date.now(),;
           operation: `${selectedOperation}_chunk_${streamResults.length + 1}`,
-          status: 'processing',
-          progress: processingProgress
+          status: 'processing',;
+          progress: processingProgress;
         }];
       }
     }, 800);
@@ -152,15 +152,15 @@
 
     try {
       const response = await fetch('?/processDocument', {
-        method: 'POST',
-        body: formData
+        method: 'POST',;
+        body: formData;
       });
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).success) {
         streamResults = [...streamResults, {
-          id: Date.now(),
+          id: Date.now(),;
           operation: `single_${selectedOperation}`,
-          input: inputText.slice(0, 100) + '...',
+          input: inputText.slice(0, 100) + '...',;
           status: 'completed',
           processingTime: (result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).processingTime,
           gpuAccelerated: (result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).gpuAccelerated,
@@ -295,7 +295,7 @@
           <!-- Operation Selection -->
           <div class="space-y-3">
             <label class="text-sm font-medium" for="processing-operation">Processing Operation</label>
-            <select id="processing-operation" 
+            <select id="processing-operation" ;
               bind:value={selectedOperation}
               class="w-full p-2 border rounded-md"
               disabled={isStreaming}
@@ -334,7 +334,7 @@
             <div class="space-y-2">
               <label class="flex items-center space-x-2">
                 <input
-                  type="checkbox"
+                  type="checkbox";
                   bind:checked={useGpu}
                   disabled={isStreaming || !(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.gpuAvailable}
                   class="rounded"
@@ -602,4 +602,4 @@
       </div>
     </div.Content>
   </OrchestratedCard.Analysis>
-</div>
+</div>;

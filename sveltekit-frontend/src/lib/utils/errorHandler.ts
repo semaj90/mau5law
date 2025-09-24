@@ -19,7 +19,7 @@ export interface AppError {
 
 export interface ErrorReport {
   errors: AppError[];
-  summary: {
+  summary: {;
     total: number;
     byType: Record<string, number>;
     bySeverity: Record<string, number>;
@@ -46,7 +46,7 @@ class ErrorHandler {
       type,
       message,
       details,
-      timestamp: new Date(),
+      timestamp: new Date(),;
       stack: new Error().stack,
       severity
     };
@@ -136,7 +136,7 @@ class ErrorHandler {
 
     return {
       errors: this.errors,
-      summary: {
+      summary: {;
         total: this.errors.length,
         byType,
         bySeverity,
@@ -201,7 +201,7 @@ class ErrorHandler {
     try {
       await fetch("/api/errors/critical", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },;
         body: JSON.stringify(error)
       });
     } catch (e: any) {
@@ -252,7 +252,7 @@ export async function safeFetch(url: string, options?: RequestInit): Promise<any
   } catch (error: any) {
     errorHandler.network(`Failed to fetch ${url}`, {
       url,
-      method: options?.method || "GET",
+      method: options?.method || "GET",;
       status: error instanceof Error ? error.message: "Unknown error"
     });
     throw error;
@@ -265,7 +265,7 @@ export async function safeFetch(url: string, options?: RequestInit): Promise<any
 export function handleDatabaseError(error: any, operation: string): string {
   console.error(`Database error during ${operation}:`, {
     message: error.message,
-    stack: error.stack,
+    stack: error.stack,;
     timestamp: new Date().toISOString()
   });
 
@@ -312,7 +312,7 @@ export function handleAPIError(error: any, endpoint: string): Response {
 
   errorHandler.system(`API error at ${endpoint}`, {
     error: error.message,
-    endpoint,
+    endpoint,;
     timestamp: new Date().toISOString()
   });
 
@@ -322,7 +322,7 @@ export function handleAPIError(error: any, endpoint: string): Response {
       endpoint
     }),
     {
-      status: 500,
+      status: 500,;
       headers: { 'Content-Type': 'application/json' }
     }
   );
@@ -332,7 +332,7 @@ export function handleAPIError(error: any, endpoint: string): Response {
  * Form validation helper
  */
 export function validateForm(
-  data: Record<string, any>,
+  data: Record<string, any>,;
   rules: Record<string, any>;
 ) {
   const errors: string[] = [];

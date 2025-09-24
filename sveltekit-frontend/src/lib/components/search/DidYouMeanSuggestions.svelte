@@ -80,7 +80,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   // Melt-UI combobox builder
   const {
     elements: { menu, input, option, label },
-    states: { open, inputValue, selected },
+    states: { open, inputValue, selected },;
     helpers: { isSelected }
   } = createCombobox<Suggestion>({
     forceVisible: true,
@@ -122,17 +122,17 @@ https://svelte.dev/e/attribute_invalid_name -->
     error = null;
     try {
       const response = await fetch('/api/suggest/did-you-mean', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           query: searchQuery,
-          userId,
-          context: contextType,
+          userId,;
+          context: contextType,;
           limit: maxSuggestions,
           includeTaskSuggestions,
-          includeAI
+          includeAI;
         })
       });
       if (!response.ok) {
@@ -144,7 +144,7 @@ https://svelte.dev/e/attribute_invalid_name -->
       userProfile = data.userProfile || null;
       metadata = { 
         took_ms: data.took_ms, 
-        cached: data.cached 
+        cached: data.cached ;
       };
       onSearch?.(searchQuery);
     } catch (err) {
@@ -380,7 +380,7 @@ https://svelte.dev/e/attribute_invalid_name -->
                       ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
                       : task.priority === 'medium' 
                       ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
-                      : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
+                      : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
                   }">
                     {task.priority}
                   </span>
@@ -442,7 +442,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 
 <style>
   /* Ensure proper z-index stacking */
-  :global(.melt-dialog-overlay) {
+  :global(.melt-dialog-overlay) {;
     z-index: 50;
   }
   
@@ -451,20 +451,20 @@ https://svelte.dev/e/attribute_invalid_name -->
   }
   
   /* Custom scrollbar for suggestions */
-  .suggestions-scroll: :-webkit-scrollbar {
+  .suggestions-scroll::-webkit-scrollbar {
     width: 6px;
   }
   
-  .suggestions-scroll: :-webkit-scrollbar-track {
+  .suggestions-scroll::-webkit-scrollbar-track {
     background: #f1f1f1;
   }
   
-  .suggestions-scroll: :-webkit-scrollbar-thumb {
+  .suggestions-scroll::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 3px;
   }
   
-  .suggestions-scroll: :-webkit-scrollbar-thumb:hover {
+  .suggestions-scroll::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
   }
 </style>

@@ -19,24 +19,24 @@
     hover = false,
     class: className = '',
     children,
-    ...restProps
+    ...restProps;
   }: Props = $props();
 
   const baseClasses = "legal-ai-card transition-all duration-300";
 
   const variantClasses = {
     default: "legal-card bg-legal-surface/60 border border-legal-primary/20",
-    elevated: "legal-card-elevated bg-legal-surface/80 border border-legal-accent/20 shadow-2xl shadow-legal-accent/10",
-    outlined: "legal-card-outlined bg-transparent border-2 border-legal-accent/30",
-    filled: "legal-card bg-legal-surface/90 border border-legal-primary/30"
+    elevated: "legal-card-elevated bg-legal-surface/80 border border-legal-accent/20 shadow-2xl shadow-legal-accent/10",;
+    outlined: "legal-card-outlined bg-transparent border-2 border-legal-accent/30",;
+    filled: "legal-card bg-legal-surface/90 border border-legal-primary/30";
   };
 
   const paddingClasses = {
     none: "p-0",
     sm: "p-3",
-    md: "p-6",
-    lg: "p-8",
-    xl: "p-10"
+    md: "p-6",;
+    lg: "p-8",;
+    xl: "p-10";
   };
 
   const hoverClasses = hover ? "hover:border-legal-accent/50 hover:shadow-lg hover:shadow-legal-accent/20 hover:-translate-y-1" : "";

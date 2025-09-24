@@ -92,7 +92,7 @@ export class FocusManager {
     }
   }
   static announceToScreenReader(
-    message: string,
+    message: string,;
     priority: "polite" | "assertive" = "polite";
   ) {
     const announcement = document.createElement("div");
@@ -130,7 +130,7 @@ export class FocusManager {
     const messages = {
       starting: `File upload starting${context ? ` for ${context}` : ''}`,
       progress: `File upload in progress${context ? ` for ${context}` : ''}`,
-      complete: `File upload completed successfully${context ? ` for ${context}` : ''}`,
+      complete: `File upload completed successfully${context ? ` for ${context}` : ''}`,;
       error: `File upload failed${context ? ` for ${context}` : ''}`
     };
     
@@ -146,7 +146,7 @@ export class FocusManager {
       analyzing: `Analyzing${context ? ` ${context}` : ''}, please wait...`,
       processing: `Processing${context ? ` ${context}` : ''}, please wait...`,
       generating: `Generating${context ? ` ${context}` : ''}, please wait...`,
-      complete: `Processing completed${context ? ` for ${context}` : ''}`,
+      complete: `Processing completed${context ? ` for ${context}` : ''}`,;
       error: `Processing failed${context ? ` for ${context}` : ''}`
     };
     
@@ -159,7 +159,7 @@ export class KeyboardNavigation {
   static handleArrowKeys(
     elements: HTMLElement[],
     currentIndex: number,
-    key: string,
+    key: string,;
     orientation: "horizontal" | "vertical" = "horizontal";
   ): number {
     let newIndex = currentIndex;
@@ -263,7 +263,7 @@ export class ColorContrast {
     return result;
       ? {
           r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
+          g: parseInt(result[2], 16),;
           b: parseInt(result[3], 16)
         }
       : null;
@@ -322,7 +322,7 @@ export class AriaUtils {
   }
   static linkElements(
     trigger: HTMLElement,
-    target: HTMLElement,
+    target: HTMLElement,;
     relationship: string;
   ) {
     const id = target.id || this.generateId();
@@ -374,7 +374,7 @@ export class MotionUtils {
   }
   static createResponsiveAnimation(
     element: HTMLElement,
-    animation: Keyframe[] | PropertyIndexedKeyframes,
+    animation: Keyframe[] | PropertyIndexedKeyframes,;
     options: KeyframeAnimationOptions;
   ): Animation | null {
     if (this.prefersReducedMotion()) {

@@ -1,12 +1,12 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Legal Document Summarization Interface
-  
+
   Advanced UI for LangChain-powered document summarization with:
   - Legal-specific options and settings
-  - Real-time processing feedback  
+  - Real-time processing feedback
   - Professional legal document handling
   - Integration with your existing legal AI platform
 -->
@@ -38,7 +38,7 @@ https://svelte.dev/e/js_parse_error -->
   const sampleLegalDoc = `MEMORANDUM OF LAW
 
   TO: Senior Partner
-  FROM: Legal Research Team  
+  FROM: Legal Research Team
   DATE: August 25, 2025
   RE: Contract Breach Analysis - ABC Corp v. XYZ Industries
 
@@ -60,7 +60,7 @@ https://svelte.dev/e/js_parse_error -->
 
   Here, XYZ's delays and performance failures substantially frustrated ABC's legitimate expectations under the agreement. The 90-day delay caused ABC to lose a major client contract worth $2.3 million, and the ongoing performance issues have resulted in additional operational costs and customer complaints.
 
-  B. Damages Calculation  
+  B. Damages Calculation
 
   The contract includes both liquidated damages provisions for delays ($10,000 per day after the deadline) and general damages for performance failures. Based on the delay period and documented losses, ABC's potential damages include:
 
@@ -148,10 +148,10 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const response = await fetch('/api/summarize', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: reportText,
+          text: reportText,;
           options: {
             summaryLength,
             includeKeyTerms,
@@ -217,14 +217,14 @@ https://svelte.dev/e/js_parse_error -->
   <header class="page-header">
     <h1>🏛️ Legal Document Summarization</h1>
     <p class="subtitle">Advanced AI analysis powered by LangChain and your local legal model</p>
-    
+
     <div class="status-bar">
       <div class="stats">
         <span>📄 Words: {wordCount.toLocaleString()}</span>
         <span>📝 Characters: {charCount.toLocaleString()}</span>
         <span>⏱️ Est. time: {estimatedProcessingTime}s</span>
       </div>
-      
+
       <div class="actions">
         <button class="btn nes-btn" onclick={loadSampleDocument}>
           Load Sample
@@ -237,13 +237,13 @@ https://svelte.dev/e/js_parse_error -->
   </header>
 
   <div class="tab-navigation">
-    <button 
+    <button
       class="tab {activeTab === 'input' ? 'active' : ''}"
       onclick={() => activeTab = 'input'}
     >
       📝 Document Input
     </button>
-    <button 
+    <button
       class="tab {activeTab === 'summary' ? 'active' : ''}"
       onclick={() => activeTab = 'summary'}
       disabled={!summary && !isLoading}
@@ -253,7 +253,7 @@ https://svelte.dev/e/js_parse_error -->
         <span class="loading-spinner">⏳</span>
       {/if}
     </button>
-    <button 
+    <button
       class="tab {activeTab === 'analysis' ? 'active' : ''}"
       onclick={() => activeTab = 'analysis'}
       disabled={!metadata?.legalRiskAnalysis}
@@ -270,9 +270,9 @@ https://svelte.dev/e/js_parse_error -->
             <label for="file-input" class="btn nes-btn">
               📁 Upload Document
             </label>
-            <input 
+            <input
               id="file-input"
-              type="file" 
+              type="file"
               accept=".txt,.md,.pdf,.docx" onchange={handleFileUpload}
               hidden
             />
@@ -290,12 +290,12 @@ https://svelte.dev/e/js_parse_error -->
 
             <div class="option-group">
               <label for="temperature">Analysis Creativity:</label>
-              <input 
-                id="temperature" 
-                type="range" 
-                min="0" 
-                max="1" 
-                step="0.1" 
+              <input
+                id="temperature"
+                type="range"
+                min="0"
+                max="1"
+                step="0.1"
                 bind:value={temperature}
               />
               <span class="range-value">{temperature}</span>
@@ -325,9 +325,9 @@ https://svelte.dev/e/js_parse_error -->
             disabled={isLoading}
             rows="20"
           ></textarea>
-          
+
           <div class="input-footer">
-            <button 
+            <button
               class="btn nes-btn is-primary btn-large"
               onclick={handleSummarize}
               disabled={isLoading || !reportText.trim() || reportText.length < 100}
@@ -366,12 +366,12 @@ https://svelte.dev/e/js_parse_error -->
                 </button>
               </div>
             </div>
-            
+
             <div class="summary-content">
               <div class="summary-text">
                 {summary}
               </div>
-              
+
               {#if metadata}
                 <div class="metadata-panel">
                   <h4>📊 Processing Metadata</h4>
@@ -389,7 +389,7 @@ https://svelte.dev/e/js_parse_error -->
                       <strong>Model:</strong> {metadata.model}
                     </div>
                   </div>
-                  
+
                   {#if metadata.keyLegalTerms?.length}
                     <div class="key-terms">
                       <h5>🏷️ Key Legal Terms</h5>
@@ -549,7 +549,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .options-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
     margin: 1rem 0;
   }
@@ -718,7 +718,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .metadata-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     margin: 1rem 0;
   }

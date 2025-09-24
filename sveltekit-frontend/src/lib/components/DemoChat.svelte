@@ -32,9 +32,9 @@ Tests the demo RAG functionality with a working interface
 
     // Add user message
     chatHistory.push({
-      type: 'user',
-      content: userQuery,
-      timestamp: new Date()
+      type: 'user',;
+      content: userQuery,;
+      timestamp: new Date();
     });
 
     isLoading = true;
@@ -47,19 +47,19 @@ Tests the demo RAG functionality with a working interface
         const summaryText = await demoGenerateCaseSummary(currentCase?.id || '1');
         response = {
           response: summaryText,
-          sources: [],
+          sources: [],;
           confidence: 0.9,
-          tokensUsed: 250,
-          reasoning: ['Generated comprehensive case summary from available evidence']
+          tokensUsed: 250,;
+          reasoning: ['Generated comprehensive case summary from available evidence'];
         };
       } else {
         // Use RAG query for other questions
         const ragQuery: RAGDemoQuery = {
           query: userQuery,
-          caseId: currentCase?.id || '1',
+          caseId: currentCase?.id || '1',;
           evidence: currentEvidence,
-          maxTokens: 500,
-          temperature: 0.7
+          maxTokens: 500,;
+          temperature: 0.7;
         };
 
         response = await demoQueryLLM(ragQuery);
@@ -69,17 +69,17 @@ Tests the demo RAG functionality with a working interface
       chatHistory.push({
         type: 'ai',
         content: response.response,
-        timestamp: new Date(),
-        sources: response.sources,
-        reasoning: response.reasoning
+        timestamp: new Date(),;
+        sources: response.sources,;
+        reasoning: response.reasoning;
       });
 
     } catch (error) {
       console.error('Chat error:', error);
       chatHistory.push({
-        type: 'ai',
-        content: 'Sorry, I encountered an error processing your request. Please try again.',
-        timestamp: new Date()
+        type: 'ai',;
+        content: 'Sorry, I encountered an error processing your request. Please try again.',;
+        timestamp: new Date();
       });
     } finally {
       isLoading = false;
@@ -231,7 +231,7 @@ Tests the demo RAG functionality with a working interface
 </div>
 
 <style>
-  .demo-chat {
+  .demo-chat {;
     display: flex;
     flex-direction: column;
     height: 100%;

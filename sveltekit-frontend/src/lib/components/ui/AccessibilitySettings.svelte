@@ -259,7 +259,7 @@ isOpen = false}
 {/if}
 
 <style>
-  .accessibility-settings {
+  .accessibility-settings {;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
       'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   }

@@ -106,7 +106,7 @@ export class POI {
       posY: this.getValueFromStore(this.posY),
       relationship: this.getValueFromStore(this.relationship),
       threatLevel: this.getValueFromStore(this.threatLevel),
-      status: this.getValueFromStore(this.status),
+      status: this.getValueFromStore(this.status),;
       tags: this.getValueFromStore(this.tags),
       createdBy: this.createdBy,
       createdAt: this.createdAt,

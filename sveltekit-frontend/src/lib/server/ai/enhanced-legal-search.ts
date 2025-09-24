@@ -99,7 +99,7 @@ const defaultConfig: LegalSearchConfig = {
     title: 2.0,
     exact_match: 3.0,
     jurisdiction: 1.5,
-    category: 1.3,
+    category: 1.3,;
     recency: 1.2
   }
 };
@@ -163,7 +163,7 @@ export class EnhancedLegalSearchService {
           jurisdiction: doc.jurisdiction,
           category: doc.category,
           code: doc.code,
-          sections: doc.sections || [],
+          sections: doc.sections || [],;
           url: doc.url
         }
       });
@@ -206,7 +206,7 @@ export class EnhancedLegalSearchService {
 
   // Main search method with multiple strategies
   async search(
-    query: string,
+    query: string,;
     options: {
       jurisdiction?: string;
       category?: string;
@@ -231,7 +231,7 @@ export class EnhancedLegalSearchService {
               limit: options.maxResults || this.config.maxResults,
               threshold: this.config.similarityThreshold,
               filters: {
-                category: options.category,
+                category: options.category,;
                 jurisdiction: options.jurisdiction
               }
             })
@@ -352,7 +352,7 @@ export class EnhancedLegalSearchService {
                 doc.metadata?.jurisdiction
               ),
               category_match: this.calculateCategoryMatch(options.category, doc.metadata?.category)
-            },
+            },;
             metadata: doc.metadata || {}
           });
         }
@@ -387,7 +387,7 @@ export class EnhancedLegalSearchService {
 
   // Database text search (disabled - no db connection)
   private async performDatabaseTextSearch(
-    query: string,
+    query: string,;
     options: any;
   ): Promise<LegalSearchResult[]> {
     // Database search disabled for now - returning empty results
@@ -420,7 +420,7 @@ export class EnhancedLegalSearchService {
             score: score,
             searchType: 'hybrid',
             confidence: this.calculateConfidence(score, 'fuzzy'),
-            relevanceFactors: {
+            relevanceFactors: {;
               semantic: score * 0.7,
               exact_match: this.calculateExactMatch(query, doc.content),
               jurisdiction_match: this.calculateJurisdictionMatch(
@@ -472,7 +472,7 @@ export class EnhancedLegalSearchService {
           score: Math.min(score, 1.0),
           searchType: 'fallback',
           confidence: 0.6,
-          relevanceFactors: {
+          relevanceFactors: {;
             semantic: 0.5,
             exact_match: titleMatch ? 1.0 : 0.0,
             jurisdiction_match: this.calculateJurisdictionMatch(
@@ -541,7 +541,7 @@ export class EnhancedLegalSearchService {
     const baseConfidence = {
       vector: 0.9,
       hybrid: 0.8,
-      fuzzy: 0.7,
+      fuzzy: 0.7,;
       fallback: 0.6
     };
 
@@ -555,7 +555,7 @@ export class EnhancedLegalSearchService {
 
   private deduplicateAndRankResults(
     results: LegalSearchResult[],
-    query: string,
+    query: string,;
     options: any;
   ): LegalSearchResult[] {
     // Remove duplicates by ID

@@ -13,7 +13,7 @@
   import * as Card from '$lib/components/ui/card';
   import * as Alert from '$lib/components/ui/alert';
   import * as Tabs from '$lib/components/ui/tabs';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { Separator } from '$lib/components/ui/separator';
   import {
@@ -35,7 +35,7 @@
   const testCredentials = {
     login: {
       email: 'prosecutor@legal-ai.com',
-      password: 'SecurePass123!@#'
+      password: 'SecurePass123!@#';
     },
     register: {
       email: 'investigator@police.gov',
@@ -43,18 +43,20 @@
       lastName: 'Smith',
       password: 'SecurePass123!@#',
       confirmPassword: 'SecurePass123!@#',
-      role: 'investigator',
-      department: 'Metropolitan Police Department',
+      role: 'investigator',;
+      department: 'Metropolitan Police Department',;
       jurisdiction: 'Washington DC',
       badgeNumber: 'MPD-4567',
       enableTwoFactor: true,
       agreeToTerms: true,
-      agreeToPrivacy: true
+      agreeToPrivacy: true;
     }
   };
 
-  $effect(async () => {
-    await runInitialTests();
+  $effect(() => {
+    (async () => {
+await runInitialTests();
+    })();
   });
 
   async function runInitialTests() {
@@ -65,9 +67,9 @@
       console.log('🧪 Testing GPU cluster status...');
       const clusterTest = await mcpGPUOrchestrator.getClusterStatus();
       testResults.cluster = {
-        success: true,
-        data: clusterTest,
-        timestamp: new Date().toISOString()
+        success: true,;
+        data: clusterTest,;
+        timestamp: new Date().toISOString();
       };
       clusterStatus = clusterTest;
 
@@ -80,9 +82,9 @@
       ]);
 
       testResults.context7 = {
-        success: docsTest.every.status === 'fulfilled'),
+        success: docsTest.every.status === 'fulfilled'),;
         data: docsTest.map.status === 'fulfilled' ? (result as { status?: unknown; value?: unknown }).value: null),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString();
       };
       context7Docs = testResults.context7.data;
 
@@ -91,28 +93,28 @@
       const securityTest = await mcpGPUOrchestrator.dispatchGPUTask({
         id: `test_security_${Date.now()}`,
         type: 'security_analysis',
-        priority: 'medium',
+        priority: 'medium',;
         data: {
           email: 'test@legal-ai.com',
           timestamp: new Date().toISOString(),
-          userAgent: navigator.userAgent,
+          userAgent: navigator.userAgent,;
           fingerprint: btoa(JSON.stringify({ test: true }))
         },
         context: {
           action: 'test_analysis',
-          enhancedSecurity: true
+          enhancedSecurity: true;
         },
         config: {
           useGPU: true,
-          model: 'gemma3-legal',
-          protocol: 'auto'
+          model: 'gemma3-legal',;
+          protocol: 'auto';
         }
       });
 
       testResults.security = {
-        success: securityTest.success,
-        data: securityTest,
-        timestamp: new Date().toISOString()
+        success: securityTest.success,;
+        data: securityTest,;
+        timestamp: new Date().toISOString();
       };
 
       // Test 4: Legal Professional Validation
@@ -120,7 +122,7 @@
       const validationTest = await mcpGPUOrchestrator.dispatchGPUTask({
         id: `test_validation_${Date.now()}`,
         type: 'security_validation',
-        priority: 'medium',
+        priority: 'medium',;
         data: {
           email: 'prosecutor@da.gov',
           firstName: 'John',
@@ -128,31 +130,31 @@
           role: 'prosecutor',
           department: 'District Attorney Office',
           jurisdiction: 'Los Angeles County',
-          badgeNumber: 'DA-123'
+          badgeNumber: 'DA-123';
         },
         context: {
           action: 'test_validation',
-          legalProfessionalCheck: true
+          legalProfessionalCheck: true;
         },
         config: {
           useGPU: true,
-          model: 'gemma3-legal',
-          protocol: 'auto'
+          model: 'gemma3-legal',;
+          protocol: 'auto';
         }
       });
 
       testResults.validation = {
-        success: validationTest.success,
-        data: validationTest,
-        timestamp: new Date().toISOString()
+        success: validationTest.success,;
+        data: validationTest,;
+        timestamp: new Date().toISOString();
       };
 
     } catch (error) {
       console.error('Test failed:', error);
       testResults.error = {
-        success: false,
-        error: error instanceof Error ? error.message: 'Unknown error',
-        timestamp: new Date().toISOString()
+        success: false,;
+        error: error instanceof Error ? error.message: 'Unknown error',;
+        timestamp: new Date().toISOString();
       };
     } finally {
       testRunning = false;
@@ -176,9 +178,9 @@
     login: { email: '', password: '' },
     register: {
       email: '', firstName: '', lastName: '', password: '',
-      confirmPassword: '', role: 'prosecutor', department: '',
+      confirmPassword: '', role: 'prosecutor', department: '',;
       jurisdiction: '', badgeNumber: '', enableTwoFactor: false,
-      agreeToTerms: false, agreeToPrivacy: false
+      agreeToTerms: false, agreeToPrivacy: false;
     }
   };
 

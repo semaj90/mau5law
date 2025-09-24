@@ -53,7 +53,7 @@
     if (!isAuthenticated) {
       ondispatch?.({
         citation,
-        error: 'Please sign in to save citations'
+        error: 'Please sign in to save citations';
       });
       return;
     }
@@ -67,13 +67,13 @@
       } else {
         ondispatch?.({
           citation,
-          error: 'Failed to save citation'
+          error: 'Failed to save citation';
         });
       }
     } catch (error) {
       ondispatch?.({
         citation,
-        error: error instanceof Error ? error.message: 'Unknown error'
+        error: error instanceof Error ? error.message: 'Unknown error';
       });
     } finally {
       isSaving = false;
@@ -93,7 +93,7 @@
     } catch (error) {
       ondispatch?.({
         citation,
-        error: error instanceof Error ? error.message: 'Failed to remove citation'
+        error: error instanceof Error ? error.message: 'Failed to remove citation';
       });
     } finally {
       isSaving = false;
@@ -117,7 +117,7 @@
     } catch (error) {
       ondispatch?.({
         citation,
-        error: error instanceof Error ? error.message: 'Failed to save to collection'
+        error: error instanceof Error ? error.message: 'Failed to save to collection';
       });
     }
   }

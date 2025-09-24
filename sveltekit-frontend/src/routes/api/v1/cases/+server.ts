@@ -4,17 +4,17 @@
  * POST /api/v1/cases - Create new case
  */
 
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import { json, error, type RequestHandler } from '@sveltejs/kit'
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
 import {
   CasesCRUDService,
   CreateCaseSchema,
   type CreateCaseData
-} from '$lib/server/services/user-scoped-crud';
-import { queueCaseSynthesis } from '$lib/server/services/background-job-queue';
-import { z } from 'zod';
+} from '$lib/server/services/user-scoped-crud'
+import { queueCaseSynthesis } from '$lib/server/services/background-job-queue'
+import { z } from 'zod'
 
-// Query parameters schema for GET requests;
+// Query parameters schema for GET requests
 const CasesQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(100).default(20),
@@ -22,42 +22,42 @@ const CasesQuerySchema = z.object({
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
   status: z.enum(['open', 'closed', 'pending', 'archived']).optional(),
   priority: z.enum(['low', 'medium', 'high', 'urgent']).optional()
-});
+})
 
 /*
  * GET /api/v1/cases
  * List user's cases with pagination and filtering
- */;
+ */
 export const GET: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication;
+    // Check authentication
     if (!locals.session || !locals.user) {
       return error(
         401,
         makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
-      );
+      )
     }
 
     // Parse query parameters
-    const url = new URL(request.url);
-    const queryParams = Object.fromEntries(url.searchParams.entries();
+    const url = new URL(request.url)
+    const queryParams = Object.fromEntries(url.searchParams.entries()
 
-    const validatedQuery = CasesQuerySchema.parse(queryParams);
+    const validatedQuery = CasesQuerySchema.parse(queryParams)
 
     // Create service instance
-    const casesService = new CasesCRUDService(locals.user.id);
+    const casesService = new CasesCRUDService(locals.user.id)
 
-    // Get cases with pagination;
+    // Get cases with pagination
     const result = await casesService.list({
       page: validatedQuery.page,
       limit: validatedQuery.limit,
       sortBy: validatedQuery.sortBy,
       sortOrder: validatedQuery.sortOrder
-    });
+    })
 
     // Map service ListResult<T> => route payload shape
     // Validate response shape with zod before returning
-    const CaseItemSchema = z;
+    const CaseItemSchema = z
       .object({
         id: z.string(),
         title: z.string().optional(),
@@ -68,9 +68,9 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         createdAt: z.string().optional(),
         updatedAt: z.string().optional()
       })
-      .passthrough();
+      .passthrough()
 
-    const CasesListResponse = z;
+    const CasesListResponse = z
       .object({
         success: z.literal(true),
         data: z.array(CaseItemSchema),
@@ -84,7 +84,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         }),
         meta: z.record(z.any()).optional()
       })
-      .passthrough();
+      .passthrough()
 
     const payload = {
       success: true,
@@ -101,23 +101,23 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         userId: locals.user.id,
         timestamp: new Date().toISOString()
       }
-    };
+    }
 
-    const validated = CasesListResponse.safeParse(payload);
+    const validated = CasesListResponse.safeParse(payload)
     if (!validated.success) {
-      console.error('Cases list response validation failed', validated.error);
+      console.error('Cases list response validation failed', validated.error)
       return error(
         500,
         makeHttpErrorPayload({
           message: 'Invalid response shape',
           code: 'RESPONSE_VALIDATION_FAILED'
         })
-      );
+      )
     }
 
-    return json(payload);
+    return json(payload)
   } catch (err: any) {
-    console.error('Error fetching cases:', err);
+    console.error('Error fetching cases:', err)
 
     if (err instanceof z.ZodError) {
       return error(
@@ -127,7 +127,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
           code: 'INVALID_QUERY',
           details: err.errors
         })
-      );
+      )
     }
 
     return error(
@@ -137,47 +137,47 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         code: 'FETCH_FAILED',
         details: err.message
       })
-    );
+    )
   }
-};
+}
 
 /*
  * POST /api/v1/cases
  * Create a new case
- */;
+ */
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication;
+    // Check authentication
     if (!locals.session || !locals.user) {
       return error(
         401,
         makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
-      );
+      )
     }
 
     // Parse request body
-    const body = await request.json();
-    const validatedData = CreateCaseSchema.parse(body) as CreateCaseData;
+    const body = await request.json()
+    const validatedData = CreateCaseSchema.parse(body) as CreateCaseData
 
     // Create service instance
-    const casesService = new CasesCRUDService(locals.user.id);
+    const casesService = new CasesCRUDService(locals.user.id)
 
     // Create case
-    const caseId = await casesService.create(validatedData);
+    const caseId = await casesService.create(validatedData)
 
     // Get the created case details
-    const createdCase = await casesService.getById(caseId);
+    const createdCase = await casesService.getById(caseId)
 
-    // Queue background synthesis;
+    // Queue background synthesis
     try {
-      const jobId = await queueCaseSynthesis(caseId, locals.user.id);
-      console.log(`[Cases API] Queued synthesis job ${jobId} for case ${caseId}`);
+      const jobId = await queueCaseSynthesis(caseId, locals.user.id)
+      console.log(`[Cases API] Queued synthesis job ${jobId} for case ${caseId}`)
     } catch (queueError) {
-      console.error('Failed to queue case synthesis:', queueError);
+      console.error('Failed to queue case synthesis:', queueError)
       // Don't fail the request, just log the error
     }
 
-    return json();
+    return json()
       {
         success: true,
         data: createdCase,
@@ -189,9 +189,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         }
       },
       { status: 201 }
-    );
+    )
   } catch (err: any) {
-    console.error('Error creating case:', err);
+    console.error('Error creating case:', err)
 
     if (err instanceof z.ZodError) {
       return error(
@@ -201,11 +201,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           code: 'INVALID_DATA',
           details: err.errors
         })
-      );
+      )
     }
 
     if (err.message.includes('not found') || err.message.includes('access denied')) {
-      return error(403, makeHttpErrorPayload({ message: err.message, code: 'ACCESS_DENIED' });
+      return error(403, makeHttpErrorPayload({ message: err.message, code: 'ACCESS_DENIED' })
     }
 
     return error(
@@ -215,6 +215,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         code: 'CREATE_FAILED',
         details: err.message
       })
-    );
+    )
   }
-};
+}

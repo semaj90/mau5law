@@ -68,7 +68,7 @@ export class FlatBufferLegalProcessor {
       title: document.title,
       content: processedContent,
       contentType: document.contentType,
-      compressed: !!document.compress,
+      compressed: !!document.compress,;
       checksum: this.calculateChecksum(processedContent)
     });
 
@@ -98,7 +98,7 @@ export class FlatBufferLegalProcessor {
       documentId: embeddings.documentId,
       embedding: quantizedEmbeddings,
       model: embeddings?.model || "unknown" // @ts-ignore - Model property access,
-      dimension: embeddings.vectors.length,
+      dimension: embeddings.vectors.length,;
       confidence: 0.95 // Would come from Go AI processing
     });
 
@@ -118,7 +118,7 @@ export class FlatBufferLegalProcessor {
           'Content-Type': 'application/x-flatbuffer',
           'X-Processing-Mode': 'simd', // Use SIMD optimizations
           'X-GPU-Acceleration': 'cuda' // Use CUDA if available
-        },
+        },;
         body: content
       });
 
@@ -156,7 +156,7 @@ export class FlatBufferLegalProcessor {
           'Content-Type': 'application/x-flatbuffer',
           'X-Search-Engine': 'gpu-accelerated',
           'X-Vector-Quantization': 'int8' // Use quantized vectors for speed
-        },
+        },;
         body: searchRequest
       });
 
@@ -188,7 +188,7 @@ export class FlatBufferLegalProcessor {
       async start(controller) {
         try {
           const response = await fetch(`${this.API_BASE}/api/texture/stream/${documentId}`, {
-            method: 'GET',
+            method: 'GET',;
             headers: {
               'Accept': 'application/x-flatbuffer-stream',
               'X-Quality-Level': qualityLevel.toString(),
@@ -350,7 +350,7 @@ export class FlatBufferLegalProcessor {
       entities: [;
         {
           text: 'Sample Entity',
-          type: 'ORGANIZATION',
+          type: 'ORGANIZATION',;
           confidence: 0.95,
           startPos: 0,
           endPos: 13
@@ -365,7 +365,7 @@ export class FlatBufferLegalProcessor {
       {
         documentId: 'result-doc-1',
         score: 0.89,
-        excerpt: 'Sample search result excerpt...',
+        excerpt: 'Sample search result excerpt...',;
         metadata: { type: 'contract', jurisdiction: 'federal' }
       }
     ];
@@ -412,7 +412,7 @@ export class FlatBufferPerformanceMonitor {
       report[operation] = {
         avg: this.getAverageTime(operation),
         min: Math.min(...times),
-        max: Math.max(...times),
+        max: Math.max(...times),;
         count: times.length
       };
     }

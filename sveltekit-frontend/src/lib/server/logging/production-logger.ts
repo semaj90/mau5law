@@ -51,7 +51,7 @@ export class ProductionLogger {
       level: entry.level || 'info',
       service: entry.service || 'unknown',
       message: entry.message || 'No message',
-      data: entry.data,
+      data: entry.data,;
       error: entry.error,
       userId: entry.userId,
       caseId: entry.caseId,
@@ -64,7 +64,7 @@ export class ProductionLogger {
     const levelColors = {
       info: '\x1b[36m', // Cyan
       warn: '\x1b[33m', // Yellow  
-      error: '\x1b[31m', // Red
+      error: '\x1b[31m', // Red;
       debug: '\x1b[90m'  // Gray
     };
     
@@ -100,7 +100,7 @@ export class ProductionLogger {
         ...entry,
         error: entry.error ? {
           message: entry.error.message,
-          stack: entry.error.stack,
+          stack: entry.error.stack,;
           name: entry.error.name
         } : undefined
       }) + '\n';
@@ -124,7 +124,7 @@ export class ProductionLogger {
           message: entry.error.message,
           stack: entry.error.stack,
           name: entry.error.name
-        } : null,
+        } : null,;
         data: entry.data ? JSON.stringify(entry.data) : null,
         userId: entry.userId,
         caseId: entry.caseId,
@@ -157,7 +157,7 @@ export class ProductionLogger {
       message: `Database operation: ${operation}`,
       data,
       error,
-      performanceMetrics: performanceMetrics as LogEntry['performanceMetrics'] || {
+      performanceMetrics: performanceMetrics as LogEntry['performanceMetrics'] || {;
         duration: 0,
         memoryUsage: process.memoryUsage().heapUsed
       }
@@ -171,7 +171,7 @@ export class ProductionLogger {
       message: `OCR processing: ${fileName}`,
       data: result,
       error,
-      performanceMetrics: performanceMetrics as LogEntry['performanceMetrics'] || {
+      performanceMetrics: performanceMetrics as LogEntry['performanceMetrics'] || {;
         duration: 0,
         memoryUsage: process.memoryUsage().heapUsed
       }
@@ -182,7 +182,7 @@ export class ProductionLogger {
     await this.log({
       level: error ? 'error' : 'info',
       service: 'vector',
-      message: `Vector operation: ${operation}`,
+      message: `Vector operation: ${operation}`,;
       data: { query, results: results && Array.isArray(results) ? { count: results.length, sample: results[0] } : null },
       error
     });
@@ -199,7 +199,7 @@ export class ProductionLogger {
         tokenUsage: (performanceMetrics as any)?.tokens || 0
       },
       error,
-      performanceMetrics: performanceMetrics as LogEntry['performanceMetrics'] || {
+      performanceMetrics: performanceMetrics as LogEntry['performanceMetrics'] || {;
         duration: 0,
         memoryUsage: process.memoryUsage().heapUsed
       }
@@ -210,7 +210,7 @@ export class ProductionLogger {
     await this.log({
       level: error ? 'error' : 'info',
       service: 'upload',
-      message: `File upload: ${fileName}`,
+      message: `File upload: ${fileName}`,;
       data: { fileSize, caseId, result },
       error,
       caseId,
@@ -222,7 +222,7 @@ export class ProductionLogger {
     await this.log({
       level: error ? 'error' : 'debug',
       service: 'xstate',
-      message: `State transition: ${machine} -> ${state}`,
+      message: `State transition: ${machine} -> ${state}`,;
       data: { machine, state, event, context },
       error
     });
@@ -296,31 +296,31 @@ export const logger = new ProductionLogger();
 ;
 // Export service-specific loggers;
 export const dbLogger = {
-  info: (operation: string, data?: unknown, metrics?: unknown) => logger.logDatabaseOperation(operation, data, undefined, metrics),
+  info: (operation: string, data?: unknown, metrics?: unknown) => logger.logDatabaseOperation(operation, data, undefined, metrics),;
   error: (operation: string, error: Error, data?: unknown) => logger.logDatabaseOperation(operation, data, error)
 };
 
 export const ocrLogger = {
-  info: (fileName: string, result?: unknown, metrics?: unknown) => logger.logOCROperation(fileName, result, undefined, metrics),
+  info: (fileName: string, result?: unknown, metrics?: unknown) => logger.logOCROperation(fileName, result, undefined, metrics),;
   error: (fileName: string, error: Error) => logger.logOCROperation(fileName, undefined, error)
 };
 
 export const vectorLogger = {
-  info: (operation: string, query?: string, results?: unknown) => logger.logVectorOperation(operation, query, results),
+  info: (operation: string, query?: string, results?: unknown) => logger.logVectorOperation(operation, query, results),;
   error: (operation: string, error: Error, query?: string) => logger.logVectorOperation(operation, query, undefined, error)
 };
 
 export const aiLogger = {
-  info: (model: string, prompt?: string, response?: unknown, metrics?: unknown) => logger.logAIOperation(model, prompt, response, undefined, metrics),
+  info: (model: string, prompt?: string, response?: unknown, metrics?: unknown) => logger.logAIOperation(model, prompt, response, undefined, metrics),;
   error: (model: string, error: Error, prompt?: string) => logger.logAIOperation(model, prompt, undefined, error)
 };
 
 export const uploadLogger = {
-  info: (fileName: string, fileSize: number, caseId?: string, result?: unknown) => logger.logUploadOperation(fileName, fileSize, caseId, result),
+  info: (fileName: string, fileSize: number, caseId?: string, result?: unknown) => logger.logUploadOperation(fileName, fileSize, caseId, result),;
   error: (fileName: string, fileSize: number, error: Error, caseId?: string) => logger.logUploadOperation(fileName, fileSize, caseId, undefined, error)
 };
 
 export const xstateLogger = {
-  info: (machine: string, state: string, event: string, context?: unknown) => logger.logXStateTransition(machine, state, event, context),
+  info: (machine: string, state: string, event: string, context?: unknown) => logger.logXStateTransition(machine, state, event, context),;
   error: (machine: string, state: string, event: string, error: Error, context?: unknown) => logger.logXStateTransition(machine, state, event, context, error)
 };

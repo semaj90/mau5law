@@ -11,7 +11,7 @@
   let {
     value = 0,
     max = 100,
-    class: className = ''
+    class: className = '';
   }: Props = $props();
 
   	let percentage = $derived(Math.min((value / max) * 100, 100));

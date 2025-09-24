@@ -13,7 +13,7 @@
       title: 'Police Report #2024-001',
       description: 'Initial incident report filed by responding officer',
       url: '/docs/police-report-001.pdf',
-      tags: ['official', 'police', 'incident'],
+      tags: ['official', 'police', 'incident'],;
       metadata: { format: 'PDF', size: 1024000 },
       createdAt: new Date('2024-01-15'),
       updatedAt: new Date('2024-01-15')
@@ -24,7 +24,7 @@
       title: 'Crime Scene Photo 1',
       description: 'Overview of the crime scene from north entrance',
       url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
-      tags: ['evidence', 'scene', 'photography'],
+      tags: ['evidence', 'scene', 'photography'],;
       metadata: { format: 'JPG', size: 2048000 },
       createdAt: new Date('2024-01-16'),
       updatedAt: new Date('2024-01-16')
@@ -35,7 +35,7 @@
       title: 'Security Camera Footage',
       description: 'CCTV footage from building entrance showing suspect',
       url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-      tags: ['surveillance', 'suspect', 'timestamp'],
+      tags: ['surveillance', 'suspect', 'timestamp'],;
       metadata: { format: 'MP4', size: 15728640, duration: '00:02:14' },
       createdAt: new Date('2024-01-16'),
       updatedAt: new Date('2024-01-16')
@@ -46,7 +46,7 @@
       title: 'Forensic Lab Report',
       description: 'DNA analysis results from evidence collected at scene',
       url: 'https://example.com/forensic-report-2024-001',
-      tags: ['forensics', 'dna', 'lab-results'],
+      tags: ['forensics', 'dna', 'lab-results'],;
       metadata: { format: 'HTML', size: 128000 },
       createdAt: new Date('2024-01-18'),
       updatedAt: new Date('2024-01-18')
@@ -57,7 +57,7 @@
       title: 'Witness Interview Recording',
       description: 'Audio recording of witness statement taken on January 17th',
       url: '/audio/witness-interview-001.mp3',
-      tags: ['witness', 'interview', 'statement'],
+      tags: ['witness', 'interview', 'statement'],;
       metadata: { format: 'MP3', size: 5242880, duration: '00:12:34' },
       createdAt: new Date('2024-01-17'),
       updatedAt: new Date('2024-01-17')
@@ -67,8 +67,8 @@
       type: 'image' as const,
       title: 'Evidence Item A-1',
       description: 'Photograph of recovered weapon with measurement scale',
-      url: 'https://images.unsplash.com/photo-1568667256549-094345857637?w=400',
-      tags: ['weapon', 'evidence', 'measurement'],
+      url: 'https://images.unsplash.com/photo-1568667256549-094345857637?w=400',;
+      tags: ['weapon', 'evidence', 'measurement'],;
       metadata: { format: 'JPG', size: 1536000 },
       createdAt: new Date('2024-01-16'),
       updatedAt: new Date('2024-01-16')
@@ -77,8 +77,8 @@
   $effect(() => {
     const settings = {
       autoSave: true,
-      theme: 'light' as const,
-      layout: 'dual' as const
+      theme: 'light' as const,;
+      layout: 'dual' as const;
     };
     reportActions.load(sampleReport);
   });

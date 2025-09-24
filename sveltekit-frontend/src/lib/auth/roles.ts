@@ -155,7 +155,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
     displayName: 'Viewer',
     description: 'Read-only access for supervisors and auditors',
     hierarchyLevel: 10,
-    canDelegate: false,
+    canDelegate: false,;
     permissions: [
       'view_case', 'view_evidence', 'view_report',
       'view_users', 'view_criminals'
@@ -194,7 +194,7 @@ export const PERMISSION_CATEGORIES = {
     permissions: ['system_admin', 'access_admin_panel', 'configure_system', 'view_audit_logs', 'manage_integrations'] as Permission[]
   },
   data_export: {
-    name: 'Data Export',
+    name: 'Data Export',;
     permissions: ['export_data'] as Permission[]
   }
 };

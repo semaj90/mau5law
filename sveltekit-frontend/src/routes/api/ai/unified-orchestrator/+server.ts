@@ -22,19 +22,19 @@
  * Supports both local and server-side orchestrators with MCP multi-core integration
  */
 
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { llmOrchestratorBridge } from '$lib/server/ai/llm-orchestrator-bridge.js';
-import type { LLMBridgeRequest } from '$lib/server/ai/llm-orchestrator-bridge.js';
-import { logger } from '$lib/server/ai/logger.js';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
+import { llmOrchestratorBridge } from '$lib/server/ai/llm-orchestrator-bridge.js'
+import type { LLMBridgeRequest } from '$lib/server/ai/llm-orchestrator-bridge.js'
+import { logger } from '$lib/server/ai/logger.js'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 
-// Health check endpoint;
+// Health check endpoint
 const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
-    const status = await llmOrchestratorBridge.getStatus();
-    const metrics = llmOrchestratorBridge.getPerformanceMetrics();
-    const activeRequests = llmOrchestratorBridge.getActiveRequests();
+    const status = await llmOrchestratorBridge.getStatus()
+    const metrics = llmOrchestratorBridge.getPerformanceMetrics()
+    const activeRequests = llmOrchestratorBridge.getActiveRequests()
 
     return json({
       service: 'unified-ai-orchestrator',
@@ -70,10 +70,10 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         server: ['gemma3-legal:latest', 'nomic-embed-text:latest'],
         client: ['gemma270m', 'legal-bert', 'onnx-embeddings']
       }
-    });
+    })
   } catch (error) {
-    logger.error('[Unified Orchestrator] Health check failed:', error);
-    return json();
+    logger.error('[Unified Orchestrator] Health check failed:', error)
+    return json()
       {
         service: 'unified-ai-orchestrator',
         status: 'error',
@@ -81,36 +81,36 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         timestamp: new Date().toISOString()
       },
       { status: 500 }
-    );
+    )
   }
-};
+}
 
-// Main orchestrator endpoint;
+// Main orchestrator endpoint
 const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
-  const startTime = performance.now();
-  let requestData: any;
+  const startTime = performance.now()
+  let requestData: any
 
   try {
-    requestData = await request.json();
+    requestData = await request.json()
     
-    // Validate required fields;
+    // Validate required fields
     if (!requestData.content && !requestData.messages && !requestData.prompt) {
-      return json();
+      return json()
         {
           success: false,
           error: 'Missing required field: content, messages, or prompt',
           timestamp: new Date().toISOString()
         },
         { status: 400 }
-      );
+      )
     }
 
     // Normalize input format (support multiple input styles)
     const content = requestData.content || 
                    requestData.prompt || 
-                   (requestData.messages ? extractContentFromMessages(requestData.messages) : '');
+                   (requestData.messages ? extractContentFromMessages(requestData.messages) : '')
 
-    // Create bridge request;
+    // Create bridge request
     const bridgeRequest: LLMBridgeRequest = {
       id: generateRequestId(),
       type: determineRequestType(requestData),
@@ -137,25 +137,25 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
         userAgent: request.headers.get('user-agent') || 'unknown',
         timestamp: Date.now()
       }
-    };
+    }
 
-    logger.info(`[Unified Orchestrator] Processing ${bridgeRequest.type} request: ${bridgeRequest.id}`);
+    logger.info(`[Unified Orchestrator] Processing ${bridgeRequest.type} request: ${bridgeRequest.id}`)
 
     // Process through bridge
-    const result = await llmOrchestratorBridge.processRequest(bridgeRequest);
+    const result = await llmOrchestratorBridge.processRequest(bridgeRequest)
 
     // Format response based on request type
-    const response = formatResponse(result, requestData, startTime);
+    const response = formatResponse(result, requestData, startTime)
 
     logger.info(
       `[Unified Orchestrator] Request ${bridgeRequest.id} completed: ` +
       `${(result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).orchestratorUsed} orchestrator, ${(result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).executionMetrics.totalLatency.toFixed(2)}ms`
-    );
+    )
 
-    return json(response);
+    return json(response)
 
   } catch (error) {
-    logger.error('[Unified Orchestrator] Request failed:', error);
+    logger.error('[Unified Orchestrator] Request failed:', error)
     
     const errorResponse = {
       success: false,
@@ -169,18 +169,18 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
       },
       requestId: requestData?.id || 'unknown',
       timestamp: new Date().toISOString()
-    };
+    }
 
-    return json(errorResponse, { status: 500 });
+    return json(errorResponse, { status: 500 })
   }
-};
+}
 
-// Streaming endpoint for real-time responses;
+// Streaming endpoint for real-time responses
 const originalPATCHHandler: RequestHandler = async ({ request }) => {
   try {
-    const requestData = await request.json();
+    const requestData = await request.json()
     
-    // Enable streaming in bridge request;
+    // Enable streaming in bridge request
     const bridgeRequest: LLMBridgeRequest = {
       id: generateRequestId(),
       type: 'chat',
@@ -194,27 +194,27 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
         source: 'streaming_api',
         timestamp: Date.now()
       }
-    };
+    }
 
-    // Create a readable stream for SSE;
+    // Create a readable stream for SSE
     const stream = new ReadableStream({
       async start(controller) {
         try {
           // For now, just process normally and return result
           // In future, this could use streaming from orchestrator
-          const result = await llmOrchestratorBridge.processRequest(bridgeRequest);
+          const result = await llmOrchestratorBridge.processRequest(bridgeRequest)
           
           // Send as SSE event
-          const data = `data: ${JSON.stringify(result)}\n\n`;
-          controller.enqueue(new TextEncoder().encode(data);
-          controller.close();
+          const data = `data: ${JSON.stringify(result)}\n\n`
+          controller.enqueue(new TextEncoder().encode(data)
+          controller.close()
         } catch (error) {
-          const errorData = `data: ${JSON.stringify({ error: error instanceof Error ? error.message: 'Unknown error' })}\n\n`;
-          controller.enqueue(new TextEncoder().encode(errorData);
-          controller.close();
+          const errorData = `data: ${JSON.stringify({ error: error instanceof Error ? error.message: 'Unknown error' })}\n\n`
+          controller.enqueue(new TextEncoder().encode(errorData)
+          controller.close()
         }
       }
-    });
+    })
 
     return new Response(stream, {
       headers: {
@@ -222,59 +222,59 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive'
       }
-    });
+    })
   } catch (error) {
     return json(
       { error: error instanceof Error ? error.message: 'Streaming failed' },)
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 // Helper functions
 
 function extractContentFromMessages(messages: any[]): string {
   if (!Array.isArray(messages) || messages.length === 0) {
-    return '';
+    return ''
   }
   
   // Get the last user message
-  const lastMessage = messages[messages.length - 1];
-  return lastMessage?.content || lastMessage?.text || '';
+  const lastMessage = messages[messages.length - 1]
+  return lastMessage?.content || lastMessage?.text || ''
 }
 
 function determineRequestType(requestData: any): LLMBridgeRequest['type'] {
-  // Explicit type specified;
+  // Explicit type specified
   if (requestData.type) {
-    return requestData.type;
+    return requestData.type
   }
 
-  // Detect from endpoint or context;
+  // Detect from endpoint or context
   if (requestData.workflow || requestData.workflowType) {
-    return 'workflow';
+    return 'workflow'
   }
   
   if (requestData.documentType || requestData.document || requestData.content?.length > 1000) {
-    return 'document_processing';
+    return 'document_processing'
   }
   
   if (requestData.query || requestData.search || requestData.vector) {
-    return 'search';
+    return 'search'
   }
   
   if (requestData.embed || requestData.embedding) {
-    return 'embedding';
+    return 'embedding'
   }
   
   if (requestData.legalAnalysis || requestData.legalDomain || 
       (requestData.content && (requestData.content.includes('legal') || 
-                              requestData.content.includes('contract') ||;
+                              requestData.content.includes('contract') ||
                               requestData.content.includes('statute')))) {
-    return 'legal_analysis';
+    return 'legal_analysis'
   }
   
   // Default to chat
-  return 'chat';
+  return 'chat'
 }
 
 function formatResponse(result: any, originalRequest: any, startTime: number) {
@@ -290,15 +290,15 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
     confidence: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).confidence,
     requestId: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).requestId,
     timestamp: new Date().toISOString()
-  };
+  }
 
   // Add additional fields based on original request format
   
-  // OpenAI-compatible format;
+  // OpenAI-compatible format
   if (originalRequest.messages) {
     return {
       ...baseResponse,
-      choices: [;
+      choices: [
         {
           message: {
             role: 'assistant',
@@ -313,10 +313,10 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
         completion_tokens: Math.ceil((result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).response.length / 4),
         total_tokens: Math.ceil(((originalRequest.content || '') + (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).response).length / 4)
       }
-    };
+    }
   }
 
-  // Legal analysis format;
+  // Legal analysis format
   if (originalRequest.type === 'legal_analysis' || originalRequest.legalAnalysis) {
     return {
       ...baseResponse,
@@ -326,10 +326,10 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
         confidence: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).confidence || 0.8,
         recommendations: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).followupSuggestions || []
       }
-    };
+    }
   }
 
-  // Document processing format;
+  // Document processing format
   if (originalRequest.type === 'document_processing' || originalRequest.document) {
     return {
       ...baseResponse,
@@ -339,10 +339,10 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
         keyTerms: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).keyTerms || [],
         metadata: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).metadata || {}
       }
-    };
+    }
   }
 
-  // Search format;
+  // Search format
   if (originalRequest.type === 'search' || originalRequest.query) {
     return {
       ...baseResponse,
@@ -352,22 +352,22 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
         summary: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).response,
         totalResults: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).totalResults || 0
       }
-    };
+    }
   }
 
   // Default format
-  return baseResponse;
+  return baseResponse
 }
 
 function generateRequestId(): string {
-  return `unified_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  return `unified_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`
 }
 
 function generateSessionId(): string {
-  return `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  return `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`
 }
 
-// OPTIONS handler for CORS;
+// OPTIONS handler for CORS
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {
     status: 200,
@@ -376,9 +376,9 @@ export const OPTIONS: RequestHandler = async () => {
       'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization'
     }
-  });
-};
+  })
+}
 
-export const GET = redisOptimized.aiAnalysis(originalGETHandler);
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
-export const PATCH = redisOptimized.aiAnalysis(originalPATCHHandler);
+export const GET = redisOptimized.aiAnalysis(originalGETHandler)
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
+export const PATCH = redisOptimized.aiAnalysis(originalPATCHHandler)

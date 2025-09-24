@@ -21,7 +21,7 @@
     loading = false,
     interactive = false,
     children,
-    ...restProps
+    ...restProps;
   }: Props = $props();
 
   let cardClass = $derived(() => {
@@ -31,17 +31,17 @@
     const variantClasses = {
       default: "card-nes-default",
       evidence: "card-nes-evidence legal-document-evidence",
-      legal: "card-nes-legal legal-document-contract",
-      nes: "yorha-3d-card bg-gray-900/90 border-yellow-400/50 text-yellow-100",
-      yorha: "yorha-3d-panel text-yellow-400"
+      legal: "card-nes-legal legal-document-contract",;
+      nes: "yorha-3d-card bg-gray-900/90 border-yellow-400/50 text-yellow-100",;
+      yorha: "yorha-3d-panel text-yellow-400";
     };
 
     // Priority-based styling
     const priorityClasses = priority ? {
       critical: "nes-legal-priority-critical ring-2 ring-red-400",
-      high: "nes-legal-priority-high ring-2 ring-yellow-400",
-      medium: "nes-legal-priority-medium ring-2 ring-blue-400",
-      low: "nes-legal-priority-low"
+      high: "nes-legal-priority-high ring-2 ring-yellow-400",;
+      medium: "nes-legal-priority-medium ring-2 ring-blue-400",;
+      low: "nes-legal-priority-low";
     }[priority] : '';
 
     // Loading state

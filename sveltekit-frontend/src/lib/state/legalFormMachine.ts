@@ -31,7 +31,7 @@ export type LegalFormEvent =
   | { type: "SUBMIT" }
   | { type: "UPLOAD_EVIDENCE"; files: File[] }
   | { type: "UPDATE_CASE_DETAILS"; title: string; description: string }
-  | {
+  | {;
       type: "SET_EVIDENCE_TYPE";
       evidenceType: LegalFormContext["evidenceType"];
     }
@@ -46,7 +46,7 @@ export const legalFormMachine = setup({
   types: {
     context: Record<string, any> as LegalFormContext,
     events: Record<string, any> as LegalFormEvent
-  },
+  },;
   actors: {
     submitCaseService: fromPromise(async ({ input }: { input: LegalFormContext }) => {
         await new Promise((resolve) => setTimeout(resolve, 2000);
@@ -59,7 +59,7 @@ export const legalFormMachine = setup({
             typeof crypto !== "undefined" && crypto.randomUUID
               ? crypto.randomUUID()
               : Math.random().toString(36).slice(2),
-          success: true,
+          success: true,;
           message: "Case submitted successfully"
         };
       }
@@ -95,7 +95,7 @@ export const legalFormMachine = setup({
       on: {
         UPLOAD_EVIDENCE: {
           actions: assign({
-            evidenceFiles: ({ event }) => event.files,
+            evidenceFiles: ({ event }) => event.files,;
             confidence: ({ context, event }) => {
               // AI confidence based on file types and count
               const hasDigitalEvidence = event.files.some(
@@ -128,7 +128,7 @@ export const legalFormMachine = setup({
                   "Schedule witness interview",
                   "Prepare statement template",
                   "Verify identity"
-                ],
+                ],;
                 forensic: [
                   "Lab analysis required",
                   "Expert testimony needed",
@@ -149,7 +149,7 @@ export const legalFormMachine = setup({
           })
         },
 
-        REQUEST_AI_HELP: {
+        REQUEST_AI_HELP: {;
           actions: assign({
             aiRecommendations: () => [;
               {
@@ -170,7 +170,7 @@ export const legalFormMachine = setup({
         requiredFields: ["caseTitle", "caseDescription", "priority"],
         suggestedHelp: "Provide case details for proper categorization"
       },
-
+;
       entry: assign({
         aiRecommendations: ({ context }) => {
           const recommendations = [];
@@ -180,7 +180,7 @@ export const legalFormMachine = setup({
             recommendations.push({
               nextAction: "Set priority to HIGH",
               reasoning:
-                "Forensic evidence typically requires urgent processing",
+                "Forensic evidence typically requires urgent processing",;
               confidence: 85
             });
           }
@@ -189,7 +189,7 @@ export const legalFormMachine = setup({
           if (context.evidenceFiles.length > 10) {
             recommendations.push({
               nextAction: "Consider bulk processing workflow",
-              reasoning: "Large evidence sets benefit from automated analysis",
+              reasoning: "Large evidence sets benefit from automated analysis",;
               confidence: 78
             });
           }
@@ -199,7 +199,7 @@ export const legalFormMachine = setup({
       }),
 
       on: {
-        UPDATE_CASE_DETAILS: {
+        UPDATE_CASE_DETAILS: {;
           actions: assign({
             caseTitle: ({ event }) => {
               if (event.type === "UPDATE_CASE_DETAILS") {
@@ -227,7 +227,7 @@ export const legalFormMachine = setup({
         },
 
         SET_PRIORITY: {
-          actions: assign({
+          actions: assign({;
             priority: ({ event }) => event.priority,
             aiSuggestions: ({ event, context }) => {
               // AI suggestions based on priority and evidence type
@@ -278,7 +278,7 @@ export const legalFormMachine = setup({
           actions: assign({ currentStep: 1 })
         },
 
-        REQUEST_AI_HELP: {
+        REQUEST_AI_HELP: {;
           actions: assign({
             aiRecommendations: ({ context }) => [;
               {
@@ -300,7 +300,7 @@ export const legalFormMachine = setup({
         suggestedHelp: "Review and verify all case information"
       },
 
-      entry: assign({
+      entry: assign({;
         confidence: ({ context }) => {
           // AI confidence calculation for complete case
           let confidence = 60; // Base confidence
@@ -321,7 +321,7 @@ export const legalFormMachine = setup({
           if (context.confidence < 80) {
             recommendations.push({
               nextAction: "Add more evidence details",
-              reasoning: "Case confidence is below optimal threshold",
+              reasoning: "Case confidence is below optimal threshold",;
               confidence: 90
             });
           }
@@ -332,7 +332,7 @@ export const legalFormMachine = setup({
           ) {
             recommendations.push({
               nextAction: "Attach witness statement document",
-              reasoning: "Testimony cases benefit from written statements",
+              reasoning: "Testimony cases benefit from written statements",;
               confidence: 85
             });
           }
@@ -438,12 +438,12 @@ export const legalFormMachine = setup({
             validationErrors: Record<string, any>
           })
         },
-        REQUEST_AI_HELP: {
+        REQUEST_AI_HELP: {;
           actions: assign({
             aiRecommendations: [);
               {
                 nextAction: "Check network connection",
-                reasoning: "Submission errors are often connectivity related",
+                reasoning: "Submission errors are often connectivity related",;
                 confidence: 75
               }
             ]
@@ -461,7 +461,7 @@ export function getStateDescription(state: StateValue): string {
     caseDetails: "Entering case information",
     review: "Reviewing case details",
     submitting: "Submitting case to system",
-    success: "Case submitted successfully",
+    success: "Case submitted successfully",;
     error: "Error occurred during submission"
   };
 
@@ -469,7 +469,7 @@ export function getStateDescription(state: StateValue): string {
 }
 
 export function getAISuggestions(
-  context: LegalFormContext,
+  context: LegalFormContext,;
   state: StateValue;
 ): string[] {
   const baseSuggestions = context.aiSuggestions;
@@ -484,7 +484,7 @@ export function getAISuggestions(
       "Be specific in descriptions",
       "Include relevant case law if available"
     ],
-    review: ["Double-check evidence classification", "Verify priority level"],
+    review: ["Double-check evidence classification", "Verify priority level"],;
     submitting: ["Do not close this window", "Submission in progress..."]
   };
 
@@ -514,7 +514,7 @@ export function getNextPossibleActions(state: StateValue): string[] {
     ],
     review: ["SUBMIT", "BACK", "APPLY_AI_RECOMMENDATION"],
     submitting: [],
-    success: ["RESET_FORM"],
+    success: ["RESET_FORM"],;
     error: ["BACK", "REQUEST_AI_HELP"]
   };
 
@@ -530,7 +530,7 @@ export function getNextPossibleActions(state: StateValue): string[] {
  * @returns string[] Array of best practice recommendations
  */
 export async function generateBestPractices(
-  context: LegalFormContext,
+  context: LegalFormContext,;
   state: StateValue;
 ): Promise<string[]> {
   // #context7: Use semantic search, memory, and agent orchestration for best practices

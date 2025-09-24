@@ -21,17 +21,17 @@
   let sanitizedContent = $derived(() => DOMPurify.sanitize(message.content));
   let isUser = $derived(message.role === "user");
   let isAssistant = $derived(message.role === "assistant");
-  let formattedTime = $derived(() => 
+  let formattedTime = $derived(() =>
     message.timestamp ? new Date(message.timestamp).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit"
+      hour: "2-digit",;
+      minute: "2-digit";
     }) : ""
   );
 </script>
 
-<div 
-  class="chat-message" 
-  class:user={isUser} 
+<div
+  class="chat-message"
+  class:user={isUser}
   class:assistant={isAssistant}
   data-role={message.role}
 >
@@ -84,7 +84,7 @@
 </div>
 
 <style>
-  .chat-message {
+  .chat-message {;
     display: flex;
     margin-bottom: 1rem;
     max-width: 100%;
@@ -200,15 +200,15 @@
   }
 
   /* Content styling */
-  .message-body: global(p) {
+  .message-body :global(p) {
     margin: 0 0 0.5rem 0;
   }
 
-  .message-body: global(p:last-child) {
+  .message-body :global(p:last-child) {
     margin-bottom: 0;
   }
 
-  .message-body: global(code) {
+  .message-body :global(code) {
     background-color: rgba(0, 0, 0, 0.1);
     padding: 0.125rem 0.25rem;
     border-radius: 0.25rem;
@@ -216,7 +216,7 @@
     font-size: 0.8125rem;
   }
 
-  .message-body: global(pre) {
+  .message-body :global(pre) {
     background-color: rgba(0, 0, 0, 0.05);
     padding: 0.75rem;
     border-radius: 0.375rem;
@@ -224,13 +224,13 @@
     margin: 0.5rem 0;
   }
 
-  .message-body: global(ul),
+  .message-body :global(ul),
   .message-body :global(ol) {
     margin: 0.5rem 0;
     padding-left: 1.5rem;
   }
 
-  .message-body: global(li) {
+  .message-body :global(li) {
     margin: 0.25rem 0;
   }
 
@@ -251,11 +251,11 @@
       color: var(--muted-foreground, #94a3b8);
     }
 
-    .message-body: global(code) {
+  .message-body :global(code) {
       background-color: rgba(255, 255, 255, 0.1);
     }
 
-    .message-body: global(pre) {
+  .message-body :global(pre) {
       background-color: rgba(255, 255, 255, 0.05);
     }
   }

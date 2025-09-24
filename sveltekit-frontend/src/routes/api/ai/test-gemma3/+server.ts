@@ -1,23 +1,23 @@
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 // Test endpoint for Gemma3 local LLM integration
-import { json } from "@sveltejs/kit";
-import { tauriLLM } from "$lib/services/tauri-llm";
+import { json } from "@sveltejs/kit"
+import { tauriLLM } from "$lib/services/tauri-llm"
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { prompt, options = {} } = await request.json();
+    const { prompt, options = {} } = await request.json()
 
     if (!prompt) {
       return json({
           error: "Prompt is required"
         },)
         { status: 400 },
-      );
+      )
     }
     // Initialize Tauri LLM service
-    await tauriLLM.initialize();
+    await tauriLLM.initialize()
 
     if (!tauriLLM.isAvailable()) {
       return json({
@@ -26,10 +26,10 @@ export const POST: RequestHandler = async ({ request }) => {
         fallback: true,
         message:
           "Gemma3 is not loaded. Please ensure the desktop app is running with local LLM support."
-      });
+      })
     }
     // Test Gemma3 inference
-    const startTime = Date.now();
+    const startTime = Date.now()
 
     const response = await tauriLLM.runInference(prompt, {
       temperature: options.temperature || 0.7,
@@ -37,9 +37,9 @@ export const POST: RequestHandler = async ({ request }) => {
       systemPrompt:
         options.systemPrompt ||
         "You are a helpful legal AI assistant. Provide clear, accurate responses."
-    });
+    })
 
-    const inferenceTime = Date.now() - startTime;
+    const inferenceTime = Date.now() - startTime
 
     return json({
       success: true,
@@ -52,11 +52,11 @@ export const POST: RequestHandler = async ({ request }) => {
           prompt: prompt.substring(0, 100) + (prompt.length > 100 ? "..." : "")
         }
       }
-    });
+    })
   } catch (error: any) {
-    console.error("Gemma3 test failed:", error);
+    console.error("Gemma3 test failed:", error)
 
-    return json();
+    return json()
       {
         success: false,
         error: "Gemma3 inference failed",
@@ -69,20 +69,20 @@ export const POST: RequestHandler = async ({ request }) => {
         ]
       },
       { status: 500 },
-    );
+    )
   }
-};
+}
 
 export const GET: RequestHandler = async () => {
   try {
-    await tauriLLM.initialize();
+    await tauriLLM.initialize()
 
     const status = {
       available: tauriLLM.isAvailable(),
       models: tauriLLM.getAvailableModels(),
       currentModels: tauriLLM.getCurrentModels(),
       initialized: true
-    };
+    }
 
     return json({
       success: true,
@@ -90,7 +90,7 @@ export const GET: RequestHandler = async () => {
       message: status.available
         ? "Gemma3 local LLM is ready"
         : "Local LLM not available - running in web mode"
-    });
+    })
   } catch (error: any) {
     return json({
       success: false,
@@ -99,6 +99,6 @@ export const GET: RequestHandler = async () => {
         initialized: false,
         error: error instanceof Error ? error.message: "Unknown error"
       }
-    });
+    })
   }
-};
+}

@@ -383,7 +383,7 @@
 </div>
 
 <style>
-  .demo-showcase {
+  .demo-showcase {;
     min-height: 100vh;
     background: var(--color-bg-primary, #f8fafc);
     padding: 2rem;

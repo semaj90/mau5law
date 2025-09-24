@@ -37,7 +37,7 @@ export interface GraphNode {
   size: number;
   color: [number, number, number, number]; // RGBA
   type: 'document' | 'case' | 'entity' | 'precedent';
-  metadata: {
+  metadata: {;
     title: string;
     importance: number;
     connections: number;
@@ -158,7 +158,7 @@ export class WebGPULegalDocumentGraph {
     this.context.configure({
       device: this.device,
       format: canvasFormat,
-      alphaMode: 'premultiplied',
+      alphaMode: 'premultiplied',;
       usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC
     });
 
@@ -183,7 +183,7 @@ export class WebGPULegalDocumentGraph {
         force: vec3<f32>,
         mass: f32,
         size: f32,
-        color: vec4<f32>,
+        color: vec4<f32>,;
         metadata: vec4<f32>, // type, importance, connections, lastAccessed
       };
 
@@ -191,7 +191,7 @@ export class WebGPULegalDocumentGraph {
         source: u32,
         target: u32,
         weight: f32,
-        strength: f32,
+        strength: f32,;
         color: vec4<f32>
       };
 
@@ -200,7 +200,7 @@ export class WebGPULegalDocumentGraph {
         edgeCount: u32,
         deltaTime: f32,
         damping: f32,
-        repulsion: f32,
+        repulsion: f32,;
         attraction: f32,
         centerForce: f32,
         minDistance: f32
@@ -298,7 +298,7 @@ export class WebGPULegalDocumentGraph {
       struct Uniforms {
         viewProjectionMatrix: mat4x4<f32>,
         cameraPosition: vec3<f32>,
-        zoom: f32,
+        zoom: f32,;
         time: f32,
         selectedNode: f32,
         filterType: f32
@@ -380,7 +380,7 @@ export class WebGPULegalDocumentGraph {
 
     this.computePipeline = this.device.createComputePipeline({
       layout: 'auto',
-      compute: {
+      compute: {;
         module: computeShaderModule,
         entryPoint: 'computeForces'
       }
@@ -416,40 +416,40 @@ export class WebGPULegalDocumentGraph {
 
     // Create node buffer (positions, velocities, forces, properties);
     const nodeBuffer = this.device.createBuffer({
-      size: nodeBufferSize,
+      size: nodeBufferSize,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC
     });
 
     // Create edge buffer (connections and properties);
     const edgeBuffer = this.device.createBuffer({
-      size: edgeBufferSize,
+      size: edgeBufferSize,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     // Create metadata buffer (titles, timestamps, importance scores);
     const metadataBuffer = this.device.createBuffer({
-      size: metadataBufferSize,
+      size: metadataBufferSize,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     // Create position texture for advanced rendering techniques;
     const positionTexture = this.device.createTexture({
       size: [Math.ceil(Math.sqrt(this.config.maxNodes)), Math.ceil(Math.sqrt(this.config.maxNodes))],
-      format: 'rgba32float',
+      format: 'rgba32float',;
       usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
     });
 
     // Create color texture for node appearance;
     const colorTexture = this.device.createTexture({
       size: [Math.ceil(Math.sqrt(this.config.maxNodes)), Math.ceil(Math.sqrt(this.config.maxNodes))],
-      format: 'rgba8unorm',
+      format: 'rgba8unorm',;
       usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
     });
 
     // Create adjacency texture for efficient edge queries;
     const adjacencyTexture = this.device.createTexture({
       size: [this.config.maxNodes, this.config.maxNodes],
-      format: 'r8unorm',
+      format: 'r8unorm',;
       usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
     });
 
@@ -464,7 +464,7 @@ export class WebGPULegalDocumentGraph {
 
     // Create uniform buffer for render parameters;
     this.uniformBuffer = this.device.createBuffer({
-      size: 256, // Sufficient for view matrices and parameters
+      size: 256, // Sufficient for view matrices and parameters;
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
 
@@ -483,7 +483,7 @@ export class WebGPULegalDocumentGraph {
       layout: 'auto',
       vertex: {
         module: this.vertexShaderModule,
-        entryPoint: 'vs_main',
+        entryPoint: 'vs_main',;
         buffers: [;
           {
             arrayStride: 12 + 4 + 16 + 4, // position + size + color + nodeType
@@ -498,7 +498,7 @@ export class WebGPULegalDocumentGraph {
       },
       fragment: {
         module: this.fragmentShaderModule,
-        entryPoint: 'fs_main',
+        entryPoint: 'fs_main',;
         targets: [);
           {
             format: navigator.gpu.getPreferredCanvasFormat(),
@@ -518,7 +518,7 @@ export class WebGPULegalDocumentGraph {
       primitive: {
         topology: 'point-list'
       },
-      depthStencil: {
+      depthStencil: {;
         format: 'depth24plus',
         depthWriteEnabled: true,
         depthCompare: 'less'
@@ -555,7 +555,7 @@ export class WebGPULegalDocumentGraph {
         type: this.parseNodeType(node.type),
         metadata: {
           title: node.label,
-          importance: node.metadata?.importance || 0.5,
+          importance: node.metadata?.importance || 0.5,;
           connections: 0, // Will be calculated
           lastAccessed: Date.now()
         }
@@ -570,7 +570,7 @@ export class WebGPULegalDocumentGraph {
           target: targetIndex,
           weight: edge.weight || 1.0,
           type: this.parseEdgeType(edge.type),
-          strength: 1.0,
+          strength: 1.0,;
           color: this.parseColor(edge.color)
         };
       });

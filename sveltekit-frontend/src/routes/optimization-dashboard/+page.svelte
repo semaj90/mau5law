@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -18,7 +18,7 @@ https://svelte.dev/e/js_parse_error -->
       currentUsage: 0,
       efficiency: 0,
       predictions: [],
-      lodLevel: 'medium' as const
+      lodLevel: 'medium' as const;
     },
     mlCaching: {
       hitRate: 0,
@@ -31,8 +31,8 @@ https://svelte.dev/e/js_parse_error -->
       activeWorkers: 0,
       systemHealth: 'healthy' as const,
       queuedJobs: 0
-    } as WorkerStats,
-    recommendations: [] as string[]
+    } as WorkerStats,;
+    recommendations: [] as string[];
   });
 
   let isMonitoring = $state(false);
@@ -55,9 +55,9 @@ https://svelte.dev/e/js_parse_error -->
       const memoryReport = await enhancedRAGStore.neuralMemory.generatePerformanceReport();
       systemStatus.neuralMemory = {
         currentUsage: enhancedRAGStore.neuralMemory.getCurrentMemoryUsage(),
-        efficiency: memoryReport.memoryEfficiency,
+        efficiency: memoryReport.memoryEfficiency,;
         predictions: [],
-        lodLevel: "medium" as const
+        lodLevel: "medium" as const;
       };
 
       // Get caching metrics
@@ -74,12 +74,12 @@ https://svelte.dev/e/js_parse_error -->
       // Update performance charts
       const now = new Date());
       performanceChart.memoryUsage.push({
-        time: now,
-        value: systemStatus.neuralMemory.currentUsage
+        time: now,;
+        value: systemStatus.neuralMemory.currentUsage;
       });
       performanceChart.cacheHitRate.push({
-        time: now,
-        value: systemStatus.mlCaching.hitRate
+        time: now,;
+        value: systemStatus.mlCaching.hitRate;
       });
 
       // Keep only last 20 data points
@@ -101,17 +101,17 @@ https://svelte.dev/e/js_parse_error -->
     try {
       // Submit a test summarization job
       const jobResponse = await fetch('/api/workers', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          type: 'SUMMARIZE_DOCUMENT',
+          type: 'SUMMARIZE_DOCUMENT',;
           document: {
             id: 'test-doc-001',
-            content: 'This is a test legal document for our specialized worker system. It demonstrates how the event-driven architecture with RabbitMQ can process documents efficiently using our legal AI models. The system uses neural memory management, ML-based caching, and adaptive resource management to optimize performance.',
+            content: 'This is a test legal document for our specialized worker system. It demonstrates how the event-driven architecture with RabbitMQ can process documents efficiently using our legal AI models. The system uses neural memory management, ML-based caching, and adaptive resource management to optimize performance.',;
             metadata: { source: 'test' }
           },
-          options: { maxLength: 100, style: 'brief' },
-          priority: 'high'
+          options: { maxLength: 100, style: 'brief' },;
+          priority: 'high';
         })
       });
 
@@ -120,8 +120,8 @@ https://svelte.dev/e/js_parse_error -->
 
         // Wait for job completion
         const resultResponse = await fetch('/api/workers/wait', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          method: 'PUT',;
+          headers: { 'Content-Type': 'application/json' },;
           body: JSON.stringify({ jobId, timeout: 30000 })
         });
 
@@ -141,7 +141,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       await enhancedRAGStore.search('legal AI optimization neural networks', {
         limit: 5,
-        useMLRanking: true
+        useMLRanking: true;
       });
 
       systemStatus.recommendations = enhancedRAGStore.intelligentSuggestions();
@@ -440,7 +440,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   /* Custom scrollbar for webkit browsers */
-  ::-webkit-scrollbar {
+  ::-webkit-scrollbar {;
     width: 8px;
   }
 

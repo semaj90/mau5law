@@ -64,9 +64,9 @@
   let serviceStatus = $state({
     healthy: false,
     loading: true,
-    services: as Record<string, string>,
-    version: "",
-    config: as Record<string, any>,
+    services: as Record<string, string>,;
+    version: "",;
+    config: as Record<string, any>,;
   });
 
   let documentContent = $state("");
@@ -125,9 +125,9 @@
         serviceStatus = {
           healthy: true,
           loading: false,
-          services: health.services || ,
-          version: health.version || "",
-          config: health.config || ,
+          services: health.services || ,;
+          version: health.version || "",;
+          config: health.config || ,;
         };
       } else {
         throw new Error(`HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).status}`);
@@ -137,9 +137,9 @@
       serviceStatus = {
         healthy: false,
         loading: false,
-        services: ,
-        version: "",
-        config: ,
+        services: ,;
+        version: "",;
+        config: ,;
       };
     }
   }
@@ -159,20 +159,20 @@
         document_type: selectedDocumentType,
         practice_area: selectedPracticeArea,
         jurisdiction: selectedJurisdiction,
-        use_gpu: useGPU,
-        metadata: {
+        use_gpu: useGPU,;
+        metadata: {;
           timestamp: new Date().toISOString(),
           user_id: "demo-user",
-          session_id: "demo-session",
+          session_id: "demo-session",;
         },
       };
 
       const response = await fetch(`${API_BASE}/process`, {
-        method: "POST",
+        method: "POST",;
         headers: {
           "Content-Type": "application/json",
-        },
-        body: JSON.stringify(request),
+        },;
+        body: JSON.stringify(request),;
       });
 
       if (!(response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).ok) {
@@ -203,19 +203,19 @@
         query: searchQuery,
         limit: searchLimit,
         use_gpu: useGPU,
-        model: "gemma3-legal",
-        filters: {
+        model: "gemma3-legal",;
+        filters: {;
           jurisdiction: selectedJurisdiction,
-          practice_area: selectedPracticeArea,
+          practice_area: selectedPracticeArea,;
         },
       };
 
       const response = await fetch(`${API_BASE}/vector-search`, {
-        method: "POST",
+        method: "POST",;
         headers: {
           "Content-Type": "application/json",
-        },
-        body: JSON.stringify(request),
+        },;
+        body: JSON.stringify(request),;
       });
 
       if (!(response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).ok) {
@@ -458,7 +458,7 @@
         </div>
 
         <!-- Search Input -->
-        <textarea
+        <textarea;
           bind:value={searchQuery}
           placeholder="Enter legal search query (e.g., 'contract liability terms', 'patent infringement')"
           class="w-full h-32 p-3 border border-slate-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -646,7 +646,7 @@
 
 <style>
   /* UnoCSS will handle most styling, but we can add custom styles here if needed */
-  .animate-spin {
+  .animate-spin {;
     animation: spin 1s linear infinite;
   }
 

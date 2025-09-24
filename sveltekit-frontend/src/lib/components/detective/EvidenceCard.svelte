@@ -79,9 +79,9 @@
   function formatDate(date: string | Date): string {
     return new Date(date).toLocaleDateString("en-US", {
       month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+      day: "numeric",;
+      hour: "2-digit",;
+      minute: "2-digit",;
     });
   }
 </script>
@@ -220,16 +220,16 @@
 
 <style>
   /* Modern CSS line clamping with fallback */
-  .line-clamp-2 {
+  .line-clamp-2 {;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 
     /* Modern CSS fallback */
-    display: box;
-    line-clamp: 2;
-    box-orient: vertical;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 
     /* Additional constraints for better browser support */
     max-height: calc(1.2em * 2); /* 2 lines at 1.2 line height */

@@ -34,7 +34,7 @@
 {/if}
 
 <style>
-  .loading-screen {
+  .loading-screen {;
     position: fixed;
     inset: 0;
     background: linear-gradient(145deg, #1a1a1a 0%, #000000 100%);

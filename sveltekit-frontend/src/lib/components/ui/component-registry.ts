@@ -56,7 +56,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     package: 'bits-ui',
     svelte5Compatible: true,
     legalAIUseCase: ['main-navigation', 'case-categories', 'user-menu'],
-    priority: 'essential',
+    priority: 'essential',;
     implemented: false
   },
 
@@ -114,7 +114,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     package: 'bits-ui',
     svelte5Compatible: true,
     legalAIUseCase: ['incident-times', 'evidence-timestamps', 'hearing-schedules'],
-    priority: 'important',
+    priority: 'important',;
     implemented: false
   },
 
@@ -148,7 +148,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     package: 'both',
     svelte5Compatible: true,
     legalAIUseCase: ['case-lists', 'evidence-galleries', 'search-results'],
-    priority: 'important',
+    priority: 'important',;
     implemented: false
   },
 
@@ -190,7 +190,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     package: 'both',
     svelte5Compatible: true,
     legalAIUseCase: ['field-help', 'status-info', 'feature-guidance'],
-    priority: 'important',
+    priority: 'important',;
     implemented: false
   },
 
@@ -216,7 +216,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     package: 'both',
     svelte5Compatible: true,
     legalAIUseCase: ['form-labels', 'evidence-tags', 'case-metadata'],
-    priority: 'important',
+    priority: 'important',;
     implemented: false
   },
 
@@ -250,7 +250,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     package: 'bits-ui',
     svelte5Compatible: true,
     legalAIUseCase: ['evidence-images', 'document-preview', 'media-display'],
-    priority: 'optional',
+    priority: 'optional',;
     implemented: false
   }
 ];

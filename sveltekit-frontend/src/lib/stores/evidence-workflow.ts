@@ -34,7 +34,7 @@ type EvidenceEvents =
   | { type: string; [key: string]: any };
 
 const evidenceProcessingMachine = createMachine({
-  id: 'evidenceProcessor',
+  id: 'evidenceProcessor',;
   initial: 'idle',
   // Using xstate v5 generic types requires runtime noop; cast for compile-time only
   types: {} as { context: EvidenceContext; events: EvidenceEvents },
@@ -66,7 +66,7 @@ const evidenceProcessingMachine = createMachine({
     },
     validating: {
       invoke: {
-        id: 'validateEvidence',
+        id: 'validateEvidence',;
         src: async ({ context }) => {
           if (!context.file) throw new Error('No file provided');
           if (!context.evidenceId) throw new Error('Evidence ID required');
@@ -94,7 +94,7 @@ const evidenceProcessingMachine = createMachine({
     },
     analyzing: {
       invoke: {
-        id: 'analyzeEvidence',
+        id: 'analyzeEvidence',;
         src: async ({ context }) => {
           const formData = new FormData();
           formData.append('file', context.file!);
@@ -102,7 +102,7 @@ const evidenceProcessingMachine = createMachine({
           formData.append('case_id', context.caseId);
 
           const response = await fetch('/api/ai/analyze-evidence', {
-            method: 'POST',
+            method: 'POST',;
             body: formData
           });
 
@@ -129,7 +129,7 @@ const evidenceProcessingMachine = createMachine({
     },
     embedding: {
       invoke: {
-        id: 'embedMetadata',
+        id: 'embedMetadata',;
         src: async ({ context }) => {
           const fileBuffer = await context.file!.arrayBuffer();
           // Use static API per PNGEmbedExtractor implementation
@@ -168,7 +168,7 @@ const evidenceProcessingMachine = createMachine({
               processing_timestamp: new Date().toISOString()
             },
             ai_analysis: context.metadata,
-            risk_assessment: context.metadata?.riskAssessment || 'unknown',
+            risk_assessment: context.metadata?.riskAssessment || 'unknown',;
             confidence: context.metadata?.confidence || 0.5
           };
 
@@ -176,7 +176,7 @@ const evidenceProcessingMachine = createMachine({
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
-            },
+            },;
             body: JSON.stringify(uploadData)
           });
 
@@ -206,7 +206,7 @@ const evidenceProcessingMachine = createMachine({
         RESET: 'idle'
       }
     },
-    error: {
+    error: {;
       on: {
         RETRY: 'validating',
         RESET: 'idle'
@@ -266,7 +266,7 @@ export const searchArtifacts = async (searchParams: {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
-    },
+    },;
     body: JSON.stringify(searchParams)
   });
 

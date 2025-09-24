@@ -10,7 +10,7 @@ https://svelte.dev/e/expected_token -->
   interface InferenceResponse {
     result: string;
     confidence: number;
-    metadata: {
+    metadata: {;
       model: string;
       processing_time: string;
       cached: boolean;
@@ -44,13 +44,13 @@ https://svelte.dev/e/expected_token -->
       const startTime = Date.now();
       
       const apiResponse = await fetch('http://localhost:8200/inference', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          text: queryText,
-          model: 'gemma3-legal',
+          text: queryText,;
+          model: 'gemma3-legal',;
           config: { temperature: 0.7 }
         })
       });
@@ -89,8 +89,8 @@ https://svelte.dev/e/expected_token -->
 
       console.log('Inference completed:', {
         totalTime: totalTime + 'ms',
-        cached: data.metadata?.cached,
-        confidence: data.confidence
+        cached: data.metadata?.cached,;
+        confidence: data.confidence;
       });
 
     } catch (error) {
@@ -164,7 +164,7 @@ https://svelte.dev/e/expected_token -->
 
   <!-- GPU Loading Progress -->
   <GPULoadingProgress 
-    bind:status 
+    bind:status ;
     bind:progress
     modelName="gemma3-legal:latest"
     gpuMemoryUsage="7.3GB"
@@ -237,21 +237,21 @@ https://svelte.dev/e/expected_token -->
 
 <style>
   /* Custom scrollbar for response text */
-  .prose: :-webkit-scrollbar {
+  .prose::-webkit-scrollbar {;
     width: 4px;
   }
 
-  .prose: :-webkit-scrollbar-track {
+  .prose::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.1);
     border-radius: 2px;
   }
 
-  .prose: :-webkit-scrollbar-thumb {
+  .prose::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.3);
     border-radius: 2px;
   }
 
-  .prose: :-webkit-scrollbar-thumb:hover {
+  .prose::-webkit-scrollbar-thumb:hover {
     background: rgba(0, 0, 0, 0.5);
   }
 </style>

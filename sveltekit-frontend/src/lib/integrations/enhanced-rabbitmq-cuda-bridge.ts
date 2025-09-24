@@ -17,7 +17,7 @@ export const rabbitMQCudaState = writable({
   cudaHealthy: false,
   activeJobs: 0,
   completedJobs: 0,
-  lastError: null,
+  lastError: null,;
   performance: {
     averageProcessingTime: 0,
     cudaAcceleration: true,
@@ -122,7 +122,7 @@ class EnhancedRabbitMQCudaBridge {
     
     for (const queueName of queues) {
       await this.channel.assertQueue(queueName, { 
-        durable: true,
+        durable: true,;
         arguments: {
           'x-max-priority': 10, // Enable message priority
           'x-message-ttl': 300000 // 5 minute TTL
@@ -192,7 +192,7 @@ class EnhancedRabbitMQCudaBridge {
         // Use CUDA service for acceleration;
         result = await this.submitToCudaService({
           type: 'tensor_compute',
-          data: job.payload,
+          data: job.payload,;
           priority: job.priority || 5
         });
       } else {
@@ -223,7 +223,7 @@ class EnhancedRabbitMQCudaBridge {
     } catch (error) {
       console.error('❌ Tensor job processing failed:', error);
       await this.publishResult(job?.id || 'unknown', {
-        success: false,
+        success: false,;
         error: error.message,
         processingTime: Date.now() - startTime
       });
@@ -254,7 +254,7 @@ class EnhancedRabbitMQCudaBridge {
             vectors: candidateVectors,
             algorithm,
             batch_size: 1000 // RTX 3060 Ti optimized batch size
-          },
+          },;
           priority: job.priority || 7
         });
       } else {
@@ -265,7 +265,7 @@ class EnhancedRabbitMQCudaBridge {
       const processingTime = Date.now() - startTime;
       
       await this.publishResult(job.id, {
-        success: true,
+        success: true,;
         result: { similarities, algorithm, vectorCount: candidateVectors.length },
         processingTime,
         cudaAccelerated: this.cudaHealthy && candidateVectors.length > 100
@@ -274,7 +274,7 @@ class EnhancedRabbitMQCudaBridge {
     } catch (error) {
       console.error('❌ Vector similarity job failed:', error);
       await this.publishResult(job?.id || 'unknown', {
-        success: false,
+        success: false,;
         error: error.message,
         processingTime: Date.now() - startTime
       });
@@ -304,7 +304,7 @@ class EnhancedRabbitMQCudaBridge {
             vectors: embeddings,
             batch_size: Math.min(batchSize, 500), // GPU memory optimized
             normalize_type: 'l2'
-          },
+          },;
           priority: job.priority || 6
         });
       } else {
@@ -315,7 +315,7 @@ class EnhancedRabbitMQCudaBridge {
       const processingTime = Date.now() - startTime;
       
       await this.publishResult(job.id, {
-        success: true,
+        success: true,;
         result: { embeddings: normalizedEmbeddings, count: embeddings.length },
         processingTime,
         cudaAccelerated: this.cudaHealthy
@@ -324,7 +324,7 @@ class EnhancedRabbitMQCudaBridge {
     } catch (error) {
       console.error('❌ Embedding normalization failed:', error);
       await this.publishResult(job?.id || 'unknown', {
-        success: false,
+        success: false,;
         error: error.message,
         processingTime: Date.now() - startTime
       });
@@ -338,7 +338,7 @@ class EnhancedRabbitMQCudaBridge {
     try {
       const response = await fetch(`${CUDA_SERVICE_URL}/api/v1/compute`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify(jobData)
       });
       
@@ -445,7 +445,7 @@ class EnhancedRabbitMQCudaBridge {
       'legal_cuda_results',
       Buffer.from(JSON.stringify(message)),
       { 
-        priority: (result as { success?: any }).success ? 5 : 8, // Higher priority for errors
+        priority: (result as { success?: any }).success ? 5 : 8, // Higher priority for errors;
         persistent: true 
       }
     );
@@ -458,7 +458,7 @@ class EnhancedRabbitMQCudaBridge {
     if (!this.channel) throw new Error('RabbitMQ not connected');
     
     const jobId = `cuda_job_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const job: CUDAJob = {
+    const job: CUDAJob = {;
       id: jobId,
       type,
       payload,
@@ -482,7 +482,7 @@ class EnhancedRabbitMQCudaBridge {
       Buffer.from(JSON.stringify(job)),
       { 
         priority,
-        persistent: true,
+        persistent: true,;
         headers: {
           'x-job-type': type,
           'x-cuda-preferred': this.cudaHealthy ? 'true' : 'false'
@@ -504,7 +504,7 @@ class EnhancedRabbitMQCudaBridge {
       connected: !!this.connection,
       cudaHealthy: this.cudaHealthy,
       activeJobs: this.jobQueue.size,
-      resultCache: this.resultCache.size,
+      resultCache: this.resultCache.size,;
       capabilities: this.cudaHealthy ? [
         'cuda_tensor_compute',
         'rtx_3060_ti_acceleration',

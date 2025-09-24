@@ -1,8 +1,8 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { dbPool } from '$lib/server/database-pool-service';
-import { embeddingCache } from '$lib/server/embedding-cache-service';
-import { redisService } from '$lib/server/redis-service';
+import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
+import { dbPool } from '$lib/server/database-pool-service'
+import { embeddingCache } from '$lib/server/embedding-cache-service'
+import { redisService } from '$lib/server/redis-service'
 
 export const GET: RequestHandler = async () => {
   try {
@@ -17,16 +17,16 @@ export const GET: RequestHandler = async () => {
       dbPool.getStats(),
       dbPool.healthCheck(),
       Promise.resolve(redisService.isHealthy()
-    ]);
+    ])
 
     // Calculate cache efficiency
     const embeddingHitRate = cacheStats.embeddings.hits + cacheStats.embeddings.misses > 0 ?
       (cacheStats.embeddings.hits / (cacheStats.embeddings.hits + cacheStats.embeddings.misses) * 100).toFixed(2) :
-      '0.00';
+      '0.00'
 
     const queryHitRate = cacheStats.queries.hits + cacheStats.queries.misses > 0 ?
       (cacheStats.queries.hits / (cacheStats.queries.hits + cacheStats.queries.misses) * 100).toFixed(2) :
-      '0.00';
+      '0.00'
 
     const response = {
       timestamp: new Date().toISOString(),
@@ -68,58 +68,58 @@ export const GET: RequestHandler = async () => {
         cache_size_total: cacheStats.embeddings.size + cacheStats.queries.size
       },
       recommendations: generateRecommendations(cacheStats, dbStats, redisConnected)
-    };
+    }
 
-    return json(response);
+    return json(response)
   } catch (error) {
-    console.error('Cache stats error:', error);
+    console.error('Cache stats error:', error)
     return json({
       timestamp: new Date().toISOString(),
       status: 'error',
       error: 'Failed to retrieve cache statistics',
       message: error instanceof Error ? error.message: 'Unknown error'
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 function generateRecommendations(cacheStats: any, dbStats: any, redisConnected: boolean): string[] {
-  const recommendations: string[] = [];
+  const recommendations: string[] = []
 
   if (!redisConnected) {
-    recommendations.push('🔴 Redis is not connected - caching is disabled');
+    recommendations.push('🔴 Redis is not connected - caching is disabled')
   }
 
   const embeddingHitRate = cacheStats.embeddings.hits + cacheStats.embeddings.misses > 0 ?
-    (cacheStats.embeddings.hits / (cacheStats.embeddings.hits + cacheStats.embeddings.misses) * 100) : 0;
+    (cacheStats.embeddings.hits / (cacheStats.embeddings.hits + cacheStats.embeddings.misses) * 100) : 0
 
   const queryHitRate = cacheStats.queries.hits + cacheStats.queries.misses > 0 ?
-    (cacheStats.queries.hits / (cacheStats.queries.hits + cacheStats.queries.misses) * 100) : 0;
+    (cacheStats.queries.hits / (cacheStats.queries.hits + cacheStats.queries.misses) * 100) : 0
 
   if (embeddingHitRate < 30) {
-    recommendations.push('⚠️ Low embedding cache hit rate - consider increasing TTL or checking cache keys');
+    recommendations.push('⚠️ Low embedding cache hit rate - consider increasing TTL or checking cache keys')
   } else if (embeddingHitRate > 80) {
-    recommendations.push('✅ Excellent embedding cache performance');
+    recommendations.push('✅ Excellent embedding cache performance')
   }
 
   if (queryHitRate < 30) {
-    recommendations.push('⚠️ Low query cache hit rate - review query patterns and TTL settings');
+    recommendations.push('⚠️ Low query cache hit rate - review query patterns and TTL settings')
   } else if (queryHitRate > 80) {
-    recommendations.push('✅ Excellent query cache performance');
+    recommendations.push('✅ Excellent query cache performance')
   }
 
   if (cacheStats.embeddings.size > 1000) {
-    recommendations.push('📊 Large embedding cache - monitor memory usage');
+    recommendations.push('📊 Large embedding cache - monitor memory usage')
   }
 
   if (dbStats.totalPools > 5) {
-    recommendations.push('🔧 Many database pools active - consider connection consolidation');
+    recommendations.push('🔧 Many database pools active - consider connection consolidation')
   } else if (dbStats.totalPools === 0) {
-    recommendations.push('⚠️ No active database pools');
+    recommendations.push('⚠️ No active database pools')
   }
 
   if (recommendations.length === 0) {
-    recommendations.push('✅ All systems performing optimally');
+    recommendations.push('✅ All systems performing optimally')
   }
 
-  return recommendations;
+  return recommendations
 }

@@ -94,7 +94,7 @@
     animationDuration = 500,
     pulseOnComplete = true,
 
-    class: className = ''
+    class: className = '';
   }: Props = $props();
 
   
@@ -257,7 +257,7 @@
       secondary: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057', track: '#4a5568' },
       success: { base: '#28a745', highlight: '#48c662', shadow: '#1e7e34', track: '#2d5016' },
       warning: { base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00', track: '#744210' },
-      error: { base: '#dc3545', highlight: '#e85563', shadow: '#c82333', track: '#742a2a' },
+      error: { base: '#dc3545', highlight: '#e85563', shadow: '#c82333', track: '#742a2a' },;
       info: { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496', track: '#2a4365' }
     };
 
@@ -284,7 +284,7 @@
           inset 0 -2px 0 rgba(0,0,0,0.4),
           0 0 ${progress * 0.5}px ${colors.base}
         `
-      },
+      },;
       pbr: {
         trackBackground: `
           linear-gradient(145deg, ${colors.track} 0%, rgba(0,0,0,0.9) 70%, ${colors.track} 100%),
@@ -315,7 +315,7 @@
     const sizeMap = {
       small: { height: '16px', fontSize: '12px', borderRadius: '8px' },
       medium: { height: '24px', fontSize: '14px', borderRadius: '12px' },
-      large: { height: '32px', fontSize: '16px', borderRadius: '16px' },
+      large: { height: '32px', fontSize: '16px', borderRadius: '16px' },;
       xl: { height: '40px', fontSize: '18px', borderRadius: '20px' }
     };
     return sizeMap[size as keyof typeof sizeMap] || sizeMap.medium;
@@ -379,11 +379,11 @@
   <div
     bind:this={progressElement}
     class="n64-progress {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
-    class:indeterminate
+    class:indeterminate;
     class:complete={isComplete}
     class:animating={isAnimating}
     class:disabled
-    style="
+    style=";
       --track-bg: {materialStyles.trackBackground};
       --bar-bg: {materialStyles.barBackground};
       --bar-shadow: {materialStyles.barShadow};
@@ -671,7 +671,7 @@
     border-radius: var(--progress-border-radius);
   }
 
-  .progress-particles: :before,
+  .progress-particles::before,
   .progress-particles::after {
     content: '';
     position: absolute;
@@ -682,13 +682,13 @@
     animation: floatProgressParticles 1.5s ease-out infinite;
   }
 
-  .progress-particles: :before {
+  .progress-particles::before {
     top: 30%;
     left: 20%;
     animation-delay: 0s;
   }
 
-  .progress-particles: :after {
+  .progress-particles::after {
     top: 70%;
     left: 60%;
     animation-delay: -0.75s;
@@ -849,7 +849,7 @@
 
     .texture-stream,
     .wave-effect,
-    .progress-particles: :before,
+    .progress-particles::before,
     .progress-particles::after {
       animation: none;
     }

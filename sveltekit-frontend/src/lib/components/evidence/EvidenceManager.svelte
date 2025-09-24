@@ -19,7 +19,7 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
 
   interface EvidenceFile {
     id: number;
@@ -66,15 +66,15 @@
   let embeddingStats = $state<EmbeddingStats>({
     total: 0,
     withEmbeddings: 0,
-    withoutEmbeddings: 0,
-    percentage: 0
+    withoutEmbeddings: 0,;
+    percentage: 0;
   });
   let loading = $state({
     files: false,
     upload: false,
-    backfill: false,
-    search: false,
-    stats: false
+    backfill: false,;
+    search: false,;
+    stats: false;
   });
 
   let searchQuery = $state('');
@@ -143,8 +143,8 @@
         formData.append('evidence_type', getEvidenceType(file.type));
 
         const response = await fetch('/api/evidence-files', {
-          method: 'POST',
-          body: formData
+          method: 'POST',;
+          body: formData;
         });
 
         const result = await (response as { json?: unknown }).json();
@@ -177,8 +177,8 @@
 
     try {
       const response = await fetch('/api/evidence-embeddings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ action: 'backfill' })
       });
 
@@ -204,8 +204,8 @@
 
     try {
       const params = new URLSearchParams({
-        search: searchQuery,
-        limit: '10'
+        search: searchQuery,;
+        limit: '10';
       });
       if (caseId) params.set('case_id', caseId);
 
@@ -246,9 +246,9 @@
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      day: 'numeric',;
+      hour: '2-digit',;
+      minute: '2-digit';
     });
   }
 
@@ -342,7 +342,7 @@ export default ;
           ondragover={handleDragOver}
           role="region" aria-label="Drop zone" ondrop={handleDrop}
         >
-          <input
+          <input;
             bind:this={fileInput}
             type="file"
             multiple
@@ -569,7 +569,7 @@ fileInput?.click()}
     position: relative;
     overflow: hidden;
   }
-  .stat-item: :after {
+  .stat-item::after {
     content:'';
     position:absolute;
     inset:0;
@@ -628,14 +628,14 @@ fileInput?.click()}
     position:relative;
     overflow:hidden;
   }
-  .error-box: :before,
+  .error-box::before,
   .error-box::after {
     content:'';
     position:absolute;
     inset:0;
     pointer-events:none;
   }
-  .error-box: :before {
+  .error-box::before {
     background:
       repeating-linear-gradient(
         135deg,
@@ -645,7 +645,7 @@ fileInput?.click()}
     mix-blend-mode: overlay;
     opacity:0.25;
   }
-  .error-box: :after {
+  .error-box::after {
     background:
       linear-gradient(90deg,
         transparent,
@@ -719,7 +719,7 @@ fileInput?.click()}
   .retro-scan {
     position:relative;
   }
-  .retro-scan: :before {
+  .retro-scan::before {
     content:'';
     position:absolute;
     inset:0;
@@ -759,7 +759,7 @@ fileInput?.click()}
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .error-box: :after,
+    .error-box::after,
     .error-icon,
     .retro-scan::before,
     .flicker,

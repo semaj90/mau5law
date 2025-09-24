@@ -44,7 +44,7 @@ export interface LegalCaseContext {
 
   // Case components
   evidence: EvidenceItem[];
-  id: 'legalCase',
+  id: 'legalCase',;
   timeline: TimelineEvent[];
   assignedUsers: CaseAssignment[];
 
@@ -444,7 +444,7 @@ export const legalCaseMachine = createMachine({
 
     loading: {
       invoke: {
-        id: 'loadCase',
+        id: 'loadCase',;
         src: fromPromise(async ({ input }: { input: { caseId: string } }) => {
           const response = await fetch(`/api/v1/cases/${input.caseId}`);
           if (!response.ok) {
@@ -486,7 +486,7 @@ export const legalCaseMachine = createMachine({
         src: fromPromise(async ({ input }: { input: { caseData: Partial<CaseForm> } }) => {
           const response = await fetch('/api/v1/cases', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' },;
             body: JSON.stringify(input.caseData)
           });
           if (!response.ok) {
@@ -569,7 +569,7 @@ export const legalCaseMachine = createMachine({
             analysisProgress: 0
           })
         },
-        SET_STATUS: {
+        SET_STATUS: {;
           actions: assign({
             currentCase: ({ context, event }) =>;
               context.currentCase ? {
@@ -578,7 +578,7 @@ export const legalCaseMachine = createMachine({
               } : null
           })
         },
-        SET_PRIORITY: {
+        SET_PRIORITY: {;
           actions: assign({
             currentCase: ({ context, event }) =>;
               context.currentCase ? {
@@ -592,11 +592,11 @@ export const legalCaseMachine = createMachine({
 
     updating: {
       invoke: {
-        id: 'updateCase',
+        id: 'updateCase',;
         src: fromPromise(async ({ input }: { input: { caseId: string; updates: Partial<CaseForm> } }) => {
           const response = await fetch(`/api/v1/cases/${input.caseId}`, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' },;
             body: JSON.stringify(input.updates)
           });
           if (!response.ok) {
@@ -633,13 +633,13 @@ export const legalCaseMachine = createMachine({
 
     analyzing: {
       invoke: {
-        id: 'runAnalysis',
+        id: 'runAnalysis',;
         src: fromPromise(async ({ input }: { input: { query: string; analysisType?: AnalysisType; caseId?: string } }) => {
           const response = await fetch('/api/v1/ai/analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              query: input.query,
+              query: input.query,;
               type: input.analysisType || 'case_strength',
               caseId: input.caseId
             })
@@ -690,7 +690,7 @@ export const legalCaseMachine = createMachine({
       invoke: {
         id: 'deleteCase',
         src: fromPromise(async ({ input }: { input: { caseId: string } }) => {
-          const response = await fetch(`/api/v1/cases/${input.caseId}`, {
+          const response = await fetch(`/api/v1/cases/${input.caseId}`, {;
             method: 'DELETE'
           });
           if (!response.ok) {
@@ -724,7 +724,7 @@ export const legalCaseMachine = createMachine({
       }
     },
 
-    error: {
+    error: {;
       on: {
         RETRY: [;
           {
@@ -750,7 +750,7 @@ export const legalCaseMachine = createMachine({
           target: 'idle',
           actions: assign({
             currentCase: null,
-            caseId: null,
+            caseId: null,;
             error: null,
             retryCount: 0,
             isLoading: false

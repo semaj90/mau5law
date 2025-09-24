@@ -34,15 +34,15 @@
   /**
    * Initialize the page
    */
-  $effect(async () => {
+  $effect(() => {
     if (!caseId) {
       error = 'Case ID is required';
       isLoading = false;
       return;
     }
-    
-    await loadCaseData();
-    await loadCaseEvidence();
+
+    loadCaseData();
+    loadCaseEvidence();
     isLoading = false;
   });
   
@@ -94,9 +94,9 @@
       ...analytics,
       lastConnectionMap: {
         timestamp: new Date().toISOString(),
-        nodes: connectionMap.nodes?.length || 0,
-        edges: connectionMap.edges?.length || 0,
-        clusters: connectionMap.clusters?.length || 0
+        nodes: connectionMap.nodes?.length || 0,;
+        edges: connectionMap.edges?.length || 0,;
+        clusters: connectionMap.clusters?.length || 0;
       }
     };
     
@@ -117,7 +117,7 @@
         lastPrompts: lastContextualPrompts,
         engagement: event.detail.context.analytics?.userEngagement || 'medium',
         typingSpeed: event.detail.context.userBehavior?.avgTypingSpeed || 0,
-        lastActivity: new Date().toISOString()
+        lastActivity: new Date().toISOString();
       }
     };
     
@@ -203,7 +203,7 @@
     </main>
 
     <!-- Analytics sidebar (optional) -->
-    {#if Object.keys.length > 0}
+    {#if Object.keys(errors).length > 0}
       <aside class="analytics-sidebar">
         <h3>Session Analytics</h3>
         
@@ -307,7 +307,7 @@
     font-weight: 500;
   }
 
-  .error-container button:hover, .back-link:hover {
+  .error-container button:hover, .back-link:hover {;
     background: #2563eb;
   }
 
@@ -395,7 +395,7 @@
     border: 1px solid #d1d5db;
   }
 
-  .case-actions button:hover {
+  .case-actions button:hover {;
     background: #e5e7eb;
   }
 

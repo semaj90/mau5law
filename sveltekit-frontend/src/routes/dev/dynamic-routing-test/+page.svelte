@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!--
@@ -28,55 +28,55 @@ https://svelte.dev/e/attribute_duplicate -->
   // Test configuration
   const testCases = [
     {
-      name: 'Route Configuration Load',
+      name: 'Route Configuration Load',;
       test: async () => {
         const routes = allRoutes;
         return `✅ Loaded ${routes.length} routes from configuration`;
       }
     },
     {
-      name: 'Category Filter Test - Demo',
+      name: 'Category Filter Test - Demo',;
       test: async () => {
         const demoRoutes = getRoutesByCategory('demo');
         return `✅ Found ${demoRoutes.length} demo routes`;
       }
     },
     {
-      name: 'Category Filter Test - Dev',
+      name: 'Category Filter Test - Dev',;
       test: async () => {
         const devRoutes = getRoutesByCategory('dev');
         return `✅ Found ${devRoutes.length} dev routes`;
       }
     },
     {
-      name: 'Category Filter Test - AI',
+      name: 'Category Filter Test - AI',;
       test: async () => {
         const aiRoutes = getRoutesByCategory('ai');
         return `✅ Found ${aiRoutes.length} AI routes`;
       }
     },
     {
-      name: 'Search Test - AI',
+      name: 'Search Test - AI',;
       test: async () => {
         const results = searchRoutes('ai');
         return `✅ Found ${results.length} routes matching 'ai'`;
       }
     },
     {
-      name: 'Search Test - Demo',
+      name: 'Search Test - Demo',;
       test: async () => {
         const results = searchRoutes('demo');
         return `✅ Found ${results.length} routes matching 'demo'`;
       }
     },
     {
-      name: 'Current Page Test',
+      name: 'Current Page Test',;
       test: async () => {
         return `✅ Current path: ${currentPath}`;
       }
     },
     {
-      name: 'Navigation Test',
+      name: 'Navigation Test',;
       test: async () => {
         // Test navigation to a known route
         const demoRoutes = getRoutesByCategory('demo');
@@ -88,7 +88,7 @@ https://svelte.dev/e/attribute_duplicate -->
     }
   ];
 
-  $effect(async () => {
+  $effect(() => {
     // Get current path from page store
     page.subscribe(($page) => {
       currentPath = $page.url.pathname;
@@ -101,7 +101,7 @@ https://svelte.dev/e/attribute_duplicate -->
   function calculateRouteStats() {
     const categories = ['main', 'demo', 'ai', 'legal', 'dev', 'admin'];
     const stats: unknown = {
-      total: allRoutes.length,
+      total: allRoutes.length,;
       categories: };
 
     categories.forEach.length;
@@ -359,7 +359,7 @@ navigateToRoute('/cases')}
 </div>
 
 <style>
-  :global(.yorha-terminal-grid) {
+  :global(.yorha-terminal-grid) {;
     background-image:
       linear-gradient(rgba(255, 215, 0, 0.1) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 215, 0, 0.1) 1px, transparent 1px);

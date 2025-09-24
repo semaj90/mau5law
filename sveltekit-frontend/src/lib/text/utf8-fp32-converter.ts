@@ -116,7 +116,7 @@ export class UTF8ToFP32Converter {
       outputRange: [-1.0, 1.0],
       paddingValue: 0.0,
       maxLength: undefined,
-      preserveSpecialChars: true,
+      preserveSpecialChars: true,;
       encoding: 'utf8',
       ...options
     };
@@ -372,7 +372,7 @@ export class UTF8ToFP32Converter {
       normalizationMethod: 'range',
       outputRange: [-1.0, 1.0],
       paddingValue: 0.0,
-      preserveSpecialChars: true,
+      preserveSpecialChars: true,;
       encoding: 'utf8',
       ...options
     };

@@ -793,7 +793,7 @@ class MultiLayerCache {
         const data = {
           key,
           value,
-          expires: Date.now() + ttl,
+          expires: Date.now() + ttl,;
           created: Date.now()
         };
 
@@ -1041,7 +1041,7 @@ export const aiAssistantMachine = createMachine({
 
     // Enhanced AI Configuration with multi-model support
     isProcessing: false,
-    model: "gemma3-legal",
+    model: "gemma3-legal",;
     temperature: 0.7,
     maxTokens: 2048,
     availableModels: [
@@ -1088,7 +1088,7 @@ export const aiAssistantMachine = createMachine({
     },
     preferredProtocol: 'quic',
     activeProtocol: 'http',
-    serviceLoadBalancer: {
+    serviceLoadBalancer: {;
       algorithm: 'round_robin',
       healthyServices: new Map(),
       failedServices: new Set(),
@@ -1190,7 +1190,7 @@ export const aiAssistantMachine = createMachine({
     embeddingJobs: [],
     aiInteractions: [],
     multiModalAnalysis: [],
-    realtimeInference: {
+    realtimeInference: {;
       active: false,
       streamId: null,
       tokensPerSecond: 0,
@@ -1210,7 +1210,7 @@ export const aiAssistantMachine = createMachine({
       imageBuffers: 0,
       totalAllocated: 0
     },
-    garbageCollectionMetrics: {
+    garbageCollectionMetrics: {;
       collections: 0,
       totalMemoryFreed: 0,
       lastGC: 0,
@@ -1231,14 +1231,14 @@ export const aiAssistantMachine = createMachine({
       rateLimits: new Map()
     }
   } as AIAssistantContext,
-  types: Record<string, any> as {
+  types: Record<string, any> as {;
     context: AIAssistantContext;
     events: AIAssistantEvent;
   },
   states: {
     initializing: {
       invoke: {
-        id: "initializeServices",
+        id: "initializeServices",;
         src: fromPromise(async () => {
           console.log('🚀 Initializing Enhanced AI Assistant with Full-Stack Integration...');
           const startTime = safeNow();
@@ -1369,7 +1369,7 @@ export const aiAssistantMachine = createMachine({
                   type: model.name.includes('legal') ? 'legal' :
                     model.name.includes('code') ? 'code' : 'general',
                   maxTokens: model.details?.parameter_size === '7B' ? 8192 : 4096,
-                  cost: 0.1,
+                  cost: 0.1,;
                   capabilities: model.details?.families || ['text'],
                   gpuRequired: model.size > 4000000000 // > 4GB
                 });
@@ -1427,7 +1427,7 @@ export const aiAssistantMachine = createMachine({
           };
         }),
         onDone: {
-          target: "idle",
+          target: "idle",;
           actions: assign({
             serviceHealth: ({ event }) => {
               const health = (event as any).output.healthStatus;
@@ -1455,7 +1455,7 @@ export const aiAssistantMachine = createMachine({
                   websockets: false
                 },
                 storage: {
-                  minio: health.services?.['minio'] || false,
+                  minio: health.services?.['minio'] || false,;
                   filesystem: true
                 }
               };
@@ -1487,7 +1487,7 @@ export const aiAssistantMachine = createMachine({
               code: 'INIT_FAILED',
               type: 'processing',
               recoverable: true,
-              retryCount: 0,
+              retryCount: 0,;
               timestamp: new Date()
             })
           })
@@ -1497,7 +1497,7 @@ export const aiAssistantMachine = createMachine({
     // Lightweight integration runner: links to reports, triggers DB migration action;
     integration: {
       invoke: {
-        id: 'runIntegrationTasks',
+        id: 'runIntegrationTasks',;
         src: fromPromise(async (context) => {
           // fetch essential docs and provide migration hint
           const docs = {} as any;
@@ -1652,7 +1652,7 @@ export const aiAssistantMachine = createMachine({
       states: {
         preparingQuery: {
           invoke: {
-            id: "enhanceQuery",
+            id: "enhanceQuery",;
             src: fromPromise(async ({ input }: { input: any }) => {
               const { query, useContext7, caseId, context } = input;
               const startTime = performance.now();
@@ -1661,7 +1661,7 @@ export const aiAssistantMachine = createMachine({
               const userEntry: ConversationEntry = {
                 id: `user_${Date.now()}`,
                 type: 'user',
-                content: query,
+                content: query,;
                 timestamp: new Date()
               };
 
@@ -1709,7 +1709,7 @@ export const aiAssistantMachine = createMachine({
                       bitsUIResponse?.content,
                       xstateDocsResponse?.content
                     ].filter(item => item.join)('\n\n'),
-                    confidence: 0.85,
+                    confidence: 0.85,;
                     libraries: ['svelte', 'bits-ui', 'xstate'].filter(item => item.includes)(lib)
                     ),
                     apiEndpoints: []
@@ -1769,7 +1769,7 @@ export const aiAssistantMachine = createMachine({
 
         selectingOptimalService: {
           invoke: {
-            id: "selectOptimalService",
+            id: "selectOptimalService",;
             src: fromPromise(async ({ input }: { input: any }) => {
               const { query, preferredProtocol } = input;
 
@@ -1811,7 +1811,7 @@ export const aiAssistantMachine = createMachine({
 
               return {
                 service: selectedService,
-                protocol: selectedProtocol,
+                protocol: selectedProtocol,;
                 url: serviceUrl,
                 isLegalQuery
               };
@@ -1844,7 +1844,7 @@ export const aiAssistantMachine = createMachine({
 
         generatingResponse: {
           invoke: {
-            id: "generateAIResponse",
+            id: "generateAIResponse",;
             src: fromPromise(async ({ input }: { input: any }) => {
               const { query, model, temperature, maxTokens, conversationHistory, service, protocol, url, caseContext } = input;
               const startTime = Date.now();
@@ -1869,7 +1869,7 @@ export const aiAssistantMachine = createMachine({
                     // QUIC implementation would go here;
                     response = await fetch(`${url}/api/rag/query`, {
                       method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
+                      headers: { 'Content-Type': 'application/json' },;
                       body: JSON.stringify(requestPayload)
                     });
                     break;
@@ -1878,7 +1878,7 @@ export const aiAssistantMachine = createMachine({
                     // gRPC implementation would go here;
                     response = await fetch(`${url}/api/rag/query`, {
                       method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
+                      headers: { 'Content-Type': 'application/json' },;
                       body: JSON.stringify(requestPayload)
                     });
                     break;
@@ -1887,7 +1887,7 @@ export const aiAssistantMachine = createMachine({
                     // HTTP fallback;
                     response = await fetch(`${url}/api/rag/query`, {
                       method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
+                      headers: { 'Content-Type': 'application/json' },;
                       body: JSON.stringify(requestPayload)
                     });
                 }
@@ -1904,7 +1904,7 @@ export const aiAssistantMachine = createMachine({
                   id: `assistant_${Date.now()}`,
                   type: 'assistant',
                   content: responseData.response || responseData.data?.response || 'No response generated',
-                  timestamp: new Date(),
+                  timestamp: new Date(),;
                   metadata: {
                     model,
                     temperature,
@@ -1926,7 +1926,7 @@ export const aiAssistantMachine = createMachine({
                   model,
                   tokensUsed: responseData.tokenCount || 0,
                   responseTime,
-                  confidence: responseData.confidence || 0,
+                  confidence: responseData.confidence || 0,;
                   metadata: {
                     protocol,
                     service,
@@ -1960,7 +1960,7 @@ export const aiAssistantMachine = createMachine({
               ...(event as any).output
             }),
             onDone: {
-              target: "#enhancedAiAssistant.idle",
+              target: "#enhancedAiAssistant.idle",;
               actions: [;
                 assign({
                   response: ({ event }) => (event as any).output.response,
@@ -2025,7 +2025,7 @@ export const aiAssistantMachine = createMachine({
 
     processingDocument: {
       invoke: {
-        id: "processDocument",
+        id: "processDocument",;
         src: fromPromise(async ({ input }: { input: any }) => {
           const { file, caseId } = input;
 
@@ -2035,7 +2035,7 @@ export const aiAssistantMachine = createMachine({
           if (caseId) formData.append('caseId', caseId);
 
           const uploadResponse = await fetch('http://localhost:8093/upload', {
-            method: 'POST',
+            method: 'POST',;
             body: formData
           });
 
@@ -2066,7 +2066,7 @@ export const aiAssistantMachine = createMachine({
           caseId: (event as any).caseId
         }),
         onDone: {
-          target: "idle",
+          target: "idle",;
           actions: [;
             assign({
               currentDocuments: ({ context, event }) => [
@@ -2104,7 +2104,7 @@ export const aiAssistantMachine = createMachine({
 
     processingImage: {
       invoke: {
-        id: "processImage",
+        id: "processImage",;
         src: fromPromise(async ({ input }: { input: any }) => {
           const { file, type } = input;
 
@@ -2114,7 +2114,7 @@ export const aiAssistantMachine = createMachine({
           formData.append('type', type);
 
           const uploadResponse = await fetch('http://localhost:8093/upload/image', {
-            method: 'POST',
+            method: 'POST',;
             body: formData
           });
 
@@ -2150,7 +2150,7 @@ export const aiAssistantMachine = createMachine({
             fileSize: file.size,
             type,
             extractedText,
-            ocrConfidence,
+            ocrConfidence,;
             url: uploadResult.url
           };
         }),
@@ -2159,7 +2159,7 @@ export const aiAssistantMachine = createMachine({
           type: (event as any).type
         }),
         onDone: {
-          target: "idle",
+          target: "idle",;
           actions: [;
             assign({
               currentImages: ({ context, event }) => [
@@ -2196,7 +2196,7 @@ export const aiAssistantMachine = createMachine({
 
     analyzingDocument: {
       invoke: {
-        id: "analyzeDocument",
+        id: "analyzeDocument",;
         src: fromPromise(async ({ input }: { input: any }) => {
           const { documentId, analysisType } = input;
 
@@ -2220,7 +2220,7 @@ export const aiAssistantMachine = createMachine({
               // Legal analysis via specialized service;
               const legalResponse = await fetch('http://localhost:8202/api/analyze', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json' },;
                 body: JSON.stringify({
                   documentId,
                   content,
@@ -2239,13 +2239,13 @@ export const aiAssistantMachine = createMachine({
                 semanticAnalyzer.analyzeDocument(content, documentId),
                 fetch('http://localhost:8202/api/analyze', {
                   method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
+                  headers: { 'Content-Type': 'application/json' },;
                   body: JSON.stringify({ documentId, content, analysisType: 'legal' })
                 }).then(r => r.ok ? r.json() : null)
               ]);
 
               analysisResult = {
-                semantic: semantic.status === 'fulfilled' ? semantic.value: null,
+                semantic: semantic.status === 'fulfilled' ? semantic.value: null,;
                 legal: legal.status === 'fulfilled' ? legal.value : null
               };
               break;
@@ -2254,7 +2254,7 @@ export const aiAssistantMachine = createMachine({
           return {
             documentId,
             analysisType,
-            result: analysisResult,
+            result: analysisResult,;
             timestamp: new Date()
           };
         }),
@@ -2263,7 +2263,7 @@ export const aiAssistantMachine = createMachine({
           analysisType: (event as any).analysisType
         }),
         onDone: {
-          target: "idle",
+          target: "idle",;
           actions: [;
             assign({
               semanticAnalysis: ({ event }) =>
@@ -2295,7 +2295,7 @@ export const aiAssistantMachine = createMachine({
 
     searchingSemantic: {
       invoke: {
-        id: "semanticSearch",
+        id: "semanticSearch",;
         src: fromPromise(async ({ input }: { input: any }) => {
           const { query, filters } = input;
 
@@ -2318,7 +2318,7 @@ export const aiAssistantMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({
+          actions: assign({;
             response: ({ event }) => {
               const result = (event as any).output as RAGResponse;
               return `Found ${(result as { expires?: any; value?: any; totalFound?: any; results?: any; result?: any; precedents?: any; status?: any }).totalFound} relevant documents:\n\n${(result as { expires?: any; value?: any; totalFound?: any; results?: any; result?: any; precedents?: any; status?: any }).results.map((r, i) => `${i + 1}. ${r.title} (${(r.relevanceScore * 100).toFixed(1)}% relevant)\n${r.excerpt}\n`).join('\n')
@@ -2344,13 +2344,13 @@ export const aiAssistantMachine = createMachine({
 
     searchingVector: {
       invoke: {
-        id: "vectorSearch",
+        id: "vectorSearch",;
         src: fromPromise(async ({ input }: { input: any }) => {
           const { embedding, filters } = input;
 
           // Direct vector search in Qdrant;
           const searchPayload = {
-            vector: embedding,
+            vector: embedding,;
             limit: 20,
             with_payload: true,
             score_threshold: filters?.confidenceThreshold || 0.7
@@ -2358,7 +2358,7 @@ export const aiAssistantMachine = createMachine({
 
           const response = await fetch('http://localhost:6333/collections/legal_documents/points/search', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' },;
             body: JSON.stringify(searchPayload)
           });
 
@@ -2375,7 +2375,7 @@ export const aiAssistantMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({
+          actions: assign({;
             response: ({ event }) => {
               const results = (event as any).output;
               return `Vector search found ${results.length} similar documents:\n\n${results.map((r: any, i: number) =>
@@ -2403,14 +2403,14 @@ export const aiAssistantMachine = createMachine({
 
     searchingLegal: {
       invoke: {
-        id: "legalSearch",
+        id: "legalSearch",;
         src: fromPromise(async ({ input }: { input: any }) => {
           const { query, jurisdiction, category } = input;
 
           // Legal-specific search via specialized service;
           const searchPayload = {
             query,
-            jurisdiction: jurisdiction || 'federal',
+            jurisdiction: jurisdiction || 'federal',;
             category: category || 'general',
             includePrecedents: true,
             includeStatutes: true
@@ -2418,7 +2418,7 @@ export const aiAssistantMachine = createMachine({
 
           const response = await fetch('http://localhost:8202/api/search/legal', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' },;
             body: JSON.stringify(searchPayload)
           });
 
@@ -2436,7 +2436,7 @@ export const aiAssistantMachine = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({
+          actions: assign({;
             response: ({ event }) => {
               const result = (event as any).output;
               return `Legal search results:\n\n${(result as { expires?: any; value?: any; totalFound?: any; results?: any; result?: any; precedents?: any; status?: any }).precedents?.map((p: any, i: number) =>
@@ -2465,7 +2465,7 @@ export const aiAssistantMachine = createMachine({
 
     loadingCaseContext: {
       invoke: {
-        id: "loadCaseContext",
+        id: "loadCaseContext",;
         src: fromPromise(async ({ input }: { input: any }) => {
           const { caseId } = input;
 
@@ -2496,7 +2496,7 @@ export const aiAssistantMachine = createMachine({
             })),
             ...evidence.map((e: any) => ({
               event: `Evidence added: ${e.title}`,
-              timestamp: new Date(e.createdAt),
+              timestamp: new Date(e.createdAt),;
               significance: 4
             })
           ].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime();
@@ -2504,7 +2504,7 @@ export const aiAssistantMachine = createMachine({
           return {
             caseId,
             title: caseData.title,
-            status: caseData.status,
+            status: caseData.status,;
             priority: caseData.priority,
             documents,
             evidence,
@@ -2540,7 +2540,7 @@ export const aiAssistantMachine = createMachine({
 
     checkingServiceHealth: {
       invoke: {
-        id: "checkServiceHealth",
+        id: "checkServiceHealth",;
         src: fromPromise(async () => {
           const healthStatus = await productionServiceRegistry.getClusterHealth();
 
@@ -2583,7 +2583,7 @@ export const aiAssistantMachine = createMachine({
               websockets: false // TODO: implement WebSocket health check
             },
             storage: {
-              minio: false, // TODO: implement MinIO health check
+              minio: false, // TODO: implement MinIO health check;
               filesystem: true
             }
           };
@@ -2608,7 +2608,7 @@ export const aiAssistantMachine = createMachine({
 
     analyzingWithContext7: {
       invoke: {
-        id: "context7Analysis",
+        id: "context7Analysis",;
         src: fromPromise(async ({ input }: { input: any }) => {
           const { topic } = input;
 
@@ -2627,7 +2627,7 @@ export const aiAssistantMachine = createMachine({
               .filter(item => item.status) === 'fulfilled')
               .map(result => (result as any).value);
 
-            const analysis: Context7Analysis = {
+            const analysis: Context7Analysis = {;
               suggestions: [
                 `Modern Svelte 5 approaches for ${topic}`,
                 `Accessible component patterns with bits-ui for ${topic}`,
@@ -2636,7 +2636,7 @@ export const aiAssistantMachine = createMachine({
               ],
               codeExamples: validResponses.flatMap(response => (response as { ok?: any; status?: any; statusText?: any; json?: any; snippets?: any; content?: any; apiEndpoints?: any }).snippets || []),
               documentation: validResponses.map(response => (response as { ok?: any; status?: any; statusText?: any; json?: any; snippets?: any; content?: any; apiEndpoints?: any }).content).join('\n\n'),
-              confidence: validResponses.length > 0 ? 0.85 : 0.3,
+              confidence: validResponses.length > 0 ? 0.85 : 0.3,;
               libraries: ['svelte', 'bits-ui', 'xstate'].filter(item => item.includes)(lib) || validResponses.some(r => r.content?.toLowerCase().includes(lib)
               ),
               apiEndpoints: validResponses.flatMap(response => (response as { ok?: any; status?: any; statusText?: any; json?: any; snippets?: any; content?: any; apiEndpoints?: any }).apiEndpoints || [])
@@ -2675,7 +2675,7 @@ export const aiAssistantMachine = createMachine({
 
     connectingNATS: {
       invoke: {
-        id: "connectNATS",
+        id: "connectNATS",;
         src: fromPromise(async () => {
           const connected = await natsMessaging.connect();
           if (!connected) {
@@ -2684,7 +2684,7 @@ export const aiAssistantMachine = createMachine({
           return { connected: true };
         }),
         onDone: {
-          target: "idle",
+          target: "idle",;
           actions: [;
             assign({
               natsConnected: () => true,
@@ -2718,7 +2718,7 @@ export const aiAssistantMachine = createMachine({
 
     disconnectingNATS: {
       invoke: {
-        id: "disconnectNATS",
+        id: "disconnectNATS",;
         src: fromPromise(async () => {
           await natsMessaging.disconnect();
           return { disconnected: true };
@@ -2755,7 +2755,7 @@ export const aiAssistantMachine = createMachine({
 
     streaming: {
       invoke: {
-        id: "streamResponse",
+        id: "streamResponse",;
         src: fromCallback(({ input, sendBack }: { input: any; sendBack: any }) => {
           const { query, model, temperature, service } = input;
 
@@ -2815,7 +2815,7 @@ export const aiAssistantMachine = createMachine({
           })
         },
         STREAM_END: {
-          target: "idle",
+          target: "idle",;
           actions: [;
             assign({
               response: ({ context }) => context.streamBuffer,
@@ -2863,7 +2863,7 @@ export const aiAssistantMachine = createMachine({
 
     benchmarkingPerformance: {
       invoke: {
-        id: "runPerformanceBenchmark",
+        id: "runPerformanceBenchmark",;
         src: fromPromise(async ({ input }: { input: any }) => {
           const { suiteId } = input;
           console.log(`🏁 Running performance benchmark suite: ${suiteId || 'default'}`);
@@ -2885,7 +2885,7 @@ export const aiAssistantMachine = createMachine({
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                  vector: Array.from(testQuery),
+                  vector: Array.from(testQuery),;
                   limit: 10,
                   with_payload: true
                 })
@@ -2904,7 +2904,7 @@ export const aiAssistantMachine = createMachine({
               await fetch('http://localhost:8094/api/rag/query', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
+                body: JSON.stringify({;
                   query: 'Test benchmark query',
                   maxTokens: 100
                 })
@@ -2971,7 +2971,7 @@ export const aiAssistantMachine = createMachine({
 
     optimizingResources: {
       invoke: {
-        id: "optimizeSystemResources",
+        id: "optimizeSystemResources",;
         src: fromPromise(async () => {
           console.log('⚡ Optimizing system resources...');
           const startTime = safeNow();
@@ -3004,7 +3004,7 @@ export const aiAssistantMachine = createMachine({
           };
         }),
         onDone: {
-          target: "idle",
+          target: "idle",;
           actions: [;
             assign({
               performance: ({ context, event }) => ({
@@ -3039,7 +3039,7 @@ export const aiAssistantMachine = createMachine({
 
     batchAnalyzingDocuments: {
       invoke: {
-        id: "batchAnalyzeDocuments",
+        id: "batchAnalyzeDocuments",;
         src: fromPromise(async ({ input }: { input: any }) => {
           const { documentIds, analysisType, batchConfig } = input;
           console.log(`📋 Batch analyzing ${documentIds.length} documents with ${analysisType} analysis`);
@@ -3055,7 +3055,7 @@ export const aiAssistantMachine = createMachine({
             const batchPromises = batch.map(async (documentId: string) => {
               try {
                 return await workerPool.executeTask({
-                  type: 'processDocument',
+                  type: 'processDocument',;
                   data: { documentId, analysisType }
                 });
               } catch (error: any) {
@@ -3118,7 +3118,7 @@ export const aiAssistantMachine = createMachine({
 
     performingMemoryCleanup: {
       invoke: {
-        id: "performMemoryCleanup",
+        id: "performMemoryCleanup",;
         src: fromPromise(async ({ input }: { input: any }) => {
           const { aggressive } = input;
           console.log(`🧹 Performing ${aggressive ? 'aggressive' : 'standard'} memory cleanup...`);
@@ -3218,7 +3218,7 @@ export const aiAssistantMachine = createMachine({
         },
         CLEAR_CONVERSATION: {
           target: "idle",
-          actions: assign({
+          actions: assign({;
             error: () => null,
             conversationHistory: () => [],
             isProcessing: () => false,
@@ -3243,7 +3243,7 @@ export const aiAssistantActions = {
         code: context.error.code,
         type: context.error.type,
         timestamp: context.error.timestamp,
-        context: context.error.context,
+        context: context.error.context,;
         recoverable: context.error.recoverable,
         retryCount: context.error.retryCount
       });
@@ -3251,7 +3251,7 @@ export const aiAssistantActions = {
       // Send error to monitoring service;
       if (context.natsConnected) {
         natsMessaging.publishSystemHealth({
-          type: 'error',
+          type: 'error',;
           error: context.error,
           sessionId: context.sessionId
         }).catch(err => console.warn('Failed to publish error to NATS:', err);
@@ -3290,7 +3290,7 @@ export const aiAssistantActions = {
         {
           sessionId: context.sessionId,
           response: context.response,
-          caseId: context.currentCaseId,
+          caseId: context.currentCaseId,;
           timestamp: new Date().toISOString()
         }
       ).catch(err => console.warn('Failed to publish to NATS:', err);
@@ -3309,7 +3309,7 @@ function getLocalServiceUrl(serviceName: string, protocol: 'http' | 'grpc' | 'qu
   const protocolMap = {
     http: 'http',
     grpc: 'grpc',
-    quic: 'quic',
+    quic: 'quic',;
     websocket: 'ws'
   };
 

@@ -256,7 +256,7 @@ export class FlatBufferNodeSerializer {
         // Read position;
         const position = {
           x: view.getFloat32(offset + FLATBUFFER_SCHEMA.NODE.POSITION_X, true),
-          y: view.getFloat32(offset + FLATBUFFER_SCHEMA.NODE.POSITION_Y, true),
+          y: view.getFloat32(offset + FLATBUFFER_SCHEMA.NODE.POSITION_Y, true),;
           z: view.getFloat32(offset + FLATBUFFER_SCHEMA.NODE.POSITION_Z, true)
         };
 
@@ -362,7 +362,7 @@ export class FlatBufferNodeSerializer {
       nodeId: nodeIds,
       position: positions,
       embedding: embeddings,
-      metadata,
+      metadata,;
       priority: priorities,
       bankId: bankIds
     };

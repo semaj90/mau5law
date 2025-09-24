@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 /*
  * Kernel Splicing Attention API
@@ -6,88 +6,88 @@ import type { RequestHandler } from './$types.js';
  * Optimized for RTX 3060 Ti with <1ms processing
  */
 
-import { productionServiceClient } from '$lib/services/productionServiceClient';
-import { dimensionalCache } from '$lib/ai/dimensional-cache-engine';
+import { productionServiceClient } from '$lib/services/productionServiceClient'
+import { dimensionalCache } from '$lib/ai/dimensional-cache-engine'
 
 interface AttentionRequest {
-  jobId: string;
-  text: string;
-  type: 'attention' | 'multi-head' | 'flash-attention' | 'kernel-splicing';
-  useCache?: boolean;
-  userId?: string;
-  context?: string;
+  jobId: string
+  text: string
+  type: 'attention' | 'multi-head' | 'flash-attention' | 'kernel-splicing'
+  useCache?: boolean
+  userId?: string
+  context?: string
   options?: {
-    heads?: number;
-    dimensions?: number;
-    sequence_length?: number;
-    batch_size?: number;
-  };
+    heads?: number
+    dimensions?: number
+    sequence_length?: number
+    batch_size?: number
+  }
 }
 
 interface AttentionResponse {
-  jobId: string;
-  status: 'success' | 'error';
-  output: number[];
-  attention: number[];
-  cached: boolean;
-  processTime: number;
-  gpu: string;
-  memoryUsage?: string;
-  confidence?: number;
+  jobId: string
+  status: 'success' | 'error'
+  output: number[]
+  attention: number[]
+  cached: boolean
+  processTime: number
+  gpu: string
+  memoryUsage?: string
+  confidence?: number
   metadata?: {
-    heads?: number;
-    dimensions?: number;
-    kernelSplicing?: boolean;
-    flashAttention?: boolean;
-  };
+    heads?: number
+    dimensions?: number
+    kernelSplicing?: boolean
+    flashAttention?: boolean
+  }
 }
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body: AttentionRequest = await request.json();
-    const { jobId, text, type = 'attention', useCache = true, userId, context, options = {} } = body;
+    const body: AttentionRequest = await request.json()
+    const { jobId, text, type = 'attention', useCache = true, userId, context, options = {} } = body
 
     if (!jobId || !text) {
       return json({
         success: false,
         error: 'jobId and text are required'
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
-    const startTime = performance.now();
+    const startTime = performance.now()
 
     // Check cache first if enabled
-    let cacheKey = `attention:${type}:${Buffer.from(text).toString('base64').slice(0, 32)}`;
-    let cached = false;
-    let result: any = null;
+    let cacheKey = `attention:${type}:${Buffer.from(text).toString('base64').slice(0, 32)}`
+    let cached = false
+    let result: any = null
 
     if (useCache) {
       try {
-        result = await dimensionalCache.get(cacheKey);
-        cached = !!result;
+        result = await dimensionalCache.get(cacheKey)
+        cached = !!result
       } catch (err) {
-        console.warn('Cache lookup failed:', err);
+        console.warn('Cache lookup failed:', err)
       }
     }
 
     if (!cached) {
-      // Process with advanced CUDA attention;
+      // Process with advanced CUDA attention
       try {
         switch (type) {
           case 'kernel-splicing':
-            result = await processKernelSplicingAttention(text, options);
-            break;
+            result = await processKernelSplicingAttention(text, options)
+            break
           case 'flash-attention':
-            result = await processFlashAttention(text, options);
-            break;
+            result = await processFlashAttention(text, options)
+            break
           case 'multi-head':
-            result = await processMultiHeadAttention(text, options);
-            break;
+            result = await processMultiHeadAttention(text, options)
+            break
           default:
-            result = await processBasicAttention(text, options);
+            result = await processBasicAttention(text, options)
         }
 
-        // Cache the result;
+        // Cache the result
         if (useCache && result) {
           try {
             await dimensionalCache.store(cacheKey, {
@@ -100,9 +100,9 @@ export const POST: RequestHandler = async ({ request }) => {
                 timestamp: Date.now(),
                 processTime: (result as { output?: any; attention?: any; processTime?: any; embeddings?: any; attentionWeights?: any }).processTime
               }
-            });
+            })
           } catch (err) {
-            console.warn('Cache store failed:', err);
+            console.warn('Cache store failed:', err)
           }
         }
       } catch (error: any) {
@@ -113,11 +113,11 @@ export const POST: RequestHandler = async ({ request }) => {
           error: error instanceof Error ? error.message: String(error),
           processTime: performance.now() - startTime,
           timestamp: Date.now()
-        }, { status: 500 });
+        }, { status: 500 })
       }
     }
 
-    const totalTime = performance.now() - startTime;
+    const totalTime = performance.now() - startTime
 
     const response: AttentionResponse = {
       jobId,
@@ -135,27 +135,27 @@ export const POST: RequestHandler = async ({ request }) => {
         kernelSplicing: type === 'kernel-splicing',
         flashAttention: type === 'flash-attention'
       }
-    };
+    }
 
     return json({
       success: true,
       ...response,
       timestamp: Date.now()
-    });
+    })
 
   } catch (error: any) {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 export const GET: RequestHandler = async () => {
   try {
     // Get service status
-    const stats = await dimensionalCache.getStats();
+    const stats = await dimensionalCache.getStats()
 
     return json({
       service: 'attention-processing',
@@ -197,21 +197,21 @@ export const GET: RequestHandler = async () => {
         'kernel-splicing'
       ],
       timestamp: Date.now()
-    });
+    })
 
   } catch (error: any) {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
-// Helper functions for different attention types;
+// Helper functions for different attention types
 async function processKernelSplicingAttention(text: string, options: any) {
   // Simulate kernel splicing attention with <1ms processing
-  const processTime = Math.random() * 0.001;
+  const processTime = Math.random() * 0.001
   
   return {
     output: new Array(768).fill(0).map(() => Math.random() * 2 - 1),
@@ -220,12 +220,12 @@ async function processKernelSplicingAttention(text: string, options: any) {
     memoryUsage: '1.8GB',
     confidence: 0.98,
     kernelSplicing: true
-  };
+  }
 }
 
 async function processFlashAttention(text: string, options: any) {
   // Simulate flash attention processing
-  const processTime = Math.random() * 0.005;
+  const processTime = Math.random() * 0.005
   
   return {
     output: new Array(768).fill(0).map(() => Math.random() * 2 - 1),
@@ -234,13 +234,13 @@ async function processFlashAttention(text: string, options: any) {
     memoryUsage: '2.1GB',
     confidence: 0.96,
     flashAttention: true
-  };
+  }
 }
 
 async function processMultiHeadAttention(text: string, options: any) {
   // Simulate multi-head attention processing
-  const processTime = Math.random() * 0.010;
-  const heads = options.heads || 8;
+  const processTime = Math.random() * 0.010
+  const heads = options.heads || 8
   
   return {
     output: new Array(768).fill(0).map(() => Math.random() * 2 - 1),
@@ -250,12 +250,12 @@ async function processMultiHeadAttention(text: string, options: any) {
     confidence: 0.94,
     multiHead: true,
     heads
-  };
+  }
 }
 
 async function processBasicAttention(text: string, options: any) {
   // Simulate basic attention processing
-  const processTime = Math.random() * 0.015;
+  const processTime = Math.random() * 0.015
   
   return {
     output: new Array(768).fill(0).map(() => Math.random() * 2 - 1),
@@ -263,5 +263,5 @@ async function processBasicAttention(text: string, options: any) {
     processTime,
     memoryUsage: '2.0GB',
     confidence: 0.92
-  };
+  }
 }

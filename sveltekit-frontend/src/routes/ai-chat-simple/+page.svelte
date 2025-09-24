@@ -33,9 +33,9 @@
 
 		const userMessage = {
 			id: Date.now.toString(),
-			role: 'user' as const,
-			content: currentMessage.trim(),
-			timestamp: new Date()
+			role: 'user' as const,;
+			content: currentMessage.trim(),;
+			timestamp: new Date();
 		};
 
 		messages = [...messages, userMessage];
@@ -45,12 +45,12 @@
 
 		try {
 			const response = await fetch('http://localhost:8086/api/generate', {
-				method: 'POST',
+				method: 'POST',;
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					model: 'gemma3-legal:latest',
-					prompt: messageToSend,
-					stream: false
+					model: 'gemma3-legal:latest',;
+					prompt: messageToSend,;
+					stream: false;
 				})
 			});
 
@@ -58,9 +58,9 @@
 
 			const aiMessage = {
 				id: (Date.now() + 1).toString(),
-				role: 'assistant' as const,
-				content: data.response || 'Sorry, I encountered an error processing your request.',
-				timestamp: new Date()
+				role: 'assistant' as const,;
+				content: data.response || 'Sorry, I encountered an error processing your request.',;
+				timestamp: new Date();
 			};
 
 			messages = [...messages, aiMessage];
@@ -68,9 +68,9 @@
 			console.error('Error sending message:', error);
 			const errorMessage = {
 				id: (Date.now() + 1).toString(),
-				role: 'assistant' as const,
-				content: 'Sorry, I could not connect to the AI service. Please check that TensorRT bridge is running on port 8086.',
-				timestamp: new Date()
+				role: 'assistant' as const,;
+				content: 'Sorry, I could not connect to the AI service. Please check that TensorRT bridge is running on port 8086.',;
+				timestamp: new Date();
 			};
 			messages = [...messages, errorMessage];
 		} finally {
@@ -97,9 +97,9 @@
 		checkServiceHealth();
 		messages = [{
 			id: 'welcome',
-			role: 'assistant',
-			content: 'Hello! I\'m your legal AI assistant powered by TensorRT. How can I help you today?',
-			timestamp: new Date()
+			role: 'assistant',;
+			content: 'Hello! I\'m your legal AI assistant powered by TensorRT. How can I help you today?',;
+			timestamp: new Date();
 		}];
 	});
 </script>
@@ -183,17 +183,17 @@
 
 <style>
 	/* Custom scrollbar */
-	:global(.overflow-y-auto: :-webkit-scrollbar) {
+	:global(.overflow-y-auto::-webkit-scrollbar) {;
 		width: 6px;
 	}
-	:global(.overflow-y-auto: :-webkit-scrollbar-track) {
+	:global(.overflow-y-auto::-webkit-scrollbar-track) {
 		background: #f1f1f1;
 	}
-	:global(.overflow-y-auto: :-webkit-scrollbar-thumb) {
+	:global(.overflow-y-auto::-webkit-scrollbar-thumb) {
 		background: #c1c1c1;
 		border-radius: 3px;
 	}
-	:global(.overflow-y-auto: :-webkit-scrollbar-thumb:hover) {
+	:global(.overflow-y-auto::-webkit-scrollbar-thumb:hover) {
 		background: #a8a8a8;
 	}
 </style>

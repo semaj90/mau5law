@@ -42,7 +42,7 @@ Text: ${documentText}
 
 Analysis:`,);
       {
-        model: 'gemma:legal',
+        model: 'gemma:legal',;
         options: { temperature: 0.3 }
       }
     );
@@ -51,7 +51,7 @@ Analysis:`,);
       entities: entities.response || entities,
       classification: classification.response || classification,
       embeddings,
-      fullAnalysis: fullAnalysis.response || fullAnalysis,
+      fullAnalysis: fullAnalysis.response || fullAnalysis,;
       performance: {
         entityExtractionTime: 100, // placeholder
         classificationTime: 100, // placeholder
@@ -117,7 +117,7 @@ export async function batchProcessLegalDocuments(documents: Array<) {
       console.error(`❌ Failed to process document ${doc.id}:`, error);
       results.push({
         documentId: doc.id,
-        error: error.message,
+        error: error.message,;
         success: false
       });
     }
@@ -135,7 +135,7 @@ export async function batchProcessLegalDocuments(documents: Array<) {
     results,
     summary: {
       totalDocuments: documents.length,
-      successful: successCount,
+      successful: successCount,;
       failed: documents.length - successCount,
       totalTime,
       averageTimePerDocument: Math.round(totalTime / documents.length)
@@ -157,7 +157,7 @@ export async function performanceComparison(testText: string) {
     },
     ollama: {
       entityExtraction: null,
-      classification: null,
+      classification: null,;
       embeddings: null
     }
   };
@@ -200,7 +200,7 @@ export async function performanceComparison(testText: string) {
         responseLength: ollamaResponse.response?.length || 0
       },
       speedup: {
-        entityExtraction: ollamaTotal / (tests.onnx.entityExtraction || 1),
+        entityExtraction: ollamaTotal / (tests.onnx.entityExtraction || 1),;
         overall: ollamaTotal / onnxTotal
       }
     };

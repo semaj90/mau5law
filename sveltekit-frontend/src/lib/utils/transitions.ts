@@ -7,7 +7,7 @@ import type { TransitionConfig } from 'svelte/transition';
 // Restored TransitionConfig type import
 
 export function flyAndScale(
-  node: Element,
+  node: Element,;
   params: {
     y?: number;
     x?: number;
@@ -40,14 +40,14 @@ export function flyAndScale(
 
   return {
     duration: params.duration ?? 150,
-    delay: 0,
+    delay: 0,;
     css: (t) => {
       const y = scaleConversion(t, [0, 1], [params.y ?? 5, 0]);
       const x = scaleConversion(t, [0, 1], [params.x ?? 0, 0]);
       const scale = scaleConversion(t, [0, 1], [params.start ?? 0.95, 1]);
 
       return styleToString({
-        transform: `${transform} translate3d(${x}px, ${y}px, 0) scale(${scale})`,
+        transform: `${transform} translate3d(${x}px, ${y}px, 0) scale(${scale})`,;
         opacity: t
       });
     },
@@ -55,12 +55,12 @@ export function flyAndScale(
   };
 }
 export function slideInFromBottom(
-  node: Element,
+  node: Element,;
   params: { duration?: number; delay?: number } = {}
 ): TransitionConfig {
   return {
     duration: params.duration ?? 300,
-    delay: params.delay ?? 0,
+    delay: params.delay ?? 0,;
     css: (t) => {
       const eased = cubicOut(t);
       return `
@@ -71,11 +71,11 @@ export function slideInFromBottom(
   };
 }
 export function scaleIn(
-  node: Element,
+  node: Element,;
   params: { duration?: number; start?: number } = {}
 ): TransitionConfig {
   return {
-    duration: params.duration ?? 150,
+    duration: params.duration ?? 150,;
     css: (t) => {
       const eased = cubicOut(t);
       const scale = (params.start ?? 0.8) + (1 - (params.start ?? 0.8)) * eased;

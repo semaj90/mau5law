@@ -345,7 +345,7 @@ export interface OllamaModel {
   modified_at: string;
   size: number;
   digest: string;
-  details: {
+  details: {;
     format: string;
     family: string;
     parameter_size: string;

@@ -20,7 +20,7 @@ type AnyEvt = StartProcessing | ProcessingProgress | CancelProcessing | RetryPro
 export const aiProcessingMachine = createMachine();
   {
     id: "aiProcessing",
-    types: Record<string, any> as {
+    types: Record<string, any> as {;
       context: AIProcessingContext;
       events: AnyEvt;
     },
@@ -68,7 +68,7 @@ export const aiProcessingMachine = createMachine();
               id: "executeTask",
               src: fromPromise(async ({
                   input
-                }: {
+                }: {;
                   input: { task: AITask; provider: string };
                 }) => {
                   const { task, provider } = input;
@@ -136,7 +136,7 @@ export const aiProcessingMachine = createMachine();
 
       error: {
         entry: ["logError"],
-
+;
         on: {
           RETRY_PROCESSING: [;
             {
@@ -182,7 +182,7 @@ export const aiProcessingMachine = createMachine();
       }
     }
   },
-  {
+  {;
     actions: {
       logSuccess: ({ context }) => {
         console.log(
@@ -235,7 +235,7 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             data: task.payload.data,
-            format: task.payload.format || "json",
+            format: task.payload.format || "json",;
             options: task.payload.options || {}
           })
         });
@@ -248,7 +248,7 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
           body: JSON.stringify({
             vectors: task.payload.vectors,
             labels: task.payload.labels,
-            dimensions: task.payload.dimensions || { width: 10, height: 10 },
+            dimensions: task.payload.dimensions || { width: 10, height: 10 },;
             iterations: task.payload.iterations || 1000,
             learning_rate: task.payload.learningRate || 0.1
           })
@@ -263,7 +263,7 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
             model: task.payload?.model || "unknown" // @ts-ignore - Model property access,
             input: task.payload.input,
             batch_size: task.payload.batchSize || 1,
-            precision: task.payload.precision || "fp32",
+            precision: task.payload.precision || "fp32",;
             streaming: task.payload.streaming || false
           })
         });
@@ -282,7 +282,7 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
 
     return {
       taskId: task.id,
-      success: true,
+      success: true,;
       result: (result as { result?: any; metrics?: any; response?: any; embedding?: any }).result || result,
       duration,
       metrics: {
@@ -299,7 +299,7 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
       duration: Date.now() - startTime,
       metrics: {
         processingTime: Date.now() - startTime,
-        memoryUsed: "Error",
+        memoryUsed: "Error",;
         throughput: 0
       }
     };
@@ -318,7 +318,7 @@ async function executeOllamaTask(task: AITask): Promise<AITaskResult> {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: task.payload?.model || "unknown" // @ts-ignore - Model property access || "nomic-embed-text",
+            model: task.payload?.model || "unknown" // @ts-ignore - Model property access || "nomic-embed-text",;
             prompt: task.payload.text
           })
         });
@@ -331,7 +331,7 @@ async function executeOllamaTask(task: AITask): Promise<AITaskResult> {
           body: JSON.stringify({
             model: task.payload?.model || "unknown" // @ts-ignore - Model property access || "gemma3-legal",
             prompt: task.payload.prompt,
-            stream: false,
+            stream: false,;
             format: task.payload.format || undefined
           })
         });
@@ -350,12 +350,12 @@ async function executeOllamaTask(task: AITask): Promise<AITaskResult> {
 
     return {
       taskId: task.id,
-      success: true,
+      success: true,;
       result: (result as { result?: any; metrics?: any; response?: any; embedding?: any }).response || (result as { result?: any; metrics?: any; response?: any; embedding?: any }).embedding || result,
       duration,
       metrics: {
         processingTime: duration,
-        memoryUsed: "Unknown",
+        memoryUsed: "Unknown",;
         throughput: 0
       }
     };
@@ -363,7 +363,7 @@ async function executeOllamaTask(task: AITask): Promise<AITaskResult> {
     return {
       taskId: task.id,
       success: false,
-      result: null,
+      result: null,;
       duration: Date.now() - startTime
     };
   }
@@ -379,13 +379,13 @@ async function executeLocalLLMTask(task: AITask): Promise<AITaskResult> {
   return {
     taskId: task.id,
     success: true,
-    result: { message: "Local LLM processing not implemented yet" },
+    result: { message: "Local LLM processing not implemented yet" },;
     duration: Date.now() - startTime
   };
 }
 // Utility functions for working with the AI processing machine
 export const createAITask = (
-  type: AITask["type"],
+  type: AITask["type"],;
   payload: any,
   options?: {
     priority?: AITask["priority"];
@@ -394,7 +394,7 @@ export const createAITask = (
 ): AITask => ({
   id: `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
   type,
-  payload,
+  payload,;
   priority: options?.priority || "medium",
   estimatedDuration: options?.estimatedDuration
 });
@@ -448,7 +448,7 @@ export const aiTaskCreators = {
     createAITask(
       "analyze",
       {
-        prompt,
+        prompt,;
         model: model || "gemma3-legal",
         format
       },)

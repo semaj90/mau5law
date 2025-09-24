@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa Advanced API Testing Interface -->
@@ -67,9 +67,9 @@ https://svelte.dev/e/js_parse_error -->
     p95Latency: 0,
     p99Latency: 0,
     throughput: 0,
-    errorRate: 0,
+    errorRate: 0,;
     uptime: 100,
-    lastReset: new Date()
+    lastReset: new Date();
   });
 
   // Real-time monitoring
@@ -96,10 +96,10 @@ https://svelte.dev/e/js_parse_error -->
       timeout: 5000,
       expectedStatus: 200,
       description: 'Real-time system health and performance metrics',
-      headers: ,
+      headers: ,;
       validation: {
         required: ['status', 'uptime', 'services'],
-        statusCodes: [200]
+        statusCodes: [200];
       }
     },
     {
@@ -111,21 +111,21 @@ https://svelte.dev/e/js_parse_error -->
       category: 'ai',
       priority: 'high',
       timeout: 30000,
-      expectedStatus: 200,
+      expectedStatus: 200,;
       payload: {
         query: 'Legal precedent analysis for contract liability',
-        context: 'legal_analysis',
+        context: 'legal_analysis',;
         options: {
           maxResults: 5,
           includeMetadata: true,
-          model: 'gemma3-legal'
+          model: 'gemma3-legal';
         }
       },
-      description: 'AI-powered legal document analysis and retrieval',
+      description: 'AI-powered legal document analysis and retrieval',;
       headers: { 'Content-Type': 'application/json' },
       validation: {
         required: ['results', 'confidence', 'sources'],
-        statusCodes: [200, 202]
+        statusCodes: [200, 202];
       }
     },
     {
@@ -137,18 +137,18 @@ https://svelte.dev/e/js_parse_error -->
       category: 'data',
       priority: 'medium',
       timeout: 10000,
-      expectedStatus: 200,
+      expectedStatus: 200,;
       params: {
         search: 'contract liability indemnification',
         limit: 10,
         offset: 0,
         sortBy: 'relevance',
-        includeMetadata: true
+        includeMetadata: true;
       },
-      description: 'Semantic legal document search with vector similarity',
+      description: 'Semantic legal document search with vector similarity',;
       validation: {
         required: ['documents', 'total', 'page'],
-        statusCodes: [200]
+        statusCodes: [200];
       }
     },
     {
@@ -161,10 +161,10 @@ https://svelte.dev/e/js_parse_error -->
       priority: 'critical',
       timeout: 5000,
       expectedStatus: 200,
-      description: 'Microservices cluster status and health monitoring',
+      description: 'Microservices cluster status and health monitoring',;
       validation: {
         required: ['services', 'healthy', 'timestamp'],
-        statusCodes: [200, 503]
+        statusCodes: [200, 503];
       }
     },
     {
@@ -177,10 +177,10 @@ https://svelte.dev/e/js_parse_error -->
       priority: 'high',
       timeout: 5000,
       expectedStatus: 200,
-      description: 'Context7 multicore processing service health',
+      description: 'Context7 multicore processing service health',;
       validation: {
         required: ['workers', 'status', 'performance'],
-        statusCodes: [200]
+        statusCodes: [200];
       }
     },
     {
@@ -192,18 +192,18 @@ https://svelte.dev/e/js_parse_error -->
       category: 'data',
       priority: 'medium',
       timeout: 15000,
-      expectedStatus: 200,
+      expectedStatus: 200,;
       payload: {
         query: 'Employment law discrimination case precedents',
         limit: 20,
         threshold: 0.7,
-        includeEmbeddings: false
+        includeEmbeddings: false;
       },
-      description: 'PostgreSQL pgvector similarity search',
+      description: 'PostgreSQL pgvector similarity search',;
       headers: { 'Content-Type': 'application/json' },
       validation: {
         required: ['matches', 'scores', 'metadata'],
-        statusCodes: [200]
+        statusCodes: [200];
       }
     },
     {
@@ -215,18 +215,18 @@ https://svelte.dev/e/js_parse_error -->
       category: 'ai',
       priority: 'high',
       timeout: 45000,
-      expectedStatus: 200,
+      expectedStatus: 200,;
       payload: {
         prompt: 'Analyze the legal implications of this contract clause regarding force majeure',
         model: 'gemma3-legal',
         temperature: 0.3,
-        maxTokens: 1000
+        maxTokens: 1000;
       },
-      description: 'Ollama AI model inference with legal specialization',
+      description: 'Ollama AI model inference with legal specialization',;
       headers: { 'Content-Type': 'application/json' },
       validation: {
         required: ['response', 'model', 'usage'],
-        statusCodes: [200]
+        statusCodes: [200];
       }
     },
     {
@@ -238,15 +238,15 @@ https://svelte.dev/e/js_parse_error -->
       category: 'data',
       priority: 'low',
       timeout: 10000,
-      expectedStatus: 200,
+      expectedStatus: 200,;
       payload: {
-        query: 'MATCH (c:Case)-[:RELATED_TO]->(d:Document) RETURN c.title, d.type LIMIT 10',
+        query: 'MATCH (c:Case)-[:RELATED_TO]->(d:Document) RETURN c.title, d.type LIMIT 10',;
         parameters: },
-      description: 'Neo4j knowledge graph traversal and analysis',
+      description: 'Neo4j knowledge graph traversal and analysis',;
       headers: { 'Content-Type': 'application/json' },
       validation: {
         required: ['records', 'summary'],
-        statusCodes: [200]
+        statusCodes: [200];
       }
     },
     {
@@ -258,20 +258,20 @@ https://svelte.dev/e/js_parse_error -->
       category: 'messaging',
       priority: 'medium',
       timeout: 5000,
-      expectedStatus: 200,
+      expectedStatus: 200,;
       payload: {
-        subject: 'legal.test.message',
+        subject: 'legal.test.message',;
         data: {
           type: 'api_test',
           timestamp: new Date().toISOString(),
-          payload: 'Test message from YoRHa API interface'
+          payload: 'Test message from YoRHa API interface';
         }
       },
-      description: 'NATS messaging system publication test',
+      description: 'NATS messaging system publication test',;
       headers: { 'Content-Type': 'application/json' },
       validation: {
         required: ['published', 'messageId'],
-        statusCodes: [200]
+        statusCodes: [200];
       }
     },
     {
@@ -284,10 +284,10 @@ https://svelte.dev/e/js_parse_error -->
       priority: 'critical',
       timeout: 5000,
       expectedStatus: 200,
-      description: 'PostgreSQL, Redis, and Neo4j connectivity check',
-      validation: {
+      description: 'PostgreSQL, Redis, and Neo4j connectivity check',;
+      validation: {;
         required: ['postgresql', 'redis', 'neo4j'],
-        statusCodes: [200, 503]
+        statusCodes: [200, 503];
       }
     }
   ];
@@ -301,7 +301,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: TestTube,
       endpoints: ['system-status', 'cluster-health', 'database-health', 'context7-status'],
       timeout: 30000,
-      parallel: true
+      parallel: true;
     },
     {
       id: 'ai-pipeline',
@@ -310,7 +310,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: Cpu,
       endpoints: ['enhanced-rag', 'vector-search', 'ai-inference', 'context7-status'],
       timeout: 120000,
-      parallel: false
+      parallel: false;
     },
     {
       id: 'data-layer',
@@ -319,7 +319,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: Database,
       endpoints: ['legal-data-search', 'vector-search', 'graph-query', 'database-health'],
       timeout: 60000,
-      parallel: true
+      parallel: true;
     },
     {
       id: 'infrastructure',
@@ -328,7 +328,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: Server,
       endpoints: ['system-status', 'cluster-health', 'database-health', 'nats-publish'],
       timeout: 45000,
-      parallel: true
+      parallel: true;
     },
     {
       id: 'performance-test',
@@ -336,9 +336,9 @@ https://svelte.dev/e/js_parse_error -->
       description: 'Stress testing with concurrent requests',
       icon: BarChart3,
       endpoints: ['system-status', 'enhanced-rag', 'legal-data-search'],
-      timeout: 180000,
-      parallel: true,
-      iterations: 10
+      timeout: 180000,;
+      parallel: true,;
+      iterations: 10;
     }
   ];
 
@@ -363,10 +363,10 @@ https://svelte.dev/e/js_parse_error -->
     // Initialize test suites
     testSuites = testSuitesConfig.map(suite => ({
       ...suite,
-      status: 'pending',
+      status: 'pending',;
       results: [],
-      lastRun: null,
-      duration: 0
+      lastRun: null,;
+      duration: 0;
     });
     // Subscribe to real-time API events
     startRealTimeMonitoring();
@@ -468,10 +468,10 @@ https://svelte.dev/e/js_parse_error -->
       error: null,
       statusCode: null,
       responseSize: 0,
-      headers: ,
+      headers: ,;
       validation: {
-        passed: false,
-        errors: []
+        passed: false,;
+        errors: [];
       }
     };
 
@@ -490,9 +490,9 @@ https://svelte.dev/e/js_parse_error -->
 
       // Prepare request options
       const requestOptions = {
-        method: endpoint.method,
-        headers: endpoint.headers || ,
-        signal: AbortSignal.timeout(endpoint.timeout || 30000)
+        method: endpoint.method,;
+        headers: endpoint.headers || ,;
+        signal: AbortSignal.timeout(endpoint.timeout || 30000);
       };
 
       // Add body for POST requests
@@ -538,7 +538,7 @@ https://svelte.dev/e/js_parse_error -->
       yorhaAPI.emit.ok,
         latency,
         responseSize,
-        endpoint: endpoint.id
+        endpoint: endpoint.id;
       });
 
     } catch (error) {
@@ -555,9 +555,9 @@ https://svelte.dev/e/js_parse_error -->
       yorhaAPI.emit('api:response', {
         success: false,
         latency,
-        responseSize: 0,
-        endpoint: endpoint.id,
-        error: error.message
+        responseSize: 0,;
+        endpoint: endpoint.id,;
+        error: error.message;
       });
     } finally {
       // Update test results
@@ -685,9 +685,9 @@ https://svelte.dev/e/js_parse_error -->
       p95Latency: 0,
       p99Latency: 0,
       throughput: 0,
-      errorRate: 0,
+      errorRate: 0,;
       uptime: 100,
-      lastReset: new Date()
+      lastReset: new Date();
     };
   }
 
@@ -698,13 +698,13 @@ https://svelte.dev/e/js_parse_error -->
       realTimeStats,
       testResults: testResults.slice(0, 50), // Last 50 results
       testSuites: testSuites.map(suite => ({
-        ...suite,
-        results: suite.results?.slice(0, 10) // Last 10 results per suite
+        ...suite,;
+        results: suite.results?.slice(0, 10) // Last 10 results per suite;
       }))
     };
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-      type: 'application/json'
+      type: 'application/json';
     });
 
     const url = URL.createObjectURL(blob);
@@ -838,7 +838,7 @@ https://svelte.dev/e/js_parse_error -->
 
           <!-- Control buttons -->
           <button
-            class="p-2 rounded-lg bg-amber-900/20 border border-amber-400/30 hover:bg-amber-400/10 text-amber-400"
+            class="p-2 rounded-lg bg-amber-900/20 border border-amber-400/30 hover:bg-amber-400/10 text-amber-400";
             class:animate-spin={autoRefresh}
             onclick={toggleAutoRefresh}
             title={autoRefresh ? 'Disable auto-refresh' : 'Enable auto-refresh'}
@@ -1098,7 +1098,7 @@ https://svelte.dev/e/js_parse_error -->
               />
             </div>
 
-            <select
+            <select;
               bind:value={filterStatus}
               class="px-3 py-2 bg-black/50 border border-gray-600 rounded-lg text-gray-200 focus:border-amber-400 focus:outline-none"
             >
@@ -1194,20 +1194,20 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   /* Custom scrollbar for YoRHa theme */
-  :global(.overflow-y-auto: :-webkit-scrollbar) {
+  :global(.overflow-y-auto::-webkit-scrollbar) {
     width: 6px;
   }
 
-  :global(.overflow-y-auto: :-webkit-scrollbar-track) {
+  :global(.overflow-y-auto::-webkit-scrollbar-track) {
     background: rgba(0, 0, 0, 0.2);
   }
 
-  :global(.overflow-y-auto: :-webkit-scrollbar-thumb) {
+  :global(.overflow-y-auto::-webkit-scrollbar-thumb) {
     background: rgba(251, 191, 36, 0.3);
     border-radius: 3px;
   }
 
-  :global(.overflow-y-auto: :-webkit-scrollbar-thumb:hover) {
+  :global(.overflow-y-auto::-webkit-scrollbar-thumb:hover) {
     background: rgba(251, 191, 36, 0.5);
   }
 

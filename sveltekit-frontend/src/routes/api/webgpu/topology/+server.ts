@@ -2,21 +2,21 @@
  * WebGPU QLoRA Topology Prediction API
  * SvelteKit 2 API endpoint for legal AI topology optimization
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { qloraTopologyPredictor } from '$lib/ai/qlora-topology-predictor';
-import { webgpuRAGService } from '$lib/webgpu/webgpu-rag-service';
-import type { LegalDocument } from '$lib/memory/nes-memory-architecture';
-import type { UserBehaviorPattern } from '$lib/ai/qlora-topology-predictor';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { qloraTopologyPredictor } from '$lib/ai/qlora-topology-predictor'
+import { webgpuRAGService } from '$lib/webgpu/webgpu-rag-service'
+import type { LegalDocument } from '$lib/memory/nes-memory-architecture'
+import type { UserBehaviorPattern } from '$lib/ai/qlora-topology-predictor'
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json();
-    const { query, documentType, complexity, userPattern, performanceRequirements } = body;
+    const body = await request.json()
+    const { query, documentType, complexity, userPattern, performanceRequirements } = body
 
-    console.log('🔮 WebGPU Topology Prediction Request:', { query, documentType, complexity });
+    console.log('🔮 WebGPU Topology Prediction Request:', { query, documentType, complexity })
 
-    // Create mock legal document;
+    // Create mock legal document
     const document: LegalDocument = {
       id: `doc_${Date.now()}`,
       type: documentType || 'contract',
@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
       lastAccessed: Date.now(),
       compressed: true,
       metadata: Record<string, any>
-    };
+    }
 
     // Create user behavior pattern (use satisfies to enforce exact keys & avoid stale interface collisions)
     const behavior = {
@@ -37,33 +37,33 @@ export const POST: RequestHandler = async ({ request }) => {
       interactionVelocity: userPattern?.interactionVelocity ?? 0.5,
       qualityExpectation: userPattern?.qualityExpectation ?? 0.8,
       timeConstraints: userPattern?.timeConstraints ?? 0.6
-    } satisfies UserBehaviorPattern;
+    } satisfies UserBehaviorPattern
 
-    // Performance requirements;
+    // Performance requirements
     const perfReqs = {
       maxLatency: performanceRequirements?.maxLatency || 1000,
       minAccuracy: performanceRequirements?.minAccuracy || 0.85,
       memoryBudget: performanceRequirements?.memoryBudget || 512
-    };
+    }
 
     // Get topology prediction from QLoRA predictor with HMM
     const topologyPrediction = await qloraTopologyPredictor.predictOptimalTopology(
       document,
       behavior,
       perfReqs
-    );
+    )
 
     // Initialize WebGPU service if available
-    const webgpuInit = await webgpuRAGService.initializeWebGPU();
+    const webgpuInit = await webgpuRAGService.initializeWebGPU()
 
-    // Process query with WebGPU acceleration;
+    // Process query with WebGPU acceleration
     const webgpuResult = await webgpuRAGService.processQuery(query || 'topology optimization', {
       useGPU: true,
       topologyConfig: topologyPrediction.predictedConfig
-    });
+    })
 
     // Get HMM accuracy metrics
-    const hmmMetrics = qloraTopologyPredictor.getAccuracyMetrics();
+    const hmmMetrics = qloraTopologyPredictor.getAccuracyMetrics()
 
     return json({
       success: true,
@@ -84,25 +84,25 @@ export const POST: RequestHandler = async ({ request }) => {
         complexity: document.confidenceLevel
       },
       timestamp: new Date().toISOString()
-    });
+    })
   } catch (error) {
-    console.error('❌ WebGPU Topology Prediction Error:', error);
-    return json();
+    console.error('❌ WebGPU Topology Prediction Error:', error)
+    return json()
       {
         success: false,
         error: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString()
       },
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 export const GET: RequestHandler = async () => {
 	try {
 		// Health check for WebGPU + QLoRA topology system
-		const hmmMetrics = qloraTopologyPredictor.getAccuracyMetrics();
-		const webgpuInit = await webgpuRAGService.initializeWebGPU();
+		const hmmMetrics = qloraTopologyPredictor.getAccuracyMetrics()
+		const webgpuInit = await webgpuRAGService.initializeWebGPU()
 
 		return json({
 			status: 'operational',
@@ -119,14 +119,14 @@ export const GET: RequestHandler = async () => {
 			},
 			webgpu: webgpuInit,
 			timestamp: new Date().toISOString()
-		});
+		})
 
 	} catch (error) {
-		console.error('❌ WebGPU Topology Health Check Error:', error);
+		console.error('❌ WebGPU Topology Health Check Error:', error)
 		return json({
 			status: 'error',
 			error: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString()
-		}, { status: 500 });
+		}, { status: 500 })
 	}
-};
+}

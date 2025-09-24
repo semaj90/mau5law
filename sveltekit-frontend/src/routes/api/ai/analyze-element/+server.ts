@@ -16,27 +16,27 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 /*
  * Elemental Awareness API - YOLO-style hover analysis
  * Provides legal context for any UI element when hovered
  */
-import { json } from '@sveltejs/kit';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { json } from '@sveltejs/kit'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
-    const payload = await request.json();
-    const elementType = payload?.elementType ?? 'unknown';
-    const content = payload?.content ?? '';
-    const context = payload?.context ?? '';
+    const payload = await request.json()
+    const elementType = payload?.elementType ?? 'unknown'
+    const content = payload?.content ?? ''
+    const context = payload?.context ?? ''
 
     if (!content || content.length < 3) {
-      return json({ error: 'No content to analyze', relevance: 'No content to analyze' }, { status: 400 });
+      return json({ error: 'No content to analyze', relevance: 'No content to analyze' }, { status: 400 })
     }
 
-    // Quick legal relevance analysis;
+    // Quick legal relevance analysis
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -52,50 +52,50 @@ Provide a brief 1-sentence legal relevance assessment and classification.
 Format as JSON: {"relevance": "...", "legalContext": "evidence|case|statute|procedure|other", "actionable": true}`,
         stream: false
       })
-    });
+    })
 
     if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
-      const text = await (response as { ok?: any; text?: any; status?: any; json?: any }).text().catch(() => '');
-      console.error('Remote analyze service returned non-OK:', (response as { ok?: any; text?: any; status?: any; json?: any }).status, text);
-      return json({ error: 'Remote analyze service failed' }, { status: 502 });
+      const text = await (response as { ok?: any; text?: any; status?: any; json?: any }).text().catch(() => '')
+      console.error('Remote analyze service returned non-OK:', (response as { ok?: any; text?: any; status?: any; json?: any }).status, text)
+      return json({ error: 'Remote analyze service failed' }, { status: 502 })
     }
 
-    const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json().catch(() => null);
+    const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json().catch(() => null)
 
     // Normalize result into a JS object
-    let analysis: any = null;
+    let analysis: any = null
     if (!result) {
       analysis = {
         relevance: 'Content may have legal significance',
         legalContext: 'general',
         actionable: false
-      };
+      }
     } else if (typeof result === 'string') {
       try {
-        analysis = JSON.parse(result);
+        analysis = JSON.parse(result)
       } catch {
-        analysis = { raw: result };
+        analysis = { raw: result }
       }
     } else if ((result as { response?: any }).response) {
-      // (result as { response?: any }).response might be a JSON string or already an object;
+      // (result as { response?: any }).response might be a JSON string or already an object
       if (typeof (result as { response?: any }).response === 'string') {
         try {
-          analysis = JSON.parse((result as { response?: any }).response);
+          analysis = JSON.parse((result as { response?: any }).response)
         } catch {
-          analysis = { response: (result as { response?: any }).response };
+          analysis = { response: (result as { response?: any }).response }
         }
       } else {
-        analysis = (result as { response?: any }).response;
+        analysis = (result as { response?: any }).response
       }
     } else {
-      analysis = result;
+      analysis = result
     }
 
-    return json(analysis);
+    return json(analysis)
   } catch (error: any) {
-    console.error('Element analysis failed:', error);
-    return json({ error: 'Analysis unavailable', relevance: 'Analysis unavailable' }, { status: 500 });
+    console.error('Element analysis failed:', error)
+    return json({ error: 'Analysis unavailable', relevance: 'Analysis unavailable' }, { status: 500 })
   }
-};
+}
 
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)

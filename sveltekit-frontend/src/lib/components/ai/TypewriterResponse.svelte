@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -42,8 +42,8 @@ https://svelte.dev/e/js_parse_error -->
   let isPaused = $state(false);
   let cursorVisible = $state(true);
   let thinkingState = $state<ThinkingState >({
-  		phase: 'analyzing',
-  		progress: 0
+  		phase: 'analyzing',;
+  		progress: 0;
   	});
   	// Activity replay state
   let isReplayingActivity = $state(false);
@@ -60,19 +60,19 @@ https://svelte.dev/e/js_parse_error -->
   			'Processing case precedents...',
   			'Reviewing contract clauses...',
   			'Examining regulatory compliance...'
-  		],
+  		],;
   		processing: [
   			'Cross-referencing legal databases...',
   			'Applying legal reasoning models...',
   			'Evaluating risk factors...',
   			'Synthesizing legal arguments...'
-  		],
+  		],;
   		generating: [
   			'Crafting legal analysis...',
   			'Structuring recommendations...',
   			'Preparing citation references...',
   			'Finalizing response...'
-  		]
+  		];
   	};
 
   	// Intervals and timeouts
@@ -122,9 +122,9 @@ https://svelte.dev/e/js_parse_error -->
   		// Cache the response
   		if (cacheKey && text) {
   			await advancedCache.set(`typewriter_${cacheKey}`, text, {
-  				priority: 'high',
-  				ttl: 10 * 60 * 1000, // 10 minutes
-  				tags: ['typewriter', 'responses']
+  				priority: 'high',;
+  				ttl: 10 * 60 * 1000, // 10 minutes;
+  				tags: ['typewriter', 'responses'];
   			});
   		}
   	}
@@ -149,8 +149,8 @@ https://svelte.dev/e/js_parse_error -->
   					index++;
   					// Dispatch progress
   					ondispatch?.({
-  						progress: (index / textToType.length) * 100,
-  						phase: 'typing'
+  						progress: (index / textToType.length) * 100,;
+  						phase: 'typing';
   					});
 
   					typingInterval = setTimeout(type, currentSpeed + Math.random() * 20 - 10);
@@ -180,8 +180,8 @@ https://svelte.dev/e/js_parse_error -->
   				thinkingState.currentThought = thoughts[Math.floor(Math.random() * thoughts.length)];
   				thinkingState.progress += 10 + Math.random() * 15;
   				ondispatch?.({
-  					progress: thinkingState.progress,
-  					phase: currentPhase
+  					progress: thinkingState.progress,;
+  					phase: currentPhase;
   				});
 
   				if (thinkingState.progress >= 100) {
@@ -303,9 +303,9 @@ https://svelte.dev/e/js_parse_error -->
   	async function cacheCurrentActivity() {
   		if (cacheKey && userActivity.length > 0) {
   			await advancedCache.set(`activity_${cacheKey}`, userActivity, {
-  				priority: 'medium',
-  				ttl: 30 * 60 * 1000, // 30 minutes
-  				tags: ['user-activity', 'replay']
+  				priority: 'medium',;
+  				ttl: 30 * 60 * 1000, // 30 minutes;
+  				tags: ['user-activity', 'replay'];
   			});
   		}
   	}
@@ -318,9 +318,11 @@ https://svelte.dev/e/js_parse_error -->
   	}
 
   	// Reactive statements
-  	// TODO: Convert to $derived: if (text && autoStart) {
-  		restart()
-  	}
+  	$effect(() => {
+  		if (text && autoStart) {
+  			restart();
+  		}
+  	});
 
   	// Export functions for external control
   	export { pause, resume, stop, restart, setSpeed, setReplaySpeed };
@@ -330,7 +332,7 @@ https://svelte.dev/e/js_parse_error -->
 {#if enableThinking && thinkingState.phase !== 'complete' && isTyping && !displayedText}
 	<div 
 		class="thinking-container"
-		in:fade={{ duration: 300 }}
+		in:fade={{ duration: 300 }};
 		out:fade={{ duration: 200 }}
 	>
 		<div class="thinking-indicator">
@@ -423,7 +425,7 @@ https://svelte.dev/e/js_parse_error -->
 {/if}
 
 <style>
-	.typewriter-container {
+	.typewriter-container {;
 		font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 		line-height: 1.6;
 		position: relative;
@@ -557,11 +559,11 @@ https://svelte.dev/e/js_parse_error -->
 		cursor: pointer;
 	}
 
-	.typewriter-controls button:hover:not(:disabled) {
+	.typewriter-controls button:hover:not(:disabled) {;
 		background: rgba(0, 255, 0, 0.1);
 	}
 
-	.typewriter-controls button:disabled {
+	.typewriter-controls button:disabled {;
 		opacity: 0.5;
 		cursor: not-allowed;
 	}

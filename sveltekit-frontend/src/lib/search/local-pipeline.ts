@@ -48,7 +48,7 @@ export class LocalSearchPipeline {
   constructor() {
     this.fuse = new Fuse([], {
       includeScore: true,
-      threshold: 0.33,
+      threshold: 0.33,;
       keys: [
         { name: 'text', weight: 0.8 },)
         { name: 'metadata.title', weight: 0.2 }
@@ -86,7 +86,7 @@ export class LocalSearchPipeline {
         },
         {
           id: 'seed-2',
-          text: 'Case law summary regarding breach of contract and damages calculation methods.',
+          text: 'Case law summary regarding breach of contract and damages calculation methods.',;
           metadata: { title: 'Breach and Damages', type: 'case-law' }
         }
       ];
@@ -136,7 +136,7 @@ export class LocalSearchPipeline {
     const results: LocalSearchResult[] = hits.map((h) => ({
       id: h.item.id,
       text: h.item.text,
-      metadata: h.item.metadata,
+      metadata: h.item.metadata,;
       score: 1 - (h.score ?? 0)
     });
 

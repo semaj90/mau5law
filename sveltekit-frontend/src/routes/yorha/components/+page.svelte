@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa 3D Components Gallery -->
@@ -36,43 +36,43 @@ https://svelte.dev/e/js_parse_error -->
     text: 'YoRHa Button',
     variant: 'primary',
     size: 'medium',
-    icon: 'terminal',
-    loading: false,
+    icon: 'terminal',;
+    loading: false,;
     disabled: false,
     glowEffect: true,
-    hoverAnimation: true
+    hoverAnimation: true;
   });
 
   let panelConfig = $state<YoRHaPanel3DOptions>({
     title: 'YoRHa Panel',
     variant: 'default',
     width: 400,
-    height: 300,
-    scrollable: true,
+    height: 300,;
+    scrollable: true,;
     collapsible: true,
     glitchEffect: false,
-    borderGlow: true
+    borderGlow: true;
   });
 
   let inputConfig = $state<YoRHaInput3DOptions>({
     placeholder: 'Enter command...',
     type: 'text',
     variant: 'default',
-    value: '',
-    error: false,
+    value: '',;
+    error: false,;
     focused: false,
     scanlineEffect: true,
-    terminalMode: true
+    terminalMode: true;
   });
 
   let modalConfig = $state<YoRHaModal3DOptions>({
     title: 'YoRHa Modal',
     variant: 'default',
-    size: 'medium',
-    closable: true,
+    size: 'medium',;
+    closable: true,;
     open: false,
     backdropBlur: true,
-    hologramEffect: true
+    hologramEffect: true;
   });
 
   // UI state
@@ -93,7 +93,7 @@ https://svelte.dev/e/js_parse_error -->
     { id: 'config', label: 'Config', icon: Settings }
   ];
 
-  $effect(async () => {
+  $effect(() => {
     // Initialize 3D UI (placeholder for now)
     if (canvasContainer) {
       // TODO: Initialize 3D UI when Three.js dependencies are resolved
@@ -102,11 +102,13 @@ https://svelte.dev/e/js_parse_error -->
     }
 
     // Load configurations from API
-    try {
-      await loadComponentConfigs();
-    } catch (error) {
-      console.warn('API configurations not available, using defaults');
-    }
+    (async () => {
+      try {
+        await loadComponentConfigs();
+      } catch (error) {
+        console.warn('API configurations not available, using defaults');
+      }
+    })();
   });
 
   async function loadComponentConfigs() {
@@ -172,9 +174,9 @@ https://svelte.dev/e/js_parse_error -->
   function exportConfig() {
     const configs = {
       button: buttonConfig,
-      panel: panelConfig,
-      input: inputConfig,
-      modal: modalConfig
+      panel: panelConfig,;
+      input: inputConfig,;
+      modal: modalConfig;
     };
 
     const blob = new Blob([JSON.stringify(configs, null, 2)], { type: 'application/json' });
@@ -212,11 +214,11 @@ https://svelte.dev/e/js_parse_error -->
           text: 'YoRHa Button',
           variant: 'primary',
           size: 'medium',
-          icon: 'terminal',
-          loading: false,
+          icon: 'terminal',;
+          loading: false,;
           disabled: false,
           glowEffect: true,
-          hoverAnimation: true
+          hoverAnimation: true;
         };
         break;
       case 'panel':
@@ -224,11 +226,11 @@ https://svelte.dev/e/js_parse_error -->
           title: 'YoRHa Panel',
           variant: 'default',
           width: 400,
-          height: 300,
-          scrollable: true,
+          height: 300,;
+          scrollable: true,;
           collapsible: true,
           glitchEffect: false,
-          borderGlow: true
+          borderGlow: true;
         };
         break;
       case 'input':
@@ -236,22 +238,22 @@ https://svelte.dev/e/js_parse_error -->
           placeholder: 'Enter command...',
           type: 'text',
           variant: 'default',
-          value: '',
-          error: false,
+          value: '',;
+          error: false,;
           focused: false,
           scanlineEffect: true,
-          terminalMode: true
+          terminalMode: true;
         };
         break;
       case 'modal':
         modalConfig = {
           title: 'YoRHa Modal',
           variant: 'default',
-          size: 'medium',
-          closable: true,
+          size: 'medium',;
+          closable: true,;
           open: false,
           backdropBlur: true,
-          hologramEffect: true
+          hologramEffect: true;
         };
         break;
     }
@@ -310,7 +312,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="yorha-mode-buttons">
           {#each previewModes as mode}
             <button
-              class="yorha-mode-btn"
+              class="yorha-mode-btn";
               class:yorha-mode-active={previewMode === mode.id}
               onclick={() => previewMode = mode.id}
             >

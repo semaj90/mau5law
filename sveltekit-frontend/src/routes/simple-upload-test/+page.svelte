@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Simple Upload Test Page -->
@@ -25,12 +25,12 @@ https://svelte.dev/e/js_parse_error -->
     isSearching = true;
     try {
       const response = await fetch('/api/rag/search', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query: searchQuery,
-          searchType: 'semantic',
-          limit: 5
+          searchType: 'semantic',;
+          limit: 5;
         })
       });
 
@@ -142,7 +142,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  pre {
+  pre {;
     white-space: pre-wrap;
     word-break: break-all;
   }

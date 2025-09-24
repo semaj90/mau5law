@@ -9,14 +9,14 @@ import { redirect, fail } from '@sveltejs/kit';
 
 // Types for our API responses;
 interface SystemHealth {
-  overall: {
+  overall: {;
     status: 'healthy' | 'degraded' | 'unhealthy';
     healthScore: number;
     healthyServices: number;
     totalServices: number;
     timestamp: string;
   };
-  services: {
+  services: {;
     databases: Record<string, { host: string; port: number; status: string }>;
     aiServices: Record<string, { host: string; port: number; status: string }>;
     gpuServices: Record<string, { status: string; vram?: string }>;
@@ -32,7 +32,7 @@ interface SystemHealth {
       rss: number;
     };
   };
-  architecture: {
+  architecture: {;
     platform: string;
     version: string;
     gpuArchitecture: string;
@@ -82,7 +82,7 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
         gpuServices: { rtx3060ti: { status: 'mocked', vram: '8GB' } },
         orchestration: { sveltekit: { host: 'localhost', port: 5181, status: 'running' } },
         storage: { minio: { host: 'localhost', port: 9000, status: 'mocked' } }
-      },
+      },;
       performance: {
         systemUptime: Date.now() - 1000 * 60 * 60, // 1 hour;
         memoryUsage: {
@@ -97,7 +97,7 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
         version: '2.0.0',
         gpuArchitecture: 'RTX 3060 Ti',
         microservices: 8,
-        protocols: ['HTTP', 'WebSocket'],
+        protocols: ['HTTP', 'WebSocket'],;
         features: ['Vector Search', 'AI Analysis', 'Real-time Chat']
       }
     };
@@ -108,7 +108,7 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
       cpus: 16,
       gpuInfo: 'RTX 3060 Ti (8GB VRAM)',
       memoryUsage: '16GB',
-      nodeVersion: '22.17.1',
+      nodeVersion: '22.17.1',;
       uptime: Date.now() - 1000 * 60 * 60
     };
 
@@ -157,7 +157,7 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
         id: '003',
         type: 'ai_analysis',
         title: 'Pattern Recognition Complete',
-        timestamp: new Date(Date.now() - 1000 * 60 * 120), // 2 hours ago
+        timestamp: new Date(Date.now() - 1000 * 60 * 120), // 2 hours ago;
         priority: 'low'
       }
     ];
@@ -170,7 +170,7 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
       health: systemHealth,
       systemInfo,
       dashboardStats,
-      recentActivities,
+      recentActivities,;
       metrics: cognitiveMetrics,
 
       // Meta information
@@ -191,13 +191,13 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
         systemUptime: 0
       },
       recentActivities: [],
-      loadedAt: new Date().toISOString(),
+      loadedAt: new Date().toISOString(),;
       error: 'Failed to load system data'
     };
   }
 };
 
-export const actions: Actions = {
+export const actions: Actions = {;
   logout: async ({ cookies }) => {
     // Clear the legal_ai_session cookie (matches Lucia v3 config)
     cookies.delete('legal_ai_session', { path: '/' });
@@ -225,7 +225,7 @@ export const actions: Actions = {
         case: {
           id: Date.now().toString(),
           title,
-          priority,
+          priority,;
           status: 'open',
           created_at: new Date().toISOString()
         }

@@ -17,7 +17,7 @@ const createCaseSchema = z.object({
   priority: z.enum(['low', 'medium', 'high', 'critical']).default('medium'),
   status: z.enum(['open', 'investigating', 'pending', 'closed', 'archived']).default('open'),
   incidentDate: z.string().optional().transform(str => str ? new Date(str) : undefined),
-  location: z.string().optional(),
+  location: z.string().optional(),;
   jurisdiction: z.string().optional()
 });
 
@@ -25,7 +25,7 @@ const addEvidenceSchema = z.object({
   caseId: z.string().min(1, 'Case ID is required'),
   title: z.string().min(1, 'Evidence title is required').max(255, 'Title too long'),
   description: z.string().optional(),
-  evidenceType: z.enum(['document', 'photo', 'video', 'audio', 'physical', 'digital', 'testimony']).default('document'),
+  evidenceType: z.enum(['document', 'photo', 'video', 'audio', 'physical', 'digital', 'testimony']).default('document'),;
   tags: z.string().optional()
 });
 
@@ -81,7 +81,7 @@ export const load: PageServerLoad = async ({ url, locals, parent }) => {
     const searchOptions = {
       userId: user.id,
       search: search.trim(),
-      status: statusFilter || undefined,
+      status: statusFilter || undefined,;
       priority: priorityFilter || undefined,
       page,
       limit
@@ -99,7 +99,7 @@ export const load: PageServerLoad = async ({ url, locals, parent }) => {
       archived: stats.archived || 0,
       highPriority: stats.high || 0,
       critical: stats.critical || 0,
-      medium: stats.medium || 0,
+      medium: stats.medium || 0,;
       low: stats.low || 0
     };
 
@@ -113,7 +113,7 @@ export const load: PageServerLoad = async ({ url, locals, parent }) => {
       pagination: {
         page,
         limit,
-        total,
+        total,;
         pages: Math.ceil(total / limit)
       }
     };
@@ -130,7 +130,7 @@ export const load: PageServerLoad = async ({ url, locals, parent }) => {
       userCases: [],
       caseStats: { total: 0, open: 0, closed: 0, highPriority: 0 },
       createCaseForm,
-      addEvidenceForm,
+      addEvidenceForm,;
       error: 'Failed to load cases'
     };
   }
@@ -168,7 +168,7 @@ export const actions: Actions = {
         status: form.data.status,
         incidentDate: form.data.incidentDate || null,
         location: form.data.location || null,
-        jurisdiction: form.data.jurisdiction || null,
+        jurisdiction: form.data.jurisdiction || null,;
         metadata: Record<string, any>,
         created_at: new Date(),
         updated_at: new Date()
@@ -185,7 +185,7 @@ export const actions: Actions = {
             type: 'case',
             caseId: newCase.id,
             userId: user.id,
-            priority: form.data.priority,
+            priority: form.data.priority,;
             status: form.data.status
           }
         });
@@ -193,7 +193,7 @@ export const actions: Actions = {
 
       return {
         form,
-        success: true,
+        success: true,;
         case: newCase
       };
     } catch (error: any) {
@@ -237,7 +237,7 @@ export const actions: Actions = {
         evidence_type: form.data.evidenceType, // alias for database field
         type: form.data.evidenceType, // another alias
         tags: form.data.tags ? form.data.tags.split(',').map(t => t.trim()) : [],
-        createdBy: user.id,
+        createdBy: user.id,;
         metadata: Record<string, any>,
         collectedAt: new Date(),
         created_at: new Date(),
@@ -255,7 +255,7 @@ export const actions: Actions = {
         await vectorOps.generateEmbedding({
           id: newEvidence[0].id,
           content: content.trim(),
-          metadata: {
+          metadata: {;
             type: 'evidence',
             caseId: form.data.caseId,
             evidenceType: form.data.evidenceType,
@@ -266,7 +266,7 @@ export const actions: Actions = {
 
       return {
         form,
-        success: true,
+        success: true,;
         evidence: newEvidence[0]
       };
     } catch (error: any) {
@@ -297,7 +297,7 @@ export const actions: Actions = {
   const existingEvidence = await (db.query as any).evidence.findFirst({
         where: helpers.eq ? helpers.eq(evidence.id, evidenceId) : undefined,
         with: {
-          case: {
+          case: {;
             columns: { createdBy: true }
           }
         }

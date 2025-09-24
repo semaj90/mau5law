@@ -26,11 +26,11 @@
     modelSize: '270M',
     quantization: 'int8',
     contextLength: 2048,
-    batchSize: 1,
+    batchSize: 1,;
     threads: navigator.hardwareConcurrency || 4,
     memoryMB: 512, // Lighter memory footprint for client-side
     enableWebGL: true,
-    enableSharedMemory: true
+    enableSharedMemory: true;
   };
 
   // Performance metrics
@@ -47,10 +47,12 @@
   let webglContext = $state(null);
   let gpuBuffers = $state(new Map());
 
-  $effect(async () => {
-    await initializeWebAssembly();
+  $effect(() => {
+    (async () => {
+await initializeWebAssembly();
     checkBrowserCapabilities();
     initializeWebGL();
+    })();
   });
 
   async function initializeWebAssembly() {
@@ -97,16 +99,16 @@
           inference: simulateInference,
           embedding: simulateEmbedding,
           summarize: simulateSummarization,
-          extract: simulateExtraction,
+          extract: simulateExtraction,;
           memory: {
             allocate: simulateMemoryAllocate,
             free: simulateMemoryFree,
-            usage: simulateMemoryUsage
+            usage: simulateMemoryUsage;
           },
           gpu: {
-            initialize: simulateGPUInit,
-            transfer: simulateGPUTransfer,
-            compute: simulateGPUCompute
+            initialize: simulateGPUInit,;
+            transfer: simulateGPUTransfer,;
+            compute: simulateGPUCompute;
           }
         });
       }, 1500); // Simulate load time
@@ -206,32 +208,32 @@
     // Use WebAssembly module for inference
     const result = await wasmModule.inference({
       text: text,
-      maxTokens: 512,
+      maxTokens: 512,;
       temperature: 0.1,
-      useWebGL: performanceMetrics.webglAcceleration
+      useWebGL: performanceMetrics.webglAcceleration;
     });
 
     return {
       text: result.generatedText || `Client-side generated response for: ${text.substring(0, 50)}...`,
       confidence: result.confidence || 0.85,
-      tokensGenerated: result.tokensGenerated || 42,
+      tokensGenerated: result.tokensGenerated || 42,;
       model: 'gemma3-270m-wasm',
-      processingLocation: 'client-side'
+      processingLocation: 'client-side';
     };
   }
 
   async function generateClientEmbedding(text) {
     const result = await wasmModule.embedding({
-      text: text,
-      dimensions: 384, // Smaller dimensions for 270M model
-      normalize: true
+      text: text,;
+      dimensions: 384, // Smaller dimensions for 270M model;
+      normalize: true;
     });
 
     return {
-      embedding: result.vector || new Array(384).fill.map(() => Math.random()),
-      dimensions: 384,
+      embedding: result.vector || new Array(384).fill.map(() => Math.random()),;
+      dimensions: 384,;
       model: 'gemma3-270m-embedding-wasm',
-      processingLocation: 'client-side'
+      processingLocation: 'client-side';
     };
   }
 
@@ -239,23 +241,23 @@
     const result = await wasmModule.summarize({
       text: text,
       maxSummaryLength: 200,
-      extractiveRatio: 0.3
+      extractiveRatio: 0.3;
     });
 
     return {
       summary: result.summary || `Client-side summary of: ${text.substring(0, 100)}...`,
       compressionRatio: result.compressionRatio || 0.25,
-      keyPoints: result.keyPoints || ['Key point 1', 'Key point 2', 'Key point 3'],
+      keyPoints: result.keyPoints || ['Key point 1', 'Key point 2', 'Key point 3'],;
       model: 'gemma3-270m-summarizer-wasm',
-      processingLocation: 'client-side'
+      processingLocation: 'client-side';
     };
   }
 
   async function extractClientSide(text) {
     const result = await wasmModule.extract({
-      text: text,
-      schema: 'legal-entities',
-      confidence: 0.7
+      text: text,;
+      schema: 'legal-entities',;
+      confidence: 0.7;
     });
 
     return {
@@ -263,9 +265,9 @@
         { type: 'person', value: 'John Doe', confidence: 0.9 },
         { type: 'organization', value: 'ABC Corp', confidence: 0.85 }
       ],
-      relationships: result.relationships || [],
+      relationships: result.relationships || [],;
       model: 'gemma3-270m-extractor-wasm',
-      processingLocation: 'client-side'
+      processingLocation: 'client-side';
     };
   }
 
@@ -278,16 +280,16 @@
   async function simulateInference(params) {
     await new Promise(resolve => setTimeout(resolve, 200));
     return {
-      generatedText: `AI response to: ${params.text.substring(0, 30)}...`,
+      generatedText: `AI response to: ${params.text.substring(0, 30)}...`,;
       confidence: 0.87,
-      tokensGenerated: 45
+      tokensGenerated: 45;
     };
   }
 
   async function simulateEmbedding(params) {
     await new Promise(resolve => setTimeout(resolve, 100));
     return {
-      vector: new Array(params.dimensions).fill.map(() => Math.random())
+      vector: new Array(params.dimensions).fill.map(() => Math.random());
     };
   }
 
@@ -305,8 +307,8 @@
     return {
       entities: [
         { type: 'person', value: 'Client Entity', confidence: 0.9 }
-      ],
-      relationships: []
+      ],;
+      relationships: [];
     };
   }
 
@@ -548,7 +550,7 @@
 </div>
 
 <style>
-  .gemma-270m-wasm {
+  .gemma-270m-wasm {;
     max-width: 800px;
   }
 

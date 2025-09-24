@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -58,7 +58,7 @@ https://svelte.dev/e/js_parse_error -->
     nesStyle = false,
     onclick,
     class: className = '',
-    ...restProps
+    ...restProps;
   }: Props = $props();
 
   // Melt UI button
@@ -71,8 +71,8 @@ https://svelte.dev/e/js_parse_error -->
   let isPressed = $state(false);
   // Legal AI confidence animation
   const confidence = spring(legalContext?.confidence || 0, {
-    stiffness: 0.3,
-    damping: 0.8
+    stiffness: 0.3,;
+    damping: 0.8;
   });
 
   // Memory-efficient animation state (NES constraints: 2KB)
@@ -364,7 +364,7 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Legal risk indicator -->
     {#if legalContext?.riskLevel === 'high'}
       <div 
-        class="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500 animate-ping"
+        class="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500 animate-ping";
         transition:fade
       />
     {/if}

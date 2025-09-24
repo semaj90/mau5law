@@ -16,11 +16,11 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 
-import { json } from '@sveltejs/kit';
-import { getCache, deleteCache, redisTTL, memoryStats } from '$lib/server/summarizeCache';
-import type { RequestHandler } from './$types.js';
-import { URL } from "url";
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { json } from '@sveltejs/kit'
+import { getCache, deleteCache, redisTTL, memoryStats } from '$lib/server/summarizeCache'
+import type { RequestHandler } from './$types.js'
+import { URL } from "url"
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 
 
 // Introspection + invalidation route
@@ -29,16 +29,16 @@ import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 // Query params: include=summary (include full summary text)
 
 const originalGETHandler: RequestHandler = async ({ params, url }) => {
-  const key = params.key;
-  if (!key) return json({ success: false, error: 'Key required' }, { status: 400 });
-  const includeSummary = url.searchParams.get('include') === 'summary';
-  const cached = await getCache(key);
+  const key = params.key
+  if (!key) return json({ success: false, error: 'Key required' }, { status: 400 })
+  const includeSummary = url.searchParams.get('include') === 'summary'
+  const cached = await getCache(key)
   if (!cached.entry) {
-    return json({ success: false, hit: false, key, message: 'Cache miss' }, { status: 404 });
+    return json({ success: false, hit: false, key, message: 'Cache miss' }, { status: 404 })
   }
-  const ttl = await redisTTL(key);
-  const now = Date.now();
-  const remainingMs = cached.entry.ttlMs - (now - cached.entry.ts);
+  const ttl = await redisTTL(key)
+  const now = Date.now()
+  const remainingMs = cached.entry.ttlMs - (now - cached.entry.ts)
   return json({
     success: true,
     hit: true,
@@ -56,16 +56,16 @@ const originalGETHandler: RequestHandler = async ({ params, url }) => {
     memory: memoryStats(),
     summary: includeSummary ? cached.entry.summary: undefined,
     structuredPayload: includeSummary ? cached.entry.structured : undefined
-  });
-};
+  })
+}
 
 const originalDELETEHandler: RequestHandler = async ({ params }) => {
-  const key = params.key;
-  if (!key) return json({ success: false, error: 'Key required' }, { status: 400 });
-  await deleteCache(key);
-  return json({ success: true, deleted: key, timestamp: new Date().toISOString() });
-};
+  const key = params.key
+  if (!key) return json({ success: false, error: 'Key required' }, { status: 400 })
+  await deleteCache(key)
+  return json({ success: true, deleted: key, timestamp: new Date().toISOString() })
+}
 
 
-export const GET = redisOptimized.aiAnalysis(originalGETHandler);
-export const DELETE = redisOptimized.aiAnalysis(originalDELETEHandler);
+export const GET = redisOptimized.aiAnalysis(originalGETHandler)
+export const DELETE = redisOptimized.aiAnalysis(originalDELETEHandler)

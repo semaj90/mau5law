@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -22,14 +22,16 @@ https://svelte.dev/e/js_parse_error -->
     rabbitMqConnected: false
   });
 
-  $effect(async () => {
+  $effect(() => {
     // Check system status
-    try {
-      const cudaResponse = await fetch('http://localhost:8096/health');
-      systemStatus.cudaService = cudaResponse.ok;
-    } catch (error) {
-      console.log('CUDA service not available');
-    }
+    (async () => {
+      try {
+        const cudaResponse = await fetch('http://localhost:8096/health');
+        systemStatus.cudaService = cudaResponse.ok;
+      } catch (error) {
+        console.log('CUDA service not available');
+      }
+    })();
 
     // Check WebGPU support
     systemStatus.webgpuSupported = !!navigator.gpu;
@@ -223,7 +225,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .demo-container {
+  .demo-container {;
     font-family: 'Inter', system-ui, sans-serif;
   }
 

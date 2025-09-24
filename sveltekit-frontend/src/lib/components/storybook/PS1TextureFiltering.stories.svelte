@@ -21,31 +21,31 @@ https://svelte.dev/e/expected_token -->
       id: 'nearest', 
       name: 'Nearest (Pixelated)', 
       desc: 'Sharp, pixelated look - authentic PS1',
-      cssClass: 'ps1-texture-nearest'
+      cssClass: 'ps1-texture-nearest';
     },
     { 
       id: 'linear', 
       name: 'Linear (Smooth)', 
       desc: 'Basic smoothing filter',
-      cssClass: 'ps1-texture-linear'
+      cssClass: 'ps1-texture-linear';
     },
     { 
       id: 'bilinear', 
       name: 'Bilinear', 
       desc: 'Better quality smoothing',
-      cssClass: 'ps1-texture-bilinear'
+      cssClass: 'ps1-texture-bilinear';
     },
     { 
       id: 'trilinear', 
       name: 'Trilinear', 
       desc: 'Smooth between mipmap levels',
-      cssClass: 'ps1-texture-trilinear'
+      cssClass: 'ps1-texture-trilinear';
     },
     { 
-      id: 'anisotropic', 
-      name: 'Anisotropic', 
+      id: 'anisotropic', ;
+      name: 'Anisotropic', ;
       desc: 'High quality at angles - modern GPU',
-      cssClass: 'ps1-anisotropic-16x ps1-nvidia-optimized'
+      cssClass: 'ps1-anisotropic-16x ps1-nvidia-optimized';
     }
   ];
 
@@ -58,11 +58,11 @@ https://svelte.dev/e/expected_token -->
   });
 
   let textureDemo = $state({
-    rotation: 0,
-    perspective: 45,
+    rotation: 0,;
+    perspective: 45,;
     zoom: 1,
     offsetX: 0,
-    offsetY: 0
+    offsetY: 0;
   });
 
   $effect(() =&gt; {
@@ -456,11 +456,11 @@ https://svelte.dev/e/expected_token -->
     font-size: 13px;
   }
 
-  .metric span:first-child {
+  .metric span:first-child {;
     color: var(--ps1-muted);
   }
 
-  .metric span:last-child {
+  .metric span:last-child {;
     color: var(--ps1-text);
     font-weight: 600;
   }

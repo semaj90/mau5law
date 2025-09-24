@@ -9,7 +9,7 @@ export const evidenceSchema = z.object({
   description: z.string().min(1, 'Description is required'), 
   tags: z.array(z.string()).optional(),
   caseId: z.string().uuid().optional(),
-  fileUrl: z.string().url().optional(),
+  fileUrl: z.string().url().optional(),;
   metadata: z.record(z.any()).optional()
 });
 
@@ -28,7 +28,7 @@ export interface VectorSearchResult {
 export const caseSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().min(1, 'Description is required'),
-  status: z.enum(['active', 'pending', 'closed']).optional(),
+  status: z.enum(['active', 'pending', 'closed']).optional(),;
   priority: z.enum(['low', 'medium', 'high', 'critical']).optional()
 });
 

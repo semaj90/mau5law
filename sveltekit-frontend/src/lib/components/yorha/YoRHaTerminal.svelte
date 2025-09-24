@@ -13,21 +13,15 @@
     maxLines?: number;
   }
 
-  let { title = "YORHA LEGAL TERMINAL v4.0.0",
+  let {
+    title = "YORHA LEGAL TERMINAL v4.0.0",
     prompt = "YoRHa:legal>",
     history = [],
     currentInput = "",
     isActive = true,
     onCommand,
     maxLines = 100
-   }: { title = "YORHA LEGAL TERMINAL v4.0.0",
-    prompt = "YoRHa:legal>",
-    history = [],
-    currentInput = "",
-    isActive = true,
-    onCommand,
-    maxLines = 100
-  : unknown } = $props();
+  } = $props<Partial<TerminalProps>>();
 
   let terminalRef: HTMLDivElement
   let inputRef: HTMLInputElement
@@ -97,13 +91,13 @@
       'help', 'clear', 'status', 'cases', 'evidence', 'analyze',
       'search', 'report', 'audit', 'backup', 'config', 'exit'
     ];
-    const matches = availableCommands.filter(cmd => 
+    const matches = availableCommands.filter(cmd =>
       cmd.startsWith(currentCommand.toLowerCase())
     );
     if (matches.length === 1) {
       currentCommand = matches[0];
     } else if (matches.length > 1) {
-      terminalHistory = [...terminalHistory, 
+      terminalHistory = [...terminalHistory,
         `${prompt} ${currentCommand}`,
         `Available commands: ${matches.join(', ')}`,
         ""
@@ -130,7 +124,7 @@
   }
 
   function processCommand(cmd: string) {
-    const [command, ...args] = cmd.toLowerCase.split(' ');
+    const [command, ...args] = cmd.toLowerCase().split(' ');
     switch (command) {
       case 'help':
         terminalHistory = [...terminalHistory,
@@ -287,7 +281,7 @@
         <pre>{line}</pre>
       </div>
     {/each}
-    
+
     <!-- Current Input Line -->
     <div class="terminal-line current" class:processing={isProcessing}>
       <span class="prompt-text">{prompt}</span>
@@ -319,10 +313,10 @@
     line-height: 1.4;
     color: var(--yorha-text-primary, #e0e0e0);
     height: 600px;
-    display: flex
-    flex-direction: column
-    overflow: hidden
-    box-shadow: 
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow:
       0 0 0 3px var(--yorha-bg-secondary, #1a1a1a),
       0 0 30px rgba(255, 215, 0, 0.3);
   }
@@ -330,21 +324,21 @@
   .terminal-header {
     background: var(--yorha-bg-secondary, #1a1a1a);
     border-bottom: 2px solid var(--yorha-secondary, #ffd700);
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     justify-content: space-between;
     padding: 8px 16px;
     min-height: 40px;
   }
 
   .header-left {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     gap: 12px;
   }
 
   .terminal-dots {
-    display: flex
+    display: flex;
     gap: 6px;
   }
 
@@ -370,7 +364,7 @@
   .terminal-title {
     font-weight: 700;
     color: var(--yorha-secondary, #ffd700);
-    text-transform: uppercase
+    text-transform: uppercase;
     letter-spacing: 1px;
     font-size: 12px;
   }
@@ -378,7 +372,7 @@
   .status-indicator {
     font-size: 10px;
     font-weight: 600;
-    text-transform: uppercase
+    text-transform: uppercase;
     letter-spacing: 1px;
     padding: 4px 8px;
     border: 1px solid currentColor;
@@ -396,21 +390,21 @@
 
   .terminal-content {
     flex: 1;
-    overflow-y: auto
+    overflow-y: auto;
     padding: 16px;
-    scrollbar-width: thin
+    scrollbar-width: thin;
     scrollbar-color: var(--yorha-secondary, #ffd700) var(--yorha-bg-primary, #0a0a0a);
   }
 
-  .terminal-content: :-webkit-scrollbar {
+  .terminal-content::-webkit-scrollbar {
     width: 12px;
   }
 
-  .terminal-content: :-webkit-scrollbar-track {
+  .terminal-content::-webkit-scrollbar-track {
     background: var(--yorha-bg-primary, #0a0a0a);
   }
 
-  .terminal-content: :-webkit-scrollbar-thumb {
+  .terminal-content::-webkit-scrollbar-thumb {
     background: var(--yorha-secondary, #ffd700);
     border: 2px solid var(--yorha-bg-primary, #0a0a0a);
   }
@@ -423,8 +417,8 @@
   .terminal-line pre {
     margin: 0;
     padding: 0;
-    font-family: inherit
-    font-size: inherit
+    font-family: inherit;
+    font-size: inherit;
     white-space: pre-wrap;
     word-wrap: break-word;
   }
@@ -434,8 +428,8 @@
   }
 
   .terminal-line.current {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     gap: 8px;
     margin-top: 8px;
   }
@@ -447,19 +441,19 @@
   }
 
   .command-input {
-    background: transparent
-    border: none
-    outline: none
+    background: transparent;
+    border: none;
+    outline: none;
     color: var(--yorha-text-primary, #e0e0e0);
-    font-family: inherit
-    font-size: inherit
+    font-family: inherit;
+    font-size: inherit;
     flex: 1;
-    caret-color: transparent
+    caret-color: transparent;
   }
 
   .cursor {
     color: var(--yorha-accent, #00ff41);
-    font-weight: bold
+    font-weight: bold;
     animation: blink 1s infinite;
   }
 

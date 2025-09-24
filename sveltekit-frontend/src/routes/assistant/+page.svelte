@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -13,7 +13,7 @@ https://svelte.dev/e/js_parse_error -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
 
   let caseId = $state('');
@@ -23,35 +23,37 @@ https://svelte.dev/e/js_parse_error -->
   // Mock user context
 
   const mockUser = {
-    id: 'user-123',
-    name: 'Legal Assistant User',
-    email: 'assistant@legal.ai'
+    id: 'user-123',;
+    name: 'Legal Assistant User',;
+    email: 'assistant@legal.ai';
   };
   setContext('user', () => mockUser);
 
-  $effect(async () => {
+  $effect(() => {
     // Load recent evidence files as context
-    try {
-      const response = await fetch('/api/evidence-files?limit=10');
-      const data = await (response as { json?: unknown }).json();
-      if ((data as { success?: unknown; items?: unknown; mimeType?: unknown; fileSize?: unknown }).success) {
-        contextItems = (data as { success?: unknown; items?: unknown; mimeType?: unknown; fileSize?: unknown }).items.map(item => ({ id: item.id.toString(),
-          title: (item as { id?: unknown; title?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; content?: unknown; similarity?: unknown }).title,
-          content: `${(item as { id?: unknown; title?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; content?: unknown; similarity?: unknown }).evidence_type} - ${(item as { id?: unknown; title?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; content?: unknown; similarity?: unknown }).mime_type}`,
-          uploadedAt: (item as { id?: unknown; title?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; content?: unknown; similarity?: unknown }).uploaded_at
-        }));
+    (async () => {
+      try {
+        const response = await fetch('/api/evidence-files?limit=10');
+        const data = await (response as { json?: unknown }).json();
+        if ((data as { success?: unknown; items?: unknown; mimeType?: unknown; fileSize?: unknown }).success) {
+          contextItems = (data as { success?: unknown; items?: unknown; mimeType?: unknown; fileSize?: unknown }).items.map(item => ({ id: item.id.toString(),;
+            title: (item as { id?: unknown; title?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; content?: unknown; similarity?: unknown }).title,
+            content: `${(item as { id?: unknown; title?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; content?: unknown; similarity?: unknown }).evidence_type} - ${(item as { id?: unknown; title?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; content?: unknown; similarity?: unknown }).mime_type}`,
+            uploadedAt: (item as { id?: unknown; title?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; content?: unknown; similarity?: unknown }).uploaded_at
+          }));
+        }
+      } catch (error) {
+        console.error('Failed to load evidence context:', error);
       }
-    } catch (error) {
-      console.error('Failed to load evidence context:', error);
-    }
+    })();
   });
 
   function onEvidenceUploaded(event) {
     const newEvidence = event.detail;
     contextItems = [
       {
-        id: newEvidence.record.id.toString(),
-        title: newEvidence.record.title || 'Uploaded Evidence',
+        id: newEvidence.record.id.toString(),;
+        title: newEvidence.record.title || 'Uploaded Evidence',;
         content: `${newEvidence.upload.metadata.mimeType} - ${newEvidence.upload.metadata.fileSize} bytes`,
         uploadedAt: new Date().toISOString()
       },
@@ -65,7 +67,7 @@ https://svelte.dev/e/js_parse_error -->
     const results = event.detail.results;
     if (results && results.length > 0) {
       // Update context with search results
-      contextItems = results.map(item => ({ id: item.id.toString(),
+      contextItems = results.map(item => ({ id: item.id.toString(),;
         title: (result as { id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; success?: unknown; result?: unknown }).title,
         content: `${(result as { id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; success?: unknown; result?: unknown }).evidenceType} - Similarity: ${((result as { id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; success?: unknown; result?: unknown }).similarity * 100).toFixed(1)}%`,
         similarity: (result as { id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; success?: unknown; result?: unknown }).similarity
@@ -132,7 +134,7 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
 
                 <div>
-                  <label class="block text-sm font-medium mb-2" for="additional-context">Additional Context:</label><textarea id="additional-context"
+                  <label class="block text-sm font-medium mb-2" for="additional-context">Additional Context:</label><textarea id="additional-context";
                     bind:value={evidenceText}
                     class="w-full p-2 border rounded-md h-24 text-sm"
                     placeholder="Add any additional context for the AI assistant..."
@@ -193,8 +195,8 @@ https://svelte.dev/e/js_parse_error -->
                   onclick={async () => {
                     try {
                       const response = await fetch('/api/evidence-embeddings', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        method: 'POST',;
+                        headers: { 'Content-Type': 'application/json' },;
                         body: JSON.stringify({ action: 'backfill' })
                       });
                       const result = await (response as { json?: unknown }).json();
@@ -226,7 +228,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .container {
+  .container {;
     min-height: 100vh;
   }
 </style>

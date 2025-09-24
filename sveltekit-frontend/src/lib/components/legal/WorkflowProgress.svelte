@@ -4,9 +4,9 @@ Visual progress indicator for the Evidence Chain of Custody workflow
 -->
 <script lang="ts">
   interface Props {
-    progress: number
+    progress: number;
     stage: string
-    stageName: string
+    stageName: string;
   }
   let { progress,
     stage,
@@ -246,7 +246,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
 </div>
 
 <style>
-  .workflow-progress {
+  .workflow-progress {;
     animation: fadeInUp 0.5s ease-out;
   }
   

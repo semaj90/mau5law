@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -104,18 +104,18 @@ https://svelte.dev/e/js_parse_error -->
   		device: null,
   		shaders: new Map(),
   		buffers: new Map(),
-  		active: false,
+  		active: false,;
   		performance: {
   			computeTime: 0,
-  			memoryUsage: 0,
-  			throughput: 0
+  			memoryUsage: 0,;
+  			throughput: 0;
   		}
   	});
 
   	const threeStore = writable({
   		scene: null,
-  		renderer: null,
-  		camera: null,
+  		renderer: null,;
+  		camera: null,;
   		objects: new Map(),
   		lodManager: {
   			currentLevel: 1,
@@ -125,15 +125,15 @@ https://svelte.dev/e/js_parse_error -->
   	});
 
   	const serviceWorkerStore = writable({
-  		registration: null,
+  		registration: null,;
   		cache: {
   			name: 'webgpu-3d-cache-v1',
   			strategy: 'cache-first',
   			resources: new Map(),
   			maxAge: 86400000, // 24 hours
-  			maxSize: 100 * 1024 * 1024 // 100MB
+  			maxSize: 100 * 1024 * 1024 // 100MB;
   		},
-  		messageChannel: null,
+  		messageChannel: null,;
   		performance: {
   			cacheHitRate: 0,
   			averageLatency: 0,
@@ -145,17 +145,17 @@ https://svelte.dev/e/js_parse_error -->
   	const performanceMetrics = derived(
   		[webgpuStore, threeStore, serviceWorkerStore],
   		([$webgpu, $three, $sw]) => ({
-  			gpu: $webgpu.performance,
+  			gpu: $webgpu.performance,;
   			rendering: {
   				fps: $three.lodManager.performanceTarget,
   				objects: $three.objects.size,
-  				currentLOD: $three.lodManager.currentLevel
+  				currentLOD: $three.lodManager.currentLevel;
   			},
-  			cache: $sw.performance,
+  			cache: $sw.performance,;
   			overall: {
-  				memory: getMemoryUsage(),
-  				cpu: getCPUUsage(),
-  				network: getNetworkUsage()
+  				memory: getMemoryUsage(),;
+  				cpu: getCPUUsage(),;
+  				network: getNetworkUsage();
   			}
   		})
   	);
@@ -191,14 +191,14 @@ https://svelte.dev/e/js_parse_error -->
   			const webgpuDevice: WebGPUDevice = {
   				device,
   				adapter,
-  				features: Array.from(device.features),
-  				limits: device.limits
+  				features: Array.from(device.features),;
+  				limits: device.limits;
   			};
 
-  			console.log('✅ WebGPU initialized:', {
+  			console.log('✅ WebGPU initialized:', {;
   				features: webgpuDevice.features,
   				maxBufferSize: webgpuDevice.limits.maxStorageBufferBindingSize,
-  				maxWorkgroupSize: webgpuDevice.limits.maxComputeWorkgroupSizeX
+  				maxWorkgroupSize: webgpuDevice.limits.maxComputeWorkgroupSizeX;
   			});
 
   			return webgpuDevice;
@@ -265,20 +265,20 @@ https://svelte.dev/e/js_parse_error -->
 
   	async function createComputeShader(
   		device: GPUDevice, 
-  		source: string, 
+  		source: string, ;
   		label: string
   	): Promise<ComputeShader> {
   		const shaderModule = device.createShaderModule({
-  			label: `${label}-shader`,
-  			code: source
+  			label: `${label}-shader`,;
+  			code: source;
   		});
 
   		const pipeline = device.createComputePipeline({
   			label: `${label}-pipeline`,
-  			layout: 'auto',
-  			compute: {
+  			layout: 'auto',;
+  			compute: {;
   				module: shaderModule,
-  				entryPoint: 'main'
+  				entryPoint: 'main';
   			}
   		});
 
@@ -289,7 +289,7 @@ https://svelte.dev/e/js_parse_error -->
   			source,
   			pipeline,
   			bindGroup: null as any, // Will be set when buffers are bound
-  			workgroupSize: [16, 16, 1]
+  			workgroupSize: [16, 16, 1];
   		};
   	}
 
@@ -315,7 +315,7 @@ https://svelte.dev/e/js_parse_error -->
   		const renderer = new THREE.WebGLRenderer({
   			canvas,
   			antialias: true,
-  			powerPreference: 'high-performance'
+  			powerPreference: 'high-performance';
   		});
   		renderer.setSize(canvas.clientWidth, canvas.clientHeight);
   		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -336,11 +336,11 @@ https://svelte.dev/e/js_parse_error -->
   		// High detail (close)
   		levels.push({
   			distance: 10,
-  			geometry: baseGeometry.clone(),
+  			geometry: baseGeometry.clone(),;
   			material: new THREE.MeshStandardMaterial({ 
-  				color: 0x00ff88,
-  				roughness: 0.3,
-  				metalness: 0.7
+  				color: 0x00ff88,;
+  				roughness: 0.3,;
+  				metalness: 0.7;
   			}),
   			polyCount: baseGeometry.attributes.position.count / 3,
   			textureSize: 1024
@@ -351,11 +351,11 @@ https://svelte.dev/e/js_parse_error -->
   		// Simplify geometry (pseudo-decimation)
   		levels.push({
   			distance: 50,
-  			geometry: mediumGeometry,
+  			geometry: mediumGeometry,;
   			material: new THREE.MeshStandardMaterial({ 
-  				color: 0x0088ff,
-  				roughness: 0.5,
-  				metalness: 0.5
+  				color: 0x0088ff,;
+  				roughness: 0.5,;
+  				metalness: 0.5;
   			}),
   			polyCount: Math.floor(baseGeometry.attributes.position.count / 6),
   			textureSize: 512
@@ -364,8 +364,8 @@ https://svelte.dev/e/js_parse_error -->
   		// Low detail (far)
   		const lowGeometry = new THREE.BoxGeometry(1, 1, 1);
   		levels.push({
-  			distance: 100,
-  			geometry: lowGeometry,
+  			distance: 100,;
+  			geometry: lowGeometry,;
   			material: new THREE.MeshBasicMaterial({ color: 0xff8800 }),
   			polyCount: 12, // 6 faces * 2 triangles
   			textureSize: 128
@@ -386,7 +386,7 @@ https://svelte.dev/e/js_parse_error -->
 
   		try {
   			const registration = await navigator.serviceWorker.register('/sw-webgpu.js', {
-  				scope: '/webgpu/'
+  				scope: '/webgpu/';
   			});
 
   			console.log('✅ Service Worker registered:', registration.scope);
@@ -402,7 +402,7 @@ https://svelte.dev/e/js_parse_error -->
   			// Send port to service worker
   			if (registration.active) {
   				registration.active.postMessage({ 
-  					type: 'INIT_PORT' 
+  					type: 'INIT_PORT' ;
   				}, [messageChannel.port2]);
   			}
 
@@ -486,8 +486,9 @@ https://svelte.dev/e/js_parse_error -->
   	let animationFrame: number;
   let initialized = $state(false);
 
-  	$effect(async () => {
-  		console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
+  	$effect(() => {
+    (async () => {
+console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
 
   		// Initialize WebGPU
   		if (enableGPUCompute) {
@@ -495,8 +496,8 @@ https://svelte.dev/e/js_parse_error -->
   			if (webgpuDevice) {
   				webgpuStore.update(store => ({
   					...store,
-  					device: webgpuDevice,
-  					active: true
+  					device: webgpuDevice,;
+  					active: true;
   				}));
 
   				// Create compute shaders
@@ -516,7 +517,8 @@ https://svelte.dev/e/js_parse_error -->
   					store.shaders.set('matrix-multiply', matrixShader);
   					store.shaders.set('vector-embedding', embeddingShader);
   					return store;
-  				});
+    })();
+  });
   			}
   		}
 
@@ -546,9 +548,9 @@ https://svelte.dev/e/js_parse_error -->
   					id: `object-${i}`,
   					mesh,
   					lodLevels,
-  					currentLOD: 0,
+  					currentLOD: 0,;
   					cached: false,
-  					gpuOptimized: enableGPUCompute
+  					gpuOptimized: enableGPUCompute;
   				};
 
   				threeStore.update(store => {
@@ -736,7 +738,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- ============================================================================ -->
 
 <style>
-	.webgpu-processor {
+	.webgpu-processor {;
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
@@ -811,7 +813,7 @@ https://svelte.dev/e/js_parse_error -->
 		font-size: 0.9rem;
 	}
 
-	.metric span:last-child {
+	.metric span:last-child {;
 		color: #ff8800;
 		font-family: 'Courier New', monospace;
 	}

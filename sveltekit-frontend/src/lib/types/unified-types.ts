@@ -32,7 +32,7 @@ export interface OllamaModel {
   name: string;
   size: number;
   digest: string;
-  details: {
+  details: {;
     format: string;
     family: string;
     families?: string[];
@@ -213,12 +213,12 @@ export interface UserPreferences {
   theme: 'light' | 'dark' | 'auto';
   language: string;
   timezone: string;
-  notifications: {
+  notifications: {;
     email: boolean;
     push: boolean;
     sms: boolean;
   };
-  ui: {
+  ui: {;
     density: 'compact' | 'comfortable' | 'spacious';
     sidebarCollapsed: boolean;
   };
@@ -249,7 +249,7 @@ export interface ApiResponse<T = any> {
 
 export interface PaginatedResponse<T = any> {
   data: T[];
-  pagination: {
+  pagination: {;
     page: number;
     limit: number;
     total: number;

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once;
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <script lang="ts">
@@ -17,9 +17,9 @@ https://svelte.dev/e/props_duplicate -->
   	let fileInput: HTMLInputElement;
   let dragOver = $state(false);
   	let avatarSize = $derived({
-  		small: '32px',
-  		medium: '48px', 
-  		large: '80px'
+  		small: '32px',;
+  		medium: '48px', ;
+  		large: '80px';
   	}[size]);
   	$effect(() => {
   		avatarStore.loadAvatar();

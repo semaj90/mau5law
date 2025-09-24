@@ -36,7 +36,7 @@ const CACHE_CONFIG = {
   // Loki.js settings;
   loki: {
     autosave: true,
-    autosaveInterval: 5000, // 5 seconds
+    autosaveInterval: 5000, // 5 seconds;
     autoload: true,
     throttledSaves: true,
     serializationMethod: 'pretty' as const
@@ -51,7 +51,7 @@ const CACHE_CONFIG = {
     ttl: {
       documents: 3600, // 1 hour for documents
       searches: 1800, // 30 minutes for search results
-      analyses: 7200, // 2 hours for AI analyses
+      analyses: 7200, // 2 hours for AI analyses;
       embeddings: 86400, // 24 hours for vector embeddings
     }
   },
@@ -83,7 +83,7 @@ export interface SearchResult {
 }
 
 export interface CacheStats {
-  loki: {
+  loki: {;
     collections: number;
     documents: number;
     memoryUsage: number;
@@ -91,7 +91,7 @@ export interface CacheStats {
     hits: number;
     misses: number;
   };
-  redis: {
+  redis: {;
     connected: boolean;
     keys: number;
     memoryUsage: number;
@@ -119,13 +119,13 @@ export class LokiRedisCache extends EventEmitter {
   private nesMemory: any = null;
 
   // Loki collections by document type
-  private collections: Map<string, Collection<CachedDocument> = new Map();
+  private collections: Map<string, Collection<CachedDocument>> = new Map();
 
   // Performance tracking;
   private stats = {
     loki: { collections: 0, documents: 0, memoryUsage: 0, queries: 0, hits: 0, misses: 0 },
     redis: { connected: false, keys: 0, memoryUsage: 0, operations: 0, hits: 0, misses: 0 },
-    nes: { documentsStored: 0, memoryUsage: 0, bankSwitches: 0 },
+    nes: { documentsStored: 0, memoryUsage: 0, bankSwitches: 0 },;
     overall: { hitRatio: 0, avgResponseTime: 0, totalDocuments: 0, syncConflicts: 0 }
   };
 
@@ -190,7 +190,7 @@ export class LokiRedisCache extends EventEmitter {
 
               if (!collection) {
                 collection = this.loki!.addCollection<CachedDocument>(collectionName, {
-                  indices: ['id', 'cacheTimestamp', 'type', 'priority', 'riskLevel'],
+                  indices: ['id', 'cacheTimestamp', 'type', 'priority', 'riskLevel'],;
                   unique: ['id']
                 });
               }
@@ -569,7 +569,7 @@ export class LokiRedisCache extends EventEmitter {
   }
 
   async searchDocuments(
-    query: string,
+    query: string,;
     filters: {
       type?: string[];
       riskLevel?: string[];
@@ -633,7 +633,7 @@ export class LokiRedisCache extends EventEmitter {
         for (const doc of documents) {
           results.push({
             id: doc.id,
-            document: doc as LegalDocument,
+            document: doc as LegalDocument,;
             score: this.calculateRelevanceScore(doc, query),
             matchType: 'fuzzy' as const
           });
@@ -965,7 +965,7 @@ export class LokiRedisCache extends EventEmitter {
           hits: 0,
           misses: 0
         },
-        nes: { documentsStored: 0, memoryUsage: 0, bankSwitches: 0 },
+        nes: { documentsStored: 0, memoryUsage: 0, bankSwitches: 0 },;
         overall: { hitRatio: 0, avgResponseTime: 0, totalDocuments: 0, syncConflicts: 0 }
       };
 

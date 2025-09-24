@@ -5,14 +5,14 @@
   	import { onMount } from 'svelte';
   import { frontendRAG } from '$lib/ai/frontend-rag-pipeline';
   	import type { SemanticChunk } from '$lib/ai/frontend-rag-pipeline';
-  	import Button from '$lib/components/ui/enhanced-bits';;
+  	import Button from '$lib/components/ui/enhanced-bits';
   	import Input from '$lib/components/ui/Input.svelte';
   	import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
 
   	// State management with Svelte 5
   	let query = $state('');
@@ -26,31 +26,33 @@
   	// System stats
   	let systemStats = $state<any>(null);
 
-  	$effect(async () => {
-  		// Initialize with some sample legal documents
+  	$effect(() => {
+    (async () => {
+// Initialize with some sample legal documents
   		await initializeSampleData();
   		updateStats();
   		// Update stats every 10 seconds
   		const interval = setInterval(updateStats, 10000);
   		return () => clearInterval(interval);
-  	});
+    })();
+  });
 
   	async function initializeSampleData() {
   		const sampleDocs = [
   			{
-  				text: "Contract formation requires offer, acceptance, consideration, and legal capacity. The statute of frauds requires certain contracts to be in writing.",
+  				text: "Contract formation requires offer, acceptance, consideration, and legal capacity. The statute of frauds requires certain contracts to be in writing.",;
   				metadata: { source: "Contract Law Basics", semanticGroup: "legal", relevance: 1.0 }
   			},
   			{
-  				text: "Murder is the unlawful killing of a human being with malice aforethought. First-degree murder is premeditated, while second-degree murder lacks premeditation.",
+  				text: "Murder is the unlawful killing of a human being with malice aforethought. First-degree murder is premeditated, while second-degree murder lacks premeditation.",;
   				metadata: { source: "Criminal Law", semanticGroup: "legal", relevance: 1.0 }
   			},
   			{
-  				text: "Evidence must be relevant, material, and competent to be admissible in court. Hearsay is generally excluded unless it falls under an exception.",
+  				text: "Evidence must be relevant, material, and competent to be admissible in court. Hearsay is generally excluded unless it falls under an exception.",;
   				metadata: { source: "Evidence Law", semanticGroup: "legal", relevance: 1.0 }
   			},
   			{
-  				text: "SvelteKit 2 with Svelte 5 uses runes for reactivity. Use $state() for reactive variables and $effect() for side effects.",
+  				text: "SvelteKit 2 with Svelte 5 uses runes for reactivity. Use $state() for reactive variables and $effect() for side effects.",;
   				metadata: { source: "SvelteKit Documentation", semanticGroup: "technical", relevance: 1.0 }
   			}
   		];
@@ -69,12 +71,12 @@
   				useG0llama,
   				maxTokens: 200,
   				temperature: 0.7,
-  				useSIMDOptimization: useSIMD
+  				useSIMDOptimization: useSIMD;
   			});
 
   			results = {
   				...result,
-  				stats: frontendRAG.getStats()
+  				stats: frontendRAG.getStats();
   			};
 
   			// Add to search history
@@ -87,9 +89,9 @@
   			console.error('Search failed:', error);
   			results = {
   				response: `Search failed: ${error.message}`,
-  				sources: [],
+  				sources: [],;
   				confidence: 0,
-  				generationMethod: 'error'
+  				generationMethod: 'error';
   			};
   		} finally {
   			isSearching = false;
@@ -292,20 +294,20 @@
 
 <style>
 	/* Custom scrollbar for better UX */
-	:global(.prose) {
+	:global(.prose) {;
 		scrollbar-width: thin;
 		scrollbar-color: #cbd5e0 #f7fafc;
 	}
 	
-	:global(.prose: :-webkit-scrollbar) {
+	:global(.prose::-webkit-scrollbar) {
 		width: 4px;
 	}
 	
-	:global(.prose: :-webkit-scrollbar-track) {
+	:global(.prose::-webkit-scrollbar-track) {
 		background: #f7fafc;
 	}
 	
-	:global(.prose: :-webkit-scrollbar-thumb) {
+	:global(.prose::-webkit-scrollbar-thumb) {
 		background: #cbd5e0;
 		border-radius: 2px;
 	}

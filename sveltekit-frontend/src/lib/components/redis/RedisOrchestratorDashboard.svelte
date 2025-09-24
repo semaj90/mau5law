@@ -287,7 +287,7 @@
 </div>
 
 <style>
-  .redis-dashboard {
+  .redis-dashboard {;
     font-family: 'Courier New', monospace;
     background: #0f0f23;
     color: #cccccc;

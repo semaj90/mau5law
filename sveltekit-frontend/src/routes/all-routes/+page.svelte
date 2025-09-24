@@ -181,9 +181,9 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 					path: route.path,
 					name: route.path.replace(/\//g, ' → '),
 					type: 'configured',
-					icon: route.icon || '📄',
-					description: route.description,
-					category: categorizeRoute(route.path)
+					icon: route.icon || '📄',;
+					description: route.description,;
+					category: categorizeRoute(route.path);
 				});
 			});
 		}
@@ -195,9 +195,9 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 					path: route,
 					name: route.replace(/\//g, ' → '),
 					type: 'file-based',
-					icon: '🔗',
-					description: `Auto-discovered route`,
-					category: categorizeRoute(route)
+					icon: '🔗',;
+					description: `Auto-discovered route`,;
+					category: categorizeRoute(route);
 				});
 			});
 		}
@@ -216,14 +216,14 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 				testing: 0,
 				consolidation: 0,
 				demo: 0,
-				other: 0
+				other: 0;
 			},
 			sections: {
 				core: 0,
 				api: 0,
-				demo: 0,
-				infrastructure: 0,
-				other: 0
+				demo: 0,;
+				infrastructure: 0,;
+				other: 0;
 			}
 		};
 
@@ -454,7 +454,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 				<div class="flex-1">
 					<label class="block text-sm font-medium text-gray-700 mb-2">🔍 Search Routes</label>
 					<input
-						type="text"
+						type="text";
 						bind:value={searchTerm}
 						placeholder="Search by path, name, or description..."
 						class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition-colors"
@@ -464,7 +464,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 				<!-- Section Filter -->
 				<div class="lg:w-48">
 					<label class="block text-sm font-medium text-gray-700 mb-2">📂 Section</label>
-					<select
+					<select;
 						bind:value={selectedSection}
 						class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition-colors"
 					>
@@ -480,7 +480,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 				<!-- Category Filter -->
 				<div class="lg:w-64">
 					<label class="block text-sm font-medium text-gray-700 mb-2">🎯 Category</label>
-					<select
+					<select;
 						bind:value={selectedCategory}
 						class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition-colors"
 					>
@@ -640,7 +640,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 			<div class="mb-8">
 				<h3 class="text-xl font-bold mb-4 flex items-center gap-2">
 					🔗 API Service Clusters
-					<span class="text-sm font-normal text-gray-600">({Object.keys.length} services, {Object.values.flat().length} endpoints)</span>
+					<span class="text-sm font-normal text-gray-600">({Object.keys(errors).length} services, {Object.values.flat().length} endpoints)</span>
 				</h3>
 
 				<!-- Enhanced SSR-optimized API service cluster grid -->
@@ -999,7 +999,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 <style>
 /* Enhanced SSR-optimized 3-Column Flexbox Layout */
 .ssr-flexbox-container {
-	/* Ensure proper layout calculation on server-side rendering */
+	/* Ensure proper layout calculation on server-side rendering */;
 	min-height: 400px;
 	width: 100%;
 	box-sizing: border-box;
@@ -1072,7 +1072,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 	align-items: start;
 
 	/* Responsive grid template with proper proportions */
-	grid-template-columns: repeat(auto-fit, minmax(320px, 1fr);
+	grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
@@ -1209,7 +1209,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 @supports not (display: flex) {
 	.ssr-flexbox-container {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr);
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 		gap: 1.5rem;
 	}
 

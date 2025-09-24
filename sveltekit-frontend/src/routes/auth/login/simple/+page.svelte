@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -41,7 +41,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       console.log('📡 Calling auto-login endpoint...');
       const response = await fetch('/auth/login/auto', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json',
         }
@@ -189,7 +189,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   /* Inline CSS to avoid dependency on global styles */
-  .min-h-screen {
+  .min-h-screen {;
     min-height: 100vh;
   }
 

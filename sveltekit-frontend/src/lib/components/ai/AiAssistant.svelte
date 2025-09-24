@@ -1,7 +1,7 @@
 
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
 <!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -36,7 +36,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   interface AIStore {
-    context: AIStoreContext
+    context: AIStoreContext;
   }
 
   // Get user from context (SSR-safe)
@@ -88,8 +88,8 @@ https://svelte.dev/e/js_parse_error -->
     legalCaseActions.searchRelatedEvidence({
       caseId,
       query: evidenceText,
-      userId: user.id,
-      limit: 10
+      userId: user.id,;
+      limit: 10;
     });
   }
 
@@ -98,16 +98,16 @@ https://svelte.dev/e/js_parse_error -->
       if (!(($aiGlobalStore as AIStore).context.summary) || !caseId || !user?.id) return;
       try {
         const response = await fetch('/api/summaries', {
-          method: 'POST',
+          method: 'POST',;
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             type: 'case',
-            targetId: caseId,
+            targetId: caseId,;
             depth: 'comprehensive',
             includeRAG: true,
             includeUserActivity: false,
             enableStreaming: false,
-            userId: user.id
+            userId: user.id;
           })
         });
 

@@ -32,7 +32,7 @@
       status,
       time,
       error,
-      timestamp: Date.now()
+      timestamp: Date.now();
     }, ...apiLogs.slice(0, 9)];
   };
 
@@ -45,16 +45,16 @@
 
     try {
       const response = await fetch('http://localhost:11434/api/generate', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'gemma3-legal',
           prompt: query || 'Legal AI status check',
-          stream: false,
-          options: {
+          stream: false,;
+          options: {;
             temperature: 0.1,
             num_ctx: 4096,
-            num_gpu: 1 // Force GPU
+            num_gpu: 1 // Force GPU;
           }
         })
       });
@@ -68,7 +68,7 @@
         logAPI('Gemma3 Legal', 200, time);
         onresponse?.(new CustomEvent('response', {
           detail: {
-            source: 'gemma3',
+            source: 'gemma3',;
             content: (result as { response?: any; documents?: any }).response,
             metadata: { time, confidence: 0.92 }
           }
@@ -97,14 +97,14 @@
 
     try {
       const response = await fetch('/api/evidence/synthesize', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           evidenceIds: ['test-1', 'test-2'],
           synthesisType: 'correlation',
           caseId: 'api-test',
-          title: 'API Validation Test',
-          prompt: query
+          title: 'API Validation Test',;
+          prompt: query;
         })
       });
 
@@ -118,8 +118,8 @@
         const result = await (response as { ok?: any; json?: any; status?: any }).json();
         onresponse?.(new CustomEvent('response', {
           detail: {
-            source: 'synthesis',
-            content: JSON.stringify(result, null, 2),
+            source: 'synthesis',;
+            content: JSON.stringify(result, null, 2),;
             metadata: { time, status: (response as { ok?: any; json?: any; status?: any }).status }
           }
         }));
@@ -146,12 +146,12 @@
 
     try {
       const response = await fetch('/api/enhanced-rag/query', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({;
           query: query || 'legal evidence analysis',
           useContextRAG: true,
-          maxResults: 10
+          maxResults: 10;
         })
       });
 
@@ -163,8 +163,8 @@
         logAPI('RAG Studio', 200, time);
         onresponse?.(new CustomEvent('response', {
           detail: {
-            source: 'rag',
-            content: JSON.stringify(result, null, 2),
+            source: 'rag',;
+            content: JSON.stringify(result, null, 2),;
             metadata: { time, documents: (result as { response?: any; documents?: any }).documents?.length }
           }
         }));

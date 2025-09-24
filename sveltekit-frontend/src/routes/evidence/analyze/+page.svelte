@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -12,7 +12,7 @@ https://svelte.dev/e/js_parse_error -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import {
     Dialog,
     DialogContent,
@@ -56,7 +56,7 @@ https://svelte.dev/e/js_parse_error -->
       status: 'pending',
       description: 'Structuring document and extracting key facts',
       icon: '📋',
-      duration: '30-45s',
+      duration: '30-45s',;
     },
     {
       name: 'Person Extraction',
@@ -64,7 +64,7 @@ https://svelte.dev/e/js_parse_error -->
       status: 'pending',
       description: 'Identifying persons of interest and roles',
       icon: '👥',
-      duration: '20-30s',
+      duration: '20-30s',;
     },
     {
       name: 'Relationship Mapping',
@@ -72,15 +72,15 @@ https://svelte.dev/e/js_parse_error -->
       status: 'pending',
       description: 'Building knowledge graph connections',
       icon: '🔗',
-      duration: '15-25s',
+      duration: '15-25s',;
     },
     {
       name: 'Case Synthesis',
       key: 'case_synthesis',
       status: 'pending',
-      description: 'Generating prosecutorial analysis',
-      icon: '⚖️',
-      duration: '25-35s',
+      description: 'Generating prosecutorial analysis',;
+      icon: '⚖️',;
+      duration: '25-35s',;
     },
   ];
 
@@ -101,12 +101,12 @@ https://svelte.dev/e/js_parse_error -->
     {
       value: 'medium',
       label: 'Medium Priority',
-      color: 'bg-blue-100 text-blue-800',
+      color: 'bg-blue-100 text-blue-800',;
     },
     {
-      value: 'high',
-      label: 'High Priority',
-      color: 'bg-orange-100 text-orange-800',
+      value: 'high',;
+      label: 'High Priority',;
+      color: 'bg-orange-100 text-orange-800',;
     },
     { value: 'urgent', label: 'Urgent', color: 'bg-red-100 text-red-800' },
   ];
@@ -147,8 +147,8 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const response = await fetch('/api/evidence/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({
           caseId,
           evidenceFile: evidenceFile?.name || 'uploaded_evidence.txt',
@@ -202,12 +202,12 @@ https://svelte.dev/e/js_parse_error -->
             'Review additional witness statements',
             'Obtain security footage',
             'Examine financial records'
-          ]
+          ];
         },
         metadata: {
           source: 'mock-evidence-analyzer',
-          processingTime: '45 seconds',
-          model: 'Legal Evidence AI v2.0 (Simulated)'
+          processingTime: '45 seconds',;
+          model: 'Legal Evidence AI v2.0 (Simulated)';
         }
       };
 
@@ -276,12 +276,12 @@ https://svelte.dev/e/js_parse_error -->
             ],
             legalImplications: 'Mock polling result: Analysis completed locally due to service unavailability. Review manually for accuracy.',
             confidenceScore: 0.65,
-            nextSteps: ['Verify mock results', 'Retry analysis when service available']
+            nextSteps: ['Verify mock results', 'Retry analysis when service available'];
           },
           metadata: {
             source: 'mock-polling-fallback',
-            processingTime: 'Simulated',
-            model: 'Offline Evidence Analyzer'
+            processingTime: 'Simulated',;
+            model: 'Offline Evidence Analyzer';
           }
         };
       }
@@ -335,7 +335,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="space-y-2">
           <Label for_="caseId">Case ID *</Label>
           <Input
-            id="caseId"
+            id="caseId";
             bind:value={caseId}
             placeholder="CASE-2024-001"
             disabled={analyzing}
@@ -588,7 +588,7 @@ goto(`/cases/${caseId}`)}>View Case Details
   /* Custom animations for progress indicators */
   @keyframes pulse-glow {
     0%,
-    100% {
+    100% {;
       box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
     }
     50% {

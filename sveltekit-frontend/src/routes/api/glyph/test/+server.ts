@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 /*
  * Simple Glyph Generation Test API
@@ -7,21 +7,21 @@ import type { RequestHandler } from './$types.js';
  */
 
 export const GET: RequestHandler = async () => {
-  console.log('🎨 Glyph test endpoint accessed via GET');
+  console.log('🎨 Glyph test endpoint accessed via GET')
   return json({
     success: true,
     message: 'Glyph diffusion test endpoint is working',
     status: 'ok'
-  });
-};
+  })
+}
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json();
+    const body = await request.json()
 
-    console.log('🎨 Testing glyph generation:', body);
+    console.log('🎨 Testing glyph generation:', body)
 
-    // Simulate glyph generation without database/MinIO;
+    // Simulate glyph generation without database/MinIO
     const mockGlyphResponse = {
       success: true,
       data: {
@@ -48,16 +48,16 @@ export const POST: RequestHandler = async ({ request }) => {
           dimensions: body.dimensions || [256, 256]
         }
       }
-    };
+    }
 
-    console.log('✅ Mock glyph generated successfully');
-    return json(mockGlyphResponse);
+    console.log('✅ Mock glyph generated successfully')
+    return json(mockGlyphResponse)
 
   } catch (error) {
-    console.error('❌ Glyph test generation failed:', error);
+    console.error('❌ Glyph test generation failed:', error)
     return json({
       success: false,
       error: 'Glyph test generation failed: ' + error.message
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

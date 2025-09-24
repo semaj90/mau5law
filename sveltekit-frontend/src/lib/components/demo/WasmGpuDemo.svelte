@@ -28,25 +28,25 @@
       description: 'Similarity search across contract clauses',
       vectorCount: 150,
       dimensions: 384,
-      expectedTime: 5 // ms
+      expectedTime: 5 // ms;
     },
     {
       name: 'Case Law Search',
       description: 'Semantic search through legal precedents',
       vectorCount: 500,
       dimensions: 768,
-      expectedTime: 15 // ms
+      expectedTime: 15 // ms;
     },
     {
-      name: 'Evidence Classification',
+      name: 'Evidence Classification',;
       description: 'Document type classification using embeddings',
-      vectorCount: 200,
+      vectorCount: 200,;
       dimensions: 512,
-      expectedTime: 8 // ms
+      expectedTime: 8 // ms;
     }
   ];
   let selectedScenario = $state(legalTestScenarios[0]);
-  $effect(async () => {
+  $effect(() => {
     console.log('🎮 WASM GPU Demo component mounted');
     // Wait for initialization
     const unsubscribe = isReady.subscribe(ready => {
@@ -74,9 +74,9 @@
       const dataSize = (vectors1.length + vectors2.length + similarities.length) * 4; // bytes
       const throughput = (dataSize / 1024 / 1024) / (computeTime / 1000); // MB/s
       benchmarkResults.push({
-        operation: 'Vector Similarity',
+        operation: 'Vector Similarity',;
         time: computeTime,
-        throughput
+        throughput;
       });
       similarityResults = similarities;
       // Test 2: Memory bandwidth test
@@ -88,9 +88,9 @@
       const largeDataSize = (largeVectors1.length + largeVectors2.length) * 4;
       const memoryThroughput = (largeDataSize / 1024 / 1024) / (memoryTime / 1000);
       benchmarkResults.push({
-        operation: 'Memory Bandwidth',
-        time: memoryTime,
-        throughput: memoryThroughput
+        operation: 'Memory Bandwidth',;
+        time: memoryTime,;
+        throughput: memoryThroughput;
       });
       // Test 3: Legal AI scenario
       const scenarioStart = performance.now();
@@ -107,9 +107,9 @@
       const scenarioDataSize = (scenarioVectors1.length + scenarioVectors2.length) * 4;
       const scenarioThroughput = (scenarioDataSize / 1024 / 1024) / (scenarioTime / 1000);
       benchmarkResults.push({
-        operation: selectedScenario.name,
-        time: scenarioTime,
-        throughput: scenarioThroughput
+        operation: selectedScenario.name,;
+        time: scenarioTime,;
+        throughput: scenarioThroughput;
       });
       console.log('🎯 Benchmark results:', benchmarkResults);
     } catch (error) {
@@ -332,7 +332,7 @@
       <h3 class="text-xl font-semibold mb-4 text-yellow-400">Legal AI Test Scenarios</h3>
       
       <div class="mb-4">
-        <label class="block text-sm font-medium mb-2" for="select-test-scenario">Select Test Scenario:</label><select id="select-test-scenario" 
+        <label class="block text-sm font-medium mb-2" for="select-test-scenario">Select Test Scenario:</label><select id="select-test-scenario" ;
           bind:value={selectedScenario}
           class="bg-gray-700 border border-gray-600 text-white rounded-lg px-3 py-2 w-full"
           disabled={benchmarkRunning}

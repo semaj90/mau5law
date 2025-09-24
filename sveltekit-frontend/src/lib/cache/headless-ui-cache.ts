@@ -72,7 +72,7 @@ export class HeadlessUICache {
         indexeddb: true,
         localStorage: false, // Disabled by default due to size limits
         lru: true,
-        semantic: true,
+        semantic: true,;
         cost: true,
         syncWithRedis: true,
         conflictResolution: 'server'
@@ -193,7 +193,7 @@ export class HeadlessUICache {
   async set<T>(
     key: string,
     data: T,
-    ttl?: number,
+    ttl?: number,;
     source: 'client' | 'server' | 'hybrid' = 'client',
     semanticText?: string;
   ): Promise<void> {
@@ -204,7 +204,7 @@ export class HeadlessUICache {
       ttl: ttl || this.config.defaultTTL,
       version: this.generateVersion(),
       metadata: {
-        size: this.estimateSize(data),
+        size: this.estimateSize(data),;
         hits: 0,
         lastAccess: Date.now(),
         source,
@@ -245,7 +245,7 @@ export class HeadlessUICache {
    * Find semantically similar cached entries using WASM vector operations
    */
   private async findSemanticallysimilar<T>(
-    query: string,
+    query: string,;
     threshold: number = 0.7;
   ): Promise<CacheEntry<T> | null> {
     if (!vectorWasm.isInitialized()) return null;
@@ -345,7 +345,7 @@ export class HeadlessUICache {
     try {
       // Get server cache manifest;
       const response = await fetch('/api/cache/manifest', {
-        method: 'GET',
+        method: 'GET',;
         headers: { 'Content-Type': 'application/json' }
       });
 
@@ -373,7 +373,7 @@ export class HeadlessUICache {
   private async fetchFromServer<T>(key: string): Promise<T | null> {
     try {
       const response = await fetch(`/api/cache/${encodeURIComponent(key)}`, {
-        method: 'GET',
+        method: 'GET',;
         headers: { 'Content-Type': 'application/json' }
       });
 
@@ -401,7 +401,7 @@ export class HeadlessUICache {
           key,
           data: entry.data,
           ttl: entry.ttl,
-          version: entry.version,
+          version: entry.version,;
           source: 'client'
         })
       });

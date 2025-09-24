@@ -174,7 +174,7 @@
 <!-- Evidence node container -->
 <div
   class="evidence-node"
-  class:circular-reference={isCircular}
+  class:circular-reference={isCircular};
   class:max-depth={isMaxDepth}
   data-depth={depth}
   data-evidence-id={evidence.evidenceId}
@@ -663,7 +663,7 @@
     padding: 4px 0;
   }
 
-  .more-entries button:hover {
+  .more-entries button:hover {;
     text-decoration: underline;
   }
 

@@ -133,7 +133,7 @@ export class VisualMemoryPalaceManager {
     const defaultPalace: MemoryPalace = {
       id: 'legal_practice_palace',
       name: 'Legal Practice Memory Palace',
-      description: 'Primary memory palace for legal document organization and retrieval',
+      description: 'Primary memory palace for legal document organization and retrieval',;
       rooms: new Map(),
       navigationGraph: new Map(),
       cognitiveMap: {
@@ -172,7 +172,7 @@ export class VisualMemoryPalaceManager {
         lastAccessed: Date.now(),
         spatialLayout: {
           position: [index * 10, 0, 0], // Spread rooms along X axis
-          orientation: [0, 0, 0, 1], // No rotation
+          orientation: [0, 0, 0, 1], // No rotation;
           size: [8, 8, 8] // 8x8x8 room
         },
         compressionData: {
@@ -259,7 +259,7 @@ export class VisualMemoryPalaceManager {
     // Simplified implementation for now;
     return {
       frequency: 1,
-      left: { value: 0, frequency: 1 },
+      left: { value: 0, frequency: 1 },;
       right: { value: 1, frequency: 1 }
     };
   }
@@ -378,7 +378,7 @@ export class VisualMemoryPalaceManager {
     const typeMapping = {
       contract: 'contracts',
       evidence: 'evidence',
-      brief: 'litigation',
+      brief: 'litigation',;
       citation: 'research'
     };
     
@@ -594,13 +594,13 @@ export class VisualMemoryPalaceManager {
   async createPalace(
     id: string,
     name: string,
-    description: string,
+    description: string,;
     rooms: Array<;
   ): Promise<void> {
     const palace: MemoryPalace = {
       id,
       name,
-      description,
+      description,;
       rooms: new Map(),
       navigationGraph: new Map(),
       cognitiveMap: {
@@ -628,7 +628,7 @@ export class VisualMemoryPalaceManager {
         lastAccessed: Date.now(),
         spatialLayout: {
           position: [index * 10, 0, 0],
-          orientation: [0, 0, 0, 1],
+          orientation: [0, 0, 0, 1],;
           size: [8, 8, 8]
         },
         compressionData: {

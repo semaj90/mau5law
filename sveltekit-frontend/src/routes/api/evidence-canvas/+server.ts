@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 export const GET: RequestHandler = async () => {
   return json({
@@ -19,5 +19,5 @@ export const GET: RequestHandler = async () => {
       'AI-powered evidence summarization',
       'Layout analysis and optimization suggestions'
     ]
-  });
-};
+  })
+}

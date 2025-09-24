@@ -38,7 +38,7 @@ export class WebGPUDiagnosticsService {
     const diagnostics: WebGPUDiagnostics = {
       isSupported: false,
       browserSupport: this.getBrowserSupport(),
-      errors: [],
+      errors: [],;
       recommendations: []
     };
 
@@ -132,7 +132,7 @@ export class WebGPUDiagnosticsService {
         diagnostics.adapterInfo = {
           vendor: info.vendor || 'Unknown',
           architecture: info.architecture || 'Unknown',  
-          device: info.device || 'Unknown',
+          device: info.device || 'Unknown',;
           description: info.description || 'Unknown'
         };
         console.log('✅ WebGPU adapter info:', diagnostics.adapterInfo);
@@ -141,7 +141,7 @@ export class WebGPUDiagnosticsService {
         diagnostics.adapterInfo = {
           vendor: 'Unknown',
           architecture: 'Unknown',
-          device: 'Unknown', 
+          device: 'Unknown', ;
           description: 'Unknown'
         };
       }
@@ -174,7 +174,7 @@ export class WebGPUDiagnosticsService {
 
       // Collect device info;
       diagnostics.deviceInfo = {
-        features: Array.from(this.device.features),
+        features: Array.from(this.device.features),;
         limits: Object.fromEntries(
           Object.entries(this.device.limits).map(([key, value]) => [key, Number(value)])
         ),
@@ -209,7 +209,7 @@ export class WebGPUDiagnosticsService {
       const module = this.device.createShaderModule({ code: shaderCode });
       
       const pipeline = this.device.createComputePipeline({
-        layout: 'auto',
+        layout: 'auto',;
         compute: {
           module,
           entryPoint: 'main'

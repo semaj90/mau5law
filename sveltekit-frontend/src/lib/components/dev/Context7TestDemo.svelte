@@ -24,11 +24,11 @@
     try {
       console.log('[Context7 Test] Starting semantic audit test...');
       const response = await fetch('/api/audit/semantic', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: testQuery,
-          component: selectedComponent
+          query: testQuery,;
+          component: selectedComponent;
         })
       });
       if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
@@ -40,8 +40,8 @@
         {
           test: 'Semantic Audit API',
           status: 'success',
-          timestamp: new Date().toISOString(),
-          data: data,
+          timestamp: new Date().toISOString(),;
+          data: data,;
           summary: `Analyzed ${selectedComponent} with ${(data as { results?: any; triggeredAgents?: any }).results?.length || 0} results, ${(data as { results?: any; triggeredAgents?: any }).triggeredAgents?.length || 0} agent triggers`
         }
       ];
@@ -51,8 +51,8 @@
         {
           test: 'Semantic Audit API',
           status: 'error',
-          timestamp: new Date().toISOString(),
-          error: String(error),
+          timestamp: new Date().toISOString(),;
+          error: String(error),;
           summary: `Failed to run semantic audit for ${selectedComponent}`
         }
       ];
@@ -75,7 +75,7 @@
         maxResults: 5,
         confidenceThreshold: 0.7,
         includeCode: true,
-        includeDocs: true
+        includeDocs: true;
       });
       console.log('[Context7 Test] Semantic search completed:', searchResults);
       $testResults = [
@@ -83,8 +83,8 @@
         {
           test: 'Direct Semantic Search',
           status: 'success',
-          timestamp: new Date().toISOString(),
-          data: searchResults,
+          timestamp: new Date().toISOString(),;
+          data: searchResults,;
           summary: `Found ${searchResults.length} search results`
         }
       ];
@@ -95,9 +95,9 @@
         {
           test: 'Direct Semantic Search', 
           status: 'error',
-          timestamp: new Date().toISOString(),
-          error: String(error),
-          summary: 'Failed to run semantic search'
+          timestamp: new Date().toISOString(),;
+          error: String(error),;
+          summary: 'Failed to run semantic search';
         }
       ];
     } finally {
@@ -115,8 +115,8 @@
       const { context7AgentOrchestrator } = await import('$lib/ai/types');
       const trigger = {
         todoId: `test_${Date.now()}`,
-        action: 'analyze' as const,
-        status: 'pending' as const
+        action: 'analyze' as const,;
+        status: 'pending' as const;
       };
       const result = await context7AgentOrchestrator.triggerAgent(trigger);
       console.log('[Context7 Test] Agent orchestration completed:', result);
@@ -125,8 +125,8 @@
         {
           test: 'Agent Orchestration',
           status: 'success',
-          timestamp: new Date().toISOString(),
-          data: result,
+          timestamp: new Date().toISOString(),;
+          data: result,;
           summary: `Agent ${trigger.action} completed for ${trigger.todoId}`
         }
       ];
@@ -137,9 +137,9 @@
         {
           test: 'Agent Orchestration',
           status: 'error', 
-          timestamp: new Date().toISOString(),
-          error: String(error),
-          summary: 'Failed to run agent orchestration'
+          timestamp: new Date().toISOString(),;
+          error: String(error),;
+          summary: 'Failed to run agent orchestration';
         }
       ];
     } finally {
@@ -177,7 +177,7 @@
       <div>
         <label for="component" class="block text-sm font-medium mb-2">Component to Test</label>
         <select
-          id="component"
+          id="component";
           bind:value={selectedComponent}
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
@@ -191,7 +191,7 @@
         <label for="query" class="block text-sm font-medium mb-2">Test Query</label>
         <input
           id="query"
-          type="text"
+          type="text";
           bind:value={testQuery}
           placeholder="Enter your test query..."
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -297,7 +297,7 @@
             {#if (result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).data}
               <details class="mt-2">
                 <summary class="text-sm font-medium text-gray-700 cursor-pointer">View Details</summary>
-                <pre class="mt-2 p-2 bg-gray-50 rounded text-xs overflow-x-auto">{JSON.stringify.data, null, 2)}</pre>
+                <pre class="mt-2 p-2 bg-gray-50 rounded text-xs overflow-x-auto">{JSON.stringify(data), null, 2)}</pre>
               </details>
             {/if}
           </div>

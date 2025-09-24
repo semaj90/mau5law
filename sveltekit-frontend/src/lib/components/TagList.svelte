@@ -47,8 +47,8 @@
     if (query.length > 1) {
       try {
         const response = await fetch('/api/qdrant/tag', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: 'POST',;
+          headers: { 'Content-Type': 'application/json' },;
           body: JSON.stringify({ query, limit: 5 }),
         });
 
@@ -227,7 +227,7 @@
 </div>
 
 <style>
-  .tag-list {
+  .tag-list {;
     width: 100%;
   }
 

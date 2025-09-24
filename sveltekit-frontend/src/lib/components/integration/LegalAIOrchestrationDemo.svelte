@@ -13,7 +13,7 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import Button from '$lib/components/ui/enhanced-bits';
 
   // Svelte 5 runes for state management
@@ -24,24 +24,24 @@
 
   // Form state for different workflows
   let legalResearchForm = $state({
-    query: '',
+    query: '',;
     jurisdiction: 'federal',
     userRole: 'attorney',
-    maxResults: 10
+    maxResults: 10;
   });
 
   let documentProcessingForm = $state({
     content: '',
     documentType: 'contract',
-    documentId: ''
+    documentId: '';
   });
 
   let caseCreationForm = $state({
-    title: '',
+    title: '',;
     description: '',
-    caseType: 'civil',
+    caseType: 'civil',;
     jurisdiction: 'federal',
-    clientId: ''
+    clientId: '';
   });
 
   // Reactive derived values
@@ -55,7 +55,7 @@
     legalResearch: {
       query: 'breach of contract damages in commercial agreements',
       jurisdiction: 'federal',
-      userRole: 'attorney'
+      userRole: 'attorney';
     },
     documentProcessing: {
       content: `PURCHASE AGREEMENT
@@ -71,12 +71,12 @@
   4. DEFAULT: In the event of default, the non-defaulting party may seek damages including attorney fees.
 
   [Additional standard terms and conditions...]`,
-      documentType: 'contract'
+      documentType: 'contract';
     },
     caseCreation: {
-      title: 'Smith v. Johnson Contract Dispute',
+      title: 'Smith v. Johnson Contract Dispute',;
       description: 'Commercial contract dispute involving breach of delivery terms and damages claim. Client seeks recovery of $75,000 in damages plus attorney fees.',
-      caseType: 'civil'
+      caseType: 'civil';
     }
   };
 
@@ -113,11 +113,11 @@
       switch (selectedWorkflow) {
         case 'legal-research':
           const researchRequest: LegalResearchWorkflowRequest = {
-            query: legalResearchForm.query,
+            query: legalResearchForm.query,;
             jurisdiction: legalResearchForm.jurisdiction,
             userRole: legalResearchForm.userRole,
             maxResults: legalResearchForm.maxResults,
-            includeAI: true
+            includeAI: true;
           };
           result = await workflowOrchestrator.performLegalResearch(researchRequest);
           break;
@@ -126,18 +126,18 @@
           const docRequest: DocumentProcessingWorkflowRequest = {
             documentId: documentProcessingForm.documentId || `doc_${Date.now()}`,
             content: documentProcessingForm.content,
-            documentType: documentProcessingForm.documentType
+            documentType: documentProcessingForm.documentType;
           };
           result = await workflowOrchestrator.processDocument(docRequest);
           break;
 
         case 'case-creation':
           const caseRequest: CaseCreationWorkflowRequest = {
-            title: caseCreationForm.title,
+            title: caseCreationForm.title,;
             description: caseCreationForm.description,
-            caseType: caseCreationForm.caseType,
+            caseType: caseCreationForm.caseType,;
             jurisdiction: caseCreationForm.jurisdiction,
-            clientId: caseCreationForm.clientId || 'demo_client'
+            clientId: caseCreationForm.clientId || 'demo_client';
           };
           result = await workflowOrchestrator.createCase(caseRequest);
           break;
@@ -180,9 +180,9 @@
         </span>
       </div>
       
-      {#if Object.keys.length > 0}
+      {#if Object.keys(errors).length > 0}
         <div class="text-xs text-gray-500">
-          Services: {Object.values.filter-length}/{Object.keys.length} online
+          Services: {Object.values.filter-length}/{Object.keys(errors).length} online
         </div>
       {/if}
     </div>
@@ -199,7 +199,7 @@
           <div class="space-y-2">
             <label class="flex items-center space-x-3">
               <input 
-                type="radio" 
+                type="radio" ;
                 bind:group={selectedWorkflow} 
                 value="legal-research"
                 class="w-4 h-4 text-blue-600"
@@ -344,7 +344,7 @@ Load Demo Data
               </div>
               
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1" for="case-description">Case Description</label><textarea id="case-description" 
+                <label class="block text-sm font-medium text-gray-700 mb-1" for="case-description">Case Description</label><textarea id="case-description" ;
                   bind:value={caseCreationForm.description}
                   placeholder="Describe the case details..."
                   class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -530,7 +530,7 @@ Load Demo Data
 
 <style>
   /* Custom styles for enhanced UI */
-  .animate-spin {
+  .animate-spin {;
     animation: spin 1s linear infinite;
   }
   

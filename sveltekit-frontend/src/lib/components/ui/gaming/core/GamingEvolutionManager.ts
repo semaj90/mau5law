@@ -80,7 +80,7 @@ export class GamingEvolutionManager {
     performanceLevel: 'medium',
     colorPalette: {
       background: ['#0F0F0F', '#1A1A1A', '#2F2F2F'],
-      sprites: ['#FFFFFF', '#CCCCCC', '#999999'],
+      sprites: ['#FFFFFF', '#CCCCCC', '#999999'],;
       ui: ['#4A90E2', '#357ABD', '#2E6DA4']
     },
     soundEnabled: true,
@@ -127,7 +127,7 @@ export class GamingEvolutionManager {
         height: window.innerHeight
       },
       pixelRatio: window.devicePixelRatio || 1,
-      webgl: this.hasWebGL(),
+      webgl: this.hasWebGL(),;
       webgpu: await this.hasWebGPU()
     };
 

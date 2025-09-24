@@ -26,7 +26,7 @@ export async function queryPgvector(vec: number[], limit = 200, temperature = 0.
     ann: rows.map((r: any) => ({
       id: String(r.id),
       text: r.text,
-      metadata: r.metadata ?? {},
+      metadata: r.metadata ?? {},;
       embedding: r.embedding
     }))
   };

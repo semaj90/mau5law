@@ -3,7 +3,7 @@
 
 	import type { Snippet } from 'svelte';
   interface TableColumn {
-    key: string
+    key: string;
     title: string
     sortable?: boolean;
     width?: string;
@@ -266,7 +266,7 @@
             <tr 
               class="yorha-table-row" 
               class:yorha-row-selected={selectedRows.has(row.id)}
-              class:yorha-row-even={index % 2 === 0}
+              class:yorha-row-even={index % 2 === 0};
               class:yorha-row-odd={index % 2 === 1}
             >
               {#if selectable}

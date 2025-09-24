@@ -259,7 +259,7 @@ export class SelfPromptingIntelligence {
       category: this.classifyQuery(query),
       confidence: this.calculateConfidence(query),
       urgency: this.detectUrgency(query, context),
-      complexity: this.assessComplexity(query),
+      complexity: this.assessComplexity(query),;
       context: {
         previousQueries: this.userContextHistory.slice(-5).map(h => h.category),
         userExpertise: this.inferExpertiseLevel(context),
@@ -342,7 +342,7 @@ export class SelfPromptingIntelligence {
       suggestions.push({
         id: `clarify-${Date.now()}`,
         suggestion: `Did you mean to ${this.suggestClarification(originalQuery, intent)}?`,
-        confidence: 0.8,
+        confidence: 0.8,;
         category: 'clarification',
         modelRecommendation: 'gemma-270m', // Fast model for clarifications
         estimatedLatency: 200,
@@ -382,7 +382,7 @@ export class SelfPromptingIntelligence {
       expansions.push({
         id: `expand-legal-${Date.now()}`,
         suggestion: `Would you like me to also include related statutes and case precedents in your legal research?`,
-        confidence: 0.7,
+        confidence: 0.7,;
         category: 'expansion',
         modelRecommendation: 'gemma3-legal-main',
         estimatedLatency: 300,
@@ -401,7 +401,7 @@ export class SelfPromptingIntelligence {
       alternatives.push({
         id: `alt-approach-${Date.now()}`,
         suggestion: `Instead of searching, would you prefer me to analyze and synthesize information from multiple sources?`,
-        confidence: 0.6,
+        confidence: 0.6,;
         category: 'alternative',
         modelRecommendation: 'gemma3-legal-main',
         estimatedLatency: 350,
@@ -422,7 +422,7 @@ export class SelfPromptingIntelligence {
       followUps.push({
         id: `followup-legal-${Date.now()}`,
         suggestion: `Should I prepare a comprehensive legal brief based on your recent research?`,
-        confidence: 0.75,
+        confidence: 0.75,;
         category: 'follow-up',
         modelRecommendation: 'gemma3-legal-main',
         estimatedLatency: 400,
@@ -527,7 +527,7 @@ export class IntelligentModelOrchestrator {
         name: 'FastAPI Processing Endpoint',
         type: 'fastapi-endpoint',
         targetLatency: 200,
-        memoryFootprint: 256,
+        memoryFootprint: 256,;
         capabilities: ['api-processing', 'data-transformation', 'batch-processing'],
         contextWindow: 1024,
         isLoaded: true,
@@ -557,7 +557,7 @@ export class IntelligentModelOrchestrator {
 
   // Main method: Intelligently handle user query
   async processQuery(
-    query: string,
+    query: string,;
     context: any = {},
     userBehavior?: UserBehaviorPattern
   ): Promise<any> {
@@ -658,7 +658,7 @@ export class IntelligentModelOrchestrator {
 
   private calculatePerformanceBenefit(
     current: ModelVariant,
-    target: ModelVariant,
+    target: ModelVariant,;
     intent: UserIntent
   ): number {
     // Calculate expected performance improvement
@@ -847,7 +847,7 @@ export class IntelligentModelOrchestrator {
         activeModels: this.getActiveModelIds().length
       },
       models,
-      memoryUsage: this.cudaOptimizer.optimizeCudaMemoryLayout(this.getActiveModelIds()),
+      memoryUsage: this.cudaOptimizer.optimizeCudaMemoryLayout(this.getActiveModelIds()),;
       recommendations: this.generateOptimizationRecommendations(models)
     };
   }

@@ -24,7 +24,7 @@ export class UXPatternValidator {
     {
       name: 'legal-color-scheme-consistency',
       description: 'All components use consistent legal AI color scheme',
-      category: 'consistency',
+      category: 'consistency',;
       validate: () => {
         const legalElements = document.querySelectorAll('[class*="legal-"]');
         const inconsistentElements = Array.from(legalElements).filter(el => {
@@ -42,7 +42,7 @@ export class UXPatternValidator {
     {
       name: 'button-variant-consistency',
       description: 'Button variants follow consistent design patterns',
-      category: 'consistency',
+      category: 'consistency',;
       validate: () => {
         const buttons = document.querySelectorAll('button, [role="button"]');
         const inconsistentButtons = Array.from(buttons).filter(btn => {
@@ -65,7 +65,7 @@ export class UXPatternValidator {
     {
       name: 'loading-state-indicators',
       description: 'All async actions provide loading feedback',
-      category: 'usability',
+      category: 'usability',;
       validate: () => {
         const forms = document.querySelectorAll('form');
         const buttonsWithActions = document.querySelectorAll('button[type="submit"], button[onclick]');
@@ -82,7 +82,7 @@ export class UXPatternValidator {
     {
       name: 'error-message-visibility',
       description: 'Error messages are clearly visible and actionable',
-      category: 'usability',
+      category: 'usability',;
       validate: () => {
         const errorElements = document.querySelectorAll('.error, [role="alert"], .text-red-500, .text-destructive');
         const validErrors = Array.from(errorElements).filter(el => {
@@ -100,7 +100,7 @@ export class UXPatternValidator {
     {
       name: 'image-lazy-loading',
       description: 'Images use lazy loading for performance',
-      category: 'performance',
+      category: 'performance',;
       validate: () => {
         const images = document.querySelectorAll('img');
         const lazyImages = document.querySelectorAll('img[loading="lazy"]');
@@ -114,7 +114,7 @@ export class UXPatternValidator {
     {
       name: 'animation-performance',
       description: 'Animations use performant CSS properties',
-      category: 'performance',
+      category: 'performance',;
       validate: () => {
         const animatedElements = document.querySelectorAll('[class*="transition"], [class*="animate"]');
 
@@ -140,7 +140,7 @@ export class UXPatternValidator {
     {
       name: 'semantic-heading-structure',
       description: 'Headings follow semantic hierarchy (h1 → h2 → h3)',
-      category: 'accessibility',
+      category: 'accessibility',;
       validate: () => {
         const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'));
         const headingLevels = headings.map(h => parseInt(h.tagName.charAt(1)));
@@ -164,7 +164,7 @@ export class UXPatternValidator {
     {
       name: 'legal-ai-terminology-consistency',
       description: 'Legal AI terminology is used consistently across the interface',
-      category: 'consistency',
+      category: 'consistency',;
       validate: () => {
         const textContent = document.body.textContent?.toLowerCase() || '';
 
@@ -207,14 +207,14 @@ export class UXPatternValidator {
           passed,
           message: passed ?
             `✅ ${pattern.name}: Follows best practices` :
-            `⚠️ ${pattern.name}: ${pattern.description} - ${pattern.recommendation}`,
+            `⚠️ ${pattern.name}: ${pattern.description} - ${pattern.recommendation}`,;
           timestamp: new Date()
         });
       } catch (error) {
         results.push({
           pattern,
           passed: false,
-          message: `❌ ${pattern.name}: Validation failed - ${error}`,
+          message: `❌ ${pattern.name}: Validation failed - ${error}`,;
           timestamp: new Date()
         });
       }
@@ -238,14 +238,14 @@ export class UXPatternValidator {
           passed,
           message: passed ?
             `✅ ${pattern.name}: Follows best practices` :
-            `⚠️ ${pattern.name}: ${pattern.recommendation}`,
+            `⚠️ ${pattern.name}: ${pattern.recommendation}`,;
           timestamp: new Date()
         });
       } catch (error) {
         results.push({
           pattern,
           passed: false,
-          message: `❌ ${pattern.name}: Validation failed - ${error}`,
+          message: `❌ ${pattern.name}: Validation failed - ${error}`,;
           timestamp: new Date()
         });
       }

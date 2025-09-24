@@ -318,7 +318,7 @@ onOpenChange(false)}
 </Dialog.Root>
 
 <style>
-  .legal-dialog {
+  .legal-dialog {;
     animation: dialog-content-show 150ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 

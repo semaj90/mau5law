@@ -141,7 +141,7 @@ export async function phase10SemanticAudit(query: string): Promise<any> {
   // console.log("Phase 10 Semantic Audit Results:", results);
   // return results;
   return {
-    status: "stub",
+    status: "stub",;
     message: "Phase 10 semantic audit integration pending."
   };
 }

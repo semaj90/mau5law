@@ -6,7 +6,7 @@
 	let {
 		class: className = undefined,
 		children = undefined,
-		...restProps
+		...restProps;
 	} = $props();
 </script>
 

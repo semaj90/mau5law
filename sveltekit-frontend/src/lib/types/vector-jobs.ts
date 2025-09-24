@@ -151,7 +151,7 @@ export interface WASMLLMResponse {
 	tokens: number;
 	processingTimeMs: number;
 	confidence: number;
-	metadata: {
+	metadata: {;
 		model: string;
 		promptTokens: number;
 		completionTokens: number;
@@ -217,7 +217,7 @@ export interface VectorServiceMetrics {
 
 export interface VectorHealthStatus {
 	overall: 'healthy' | 'degraded' | 'unhealthy';
-	services: {
+	services: {;
 		redis: 'connected' | 'disconnected' | 'error';
 		postgres: 'connected' | 'disconnected' | 'error';
 		rabbitmq: 'connected' | 'disconnected' | 'error';
@@ -225,7 +225,7 @@ export interface VectorHealthStatus {
 		webgpu: 'available' | 'unavailable' | 'not_supported';
 	};
 	queues: {
-		[queueName: string]: {
+		[queueName: string]: {;
 			depth: number;
 			consumers: number;
 			processingRate: number;

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -43,9 +43,9 @@ https://svelte.dev/e/js_parse_error -->
 		what: '',
 		who: '',
 		why: '',
-		how: '',
-		when: '',
-		where: ''
+		how: '',;
+		when: '',;
+		where: '';
 	});
 
 	// AI Assistant prompts and suggestions
@@ -67,25 +67,25 @@ https://svelte.dev/e/js_parse_error -->
 			title: "Fraud Investigation Case",
 			description: "Financial fraud investigation involving suspicious transactions and potential money laundering activities.",
 			category: "financial",
-			priority: "high"
+			priority: "high";
 		},
 		{
 			title: "Criminal Evidence Analysis",
 			description: "Complex criminal case requiring comprehensive evidence analysis and timeline reconstruction.",
 			category: "criminal", 
-			priority: "urgent"
+			priority: "urgent";
 		},
 		{
 			title: "Civil Rights Violation",
 			description: "Investigation of potential constitutional violations and civil rights infractions.",
 			category: "civil",
-			priority: "high"
+			priority: "high";
 		},
 		{
 			title: "Corporate Compliance Review",
-			description: "Corporate compliance investigation with regulatory violations and documentation review.",
-			category: "corporate",
-			priority: "medium"
+			description: "Corporate compliance investigation with regulatory violations and documentation review.",;
+			category: "corporate",;
+			priority: "medium";
 		}
 	];
 
@@ -133,14 +133,14 @@ https://svelte.dev/e/js_parse_error -->
 		
 		try {
 			const response = await fetch('/api/v1/cases', {
-				method: 'POST',
+				method: 'POST',;
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					title: template.title,
 					description: template.description,
-					category: template.category,
-					priority: template.priority,
-					status: 'open'
+					category: template.category,;
+					priority: template.priority,;
+					status: 'open';
 				})
 			});
 
@@ -171,14 +171,14 @@ https://svelte.dev/e/js_parse_error -->
 		
 		try {
 			const response = await fetch('/api/v1/cases', {
-				method: 'POST',
+				method: 'POST',;
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					title: caseTitle,
+					title: caseTitle,;
 					description: caseDescription,
 					category,
-					priority,
-					status: 'open'
+					priority,;
+					status: 'open';
 				})
 			});
 
@@ -358,7 +358,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-	.ai-assistant-container {
+	.ai-assistant-container {;
 		position: fixed;
 		bottom: 20px;
 		right: 20px;

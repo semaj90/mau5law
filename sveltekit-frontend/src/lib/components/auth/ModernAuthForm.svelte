@@ -4,10 +4,10 @@
   // Svelte 5 runes are used directly without imports
   import { enhance } from '$app/forms';
   // import { Dialog } from 'bits-ui';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Label } from '$lib/components/ui/label/index.js';
   import { Alert } from '$lib/components/ui/alert/index.js';
   import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator.js';
@@ -26,11 +26,11 @@
 
   // Svelte 5 runes for reactive state
   let formData = $state({
-    email: '',
+    email: '',;
     password: '',
     confirmPassword: '',
     firstName: '',
-    lastName: ''
+    lastName: '';
   });
   let loading = $state(false);
   let error = $state('');
@@ -64,9 +64,9 @@
       // Use GPU orchestrator to log authentication events for security analysis
       const authContext = {
         mode,
-        email: formData.email,
+        email: formData.email,;
         timestamp: new Date().toISOString(),
-        userAgent: navigator.userAgent
+        userAgent: navigator.userAgent;
       };
 
       // Trigger AI analysis for suspicious login patterns
@@ -78,11 +78,11 @@
 
       const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/register';
       const response = await fetch(endpoint, {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
+        },;
+        body: JSON.stringify(formData);
       });
 
       const result = await (response as { json?: any; ok?: any }).json();
@@ -102,11 +102,11 @@
         // Reset form and close dialog
         setTimeout(() => {
           formData = {
-            email: '',
+            email: '',;
             password: '',
             confirmPassword: '',
             firstName: '',
-            lastName: ''
+            lastName: '';
           };
           open = false;
           onSuccess?.((result as { message?: any; user?: any; error?: any }).user);
@@ -332,7 +332,7 @@
 
 <style>
   /* Additional component-specific styles if needed */
-  :global(.animate-in) {
+  :global(.animate-in) {;
     animation-duration: 200ms;
     animation-fill-mode: both;
   }

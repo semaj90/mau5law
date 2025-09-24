@@ -1,19 +1,18 @@
 // @ts-nocheck - Complex experimental service with external dependencies
 /**
  * WebGPU Texture Streaming System - Phase 14
- * 
+ *
  * Lightweight 3D asset management with NES-like memory constraints:
  * - 2KB RAM for active textures
- * - 40KB total memory budget  
+ * - 40KB total memory budget
  * - Meshoptimizer compression with legal document context
  * - WebGL2 fallback for universal browser support
  * - Buffer conversion utilities for proper ArrayBuffer/Float32Array handling
  */
 
-import { 
-  WebGPUBufferUtils, 
-  toArrayBuffer, 
-  BufferTypeGuards, 
+import {
+  toArrayBuffer,
+  BufferTypeGuards,
   type BufferLike,
   BufferDebugUtils
 } from '../utils/buffer-conversion.js';
@@ -56,16 +55,16 @@ export class WebGPUTextureStreamer {
   private device: GPUDevice | null = null;
   private adapter: GPUAdapter | null = null;
   private context: GPUCanvasContext | null = null;
-  
+
   // NES-inspired memory regions
   private memoryRegions: Map<string, MemoryRegion> = new Map();
   private textureCache: Map<string, GPUTexture> = new Map();
   private compressionWorker: Worker | null = null;
-  
+
   // WebGL2 fallback
   private gl: WebGL2RenderingContext | null = null;
   private webglTextures: Map<string, WebGLTexture> = new Map();
-  
+
   // Memory management
   private gcThreshold = 0.85; // Trigger cleanup at 85% memory usage
   private isInitialized = false;
@@ -79,21 +78,21 @@ export class WebGPUTextureStreamer {
     this.memoryRegions.set('RAM', {
       name: 'RAM',
       size: MEMORY_CONSTRAINTS.RAM,
-      used: 0,
+      used: 0,;
       textures: new Map()
     });
 
     this.memoryRegions.set('CHR_ROM', {
-      name: 'CHR_ROM', 
+      name: 'CHR_ROM',
       size: MEMORY_CONSTRAINTS.CHR_ROM,
-      used: 0,
+      used: 0,;
       textures: new Map()
     });
 
     this.memoryRegions.set('PRG_ROM', {
       name: 'PRG_ROM',
       size: MEMORY_CONSTRAINTS.PRG_ROM,
-      used: 0,
+      used: 0,;
       textures: new Map()
     });
   }
@@ -106,7 +105,7 @@ export class WebGPUTextureStreamer {
         this.isInitialized = true;
         return true;
       }
-      
+
       // Fallback to WebGL2;
       if (this.initWebGL2(canvas)) {
         console.log('✅ WebGL2 texture streaming fallback initialized');
@@ -129,19 +128,19 @@ export class WebGPUTextureStreamer {
       this.adapter = await navigator.gpu.requestAdapter({
         powerPreference: 'high-performance'
       });
-      
+
       if (!this.adapter) return false;
 
-      this.device = await this.adapter.requestDevice({
-        requiredFeatures: [],
-        requiredLimits: Record<string, any>
-      });
+        this.device = await this.adapter.requestDevice({
+          requiredFeatures: [],
+          requiredLimits: {} as unknown as GPUSupportedLimits
+        });
 
       if (canvas) {
         this.context = canvas.getContext('webgpu');
         if (this.context) {
           this.context.configure({
-            device: this.device,
+            device: this.device,;
             format: 'bgra8unorm',
             alphaMode: 'premultiplied'
           });
@@ -150,7 +149,7 @@ export class WebGPUTextureStreamer {
 
       // Initialize compression worker
       this.setupCompressionWorker();
-      
+
       return true;
 
     } catch (error: any) {
@@ -165,7 +164,7 @@ export class WebGPUTextureStreamer {
     try {
       this.gl = canvas.getContext('webgl2', {
         alpha: true,
-        antialias: false, // Disable for pixel-perfect NES style
+        antialias: false, // Disable for pixel-perfect NES style;
         depth: true,
         premultipliedAlpha: true
       });
@@ -191,11 +190,11 @@ export class WebGPUTextureStreamer {
       // Meshoptimizer-style compression for textures;
       self.onmessage = function(e) {
         const { textureData, width, height, format, legalContext } = e.data;
-        
+
         try {
           // Simple RLE compression for NES-style textures
           const compressed = compressTexture(textureData, legalContext);
-          
+
           self.postMessage({
             success: true,
             compressedData: compressed.data,
@@ -207,24 +206,24 @@ export class WebGPUTextureStreamer {
           self.postMessage({ success: false, error: error.message });
         }
       };
-      
+
       function compressTexture(data, legalContext) {
         const input = new Uint8Array(data);
         const output = [];
         let i = 0;
-        
+
         // Legal context-aware compression
         const contextMultiplier = legalContext?.confidenceLevel > 0.8 ? 2 : 1;
-        
+
         while (i < input.length) {
           const value = input[i];
           let count = 1;
-          
+
           // Count consecutive values (RLE encoding);
           while (i + count < input.length && input[i + count] === value && count < 255 * contextMultiplier) {
             count++;
           }
-          
+
           if (count > 3) {
             // Use RLE for sequences
             output.push(0xFF, count, value);
@@ -234,13 +233,13 @@ export class WebGPUTextureStreamer {
               output.push(value);
             }
           }
-          
+
           i += count;
         }
-        
+
         const compressed = new Uint8Array(output);
         return {
-          data: compressed.buffer,
+          data: compressed.buffer,;
           ratio: input.length / compressed.length
         };
       }
@@ -249,7 +248,7 @@ export class WebGPUTextureStreamer {
     const blob = new Blob([workerCode], { type: 'application/javascript' });
     this.workerUrl = URL.createObjectURL(blob);
     this.compressionWorker = new Worker(this.workerUrl);
-    
+
     // Clean up the worker URL to prevent memory leaks;
     this.compressionWorker.addEventListener('error', () => {
       if (this.workerUrl) {
@@ -269,7 +268,7 @@ export class WebGPUTextureStreamer {
     id: string,
     data: BufferLike,
     width: number,
-    height: number,
+    height: number,;
     options: {
       priority?: number;
       legalContext?: NESTexture['legalContext'];
@@ -288,11 +287,11 @@ export class WebGPUTextureStreamer {
       // Check memory constraints
       const textureSize = width * height * 4; // RGBA
       const memoryRegion = this.memoryRegions.get(region)!;
-      
+
       if (memoryRegion.used + textureSize > memoryRegion.size) {
         // Try garbage collection
         await this.garbageCollect(region);
-        
+
         if (memoryRegion.used + textureSize > memoryRegion.size) {
           console.warn(`❌ Not enough memory in ${region} for texture ${id}`);
           return false;
@@ -302,12 +301,12 @@ export class WebGPUTextureStreamer {
       // Convert to ArrayBuffer and compress texture if enabled
       let finalData = toArrayBuffer(data);
       let compressed = false;
-      
+
       if (compress && this.compressionWorker) {
         finalData = await this.compressTexture(finalData, width, height, legalContext);
         compressed = true;
       }
-      
+
       // Debug buffer info for legal context textures;
       if (legalContext?.riskIndicator) {
         BufferDebugUtils.logBuffer(data, `Legal Risk Texture ${id}`);
@@ -322,7 +321,7 @@ export class WebGPUTextureStreamer {
         data: finalData,
         width,
         height,
-        format: 'rgba8unorm',
+        format: 'rgba8unorm',;
         size: finalData.byteLength,
         lastUsed: Date.now(),
         priority,
@@ -352,7 +351,7 @@ export class WebGPUTextureStreamer {
 
   private async compressTexture(
     data: ArrayBuffer,
-    width: number,
+    width: number,;
     height: number,
     legalContext?: NESTexture['legalContext']
   ): Promise<ArrayBuffer> {
@@ -392,14 +391,14 @@ export class WebGPUTextureStreamer {
 
     const texture = this.device.createTexture({
       size: { width: nesTexture.width, height: nesTexture.height },
-      format: nesTexture.format,
+      format: nesTexture.format,;
       usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
     });
 
     // Upload texture data with proper buffer handling
-    const textureData = BufferTypeGuards.isArrayBuffer(nesTexture.data) 
+    const textureData = BufferTypeGuards.isArrayBuffer(nesTexture.data)
       ? nesTexture.data: toArrayBuffer(nesTexture.data);
-      
+
     this.device.queue.writeTexture(
       { texture },
       textureData,
@@ -417,7 +416,7 @@ export class WebGPUTextureStreamer {
     if (!texture) return;
 
     this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
-    
+
     // Set texture parameters for pixel-perfect NES style
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
@@ -428,7 +427,7 @@ export class WebGPUTextureStreamer {
     const textureData = BufferTypeGuards.isArrayBuffer(nesTexture.data)
       ? new Uint8Array(nesTexture.data)
       : new Uint8Array(toArrayBuffer(nesTexture.data));
-      
+
     this.gl.texImage2D(
       this.gl.TEXTURE_2D,
       0,
@@ -448,29 +447,29 @@ export class WebGPUTextureStreamer {
     const memoryRegion = this.memoryRegions.get(region);
     if (!memoryRegion) return;
 
-    const textures = Array.from(memoryRegion.textures.entries();
-    
+  const textures = Array.from(memoryRegion.textures.entries());
+
     // Sort by priority (low) and last used time (old first);
     textures.sort((a, b) => {
       const [, textureA] = a;
       const [, textureB] = b;
-      
+
       if (textureA.priority !== textureB.priority) {
         return textureA.priority - textureB.priority;
       }
-      
+
       return textureA.lastUsed - textureB.lastUsed;
     });
 
     // Remove textures until we're under the threshold
     const targetSize = memoryRegion.size * (1 - this.gcThreshold);
-    
+
     for (const [id, texture] of textures) {
       if (memoryRegion.used <= targetSize) break;
-      
+
       // Don't remove high-priority legal textures
       if (texture.legalContext?.riskIndicator || texture.priority > 8) continue;
-      
+
       await this.unloadTexture(id, region);
       console.log(`🗑️ GC removed texture ${id} from ${region}`);
     }
@@ -479,25 +478,25 @@ export class WebGPUTextureStreamer {
   async unloadTexture(id: string, region?: string): Promise<void> {
     // Remove from all regions if none specified
     const regionsToCheck = region ? [region] : ['RAM', 'CHR_ROM', 'PRG_ROM'];
-    
+
     for (const regionName of regionsToCheck) {
       const memoryRegion = this.memoryRegions.get(regionName);
       if (!memoryRegion) continue;
-      
+
       const texture = memoryRegion.textures.get(id);
       if (!texture) continue;
-      
+
       // Remove from memory region
       memoryRegion.textures.delete(id);
       memoryRegion.used -= texture.size;
-      
+
       // Remove GPU texture
       const gpuTexture = this.textureCache.get(id);
       if (gpuTexture) {
         gpuTexture.destroy();
         this.textureCache.delete(id);
       }
-      
+
       // Remove WebGL texture
       const webglTexture = this.webglTextures.get(id);
       if (webglTexture && this.gl) {
@@ -516,14 +515,14 @@ export class WebGPUTextureStreamer {
         break;
       }
     }
-    
+
     return this.textureCache.get(id) || this.webglTextures.get(id) || null;
   }
 
   getMemoryStats() {
     const stats = {
-      total: MEMORY_CONSTRAINTS.TOTAL,
-      regions: Record<string, any> as Record<string, { used: number; size: number; utilization: number; textureCount: number }>,
+      total: MEMORY_CONSTRAINTS.TOTAL,;
+        regions: {} as Record<string, { used: number; size: number; utilization: number; textureCount: number }>,
       textures: 0,
       isWebGPU: !!this.device,
       isWebGL2: !!this.gl
@@ -535,11 +534,11 @@ export class WebGPUTextureStreamer {
     for (const [name, region] of this.memoryRegions) {
       stats.regions[name] = {
         used: region.used,
-        size: region.size,
+        size: region.size,;
         utilization: region.used / region.size,
         textureCount: region.textures.size
       };
-      
+
       totalUsed += region.used;
       totalTextures += region.textures.size;
     }

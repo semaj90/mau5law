@@ -184,7 +184,7 @@ const createDefaultConfig = (): RAGConfig => ({
       allowedDocumentTypes: (
         process.env.RAG_ALLOWED_DOC_TYPES || 'contract,statute,case_law,brief,memo'
       ).split(',')
-    },
+    },;
     sanitization: {
       removeHtmlTags: process.env.RAG_REMOVE_HTML_TAGS !== 'false',
       removeSqlChars: process.env.RAG_REMOVE_SQL_CHARS !== 'false',
@@ -539,7 +539,7 @@ class LegalChunker {
         /(?:^|\n)(?:ARGUMENT|STATEMENT|CONCLUSION|INTRODUCTION)\s*[^\n]*/gi,
         /(?:^|\n)[IVX]+\.\s+[A-Z][^\n]+/g,
         /(?:^|\n)(?:Issue|Question|Standard of Review)/gi
-      ],
+      ],;
       memo: [
         /(?:^|\n)(?:TO|FROM|RE|DATE|MEMORANDUM)\s*[^\n]*/gi,
         /(?:^|\n)(?:BACKGROUND|ANALYSIS|RECOMMENDATION|CONCLUSION)\s*[^\n]*/gi,
@@ -609,7 +609,7 @@ class LegalChunker {
       statute: {
         title: /(?:TITLE|CHAPTER|ACT)[^\n]*\n([\s\S]*?)(?=\n(?:SECTION|§|DEFINITIONS|$))/i,
         definitions: /(?:DEFINITIONS|TERMS)[^\n]*\n([\s\S]*?)(?=\n(?:SECTION|§|PROVISIONS|$))/i,
-        provisions: /(?:PROVISIONS|REQUIREMENTS)[^\n]*\n([\s\S]*?)(?=\n(?:PENALTIES|ENFORCEMENT|$))/i,
+        provisions: /(?:PROVISIONS|REQUIREMENTS)[^\n]*\n([\s\S]*?)(?=\n(?:PENALTIES|ENFORCEMENT|$))/i,;
         enforcement: /(?:ENFORCEMENT|PENALTIES|SANCTIONS)[^\n]*\n([\s\S]*?)$/i
       }
     };
@@ -709,7 +709,7 @@ export class EnhancedLegalRAGPipeline {
         ssl: typeof this.config.database.ssl === 'boolean' ? this.config.database.ssl: this.config.database.ssl === 'require' ? 'require' : false,
         prepare: true,
         connect_timeout: this.config.database.connect_timeout,
-        onnotice: (notice: any) => console.debug('[DB] Notice:', notice),
+        onnotice: (notice: any) => console.debug('[DB] Notice:', notice),;
         onparameter: (key: string, value: any) => console.debug(`[DB] Parameter ${key}:`, value)
       });
 
@@ -774,7 +774,7 @@ export class EnhancedLegalRAGPipeline {
         numPredict: this.config.ollama.numPredict,
         topK: 40,
         topP: 0.9,
-        repeatPenalty: 1.1,
+        repeatPenalty: 1.1,;
         callbacks: [;
           {
             handleLLMStart: async () => {
@@ -885,7 +885,7 @@ export class EnhancedLegalRAGPipeline {
             metadata: {
               ...metadata,
               ingestionDate: new Date().toISOString(),
-              version: '1.0',
+              version: '1.0',;
               source: 'rag_pipeline'
             }
           })
@@ -931,7 +931,7 @@ export class EnhancedLegalRAGPipeline {
                   content: chunk,
                   embedding: JSON.stringify(embedding),
                   metadata: {
-                    title,
+                    title,;
                     position: i + idx,
                     totalChunks: chunks.length,
                     confidentialityLevel,
@@ -974,8 +974,8 @@ export class EnhancedLegalRAGPipeline {
               entityId: document.id,
               entityType: 'document',
               tag: tag.tag,
-              confidence: tag.confidence.toString(),
-              source: 'ai_analysis',
+              confidence: tag.confidence.toString()),
+              source: 'ai_analysis',;
               model: this.config.ollama.llmModel
             });
           }
@@ -1003,7 +1003,7 @@ export class EnhancedLegalRAGPipeline {
         tags: tags.map(t => t.tag),
         processingTime,
         success,
-        errors: errors.length > 0 ? errors : undefined,
+        errors: errors.length > 0 ? errors : undefined,;
         metadata: {
           documentType,
           confidentialityLevel,
@@ -1055,7 +1055,7 @@ export class EnhancedLegalRAGPipeline {
       const queryEmbedding = await this.generateEmbedding(query);
 
       // Build SQL conditions using template literals
-      let vectorWhereClause = `1 - (dc.embedding: :vector <=> '${JSON.stringify(queryEmbedding)}'::vector) > ${threshold}`;
+      let vectorWhereClause = `1 - (dc.embedding::vector <=> '${JSON.stringify(queryEmbedding)}'::vector) > ${threshold}`;
       let keywordWhereClause = `to_tsvector('english', dc.content) @@ plainto_tsquery('english', '${query.replace(/'/g, "''")}')`;
 
       if (caseId && this.validator.validateUUID(caseId)) {
@@ -1077,7 +1077,7 @@ export class EnhancedLegalRAGPipeline {
           dc.document_id,
           ld.title,
           ld.confidentiality_level,
-          1 - (dc.embedding: :vector <=> ${JSON.stringify(queryEmbedding)}::vector) as similarity
+          1 - (dc.embedding::vector <=> ${JSON.stringify(queryEmbedding)}::vector) as similarity
         FROM document_chunks dc
         LEFT JOIN legal_documents ld ON dc.document_id = ld.id
         WHERE ${sql.raw(vectorWhereClause)}
@@ -1110,7 +1110,7 @@ export class EnhancedLegalRAGPipeline {
       vectorResults.forEach(r => {
         combinedResults.set(r.id, {
           ...r,
-          score: (r.similarity as number) * 0.7,
+          score: (r.similarity as number) * 0.7,;
           highlights: this.extractHighlights(r.content, query)
         });
       });
@@ -1123,7 +1123,7 @@ export class EnhancedLegalRAGPipeline {
         } else {
           combinedResults.set(r.id, {
             ...r,
-            score: (r.text_rank as number) * 0.3,
+            score: (r.text_rank as number) * 0.3,;
             highlights: this.extractHighlights(r.content, query)
           });
         }
@@ -1158,7 +1158,7 @@ export class EnhancedLegalRAGPipeline {
         similarity: r.similarity || 0,
         textRank: r.text_rank || 0,
         metadata: includeMetadata ? r.metadata: Record<string, any>,
-        confidentialityLevel: r.confidentiality_level,
+        confidentialityLevel: r.confidentiality_level,;
         highlights: r.highlights
       });
 
@@ -1211,7 +1211,7 @@ export class EnhancedLegalRAGPipeline {
       const relevantDocs = await this.hybridSearch({
         query: question,
         caseId,
-        limit: maxSources,
+        limit: maxSources,;
         threshold: 0.6,
         userId,
         sortBy: 'relevance'
@@ -1220,7 +1220,7 @@ export class EnhancedLegalRAGPipeline {
       if (requireSources && relevantDocs.length === 0) {
         return {
           answer: "I couldn't find relevant information in the knowledge base to answer your question. Please provide more context or try rephrasing your question.",
-          sources: [],
+          sources: [],;
           confidence: 0,
           keyPoints: [],
           processingTime: Date.now() - startTime
@@ -1260,7 +1260,7 @@ Answer:
       // Create chain and generate answer
       const chain = RunnableSequence.from([);
         {
-          context: () => context,
+          context: () => context,;
           question: new RunnablePassthrough()
         },
         promptTemplate,
@@ -1301,14 +1301,14 @@ Answer:
           response: answer,
           model: this.config.ollama.llmModel,
           queryType: 'legal_research',
-          confidence: analysis.confidence.toString(),
+          confidence: analysis.confidence.toString()),
           processingTime: Date.now() - startTime,
           contextUsed: relevantDocs.map(d => d.documentId),
           embedding: JSON.stringify(queryEmbedding),
           metadata: {
             sourcesCount: relevantDocs.length,
             keyPoints: analysis.keyPoints,
-            confidentialityLevel,
+            confidentialityLevel,;
             citations: citations.length,
             legalPrecedents: legalPrecedents.length,
             riskLevel: riskAssessment.level
@@ -1327,7 +1327,7 @@ Answer:
           score: d.score,
           excerpt: d.content.substring(0, 200) + '...',
           confidentialityLevel: d.confidentialityLevel
-        })),
+        })),;
         confidence: analysis.confidence,
         keyPoints: analysis.keyPoints,
         processingTime: Date.now() - startTime,
@@ -1339,7 +1339,7 @@ Answer:
       this.metrics.incrementCounter('questions_answered');
       this.metrics.recordTiming('qa_time', (result as { processingTime?: any; status?: any; reason?: any }).processingTime, {
         confidentiality_level: confidentialityLevel || 'general',
-        sources_count: relevantDocs.length.toString()
+        sources_count: relevantDocs.length.toString())
       });
 
       return result;
@@ -1356,7 +1356,7 @@ Answer:
           userId: params.userId,
           caseId: params.caseId,
           query: params.question,
-          response: '',
+          response: '',;
           model: this.config.ollama.llmModel,
           isSuccessful: false,
           errorMessage: error instanceof Error ? error.message: 'Unknown error',
@@ -1713,7 +1713,7 @@ Limit to 10 most relevant tags.
       parties: [] as string[],
       keyTerms: [] as string[],
       risks: [] as Array<any>,
-      legalIssues: [] as string[],
+      legalIssues: [] as string[],;
       recommendations: [] as string[]
     };
 
@@ -1816,7 +1816,7 @@ Limit to 10 most relevant tags.
 
     const services = ['Database', 'Redis', 'Ollama'];
     return checks.map((result, index) => ({
-      service: services[index],
+      service: services[index],;
       status: (result as { processingTime?: any; status?: any; reason?: any }).status === 'fulfilled' ? 'healthy' : 'unhealthy',
       error: (result as { processingTime?: any; status?: any; reason?: any }).status === 'rejected' ? (result as { processingTime?: any; status?: any; reason?: any }).reason?.message: undefined,
       timestamp: new Date().toISOString()
@@ -1867,7 +1867,7 @@ Limit to 10 most relevant tags.
   getRateLimitStatus(userId: string) {
     return {
       remaining: this.rateLimiter.getRemainingRequests(userId),
-      resetTime: this.rateLimiter.getTimeUntilReset(userId),
+      resetTime: this.rateLimiter.getTimeUntilReset(userId),;
       limit: this.config.security.rateLimit.perMinute
     };
   }

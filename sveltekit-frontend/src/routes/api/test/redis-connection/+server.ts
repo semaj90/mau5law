@@ -3,19 +3,19 @@
  * Simple endpoint to test and debug Redis connectivity
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 export const GET: RequestHandler = async () => {
-  let redis: any = null;
+  let redis: any = null
 
   try {
     // Test basic Redis connection
-    const { createRedisInstance } = await import('$lib/server/redis');
+    const { createRedisInstance } = await import('$lib/server/redis')
     try {
-      redis = createRedisInstance();
+      redis = createRedisInstance()
     } catch {
-      const RedisCtor = (await import('ioredis')).default;
+      const RedisCtor = (await import('ioredis')).default
       redis = new RedisCtor({
         host: 'localhost',
         port: 6379,
@@ -23,37 +23,37 @@ export const GET: RequestHandler = async () => {
         retryDelayOnFailover: 100,
         maxRetriesPerRequest: 3,
         lazyConnect: false
-      });
+      })
     }
 
-    // Wait for connection to be ready;
+    // Wait for connection to be ready
     await new Promise((resolve, reject) => {
-      redis.on('ready', resolve);
-      redis.on('error', reject);
-      setTimeout(() => reject(new Error('Connection timeout')), 5000);
-    });
+      redis.on('ready', resolve)
+      redis.on('error', reject)
+      setTimeout(() => reject(new Error('Connection timeout')), 5000)
+    })
 
     // Test basic operations
-    await redis.set('test:connection', 'working');
-    const testValue = await redis.get('test:connection');
-    await redis.del('test:connection');
+    await redis.set('test:connection', 'working')
+    const testValue = await redis.get('test:connection')
+    await redis.del('test:connection')
 
     // Test Redis Stack JSON operations
-    let jsonSupported = false;
+    let jsonSupported = false
     try {
-      await redis.call('JSON.SET', 'test:json', '$', '{"status": "working"}');
-      await redis.call('JSON.GET', 'test:json');
-      await redis.del('test:json');
-      jsonSupported = true;
+      await redis.call('JSON.SET', 'test:json', '$', '{"status": "working"}')
+      await redis.call('JSON.GET', 'test:json')
+      await redis.del('test:json')
+      jsonSupported = true
     } catch (error) {
-      console.warn('Redis JSON module not available:', error);
+      console.warn('Redis JSON module not available:', error)
     }
 
     // Get Redis info
-    const info = await redis.info('server');
+    const info = await redis.info('server')
 
     if (redis) {
-      await redis.quit();
+      await redis.quit()
     }
 
     return json({
@@ -65,16 +65,16 @@ export const GET: RequestHandler = async () => {
         jsonSupported
       },
       timestamp: new Date().toISOString()
-    });
+    })
   } catch (error: any) {
     if (redis) {
       try {
-        await redis.quit();
+        await redis.quit()
       } catch (quitError) {
         // Ignore quit errors during cleanup
       }
     }
-    return json();
+    return json()
       {
         success: false,
         error: error.message,
@@ -88,6 +88,6 @@ export const GET: RequestHandler = async () => {
         timestamp: new Date().toISOString()
       },
       { status: 500 }
-    );
+    )
   }
-};
+}

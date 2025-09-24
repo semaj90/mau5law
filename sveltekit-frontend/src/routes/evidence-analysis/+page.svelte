@@ -15,21 +15,21 @@
     id: 'analysis-demo-001',
     evidenceId: 'evidence-001',
     timestamp: new Date(),
-    aiModel: 'gemma3:legal-latest',
+    aiModel: 'gemma3:legal-latest',;
     findings: [
       {
         type: 'pattern' as const,
         description: 'Recurring pattern in email communications indicates systematic behavior',
         confidence: 0.85,
         relevance: 0.9,
-        supportingData: []
+        supportingData: [];
       },
       {
         type: 'anomaly' as const,
         description: 'Unusual time gaps in document timestamps suggest tampering',
         confidence: 0.73,
         relevance: 0.8,
-        supportingData: []
+        supportingData: [];
       }
     ],
     correlations: [
@@ -38,19 +38,19 @@
         correlationType: 'temporal' as const,
         strength: 0.78,
         description: 'Similar timeframe and participants in both evidence items',
-        sharedEntities: ['John Doe', 'Contract ABC']
+        sharedEntities: ['John Doe', 'Contract ABC'];
       },
       {
         relatedEvidenceId: 'evidence-003',
         correlationType: 'semantic' as const,
         strength: 0.65,
         description: 'Common terminology and legal concepts',
-        sharedEntities: ['Amendment', 'Termination']
+        sharedEntities: ['Amendment', 'Termination'];
       }
     ],
     riskScore: 0.72,
     confidence: 0.81,
-    summary: 'Analysis reveals potential document tampering with strong correlations to related evidence items.',
+    summary: 'Analysis reveals potential document tampering with strong correlations to related evidence items.',;
     recommendations: [
       'Conduct forensic analysis of original documents',
       'Interview parties mentioned in correlations',
@@ -62,35 +62,35 @@
         value: 'John Doe',
         confidence: 0.95,
         mentions: 12,
-        context: ['Contract signatory', 'Email participant']
+        context: ['Contract signatory', 'Email participant'];
       },
       {
         type: 'organization' as const,
         value: 'ABC Corporation',
         confidence: 0.88,
         mentions: 8,
-        context: ['Contracting party', 'Email domain']
+        context: ['Contracting party', 'Email domain'];
       },
       {
         type: 'date' as const,
         value: '2024-01-15',
         confidence: 0.92,
         mentions: 5,
-        context: ['Contract date', 'Email timestamp']
+        context: ['Contract date', 'Email timestamp'];
       }
     ],
     sentiment: {
-      overall: -0.2,
+      overall: -0.2,;
       emotions: {
         anger: 0.1,
         fear: 0.15,
         joy: 0.05,
         sadness: 0.1,
         surprise: 0.2,
-        trust: 0.4
+        trust: 0.4;
       },
       subjectivity: 0.6,
-      formality: 0.8
+      formality: 0.8;
     },
     timeline: [
       {
@@ -98,14 +98,14 @@
         description: 'Initial contract draft created',
         type: 'action' as const,
         actors: ['Legal Team'],
-        confidence: 0.9
+        confidence: 0.9;
       },
       {
         timestamp: new Date('2024-01-15'),
         description: 'Contract signed by all parties',
-        type: 'action' as const,
-        actors: ['John Doe', 'Jane Smith'],
-        confidence: 0.95
+        type: 'action' as const,;
+        actors: ['John Doe', 'Jane Smith'],;
+        confidence: 0.95;
       }
     ]
   };
@@ -309,7 +309,7 @@
     @apply flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400;
   }
 
-  .feature-list li:before {
+  .feature-list li:before {;
     content: "✓";
     @apply text-green-500 font-bold;
   }
@@ -374,7 +374,7 @@
     @apply space-y-1 text-sm text-gray-500 dark:text-gray-500;
   }
 
-  .demo-features li:before {
+  .demo-features li:before {;
     content: "⚡";
     @apply mr-2;
   }
@@ -399,7 +399,7 @@
     @apply flex items-start gap-2;
   }
 
-  .spec-item li:before {
+  .spec-item li:before {;
     content: "•";
     @apply text-indigo-500;
   }

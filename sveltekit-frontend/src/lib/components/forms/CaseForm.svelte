@@ -7,7 +7,7 @@
   import { zodClient } from 'sveltekit-superforms/adapters';
   import {   } from "svelte";
 
-  
+
 
   interface Props {
     initialData?: SuperValidated<CaseForm> | Partial<CaseForm>;
@@ -124,7 +124,7 @@
           <input
             type="text"
             id="caseNumber"
-            name="caseNumber"
+            name="caseNumber";
             bind:value={$form.caseNumber}
             class="space-y-4"
             placeholder="e.g., CAS-2024-123456"
@@ -362,10 +362,10 @@
 <style>
   /* @unocss-include */
   /* Custom validation styles */
-  .legal-input: invalid {
+  .legal-input:invalid {
     border-color: #ef4444;
 }
-  .legal-input: valid {
+  .legal-input:valid {
     border-color: #10b981;
 }
 </style>

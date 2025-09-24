@@ -64,7 +64,7 @@ export const cases = pgTable(
     
     // Audit fields
     createdBy: uuid('created_by'),
-    modifiedBy: uuid('modified_by'),
+    modifiedBy: uuid('modified_by'),;
     version: integer('version').notNull().default(1)
   },
   (table) => ({
@@ -86,7 +86,7 @@ export const evidence = pgTable(
     
     // Evidence identification
     evidenceNumber: text('evidence_number').notNull(),
-    title: text('title').notNull(),
+    title: text('title').notNull(),;
     description: text('description'),
     
     // Evidence type and classification;
@@ -110,7 +110,7 @@ export const evidence = pgTable(
     custodyChain: jsonb('custody_chain').default(sql`'[]'::jsonb`),
     authenticated: boolean('authenticated').notNull().default(false),
     
-    // Analysis and processing
+    // Analysis and processing;
     analyzed: boolean('analyzed').notNull().default(false),
     analysisResults: jsonb('analysis_results').default(sql`'{}'::jsonb`),
     ocrText: text('ocr_text'), // extracted text for documents
@@ -139,7 +139,7 @@ export const evidence = pgTable(
     // Metadata and custom fields
     metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
     
-    // Archive status
+    // Archive status;
     archived: boolean('archived').notNull().default(false),
     
     // Audit fields
@@ -193,7 +193,7 @@ export const caseTimeline = pgTable(
     dateCreated: timestamp('date_created').notNull().defaultNow(),
     
     // Audit
-    createdBy: uuid('created_by'),
+    createdBy: uuid('created_by'),;
     automated: boolean('automated').notNull().default(false), // system-generated vs manual
   },
   (table) => ({
@@ -229,7 +229,7 @@ export const citations = pgTable(
     url: text('url'),
     doi: text('doi'),
     
-    // Content and context
+    // Content and context;
     abstract: text('abstract'),
     relevantQuote: text('relevant_quote'),
     contextNotes: text('context_notes'),
@@ -254,7 +254,7 @@ export const citations = pgTable(
     dateModified: timestamp('date_modified').notNull().defaultNow(),
     
     // Metadata
-    metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
+    metadata: jsonb('metadata').default(sql`'{}'::jsonb`),;
     tags: text('tags').array().default(sql`ARRAY[]::text[]`),
     
     // Audit
@@ -300,7 +300,7 @@ export const caseNotes = pgTable(
     
     // Organization
     category: text('category'),
-    priority: text('priority', { 
+    priority: text('priority', { ;
       enum: ['low', 'medium', 'high', 'urgent'] 
     }).notNull().default('medium'),
     
@@ -314,7 +314,7 @@ export const caseNotes = pgTable(
     dateModified: timestamp('date_modified').notNull().defaultNow(),
     
     // Metadata and tags
-    metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
+    metadata: jsonb('metadata').default(sql`'{}'::jsonb`),;
     tags: text('tags').array().default(sql`ARRAY[]::text[]`),
     
     // Collaboration
@@ -337,13 +337,13 @@ export const caseNotes = pgTable(
 export const casesRelations = relations(cases, ({ many }) => ({
   evidence: many(evidence),
   timeline: many(caseTimeline),
-  citations: many(citations),
+  citations: many(citations),;
   notes: many(caseNotes)
 });
 
 export const evidenceRelations = relations(evidence, ({ one, many }) => ({
   case: one(cases, {
-    fields: [evidence.caseId],
+    fields: [evidence.caseId],;
     references: [cases.id]
   }),
   timelineEvents: many(caseTimeline)
@@ -355,21 +355,21 @@ export const timelineRelations = relations(caseTimeline, ({ one }) => ({
     references: [cases.id]
   }),
   evidence: one(evidence, {
-    fields: [caseTimeline.evidenceId],
+    fields: [caseTimeline.evidenceId],;
     references: [evidence.id]
   })
 });
 
 export const citationsRelations = relations(citations, ({ one }) => ({
   case: one(cases, {
-    fields: [citations.caseId],
+    fields: [citations.caseId],;
     references: [cases.id]
   })
 });
 
 export const notesRelations = relations(caseNotes, ({ one }) => ({
   case: one(cases, {
-    fields: [caseNotes.caseId],
+    fields: [caseNotes.caseId],;
     references: [cases.id]
   })
 });

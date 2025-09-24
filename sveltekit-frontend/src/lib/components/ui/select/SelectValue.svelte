@@ -10,16 +10,16 @@
     children?: unknown;
   }
   let { children, placeholder,
-    class: class_ = ""
+    class: class_ = "";
   }: Props = $props();
 
   const context =
     getContext<SelectContext>("select") ||
     ({
-      selected: writable(null),
+      selected: writable(null),;
       open: writable(false),
       onSelect: () => ,
-      onToggle: () => ,
+      onToggle: () => ,;
     } as SelectContext);
   const { selected } = context;
 </script>

@@ -102,7 +102,7 @@ export interface LegalDocumentPhysics {
     jurisdictionBonds: string[];         // Same jurisdiction documents
     temporalProximity: string[];         // Similar time period
   };
-  forces: {                             // Physics forces acting on document
+  forces: {                             // Physics forces acting on document;
     gravity: [number, number, number];   // Attraction to related docs
     repulsion: [number, number, number]; // Push from conflicting docs
     jurisdiction: [number, number, number]; // Geographic constraints
@@ -311,7 +311,7 @@ export class PhysicsAwareLegalGPUOrchestrator {
       };
       
       this.cudaBridgeWorker!.postMessage({
-        type: 'initialize',
+        type: 'initialize',;
         config: this.config.cudaBridge
       });
     });
@@ -340,7 +340,7 @@ export class PhysicsAwareLegalGPUOrchestrator {
       variant: 'cyberpunk',
       glowIntensity: 0.8,
       antiAliasing: this.config.visualQuality.antiAliasing,
-      shaderEnhancements: {
+      shaderEnhancements: {;
         supersample: true,
         edgeSmoothing: true,
         gradientSmoothing: true,
@@ -364,7 +364,7 @@ export class PhysicsAwareLegalGPUOrchestrator {
     };
     
     this.performanceMonitor.postMessage({
-      type: 'start_monitoring',
+      type: 'start_monitoring',;
       interval: 1000 // Update every second
     });
   }
@@ -395,7 +395,7 @@ export class PhysicsAwareLegalGPUOrchestrator {
       forces: {
         gravity: [0, 0, 0],
         repulsion: [0, 0, 0],
-        jurisdiction: [0, 0, 0],
+        jurisdiction: [0, 0, 0],;
         temporal: [0, 0, 0]
       }
     };
@@ -409,7 +409,7 @@ export class PhysicsAwareLegalGPUOrchestrator {
       id: physics.documentId,
       vertices: this.generateVerticesFromPhysics(physics),
       textures: await this.generateLegalTextures(analysisResult),
-      antiAliasing: this.config.visualQuality.antiAliasing,
+      antiAliasing: this.config.visualQuality.antiAliasing,;
       upscaled: this.config.visualQuality.rtxTensorUpscaling
     };
     
@@ -458,7 +458,7 @@ export class PhysicsAwareLegalGPUOrchestrator {
         antiAliasing: {
           type: 'smaa',
           quality: 'ultra',
-          samples: 8,
+          samples: 8,;
           enabled: true,
           edgeThreshold: 0.1,
           subpixelQuality: 1.0
@@ -531,7 +531,7 @@ export class PhysicsAwareLegalGPUOrchestrator {
     // Generate legal document textures for neural sprites;
     return {
       diffuse: 'legal_document_texture',
-      normal: 'legal_structure_normal',
+      normal: 'legal_structure_normal',;
       metallic: 'legal_importance_metallic'
     };
   }

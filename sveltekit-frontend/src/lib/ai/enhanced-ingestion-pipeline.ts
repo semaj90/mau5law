@@ -13,7 +13,7 @@ const neo4j = null as any;
 // import { errorHandler } from "$lib/utils/errorHandler";
 // Fallback error handler for when the module is not available;
 const errorHandler = {
-  system: (message: string, data?: unknown) => console.error(`[SYSTEM] ${message}`, data),
+  system: (message: string, data?: unknown) => console.error(`[SYSTEM] ${message}`, data),;
   analysis: (message: string, data?: unknown) => console.error(`[ANALYSIS] ${message}`, data)
 };
 import type { Document as LangChainDocumentType } from "@langchain/core/documents";
@@ -33,7 +33,7 @@ export interface MultimodalEvidence {
   id: string;
   type: "image" | "video" | "audio" | "document" | "forensic";
   file_path: string;
-  metadata: {
+  metadata: {;
     filename: string;
     size: number;
     mime_type: string;
@@ -61,7 +61,7 @@ export interface MultimodalEvidence {
 export interface AnchorPoint {
   id: string;
   type: "object" | "text" | "audio_segment" | "timeline_event" | "custom";
-  coordinates: {
+  coordinates: {;
     x: number; // Normalized 0-1
     y: number; // Normalized 0-1
     width?: number;
@@ -113,7 +113,7 @@ export interface CopilotArchitectureContext {
 export interface IngestionDocument {
   id: string;
   content: string;
-  metadata: {
+  metadata: {;
     filename: string;
     case_id?: string;
     evidence_type: "digital" | "physical" | "testimony" | "forensic";
@@ -161,7 +161,7 @@ export class EnhancedIngestionPipeline {
   private isProcessing = false;
   private stats: IngestionStats = {
     total_processed: 0,
-    successful: 0,
+    successful: 0,;
     failed: 0,
     avg_processing_time: 0,
     cluster_distribution: Record<string, any>,
@@ -243,7 +243,7 @@ export class EnhancedIngestionPipeline {
       if (!exists) {
         await this.qdrantClient.createCollection(collectionName, {
           vectors: {
-            size: 384, // Default embedding size
+            size: 384, // Default embedding size;
             distance: "Cosine"
           }
         });
@@ -314,7 +314,7 @@ export class EnhancedIngestionPipeline {
   /**
    * Process image evidence: OCR, object detection, embedding, and storage
    */
-  private async processImageEvidence(
+  private async processImageEvidence(;
     evidence: MultimodalEvidence;
   ): Promise<DocumentEmbedding> {
     const extractedText = evidence.extracted_content.text || "";
@@ -327,7 +327,7 @@ export class EnhancedIngestionPipeline {
         case_id: evidence.metadata.case_id,
         evidence_type: "image",
         legal_category: this.determineLegalCategory(evidence),
-        confidence: evidence.metadata.confidence_scores?.ocr || 0.8,
+        confidence: evidence.metadata.confidence_scores?.ocr || 0.8,;
         timestamp: Date.now()
       }
     };
@@ -338,7 +338,7 @@ export class EnhancedIngestionPipeline {
   /**
    * Process video evidence: scene analysis, timeline segmentation, embedding, and storage
    */
-  private async processVideoEvidence(
+  private async processVideoEvidence(;
     evidence: MultimodalEvidence;
   ): Promise<DocumentEmbedding> {
     const sceneSummary = evidence.extracted_content.scene_summary || "";
@@ -351,7 +351,7 @@ export class EnhancedIngestionPipeline {
         case_id: evidence.metadata.case_id,
         evidence_type: "video",
         legal_category: this.determineLegalCategory(evidence),
-        confidence: evidence.metadata.confidence_scores?.scene_analysis || 0.8,
+        confidence: evidence.metadata.confidence_scores?.scene_analysis || 0.8,;
         timestamp: Date.now()
       }
     };
@@ -362,7 +362,7 @@ export class EnhancedIngestionPipeline {
   /**
    * Process audio evidence: transcription, embedding, and storage
    */
-  private async processAudioEvidence(
+  private async processAudioEvidence(;
     evidence: MultimodalEvidence;
   ): Promise<DocumentEmbedding> {
     const transcription = evidence.extracted_content.transcription || "";
@@ -375,7 +375,7 @@ export class EnhancedIngestionPipeline {
         case_id: evidence.metadata.case_id,
         evidence_type: "audio",
         legal_category: this.determineLegalCategory(evidence),
-        confidence: 0.8,
+        confidence: 0.8,;
         timestamp: Date.now()
       }
     };
@@ -386,7 +386,7 @@ export class EnhancedIngestionPipeline {
   /**
    * Process document evidence: text extraction, embedding, and storage
    */
-  private async processDocumentEvidence(
+  private async processDocumentEvidence(;
     evidence: MultimodalEvidence;
   ): Promise<DocumentEmbedding> {
     const text = evidence.extracted_content.text || "";
@@ -399,7 +399,7 @@ export class EnhancedIngestionPipeline {
         case_id: evidence.metadata.case_id,
         evidence_type: "document",
         legal_category: this.determineLegalCategory(evidence),
-        confidence: 0.9,
+        confidence: 0.9,;
         timestamp: Date.now()
       }
     };
@@ -438,7 +438,7 @@ export class EnhancedIngestionPipeline {
           case_id: document.metadata.case_id,
           evidence_type: document.metadata.evidence_type,
           legal_category: document.metadata.legal_category,
-          confidence: extractedData.confidence,
+          confidence: extractedData.confidence,;
           timestamp: Date.now()
         }
       };
@@ -474,7 +474,7 @@ export class EnhancedIngestionPipeline {
       return result;
     } catch (error: any) {
       console.error(`❌ Failed to process document ${document.id}:`, error);
-      errorHandler.analysis(`Document processing failed: ${document.id}`, {
+      errorHandler.analysis(`Document processing failed: ${document.id}`, {;
         error: error.message
       });
       this.updateStats(
@@ -599,7 +599,7 @@ export class EnhancedIngestionPipeline {
 
         if (filters.evidence_type) {
           must.push({
-            key: "evidence_type",
+            key: "evidence_type",;
             match: { value: filters.evidence_type }
           });
         }
@@ -610,7 +610,7 @@ export class EnhancedIngestionPipeline {
 
         if (filters.confidence_threshold) {
           must.push({
-            key: "confidence",
+            key: "confidence",;
             range: { gte: filters.confidence_threshold }
           });
         }
@@ -623,7 +623,7 @@ export class EnhancedIngestionPipeline {
       // Search in Qdrant;
       const searchResults = await this.qdrantClient.search("legal_documents", {
         vector: queryEmbedding,
-        limit,
+        limit,;
         filter: Object.keys(qdrantFilter).length > 0 ? qdrantFilter : undefined,
         with_payload: true
       });
@@ -781,7 +781,7 @@ export class EnhancedIngestionPipeline {
     return {
       entities,
       keywords: foundKeywords,
-      confidence: Math.min(foundKeywords.length / 10, 1.0),
+      confidence: Math.min(foundKeywords.length / 10, 1.0),;
       language: "en"
     };
   }
@@ -813,13 +813,13 @@ export class EnhancedIngestionPipeline {
     // Store in Qdrant for vector similarity search;
     try {
       await this.qdrantClient.upsert("legal_documents", {
-        wait: true,
+        wait: true,;
         points: [);
           {
             id: document.id,
             vector: document.embedding,
             payload: {
-              content: document.content,
+              content: document.content,;
               metadata: document.metadata
             }
           }
@@ -845,7 +845,7 @@ export class EnhancedIngestionPipeline {
   private updateStats(
     evidenceType: string,
     cluster: number,
-    processingTime: number,
+    processingTime: number,;
     success: boolean;
   ): void {
     this.stats.total_processed++;
@@ -916,7 +916,7 @@ export class EnhancedIngestionPipeline {
           case_id: evidence.metadata.case_id,
           evidence_type: mappedEvidenceType,
           legal_category: this.determineLegalCategory(evidence),
-          upload_timestamp: Date.now(),
+          upload_timestamp: Date.now(),;
           filename: evidence.metadata.filename,
           file_size: evidence.metadata.size,
           mime_type: evidence.metadata.mime_type,

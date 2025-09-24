@@ -117,7 +117,7 @@ class ParallelCacheOrchestrator {
       
       return {
         success: true,
-        data: allResults.map(r => r.data).filter(Boolean),
+        data: allResults.map(r => r.data).filter(Boolean),;
         metrics: { ...this.executionMetrics, totalLatency },
         cacheResults: allResults
       };
@@ -127,7 +127,7 @@ class ParallelCacheOrchestrator {
       this.recordCircuitBreakerFailure(request.type);
       
       return {
-        success: false,
+        success: false,;
         metrics: { ...this.executionMetrics, totalLatency: performance.now() - startTime },
         cacheResults: []
       };
@@ -138,7 +138,7 @@ class ParallelCacheOrchestrator {
    * Group 0: Memory + GPU operations (300ms target)
    */
   private async executeGroup0Operations(
-    request: ParallelCacheRequest,
+    request: ParallelCacheRequest,;
     resources: CacheResourceAllocation;
   ): Promise<Array<any> {
     const operations = [
@@ -173,7 +173,7 @@ class ParallelCacheOrchestrator {
    * Group 1: Network + Storage operations (200ms target)
    */
   private async executeGroup1Operations(
-    request: ParallelCacheRequest,
+    request: ParallelCacheRequest,;
     resources: CacheResourceAllocation,
     group0Results: any[];
   ): Promise<Array<any> {
@@ -233,7 +233,7 @@ class ParallelCacheOrchestrator {
    * Batch memory lookups across L1/L2 tiers
    */
   private async batchMemoryLookup(
-    keys: string[],
+    keys: string[],;
     tier: 'l1' | 'l2';
   ): Promise<Array<any> {
     const cache = tier === 'l1' ? this.l1Memory: this.l2Memory;
@@ -279,7 +279,7 @@ class ParallelCacheOrchestrator {
         const searchResults = await shaderCacheManager.searchShaders({
           text: key,
           operation: request.type,
-          shaderType: 'webgpu',
+          shaderType: 'webgpu',;
           limit: 1
         });
 
@@ -287,7 +287,7 @@ class ParallelCacheOrchestrator {
           results.push({
             key,
             hit: true,
-            source: 'gpu_texture',
+            source: 'gpu_texture',;
             data: searchResults[0]
           });
           this.executionMetrics.layerPerformance.gpuTextureHits++;
@@ -312,7 +312,7 @@ class ParallelCacheOrchestrator {
       
       for (const key of request.keys) {
         const cacheResult = await (cacheActor as any).send({ 
-          type: 'get', 
+          type: 'get', ;
           input: { operation: 'get', key, semanticQuery: key } 
         });
 
@@ -320,7 +320,7 @@ class ParallelCacheOrchestrator {
           results.push({
             key,
             hit: true,
-            source: 'xstate_semantic',
+            source: 'xstate_semantic',;
             data: cacheResult.data
           });
         }
@@ -359,7 +359,7 @@ class ParallelCacheOrchestrator {
         results.push({
           key,
           hit: true,
-          source: 'rag_cached_embedding',
+          source: 'rag_cached_embedding',;
           data: { ragResults: `RAG results for ${key} using cached embeddings` }
         });
       }
@@ -381,7 +381,7 @@ class ParallelCacheOrchestrator {
         const data = await this.l3Storage.get(key));
         return {
           key,
-          hit: data !== undefined,
+          hit: data !== undefined,;
           source: 'l3_storage',
           data
         };
@@ -405,7 +405,7 @@ class ParallelCacheOrchestrator {
           const data = await getCache(key));
           return {
             key,
-            hit: data !== null,
+            hit: data !== null,;
             source: 'server_cache',
             data
           };
@@ -423,7 +423,7 @@ class ParallelCacheOrchestrator {
    */
   async storeParallel(
     key: string,
-    data: any,
+    data: any,;
     options: {
       tier?: 'l1' | 'l2' | 'l3' | 'all';
       ttl?: number;

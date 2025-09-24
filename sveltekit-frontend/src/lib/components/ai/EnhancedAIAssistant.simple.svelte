@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once;
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <!-- Simplified Enhanced AI Assistant -->
@@ -22,7 +22,7 @@ https://svelte.dev/e/props_duplicate -->
   let { showReferences = $bindable()  }: { showReferences = $bindable() : any } = $props(); // true;
   export const enableVoiceInput = false;
   ;
-  // TODO: Replace createEventDispatcher with callback props in Svelte 5
+
 
   // State
   let query = $state("");
@@ -51,7 +51,7 @@ https://svelte.dev/e/props_duplicate -->
     // Mock AI response
     setTimeout(() => {
       const aiResponse = {
-        role: "assistant",
+        role: "assistant",;
         content: `Based on the case information provided, here are my findings regarding "${userMessage.content}":
 
   This appears to be a question about legal precedent and case law. The relevant statutes and regulations would need to be analyzed in the context of your specific jurisdiction.
@@ -62,17 +62,17 @@ https://svelte.dev/e/props_duplicate -->
   3. Jurisdictional variations
   4. Current regulatory environment
 
-  Would you like me to elaborate on any of these aspects?`,
+  Would you like me to elaborate on any of these aspects?`,;
         references: [
           {
             title: "Smith v. Jones",
             citation: "123 F.3d 456 (2023)",
-            relevance: 0.9,
+            relevance: 0.9,;
           },
           {
-            title: "42 U.S.C. § 1983",
-            citation: "Federal Civil Rights Statute",
-            relevance: 0.8,
+            title: "42 U.S.C. § 1983",;
+            citation: "Federal Civil Rights Statute",;
+            relevance: 0.8,;
           },
         ],
       };
@@ -235,7 +235,7 @@ https://svelte.dev/e/props_duplicate -->
             id="max-results"
             type="number"
             min="1"
-            max="20"
+            max="20";
             bind:value={maxResults}
           />
         </div>

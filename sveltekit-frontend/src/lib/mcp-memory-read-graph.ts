@@ -18,7 +18,7 @@ export interface GraphNode {
 
 export interface GraphReadResponse {
   nodes: GraphNode[];
-  edges: {
+  edges: {;
     from: string;
     to: string;
     type: 'declares' | 'uses' | 'imports' | 'exports' | 'duplicates';
@@ -41,7 +41,7 @@ export async function mcpMemory2ReadGraph(
   if (nodeType) params.append('nodeType', nodeType);
   
   const response = await fetch(`/api/mcp/memory2/read-graph?${params.toString()}`, {
-    method: "GET",
+    method: "GET",;
     headers: { "Content-Type": "application/json" }
   });
   
@@ -83,7 +83,7 @@ export async function analyzeComponentStructure(componentName: string): Promise<
   return {
     component: componentNode,
     variables: relatedNodes.filter(n => n.type === 'variable'),
-    props: relatedNodes.filter(n => n.type === 'prop'),
+    props: relatedNodes.filter(n => n.type === 'prop'),;
     duplicates: relatedNodes.filter(n => (n.duplicateCount || 0) > 1)
   };
 }

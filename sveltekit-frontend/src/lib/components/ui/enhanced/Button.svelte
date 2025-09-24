@@ -20,7 +20,7 @@
   		children,
   		class: className = '',
   		disabled,
-  		...props
+  		...props;
   	}: Props = $props();
 
   	let isDisabled = $derived(disabled || loading);

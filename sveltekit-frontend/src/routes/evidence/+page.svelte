@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -14,7 +14,7 @@ https://svelte.dev/e/js_parse_error -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import AdvancedFileUpload from "$lib/components/upload/AdvancedFileUpload.svelte";
   import ThinkingStyleToggle from "$lib/components/ai/ThinkingStyleToggle.svelte";
@@ -74,15 +74,15 @@ https://svelte.dev/e/js_parse_error -->
 
   // State management
   let validationModal = $state({
-    open: false,
+    open: false,;
     evidence: null as Evidence | null,
-    aiEvent: null as any,
+    aiEvent: null as any,;
   });
   let analysisModal = $state({
     open: false,
-    evidence: null as Evidence | null,
-    result: null as any,
-    loading: false
+    evidence: null as Evidence | null,;
+    result: null as any,;
+    loading: false;
   });
   let searchQuery = $state("");
   let showFilters = $state(false);
@@ -233,22 +233,22 @@ https://svelte.dev/e/js_parse_error -->
 
       analysisModal = {
         open: true,
-        evidence,
-        result: analysis,
-        loading: false
+        evidence,;
+        result: analysis,;
+        loading: false;
       };
 
       notifications.add({
-        type: "success",
-        title: `Evidence Analysis Complete`,
+        type: "success",;
+        title: `Evidence Analysis Complete`,;
         message: `${thinkingStyleEnabled ? 'Detailed thinking' : 'Quick'} analysis completed for ${evidence.title}`,
       });
 
     } catch (error) {
       console.error('Evidence analysis failed:', error);
       notifications.add({
-        type: "error",
-        title: "Analysis Failed",
+        type: "error",;
+        title: "Analysis Failed",;
         message: `Failed to analyze evidence: ${error instanceof Error ? error.message: 'Unknown error'}`,
       });
     } finally {
@@ -260,9 +260,9 @@ https://svelte.dev/e/js_parse_error -->
   async function bulkAnalyzeEvidence() {
     if (selectedEvidence.size === 0) {
       notifications.add({
-        type: "warning",
-        title: "No Evidence Selected",
-        message: "Please select evidence items to analyze.",
+        type: "warning",;
+        title: "No Evidence Selected",;
+        message: "Please select evidence items to analyze.",;
       });
       return;
     }
@@ -288,8 +288,8 @@ https://svelte.dev/e/js_parse_error -->
       }
 
       notifications.add({
-        type: successCount > 0 ? "success" : "error",
-        title: "Bulk Analysis Complete",
+        type: successCount > 0 ? "success" : "error",;
+        title: "Bulk Analysis Complete",;
         message: `${successCount} evidence items analyzed successfully${failureCount > 0 ? `, ${failureCount} failed` : ''}.`,
       });
 
@@ -309,20 +309,20 @@ https://svelte.dev/e/js_parse_error -->
     thinkingStyleEnabled = event.detail.enabled;
 
     notifications.add({
-      type: "info",
-      title: "Analysis Mode Changed",
+      type: "info",;
+      title: "Analysis Mode Changed",;
       message: thinkingStyleEnabled
         ? "🧠 Thinking Style enabled - detailed reasoning will be shown"
-        : "⚡ Quick Mode enabled - concise analysis results",
+        : "⚡ Quick Mode enabled - concise analysis results",;
     });
   }
 
   function closeAnalysisModal() {
     analysisModal = {
       open: false,
-      evidence: null,
-      result: null,
-      loading: false
+      evidence: null,;
+      result: null,;
+      loading: false;
     };
   }
 
@@ -401,8 +401,8 @@ https://svelte.dev/e/js_parse_error -->
             evidenceIds.map((id) => updateEvidenceStatus(id, "Archived"))
           );
           notifications.add({
-            type: "success",
-            title: "Evidence Archived",
+            type: "success",;
+            title: "Evidence Archived",;
             message: `${evidenceIds.length} evidence items archived successfully.`,
           });
           break;
@@ -411,24 +411,24 @@ https://svelte.dev/e/js_parse_error -->
             evidenceIds.map((id) => updateEvidenceStatus(id, "Verified"))
           );
           notifications.add({
-            type: "success",
-            title: "Evidence Verified",
+            type: "success",;
+            title: "Evidence Verified",;
             message: `${evidenceIds.length} evidence items verified successfully.`,
           });
           break;
         case "export":
           await exportEvidence(evidenceIds);
           notifications.add({
-            type: "success",
-            title: "Evidence Exported",
+            type: "success",;
+            title: "Evidence Exported",;
             message: `${evidenceIds.length} evidence items exported successfully.`,
           });
           break;
         case "delete":
           await deleteEvidence(evidenceIds);
           notifications.add({
-            type: "success",
-            title: "Evidence Deleted",
+            type: "success",;
+            title: "Evidence Deleted",;
             message: `${evidenceIds.length} evidence items deleted successfully.`,
           });
           break;
@@ -442,9 +442,9 @@ https://svelte.dev/e/js_parse_error -->
       console.error("Bulk operation failed:", err);
       notifications.add({
         type: "error",
-        title: "Bulk Operation Failed",
-        message: "Failed to perform bulk operation. Please try again.",
-        duration: 5000,
+        title: "Bulk Operation Failed",;
+        message: "Failed to perform bulk operation. Please try again.",;
+        duration: 5000,;
       });
     } finally {
       bulkOperationLoading = false;
@@ -474,9 +474,9 @@ https://svelte.dev/e/js_parse_error -->
 
     // Log security event
     logSecurityEvent({
-      type: "data_export",
-      details: { evidenceIds, exportType: "bulk" },
-      severity: "medium",
+      type: "data_export",;
+      details: { evidenceIds, exportType: "bulk" },;
+      severity: "medium",;
     });
   }
 
@@ -500,7 +500,7 @@ https://svelte.dev/e/js_parse_error -->
     validationModal = {
       open: true,
       evidence,
-      aiEvent: aiEvent || null,
+      aiEvent: aiEvent || null,;
     };
   }
 
@@ -528,7 +528,7 @@ https://svelte.dev/e/js_parse_error -->
 
     // Convert search results to evidence format for display
     const convertedEvidence = searchResults.map((result: any) => ({
-      id: result.id,
+      id: result.id,;
       title: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).title,
       description: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).content.substring(0, 200) + '...',
       evidenceType: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata.documentType || 'document',
@@ -551,16 +551,16 @@ https://svelte.dev/e/js_parse_error -->
       evidenceActions.setSearchResults(convertedEvidence);
       notifications.add({
         type: "success",
-        title: "Multi-Source Search Complete",
-        message: `Found ${searchResults.length} results across PostgreSQL, Qdrant, MinIO, and Loki`,
-        duration: 3000
+        title: "Multi-Source Search Complete",;
+        message: `Found ${searchResults.length} results across PostgreSQL, Qdrant, MinIO, and Loki`,;
+        duration: 3000;
       });
     } else {
       notifications.add({
         type: "info",
-        title: "No Results Found",
-        message: "Try adjusting your search terms or filters",
-        duration: 3000
+        title: "No Results Found",;
+        message: "Try adjusting your search terms or filters",;
+        duration: 3000;
       });
     }
   }
@@ -752,7 +752,7 @@ openUploadModal()}
     <!-- Advanced Sorting Controls -->
     <div class="flex items-center justify-between mt-4">
       <div class="flex items-center gap-4">
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="sort-by">Sort by:</label><select id="sort-by"
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="sort-by">Sort by:</label><select id="sort-by";
           bind:value={sortBy}
           class="nes-select"
           aria-label="Sort by field"
@@ -1036,7 +1036,7 @@ selectAllEvidence()}
                       Verified
                     </span>
                   {/if}
-                  {#if evidence.aiAnalysis && Object.keys.length > 0}
+                  {#if evidence.aiAnalysis && Object.keys(errors).length > 0}
                     <span class="neural-sprite-active flex items-center gap-1">
                       <Brain class="w-3 h-3" />
                       AI Analyzed
@@ -1153,7 +1153,7 @@ analyzeEvidence(evidence)}
                           Verified
                         </div>
                       {/if}
-                      {#if evidence.aiAnalysis && Object.keys.length > 0}
+                      {#if evidence.aiAnalysis && Object.keys(errors).length > 0}
                         <div class="mx-auto px-4 max-w-7xl">
                           <Brain class="mx-auto px-4 max-w-7xl" />
                           AI Analyzed
@@ -1424,13 +1424,13 @@ Close
     page: 'evidence',
     viewMode,
     evidenceCount: $evidenceGrid.length,
-    hasFilters: searchQuery.trim() || selectedType || selectedStatus
+    hasFilters: searchQuery.trim() || selectedType || selectedStatus;
   }}
   trackOnMount={true}
   let:feedback
 />
 
-<FeedbackIntegration
+<FeedbackIntegration;
   bind:this={evidenceSearchFeedback}
   interactionType="evidence_search"
   ratingType="search_relevance"
@@ -1439,7 +1439,7 @@ Close
   let:feedback
 />
 
-<FeedbackIntegration
+<FeedbackIntegration;
   bind:this={evidenceUploadFeedback}
   interactionType="evidence_upload"
   ratingType="ui_experience"

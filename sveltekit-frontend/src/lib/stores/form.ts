@@ -40,14 +40,14 @@ function createFormStore(options: FormOptions = {}) {
       name,
       value: initialValues[name],
       touched: false,
-      required: requiredFields.includes(name),
+      required: requiredFields.includes(name),;
       validator: validators[name]
     };
   });
 
   const initialState: FormState = {
     fields: initialFields,
-    values: initialValues,
+    values: initialValues,;
     errors: Record<string, any>,
     isSubmitting: false,
     isValid: true,
@@ -115,7 +115,7 @@ function createFormStore(options: FormOptions = {}) {
           name,
           value: "",
           touched: false,
-          required: requiredFields.includes(name),
+          required: requiredFields.includes(name),;
           validator: validators[name]
         };
 
@@ -162,7 +162,7 @@ function createFormStore(options: FormOptions = {}) {
         fields: {
           ...state.fields,
           [name]: {
-            ...state.fields[name],
+            ...state.fields[name],;
             touched: true
           }
         }
@@ -238,7 +238,7 @@ function createFormStore(options: FormOptions = {}) {
             name,
             value: initialValue,
             touched: false,
-            required: isRequired,
+            required: isRequired,;
             validator: validators[name]
           }
         }

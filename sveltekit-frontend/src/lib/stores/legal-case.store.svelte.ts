@@ -64,12 +64,12 @@ export function createLegalCaseStore() {
   let auditLog: AuditLogEntry[] = $state([]);
   const currentUser = $state<User | null>({
     id: 'demo-user-001',
-    clearanceLevel: 3,
+    clearanceLevel: 3,;
     role: 'legal-analyst'
   });
   const loading = $state({
     cases: false,
-    analysis: false,
+    analysis: false,;
     documents: false
   });
 
@@ -85,7 +85,7 @@ export function createLegalCaseStore() {
   const caseStats = $derived({
     total: filteredCases.length,
     active: filteredCases.filter((c) => c.status === "active").length,
-    pending: filteredCases.filter((c) => c.status === "pending").length,
+    pending: filteredCases.filter((c) => c.status === "pending").length,;
     closed: filteredCases.filter((c) => c.status === "closed").length,
     highPriority: filteredCases.filter((c) => c.priority === "high").length
   });
@@ -130,7 +130,7 @@ export function createLegalCaseStore() {
             title: 'IP Infringement - Patent Violation',
             caseNumber: 'CASE-2024-003',
             description: 'Alleged patent infringement in mobile app technology',
-            status: 'closed' as const,
+            status: 'closed' as const,;
             priority: 'low' as const,
             confidentialityLevel: 1
           }
@@ -142,7 +142,7 @@ export function createLegalCaseStore() {
         type: "CASES_LOADED",
         entityType: "CASE",
         entityId: "bulk",
-        userId: currentUser?.id || "unknown",
+        userId: currentUser?.id || "unknown",;
         details: { count: cases.length }
       });
     } catch (error: any) {
@@ -154,7 +154,7 @@ export function createLegalCaseStore() {
           title: 'Sample Legal Case',
           caseNumber: 'CASE-DEMO-001',
           description: 'Demo case for testing analysis functionality',
-          status: 'active' as const,
+          status: 'active' as const,;
           priority: 'medium' as const,
           confidentialityLevel: 1
         }
@@ -189,7 +189,7 @@ export function createLegalCaseStore() {
       });
 
       const response = await fetch(`/api/cases/${caseId}/analyze`, {
-        method: "POST",
+        method: "POST",;
         headers: { "Content-Type": "application/json" }
       });
 
@@ -207,7 +207,7 @@ export function createLegalCaseStore() {
         type: "CASE_ANALYSIS_COMPLETED",
         entityType: "CASE",
         entityId: caseId,
-        userId: currentUser?.id || "unknown",
+        userId: currentUser?.id || "unknown",;
         details: {
           insightCount: insights.findings?.length || 0,
           riskScore: insights.riskAssessment?.score
@@ -220,7 +220,7 @@ export function createLegalCaseStore() {
         type: "CASE_ANALYSIS_FAILED",
         entityType: "CASE",
         entityId: caseId,
-        userId: currentUser?.id || "unknown",
+        userId: currentUser?.id || "unknown",;
         details: { error: error.message }
       });
 
@@ -242,7 +242,7 @@ export function createLegalCaseStore() {
       });
 
       const response = await fetch(`/api/documents/${documentId}/analyze`, {
-        method: "POST",
+        method: "POST",;
         headers: { "Content-Type": "application/json" }
       });
 
@@ -257,7 +257,7 @@ export function createLegalCaseStore() {
         type: "DOCUMENT_ANALYSIS_COMPLETED",
         entityType: "DOCUMENT",
         entityId: documentId,
-        userId: currentUser?.id || "unknown",
+        userId: currentUser?.id || "unknown",;
         details: {
           complianceScore: insights.complianceChecks?.length || 0,
           riskLevel: insights.riskAssessment?.level
@@ -270,7 +270,7 @@ export function createLegalCaseStore() {
         type: "DOCUMENT_ANALYSIS_FAILED",
         entityType: "DOCUMENT",
         entityId: documentId,
-        userId: currentUser?.id || "unknown",
+        userId: currentUser?.id || "unknown",;
         details: { error: error.message }
       });
 
@@ -290,7 +290,7 @@ export function createLegalCaseStore() {
     try {
       await fetch(`/api/cases/${caseId}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },;
         body: JSON.stringify({ status: newStatus })
       });
 
@@ -298,7 +298,7 @@ export function createLegalCaseStore() {
         type: "CASE_STATUS_UPDATED",
         entityType: "CASE",
         entityId: caseId,
-        userId: currentUser?.id || "unknown",
+        userId: currentUser?.id || "unknown",;
         details: { oldStatus, newStatus }
       });
     } catch (error: any) {

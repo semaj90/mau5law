@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa Detective Command Center -->
@@ -20,9 +20,9 @@ https://svelte.dev/e/js_parse_error -->
   let selectedSection = $state('command-center');
   let showNewCaseModal = $state(false);
   let newCaseData = $state({
-    title: '',
-    description: '',
-    priority: 'medium' as 'low' | 'medium' | 'high' | 'critical'
+    title: '',;
+    description: '',;
+    priority: 'medium' as 'low' | 'medium' | 'high' | 'critical';
   });
 
   // Notification state
@@ -68,14 +68,14 @@ https://svelte.dev/e/js_parse_error -->
   async function handleCreateCase() {
     try {
       const response = await fetch('/api/cases', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          title: newCaseData.title,
-          description: newCaseData.description,
-          priority: newCaseData.priority
+          title: newCaseData.title,;
+          description: newCaseData.description,;
+          priority: newCaseData.priority;
         })
       });
 
@@ -84,9 +84,9 @@ https://svelte.dev/e/js_parse_error -->
         showNewCaseModal = false;
         // Reset form
         newCaseData = {
-          title: '',
-          description: '',
-          priority: 'medium'
+          title: '',;
+          description: '',;
+          priority: 'medium';
         };
 
         // Show success notification
@@ -106,9 +106,9 @@ https://svelte.dev/e/js_parse_error -->
   function cancelNewCase() {
     showNewCaseModal = false;
     newCaseData = {
-      title: '',
-      description: '',
-      priority: 'medium'
+      title: '',;
+      description: '',;
+      priority: 'medium';
     };
   }
 
@@ -370,7 +370,7 @@ https://svelte.dev/e/js_parse_error -->
         <div>
           <label for="case-description" class="block text-sm font-medium text-amber-400 mb-2">Description</label>
           <textarea
-            id="case-description"
+            id="case-description";
             bind:value={newCaseData.description}
             rows="4"
             class="w-full p-3 bg-black bg-opacity-50 border border-amber-400 border-opacity-30 text-amber-300 placeholder-amber-400 placeholder-opacity-50 focus:border-opacity-60 focus:ring-2 focus:ring-amber-400 focus:ring-opacity-20"
@@ -382,7 +382,7 @@ https://svelte.dev/e/js_parse_error -->
         <div>
           <label for="case-priority" class="block text-sm font-medium text-amber-400 mb-2">Priority</label>
           <select
-            id="case-priority"
+            id="case-priority";
             bind:value={newCaseData.priority}
             class="w-full p-3 bg-black bg-opacity-50 border border-amber-400 border-opacity-30 text-amber-300 focus:border-opacity-60 focus:ring-2 focus:ring-amber-400 focus:ring-opacity-20"
           >
@@ -443,7 +443,7 @@ https://svelte.dev/e/js_parse_error -->
     position: relative;
   }
 
-  .nav-item: :before {
+  .nav-item::before {
     content: '';
     position: absolute;
     left: 0;
@@ -456,7 +456,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   .nav-item:hover::before,
-  .nav-.active::before {
+  .nav-item.active::before {
     transform: scaleY(1);
   }
 
@@ -488,7 +488,7 @@ https://svelte.dev/e/js_parse_error -->
     overflow: hidden;
   }
 
-  .action-button: :before {
+  .action-button::before {
     content: '';
     position: absolute;
     top: 0;

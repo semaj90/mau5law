@@ -107,7 +107,7 @@ class SessionManager {
       type: "login",
       userId: user.userId,
       timestamp: now,
-      details: { username: user.username, role: user.role },
+      details: { username: user.username, role: user.role },;
       severity: "low"
     });
 
@@ -120,7 +120,7 @@ class SessionManager {
         type: "logout",
         userId: this.session.userId,
         timestamp: Date.now(),
-        details: { username: this.session.username },
+        details: { username: this.session.username },;
         severity: "low"
       });
     }
@@ -277,7 +277,7 @@ export function sanitizeForJavaScript(input: string): string {
 
 // Generic input sanitization function
 export function sanitizeInput(
-  input: string,
+  input: string,;
   type: "html" | "sql" | "js" = "html";
 ): string {
   switch (type) {
@@ -563,7 +563,7 @@ export function addChainOfCustodyEvent(
       action: "chain_of_custody",
       evidenceId,
       custodyEvent: fullEvent
-    },
+    },;
     severity: "low",
     legalContext: event.legalContext
   });
@@ -579,7 +579,7 @@ export function secureDataExport(data: any, userId: string, legalContext?: unkno
       recordCount: Array.isArray(data) ? data.length: 1,
       fields:
         Array.isArray(data) && data.length > 0 ? Object.keys(data[0]) : []
-    },
+    },;
     severity: "medium",
     legalContext
   });
@@ -627,7 +627,7 @@ export function checkAttorneyClientPrivilege(
         reason: "non_legal_professional_access",
         documentId,
         action
-      },
+      },;
       severity: "high"
     });
     return false;
@@ -656,7 +656,7 @@ export function validateLegalAccess(
         requiredPermission,
         caseId,
         userPermissions: session.permissions
-      },
+      },;
       severity: "medium",
       legalContext: { caseId }
     });
@@ -683,7 +683,7 @@ export function trackPrivilegedAccess(
         caseId,
         isLegalProfessional: session.isLegalProfessional,
         barNumber: session.barNumber
-      },
+      },;
       severity: "medium",
       legalContext: {
         caseId,

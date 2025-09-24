@@ -184,7 +184,7 @@
       case 'analyze-stack':
         return {
           content: [{
-            type: 'text',
+            type: 'text',;
             text: `# Stack Analysis: ${request.component} (${request.context})
 
   ## Recommended Patterns for Legal AI
@@ -216,7 +216,7 @@
       case 'generate-best-practices':
         return {
           content: [{
-            type: 'text',
+            type: 'text',;
             text: `# ${request.area?.toUpperCase()} Best Practices for Legal AI
 
   ## Key Recommendations
@@ -254,7 +254,7 @@
       case 'suggest-integration':
         return {
           content: [{
-            type: 'text',
+            type: 'text',;
             text: `# Integration Suggestion: ${request.feature}
 
   ## Recommended Approach
@@ -313,7 +313,7 @@
         const resolved = libraryMap[request.library?.toLowerCase() || ''] || request.library;
         return {
           content: [{
-            type: 'text',
+            type: 'text',;
             text: `# Library ID Resolution
 
   Library: ${request.library}
@@ -326,7 +326,7 @@
       case 'get-library-docs':
         return {
           content: [{
-            type: 'text',
+            type: 'text',;
             text: `# ${request.library} Documentation: ${request.topic || 'overview'}
 
   ## Documentation Content
@@ -346,8 +346,8 @@
   // Legal AI specific configuration
   const config = {
   security: 'high',
-  auditLogging: true,
-  encryption: 'AES-256'
+  auditLogging: true,;
+  encryption: 'AES-256';
   };
   \`\`\`
 
@@ -362,7 +362,7 @@
       default:
         return {
           content: [{
-            type: 'text',
+            type: 'text',;
             text: `Tool ${request.tool} not implemented in mock response.`
           }]
         };
@@ -428,7 +428,7 @@
       <div>
         <label for="tool" class="block text-sm font-medium mb-2">Tool</label>
         <select
-          id="tool"
+          id="tool";
           bind:value={selectedTool}
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
@@ -495,7 +495,7 @@
         <div class="md:col-span-2">
           <label for="requirements" class="block text-sm font-medium mb-2">Requirements (optional)</label>
           <textarea
-            id="requirements"
+            id="requirements";
             bind:value={requirements}
             placeholder="e.g., real-time messaging, legal compliance, audit trails"
             rows="3"
@@ -544,7 +544,7 @@
           <label for="maxResults" class="block text-sm font-medium mb-2">Max Results</label>
           <input
             id="maxResults"
-            type="number"
+            type="number";
             bind:value={maxResults}
             min="1"
             max="50"
@@ -556,7 +556,7 @@
           <label for="confidenceThreshold" class="block text-sm font-medium mb-2">Confidence Threshold</label>
           <input
             id="confidenceThreshold"
-            type="range"
+            type="range";
             bind:value={confidenceThreshold}
             min="0.1"
             max="1"
@@ -581,7 +581,7 @@
           <label for="documentTypes" class="block text-sm font-medium mb-2">Document Types (optional)</label>
           <input
             id="documentTypes"
-            type="text"
+            type="text";
             bind:value={documentTypes}
             placeholder="e.g., contract, evidence, case_law"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -604,7 +604,7 @@
           <label for="ragCaseId" class="block text-sm font-medium mb-2">Case ID (optional)</label>
           <input
             id="ragCaseId"
-            type="text"
+            type="text";
             bind:value={ragCaseId}
             placeholder="e.g., CASE-2024-001"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -614,7 +614,7 @@
         <div>
           <label for="documentType" class="block text-sm font-medium mb-2">Document Type</label>
           <select
-            id="documentType"
+            id="documentType";
             bind:value={documentType}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
@@ -631,7 +631,7 @@
           <label for="documentTitle" class="block text-sm font-medium mb-2">Title (optional)</label>
           <input
             id="documentTitle"
-            type="text"
+            type="text";
             bind:value={documentTitle}
             placeholder="e.g., Employment Contract v2.1"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -654,7 +654,7 @@
           <label for="documentId" class="block text-sm font-medium mb-2">Document ID</label>
           <input
             id="documentId"
-            type="text"
+            type="text";
             bind:value={documentId}
             placeholder="e.g., doc-uuid-1234"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

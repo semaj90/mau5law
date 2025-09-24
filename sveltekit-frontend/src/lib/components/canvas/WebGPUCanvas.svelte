@@ -36,7 +36,7 @@
   const vertexShaderSource = `
     struct VertexOutput {
       @builtin(position) position: vec4<f32>,
-      @location(0) color: vec3<f32>,
+      @location(0) color: vec3<f32>,;
     }
 
     @vertex
@@ -120,9 +120,9 @@
 
       const canvasFormat = navigator.gpu.getPreferredCanvasFormat();
       webgpuContext.configure({
-        device: webgpuDevice,
+        device: webgpuDevice,;
         format: canvasFormat,
-        alphaMode: 'premultiplied',
+        alphaMode: 'premultiplied',;
       });
 
       await createRenderPipeline(canvasFormat);
@@ -145,28 +145,28 @@
     if (!webgpuDevice) return;
 
     const vertexShader = webgpuDevice.createShaderModule({
-      code: vertexShaderSource,
+      code: vertexShaderSource,;
     });
 
     const fragmentShader = webgpuDevice.createShaderModule({
-      code: fragmentShaderSource,
+      code: fragmentShaderSource,;
     });
 
     renderPipeline = webgpuDevice.createRenderPipeline({
-      layout: 'auto',
+      layout: 'auto',;
       vertex: {
         module: vertexShader,
-        entryPoint: 'vs_main',
+        entryPoint: 'vs_main',;
       },
       fragment: {
         module: fragmentShader,
-        entryPoint: 'fs_main',
+        entryPoint: 'fs_main',;
         targets: [{
-          format: format,
+          format: format,;
         }],
       },
-      primitive: {
-        topology: 'triangle-list',
+      primitive: {;
+        topology: 'triangle-list',;
       },
     });
   }
@@ -389,7 +389,7 @@
 </div>
 
 <style>
-  .webgpu-canvas-container {
+  .webgpu-canvas-container {;
     margin: 1rem;
     padding: 1rem;
     background: var(--yorha-bg-secondary);

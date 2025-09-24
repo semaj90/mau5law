@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 // Enhanced Evidence Processing Component
@@ -83,10 +83,10 @@ https://svelte.dev/e/js_parse_error -->
   function addLog(message: string, type: 'info' | 'error' | 'success' = 'info') {
     processingLogs = [
       ...processingLogs,
-      {
+      {;
         timestamp: new Date().toLocaleTimeString(),
         message,
-        type
+        type;
       }
     ].slice(-50); // Keep last 50 logs
   }
@@ -96,8 +96,8 @@ https://svelte.dev/e/js_parse_error -->
       addLog('Starting evidence processing...', 'info');
       // Make API call to start processing
       const response = await fetch('/api/evidence/process', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({
           evidenceId,
           steps
@@ -117,7 +117,7 @@ https://svelte.dev/e/js_parse_error -->
       uploadActor.send({
         type: 'START_PROCESS',
         sessionId,
-        fileId: evidenceId
+        fileId: evidenceId;
       });
 
     } catch (error) {

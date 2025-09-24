@@ -29,7 +29,7 @@ class LazyLoadManager {
     this.options = {
       root: null,
       rootMargin: '50px',
-      threshold: 0.1,
+      threshold: 0.1,;
       once: true,
       fallbackDelay: 2000,
       ...options
@@ -48,7 +48,7 @@ class LazyLoadManager {
       (entries) => this.handleIntersection(entries),
       {
         root: this.options.root,
-        rootMargin: this.options.rootMargin,
+        rootMargin: this.options.rootMargin,;
         threshold: this.options.threshold
       }
     );
@@ -65,7 +65,7 @@ class LazyLoadManager {
         const lazyEntry: LazyLoadEntry = {
           element: entry.target,
           isIntersecting: entry.isIntersecting,
-          intersectionRatio: entry.intersectionRatio,
+          intersectionRatio: entry.intersectionRatio,;
           target: entry.target
         };
 
@@ -148,7 +148,7 @@ export function getLazyLoader(options?: LazyLoadOptions): LazyLoadManager {
 
 // Svelte action for easy component integration
 export function lazyLoad(
-  element: Element,
+  element: Element,;
   options: LazyLoadOptions & { 
     onIntersect: LazyLoadCallback;
   }
@@ -206,7 +206,7 @@ export function createLazyStore(initialState: Partial<LazyComponentState> = {}) 
 // Utility functions for common lazy loading patterns
 
 export function createComponentLazyLoader(
-  element: Element,
+  element: Element,;
   options: LazyLoadOptions = {}
 ): Promise<LazyLoadEntry> {
   return new Promise((resolve) => {
@@ -292,28 +292,28 @@ export const LAZY_LOAD_PRESETS = {
   // Load just before entering viewport;
   EAGER: {
     rootMargin: '100px',
-    threshold: 0,
+    threshold: 0,;
     once: true
   },
   
   // Load when partially visible;
   NORMAL: {
     rootMargin: '50px',
-    threshold: 0.1,
+    threshold: 0.1,;
     once: true
   },
   
   // Load only when mostly visible;
   LAZY: {
     rootMargin: '0px',
-    threshold: 0.5,
+    threshold: 0.5,;
     once: true
   },
   
   // For heavy components that should load early;
   HEAVY_COMPONENT: {
     rootMargin: '200px',
-    threshold: 0,
+    threshold: 0,;
     once: true,
     fallbackDelay: 1000
   },
@@ -321,14 +321,14 @@ export const LAZY_LOAD_PRESETS = {
   // For images and media;
   MEDIA: {
     rootMargin: '50px',
-    threshold: 0,
+    threshold: 0,;
     once: true
   },
   
   // For continuous monitoring (animations, etc.);
   CONTINUOUS: {
     rootMargin: '0px',
-    threshold: [0, 0.25, 0.5, 0.75, 1],
+    threshold: [0, 0.25, 0.5, 0.75, 1],;
     once: false
   }
 } as const;

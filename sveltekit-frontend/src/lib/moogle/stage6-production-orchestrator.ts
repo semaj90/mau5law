@@ -112,7 +112,7 @@ class EnhancedBitsUIOrchestrator {
 
       if (cached) {
         return {
-          rendered: true,
+          rendered: true,;
           performance: {
             latency_ms: performance.now() - startTime,
             throughput_ops_sec: 1000,
@@ -133,7 +133,7 @@ class EnhancedBitsUIOrchestrator {
       await headlessUICache.set(cacheKey, { componentName, props, rendered: true });
 
       return {
-        rendered: true,
+        rendered: true,;
         performance: {
           latency_ms: performance.now() - startTime,
           throughput_ops_sec: webgpuAcceleration ? 2000 : 500,
@@ -145,7 +145,7 @@ class EnhancedBitsUIOrchestrator {
     } catch (error) {
       console.error(`❌ Enhanced Bits UI rendering failed for ${componentName}:`, error);
       return {
-        rendered: false,
+        rendered: false,;
         performance: {
           latency_ms: performance.now() - startTime,
           throughput_ops_sec: 0,
@@ -225,7 +225,7 @@ class BVHAcceleratorOrchestrator {
     } catch (error) {
       console.error('❌ BVH Accelerator query failed:', error);
       return {
-        results: [],
+        results: [],;
         performance: {
           latency_ms: performance.now() - startTime,
           throughput_ops_sec: 0,
@@ -240,7 +240,7 @@ class BVHAcceleratorOrchestrator {
   private fallbackSearch(queryVector: number[], k: number): any[] {
     return Array.from({ length: k }, (_, i) => ({
       index: i,
-      distance: Math.random() * 0.5,
+      distance: Math.random() * 0.5,;
       confidence: 0.8 + Math.random() * 0.2
     });
   }
@@ -284,7 +284,7 @@ class CyberElephantOrchestrator {
       const processingTime = Math.max(100, documents.length * 2);
 
       return {
-        created: this.isInitialized,
+        created: this.isInitialized,;
         performance: {
           latency_ms: performance.now() - startTime,
           throughput_ops_sec: documents.length / (processingTime / 1000),
@@ -297,7 +297,7 @@ class CyberElephantOrchestrator {
     } catch (error) {
       console.error('❌ Cyber Elephant visualization failed:', error);
       return {
-        created: false,
+        created: false,;
         performance: {
           latency_ms: performance.now() - startTime,
           throughput_ops_sec: 0,
@@ -318,7 +318,7 @@ class MultipassCoordinatorOrchestrator {
   async checkHealth(): Promise<boolean> {
     try {
       const response = await fetch(`${this.serviceUrl}/health`, {
-        method: 'GET',
+        method: 'GET',;
         headers: { 'Content-Type': 'application/json' }
       });
       this.isHealthy = response.ok;
@@ -331,7 +331,7 @@ class MultipassCoordinatorOrchestrator {
   }
 
   async extractFromDocument(
-    document: { id: string; content: string },
+    document: { id: string; content: string },;
     schema: string[];
   ): Promise<{ results: any[]; performance: ComponentPerformance }> {
     const startTime = performance.now();
@@ -344,7 +344,7 @@ class MultipassCoordinatorOrchestrator {
       if (this.isHealthy) {
         const response = await fetch(`${this.serviceUrl}/api/v1/extract`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' },;
           body: JSON.stringify({
             document_id: document.id,
             document_content: document.content,
@@ -358,7 +358,7 @@ class MultipassCoordinatorOrchestrator {
         if (response.ok) {
           const data = await response.json();
           return {
-            results: data.extractions || [],
+            results: data.extractions || [],;
             performance: {
               latency_ms: data.processing_time_ms || (performance.now() - startTime),
               throughput_ops_sec: data.extractions?.length / ((data.processing_time_ms || 1000) / 1000) || 0,
@@ -385,7 +385,7 @@ class MultipassCoordinatorOrchestrator {
         field,
         value: `Extracted ${field} from ${document.id}`,
         confidence: 0.7 + Math.random() * 0.2
-      })),
+      })),;
       performance: {
         latency_ms: performance.now() - startTime,
         throughput_ops_sec: schema.length / 0.5,
@@ -417,7 +417,7 @@ class Neo4jRerankerOrchestrator {
   }
 
   async enhancedRerank(
-    query: string,
+    query: string,;
     documents: any[],
     userContext: any;
   ): Promise<{ results: RerankingResult[]; performance: ComponentPerformance }> {
@@ -446,7 +446,7 @@ class Neo4jRerankerOrchestrator {
     } catch (error) {
       console.error('❌ Neo4j Reranker failed:', error);
       return {
-        results: this.fallbackReranking(query, documents),
+        results: this.fallbackReranking(query, documents),;
         performance: {
           latency_ms: performance.now() - startTime,
           throughput_ops_sec: 0,
@@ -487,7 +487,7 @@ class Neo4jRerankerOrchestrator {
           overall_confidence: 0.72
         },
         audit_trail: []
-      },
+      },;
       explanation: `Fallback reranking for ${query}`
     });
   }
@@ -520,7 +520,7 @@ class CHRROMMemoryOrchestrator {
 
       return {
         compressed,
-        ratio: actualRatio,
+        ratio: actualRatio,;
         performance: {
           latency_ms: performance.now() - startTime,
           throughput_ops_sec: originalSize / ((performance.now() - startTime) / 1000),
@@ -534,7 +534,7 @@ class CHRROMMemoryOrchestrator {
       console.error('❌ CHR-ROM compression failed:', error);
       return {
         compressed: data, // Return original data if compression fails
-        ratio: 1.0,
+        ratio: 1.0,;
         performance: {
           latency_ms: performance.now() - startTime,
           throughput_ops_sec: 0,
@@ -673,7 +673,7 @@ export class MoogleGraphSynthesizerOrchestrator {
         query_id: query.id,
         results: allResults,
         component_scores: componentScores,
-        performance_metrics: this.calculateOverallPerformance(componentResults),
+        performance_metrics: this.calculateOverallPerformance(componentResults),;
         explanations: this.generateExplanations(componentResults),
         confidence_score: avgScore,
         cache_hit: Object.values(componentResults).some(r => r.performance?.cache_hit_rate > 0.5),
@@ -699,7 +699,7 @@ export class MoogleGraphSynthesizerOrchestrator {
           memory_usage_mb: 0,
           gpu_utilization: 0,
           cache_hit_rate: 0
-        },
+        },;
         explanations: ['Query processing failed'],
         confidence_score: 0,
         cache_hit: false,
@@ -831,7 +831,7 @@ export function createMoogleQuery(
 ): MoogleQuery {
   return {
     id: `moogle_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-    text,
+    text,;
     context: {},
     target_components: targetComponents,
     user_context: userContext,

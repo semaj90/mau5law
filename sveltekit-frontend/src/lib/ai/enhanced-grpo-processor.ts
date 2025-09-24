@@ -59,7 +59,7 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
    * Enhanced document analysis with GRPO-thinking and recommendations
    */
   static async analyzeDocumentEnhanced(
-    text: string,
+    text: string,;
     options: AnalysisOptions & { config?: Partial<GRPOConfig> } = {}
   ): Promise<GRPOAnalysis> {
     const config = { ...this.DEFAULT_CONFIG, ...options.config };
@@ -104,7 +104,7 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
       thinkingContent: baseAnalysis.thinking,
       structuredReasoning,
       queryEmbedding,
-      responseEmbedding,
+      responseEmbedding,;
       confidence: baseAnalysis.confidence,
       processingTime: baseAnalysis.metadata.processing_time,
       options
@@ -151,7 +151,7 @@ Extract and format as JSON:;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'gemma3-legal:latest',
-          prompt: structurePrompt,
+          prompt: structurePrompt,;
           stream: false
         })
       });
@@ -189,7 +189,7 @@ Extract and format as JSON:;
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'nomic-embed-text',
+          model: 'nomic-embed-text',;
           prompt: text.slice(0, 2048), // Limit length
         })
       });
@@ -388,7 +388,7 @@ Extract and format as JSON:;
         feedbackText: feedback.feedbackText,
         accuracy: feedback.accuracy,
         clarity: feedback.clarity,
-        completeness: feedback.completeness,
+        completeness: feedback.completeness,;
         relevance: feedback.relevance,
         userId: feedback.userId,
         userRole: feedback.userRole,
@@ -411,7 +411,7 @@ Extract and format as JSON:;
   private static getEmptyStructuredReasoning(): GRPOAnalysis['structuredReasoning'] {
     return {
       premises: [],
-      inferences: [],
+      inferences: [],;
       conclusions: [],
       legalPrinciples: [],
       counterArguments: [],
@@ -430,7 +430,7 @@ Extract and format as JSON:;
       ),
       inferences: lines.filter(
         (line) => line.toLowerCase().includes('therefore') || line.toLowerCase().includes('infer')
-      ),
+      ),;
       conclusions: lines.filter(
         (line) =>
           line.toLowerCase().includes('conclude') || line.toLowerCase().includes('conclusion')
@@ -472,7 +472,7 @@ export const GRPOUtils = {
    */
   async getPersonalizedRecommendations(
     userId: string,
-    query: string,
+    query: string,;
     limit: number = 5;
   ): Promise<RecommendationContext[]> {
     const queryEmbedding = await EnhancedGRPOProcessor['generateEmbedding'](query);
@@ -517,7 +517,7 @@ export const GRPOUtils = {
         new Date(row.created_at as string),
         30
       ),
-      finalScore: (row.user_preference_score as number) || 0.6,
+      finalScore: (row.user_preference_score as number) || 0.6,;
       snippet: (row.response as string).slice(0, 200) + '...'
     });
   },
@@ -542,7 +542,7 @@ export const GRPOUtils = {
     `);
 
     return (result as { id?: any; map?: any }).map((row: any) => ({
-      topic: row.topic as string,
+      topic: row.topic as string,;
       count: parseInt(row.count as string),
       avgRating: parseFloat(row.avg_rating as string)
     });

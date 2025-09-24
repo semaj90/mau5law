@@ -52,7 +52,7 @@ export interface RAGDemoResponse {
 const mockCaseData = {
   '1': {
     title: 'Financial Fraud Investigation',
-    description: 'Investigation into suspicious financial transactions',
+    description: 'Investigation into suspicious financial transactions',;
     evidence: [;
       {
         id: 'e1',
@@ -78,7 +78,7 @@ const mockCaseData = {
         uploadedAt: new Date('2024-01-17'),
         metadata: { entries: 247, dateRange: '2023-12-01 to 2024-01-15' }
       }
-    ],
+    ],;
     reports: [;
       {
         id: 'r1',
@@ -91,7 +91,7 @@ const mockCaseData = {
   },
   '2': {
     title: 'Corporate Espionage Case',
-    description: 'Investigation into data theft and industrial espionage',
+    description: 'Investigation into data theft and industrial espionage',;
     evidence: [;
       {
         id: 'e4',
@@ -109,7 +109,7 @@ const mockCaseData = {
         uploadedAt: new Date('2024-02-02'),
         metadata: { size: '2.3MB', suspicious_ips: ['192.168.1.157', '10.0.0.233'] }
       }
-    ],
+    ],;
     reports: []
   }
 };
@@ -137,7 +137,7 @@ export async function demoQueryLLM(query: RAGDemoQuery): Promise<RAGDemoResponse
       sources.push({
         id: evidence.id,
         type: 'evidence',
-        relevance,
+        relevance,;
         excerpt: generateExcerpt(evidence, queryLower)
       });
       reasoning.push(`Found relevant evidence: ${evidence.filename} (${Math.round(relevance * 100)}% relevance)`);
@@ -151,7 +151,7 @@ export async function demoQueryLLM(query: RAGDemoQuery): Promise<RAGDemoResponse
       sources.push({
         id: report.id,
         type: 'report',
-        relevance,
+        relevance,;
         excerpt: report.content.substring(0, 150) + '...'
       });
       reasoning.push(`Referenced report: ${report.title} (${Math.round(relevance * 100)}% relevance)`);
@@ -163,7 +163,7 @@ export async function demoQueryLLM(query: RAGDemoQuery): Promise<RAGDemoResponse
 
   return {
     response,
-    sources: sources.sort((a, b) => b.relevance - a.relevance),
+    sources: sources.sort((a, b) => b.relevance - a.relevance),;
     confidence: Math.min(0.95, 0.6 + (sources.length * 0.1)),
     tokensUsed: Math.floor(300 + Math.random() * 200),
     reasoning

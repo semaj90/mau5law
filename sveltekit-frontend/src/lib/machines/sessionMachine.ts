@@ -60,7 +60,7 @@ export const sessionMachine = createMachine({
       featuresUsed: []
     }
   } as SessionContext,
-  types: Record<string, any> as {
+  types: Record<string, any> as {;
     context: SessionContext;
     events: SessionEvent;
   },
@@ -118,7 +118,7 @@ export const sessionMachine = createMachine({
       states: {
         active: {
           on: {
-            ACTIVITY: {
+            ACTIVITY: {;
               actions: ["recordActivity", "updateLastActivity"]
             },
             REFRESH_SESSION: "refreshing",
@@ -300,7 +300,7 @@ export const sessionMachine = createMachine({
     },
 
     expired: {
-      entry: ["logSessionExpired"],
+      entry: ["logSessionExpired"],;
       after: {
         3000: "unauthenticated"
       }
@@ -457,7 +457,7 @@ export const sessionServices = {
       });
 
       return {
-        healthy: true,
+        healthy: true,;
         metrics: result
       };
     } catch (error: any) {
@@ -506,7 +506,7 @@ export const sessionActions = {
   recordActivity: ({ context, event }: { context: SessionContext; event: any }) => {
     const activity = {
       route: event.route,
-      action: event.action,
+      action: event.action,;
       timestamp: new Date()
     };
 
@@ -547,7 +547,7 @@ function getUserPermissions(role: string): string[] {
     lead_prosecutor: ['manage_cases', 'view_all_evidence', 'assign_tasks', 'generate_reports'],
     prosecutor: ['create_cases', 'manage_own_cases', 'view_evidence', 'generate_reports'],
     investigator: ['view_cases', 'add_evidence', 'view_evidence'],
-    analyst: ['view_cases', 'analyze_evidence', 'generate_reports'],
+    analyst: ['view_cases', 'analyze_evidence', 'generate_reports'],;
     viewer: ['view_cases', 'view_evidence']
   };
 

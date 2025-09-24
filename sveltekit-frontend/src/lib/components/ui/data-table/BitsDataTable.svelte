@@ -43,7 +43,7 @@
     selectable = false,
     onRowClick,
     onExport,
-    class: className = ''
+    class: className = '';
   }: DataTableProps = $props();
 
   let searchQuery = $state('');
@@ -282,7 +282,7 @@ currentPage = Math.max(0, currentPage - 1)}
 </div>
 
 <style>
-  :global(.legal-data-table table) {
+  :global(.legal-data-table table) {;
     font-variant-numeric: tabular-nums;
   }
 
@@ -290,7 +290,7 @@ currentPage = Math.max(0, currentPage - 1)}
     user-select: none;
   }
 
-  :global(.legal-data-table tbody tr:hover) {
+  :global(.legal-data-table tbody tr:hover) {;
     background-color: rgb(var(--yorha-bg-tertiary) / 0.5);
   }
 </style>

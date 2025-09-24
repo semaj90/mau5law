@@ -93,7 +93,7 @@
                 <input
                   type="number"
                   class="space-y-4"
-                  id="maxFiles"
+                  id="maxFiles";
                   bind:value={maxFiles}
                   min="1"
                   max="20"
@@ -234,7 +234,7 @@
 
 <style>
   /* @unocss-include */
-  .container {
+  .container {;
     max-width: 1200px;
   }
   .alert {

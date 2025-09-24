@@ -88,7 +88,7 @@ export interface UnifiedProcessingRequest {
 // Comprehensive processing result;
 export interface UnifiedProcessingResult {
   // Primary results;
-  extraction: {
+  extraction: {;
     summary: string;
     entities: any[];
     keyTerms: string[];
@@ -264,7 +264,7 @@ export class UltimateNeuralTopologyOrchestrator {
         },
         systemState: { ...this.currentState },
         embeddings: processingResults.embeddings,
-        tiledData: processingResults.tiledData,
+        tiledData: processingResults.tiledData,;
         visualizations: processingResults.visualizations,
         generatedAssets
       };
@@ -329,7 +329,7 @@ export class UltimateNeuralTopologyOrchestrator {
         id: 'webgpu_optimizer',
         type: 'optimizer' as const,
         x: 100, y: 150, z: 50,
-        activation: this.webgpuDevice ? 0.95 : 0.1,
+        activation: this.webgpuDevice ? 0.95 : 0.1,;
         connections: ['ui_cache_index', 'simd_engine']
       }
     ];
@@ -339,7 +339,7 @@ export class UltimateNeuralTopologyOrchestrator {
       for (const connection of node.connections) {
         edges.push({
           from: node.id,
-          to: connection,
+          to: connection,;
           weight: Math.random() * 0.8 + 0.2,
           dataFlow: this.calculateDataFlow(node.id, connection)
         });
@@ -534,7 +534,7 @@ export class UltimateNeuralTopologyOrchestrator {
       predictions: results[3].status === 'fulfilled' ? results[3].value : null,
       embeddings: results[0].status === 'fulfilled' && results[0].value?.embeddings?.documentEmbedding 
         ? results[0].value.embeddings.documentEmbedding 
-        : null,
+        : null,;
       visualizations: this.generateVisualizationData(results)
     };
   }
@@ -548,14 +548,14 @@ export class UltimateNeuralTopologyOrchestrator {
     return {
       nextStates: [;
         {
-          state: { userAction: 'continue_analysis', id: 'default' },
+          state: { userAction: 'continue_analysis', id: 'default' },;
           probability: 0.7,
           timeEstimate: 2000
         }
       ],
       recommendedAssets: [;
         {
-          type: 'analysis_widget',
+          type: 'analysis_widget',;
           priority: 80,
           cacheKey: `asset_${Date.now()}`
         }
@@ -569,7 +569,7 @@ export class UltimateNeuralTopologyOrchestrator {
 
     for (const pattern of chrPatterns) {
       assets.push({
-        type: 'chr_rom_pattern',
+        type: 'chr_rom_pattern',;
         data: pattern.svgPattern,
         compressionRatio: 50.0 // CHR-ROM achieves 50:1 compression
       });
@@ -757,7 +757,7 @@ export class UltimateNeuralTopologyOrchestrator {
   private async getWebGPUDiagnostics(): Promise<any> {
     return {
       available: !!this.webgpuDevice,
-      memoryUsage: Math.random() * 0.6 + 0.2, // 20-80% simulated
+      memoryUsage: Math.random() * 0.6 + 0.2, // 20-80% simulated;
       utilization: Math.random() * 0.8 + 0.1   // 10-90% simulated
     };
   }
@@ -808,7 +808,7 @@ export class UltimateNeuralTopologyOrchestrator {
     queueDepth: number;
   } {
     return {
-      state: { ...this.currentState },
+      state: { ...this.currentState },;
       metrics: { ...this.metrics },
       isInitialized: this.isInitialized,
       queueDepth: this.processingQueue.size

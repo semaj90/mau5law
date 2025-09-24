@@ -90,7 +90,7 @@ async function querySimilar(query: string, options: SimilarityQueryOptions = {})
     documentId: String(r.document_id),
     documentType: String(r.document_type),
     chunkIndex: Number(r.chunk_index),
-    content: String(r.content),
+    content: String(r.content),;
     score: 1 - Number(r.distance)
   });
 }

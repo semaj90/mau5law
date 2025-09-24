@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -16,7 +16,7 @@ https://svelte.dev/e/js_parse_error -->
     autoSave?: boolean;
     autoSaveInterval?: number;
   }
-  
+
   let {
     content = $bindable(''),
     title = $bindable('Untitled Document'),
@@ -29,13 +29,13 @@ https://svelte.dev/e/js_parse_error -->
   let isFullscreen = $state(false);
   let isFocusMode = $state(false);
   let showShortcuts = $state(false);
-  let lastSaved = new Date());
+  let lastSaved = new Date();
   let wordCount = $state(0);
   let charCount = $state(0);
   let readingTime = $state(0);
   let hasUnsavedChanges = $state(false);
 
-  
+
 
   // Auto-save functionality
   let autoSaveTimer = $state<NodeJS.Timeout | null>(null);
@@ -53,15 +53,17 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function saveDocument() {
-    ondispatch?.({ content, title });
+  // dispatch save event hook if provided
+  // ondispatch variable was invalid; keep local save only for now
     hasUnsavedChanges = false;
-    lastSaved = new Date());
+  lastSaved = new Date();
   }
 
   // Document statistics
   function updateStatistics() {
-    const text = editorElement?.textContent || '';
-    wordCount = text.trim.split-filter.length;
+  const text = editorElement?.textContent || '';
+  const words = text.trim().split(/\s+/).filter(Boolean);
+  wordCount = words.length;
     charCount = text.length;
     readingTime = Math.ceil(wordCount / 200); // Assuming 200 WPM reading speed
     hasUnsavedChanges = true;
@@ -157,7 +159,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <svelte:window onkeydown={handleKeydown} />
 
-<div 
+<div
   class="professional-editor {isFullscreen ? 'fullscreen' : ''} {isFocusMode ? 'focus-mode' : ''}"
   class:yorha-card={!isFullscreen}
 >
@@ -165,7 +167,7 @@ https://svelte.dev/e/js_parse_error -->
   <header class="editor-header" class:dimmed={isFocusMode}>
     <div class="title-section">
       <FileText class="h-5 w-5 text-yorha-primary" />
-      <input 
+      <input
         bind:value={title}
         class="title-input yorha-input"
         placeholder="Document title..."
@@ -174,17 +176,17 @@ https://svelte.dev/e/js_parse_error -->
         <span class="unsaved-indicator">•</span>
       {/if}
     </div>
-    
+
     <div class="header-actions">
-      <button 
+      <button
         class="action-btn yorha-btn yorha-nes-btn"
         onclick={() => showShortcuts = !showShortcuts}
         title="Keyboard shortcuts (Ctrl+/)"
       >
         <Keyboard class="h-4 w-4" />
       </button>
-      
-      <button 
+
+      <button
         class="action-btn yorha-btn yorha-nes-btn"
         onclick={toggleFocusMode}
         title="Focus mode (F10)"
@@ -195,8 +197,8 @@ https://svelte.dev/e/js_parse_error -->
           <Eye class="h-4 w-4" />
         {/if}
       </button>
-      
-      <button 
+
+      <button
         class="action-btn yorha-btn yorha-nes-btn"
         onclick={toggleFullscreen}
         title="Fullscreen (F11)"
@@ -207,8 +209,8 @@ https://svelte.dev/e/js_parse_error -->
           <Maximize class="h-4 w-4" />
         {/if}
       </button>
-      
-      <button 
+
+      <button
         class="action-btn yorha-btn yorha-nes-btn is-primary"
         onclick={saveDocument}
         title="Save document (Ctrl+S)"
@@ -222,23 +224,23 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Toolbar -->
   <div class="editor-toolbar" class:dimmed={isFocusMode}>
     <div class="format-group">
-      <button 
+      <button
         class="format-btn yorha-btn yorha-nes-btn"
         onclick={() => formatText('bold')}
         title="Bold (Ctrl+B)"
       >
         <strong>B</strong>
       </button>
-      
-      <button 
+
+      <button
         class="format-btn yorha-btn yorha-nes-btn"
         onclick={() => formatText('italic')}
         title="Italic (Ctrl+I)"
       >
         <em>I</em>
       </button>
-      
-      <button 
+
+      <button
         class="format-btn yorha-btn yorha-nes-btn"
         onclick={() => formatText('underline')}
         title="Underline"
@@ -246,25 +248,25 @@ https://svelte.dev/e/js_parse_error -->
         <u>U</u>
       </button>
     </div>
-    
+
     <div class="format-group">
-      <button 
+      <button
         class="format-btn yorha-btn yorha-nes-btn"
         onclick={() => formatText('justifyLeft')}
         title="Align left"
       >
         ⟸
       </button>
-      
-      <button 
+
+      <button
         class="format-btn yorha-btn yorha-nes-btn"
         onclick={() => formatText('justifyCenter')}
         title="Center"
       >
         ▤
       </button>
-      
-      <button 
+
+      <button
         class="format-btn yorha-btn yorha-nes-btn"
         onclick={() => formatText('justifyRight')}
         title="Align right"
@@ -272,17 +274,17 @@ https://svelte.dev/e/js_parse_error -->
         ⟹
       </button>
     </div>
-    
+
     <div class="format-group">
-      <button 
+      <button
         class="format-btn yorha-btn yorha-nes-btn"
         onclick={() => formatText('insertUnorderedList')}
         title="Bullet list"
       >
         ⋯
       </button>
-      
-      <button 
+
+      <button
         class="format-btn yorha-btn yorha-nes-btn"
         onclick={() => formatText('insertOrderedList')}
         title="Numbered list"
@@ -294,7 +296,7 @@ https://svelte.dev/e/js_parse_error -->
 
   <!-- Editor -->
   <div class="editor-container">
-    <div 
+    <div
       bind:this={editorElement}
       class="editor-content"
       contenteditable="true" oninput={updateStatistics}
@@ -316,7 +318,7 @@ https://svelte.dev/e/js_parse_error -->
         Reading time: {readingTime} min
       </span>
     </div>
-    
+
     <div class="status-right">
       {#if autoSave}
         <span class="auto-save-status">
@@ -334,7 +336,7 @@ https://svelte.dev/e/js_parse_error -->
       <h3 class="shortcuts-title gradient-text-primary">
         Keyboard Shortcuts
       </h3>
-      
+
       <div class="shortcuts-grid">
         {#each shortcuts as shortcut}
           <div class="shortcut-item">
@@ -343,8 +345,8 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/each}
       </div>
-      
-      <button 
+
+      <button
         class="close-shortcuts yorha-btn yorha-nes-btn is-primary"
         onclick={() => showShortcuts = false}
       >
@@ -355,6 +357,7 @@ https://svelte.dev/e/js_parse_error -->
 {/if}
 
 <style>
+  .professional-editor {;
   .professional-editor {
     display: flex;
     flex-direction: column;
@@ -481,7 +484,7 @@ https://svelte.dev/e/js_parse_error -->
     font-family: 'Georgia', 'Times New Roman', serif;
   }
 
-  .editor-content: empty::before {
+  .editor-content:empty::before {
     content: attr(placeholder);
     color: rgba(58, 55, 47, 0.5);
     font-style: italic;

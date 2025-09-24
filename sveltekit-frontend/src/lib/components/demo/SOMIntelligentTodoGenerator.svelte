@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -40,13 +40,15 @@ https://svelte.dev/e/js_parse_error -->
   let sortBy = $state<'priority' | 'confidence' | 'effort' >('priority');
   let showDetails = $state(false);
 
-  $effect(async () => {
-    try {
+  $effect(() => {
+    (async () => {
+try {
       somCache = await initializeSOMCache();
       webGPUEnabled = true;
     } catch (error) {
       console.error('Failed to initialize SOM cache:', error);
     }
+    })();
   });
 
   async function processErrors() {
@@ -98,9 +100,9 @@ https://svelte.dev/e/js_parse_error -->
           line: parseInt(match[2]),
           severity: determineSeverity(match[3]),
           category: determineCategory(match[3]),
-          type: 'error',
-          timestamp: new Date().toISOString(),
-          context: [line]
+          type: 'error',;
+          timestamp: new Date().toISOString(),;
+          context: [line];
         });
       }
     });
@@ -416,7 +418,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  :global(body) {
+  :global(body) {;
     background-color: #f8fafc;
   }
 </style>

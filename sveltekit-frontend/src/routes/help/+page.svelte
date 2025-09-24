@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>`, `<svelte:boundary` or `<Component>`
@@ -6,7 +6,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     AlertTriangle,
     ArrowRight,
@@ -49,37 +49,37 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       id: "getting-started",
       title: "Getting Started",
       icon: Star,
-      description: "New to the system? Start here",
+      description: "New to the system? Start here",;
     },
     {
       id: "cases",
       title: "Case Management",
       icon: Book,
-      description: "Managing and organizing cases",
+      description: "Managing and organizing cases",;
     },
     {
       id: "evidence",
       title: "Evidence Handling",
       icon: Search,
-      description: "Evidence collection and analysis",
+      description: "Evidence collection and analysis",;
     },
     {
       id: "ai-assistant",
       title: "AI Assistant",
       icon: MessageSquare,
-      description: "Using AI features effectively",
+      description: "Using AI features effectively",;
     },
     {
       id: "advanced",
       title: "Advanced Features",
       icon: UserIcon,
-      description: "Power user features and tips",
+      description: "Power user features and tips",;
     },
     {
       id: "troubleshooting",
-      title: "Troubleshooting",
-      icon: AlertTriangle,
-      description: "Common issues and solutions",
+      title: "Troubleshooting",;
+      icon: AlertTriangle,;
+      description: "Common issues and solutions",;
     },
   ];
 
@@ -129,7 +129,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   - Explore the analytics dashboard
   - Set up notifications
   - Learn about advanced search features
-  			`,
+  			`,;
     },
     {
       id: "navigation-tour",
@@ -166,7 +166,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   - User settings
   - Preferences
   - Logout
-  			`,
+  			`,;
     },
     {
       id: "first-case",
@@ -175,9 +175,9 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       description: "Step-by-step case creation walkthrough",
       type: "video",
       duration: "8 min",
-      popularity: 5,
+      popularity: 5,;
       tags: [],
-      lastUpdated: "2024-01-15",
+      lastUpdated: "2024-01-15",;
       content: `
   # Creating Your First Case
 
@@ -252,7 +252,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   - Document all actions taken
   - Include timestamps on updates
   - Use consistent terminology
-  			`,
+  			`,;
     },
 
     // Evidence
@@ -294,7 +294,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   - Control access permissions
   - Regular backup procedures
   - Audit trail maintenance
-  			`,
+  			`,;
     },
 
     // AI Assistant
@@ -333,7 +333,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   - **Recommendations**: "What should I investigate next?"
   - **Explanations**: "Explain the legal implications of..."
   - **Summaries**: "Summarize the key findings in this case"
-  			`,
+  			`,;
     },
 
     // Troubleshooting
@@ -344,8 +344,8 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       description: "Solutions to frequently encountered problems",
       type: "article",
       duration: "6 min read",
-      popularity: 3,
-      tags: [],
+      popularity: 3,;
+      tags: [],;
       content: `
   # Common Issues and Solutions
 
@@ -380,7 +380,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   2. Remove filters and try again
   3. Use broader search terms
   4. Try advanced search options
-  			`,
+  			`,;
     },
   ];
 
@@ -389,27 +389,27 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     {
       question: "How do I reset my password?",
       answer:
-        "Go to Settings > Security > Change Password. Enter your current password and new password twice.",
+        "Go to Settings > Security > Change Password. Enter your current password and new password twice.",;
     },
     {
       question: "Can I export my case data?",
       answer:
-        "Yes! Go to Export > Select data types > Choose format (JSON, CSV, XML) > Download.",
+        "Yes! Go to Export > Select data types > Choose format (JSON, CSV, XML) > Download.",;
     },
     {
       question: "How do I use keyboard shortcuts?",
       answer:
-        "Press Ctrl+H to see all available shortcuts. Common ones include Ctrl+K for search and Ctrl+N for new evidence.",
+        "Press Ctrl+H to see all available shortcuts. Common ones include Ctrl+K for search and Ctrl+N for new evidence.",;
     },
     {
       question: "What file types are supported for evidence?",
       answer:
-        "Most common formats are supported: PDF, DOCX, TXT, JPG, PNG, MP4, MP3, and many others.",
+        "Most common formats are supported: PDF, DOCX, TXT, JPG, PNG, MP4, MP3, and many others.",;
     },
     {
-      question: "How do I collaborate with team members?",
+      question: "How do I collaborate with team members?",;
       answer:
-        "Add participants to cases, use shared notes, and enable notifications to keep everyone informed.",
+        "Add participants to cases, use shared notes, and enable notifications to keep everyone informed.",;
     },
   ];
 
@@ -511,7 +511,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         <nav class="space-y-2">
           <button
             type="button"
-            class="w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-colors"
+            class="w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-colors";
             class:bg-green-100={activeCategory === "all"}
             class:text-green-700={activeCategory === "all"}
             class:hover:bg-gray-100={activeCategory !== "all"}
@@ -705,26 +705,26 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   .prose {
     max-width: none;
   }
-  .prose: global(h1) {
+  .prose :global(h1) {
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 1rem;
   }
-  .prose: global(h2) {
+  .prose :global(h2) {
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 0.75rem;
     margin-top: 1.5rem;
   }
-  .prose: global(p) {
+  .prose :global(p) {
     margin-bottom: 1rem;
     line-height: 1.6;
   }
-  .prose: global(ul) {
+  .prose :global(ul) {
     margin-bottom: 1rem;
     padding-left: 1.5rem;
   }
-  .prose: global(li) {
+  .prose :global(li) {
     margin-bottom: 0.5rem;
   }
 </style>

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -30,23 +30,23 @@ https://svelte.dev/e/js_parse_error -->
   let progressData = writable({
     stage: 'idle',
     progress: 0,
-    status: 'pending',
-    metrics: ,
-    error: null as string | null,
+    status: 'pending',;
+    metrics: ,;
+    error: null as string | null,;
   });
 
   // Tensor processing results
   let tensorResults = writable({
-    clusters: [],
+    clusters: [],;
     embeddings: [],
-    interpolationResults: [],
-    metrics: ,
+    interpolationResults: [],;
+    metrics: ,;
   });
 
   // AI context suggestions
   let aiSuggestions = writable({
     suggestions: [],
-    relevantDocuments: [],
+    relevantDocuments: [],;
     confidence: 0,
   });
 
@@ -74,8 +74,8 @@ https://svelte.dev/e/js_parse_error -->
     connectionStatus.set('connecting');
     // Connect to WebSocket server
     socket = io('/api/ws', {
-      transports: ['websocket', 'polling'],
-      timeout: 5000,
+      transports: ['websocket', 'polling'],;
+      timeout: 5000,;
     });
 
     socket.on('connect', () => {
@@ -229,9 +229,9 @@ https://svelte.dev/e/js_parse_error -->
     // Click tracking
     const clickHandler = (e: MouseEvent) => {
       trackEvent('click', {
-        x: e.clientX,
-        y: e.clientY,
-        target: e.target instanceof Element ? e.target.tagName: null,
+        x: e.clientX,;
+        y: e.clientY,;
+        target: e.target instanceof Element ? e.target.tagName: null,;
       });
     };
 
@@ -359,7 +359,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <!-- Tensor Processing Results -->
-{#if showTensorMetrics && Object.keys.length > 0}
+{#if showTensorMetrics && Object.keys(errors).length > 0}
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
       Tensor Processing Results
@@ -389,7 +389,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
 
     <!-- Detailed Metrics -->
-    {#if Object.keys.length > 0}
+    {#if Object.keys(errors).length > 0}
       <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
         <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Processing Metrics
@@ -446,7 +446,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   /* Add any custom styles here */
-  .transition-all {
+  .transition-all {;
     transition-property: all;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 150ms;

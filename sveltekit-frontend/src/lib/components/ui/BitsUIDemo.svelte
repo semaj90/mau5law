@@ -76,7 +76,7 @@
     </h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
       <!-- Input Demo -->
-      <BitsInput
+      <BitsInput;
         bind:value={caseName}
         placeholder="Enter case name"
         variant="legal"

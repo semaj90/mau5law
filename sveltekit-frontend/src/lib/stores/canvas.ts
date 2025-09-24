@@ -7,7 +7,7 @@ export const sidebarStore = writable({
   open: false,
   width: 320,
   items: [] as any[],
-  searchQuery: "",
+  searchQuery: "",;
   loading: false
 });
 
@@ -30,7 +30,7 @@ export const toolbarStore = writable({
     strokeColor: "#000000",
     fillColor: "transparent",
     opacity: 1
-  },
+  },;
   zoom: 100,
   canUndo: false,
   canRedo: false
@@ -46,7 +46,7 @@ export const canvasStore = writable({
   isDirty: false,
   isLoading: false,
   panX: 0,
-  panY: 0,
+  panY: 0,;
   scale: 1
 });
 
@@ -56,14 +56,14 @@ export const aiStore = writable({
   selectedVibe: "professional",
   prompt: "",
   response: "",
-  isGenerating: false,
+  isGenerating: false,;
   history: [] as any[]
 });
 
 // File upload state;
 export const uploadStore = writable({
   isUploading: false,
-  progress: 0,
+  progress: 0,;
   queue: [] as File[],
   uploadedFiles: [] as Evidence[]
 });

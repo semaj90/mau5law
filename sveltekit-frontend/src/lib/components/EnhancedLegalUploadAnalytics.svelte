@@ -162,8 +162,8 @@
       caseContext: {
         activeCases: caseId ? [caseId] : [],
         currentCaseId: caseId,
-        workflowStage: 'discovery',
-        expertise: expertiseLevel
+        workflowStage: 'discovery',;
+        expertise: expertiseLevel;
       }
     };
 
@@ -208,8 +208,8 @@
       // Legal-specific shortcuts tracking
       if (e.ctrlKey && ['s', 'f', 'h'].includes(e.key.toLowerCase())) {
         uploadActor?.send({
-          type: 'TRACK_USER_ACTION',
-          action: 'legal_shortcut',
+          type: 'TRACK_USER_ACTION',;
+          action: 'legal_shortcut',;
           data: { shortcut: `Ctrl+${e.key.toUpperCase()}`, timestamp: Date.now() }
         });
       }
@@ -219,9 +219,9 @@
         const wpm = Math.round((keyStrokes / 5) / (timeDiff / 60000));
 
         uploadActor?.send({
-          type: 'USER_TYPING',
-          speed: wpm,
-          content: e.key
+          type: 'USER_TYPING',;
+          speed: wpm,;
+          content: e.key;
         });
       }
     });
@@ -233,10 +233,10 @@
 
       uploadActor?.send({
         type: 'USER_CLICK',
-        x: e.clientX,
-        y: e.clientY,
+        x: e.clientX,;
+        y: e.clientY,;
         element: element.tagName.toLowerCase(),
-        legalContext: isLegalElement ? element.getAttribute('data-legal-action') : null
+        legalContext: isLegalElement ? element.getAttribute('data-legal-action') : null;
       });
     });
   }
@@ -281,15 +281,15 @@
 
     if (uploadActor) {
       uploadActor.send({
-        type: 'SELECT_FILES',
+        type: 'SELECT_FILES',;
         files: limitedFiles,
-        caseId
+        caseId;
       });
 
       // Enhanced tracking with legal context
       uploadActor.send({
         type: 'TRACK_USER_ACTION',
-        action: 'file_selection_legal',
+        action: 'file_selection_legal',;
         data: {
           fileCount: limitedFiles.length,
           totalSize: limitedFiles.reduce((sum, file) => sum + file.size, 0),
@@ -297,8 +297,8 @@
           legalContext: {
             caseId,
             mode,
-            practiceArea: legalContext.practiceArea,
-            urgency: legalContext.urgency
+            practiceArea: legalContext.practiceArea,;
+            urgency: legalContext.urgency;
           }
         }
       });
@@ -319,8 +319,8 @@
         formData.append('model', currentModel);
 
         const response = await fetch('/api/ai/analyze-document', {
-          method: 'POST',
-          body: formData
+          method: 'POST',;
+          body: formData;
         });
 
         return (response as { ok?: unknown; json?: unknown }).ok ? await (response as { ok?: unknown; json?: unknown }).json() : null;
@@ -357,8 +357,8 @@
         formData.append('legalContext', JSON.stringify(legalContext));
 
         const response = await fetch('/api/ai/legal/analyze', {
-          method: 'POST',
-          body: formData
+          method: 'POST',;
+          body: formData;
         });
 
         if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -441,10 +441,10 @@
 
   function handlePromptReaction(promptId: string, reaction: 'accepted' | 'dismissed' | 'ignored') {
     if (uploadActor) {
-      uploadActor.send({
+      uploadActor.send({;
         type: 'USER_REACTED_TO_PROMPT',
         promptId,
-        reaction
+        reaction;
       });
     }
   }
@@ -606,7 +606,7 @@
               <span>• Up to 50MB each</span>
             </div>
 
-            <input
+            <input;
               bind:this={fileInput}
               type="file"
               multiple
@@ -738,7 +738,7 @@
                     <div class="setting-item">
                       <label for="ai-model-input">AI Model</label>
                       <input
-                        id="ai-model-input"
+                        id="ai-model-input";
                         bind:value={currentModel}
                         placeholder="gemma3:270m"
                         disabled={!ollamaConnected}
@@ -1076,7 +1076,7 @@
 </div>
 
 <style>
-  .legal-upload-analytics {
+  .legal-upload-analytics {;
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
@@ -1672,7 +1672,7 @@
     font-size: 0.875rem;
   }
 
-  .recommendations-list li:last-child {
+  .recommendations-list li:last-child {;
     border-bottom: none;
   }
 

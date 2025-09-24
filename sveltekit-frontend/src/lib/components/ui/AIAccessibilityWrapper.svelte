@@ -90,9 +90,9 @@
       const obj = aiResult as Record<string, unknown>;
       const summary = (obj as any).summary || `${operation} completed with ${Object.keys(obj).length} sections`;
       const levels = Object.entries(obj).map(([key, value], index) => ({
-        label: key.charAt(0).toUpperCase() + key.slice(1),
-        content: value,
-        level: index + 1
+        label: key.charAt(0).toUpperCase() + key.slice(1),;
+        content: value,;
+        level: index + 1;
       }));
 
       aiAccessibilityPatterns?.createProgressiveDisclosure(containerElement, aiResult, {
@@ -120,7 +120,7 @@
     <div class="voice-commands-control">
       <button
         class={`voice-toggle nes-btn ${voiceCommandsActive ? 'is-success' : 'is-primary'}`}
-        on:click={handleVoiceCommand}
+        onclick={handleVoiceCommand}
         aria-pressed={voiceCommandsActive}
         aria-label="Toggle voice commands (Ctrl+Shift+V)"
         title="Voice Commands (Ctrl+Shift+V)"
@@ -219,7 +219,7 @@
 </div>
 
 <style>
-  .ai-accessibility-wrapper {
+  .ai-accessibility-wrapper {;
     position: relative;
     padding: 1rem;
     border: 1px solid var(--color-border, #333);

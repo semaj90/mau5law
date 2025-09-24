@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -41,8 +41,8 @@ Displays detailed integrity verification results with AI analysis
     aiAnalysisScore: number
     riskAssessment: string
   } | undefined;
-          authenticity: number
-    completeness: number
+          authenticity: number;
+    completeness: number;
     relevance: number
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
     recommendations: string[];
@@ -349,7 +349,7 @@ Displays detailed integrity verification results with AI analysis
 </div>
 
 <style>
-  .integrity-verification {
+  .integrity-verification {;
     animation: fadeIn 0.5s ease-out;
   }
   

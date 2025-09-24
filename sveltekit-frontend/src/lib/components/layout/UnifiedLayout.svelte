@@ -109,7 +109,7 @@
 
 <style>
   /* Root Layout Styles */
-  .unified-layout {
+  .unified-layout {;
     min-height: 100vh;
     background: linear-gradient(135deg,
       var(--nier-bg-primary, #0f0f23),

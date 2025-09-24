@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components
+<!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components;
 https://svelte.dev/e/component_invalid_directive -->
 <!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components -->
 <script lang="ts">
@@ -36,8 +36,9 @@ https://svelte.dev/e/component_invalid_directive -->
   
 
   // Load search history from localStorage and initialize Phase 13
-  $effect(async () => {
-    const saved = localStorage.getItem('ai-search-history');
+  $effect(() => {
+    (async () => {
+const saved = localStorage.getItem('ai-search-history');
     if (saved) {
       searchHistory = JSON.parse(saved);
     }
@@ -45,6 +46,7 @@ https://svelte.dev/e/component_invalid_directive -->
     await updatePhase13Status();
     // Generate auto-suggestions on mount
     generateAutoSuggestions();
+    })();
   });
 
   // AI-powered search with MCP integration
@@ -59,16 +61,16 @@ https://svelte.dev/e/component_invalid_directive -->
       }
 
       const response = await fetch('/api/ai/find', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: searchQuery,
+          query: searchQuery,;
           type: selectedType,
           useAI: true,
           mcpAnalysis: useMCPAnalysis,
           semanticSearch: useSemanticSearch,
           maxResults: 20,
-          confidenceThreshold: aiConfidenceThreshold
+          confidenceThreshold: aiConfidenceThreshold;
         })
       });
       const data = await (response as { json?: any; ok?: any }).json();
@@ -78,7 +80,7 @@ https://svelte.dev/e/component_invalid_directive -->
         // Update memory graph with search interaction
         await updateMemoryWithAIContext({
           userId: 'current-user',
-          query: searchQuery,
+          query: searchQuery,;
           results: (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).results.length,
           aiModel: (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).metadata?.model,
           confidence: (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).metadata?.confidence,
@@ -132,21 +134,21 @@ https://svelte.dev/e/component_invalid_directive -->
           priority: 'high',
           suggestion: 'Implement semantic case clustering',
           implementation: 'Group similar cases using AI embeddings',
-          mcpQuery: commonMCPQueries.aiChatIntegration()
+          mcpQuery: commonMCPQueries.aiChatIntegration();
         },
         {
           type: 'performance',
           priority: 'medium',
           suggestion: 'Cache frequent searches',
           implementation: 'Store common queries in Redis for faster responses',
-          mcpQuery: commonMCPQueries.performanceBestPractices()
+          mcpQuery: commonMCPQueries.performanceBestPractices();
         },
         {
           type: 'ui-enhancement',
-          priority: 'low',
-          suggestion: 'Add voice search capability',
+          priority: 'low',;
+          suggestion: 'Add voice search capability',;
           implementation: 'Integrate speech-to-text for hands-free search',
-          mcpQuery: commonMCPQueries.uiUxBestPractices()
+          mcpQuery: commonMCPQueries.uiUxBestPractices();
         }
       ];
     } catch (error) {
@@ -158,13 +160,13 @@ https://svelte.dev/e/component_invalid_directive -->
   async function updateMemoryWithAIContext(interaction: any) {
     try {
       await fetch('/api/mcp/memory/create-relations', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify.toISOString(),
-            resultsCount: interaction.results,
-            model: interaction.aiModel,
+        body: JSON.stringify(toISOString)(),
+            resultsCount: interaction.results,;
+            model: interaction.aiModel,;
             confidence: interaction.confidence,
-            processingTime: interaction.processingTime
+            processingTime: interaction.processingTime;
           }
         })
       });
@@ -254,11 +256,11 @@ https://svelte.dev/e/component_invalid_directive -->
     try {
       // Use Phase 13 integration manager to apply suggestion
       const response = await fetch('/api/phase13/integration', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({;
           action: 'apply-suggestion',
-          suggestion
+          suggestion;
         })
       });
       if ((response as { json?: any; ok?: any }).ok) {
@@ -409,7 +411,7 @@ https://svelte.dev/e/component_invalid_directive -->
                 <!-- AI Confidence Threshold -->
                 <div class="space-y-2">
                   <label class="text-yellow-400 font-mono text-sm" for="ai-confidence-mathro">AI CONFIDENCE: {Math.round(aiConfidenceThreshold * 100)}%</label><input id="ai-confidence-mathro"
-                    type="range"
+                    type="range";
                     bind:value={aiConfidenceThreshold}
                     min="0.1"
                     max="1"
@@ -476,7 +478,7 @@ https://svelte.dev/e/component_invalid_directive -->
             {#each searchResults as result, index ((result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).id)}
               <div 
                 class="nier-result-item border-b border-gray-700/50 p-4 hover:bg-gray-800/50 cursor-pointer transition-all duration-200 group"
-                onclick={() => selectResult(result)}
+                onclick={() => selectResult(result)};
                 in:fly={{ x: -20, duration: 300, delay: index * 50 }}
                 data-testid="result-item"
               >
@@ -618,13 +620,13 @@ https://svelte.dev/e/component_invalid_directive -->
 
 <style>
   /* NieR Automata Theme Enhancements */
-  .nier-container {
+  .nier-container {;
     clip-path: polygon(0 0, calc(100% - 25px) 0, 100% 25px, 100% 100%, 25px 100%, 0 calc(100% - 25px));
     position: relative;
     max-height: 90vh;
   }
 
-  .nier-container: :before {
+  .nier-container::before {
     content: '';
     position: absolute;
     top: -2px;
@@ -675,7 +677,7 @@ https://svelte.dev/e/component_invalid_directive -->
     overflow: hidden;
   }
 
-  .nier-search-btn: :before {
+  .nier-search-btn::before {
     content: '';
     position: absolute;
     top: 0;
@@ -694,7 +696,7 @@ https://svelte.dev/e/component_invalid_directive -->
     position: relative;
   }
 
-  .nier-result-item: :before {
+  .nier-result-item::before {
     content: '';
     position: absolute;
     left: 0;
@@ -732,7 +734,7 @@ https://svelte.dev/e/component_invalid_directive -->
     -webkit-appearance: none;
   }
 
-  .nier-slider: :-webkit-slider-thumb {
+  .nier-slider::-webkit-slider-thumb {
     @apply bg-yellow-400 rounded-none w-4 h-4 cursor-pointer;
     -webkit-appearance: none;
     clip-path: polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));

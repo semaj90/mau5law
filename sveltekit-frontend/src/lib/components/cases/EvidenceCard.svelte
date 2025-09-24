@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -103,7 +103,7 @@ https://svelte.dev/e/js_parse_error -->
 </script>
 
 <div
-  class="bg-white rounded-lg shadow-sm border p-4 transition-all hover:shadow-md"
+  class="bg-white rounded-lg shadow-sm border p-4 transition-all hover:shadow-md";
   class:opacity-60={disabled}
   class:pointer-events-none={disabled}
 >
@@ -180,12 +180,12 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   /* @unocss-include */
-  .line-clamp-2 {
+  .line-clamp-2 {;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
     -webkit-box-orient: vertical
-    overflow: hidden
+    overflow: hidden;
   }
 </style>
 

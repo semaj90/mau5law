@@ -14,7 +14,7 @@ export const DocumentUploadSchema = z.object({
   description: z.string().optional(),
   documentType: z.enum(['contract', 'motion', 'brief', 'evidence', 'correspondence', 'statute', 'regulation', 'case_law', 'other']),
   jurisdiction: z.enum(['federal', 'state', 'local', 'international']).optional(),
-  tags: z.array(z.string()).default([]),
+  tags: z.array(z.string()).default([]),;
   file: z.any().refine((file) => file instanceof File, 'File is required'),
   aiProcessing: z.object({
     generateSummary: z.boolean().default(true),
@@ -33,7 +33,7 @@ export const CaseCreationSchema = z.object({
   assignedTo: z.string().uuid().optional(),
   jurisdiction: z.enum(['federal', 'state', 'local', 'international']).optional(),
   tags: z.array(z.string()).default([]),
-  estimatedDuration: z.number().min(1).max(365).optional(), // days
+  estimatedDuration: z.number().min(1).max(365).optional(), // days;
   budget: z.number().min(0).optional()
 });
 
@@ -45,7 +45,7 @@ export const SearchQuerySchema = z.object({
     dateRange: z.object({
       from: z.date().optional(),
       to: z.date().optional()
-    }).optional(),
+    }).optional(),;
     tags: z.array(z.string()).default([]),
     similarityThreshold: z.number().min(0).max(1).default(0.7),
     maxResults: z.number().min(1).max(100).default(20)
@@ -58,7 +58,7 @@ export const AIAnalysisSchema = z.object({
   documentId: z.string().uuid(),
   analysisType: z.enum(['summary', 'entities', 'risk', 'recommendations', 'precedents', 'compliance']),
   options: z.object({
-    model: z.string().default('gemma3-legal:latest'),
+    model: z.string().default('gemma3-legal:latest'),;
     temperature: z.number().min(0).max(2).default(0.7),
     maxTokens: z.number().min(100).max(8000).default(2000),
     includeConfidence: z.boolean().default(true),
@@ -100,7 +100,7 @@ export interface SearchContext {
   isSearching: boolean;
   searchHistory: string[];
   filters: any;
-  pagination: {
+  pagination: {;
     page: number;
     pageSize: number;
     total: number;
@@ -225,7 +225,7 @@ export const documentUploadMachine = createMachine();
           }
         }
       },
-      uploaded: {
+      uploaded: {;
         always: [;
           {
             target: 'processing',
@@ -267,7 +267,7 @@ export const documentUploadMachine = createMachine();
           }
         }
       },
-      uploadError: {
+      uploadError: {;
         on: {
           RETRY: [;
             {
@@ -283,7 +283,7 @@ export const documentUploadMachine = createMachine();
           RESET: 'idle'
         }
       },
-      processingError: {
+      processingError: {;
         on: {
           RETRY: [;
             {
@@ -313,7 +313,7 @@ export const documentUploadMachine = createMachine();
       }
     }
   },
-  {
+  {;
     actors: {
       validateDocumentForm: fromPromise(async ({ input }) => {
         try {
@@ -340,7 +340,7 @@ export const documentUploadMachine = createMachine();
         });
 
         const response = await fetch('/api/documents/upload', {
-          method: 'POST',
+          method: 'POST',;
           body: formData
         });
 
@@ -353,7 +353,7 @@ export const documentUploadMachine = createMachine();
       processDocument: fromPromise(async ({ input }) => {
         const response = await fetch('/api/ai/process-document', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' },;
           body: JSON.stringify(input)
         });
 
@@ -459,7 +459,7 @@ export const caseCreationMachine = createMachine();
           input: ({ context }) => context.formData,
           onDone: 'submitting',
           onError: {
-            target: 'editing',
+            target: 'editing',;
             actions: assign({
               validationErrors: ({ event }) => {
                 const error = event.error;
@@ -492,7 +492,7 @@ export const caseCreationMachine = createMachine();
           },
           onError: {
             target: 'editing',
-            actions: assign({
+            actions: assign({;
               error: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'message' in error) {
@@ -512,7 +512,7 @@ export const caseCreationMachine = createMachine();
       }
     }
   },
-  {
+  {;
     actors: {
       loadDraft: fromPromise(async () => {
         // Load draft from localStorage or API
@@ -538,7 +538,7 @@ export const caseCreationMachine = createMachine();
       createCase: fromPromise(async ({ input }) => {
         const response = await fetch('/api/cases', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' },;
           body: JSON.stringify(input)
         });
 
@@ -602,7 +602,7 @@ export const searchMachine = createMachine();
           input: ({ context }) => context.query,
           onDone: 'searching',
           onError: {
-            target: 'idle',
+            target: 'idle',;
             actions: assign({
               validationErrors: ({ event }) => {
                 const error = event.error;
@@ -642,7 +642,7 @@ export const searchMachine = createMachine();
           },
           onError: {
             target: 'error',
-            actions: assign({
+            actions: assign({;
               error: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'message' in error) {
@@ -700,7 +700,7 @@ export const searchMachine = createMachine();
       }
     }
   },
-  {
+  {;
     actors: {
       loadSearchHistory: fromPromise(async () => {
         const history = localStorage.getItem('search-history');
@@ -721,7 +721,7 @@ export const searchMachine = createMachine();
         const query = input?.query || '';
         const response = await fetch('/api/search/vector', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' },;
           body: JSON.stringify(input)
         });
 
@@ -745,7 +745,7 @@ export const searchMachine = createMachine();
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            ...query,
+            ...query,;
             pagination: { page }
           })
         });
@@ -793,7 +793,7 @@ export const aiAnalysisMachine = createMachine();
           input: ({ context }) => context.analysisData,
           onDone: 'analyzing',
           onError: {
-            target: 'idle',
+            target: 'idle',;
             actions: assign({
               validationErrors: ({ event }) => {
                 const error = event.error;
@@ -829,7 +829,7 @@ export const aiAnalysisMachine = createMachine();
           },
           onError: {
             target: 'error',
-            actions: assign({
+            actions: assign({;
               error: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'message' in error) {
@@ -863,7 +863,7 @@ export const aiAnalysisMachine = createMachine();
       }
     }
   },
-  {
+  {;
     actors: {
       validateAnalysis: fromPromise(async ({ input }) => {
         try {
@@ -881,7 +881,7 @@ export const aiAnalysisMachine = createMachine();
 
         const response = await fetch('/api/ai/analyze', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' },;
           body: JSON.stringify(input)
         });
 

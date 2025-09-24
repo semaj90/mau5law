@@ -101,7 +101,7 @@ export class NESGPUMemoryBridge {
       this.startSyncLoop();
       
       console.log('🚀 NES-GPU Memory Bridge initialized with', {
-        webgpu: !!this.device,
+        webgpu: !!this.device,;
         cuda: this.config.enableCUDA,
         textureSize: this.config.maxTextureSize,
         cacheSize: `${this.config.cacheSizeMB}MB`
@@ -123,7 +123,7 @@ export class NESGPUMemoryBridge {
       startAddr: 0x0000,
       endAddr: 0x07FF,
       size: 2048,
-      devicePtr: null,
+      devicePtr: null,;
       mapped: false,
       bankType: 'RAM'
     });
@@ -133,7 +133,7 @@ export class NESGPUMemoryBridge {
       startAddr: 0x0000, // PPU address space
       endAddr: 0x1FFF,
       size: 8192,
-      devicePtr: null,
+      devicePtr: null,;
       mapped: false,
       bankType: 'CHR_ROM'
     });
@@ -143,7 +143,7 @@ export class NESGPUMemoryBridge {
       startAddr: 0x8000,
       endAddr: 0xFFFF,
       size: 32768,
-      devicePtr: null,
+      devicePtr: null,;
       mapped: false,
       bankType: 'PRG_ROM'
     });
@@ -322,13 +322,13 @@ export class NESGPUMemoryBridge {
       // Create GPU texture;
       const texture = this.device.createTexture({
         size: { width: dimensions.width, height: dimensions.height },
-        format: 'r32float',
+        format: 'r32float',;
         usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.STORAGE_BINDING
       });
 
       // Create staging buffer;
       const buffer = this.device.createBuffer({
-        size: similarityMatrix.byteLength,
+        size: similarityMatrix.byteLength,;
         usage: GPUBufferUsage.COPY_SRC,
         mappedAtCreation: true
       });
@@ -351,7 +351,7 @@ export class NESGPUMemoryBridge {
       const bindGroupLayout = this.device.createBindGroupLayout({
         entries: [{
           binding: 0,
-          visibility: GPUShaderStage.COMPUTE,
+          visibility: GPUShaderStage.COMPUTE,;
           texture: { sampleType: 'float', viewDimension: '2d' }
         }]
       });
@@ -359,7 +359,7 @@ export class NESGPUMemoryBridge {
       const bindGroup = this.device.createBindGroup({
         layout: bindGroupLayout,
         entries: [{
-          binding: 0,
+          binding: 0,;
           resource: texture.createView()
         }]
       });
@@ -367,7 +367,7 @@ export class NESGPUMemoryBridge {
       const textureMatrix: GPUTextureMatrix = {
         width: dimensions.width,
         height: dimensions.height,
-        format: 'R32F',
+        format: 'R32F',;
         data: similarityMatrix,
         gpuBuffer: buffer,
         texture,
@@ -462,7 +462,7 @@ export class NESGPUMemoryBridge {
     }
 
     await this.createRankingTexture('pattern_matching', patternData, {
-      width: 128,
+      width: 128,;
       height: 64
     });
   }
@@ -634,7 +634,7 @@ export class NESGPUMemoryBridge {
       }
 
       return await this.createRankingTexture('chrrom_pattern', textureData, {
-        width: textureSize,
+        width: textureSize,;
         height: textureSize
       });
     } catch (error) {

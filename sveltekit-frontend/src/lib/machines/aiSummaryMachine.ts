@@ -144,7 +144,7 @@ const initialContext: AISummaryContext = {
   documentType: "general",
   originalContent: "",
   summary: null,
-  keyInsights: [],
+  keyInsights: [],;
   confidence: 0,
   
   // AI Mix Synthesis data
@@ -169,7 +169,7 @@ const initialContext: AISummaryContext = {
   synthesisData: null,
   error: null,
   loading: false,
-  isPlaying: false,
+  isPlaying: false,;
   progress: 0,
   voiceEnabled: false,
   highlightMode: "key_points",
@@ -177,7 +177,7 @@ const initialContext: AISummaryContext = {
 };
 
 export const aiSummaryMachine = createMachine({
-  types: Record<string, any> as {
+  types: Record<string, any> as {;
     context: AISummaryContext;
     events: AISummaryEvent;
   },
@@ -192,7 +192,7 @@ export const aiSummaryMachine = createMachine({
             actions: assign({
               documentId: ({
                 event
-              }: {
+              }: {;
                 event: Extract<AISummaryEvent, { type: "LOAD_DOCUMENT" }>;
               }) => event.documentId,
               caseId: ({
@@ -209,7 +209,7 @@ export const aiSummaryMachine = createMachine({
             actions: assign({
               originalContent: ({
                 event
-              }: {
+              }: {;
                 event: Extract<AISummaryEvent, { type: "GENERATE_SUMMARY" }>;
               }) => event.content,
               documentType: ({
@@ -225,7 +225,7 @@ export const aiSummaryMachine = createMachine({
             actions: assign(({
                 context,
                 event
-              }: {
+              }: {;
                 context: AISummaryContext;
                 event: Extract<AISummaryEvent, { type: "UPDATE_PREFERENCES" }>;
               }) => ({
@@ -443,14 +443,14 @@ export const aiSummaryMachine = createMachine({
       }
     }
   },
-  {
+  {;
     actors: {
       loadDocument: fromPromise(async ({ input }: { input: AISummaryContext }) => {
         // Mock implementation - would call actual API;
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve({
-              content: `Evidence Report #${input.documentId}\n\nThis is a comprehensive analysis of the evidence collected in case ${input.caseId}. The findings indicate significant legal implications that require careful consideration...`,
+              content: `Evidence Report #${input.documentId}\n\nThis is a comprehensive analysis of the evidence collected in case ${input.caseId}. The findings indicate significant legal implications that require careful consideration...`,;
               type: "evidence" as const
             });
           }, 1000);
@@ -468,7 +468,7 @@ export const aiSummaryMachine = createMachine({
                 content:
                   "This evidence report provides a comprehensive analysis of digital forensics findings in the case. Key evidence points to significant security violations and potential criminal activity.",
                 type: "executive_summary",
-                importance: "critical",
+                importance: "critical",;
                 entities: [;
                   {
                     text: "digital forensics",
@@ -489,7 +489,7 @@ export const aiSummaryMachine = createMachine({
                 content:
                   "Analysis of the digital evidence reveals unauthorized access attempts, data exfiltration, and potential insider threats. Timeline analysis shows coordinated activities over a 6-month period.",
                 type: "key_findings",
-                importance: "critical",
+                importance: "critical",;
                 entities: [;
                   {
                     text: "unauthorized access",
@@ -511,7 +511,7 @@ export const aiSummaryMachine = createMachine({
                 content:
                   "The evidence supports charges under the Computer Fraud and Abuse Act (CFAA) and state data protection laws. Recommended prosecution strategy includes focusing on the financial impact and systematic nature of the violations.",
                 type: "legal_implications",
-                importance: "high",
+                importance: "high",;
                 entities: [;
                   {
                     text: "Computer Fraud and Abuse Act",
@@ -520,7 +520,7 @@ export const aiSummaryMachine = createMachine({
                   },
                   {
                     text: "data protection laws",
-                    type: "legal_term",
+                    type: "legal_term",;
                     confidence: 0.94
                   }
                 ],
@@ -537,7 +537,7 @@ export const aiSummaryMachine = createMachine({
                 "Clear CFAA violation patterns",
                 "Financial impact quantifiable",
                 "Insider threat indicators present"
-              ],
+              ],;
               confidence: 0.92,
               wordCount: sections.reduce(
                 (total, section) => total + section.wordCount,
@@ -568,7 +568,7 @@ export const aiSummaryMachine = createMachine({
                   type: "credibility" as const,
                   score: 0.89,
                   explanation:
-                    "Strong chain of custody and forensic methodology",
+                    "Strong chain of custody and forensic methodology",;
                   recommendations: [
                     "Verify forensic tool calibration",
                     "Document examiner credentials"
@@ -578,7 +578,7 @@ export const aiSummaryMachine = createMachine({
                   type: "legal_significance" as const,
                   score: 0.96,
                   explanation:
-                    "Critical evidence for establishing intent and systematic violations",
+                    "Critical evidence for establishing intent and systematic violations",;
                   recommendations: [
                     "Central to prosecution strategy",
                     "Prepare for technical challenges"
@@ -610,7 +610,7 @@ export const aiSummaryMachine = createMachine({
                   "Network traffic analysis",
                   "System log correlations",
                   "Financial impact assessment"
-                ],
+                ],;
                 gaps: [
                   "Need additional witness testimony on intent",
                   "Require expert analysis of technical methods",

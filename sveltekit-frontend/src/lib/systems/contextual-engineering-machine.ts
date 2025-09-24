@@ -128,7 +128,7 @@ export class ContextualEngineeringMachine {
     {
       userId: "test_user_001",
       sessionId: "session_friday_001",
-      timestamp: new Date(2024, 0, 19, 16, 30), // Friday 4:30 PM
+      timestamp: new Date(2024, 0, 19, 16, 30), // Friday 4:30 PM;
       messages: [
         "Quick question before weekend - compliance check needed",
         "New GDPR requirements for our data processing",
@@ -237,7 +237,7 @@ export class ContextualEngineeringMachine {
         this.testResults.push({
           testName,
           success: true,
-          executionTime: performance.now() - startTime,
+          executionTime: performance.now() - startTime,;
           details: { messageIds, totalStored: messageIds.length }
         });
       } else {
@@ -253,7 +253,7 @@ export class ContextualEngineeringMachine {
       this.testResults.push({
         testName,
         success: false,
-        executionTime: performance.now() - startTime,
+        executionTime: performance.now() - startTime,;
         details: Record<string, any>,
         errors
       });
@@ -284,7 +284,7 @@ export class ContextualEngineeringMachine {
           expectedIntent: "document_drafting",
           minConfidence: 0.7
         },
-        {
+        {;
           input: "Is our company compliant with new regulations?",
           expectedIntent: "compliance_check",
           minConfidence: 0.6
@@ -333,7 +333,7 @@ export class ContextualEngineeringMachine {
           successfulPredictions,
           totalTests: testCases.length,
           averageConfidence: this.metrics.averageConfidence
-        },
+        },;
         errors: errors.length > 0 ? errors : undefined
       });
       
@@ -344,7 +344,7 @@ export class ContextualEngineeringMachine {
       this.testResults.push({
         testName,
         success: false,
-        executionTime: performance.now() - startTime,
+        executionTime: performance.now() - startTime,;
         details: Record<string, any>,
         errors
       });
@@ -409,7 +409,7 @@ export class ContextualEngineeringMachine {
           patternsDetected,
           totalConversations: this.TEST_CONVERSATIONS.length,
           detectionRate: patternsDetected / this.TEST_CONVERSATIONS.length
-        },
+        },;
         errors: errors.length > 0 ? errors : undefined
       });
       
@@ -420,7 +420,7 @@ export class ContextualEngineeringMachine {
       this.testResults.push({
         testName,
         success: false,
-        executionTime: performance.now() - startTime,
+        executionTime: performance.now() - startTime,;
         details: Record<string, any>,
         errors
       });
@@ -474,7 +474,7 @@ export class ContextualEngineeringMachine {
           suggestionsGenerated,
           totalInputs: testInputs.length,
           suggestionRate: suggestionsGenerated / testInputs.length
-        },
+        },;
         errors: errors.length > 0 ? errors : undefined
       });
       
@@ -485,7 +485,7 @@ export class ContextualEngineeringMachine {
       this.testResults.push({
         testName,
         success: false,
-        executionTime: performance.now() - startTime,
+        executionTime: performance.now() - startTime,;
         details: Record<string, any>,
         errors
       });
@@ -541,7 +541,7 @@ export class ContextualEngineeringMachine {
           sessionId,
           messageType: 'user',
           metadata: {
-            intent: prediction.predictedIntent,
+            intent: prediction.predictedIntent,;
             confidence: prediction.confidence
           }
         });
@@ -560,7 +560,7 @@ export class ContextualEngineeringMachine {
           contextMaintained,
           totalMessages: conversationFlow.length,
           contextRate: this.metrics.contextMaintenance
-        },
+        },;
         errors: errors.length > 0 ? errors : undefined
       });
       
@@ -571,7 +571,7 @@ export class ContextualEngineeringMachine {
       this.testResults.push({
         testName,
         success: false,
-        executionTime: performance.now() - startTime,
+        executionTime: performance.now() - startTime,;
         details: Record<string, any>,
         errors
       });
@@ -637,7 +637,7 @@ export class ContextualEngineeringMachine {
           successfulSearches,
           totalQueries: searchQueries.length,
           searchSuccessRate: successfulSearches / searchQueries.length
-        },
+        },;
         errors: errors.length > 0 ? errors : undefined
       });
       
@@ -648,7 +648,7 @@ export class ContextualEngineeringMachine {
       this.testResults.push({
         testName,
         success: false,
-        executionTime: performance.now() - startTime,
+        executionTime: performance.now() - startTime,;
         details: Record<string, any>,
         errors
       });
@@ -709,7 +709,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false,
         executionTime: performance.now() - startTime,
-        details: Record<string, any>,
+        details: Record<string, any>,;
         errors: [`Query optimization error: ${error.message}`]
       });
     }
@@ -750,7 +750,7 @@ export class ContextualEngineeringMachine {
         executionTime: performance.now() - startTime,
         details: {
           contextMaintained: success,
-          similarQueries: prediction.contextualRecommendations.similarPastQueries.length,
+          similarQueries: prediction.contextualRecommendations.similarPastQueries.length,;
           intent: prediction.predictedIntent
         }
       });
@@ -762,7 +762,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false,
         executionTime: performance.now() - startTime,
-        details: Record<string, any>,
+        details: Record<string, any>,;
         errors: [`Context maintenance error: ${error.message}`]
       });
     }
@@ -879,7 +879,7 @@ export class ContextualEngineeringMachine {
           conceptRelationships: conceptGraph.size,
           memoryScore,
           recallConfidence: prediction.confidence
-        },
+        },;
         errors: errors.length > 0 ? errors : undefined
       });
       
@@ -890,7 +890,7 @@ export class ContextualEngineeringMachine {
       this.testResults.push({
         testName,
         success: false,
-        executionTime: performance.now() - startTime,
+        executionTime: performance.now() - startTime,;
         details: Record<string, any>,
         errors
       });
@@ -930,7 +930,7 @@ export class ContextualEngineeringMachine {
           ]
         },
         {
-          stage: "expert",
+          stage: "expert",;
           queries: [
             "Analyze the enforceability of this arbitration clause under California law",
             "What are the implications of the recent ruling in Smith v. TechCorp?",
@@ -958,7 +958,7 @@ export class ContextualEngineeringMachine {
             messageType: 'user',
             metadata: {
               intent: prediction.predictedIntent,
-              confidence: prediction.confidence,
+              confidence: prediction.confidence,;
               complexity: stage.stage
             }
           });
@@ -988,7 +988,7 @@ export class ContextualEngineeringMachine {
           learningScore,
           adaptabilityScore: this.metrics.adaptabilityScore,
           stagesPassed: learningScore / 0.33
-        },
+        },;
         errors: errors.length > 0 ? errors : undefined
       });
       
@@ -999,7 +999,7 @@ export class ContextualEngineeringMachine {
       this.testResults.push({
         testName,
         success: false,
-        executionTime: performance.now() - startTime,
+        executionTime: performance.now() - startTime,;
         details: Record<string, any>,
         errors
       });
@@ -1074,7 +1074,7 @@ export class ContextualEngineeringMachine {
           conceptsMapped: conceptGraph.size,
           mappingScore,
           relationshipConfidence: prediction.confidence
-        },
+        },;
         errors: errors.length > 0 ? errors : undefined
       });
       
@@ -1085,7 +1085,7 @@ export class ContextualEngineeringMachine {
       this.testResults.push({
         testName,
         success: false,
-        executionTime: performance.now() - startTime,
+        executionTime: performance.now() - startTime,;
         details: Record<string, any>,
         errors
       });
@@ -1153,7 +1153,7 @@ export class ContextualEngineeringMachine {
           emotionalAccuracy,
           messagesAnalyzed: emotionalJourney.length,
           finalEmotionalState: context.contextualMemory.emotionalState
-        },
+        },;
         errors: errors.length > 0 ? errors : undefined
       });
       
@@ -1164,7 +1164,7 @@ export class ContextualEngineeringMachine {
       this.testResults.push({
         testName,
         success: false,
-        executionTime: performance.now() - startTime,
+        executionTime: performance.now() - startTime,;
         details: Record<string, any>,
         errors
       });
@@ -1201,7 +1201,7 @@ export class ContextualEngineeringMachine {
           emotionalState: {
             sentiment: 0,
             stress_level: 0,
-            confidence: 0.5,
+            confidence: 0.5,;
             engagement: 0.5
           }
         },
@@ -1256,7 +1256,7 @@ export class ContextualEngineeringMachine {
         entity: entityText,
         type,
         frequency: 1,
-        lastMentioned: new Date(),
+        lastMentioned: new Date(),;
         context: [messageContext]
       });
     }

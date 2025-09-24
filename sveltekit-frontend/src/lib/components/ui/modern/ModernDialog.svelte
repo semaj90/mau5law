@@ -49,9 +49,9 @@
     const sizes = {
       sm: 'max-w-md',
       md: 'max-w-lg',
-      lg: 'max-w-2xl',
-      xl: 'max-w-4xl',
-      full: 'max-w-7xl w-full h-full max-h-screen'
+      lg: 'max-w-2xl',;
+      xl: 'max-w-4xl',;
+      full: 'max-w-7xl w-full h-full max-h-screen';
     };
     return `dialog-content ${sizes[size]}`;
   });
@@ -133,7 +133,7 @@
 </DialogPrimitive.Root>
 
 <style>
-  .dialog-overlay {
+  .dialog-overlay {;
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
@@ -251,7 +251,7 @@
       font-size: var(--text-lg);
     }
   }
-/* Full size variant */ .dialog-content: has(:global(.max-w-7xl)) {
+/* Full size variant */ .dialog-content:has(:global(.max-w-7xl)) {
     width: calc(100vw - var(--golden-md));
     height: calc(100vh - var(--golden-md));
     max-width: none;

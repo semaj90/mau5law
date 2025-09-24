@@ -5,7 +5,7 @@
   import { onMount } from 'svelte';
 
   interface DataPoint {
-    label: string
+    label: string;
     value: number
     color?: string;
     status?: 'active' | 'pending' | 'completed' | 'failed';
@@ -64,9 +64,9 @@
   // Status colors mapping
   const statusColors = {
     active: 'var(--yorha-accent, #00ff41)',
-    pending: 'var(--yorha-warning, #ffaa00)', 
-    completed: 'var(--yorha-secondary, #ffd700)',
-    failed: 'var(--yorha-danger, #ff0041)'
+    pending: 'var(--yorha-warning, #ffaa00)', ;
+    completed: 'var(--yorha-secondary, #ffd700)',;
+    failed: 'var(--yorha-danger, #ff0041)';
   };
 
   function getBarHeight(value: number): number {
@@ -118,7 +118,7 @@
               <div 
                 class="bar" 
                 class:animated={animated && isVisible}
-                style="
+                style=";
                   height: {getBarHeight((item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value)}%; 
                   background: {getStatusColor(item)};
                   animation-delay: {index * 100}ms;
@@ -145,7 +145,7 @@
                 <div 
                   class="progress-fill"
                   class:animated={animated && isVisible}
-                  style="
+                  style=";
                     width: {(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value}%; 
                     background: {getStatusColor(item)};
                     animation-delay: {index * 200}ms;
@@ -187,7 +187,7 @@
             <div 
               class="timeline-item"
               class:animated={animated && isVisible}
-              style="
+              style=";
                 left: {((item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value / maxValue) * 100}%; 
                 animation-delay: {index * 100}ms;
               "
@@ -228,14 +228,14 @@
     border: 2px solid var(--yorha-text-muted, #808080);
     font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
     color: var(--yorha-text-primary, #e0e0e0);
-    overflow: hidden
+    overflow: hidden;
   }
 
-  .chart-header {
+  .chart-header {;
     background: var(--yorha-bg-tertiary, #2a2a2a);
     border-bottom: 2px solid var(--yorha-secondary, #ffd700);
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     justify-content: space-between;
     padding: 12px 16px;
   }
@@ -244,23 +244,23 @@
     color: var(--yorha-secondary, #ffd700);
     font-size: 14px;
     font-weight: 700;
-    text-transform: uppercase
+    text-transform: uppercase;
     letter-spacing: 2px;
     margin: 0;
   }
 
   .chart-indicators {
-    display: flex
+    display: flex;
     gap: 12px;
   }
 
   .indicator {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     gap: 6px;
     font-size: 10px;
     font-weight: 600;
-    text-transform: uppercase
+    text-transform: uppercase;
     letter-spacing: 1px;
   }
 
@@ -271,19 +271,19 @@
   .indicator-dot {
     width: 6px;
     height: 6px;
-    background: currentColor
+    background: currentColor;
     animation: pulse 2s infinite;
   }
 
   .chart-container {
-    position: relative
+    position: relative;
     padding: 16px;
-    overflow: hidden
+    overflow: hidden;
   }
 
   /* Grid System */
   .grid-overlay {
-    position: absolute
+    position: absolute;
     top: 16px;
     left: 60px;
     right: 16px;
@@ -291,7 +291,7 @@
   }
 
   .grid-line {
-    position: absolute
+    position: absolute;
     left: 0;
     right: 0;
     height: 1px;
@@ -300,24 +300,24 @@
   }
 
   .grid-labels {
-    position: absolute
+    position: absolute;
     left: -50px;
     top: 0;
     bottom: 0;
   }
 
   .grid-label {
-    position: absolute
+    position: absolute;
     font-size: 10px;
     color: var(--yorha-text-muted, #808080);
-    text-transform: uppercase
+    text-transform: uppercase;
     letter-spacing: 1px;
   }
 
   /* Bar Chart */
   .bar-chart {
-    display: flex
-    align-items: end
+    display: flex;
+    align-items: end;
     gap: 12px;
     height: 100%;
     padding: 0 60px 40px 60px;
@@ -326,23 +326,23 @@
   .bar-container {
     flex: 1;
     display: flex
-    flex-direction: column
-    align-items: center
+    flex-direction: column;
+    align-items: center;
     height: 100%;
-    justify-content: end
+    justify-content: end;
   }
 
   .bar {
-    position: relative
+    position: relative;
     width: 100%;
     max-width: 40px;
     border: 2px solid currentColor;
-    background: currentColor
+    background: currentColor;
     transition: all 0.3s ease;
-    transform-origin: bottom
+    transform-origin: bottom;
   }
 
-  .bar.animated {
+  .bar.animated {;
     animation: barGrow 0.8s ease-out;
   }
 
@@ -352,7 +352,7 @@
   }
 
   .bar-value {
-    position: absolute
+    position: absolute;
     top: -24px;
     left: 50%;
     transform: translateX(-50%);
@@ -362,12 +362,12 @@
   }
 
   .bar-glow {
-    position: absolute
+    position: absolute;
     top: -2px;
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: currentColor
+    background: currentColor;
     opacity: 0.3;
     filter: blur(4px);
   }
@@ -376,39 +376,39 @@
     margin-top: 8px;
     font-size: 10px;
     font-weight: 500;
-    text-transform: uppercase
+    text-transform: uppercase;
     letter-spacing: 1px;
-    text-align: center
+    text-align: center;
     max-width: 60px;
     overflow: hidden
     text-overflow: ellipsis
-    white-space: nowrap
+    white-space: nowrap;
   }
 
   /* Progress Chart */
   .progress-chart {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 16px;
     padding: 16px;
   }
 
   .progress-item {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 8px;
   }
 
   .progress-header {
-    display: flex
+    display: flex;
     justify-content: space-between;
-    align-items: center
+    align-items: center;
   }
 
-  .progress-label {
+  .progress-label {;
     font-size: 12px;
     font-weight: 600;
-    text-transform: uppercase
+    text-transform: uppercase;
     letter-spacing: 1px;
   }
 
@@ -419,16 +419,16 @@
   }
 
   .progress-bar {
-    position: relative
+    position: relative;
     height: 12px;
     background: var(--yorha-bg-primary, #0a0a0a);
     border: 2px solid var(--yorha-text-muted, #808080);
-    overflow: hidden
+    overflow: hidden;
   }
 
-  .progress-fill {
+  .progress-fill {;
     height: 100%;
-    position: relative
+    position: relative;
     transition: width 0.3s ease;
   }
 
@@ -437,7 +437,7 @@
   }
 
   .progress-glow {
-    position: absolute
+    position: absolute;
     top: 0;
     right: -10px;
     width: 20px;
@@ -447,15 +447,15 @@
 
   /* Status Chart */
   .status-chart {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 12px;
     padding: 16px;
   }
 
   .status-item {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     gap: 12px;
     padding: 12px;
     background: var(--yorha-bg-primary, #0a0a0a);
@@ -473,31 +473,31 @@
   }
 
   .status-indicator {
-    position: relative
+    position: relative;
     width: 16px;
     height: 16px;
     flex-shrink: 0;
   }
 
   .indicator-pulse {
-    position: absolute
+    position: absolute;
     inset: -4px;
-    background: currentColor
+    background: currentColor;
     opacity: 0.3;
     animation: pulse 2s infinite;
   }
 
   .status-content {
     flex: 1;
-    display: flex
+    display: flex;
     justify-content: space-between;
-    align-items: center
+    align-items: center;
   }
 
-  .status-label {
+  .status-label {;
     font-size: 12px;
     font-weight: 600;
-    text-transform: uppercase
+    text-transform: uppercase;
     letter-spacing: 1px;
   }
 
@@ -512,7 +512,7 @@
     font-weight: 700;
     padding: 2px 8px;
     border: 1px solid currentColor;
-    text-transform: uppercase
+    text-transform: uppercase;
     letter-spacing: 1px;
   }
 
@@ -523,13 +523,13 @@
 
   /* Timeline Chart */
   .timeline-chart {
-    position: relative
+    position: relative;
     height: 100%;
     padding: 40px 16px;
   }
 
   .timeline-axis {
-    position: absolute
+    position: absolute;
     top: 50%;
     left: 16px;
     right: 16px;
@@ -539,7 +539,7 @@
   }
 
   .timeline-item {
-    position: absolute
+    position: absolute;
     top: 50%;
     transform: translate(-50%, -50%);
   }
@@ -551,14 +551,14 @@
   .timeline-node {
     width: 16px;
     height: 16px;
-    position: relative
+    position: relative;
     margin: 0 auto 8px;
   }
 
   .node-pulse {
-    position: absolute
+    position: absolute;
     inset: -4px;
-    background: currentColor
+    background: currentColor;
     opacity: 0.3;
     animation: pulse 2s infinite;
   }
@@ -566,27 +566,27 @@
   .timeline-label {
     font-size: 10px;
     font-weight: 600;
-    text-transform: uppercase
+    text-transform: uppercase;
     letter-spacing: 1px;
     text-align: center
-    white-space: nowrap
+    white-space: nowrap;
   }
 
   /* Chart Footer */
-  .chart-footer {
+  .chart-footer {;
     background: var(--yorha-bg-primary, #0a0a0a);
     border-top: 1px solid var(--yorha-text-muted, #808080);
     padding: 12px 16px;
   }
 
   .summary-stats {
-    display: flex
+    display: flex;
     gap: 24px;
   }
 
   .stat {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 2px;
   }
 
@@ -594,7 +594,7 @@
     font-size: 8px;
     font-weight: 600;
     color: var(--yorha-text-muted, #808080);
-    text-transform: uppercase
+    text-transform: uppercase;
     letter-spacing: 1px;
   }
 

@@ -75,7 +75,7 @@ export interface CompleteLegalAIStatus {
   };
 
   // Database Systems;
-  postgresql: {
+  postgresql: {;
     ready: boolean;
     connections: number;
     vectorExtension: boolean;
@@ -83,7 +83,7 @@ export interface CompleteLegalAIStatus {
     queryLatency: number;
   };
 
-  redis: {
+  redis: {;
     ready: boolean;
     memoryUsage: number;
     keyCount: number;
@@ -97,7 +97,7 @@ export interface CompleteLegalAIStatus {
     graphTraversalLatency: number;
   };
 
-  qdrant: {
+  qdrant: {;
     ready: boolean;
     collections: number;
     vectorCount: number;
@@ -112,7 +112,7 @@ export interface CompleteLegalAIStatus {
     successRate: number;
   };
 
-  ollama: {
+  ollama: {;
     ready: boolean;
     loadedModels: string[];
     activeConnections: number;
@@ -135,14 +135,14 @@ export interface CompleteLegalAIStatus {
   };
 
   // Infrastructure;
-  rabbitmq: {
+  rabbitmq: {;
     ready: boolean;
     queueCount: number;
     messageRate: number;
     consumerCount: number;
   };
 
-  minio: {
+  minio: {;
     ready: boolean;
     buckets: number;
     objectCount: number;
@@ -340,7 +340,7 @@ export class CompleteLegalAIOrchestrator {
         type: 'analyze',
         payload: {
           text: documentContent,
-          userId,
+          userId,;
           options: {
             useWebGPU: true,
             useWebAssembly: true,
@@ -366,7 +366,7 @@ export class CompleteLegalAIOrchestrator {
           confidenceLevel: 0.8,
           riskLevel: this.inferRiskLevel(documentContent),
           lastAccessed: Date.now(),
-          compressed: false,
+          compressed: false,;
           metadata: { vectorEmbedding: embedding }
         },
         { extractionType: options.extractionType || 'full' }
@@ -498,7 +498,7 @@ export class CompleteLegalAIOrchestrator {
       generation: 0,
       bestFitness: 0,
       populationSize: 50,
-      learningRate: 0.01,
+      learningRate: 0.01,;
       epsilon: 1.0
     };
   }
@@ -516,7 +516,7 @@ export class CompleteLegalAIOrchestrator {
   private async initializeDatabases(): Promise<void> {
     // Initialize database status;
     this.systemStatus.postgresql = {
-      ready: false, // Will be updated by health check
+      ready: false, // Will be updated by health check;
       connections: 0,
       vectorExtension: false,
       documentsStored: 0,
@@ -538,7 +538,7 @@ export class CompleteLegalAIOrchestrator {
     };
 
     this.systemStatus.qdrant = {
-      ready: false,
+      ready: false,;
       collections: 0,
       vectorCount: 0,
       searchLatency: 0
@@ -575,7 +575,7 @@ export class CompleteLegalAIOrchestrator {
     };
 
     this.systemStatus.minio = {
-      ready: false,
+      ready: false,;
       buckets: 0,
       objectCount: 0,
       storageUsed: 0
@@ -680,7 +680,7 @@ export class CompleteLegalAIOrchestrator {
         upscaleJobs: 0,
         averageUpscaleTime: 0
       },
-      rabbitmq: { ready: false, queueCount: 0, messageRate: 0, consumerCount: 0 },
+      rabbitmq: { ready: false, queueCount: 0, messageRate: 0, consumerCount: 0 },;
       minio: { ready: false, buckets: 0, objectCount: 0, storageUsed: 0 },
       wasmBridge: { ready: false, llvmVersion: '', compiledModules: 0, executionTime: 0 },
       svelteSSR: { ready: false, activeConnections: 0, averageHydrationTime: 0, cacheHitRate: 0 },
@@ -723,7 +723,7 @@ export class CompleteLegalAIOrchestrator {
     // Generate embedding using your existing service;
     const response = await fetch('/api/ai/embed', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },;
       body: JSON.stringify({ text })
     });
     const result = await (response as { json?: any }).json();

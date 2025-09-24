@@ -1,6 +1,6 @@
 <script lang="ts">
 
-  	import Button from '$lib/components/ui/enhanced-bits';;
+  	import Button from '$lib/components/ui/enhanced-bits';
   	import { quintOut } from 'svelte/easing';
   	import { fade, fly } from 'svelte/transition';
   	import { modals } from "../../stores/modal";
@@ -9,17 +9,17 @@
   	function ConfirmModal({ props, onConfirm, onClose }: unknown) {
   		return {
   			title: 'Confirm Action',
-  			content: props.message,
+  			content: props.message,;
   			actions: [
   				{
   					label: props.cancelText || 'Cancel',
   					variant: 'ghost',
-  					action: onClose
+  					action: onClose;
   				},
   				{
-  					label: props.confirmText || 'Confirm',
-  					variant: 'primary',
-  					action: onConfirm
+  					label: props.confirmText || 'Confirm',;
+  					variant: 'primary',;
+  					action: onConfirm;
   }
   			]
   		};
@@ -27,12 +27,12 @@
   	function AlertModal({ props, onClose }: unknown) {
   		return {
   			title: 'Alert',
-  			content: props.message,
+  			content: props.message,;
   			actions: [
   				{
-  					label: props.buttonText || 'OK',
-  					variant: 'primary',
-  					action: onClose
+  					label: props.buttonText || 'OK',;
+  					variant: 'primary',;
+  					action: onClose;
   }
   			]
   		};
@@ -47,12 +47,12 @@
   				{
   					label: props.cancelText || 'Cancel',
   					variant: 'ghost',
-  					action: onClose
+  					action: onClose;
   				},
   				{
-  					label: props.confirmText || 'OK',
-  					variant: 'primary',
-  					action: () => onConfirm?.(inputValue)
+  					label: props.confirmText || 'OK',;
+  					variant: 'primary',;
+  					action: () => onConfirm?.(inputValue);
   }
   			]
   		};
@@ -67,9 +67,9 @@
   		const sizeMap = {
   			sm: 'max-w-md',
   			md: 'max-w-lg',
-  			lg: 'max-w-2xl',
-  			xl: 'max-w-4xl',
-  			full: 'max-w-[95vw] max-h-[95vh]'
+  			lg: 'max-w-2xl',;
+  			xl: 'max-w-4xl',;
+  			full: 'max-w-[95vw] max-h-[95vh]';
   		};
   		return sizeMap[size as keyof typeof sizeMap] || sizeMap.md;
   }
@@ -111,12 +111,12 @@
 			in:fly={{
 				y: 30,
 				duration: 300,
-				easing: quintOut
+				easing: quintOut;
 			}}
 			out:fly={{
 				y: -30,
 				duration: 200,
-				easing: quintOut
+				easing: quintOut;
 			}}
 		>
 			<!-- Header -->
@@ -151,7 +151,7 @@
 					{@const builtInModal = (builtInComponents as any)[modal.component]({
 						props: modal.props,
 						onConfirm: modal.onConfirm,
-						onClose: () => modals.close(modal.id)
+						onClose: () => modals.close(modal.id);
 					})}
 
 					<!-- Built-in component content -->
@@ -196,21 +196,21 @@ action.action()}
 <style>
   /* @unocss-include */
 	/* Smooth scrolling for modal content */
-	.overflow-y-auto {
+	.overflow-y-auto {;
 		scrollbar-width: thin;
 		scrollbar-color: #9ca3af transparent;
 }
-	.overflow-y-auto: :-webkit-scrollbar {
+	.overflow-y-auto::-webkit-scrollbar {
 		width: 6px;
 }
-	.overflow-y-auto: :-webkit-scrollbar-track {
+	.overflow-y-auto::-webkit-scrollbar-track {
 		background: transparent;
 }
-	.overflow-y-auto: :-webkit-scrollbar-thumb {
+	.overflow-y-auto::-webkit-scrollbar-thumb {
 		background-color: #9ca3af;
 		border-radius: 3px;
 }
-	.overflow-y-auto: :-webkit-scrollbar-thumb:hover {
+	.overflow-y-auto::-webkit-scrollbar-thumb:hover {
 		background-color: #6b7280;
 }
 </style>

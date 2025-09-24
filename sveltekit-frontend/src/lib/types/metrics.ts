@@ -52,7 +52,7 @@ export interface ClientMetricsPayload {
 }
 
 export interface PerformanceMetrics {
-  overall: {
+  overall: {;
     status: 'excellent' | 'good' | 'fair' | 'poor';
     score: number;
     timestamp: string;
@@ -79,27 +79,27 @@ export interface PerformanceMetrics {
 
 export interface SystemMetrics {
   health: PerformanceMetrics;
-  resources: {
+  resources: {;
     memory: {
       heapUsed: number;
       heapTotal: number;
       external: number;
       rss: number;
     };
-    cpu: {
+    cpu: {;
       usage: number;
       loadAverage: number[];
     };
     gpu?: {
       utilization: number;
-      memory: {
+      memory: {;
         used: number;
         total: number;
       };
       temperature: number;
     };
   };
-  services: {
+  services: {;
     databases: Record<string, { status: string; responseTime?: number }>;
     aiServices: Record<string, { status: string; responseTime?: number }>;
     microservices: Record<string, { status: string; responseTime?: number }>;

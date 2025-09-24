@@ -70,7 +70,7 @@ export function safeJsonParse<T = unknown>(
     console.error('JSON parsing error:', error);
     return {
       data: fallback,
-      error: errorMessage,
+      error: errorMessage,;
       success: false,
     };
   }
@@ -202,7 +202,7 @@ export async function withLoading<T>(
 // Retry mechanism
 export async function withRetry<T>(
   operation: () => Promise<T>,
-  maxRetries: number = 3,
+  maxRetries: number = 3,;
   delay: number = 1000
 ): Promise<T> {
   let lastError: Error;

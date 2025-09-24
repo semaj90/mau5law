@@ -44,7 +44,7 @@ const LEGAL_BERT_CONFIG = {
     cacheEnabled: true,       // Cache analysis results
     gpuAcceleration: true     // Use GPU if available
   },
-  
+  ;
   realtime: {
     streamingEnabled: true,
     debounceMs: 300,          // Debounce real-time updates
@@ -132,7 +132,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     processing: boolean;
     lastProcessTime: number;
   } = {
-    queue: [],
+    queue: [],;
     processing: false,
     lastProcessTime: 0
   };
@@ -166,7 +166,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     
     const classificationModel = {
       name: LEGAL_BERT_CONFIG.models.classification.name,
-      version: '1.0.0',
+      version: '1.0.0',;
       loaded: true,
       
       async classify(text: string): Promise<DocumentClassification> {
@@ -179,7 +179,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
           subcategory: this.getSubcategory(category),
           confidence: 0.8 + Math.random() * 0.2,
           topPredictions: categories.slice(0, 3).map(cat => ({
-            category: cat,
+            category: cat,;
             confidence: Math.random()
           })).sort((a, b) => b.confidence - a.confidence)
         };
@@ -189,7 +189,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
         const subcategories: Record<string, string[]> = {
           contract: ['purchase_agreement', 'service_contract', 'employment_contract', 'lease_agreement'],
           litigation: ['civil_lawsuit', 'criminal_case', 'arbitration', 'appeal'],
-          regulatory: ['compliance_report', 'regulatory_filing', 'investigation', 'enforcement'],
+          regulatory: ['compliance_report', 'regulatory_filing', 'investigation', 'enforcement'],;
           corporate: ['merger_agreement', 'board_resolution', 'shareholder_agreement', 'bylaws'],
           intellectual_property: ['patent_application', 'trademark_filing', 'copyright_registration', 'license_agreement']
         };
@@ -205,7 +205,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
   private async loadNERModel(): Promise<void> {
     const nerModel = {
       name: LEGAL_BERT_CONFIG.models.ner.name,
-      version: '1.0.0',
+      version: '1.0.0',;
       loaded: true,
       
       async extractEntities(text: string): Promise<LegalEntity[]> {
@@ -224,7 +224,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
           while ((match = pattern.exec(text)) !== null) {
             entities.push({
               text: match[0],
-              label,
+              label,;
               confidence: 0.8 + Math.random() * 0.2,
               startPos: match.index,
               endPos: match.index + match[0].length
@@ -242,7 +242,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
   private async loadSimilarityModel(): Promise<void> {
     const similarityModel = {
       name: LEGAL_BERT_CONFIG.models.similarity.name,
-      version: '1.0.0',
+      version: '1.0.0',;
       loaded: true,
       
       async encode(text: string): Promise<Float32Array> {
@@ -282,7 +282,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
 
   async analyzeDocument(
     documentId: string,
-    text: string,
+    text: string,;
     options: {
       priority?: number;
       useCache?: boolean;
@@ -353,14 +353,14 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
 
   private async performAnalysis(
     documentId: string,
-    text: string,
+    text: string,;
     options: { realTimeUpdates: boolean; includePrecedents: boolean }
   ): Promise<SemanticAnalysis> {
     const analysisStart = Date.now();
 
     // Initialize analysis object;
     const analysis: Partial<SemanticAnalysis> = {
-      documentId,
+      documentId,;
       timestamp: Date.now(),
       cacheHit: false
     };
@@ -404,7 +404,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     analysis.processingTime = Date.now() - analysisStart;
     analysis.modelVersions = {
       classification: this.models.get('classification').version,
-      ner: this.models.get('ner').version,
+      ner: this.models.get('ner').version,;
       similarity: this.models.get('similarity').version
     };
 
@@ -450,7 +450,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
 
   private async assessRisk(
     text: string,
-    classification: DocumentClassification,
+    classification: DocumentClassification,;
     entities: LegalEntity[];
   ): Promise<RiskAssessment> {
     const riskFactors: RiskAssessment['riskFactors'] = [];
@@ -474,7 +474,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
       },
       {
         pattern: /confidential|proprietary|trade secret/gi,
-        factor: 'confidentiality_risk',
+        factor: 'confidentiality_risk',;
         severity: 'medium' as const
       }
     ];
@@ -486,7 +486,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
           factor,
           severity,
           confidence: 0.7 + Math.random() * 0.3,
-          location: { start: match.index, end: match.index + match[0].length },
+          location: { start: match.index, end: match.index + match[0].length },;
           mitigation: this.getMitigationSuggestion(factor)
         });
       }
@@ -511,7 +511,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
       riskScore,
       riskFactors,
       confidenceInterval: {
-        lower: Math.max(0, riskScore - 10),
+        lower: Math.max(0, riskScore - 10),;
         upper: Math.min(100, riskScore + 10)
       }
     };
@@ -549,7 +549,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
   private async analyzeSentiment(text: string): Promise<any> {
     // Mock sentiment analysis;
     return {
-      polarity: Math.random() * 2 - 1, // -1 (negative) to 1 (positive)
+      polarity: Math.random() * 2 - 1, // -1 (negative) to 1 (positive);
       objectivity: Math.random()       // 0 (subjective) to 1 (objective)
     };
   }
@@ -585,11 +585,11 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
         pattern: /if\s+(.+?),?\s+then/gi,
         type: 'condition' as const
       },
-      {
+      {;
         pattern: /warrants?\s+(?:and\s+represents?\s+)?that\s+(.+?)(?:\.|;)/gi,
         type: 'warranty' as const
       },
-      {
+      {;
         pattern: /indemnify\s+(.+?)(?:\.|;)/gi,
         type: 'indemnity' as const
       }
@@ -600,7 +600,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
       while ((match = pattern.exec(text)) !== null) {
         terms.push({
           term: match[1] || match[0],
-          type,
+          type,;
           enforceability: 0.7 + Math.random() * 0.3,
           riskLevel: Math.random() > 0.7 ? 'high' : Math.random() > 0.4 ? 'medium' : 'low'
         });
@@ -611,7 +611,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
   }
 
   private async findPrecedentMatches(
-    embeddings: Float32Array,
+    embeddings: Float32Array,;
     classification: DocumentClassification;
   ): Promise<SemanticAnalysis['precedentMatches']> {
     // In a real implementation, this would search a precedent database
@@ -626,7 +626,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
       {
         caseId: 'Tech Innovations LLC v. DataCorp',
         similarity: 0.78,
-        relevantSections: ['Intellectual property', 'Trade secrets'],
+        relevantSections: ['Intellectual property', 'Trade secrets'],;
         jurisdiction: 'California'
       }
     ];
@@ -697,7 +697,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
         confidenceLevel: analysis.classification.confidence,
         riskLevel: analysis.riskAssessment.overallRisk,
         lastAccessed: Date.now(),
-        compressed: false,
+        compressed: false,;
         metadata: Record<string, any> as any
       });
     } catch (error: any) {

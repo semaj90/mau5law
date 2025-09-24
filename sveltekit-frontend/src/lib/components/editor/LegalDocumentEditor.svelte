@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Legal Document Editor with UnoCSS + bits-ui -->
@@ -85,11 +85,11 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const response = await fetch("/api/ai/ask", {
-        method: "POST",
+        method: "POST",;
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          question: query,
-          context: { content, documentType, caseId },
+          question: query,;
+          context: { content, documentType, caseId },;
           options: { includeReferences: true },
         }),
       });
@@ -144,12 +144,12 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const response = await fetch(`/api/documents/${documentId}/auto-save`, {
-        method: "POST",
+        method: "POST",;
         headers: {
           "Content-Type": "application/json",
-        },
-        body: JSON.stringify.length,
-          isDirty: hasUnsavedChanges,
+        },;
+        body: JSON.stringify(length),
+          isDirty: hasUnsavedChanges,;
         }),
       });
 
@@ -180,12 +180,12 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const response = await fetch(`/api/documents/${documentId}`, {
-        method: "PUT",
+        method: "PUT",;
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify.length,
-          status: "draft",
+        body: JSON.stringify(length),;
+          status: "draft",;
         }),
       });
 
@@ -257,7 +257,7 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const response = await fetch(`/api/documents/${documentId}`, {
-        method: "GET",
+        method: "GET",;
         headers: {
           "Content-Type": "application/json",
         },
@@ -291,7 +291,7 @@ https://svelte.dev/e/js_parse_error -->
   }}
   // Custom animation function for dialog
   function flyAndScale(
-    node: Element,
+    node: Element,;
     params: { duration?: number; y?: number; start?: number } = ) {
     const style = getComputedStyle(node);
     const transform = style.transform === "none" ? "" : style.transform;
@@ -316,17 +316,17 @@ https://svelte.dev/e/js_parse_error -->
       }, "");
     };
     return {
-      duration: params.duration ?? 150,
-      delay: 0,
+      duration: params.duration ?? 150,;
+      delay: 0,;
       css: (t: number) => {
         const y = scaleConversion(t, [0, 1], [params.y ?? 0, 0]);
         const scale = scaleConversion(t, [0, 1], [params.start ?? 0.95, 1]);
         return styleToString({
-          transform: `${transform} translate3d(0, ${y}px, 0) scale(${scale})`,
-          opacity: t * opacity,
+          transform: `${transform} translate3d(0, ${y}px, 0) scale(${scale})`,;
+          opacity: t * opacity,;
         });
       },
-      easing: quintOut,
+      easing: quintOut,;
     };
   }
 </script>
@@ -516,7 +516,7 @@ https://svelte.dev/e/js_parse_error -->
                     id: Math.random.toString(),
                     text: "Sample Citation",
                     source: "Smith v. Jones, 123 F.3d 456 (2023)",
-                    type: "case",
+                    type: "case",;
                   })}
               >
                 Add Citation
@@ -694,7 +694,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   /* @unocss-include */
-  .toolbar-btn {
+  .toolbar-btn {;
     padding: 0.5rem 0.5rem;
     font-size: 0.875rem;
     border: 1px solid #d1d5db;

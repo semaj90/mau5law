@@ -1,169 +1,169 @@
 
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 export const GET: RequestHandler = async () => {
   const health = {
     timestamp: new Date().toISOString(),
     services: Record<string, any>,
     overall: 'unknown'
-  };
+  }
 
   const checks = [
-    // Redis Health Check;
+    // Redis Health Check
     {
       name: 'redis',
       check: async () => {
         try {
-          const { createClient } = await import('redis');
-          const client = createClient({ url: 'redis://localhost:6379' });
-          await client.connect();
-          await client.ping();
-          await client.quit();
-          return { status: 'healthy', responseTime: Date.now() };
+          const { createClient } = await import('redis')
+          const client = createClient({ url: 'redis://localhost:6379' })
+          await client.connect()
+          await client.ping()
+          await client.quit()
+          return { status: 'healthy', responseTime: Date.now() }
         } catch (error: any) {
-          return { status: 'unhealthy', error: error.message };
+          return { status: 'unhealthy', error: error.message }
         }
       }
     },
     
-    // Qdrant Health Check;
+    // Qdrant Health Check
     {
       name: 'qdrant',
       check: async () => {
         try {
-          const start = Date.now();
+          const start = Date.now()
           const response = await fetch('http://localhost:6333', {
             signal: AbortSignal.timeout(5000)
-          });
-          const responseTime = Date.now() - start;
+          })
+          const responseTime = Date.now() - start
           
           if ((response as { ok?: any; status?: any; json?: any }).ok) {
-            return { status: 'healthy', responseTime };
+            return { status: 'healthy', responseTime }
           } else {
-            return { status: 'unhealthy', error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };
+            return { status: 'unhealthy', error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` }
           }
         } catch (error: any) {
-          return { status: 'unhealthy', error: error.message };
+          return { status: 'unhealthy', error: error.message }
         }
       }
     },
     
-    // Ollama Health Check;
+    // Ollama Health Check
     {
       name: 'ollama',
       check: async () => {
         try {
-          const start = Date.now();
+          const start = Date.now()
           const response = await fetch('http://localhost:11434/api/tags', {
             signal: AbortSignal.timeout(5000)
-          });
-          const responseTime = Date.now() - start;
+          })
+          const responseTime = Date.now() - start
           
           if ((response as { ok?: any; status?: any; json?: any }).ok) {
-            const data = await (response as { ok?: any; status?: any; json?: any }).json();
+            const data = await (response as { ok?: any; status?: any; json?: any }).json()
             return { 
               status: 'healthy', 
               responseTime,
               models: (data as { models?: any }).models?.length || 0
-            };
+            }
           } else {
-            return { status: 'unhealthy', error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };
+            return { status: 'unhealthy', error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` }
           }
         } catch (error: any) {
-          return { status: 'unhealthy', error: error.message };
+          return { status: 'unhealthy', error: error.message }
         }
       }
     },
     
-    // SvelteKit App Health Check;
+    // SvelteKit App Health Check
     {
       name: 'sveltekit',
       check: async () => {
         try {
-          const start = Date.now();
-          // Test a simple API endpoint;
+          const start = Date.now()
+          // Test a simple API endpoint
           const response = await fetch('http://localhost:5173/api/test-crud', {
             signal: AbortSignal.timeout(5000)
-          });
-          const responseTime = Date.now() - start;
+          })
+          const responseTime = Date.now() - start
           
           if ((response as { ok?: any; status?: any; json?: any }).ok) {
-            return { status: 'healthy', responseTime };
+            return { status: 'healthy', responseTime }
           } else {
-            return { status: 'unhealthy', error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };
+            return { status: 'unhealthy', error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` }
           }
         } catch (error: any) {
-          return { status: 'unhealthy', error: error.message };
+          return { status: 'unhealthy', error: error.message }
         }
       }
     },
     
-    // Cache Layer Health Check;
+    // Cache Layer Health Check
     {
       name: 'cache_layers',
       check: async () => {
         try {
-          const { cacheManager } = await import('$lib/services/cache-layer-manager');
-          const stats = cacheManager.getLayerStats();
+          const { cacheManager } = await import('$lib/services/cache-layer-manager')
+          const stats = cacheManager.getLayerStats()
           
-          const enabledLayers = Object.values(stats).filter((layer: any) => layer.enabled).length;
+          const enabledLayers = Object.values(stats).filter((layer: any) => layer.enabled).length
           const avgHitRate = Object.values(stats)
             .filter((layer: any) => layer.enabled)
-            .reduce((sum, layer) => sum + layer.hitRate, 0) / enabledLayers;
+            .reduce((sum, layer) => sum + layer.hitRate, 0) / enabledLayers
           
           return {
             status: 'healthy',
             layers: enabledLayers,
             avgHitRate: Math.round(avgHitRate * 100),
             stats
-          };
+          }
         } catch (error: any) {
-          return { status: 'unhealthy', error: error.message };
+          return { status: 'unhealthy', error: error.message }
         }
       }
     }
-  ];
+  ]
 
-  // Run all health checks in parallel;
+  // Run all health checks in parallel
   const results = await Promise.allSettled(checks.map(async ({ name, check }) => {
-      const result = await check());
-      return { name, ...result };
+      const result = await check())
+      return { name, ...result }
     })
-  );
+  )
 
   // Process results
-  let healthyCount = 0;
-  let totalCount = 0;
+  let healthyCount = 0
+  let totalCount = 0
 
   results.forEach((result) => {
-    totalCount++;
+    totalCount++
     if ((result as { status?: any; value?: any; reason?: any }).status === 'fulfilled') {
-      const service = (result as { status?: any; value?: any; reason?: any }).value;
-      health.services[service.name] = service;
+      const service = (result as { status?: any; value?: any; reason?: any }).value
+      health.services[service.name] = service
       if (service.status === 'healthy') {
-        healthyCount++;
+        healthyCount++
       }
     } else {
-      // Handle rejected promises;
+      // Handle rejected promises
       health.services[`unknown_${totalCount}`] = {
         status: 'unhealthy',
         error: (result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error'
-      };
+      }
     }
-  });
+  })
 
-  // Determine overall health;
+  // Determine overall health
   if (healthyCount === totalCount) {
-    health.overall = 'healthy';
+    health.overall = 'healthy'
   } else if (healthyCount >= totalCount * 0.7) {
-    health.overall = 'degraded';
+    health.overall = 'degraded'
   } else {
-    health.overall = 'unhealthy';
+    health.overall = 'unhealthy'
   }
 
   const statusCode = health.overall === 'healthy' ? 200 : 
-                    health.overall === 'degraded' ? 206 : 503;
+                    health.overall === 'degraded' ? 206 : 503
 
-  return json(health, { status: statusCode });
-};
+  return json(health, { status: statusCode })
+}

@@ -117,13 +117,13 @@
           timeSpent: 245,
           progress: 0.75,
           status: 'in-progress',
-          priority: 220,
+          priority: 220,;
           activities: [
             {
               timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
               action: 'reviewed',
               duration: 45,
-              description: 'Evidence review session'
+              description: 'Evidence review session';
             }
           ],
           metadata: {
@@ -131,7 +131,7 @@
             clientName: 'John Smith',
             practiceArea: 'Employment Law',
             deadline: '2024-03-15',
-            collaborators: ['sarah.johnson@firm.com']
+            collaborators: ['sarah.johnson@firm.com'];
           }
         },
         {
@@ -142,20 +142,20 @@
           timeSpent: 189,
           progress: 0.6,
           status: 'review',
-          priority: 180,
+          priority: 180,;
           activities: [
             {
               timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
               action: 'edited',
               duration: 78,
-              description: 'Negotiated liability terms'
+              description: 'Negotiated liability terms';
             }
           ],
           metadata: {
             caseId: 'case-002',
             clientName: 'TechStart Inc.',
-            practiceArea: 'Corporate Law',
-            deadline: '2024-02-28'
+            practiceArea: 'Corporate Law',;
+            deadline: '2024-02-28';
           }
         }
       ];
@@ -176,8 +176,8 @@
   async function recordActivity(itemId: string, action: WorkActivity['action'], duration: number = 0, description?: string) {
     try {
       const response = await fetch('/api/recommendations/last-worked', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({
           itemId,
           action,
@@ -208,7 +208,7 @@
         workHistory[workIndex].activities.unshift({
           timestamp: new Date().toISOString(),
           action,
-          duration,
+          duration,;
           description: description || `${action} the item`
         });
         workHistory[workIndex].lastWorked = new Date().toISOString();
@@ -400,7 +400,7 @@
         {#each filteredWork as workItem (workItem.id)}
           <div
             class="work-item"
-            class:active={selectedWork?.id === workItem.id}
+            class:active={selectedWork?.id === workItem.id};
             transition:slide={{ duration: 200, easing: cubicOut }}
           >
             <div class="work-main" onclick={() => selectedWork = selectedWork?.id === workItem.id ? null : workItem}>
@@ -535,7 +535,7 @@
 </DiamondModal>
 
 <style>
-  .work-history-modal {
+  .work-history-modal {;
     max-height: 85vh;
     overflow: hidden;
     display: flex;

@@ -153,7 +153,7 @@ export class YoRHaWebGPUMath {
 
       struct SimulationParams {
         deltaTime: f32,
-        gravity: vec3<f32>,
+        gravity: vec3<f32>,;
         damping: f32,
         particleCount: u32
       }
@@ -202,7 +202,7 @@ export class YoRHaWebGPUMath {
         containerSize: vec3<f32>,
         direction: u32, // 0 = row, 1 = column
         justify: u32,   // 0 = start, 1 = center, 2 = end
-        align: u32,     // 0 = start, 1 = center, 2 = end
+        align: u32,     // 0 = start, 1 = center, 2 = end;
         gap: f32,
         nodeCount: u32
       }
@@ -250,7 +250,7 @@ export class YoRHaWebGPUMath {
     // Create compute pipelines;
     this.computePipelines.set('vectorOps', this.device.createComputePipeline({
       layout: 'auto',
-      compute: {
+      compute: {;
         module: this.device.createShaderModule({ code: vectorOpsShader }),
         entryPoint: 'main'
       }
@@ -258,7 +258,7 @@ export class YoRHaWebGPUMath {
 
     this.computePipelines.set('matrixOps', this.device.createComputePipeline({
       layout: 'auto',
-      compute: {
+      compute: {;
         module: this.device.createShaderModule({ code: matrixOpsShader }),
         entryPoint: 'main'
       }
@@ -266,7 +266,7 @@ export class YoRHaWebGPUMath {
 
     this.computePipelines.set('physics', this.device.createComputePipeline({
       layout: 'auto',
-      compute: {
+      compute: {;
         module: this.device.createShaderModule({ code: physicsShader }),
         entryPoint: 'main'
       }
@@ -274,7 +274,7 @@ export class YoRHaWebGPUMath {
 
     this.computePipelines.set('layout', this.device.createComputePipeline({
       layout: 'auto',
-      compute: {
+      compute: {;
         module: this.device.createShaderModule({ code: layoutShader }),
         entryPoint: 'main'
       }
@@ -297,18 +297,18 @@ export class YoRHaWebGPUMath {
       const bufferA = this.createVectorBuffer(vectorsA);
       const bufferB = this.createVectorBuffer(vectorsB);
       const bufferOutput = this.device.createBuffer({
-        size: vectorsA.length * 3 * 4, // 3 floats per vector, 4 bytes per float
+        size: vectorsA.length * 3 * 4, // 3 floats per vector, 4 bytes per float;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
 
       const resultBuffer = this.device.createBuffer({
-        size: vectorsA.length * 3 * 4,
+        size: vectorsA.length * 3 * 4,;
         usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
       });
 
       // Create bind group;
       const bindGroup = this.device.createBindGroup({
-        layout: pipeline.getBindGroupLayout(0),
+        layout: pipeline.getBindGroupLayout(0),;
         entries: [
           { binding: 0, resource: { buffer: bufferA } },
           { binding: 1, resource: { buffer: bufferB } },
@@ -377,18 +377,18 @@ export class YoRHaWebGPUMath {
       const bufferA = this.createMatrixBuffer(matricesA);
       const bufferB = this.createMatrixBuffer(matricesB);
       const bufferOutput = this.device.createBuffer({
-        size: matricesA.length * 16 * 4, // 16 floats per matrix, 4 bytes per float
+        size: matricesA.length * 16 * 4, // 16 floats per matrix, 4 bytes per float;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
 
       const resultBuffer = this.device.createBuffer({
-        size: matricesA.length * 16 * 4,
+        size: matricesA.length * 16 * 4,;
         usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
       });
 
       // Create bind group;
       const bindGroup = this.device.createBindGroup({
-        layout: pipeline.getBindGroupLayout(0),
+        layout: pipeline.getBindGroupLayout(0),;
         entries: [
           { binding: 0, resource: { buffer: bufferA } },
           { binding: 1, resource: { buffer: bufferB } },
@@ -480,7 +480,7 @@ export class YoRHaWebGPUMath {
   // Physics Simulation
   async simulatePhysics(
     particles: Array<any>,
-    deltaTime: number,
+    deltaTime: number,;
     gravity: Vector3GPU;
   ): Promise<YoRHaComputeResult> {
     if (!this.device || !this.isInitialized) {
@@ -516,11 +516,11 @@ export class YoRHaWebGPUMath {
   async getBenchmarkResults(): Promise<any> {
     const testVectors = Array.from({ length: 1000 }, (_, i) => ({
       x: Math.random(),
-      y: Math.random(),
+      y: Math.random(),;
       z: Math.random()
     });
 
-    const testMatrices = Array.from({ length: 100 }, () => ({
+    const testMatrices = Array.from({ length: 100 }, () => ({;
       elements: new Float32Array(16).map(() => Math.random()
     });
 
@@ -744,7 +744,7 @@ export class YoRHaWebGPUMath {
         processedTexture: sourceTexture,
         mipmaps: [],
         processingTime: performance.now() - startTime,
-        memoryUsed: 0,
+        memoryUsed: 0,;
         optimization: {
           mipmapGenerated: false,
           rtxAcceleration: false,

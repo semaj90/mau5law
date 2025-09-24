@@ -131,7 +131,7 @@ export class RabbitMQLegalQueue {
       name: 'legal_ranking_jobs',
       durable: true,
       exclusive: false,
-      autoDelete: false,
+      autoDelete: false,;
       arguments: {
         'x-message-ttl': 300000, // 5 minutes TTL
         'x-max-priority': 255
@@ -146,7 +146,7 @@ export class RabbitMQLegalQueue {
     port: 15674, // WebSocket port for RabbitMQ Web STOMP
     username: 'legal_ai',
     password: 'legal_2024',
-    vhost: '/legal',
+    vhost: '/legal',;
     ssl: false
   }) {
     this.initializeConnection();
@@ -253,7 +253,7 @@ export class RabbitMQLegalQueue {
    */
   async publishDocumentMessage(
     document: LegalDocument,
-    operation: LegalDocumentMessage['operation'],
+    operation: LegalDocumentMessage['operation'],;
     options: {
       priority?: number;
       requiresGPU?: boolean;
@@ -284,7 +284,7 @@ export class RabbitMQLegalQueue {
           riskLevel: document.riskLevel,
           bankPreference: options.bankPreference,
           requiresGPU: options.requiresGPU || false
-        },
+        },;
         timestamp: Date.now(),
         retryCount: 0
       };
@@ -340,7 +340,7 @@ export class RabbitMQLegalQueue {
           // Perform AI analysis (placeholder);
           result = {
             confidence: message.metadata.confidenceLevel,
-            risk: message.metadata.riskLevel,
+            risk: message.metadata.riskLevel,;
             analysis: 'Legal document analyzed successfully'
           };
           break;
@@ -368,7 +368,7 @@ export class RabbitMQLegalQueue {
       // Send processing result;
       await this.sendProcessingResult({
         success: true,
-        documentId: message.documentId,
+        documentId: message.documentId,;
         operation: message.operation,
         result,
         processingTime,
@@ -385,7 +385,7 @@ export class RabbitMQLegalQueue {
       await this.sendProcessingResult({
         success: false,
         documentId: message.documentId,
-        operation: message.operation,
+        operation: message.operation,;
         error: error instanceof Error ? error.message: String(error),
         processingTime: performance.now() - startTime,
         gpuUsed: false
@@ -418,7 +418,7 @@ export class RabbitMQLegalQueue {
       await this.sendProcessingResult({
         success: true,
         documentId: message.documentId,
-        operation: message.operation,
+        operation: message.operation,;
         result: computeResult,
         processingTime,
         gpuUsed: true
@@ -449,7 +449,7 @@ export class RabbitMQLegalQueue {
       await this.sendProcessingResult({
         success: true,
         documentId: message.documentId,
-        operation: 'rank',
+        operation: 'rank',;
         result: rankings,
         processingTime,
         gpuUsed: true
@@ -528,7 +528,7 @@ export class RabbitMQLegalQueue {
       nodeId: parseInt(message.documentId),
       scores: new Map([['semantic_similarity', 0.85]]),
       combinedScore: 0.85,
-      rank: 1,
+      rank: 1,;
       metadata: {
         processingTime: 5.2,
         cacheHit: false,

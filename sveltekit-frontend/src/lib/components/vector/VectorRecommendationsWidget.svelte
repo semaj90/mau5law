@@ -6,14 +6,14 @@ Compact AI recommendations component for sidebar/dashboard use
   // Svelte 5 runes are auto-imported
 
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import {
     Lightbulb,
     Target,
@@ -79,14 +79,14 @@ Compact AI recommendations component for sidebar/dashboard use
         userProfile: {
           role: userRole,
           experience: 'senior',
-          specialization: ['legal-analysis', 'case-management']
+          specialization: ['legal-analysis', 'case-management'];
         },
         currentCase: currentCaseId ? {
           id: currentCaseId,
           type: 'general',
           priority: 'medium',
-          status: 'active'
-        } : undefined,
+          status: 'active';
+        } : undefined,;
         preferences: {
           preferredActions: ['research', 'analysis', 'documentation'],
           workflowStyle: 'systematic'
@@ -275,7 +275,7 @@ Compact AI recommendations component for sidebar/dashboard use
 
 <style>
   /* @unocss-include */
-  .line-clamp-2 {
+  .line-clamp-2 {;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;

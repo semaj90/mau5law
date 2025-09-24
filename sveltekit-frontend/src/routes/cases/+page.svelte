@@ -40,17 +40,17 @@
     description: z.string().optional(),
     priority: z.enum(['low', 'medium', 'high']).default('medium'),
     status: z.enum(['low', 'medium', 'high']).default('open'),
-    incidentDate: z.string().optional(),
-    location: z.string().optional(),
-    jurisdiction: z.string().optional()
+    incidentDate: z.string().optional(),;
+    location: z.string().optional(),;
+    jurisdiction: z.string().optional();
   });
 
   const addEvidenceSchema = z.object({
     caseId: z.string().min(1, 'Case ID is required'),
-    title: z.string().min(1).max(255, 'Title too long'),
+    title: z.string().min(1).max(255, 'Title too long'),;
     description: z.string().optional(),
-    evidenceType: z.enum(['document', 'image', 'video']).default('document'),
-    tags: z.string().optional()
+    evidenceType: z.enum(['document', 'image', 'video']).default('document'),;
+    tags: z.string().optional();
   });
 
   // Props from load function  
@@ -71,7 +71,7 @@
             success: true,
             caseTitle: form.data.title,
             casePriority: form.data.priority,
-            caseStatus: form.data.status
+            caseStatus: form.data.status;
           });
         }
       }
@@ -136,12 +136,12 @@
         ...optimisticEvidence,
         {
           id: `temp-${Date.now()}`,
-          title: current.title,
+          title: current.title,;
           description: current.description,
           collectedAt: new Date().toISOString(),
-          evidenceType: current.evidenceType,
+          evidenceType: current.evidenceType,;
           tags: current.tags,
-          __optimistic: true
+          __optimistic: true;
         }
       ];
     }
@@ -232,18 +232,18 @@
   // Priority colors
   const priorityColors = {
     low: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-    medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
-    high: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',
-    critical: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+    medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',;
+    high: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',;
+    critical: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
   };
 
   // Status colors
   const statusColors = {
     open: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
     investigating: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
-    pending: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
-    closed: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
-    archived: 'bg-gray-100 text-gray-600 dark:bg-gray-900 dark:text-gray-400'
+    pending: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',;
+    closed: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',;
+    archived: 'bg-gray-100 text-gray-600 dark:bg-gray-900 dark:text-gray-400';
   };
 
   // Vector search function
@@ -255,7 +255,7 @@
       query: searchQuery,
       searchType: 'vector_search',
       legalDomain: 'case_management',
-      searchStartTime: Date.now()
+      searchStartTime: Date.now();
     });
 
     isSearching = true;
@@ -263,13 +263,13 @@
 
     try {
       const response = await fetch('/api/cases/search', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query: searchQuery,
-          useVectorSearch: true,
-          limit: 10,
-          threshold: 0.7
+          useVectorSearch: true,;
+          limit: 10,;
+          threshold: 0.7;
         })
       });
 
@@ -284,7 +284,7 @@
             success: true,
             resultCount: vectorSearchResults.length,
             searchTime: Date.now() - searchStartTime,
-            relevanceScore: vectorSearchResults.length > 0 ? 0.8 : 0.3 // Estimated relevance
+            relevanceScore: vectorSearchResults.length > 0 ? 0.8 : 0.3 // Estimated relevance;
           });
         }
       } else {
@@ -324,8 +324,8 @@
     formData.append('evidenceId', evidenceToDelete.id);
 
     const response = await fetch('/cases?/deleteEvidence', {
-      method: 'POST',
-      body: formData
+      method: 'POST',;
+      body: formData;
     });
 
     if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -346,7 +346,7 @@
       } else if (evidenceFormData && typeof evidenceFormData.set === 'function') {
         const current = get(evidenceFormData);
         if (current && typeof current === 'object') {
-          evidenceFormData.set.activeCase.id });
+          evidenceFormData.set(activeCase).id });
         }
       }
     }
@@ -423,7 +423,7 @@
       <div class="flex flex-col gap-4 md:flex-row md:items-center">
         <div class="relative">
           <Search class="absolute left-2 top-2.5 h-4 w-4 nes-text is-disabled" />
-          <Input
+          <Input;
             bind:value={searchQuery}
             placeholder="Search cases with AI vector search..."
             class="pl-8 w-full md:w-[400px]"
@@ -468,7 +468,7 @@
               {value: 'medium', label: 'Medium'},
               {value: 'high', label: 'High'},
               {value: 'critical', label: 'Critical'}
-            ]}
+            ]};
             bind:selected={priorityFilter}
             placeholder="Priority"
             class="w-[140px]"
@@ -981,13 +981,13 @@
   context={{
     page: 'cases',
     totalCases: filteredCases.length,
-    hasActiveFilters: searchQuery.trim() || statusFilter !== 'all' || priorityFilter !== 'all'
+    hasActiveFilters: searchQuery.trim() || statusFilter !== 'all' || priorityFilter !== 'all';
   }}
   trackOnMount={true}
   let:feedback
 />
 
-<FeedbackIntegration
+<FeedbackIntegration;
   bind:this={searchFeedback}
   interactionType="ai_search"
   ratingType="search_relevance"
@@ -996,7 +996,7 @@
   let:feedback
 />
 
-<FeedbackIntegration
+<FeedbackIntegration;
   bind:this={caseCreationFeedback}
   interactionType="case_creation"
   ratingType="ui_experience"

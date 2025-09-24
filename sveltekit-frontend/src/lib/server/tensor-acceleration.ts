@@ -204,7 +204,7 @@ export class TensorAccelerator {
     this.computePipelines.set(
       'similarity',
       this.device.createComputePipeline({
-        layout: 'auto',
+        layout: 'auto',;
         compute: { module: similarityModule, entryPoint: 'main' }
       })
     );
@@ -212,7 +212,7 @@ export class TensorAccelerator {
     this.computePipelines.set(
       'transform',
       this.device.createComputePipeline({
-        layout: 'auto',
+        layout: 'auto',;
         compute: { module: transformModule, entryPoint: 'main' }
       })
     );
@@ -220,7 +220,7 @@ export class TensorAccelerator {
     this.computePipelines.set(
       'image',
       this.device.createComputePipeline({
-        layout: 'auto',
+        layout: 'auto',;
         compute: { module: imageModule, entryPoint: 'main' }
       })
     );
@@ -250,7 +250,7 @@ export class TensorAccelerator {
     try {
       // Create buffers;
       const bufferA = this.device.createBuffer({
-        size: vectorA.byteLength,
+        size: vectorA.byteLength,;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
         mappedAtCreation: true
       });
@@ -258,7 +258,7 @@ export class TensorAccelerator {
       bufferA.unmap();
 
       const bufferB = this.device.createBuffer({
-        size: vectorB.byteLength,
+        size: vectorB.byteLength,;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
         mappedAtCreation: true
       });
@@ -266,12 +266,12 @@ export class TensorAccelerator {
       bufferB.unmap();
 
       const resultBuffer = this.device.createBuffer({
-        size: numTiles * 4, // f32 per tile
+        size: numTiles * 4, // f32 per tile;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
 
       const uniformBuffer = this.device.createBuffer({
-        size: 16, // vec4<u32>
+        size: 16, // vec4<u32>;
         usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
       });
 
@@ -285,7 +285,7 @@ export class TensorAccelerator {
       // Create bind group
       const pipeline = this.computePipelines.get('similarity')!;
       const bindGroup = this.device.createBindGroup({
-        layout: pipeline.getBindGroupLayout(0),
+        layout: pipeline.getBindGroupLayout(0),;
         entries: [
           { binding: 0, resource: { buffer: bufferA } },
           { binding: 1, resource: { buffer: bufferB } },
@@ -305,7 +305,7 @@ export class TensorAccelerator {
 
       // Read results;
       const stagingBuffer = this.device.createBuffer({
-        size: numTiles * 4,
+        size: numTiles * 4,;
         usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
       });
 
@@ -354,7 +354,7 @@ export class TensorAccelerator {
    */
   async transformEmbedding(
     embedding: Float32Array,
-    operation: 'normalize' | 'quantize' | 'activate',
+    operation: 'normalize' | 'quantize' | 'activate',;
     options: TensorAccelerationOptions = {}
   ): Promise<any> {
     const startTime = performance.now();
@@ -370,7 +370,7 @@ export class TensorAccelerator {
     try {
       // Create buffers;
       const inputBuffer = this.device.createBuffer({
-        size: embedding.byteLength,
+        size: embedding.byteLength,;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
         mappedAtCreation: true
       });
@@ -378,12 +378,12 @@ export class TensorAccelerator {
       inputBuffer.unmap();
 
       const outputBuffer = this.device.createBuffer({
-        size: embedding.byteLength,
+        size: embedding.byteLength,;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
 
       const uniformBuffer = this.device.createBuffer({
-        size: 16,
+        size: 16,;
         usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
       });
 
@@ -400,7 +400,7 @@ export class TensorAccelerator {
       // Execute transform
       const pipeline = this.computePipelines.get('transform')!;
       const bindGroup = this.device.createBindGroup({
-        layout: pipeline.getBindGroupLayout(0),
+        layout: pipeline.getBindGroupLayout(0),;
         entries: [
           { binding: 0, resource: { buffer: inputBuffer } },
           { binding: 1, resource: { buffer: outputBuffer } },
@@ -418,7 +418,7 @@ export class TensorAccelerator {
 
       // Read results;
       const stagingBuffer = this.device.createBuffer({
-        size: embedding.byteLength,
+        size: embedding.byteLength,;
         usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
       });
 
@@ -456,7 +456,7 @@ export class TensorAccelerator {
   async analyzeImage(
     imageData: Uint32Array,
     width: number,
-    height: number,
+    height: number,;
     options: TensorAccelerationOptions = {}
   ): Promise<any> {
     const startTime = performance.now();
@@ -477,7 +477,7 @@ export class TensorAccelerator {
     try {
       // Create buffers;
       const imageBuffer = this.device.createBuffer({
-        size: imageData.byteLength,
+        size: imageData.byteLength,;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
         mappedAtCreation: true
       });
@@ -485,12 +485,12 @@ export class TensorAccelerator {
       imageBuffer.unmap();
 
       const featureBuffer = this.device.createBuffer({
-        size: numFeatures * 4, // f32 per feature
+        size: numFeatures * 4, // f32 per feature;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
 
       const uniformBuffer = this.device.createBuffer({
-        size: 16,
+        size: 16,;
         usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
       });
 
@@ -503,7 +503,7 @@ export class TensorAccelerator {
       // Execute image analysis
       const pipeline = this.computePipelines.get('image')!;
       const bindGroup = this.device.createBindGroup({
-        layout: pipeline.getBindGroupLayout(0),
+        layout: pipeline.getBindGroupLayout(0),;
         entries: [
           { binding: 0, resource: { buffer: imageBuffer } },
           { binding: 1, resource: { buffer: featureBuffer } },
@@ -521,7 +521,7 @@ export class TensorAccelerator {
 
       // Read results;
       const stagingBuffer = this.device.createBuffer({
-        size: numFeatures * 4,
+        size: numFeatures * 4,;
         usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
       });
 
@@ -638,7 +638,7 @@ export async function acceleratedSimilarity(
 
 export async function acceleratedTransform(
   embedding: Float32Array,
-  operation: 'normalize' | 'quantize' | 'activate',
+  operation: 'normalize' | 'quantize' | 'activate',;
   options: TensorAccelerationOptions = {}
 ) {
   if (options.gpuTile && TensorAccelerator.isAvailable()) {

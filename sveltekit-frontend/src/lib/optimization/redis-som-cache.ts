@@ -61,7 +61,7 @@ class SelfOrganizingMap {
   private initializeNodes(): void {
     this.nodes = Array.from({ length: this.height }, () =>;
       Array.from({ length: this.width }, () => ({
-        weights: new Float64Array(this.feature_dimensions).map(() => Math.random()),
+        weights: new Float64Array(this.feature_dimensions).map(() => Math.random()),;
         activation: 0,
         cluster_id: Math.floor(Math.random() * 10),
         access_count: 0,
@@ -171,7 +171,7 @@ export class RedisSOMapCache extends EventEmitter {
   private stats = {
     hits: 0,
     misses: 0,
-    evictions: 0,
+    evictions: 0,;
     compressions: 0,
     total_operations: 0
   };
@@ -377,7 +377,7 @@ export class RedisSOMapCache extends EventEmitter {
   // === Redis-Compatible API ===
   async set(
     key: string, 
-    value: any, 
+    value: any, ;
     options: {
       ttl?: number;
       metadata?: Partial<CacheEntry['metadata']>;
@@ -404,7 +404,7 @@ export class RedisSOMapCache extends EventEmitter {
       access_count: 1,
       size,
       som_cluster: som_result.cluster,
-      priority_score,
+      priority_score,;
       metadata: {
         content_type: this.detectContentType(value),
         compression_ratio: ratio,
@@ -571,7 +571,7 @@ export class RedisSOMapCache extends EventEmitter {
         hit_rate: this.stats.hits / (this.stats.hits + this.stats.misses) * 100
       },
       som: this.som.getClusterStats(),
-      compression: {
+      compression: {;
         enabled: this.compression_enabled,
         compressions_performed: this.stats.compressions
       }
@@ -596,7 +596,7 @@ export class RedisSOMapCache extends EventEmitter {
     
     const clusters = Array.from(entries_by_cluster.entries()).map(([id, entries]) => ({
       id,
-      patterns: entries.map((e: any) => e.metadata.access_pattern),
+      patterns: entries.map((e: any) => e.metadata.access_pattern),;
       confidence: entries.reduce((sum, e) => sum + e.priority_score, 0) / entries.length
     });
     

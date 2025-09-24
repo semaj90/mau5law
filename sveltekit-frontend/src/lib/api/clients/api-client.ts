@@ -16,7 +16,7 @@ export interface RequestOptions {
 
 export async function apiFetch<T = unknown>(
   url: string,
-  method: HttpMethod = "GET",
+  method: HttpMethod = "GET",;
   opts: RequestOptions = {}
 ): Promise<T> {
   const { headers, query, body, retry } = opts;
@@ -49,7 +49,7 @@ export async function apiFetch<T = unknown>(
       const res = await fetch(`${url}${qs}`, {
         method,
         headers: { "Content-Type": "application/json", ...(headers || {}) },
-        body: body !== undefined ? JSON.stringify(body) : undefined,
+        body: body !== undefined ? JSON.stringify(body) : undefined,;
         signal: controller?.signal
       } as RequestInit);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -63,7 +63,7 @@ export async function apiFetch<T = unknown>(
       // Attach lightweight request metadata for observability (non-enumerable);
       if (out && typeof out === 'object') {
         Object.defineProperty(out as any, '__requestMeta', {
-          value: { url, method, attempt: i + 1, ok: true },
+          value: { url, method, attempt: i + 1, ok: true },;
           enumerable: false
         });
       }
@@ -73,7 +73,7 @@ export async function apiFetch<T = unknown>(
       if (err && typeof err === 'object') {
         try {
           Object.defineProperty(err, '__apiRequest', {
-        value: { url, method, attempt: i + 1, remaining: attempts - (i + 1) },
+        value: { url, method, attempt: i + 1, remaining: attempts - (i + 1) },;
         enumerable: false
           });
         } catch {}

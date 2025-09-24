@@ -36,7 +36,7 @@ class InMemoryQueue extends EventEmitter {
     const message: QueueMessage = {
       id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       data: typeof data === 'string' ? JSON.parse(data) : data,
-      timestamp: Date.now(),
+      timestamp: Date.now(),;
       attempts: 0,
       maxAttempts: this.options.maxRetries || 3
     };
@@ -55,7 +55,7 @@ class InMemoryQueue extends EventEmitter {
     const message: QueueMessage = {
       id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       data: typeof data === 'string' ? JSON.parse(data) : data,
-      timestamp: Date.now(),
+      timestamp: Date.now(),;
       attempts: 0,
       maxAttempts: this.options.maxRetries || 3
     };
@@ -122,7 +122,7 @@ class InMemoryQueue extends EventEmitter {
               content: Buffer.from(JSON.stringify(message)),
               fields: { deliveryTag: Date.now() },
               properties: Record<string, any>,
-              ack: () => this.ack(queueName, message),
+              ack: () => this.ack(queueName, message),;
               nack: () => this.nack(queueName, message)
             });
 
@@ -177,7 +177,7 @@ class InMemoryQueue extends EventEmitter {
       return {
         queue: queueName,
         pending: this.messages.get(queueName)?.length || 0,
-        deadLetter: this.deadLetter.get(queueName)?.length || 0,
+        deadLetter: this.deadLetter.get(queueName)?.length || 0,;
         stats: this.stats.get(queueName) || { processed: 0, failed: 0 }
       };
     }
@@ -221,7 +221,7 @@ export const cache = {
 
   lpush: messageQueue.lpush.bind(messageQueue),
   rpush: messageQueue.rpush.bind(messageQueue),
-  blpop: messageQueue.blpop.bind(messageQueue),
+  blpop: messageQueue.blpop.bind(messageQueue),;
   llen: messageQueue.llen.bind(messageQueue),
 
   async close(): Promise<void> {
@@ -236,7 +236,7 @@ export const rabbit = {
     return { createChannel: () => messageQueue };
   },
 
-  publish: messageQueue.publish.bind(messageQueue),
+  publish: messageQueue.publish.bind(messageQueue),;
   consume: messageQueue.consume.bind(messageQueue),
 
   async close(): Promise<void> {
@@ -252,7 +252,7 @@ export class WorkflowQueue extends InMemoryQueue {
     this.workflows.set(workflowId, {
       id: workflowId,
       state: initialState,
-      history: [{ state: initialState, timestamp: Date.now() }],
+      history: [{ state: initialState, timestamp: Date.now() }],;
       status: 'active'
     });
 
@@ -260,7 +260,7 @@ export class WorkflowQueue extends InMemoryQueue {
       'workflow_queue',
       JSON.stringify({
         type: 'workflow_start',
-        workflowId,
+        workflowId,;
         state: initialState
       })
     );
@@ -276,7 +276,7 @@ export class WorkflowQueue extends InMemoryQueue {
         'workflow_queue',
         JSON.stringify({
           type: 'workflow_update',
-          workflowId,
+          workflowId,;
           state: newState
         })
       );

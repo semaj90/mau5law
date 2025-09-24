@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once;
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <script lang="ts">
@@ -12,11 +12,11 @@ https://svelte.dev/e/props_duplicate -->
   let { showDescription = $bindable()  }: { showDescription = $bindable() : any } = $props(); // boolean = true;
   let { size = $bindable()  }: { size = $bindable() : any } = $props(); // 'sm' | 'md' | 'lg' = 'md';
   // Events now handled via props in Svelte 5
-  // 
+  //
   let hoveredScore = $state<number | null >(null);
   const descriptions = {
     1: 'Very Low',
-    2: 'Low', 
+    2: 'Low',
     3: 'Below Average',
     4: 'Slightly Below Average',
     5: 'Average',
@@ -42,9 +42,9 @@ https://svelte.dev/e/props_duplicate -->
   }
   let displayScore = $derived(hoveredScore !== null ? hoveredScore : score);
   let sizeClasses = $derived({
-    sm: 'w-4 h-4',
-    md: 'w-6 h-6', 
-    lg: 'w-8 h-8'
+    sm: 'w-4 h-4',;
+    md: 'w-6 h-6', ;
+    lg: 'w-8 h-8';
   });
 </script>
 
@@ -56,13 +56,13 @@ https://svelte.dev/e/props_duplicate -->
       <span class="mx-auto px-4 max-w-7xl">({descriptions[displayScore as keyof typeof descriptions]})</span>
     {/if}
   </div>
-  
+
   <div class="mx-auto px-4 max-w-7xl">
     {#each Array(10) as _, i}
       {@const rating = i + 1}
       {@const isActive = rating <= displayScore}
       {@const isHovered = hoveredScore !== null && rating <= hoveredScore}
-      
+
       <button
         type="button"
         class="mx-auto px-4 max-w-7xl"
@@ -87,7 +87,7 @@ https://svelte.dev/e/props_duplicate -->
       </button>
     {/each}
   </div>
-  
+
   {#if !readOnly}
     <div class="mx-auto px-4 max-w-7xl">
       <input
@@ -102,25 +102,25 @@ https://svelte.dev/e/props_duplicate -->
 </div>
 
 <style>
-  .star-button {
+  .star-button {;
     color: #d1d5db;
     border: none;
     background: transparent;
     padding: 0;
   }
-  
+
   .star-button.active {
     color: #fbbf24;
   }
-  
+
   .star-button.hovered {
     color: #fcd34d;
   }
-  
-  .star-button: not(.active):hover {
+
+  .star-button:not(.active):hover {
     color: #fef3c7;
   }
-  
+
   .star-button:disabled {
     opacity: 0.7;
   }

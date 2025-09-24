@@ -62,7 +62,7 @@ export const actions: Actions = {
       return json({
         success: true,
         sessionId,
-        stream: streamingResult,
+        stream: streamingResult,;
         timestamp: new Date().toISOString()
       });
     } catch (err) {
@@ -83,7 +83,7 @@ export const actions: Actions = {
       await terminateCudaStream(sessionId);
       
       return json({
-        success: true,
+        success: true,;
         message: 'Streaming session terminated',
         sessionId
       });
@@ -118,7 +118,7 @@ export const actions: Actions = {
         success: true,
         result: processingResult,
         processingTime,
-        gpuAccelerated: useGpu,
+        gpuAccelerated: useGpu,;
         timestamp: new Date().toISOString()
       });
     } catch (err) {
@@ -144,7 +144,7 @@ async function getGPUSystemInfo() {
     temperatureCurrent: 45, // Celsius
     powerDraw: 320, // Watts;
     utilization: {
-      gpu: 15, // percentage
+      gpu: 15, // percentage;
       memory: 8, // percentage
     }
   };
@@ -193,7 +193,7 @@ async function getRecentProcessingResults() {
       processingTime: 3120,
       gpuAccelerated: false, // Fallback to CPU
       throughput: 225,
-      timestamp: new Date(Date.now() - 1800000).toISOString(), // 30 min ago
+      timestamp: new Date(Date.now() - 1800000).toISOString(), // 30 min ago;
       status: "completed"
     }
   ];
@@ -223,7 +223,7 @@ async function processCudaDocument(documentData: string, options: any) {
   await new Promise(resolve => setTimeout(resolve, simulatedProcessingTime));
   
   return {
-    vectors: new Array(768).fill(0).map(() => Math.random()),
+    vectors: new Array(768).fill(0).map(() => Math.random()),;
     entities: [
       { text: "Legal Contract", type: "DOCUMENT_TYPE", confidence: 0.95 },
       { text: "TechCorp Inc.", type: "ORGANIZATION", confidence: 0.92 },

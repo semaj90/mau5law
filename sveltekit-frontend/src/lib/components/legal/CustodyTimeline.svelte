@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -6,7 +6,7 @@ Custody Timeline Component
 Displays the chronological chain of custody events with detailed audit trail
 -->
 <script lang="ts">
-  interface Props {
+  interface Props {;
     events: Array;
     signature?: string;
   }>;
@@ -62,49 +62,49 @@ Displays the chronological chain of custody events with detailed audit trail
     switch (event.eventType) {
       case 'intake':
         return {
-          primary: `Evidence taken into custody`,
-          secondary: `Hash verified: ${event.details.hashMatch ? 'Yes' : 'No'}`,
+          primary: `Evidence taken into custody`,;
+          secondary: `Hash verified: ${event.details.hashMatch ? 'Yes' : 'No'}`,;
           extra: event.details.originalHash ? `Hash: ${event.details.originalHash.substring(0, 8)}...` : ''
         };
       case 'transfer':
         return {
-          primary: `Custody transferred`,
-          secondary: `From: ${event.details.fromCustodian} → To: ${event.details.toCustodian}`,
+          primary: `Custody transferred`,;
+          secondary: `From: ${event.details.fromCustodian} → To: ${event.details.toCustodian}`,;
           extra: `Reason: ${event.details.transferReason}`
         };
       case 'verification':
         return {
-          primary: `Integrity verification completed`,
-          secondary: `Status: ${event.details.integrityStatus}`,
+          primary: `Integrity verification completed`,;
+          secondary: `Status: ${event.details.integrityStatus}`,;
           extra: event.details.verificationResults ? 
             `AI Score: ${(event.details.verificationResults.aiAnalysisScore * 100).toFixed(0)}%` : ''
         };
       case 'analysis':
         return {
-          primary: `AI analysis completed`,
-          secondary: `Risk Level: ${event.details.aiAnalysis?.riskLevel || 'Unknown'}`,
+          primary: `AI analysis completed`,;
+          secondary: `Risk Level: ${event.details.aiAnalysis?.riskLevel || 'Unknown'}`,;
           extra: event.details.aiAnalysis ? 
             `Models: ${event.details.models?.join(', ') || 'Multiple'}` : ''
         };
       case 'approval':
         return {
-          primary: `Custody approved`,
-          secondary: `Approval status: ${event.details.approvalStatus}`,
+          primary: `Custody approved`,;
+          secondary: `Approval status: ${event.details.approvalStatus}`,;
           extra: event.details.finalIntegrityStatus ? 
             `Final status: ${event.details.finalIntegrityStatus}` : ''
         };
       case 'finalization':
         return {
-          primary: `Custody workflow finalized`,
-          secondary: `Total events: ${event.details.custodyReport?.totalEvents || 0}`,
+          primary: `Custody workflow finalized`,;
+          secondary: `Total events: ${event.details.custodyReport?.totalEvents || 0}`,;
           extra: event.details.custodyReport?.totalProcessingTime ? 
             `Duration: ${Math.round(event.details.custodyReport.totalProcessingTime / 1000)}s` : ''
         };
       default:
         return {
-          primary: formatEventTitle(event.eventType),
-          secondary: 'Event processed',
-          extra: ''
+          primary: formatEventTitle(event.eventType),;
+          secondary: 'Event processed',;
+          extra: '';
         };
     }
   }
@@ -176,7 +176,7 @@ Displays the chronological chain of custody events with detailed audit trail
             {/if}
             
             <!-- Detailed information (expandable) -->
-            {#if event.details && Object.keys.length > 0}
+            {#if event.details && Object.keys(errors).length > 0}
               <details class="mt-2 pt-2 border-t border-gray-100">
                 <summary class="cursor-pointer text-xs text-blue-600 hover:text-blue-800">
                   View detailed information
@@ -219,32 +219,32 @@ Displays the chronological chain of custody events with detailed audit trail
 </div>
 
 <style>
-  .custody-timeline {
+  .custody-timeline {;
     max-height: 600px;
-    overflow-y: auto
+    overflow-y: auto;
   }
   
   /* Smooth scrolling for timeline */
   .custody-timeline {
-    scroll-behavior: smooth
+    scroll-behavior: smooth;
   }
   
   /* Custom scrollbar */
-  .custody-timeline: :-webkit-scrollbar {
+  .custody-timeline::-webkit-scrollbar {;
     width: 6px;
   }
   
-  .custody-timeline: :-webkit-scrollbar-track {
+  .custody-timeline::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 3px;
   }
   
-  .custody-timeline: :-webkit-scrollbar-thumb {
+  .custody-timeline::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 3px;
   }
   
-  .custody-timeline: :-webkit-scrollbar-thumb:hover {
+  .custody-timeline::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
   }
 </style>

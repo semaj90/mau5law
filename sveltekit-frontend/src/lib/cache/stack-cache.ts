@@ -4,13 +4,13 @@ export const cacheConfig = {
   // Database query caching;
   database: {
     enabled: false,
-    ttl: 300, // 5 minutes
+    ttl: 300, // 5 minutes;
     layers: ['redis', 'memory']
   },
   
   // API response caching;
   api: {
-    enabled: true,
+    enabled: true,;
     routes: {
       '/api/users': { ttl: 60, stale: 30 },
       '/api/vectors': { ttl: 120, stale: 60 },
@@ -27,7 +27,7 @@ export const cacheConfig = {
   
   // Frontend caching;
   frontend: {
-    components: { enabled: true, ttl: 3600 },
+    components: { enabled: true, ttl: 3600 },;
     assets: { enabled: true, ttl: 86400 },
     api_responses: { enabled: true, ttl: 300 }
   }

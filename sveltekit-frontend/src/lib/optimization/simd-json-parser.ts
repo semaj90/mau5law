@@ -195,7 +195,7 @@ export class SIMDJSONParser {
       const memory = (performance as any).memory;
       return {
         used: Math.round(memory.usedJSHeapSize / 1024 / 1024), // MB
-        total: Math.round(memory.totalJSHeapSize / 1024 / 1024), // MB
+        total: Math.round(memory.totalJSHeapSize / 1024 / 1024), // MB;
         limit: Math.round(memory.jsHeapSizeLimit / 1024 / 1024), // MB
       };
     }
@@ -223,7 +223,7 @@ export class SIMDPerformanceTester {
     const parser = new SIMDJSONParser();
     const results = {
       simd: 0,
-      native: 0,
+      native: 0,;
       speedup: 0
     };
 
@@ -263,7 +263,7 @@ export class SIMDPerformanceTester {
     parser.destroy();
     return {
       sizeGB: sizeGB.toFixed(3),
-      elapsed: elapsed.toFixed(3),
+      elapsed: elapsed.toFixed(3),;
       throughput: throughput.toFixed(2)
     };
   }
@@ -274,7 +274,7 @@ export class SIMDPerformanceTester {
       title: 'Test Legal Document',
       documentType: 'contract',
       content: '',
-      parties: [],
+      parties: [],;
       citations: []
     };
 

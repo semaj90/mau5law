@@ -1,14 +1,14 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   let { options: { value, selected = '', placeholder = 'Select an option', label = '', id = ''  }: { options: { value, selected = '', placeholder = 'Select an option', label = '', id = '' : unknown } = $props();
 
    label: string }[] = [];
-  
-  
-  
-  
+
+
+
+
 </script>
 
 <div class="dropdown-container">
@@ -26,7 +26,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .dropdown-container {
+  .dropdown-container {;
     margin-bottom: 1rem;
   }
 

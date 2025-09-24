@@ -133,8 +133,8 @@
 
 			// Trigger action suggestions in parent component
 			ondispatch?.({
-				type: 'suggestions',
-				data: response.metadata?.suggestions || []
+				type: 'suggestions',;
+				data: response.metadata?.suggestions || [];
 			});
 		} catch (error) {
 			console.error('Failed to get suggestions:', error);
@@ -251,7 +251,7 @@
 							message={{
 								role: message.role,
 								content: message.content,
-								timestamp: formatTimestamp(message.timestamp),
+								timestamp: formatTimestamp(message.timestamp),;
 								references: message.evidenceIds?.map(id => ({ id, score: 1.0 })) || []
 							}}
 							showReferences={true}
@@ -307,8 +307,8 @@
 					placeholder={`Ask about ${currentContext === 'general' ? 'the case' : currentContext}...`}
 					userContext={{
 						caseId,
-						selectedEvidenceIds,
-						context: currentContext
+						selectedEvidenceIds,;
+						context: currentContext;
 					}}
 					analyticsLog={(event) => console.log('AI Search Analytics:', event)}
 					onsearch={async (query) => {

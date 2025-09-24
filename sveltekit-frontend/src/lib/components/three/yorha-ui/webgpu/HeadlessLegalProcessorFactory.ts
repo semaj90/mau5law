@@ -188,7 +188,7 @@ export class HeadlessLegalProcessorFactory {
     // Create minimal render target for testing;
     const testTexture = this.device.createTexture({
       size: { width: 256, height: 256 },
-      format: 'rgba8unorm',
+      format: 'rgba8unorm',;
       usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC
     });
 
@@ -203,7 +203,7 @@ export class HeadlessLegalProcessorFactory {
     text: string,
     config: Partial<HeadlessProcessingConfig> = {}
   ): Promise<HeadlessProcessingResult> {
-    const fullConfig: HeadlessProcessingConfig = {
+    const fullConfig: HeadlessProcessingConfig = {;
       mode: 'headless',
       enableOffscreenRendering: true,
       enableMipmapGeneration: true,
@@ -265,7 +265,7 @@ export class HeadlessLegalProcessorFactory {
         success: true,
         processingTime: metrics.processingTime,
         outputFiles,
-        mipmapChain: mipmapResult ? {
+        mipmapChain: mipmapResult ? {;
           levels: mipmapResult.mipmapLevels.length,
           totalMemoryUsed: mipmapResult.totalMemoryUsed,
           generationTime: mipmapResult.totalGenerationTime,
@@ -294,7 +294,7 @@ export class HeadlessLegalProcessorFactory {
    * Process document through LOD cache engine
    */
   private async processWithLODCache(
-    text: string, 
+    text: string, ;
     config: HeadlessProcessingConfig;
   ): Promise<any> {
     const context = {
@@ -363,7 +363,7 @@ export class HeadlessLegalProcessorFactory {
 
     const texture = this.device.createTexture({
       size: { width, height },
-      format: 'rgba8unorm',
+      format: 'rgba8unorm',;
       usage: GPUTextureUsage.RENDER_ATTACHMENT | 
              GPUTextureUsage.COPY_SRC | 
              GPUTextureUsage.TEXTURE_BINDING
@@ -424,7 +424,7 @@ export class HeadlessLegalProcessorFactory {
       
       // Call Ollama service for legal analysis;
       const response = await (ollamaService as any).generateCompletion(analysisPrompt, {
-        model: 'llama3.1:8b', // Or whatever legal model is available
+        model: 'llama3.1:8b', // Or whatever legal model is available;
         stream: false
       });
 
@@ -471,7 +471,7 @@ Format your response as structured JSON.`;
       entities: [
         { text: 'Example Entity', type: 'organization', confidence: 0.9 }
       ],
-      riskLevel: 'medium' as const,
+      riskLevel: 'medium' as const,;
       summary: response?.content?.slice(0, 500) || 'Legal analysis completed'
     };
   }
@@ -483,7 +483,7 @@ Format your response as structured JSON.`;
     return {
       confidence: 0.6,
       entities: [],
-      riskLevel: 'medium' as const,
+      riskLevel: 'medium' as const,;
       summary: `Fallback analysis: Document contains ${text.length} characters. Manual review recommended.`
     };
   }
@@ -509,7 +509,7 @@ Format your response as structured JSON.`;
    * Process multiple documents in batch
    */
   async processBatch(
-    documents: Array<any>,
+    documents: Array<any>,;
     config: Partial<HeadlessProcessingConfig> = {}
   ): Promise<HeadlessProcessingResult[]> {
     console.log(`📦 Processing ${documents.length} documents in headless batch mode`);

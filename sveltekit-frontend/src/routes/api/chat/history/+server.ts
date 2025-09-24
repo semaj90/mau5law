@@ -1,34 +1,34 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { ChatHistoryService } from '$lib/server/chat/history-service';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { ChatHistoryService } from '$lib/server/chat/history-service'
 
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
-    const user = locals.user as any;
-    if (!user?.id) return json({ error: 'Unauthorized' }, { status: 401 });
+    const user = locals.user as any
+    if (!user?.id) return json({ error: 'Unauthorized' }, { status: 401 })
 
-    const sessionId = url.searchParams.get('sessionId');
+    const sessionId = url.searchParams.get('sessionId')
 
     if (sessionId) {
-      const messages = await ChatHistoryService.getMessages(sessionId);
+      const messages = await ChatHistoryService.getMessages(sessionId)
       return json({
         success: true,
         sessionId,
         messages: messages.reverse()
-      });
+      })
     }
 
-    const sessions = await ChatHistoryService.getSessionsByUser(user.id);
+    const sessions = await ChatHistoryService.getSessionsByUser(user.id)
     return json({
       success: true,
       sessions
-    });
+    })
 
   } catch (error) {
-    console.error('Chat history API error:', error);
+    console.error('Chat history API error:', error)
 
     // Return mock chat history on failure
-    const sessionId = url.searchParams.get('sessionId');
+    const sessionId = url.searchParams.get('sessionId')
     const mockData = sessionId ? {
       success: false,
       error: 'failure default to mock',
@@ -58,8 +58,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
         }
       ]
-    };
+    }
 
-    return json(mockData, { status: 500 });
+    return json(mockData, { status: 500 })
   }
-};
+}

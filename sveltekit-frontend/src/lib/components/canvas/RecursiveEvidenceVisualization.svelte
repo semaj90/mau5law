@@ -118,7 +118,7 @@
       selection: enableInteraction,
       preserveObjectStacking: true,
       imageSmoothingEnabled: true,
-      allowTouchScrolling: false
+      allowTouchScrolling: false;
     });
 
     // Initialize canvas interactions and zoom/pan handlers
@@ -177,7 +177,7 @@
 
     evidenceWorker.postMessage({
       type: 'PROCESS_EVIDENCE_CHAIN',
-      evidenceId: rootEvidenceId,
+      evidenceId: rootEvidenceId,;
       options: {
         maxDepth: 25,
         includeWeakCorrelations: true
@@ -319,14 +319,14 @@
     // Initial random positions
     nodes.forEach((node) => {
       positions.set(String(node.evidenceId), {
-        x: centerX + (Math.random() - 0.5) * 400,
-        y: centerY + (Math.random() - 0.5) * 400
+        x: centerX + (Math.random() - 0.5) * 400,;
+        y: centerY + (Math.random() - 0.5) * 400;
       });
     });
 
     // Simple force simulation placeholder
     for (let iteration = 0; iteration < 50; iteration++) {
-      // no-op: placeholder for a real force simulation
+      // no-op: placeholder for a real force simulation;
     }
 
     return {
@@ -367,9 +367,9 @@
       height: cardHeight,
       fill: getEvidenceCardColor(node),
       stroke: '#e5e7eb',
-      strokeWidth: 2,
-      rx: 8,
-      ry: 8
+      strokeWidth: 2,;
+      rx: 8,;
+      ry: 8;
     });
 
     // Evidence ID
@@ -377,9 +377,9 @@
     const evidenceId = new (fabric.Text as any)(idLabel, {
       fontSize: 12,
       fill: '#1f2937',
-      fontWeight: 'bold',
-      top: 10,
-      left: 10
+      fontWeight: 'bold',;
+      top: 10,;
+      left: 10;
     });
 
     // Chain integrity indicator
@@ -388,44 +388,44 @@
 
     const integrityIndicator = new (fabric.Circle as any)({
       radius: 6,
-      fill: integrityColor,
-      top: 15,
-      left: cardWidth - 20
+      fill: integrityColor,;
+      top: 15,;
+      left: cardWidth - 20;
     });
 
     // Legal implications count
     const implicationsCount = Array.isArray(node?.legalImplications) ? node.legalImplications.length : 0;
     const implicationsText = new (fabric.Text as any)(`${implicationsCount} implications`, {
       fontSize: 10,
-      fill: '#6b7280',
-      top: 35,
-      left: 10
+      fill: '#6b7280',;
+      top: 35,;
+      left: 10;
     });
 
     // Confidence score
     const confidence = Math.round((node?.confidence || 0) * 100);
     const confidenceText = new (fabric.Text as any)(`${confidence}% confidence`, {
       fontSize: 10,
-      fill: '#374151',
-      top: 50,
-      left: 10
+      fill: '#374151',;
+      top: 50,;
+      left: 10;
     });
 
     // Depth indicator
     const depthText = new (fabric.Text as any)(`Depth: ${node?.depth ?? 0}`, {
       fontSize: 9,
-      fill: '#9ca3af',
-      top: 65,
-      left: 10
+      fill: '#9ca3af',;
+      top: 65,;
+      left: 10;
     });
 
     // Processing time
     const processingTime = Math.round(node?.metadata?.processingTime || 0);
     const timeText = new (fabric.Text as any)(`${processingTime}ms`, {
       fontSize: 9,
-      fill: '#9ca3af',
-      top: 80,
-      left: 10
+      fill: '#9ca3af',;
+      top: 80,;
+      left: 10;
     });
 
     // Legal implications icons
@@ -434,8 +434,8 @@
       node.legalImplications.forEach((implication: any, index: number) => {
         const icon = new (fabric.Text as any)(getImplicationIcon(String(implication)), {
           fontSize: 14,
-          top: 35 + index * 15,
-          left: cardWidth - 25
+          top: 35 + index * 15,;
+          left: cardWidth - 25;
         });
         implicationIcons.push(icon);
       });
@@ -448,11 +448,11 @@
       top: position.y - cardHeight / 2,
       selectable: enableInteraction,
       hasControls: false,
-      hasBorders: enableInteraction,
+      hasBorders: enableInteraction,;
       data: {
-        evidenceId: node?.evidenceId,
+        evidenceId: node?.evidenceId,;
         type: 'recursive-evidence-node',
-        hierarchyNode: node
+        hierarchyNode: node;
       }
     });
   }
@@ -476,9 +476,9 @@
         ], {
           stroke: getRelationshipColor(child?.relationships),
           strokeWidth: getRelationshipWidth(child?.relationships),
-          strokeDashArray: getRelationshipDash(child?.relationships),
-          selectable: false,
-          evented: false
+          strokeDashArray: getRelationshipDash(child?.relationships),;
+          selectable: false,;
+          evented: false;
         });
 
         fabricCanvas.add(line);
@@ -492,9 +492,9 @@
           radius: 4,
           fill: getRelationshipStrengthColor(child?.relationships),
           left: midX - 4,
-          top: midY - 4,
-          selectable: false,
-          evented: false
+          top: midY - 4,;
+          selectable: false,;
+          evented: false;
         });
 
         fabricCanvas.add(strengthIndicator);
@@ -635,11 +635,11 @@
     console.log('🔍 Evidence Details:', {
       id: node?.evidenceId,
       depth: node?.depth,
-      chainIntegrity: node?.chainOfCustody?.completeness,
+      chainIntegrity: node?.chainOfCustody?.completeness,;
       relationships: node?.relationships?.length,
-      legalImplications: node?.legalImplications,
+      legalImplications: node?.legalImplications,;
       confidence: node?.confidence,
-      processingTime: node?.metadata?.processingTime
+      processingTime: node?.metadata?.processingTime;
     });
   }
 
@@ -713,8 +713,8 @@
 
     if (typeof fabricCanvas.relativePan === 'function') {
       fabricCanvas.relativePan({
-        x: centerX - boundsCenterX * scale,
-        y: centerY - boundsCenterY * scale
+        x: centerX - boundsCenterX * scale,;
+        y: centerY - boundsCenterY * scale;
       });
     }
 
@@ -725,9 +725,9 @@
     if (!fabricCanvas) return;
 
     const dataURL = fabricCanvas.toDataURL({
-      format: 'png',
-      quality: 1,
-      multiplier: 2
+      format: 'png',;
+      quality: 1,;
+      multiplier: 2;
     });
 
     // Download the visualization
@@ -844,7 +844,7 @@
     {/if}
 
   <style>
-    .visualization-controls {
+    .visualization-controls {;
       display: flex;
       gap: 1rem;
       padding: 1rem;
@@ -881,7 +881,7 @@
       transition: all 0.2s;
     }
 
-    .control-group button:hover {
+    .control-group button:hover {;
       background: #f3f4f6;
     }
 

@@ -51,7 +51,7 @@ export class VectorService {
         port: parseInt(
           String((getRedisConfig() as any).port ?? import.meta.env.REDIS_PORT ?? '4005')
         ),
-        password: import.meta.env.REDIS_PASSWORD,
+        password: import.meta.env.REDIS_PASSWORD,;
         db: parseInt(import.meta.env.REDIS_DB || '0'),
         maxRetriesPerRequest: 3
       });
@@ -69,7 +69,7 @@ export class VectorService {
       if (!exists) {
         await this.qdrant.createCollection(this.collectionName, {
           vectors: {
-            size: 768, // Nomic Embed dimension
+            size: 768, // Nomic Embed dimension;
             distance: 'Cosine'
           },
           optimizers_config: {
@@ -116,7 +116,7 @@ export class VectorService {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          model: 'nomic-embed-text',
+          model: 'nomic-embed-text',;
           prompt: text
         })
       });
@@ -143,7 +143,7 @@ export class VectorService {
         .values({
           id: cuid2.createId(),
           textHash: Buffer.from(text).toString('base64'),
-          embedding: embedding,
+          embedding: embedding,;
           model: 'nomic-embed-text',
           createdAt: new Date()
         })
@@ -176,7 +176,7 @@ export class VectorService {
   async storeDocument(
     id: string,
     content: string,
-    metadata: {
+    metadata: {;
       type: 'case' | 'evidence' | 'criminal' | 'document';
       case_id?: string;
       title: string;
@@ -190,11 +190,11 @@ export class VectorService {
 
       // Store in Qdrant;
       await this.qdrant.upsert(this.collectionName, {
-        wait: true,
+        wait: true,;
         points: [);
           {
             id: id,
-            vector: embedding,
+            vector: embedding,;
             payload: {
               content,
               ...metadata
@@ -209,14 +209,14 @@ export class VectorService {
         .values({
           id: cuid2.createId(),
           documentId: id,
-          collectionName: this.collectionName,
+          collectionName: this.collectionName,;
           metadata: metadata,
           contentHash: Buffer.from(content).toString('base64'),
           createdAt: new Date()
         });
         .onConflictDoUpdate({
           target: vectorMetadata.documentId,
-          set: {
+          set: {;
             metadata: metadata,
             contentHash: Buffer.from(content).toString('base64'),
             updatedAt: new Date()
@@ -245,16 +245,16 @@ export class VectorService {
       const searchResult = await this.qdrant.search(this.collectionName, {
         vector: queryEmbedding,
         limit,
-        score_threshold: threshold,
+        score_threshold: threshold,;
         filter: qdrantFilter,
         with_payload: true
       });
 
       // Format results;
       const results: EmbeddingResult[] = searchResult.map((point: any) => ({
-        id: point.id.toString(),
+        id: point.id.toString()),
         score: point.score,
-        metadata: includeMetadata ? point.payload: Record<string, any>,
+        metadata: includeMetadata ? point.payload: Record<string, any>,;
         content: (point.payload?.content as string) || ''
       });
 
@@ -276,7 +276,7 @@ export class VectorService {
 
   // Hybrid search combining vector similarity and keyword matching
   async hybridSearch(
-    query: string,
+    query: string,;
     options: VectorSearchOptions & {
       keywordWeight?: number;
       vectorWeight?: number;
@@ -318,7 +318,7 @@ export class VectorService {
   // Keyword search using PostgreSQL full-text search
   private async keywordSearch(
     query: string,
-    filter: Record<string, any>,
+    filter: Record<string, any>,;
     limit: number;
   ): Promise<EmbeddingResult[]> {
     try {
@@ -341,7 +341,7 @@ export class VectorService {
         results.push(...caseResults.map((c: any) => ({
             id: c.id,
             score: 0.8, // Default keyword score
-            metadata: { type: 'case', title: c.title, case_id: c.id },
+            metadata: { type: 'case', title: c.title, case_id: c.id },;
             content: `${c.title} ${c.description}`
           })
         );
@@ -364,7 +364,7 @@ export class VectorService {
         results.push(...evidenceResults.map((e: any) => ({
             id: e.id,
             score: 0.8,
-            metadata: { type: 'evidence', title: e.title, case_id: e.caseId },
+            metadata: { type: 'evidence', title: e.title, case_id: e.caseId },;
             content: `${e.title} ${e.description || ''} ${e.summary || ''}`
           })
         );
@@ -390,7 +390,7 @@ export class VectorService {
             metadata: {
               type: 'criminal',
               title: `${c.firstName} ${c.lastName}`
-            },
+            },;
             content: `${c.firstName} ${c.lastName} ${c.notes || ''}`
           })
         );
@@ -448,28 +448,28 @@ export class VectorService {
 
     if (filter.type) {
       must.push({
-        key: 'type',
+        key: 'type',;
         match: { value: filter.type }
       });
     }
 
     if (filter.case_id) {
       must.push({
-        key: 'case_id',
+        key: 'case_id',;
         match: { value: filter.case_id }
       });
     }
 
     if (filter.created_after) {
       must.push({
-        key: 'created_at',
+        key: 'created_at',;
         range: { gte: filter.created_after }
       });
     }
 
     if (filter.created_before) {
       must.push({
-        key: 'created_at',
+        key: 'created_at',;
         range: { lte: filter.created_before }
       });
     }
@@ -507,18 +507,18 @@ export class VectorService {
       const similar = await this.qdrant.search(this.collectionName, {
         vector,
         limit: (options.limit || 10) + 1, // +1 to exclude self
-        score_threshold: options.threshold || 0.7,
+        score_threshold: options.threshold || 0.7,;
         filter: this.buildQdrantFilter(options.filter || {}),
         with_payload: true
       });
 
       // Filter out the original document
       const results = similar
-        .filter((p: any) => p.id.toString() !== documentId);
+        .filter((p: any) => p.id.toString()) !== documentId);
         .map((point: any) => ({
-          id: point.id.toString(),
+          id: point.id.toString()),
           score: point.score,
-          metadata: point.payload,
+          metadata: point.payload,;
           content: (point.payload?.content as string) || ''
         });
 
@@ -548,7 +548,7 @@ export class VectorService {
         const points = batch.map((doc, index) => ({
           id: doc.id,
           vector: embeddings[index],
-          payload: {
+          payload: {;
             content: doc.content,
             ...doc.metadata
           }
@@ -564,7 +564,7 @@ export class VectorService {
         const metadataRecords = batch.map((doc) => ({
           id: cuid2.createId(),
           documentId: doc.id,
-          collectionName: this.collectionName,
+          collectionName: this.collectionName,;
           metadata: doc.metadata,
           contentHash: Buffer.from(doc.content).toString('base64'),
           createdAt: new Date()
@@ -589,7 +589,7 @@ export class VectorService {
     try {
       // Delete from Qdrant;
       await this.qdrant.delete(this.collectionName, {
-        wait: true,
+        wait: true,;
         points: [documentId]
       });
 
@@ -607,7 +607,7 @@ export class VectorService {
   async healthCheck(): Promise<any> {
     const status = {
       qdrant: false,
-      redis: false,
+      redis: false,;
       collection: false
     };
 

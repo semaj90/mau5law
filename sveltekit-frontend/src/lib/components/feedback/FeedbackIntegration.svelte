@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -80,12 +80,12 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Mark interaction as completed successfully
    */
-  export function markCompleted(result: unknown = ) {
+  export function markCompleted(result: unknown = {} {
     if (interactionId) {
       updateContext({ 
         completed: true, 
         result,
-        completedAt: new Date().toISOString()
+        completedAt: new Date().toISOString();
       });
     }
   }
@@ -93,12 +93,12 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Mark interaction as failed
    */
-  export function markFailed(error: unknown = ) {
+  export function markFailed(error: unknown = {} {
     if (interactionId) {
       updateContext({ 
         failed: true, 
         error,
-        failedAt: new Date().toISOString()
+        failedAt: new Date().toISOString();
       });
       // Higher priority for failed interactions
       triggerFeedback({ priority: 'high', error });
@@ -154,10 +154,10 @@ https://svelte.dev/e/js_parse_error -->
     // AI Response feedback
     aiResponse: (query: string, response: string, confidence: number = 0) => {
       triggerFeedback({
-        query,
+        query,;
         response: response.substring(0, 200) + '...',
         confidence,
-        aiModel: 'gemma3-legal'
+        aiModel: 'gemma3-legal';
       });
     },
 
@@ -194,8 +194,8 @@ https://svelte.dev/e/js_parse_error -->
     error: (errorType: string, errorMessage: string, stack?: string) => {
       markFailed({
         errorType,
-        errorMessage,
-        stack: stack?.substring(0, 500)
+        errorMessage,;
+        stack: stack?.substring(0, 500);
       });
     }
   };
@@ -207,7 +207,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .feedback-tracker {
+  .feedback-tracker {;
     display: contents;
   }
 </style>

@@ -1,7 +1,7 @@
 
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
 <!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -13,7 +13,7 @@ https://svelte.dev/e/js_parse_error -->
   <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-interface EvidenceItem {
+interface EvidenceItem {;
   id: string;
   title: string;
   description?: string;
@@ -61,7 +61,7 @@ interface UserData {
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
     import { aiGlobalStore, aiGlobalActions } from '$lib/stores/ai';
 
     // Type definition for AI store context
@@ -112,15 +112,15 @@ interface UserData {
         try {
           try {
     const response = await fetch('/api/summaries', {
-            method: 'POST',
+            method: 'POST',;
             body: JSON.stringify({
               type: 'case',
-              targetId: caseId,
+              targetId: caseId,;
               depth: 'comprehensive',
               includeRAG: true,
               includeUserActivity: false,
               enableStreaming: false,
-              userId: user.id
+              userId: user.id;
             }));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);

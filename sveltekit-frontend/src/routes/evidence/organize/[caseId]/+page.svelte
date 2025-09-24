@@ -30,8 +30,9 @@
   /**
    * Initialize the page
    */
-  $effect(async () => {
-    if (!caseId) {
+  $effect(() => {
+    (async () => {
+if (!caseId) {
       error = 'Case ID is required';
       isLoading = false;
       return;
@@ -40,6 +41,7 @@
     await loadCaseData();
     await loadOrganizationHistory();
     isLoading = false;
+    })();
   });
   
   /**
@@ -81,10 +83,10 @@
     
     // Add to organization history
     organizationHistory = [{
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString(),;
       mode: organization.type,
-      evidenceCount: evidence.length,
-      structure: organization
+      evidenceCount: evidence.length,;
+      structure: organization;
     }, ...organizationHistory].slice(0, 10); // Keep last 10 organization attempts
     
     console.log('[Evidence Organization] Evidence reorganized:', organization.type);
@@ -116,7 +118,7 @@
       ...organizationStats,
       currentMode: mode,
       lastUpdate: new Date().toISOString(),
-      structure: structure
+      structure: structure;
     };
     
     console.log('[Organization Change] Mode changed to:', mode);
@@ -139,7 +141,7 @@
         structure: organizationStats.structure,
         selectedEvidence,
         exportedAt: new Date().toISOString(),
-        exportedBy: 'user' // Would be actual user ID in production
+        exportedBy: 'user' // Would be actual user ID in production;
       };
       
       const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
@@ -170,8 +172,8 @@
     
     try {
       const response = await fetch('/api/v1/reports/evidence-organization', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({
           caseId,
           organizationData: organizationStats,
@@ -399,7 +401,7 @@
 {/if}
 
 <style>
-  .loading-container, .error-container {
+  .loading-container, .error-container {;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -438,7 +440,7 @@
     font-weight: 500;
   }
 
-  .error-container button:hover, .back-link:hover {
+  .error-container button:hover, .back-link:hover {;
     background: #2563eb;
   }
 

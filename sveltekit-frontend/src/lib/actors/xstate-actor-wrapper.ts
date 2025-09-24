@@ -34,7 +34,7 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
         text: input.text,
         documentId: input.documentId,
         caseId: input.caseId
-      }),
+      }),;
       timeout: 30000
     });
 
@@ -46,7 +46,7 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
 
     return {
       embedding: data.embedding,
-      dimensions: data.dimensions || 768,
+      dimensions: data.dimensions || 768,;
       model: data?.model || 'nomic-embed-text',
       processingTime: Date.now() - startTime,
       tokenCount: data.tokenCount
@@ -80,7 +80,7 @@ export const documentProcessingActor = fromPromise(async ({ input }: { input: Do
       const response = await fetchWithTimeout('/api/ai/process-document', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(input),
+        body: JSON.stringify(input),;
         timeout: 60000, // 60s timeout for document processing
       });
 
@@ -95,7 +95,7 @@ export const documentProcessingActor = fromPromise(async ({ input }: { input: Do
         summary: data.summary,
         entities: data.entities,
         embeddings: data.embeddings,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime,;
         success: data.success || true
       } as DocumentProcessingOutput;
     } catch (error: any) {
@@ -127,7 +127,7 @@ export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAn
     const response = await fetchWithTimeout('/api/ai/legal-analysis', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(input),
+      body: JSON.stringify(input),;
       timeout: 45000
     });
 
@@ -141,7 +141,7 @@ export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAn
       riskScore: data.riskScore || 0,
       riskFactors: data.riskFactors || [],
       recommendations: data.recommendations || [],
-      precedents: data.precedents || [],
+      precedents: data.precedents || [],;
       confidence: data.confidence || 0.5,
       processingTime: Date.now() - startTime
     } as LegalAnalysisOutput;
@@ -172,7 +172,7 @@ export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchIn
     const response = await fetchWithTimeout('/api/ai/rag-search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(input),
+      body: JSON.stringify(input),;
       timeout: 30000
     });
 
@@ -185,7 +185,7 @@ export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchIn
     return {
       results: data.results || [],
       totalResults: data.totalResults || 0,
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime,;
       model: data?.model || 'unknown'
     } as RAGSearchOutput;
   } catch (error: any) {

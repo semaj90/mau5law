@@ -27,7 +27,7 @@
     class: className = '',
   to = undefined,
   children,
-    ...restProps
+    ...restProps;
   }: Props = $props();
 
   let classes = $derived([

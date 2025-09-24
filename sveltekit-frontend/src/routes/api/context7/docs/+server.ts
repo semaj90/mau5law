@@ -1,79 +1,79 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 // Context7 Documentation RAG API endpoint
 // Integrates with Go RAG pipeline and Gemma embeddings
 
-const CONTEXT7_MCP_ENDPOINT = 'http://localhost:4000';
-const GO_RAG_QUERY_SERVER = 'http://localhost:8090';
-const ENHANCED_RAG_SERVICE = 'http://localhost:8080';
+const CONTEXT7_MCP_ENDPOINT = 'http://localhost:4000'
+const GO_RAG_QUERY_SERVER = 'http://localhost:8090'
+const ENHANCED_RAG_SERVICE = 'http://localhost:8080'
 
 interface DocFetchRequest {
-  action: 'fetch' | 'search' | 'list';
-  library?: string;
-  topic?: string;
-  query?: string;
-  limit?: number;
-  useEnhancedRAG?: boolean;
+  action: 'fetch' | 'search' | 'list'
+  library?: string
+  topic?: string
+  query?: string
+  limit?: number
+  useEnhancedRAG?: boolean
 }
 
 interface SearchRequest {
-  query: string;
-  library?: string;
-  topic?: string;
-  limit?: number;
-  threshold?: number;
+  query: string
+  library?: string
+  topic?: string
+  limit?: number
+  threshold?: number
 }
 
-// GET /api/context7/docs - List available documentation;
+// GET /api/context7/docs - List available documentation
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const action = url.searchParams.get('action') || 'list';
+    const action = url.searchParams.get('action') || 'list'
     
     if (action === 'libraries') {
       // Get list of available libraries from Go RAG server
-      const response = await fetch(`${GO_RAG_QUERY_SERVER}/api/rag/libraries`);
+      const response = await fetch(`${GO_RAG_QUERY_SERVER}/api/rag/libraries`)
       
       if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
-        throw new Error('Failed to fetch libraries');
+        throw new Error('Failed to fetch libraries')
       }
       
-      const libraries = await (response as { ok?: any; json?: any; statusText?: any }).json();
+      const libraries = await (response as { ok?: any; json?: any; statusText?: any }).json()
       
       return json({
         success: true,
         libraries,
         timestamp: new Date().toISOString()
-      });
+      })
     }
     
     if (action === 'topics') {
-      const library = url.searchParams.get('library');
+      const library = url.searchParams.get('library')
       
       // Get topics for a specific library
       const topicsUrl = library 
         ? `${GO_RAG_QUERY_SERVER}/api/rag/topics?library=${library}`
-        : `${GO_RAG_QUERY_SERVER}/api/rag/topics`;
+        : `${GO_RAG_QUERY_SERVER}/api/rag/topics`
       
-      const response = await fetch(topicsUrl);
+      const response = await fetch(topicsUrl)
       
       if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
-        throw new Error('Failed to fetch topics');
+        throw new Error('Failed to fetch topics')
       }
       
-      const topics = await (response as { ok?: any; json?: any; statusText?: any }).json();
+      const topics = await (response as { ok?: any; json?: any; statusText?: any }).json()
       
       return json({
         success: true,
         topics,
         library,
         timestamp: new Date().toISOString()
-      });
+      })
     }
     
     // Default: Get health status
-    const healthResponse = await fetch(`${GO_RAG_QUERY_SERVER}/health`);
-    const health = await healthResponse.json();
+    const healthResponse = await fetch(`${GO_RAG_QUERY_SERVER}/health`)
+    const health = await healthResponse.json()
     
     return json({
       success: true,
@@ -86,56 +86,56 @@ export const GET: RequestHandler = async ({ url }) => {
         topics: 'GET /api/context7/docs?action=topics - List topics'
       },
       timestamp: new Date().toISOString()
-    });
+    })
     
   } catch (error: any) {
-    return json();
+    return json()
       {
         success: false,
         error: error.message,
         timestamp: new Date().toISOString()
       },
       { status: 500 }
-    );
+    )
   }
-};
+}
 
-// POST /api/context7/docs - Fetch or search documentation;
+// POST /api/context7/docs - Fetch or search documentation
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const req: DocFetchRequest = await request.json();
+    const req: DocFetchRequest = await request.json()
     
     switch (req.action) {
       case 'fetch':
-        return await fetchDocumentation(req);
+        return await fetchDocumentation(req)
       
       case 'search':
-        return await searchDocumentation(req);
+        return await searchDocumentation(req)
       
       case 'list':
-        return await listDocumentation();
+        return await listDocumentation()
       
-      default:;
+      default:
         return json({
             success: false,
             error: `Unknown action: ${req.action}`
           },)
           { status: 400 }
-        );
+        )
     }
   } catch (error: any) {
-    return json();
+    return json()
       {
         success: false,
         error: error.message,
         timestamp: new Date().toISOString()
       },
       { status: 500 }
-    );
+    )
   }
-};
+}
 
-// Fetch documentation from Context7 MCP server;
+// Fetch documentation from Context7 MCP server
 async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
   try {
     const libraries = [
@@ -143,16 +143,16 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
       { id: 'webgpu', name: 'WebGPU' },
       { id: 'postgresql', name: 'PostgreSQL 17' },
       { id: 'drizzle-orm', name: 'Drizzle ORM' }
-    ];
+    ]
     
-    const results = [];
+    const results = []
     
     for (const library of libraries) {
       if (req.library && library.id !== req.library) {
-        continue;
+        continue
       }
       
-      // Fetch from Context7 MCP server;
+      // Fetch from Context7 MCP server
       const response = await fetch(`${CONTEXT7_MCP_ENDPOINT}/tools/call`, {
         method: 'POST',
         headers: {
@@ -168,10 +168,10 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
             format: 'markdown'
           }
         })
-      });
+      })
       
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
-        const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
+        const result = await (response as { ok?: any; json?: any; statusText?: any }).json()
         
         if ((result as { success?: any; result?: any }).success && (result as { success?: any; result?: any }).result) {
           results.push({
@@ -181,7 +181,7 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
             content: (result as { success?: any; result?: any }).result.content,
             metadata: (result as { success?: any; result?: any }).result.metadata,
             snippets: (result as { success?: any; result?: any }).result.snippets
-          });
+          })
         }
       }
     }
@@ -192,14 +192,14 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
       results,
       count: results.length,
       timestamp: new Date().toISOString()
-    });
+    })
     
   } catch (error: any) {
-    throw error;
+    throw error
   }
 }
 
-// Search documentation using Go RAG server with Gemma embeddings;
+// Search documentation using Go RAG server with Gemma embeddings
 async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
   try {
     if (!req.query) {
@@ -208,14 +208,14 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
           error: 'Query parameter is required for search'
         },)
         { status: 400 }
-      );
+      )
     }
     
-    let searchEndpoint = `${GO_RAG_QUERY_SERVER}/api/rag/search`;
+    let searchEndpoint = `${GO_RAG_QUERY_SERVER}/api/rag/search`
     
-    // Use Enhanced RAG service if requested;
+    // Use Enhanced RAG service if requested
     if (req.useEnhancedRAG) {
-      searchEndpoint = `${ENHANCED_RAG_SERVICE}/api/rag/query`;
+      searchEndpoint = `${ENHANCED_RAG_SERVICE}/api/rag/query`
     }
     
     const searchRequest: SearchRequest = {
@@ -224,7 +224,7 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
       topic: req.topic,
       limit: req.limit || 10,
       threshold: 0.7
-    };
+    }
     
     const response = await fetch(searchEndpoint, {
       method: 'POST',
@@ -233,16 +233,16 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
         'Accept': 'application/json'
       },
       body: JSON.stringify(searchRequest)
-    });
+    })
     
     if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
-      throw new Error(`Search failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
+      throw new Error(`Search failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`)
     }
     
-    const searchResults = await (response as { ok?: any; json?: any; statusText?: any }).json();
+    const searchResults = await (response as { ok?: any; json?: any; statusText?: any }).json()
     
     // If using Enhanced RAG, also get memory context
-    let memoryContext = null;
+    let memoryContext = null
     if (req.useEnhancedRAG) {
       try {
         const memoryResponse = await fetch(`${ENHANCED_RAG_SERVICE}/api/rag/memory/default`, {
@@ -250,13 +250,13 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
           headers: {
             'Accept': 'application/json'
           }
-        });
+        })
         
         if (memoryResponse.ok) {
-          memoryContext = await memoryResponse.json();
+          memoryContext = await memoryResponse.json()
         }
       } catch (memError) {
-        console.error('Failed to fetch memory context:', memError);
+        console.error('Failed to fetch memory context:', memError)
       }
     }
     
@@ -269,27 +269,27 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
       memory_context: memoryContext,
       service: req.useEnhancedRAG ? 'enhanced-rag' : 'go-rag',
       timestamp: new Date().toISOString()
-    });
+    })
     
   } catch (error: any) {
-    throw error;
+    throw error
   }
 }
 
-// List all available documentation;
+// List all available documentation
 async function listDocumentation(): Promise<Response> {
   try {
     // Get libraries list
-    const librariesResponse = await fetch(`${GO_RAG_QUERY_SERVER}/api/rag/libraries`);
-    const libraries = librariesResponse.ok ? await librariesResponse.json() : [];
+    const librariesResponse = await fetch(`${GO_RAG_QUERY_SERVER}/api/rag/libraries`)
+    const libraries = librariesResponse.ok ? await librariesResponse.json() : []
     
     // Get topics list
-    const topicsResponse = await fetch(`${GO_RAG_QUERY_SERVER}/api/rag/topics`);
-    const topics = topicsResponse.ok ? await topicsResponse.json() : [];
+    const topicsResponse = await fetch(`${GO_RAG_QUERY_SERVER}/api/rag/topics`)
+    const topics = topicsResponse.ok ? await topicsResponse.json() : []
     
     // Get health status
-    const healthResponse = await fetch(`${GO_RAG_QUERY_SERVER}/health`);
-    const health = healthResponse.ok ? await healthResponse.json() : { status: 'unknown' };
+    const healthResponse = await fetch(`${GO_RAG_QUERY_SERVER}/health`)
+    const health = healthResponse.ok ? await healthResponse.json() : { status: 'unknown' }
     
     return json({
       success: true,
@@ -298,9 +298,9 @@ async function listDocumentation(): Promise<Response> {
       topics,
       health,
       timestamp: new Date().toISOString()
-    });
+    })
     
   } catch (error: any) {
-    throw error;
+    throw error
   }
 }

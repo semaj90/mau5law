@@ -14,7 +14,7 @@ const connectionConfig = {
   port: parseInt(process.env.DB_PORT || '5433'), // Updated to use port 5433
   database: process.env.DB_NAME || 'legal_ai_db',
   user: process.env.DB_USER || 'legal_admin',
-  password: process.env.DB_PASSWORD || '123456',
+  password: process.env.DB_PASSWORD || '123456',;
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000
@@ -80,7 +80,7 @@ export class PgVectorService {
 
       return {
         success: true,
-        details: {
+        details: {;
           connection: basicTest.rows[0],
           pgvectorExtension: vectorTest.rows[0] || { status: 'not_installed' },
           vectorOperations: vectorCapabilityTest.rows[0],
@@ -95,7 +95,7 @@ export class PgVectorService {
     } catch (error) {
       return {
         success: false,
-        details: {
+        details: {;
           error: error.message,
           connectionConfig: { ...connectionConfig, password: '***' }
         }
@@ -110,7 +110,7 @@ export class PgVectorService {
   async insertDocumentWithEmbedding(
     documentId: string,
     content: string,
-    embedding: number[],
+    embedding: number[],;
     metadata: any = {}
   ): Promise<any> {
     try {
@@ -146,7 +146,7 @@ export class PgVectorService {
         await client.query('COMMIT');
 
         return {
-          success: true,
+          success: true,;
           id: docId
         };
       } catch (error) {
@@ -157,7 +157,7 @@ export class PgVectorService {
       }
     } catch (error) {
       return {
-        success: false,
+        success: false,;
         error: error.message
       };
     }
@@ -194,7 +194,7 @@ export class PgVectorService {
 
       // Choose distance operator based on metric;
       const distanceOperator = {
-        cosine: '<->',
+        cosine: '<->',;
         euclidean: '<=>',
         inner_product: '<#>'
       }[distanceMetric];
@@ -235,7 +235,7 @@ export class PgVectorService {
         const searchTime = Date.now() - startTime;
 
         return {
-          success: true,
+          success: true,;
           results: (result as { rows?: any; rowCount?: any }).rows,
           metadata: {
             searchTime: `${searchTime}ms`,
@@ -250,7 +250,7 @@ export class PgVectorService {
       }
     } catch (error) {
       return {
-        success: false,
+        success: false,;
         error: error.message
       };
     }
@@ -315,7 +315,7 @@ export class PgVectorService {
 
         return {
           success: true,
-          inserted,
+          inserted,;
           errors: errors.length > 0 ? errors : undefined
         };
       } catch (error) {
@@ -326,7 +326,7 @@ export class PgVectorService {
       }
     } catch (error) {
       return {
-        success: false,
+        success: false,;
         errors: [error.message]
       };
     }
@@ -352,7 +352,7 @@ export class PgVectorService {
       } = options;
 
       const metricMapping = {
-        cosine: 'vector_cosine_ops',
+        cosine: 'vector_cosine_ops',;
         euclidean: 'vector_l2_ops',
         inner_product: 'vector_ip_ops'
       };
@@ -389,7 +389,7 @@ export class PgVectorService {
             columnName,
             metric,
             lists,
-            creationTime: `${indexTime}ms`,
+            creationTime: `${indexTime}ms`,;
             query: indexQuery.trim()
           }
         };
@@ -398,7 +398,7 @@ export class PgVectorService {
       }
     } catch (error) {
       return {
-        success: false,
+        success: false,;
         error: error.message
       };
     }
@@ -485,7 +485,7 @@ export class PgVectorService {
             sizes: sizeStats.rows[0],
             connectionPool: {
               total: this.pool.totalCount,
-              idle: this.pool.idleCount,
+              idle: this.pool.idleCount,;
               waiting: this.pool.waitingCount
             }
           }
@@ -495,7 +495,7 @@ export class PgVectorService {
       }
     } catch (error) {
       return {
-        success: false,
+        success: false,;
         error: error.message
       };
     }

@@ -33,26 +33,26 @@
   } = $props();
 
   const progressTween = tweened(0, {
-    duration: 300,
-    easing: cubicOut
+    duration: 300,;
+    easing: cubicOut;
   });
 
   let startTime = Date.now();
-  let elapsedTime = 0;
+  let elapsedTime = $state(0);
   let intervalId: ReturnType<typeof setInterval> | null = null;
 
   $effect(() => { progressTween.set(progress); });
 
   let sizeClasses = $derived({
-    sm: 'text-sm p-3',
-    md: 'text-base p-4',
-    lg: 'text-lg p-6'
+    sm: 'text-sm p-3',;
+    md: 'text-base p-4',;
+    lg: 'text-lg p-6';
   });
 
   let iconSize = $derived({
-    sm: 'w-4 h-4',
-    md: 'w-5 h-5',
-    lg: 'w-6 h-6'
+    sm: 'w-4 h-4',;
+    md: 'w-5 h-5',;
+    lg: 'w-6 h-6';
   });
 
   function getOperationIcon(op: string) {
@@ -142,8 +142,8 @@
               <div class="flex-shrink-0">
                 {#if status === 'loading'}
                   <div class="relative">
-                    <svelte:component
-                      this={getOperationIcon(operation)}
+                    {@const OperationIcon = getOperationIcon(operation)}
+                    <OperationIcon
                       class="{iconSize[size]} {getStatusColor(status)} animate-pulse"
                     />
                     {#if operation === 'ai' || operation === 'gpu'}
@@ -151,8 +151,8 @@
                     {/if}
                   </div>
                 {:else}
-                  <svelte:component
-                    this={getStatusIcon(status)}
+                  {@const StatusIcon = getStatusIcon(status)}
+                  <StatusIcon
                     class="{iconSize[size]} {getStatusColor(status)}"
                   />
                 {/if}
@@ -231,8 +231,8 @@
             <div class="flex-shrink-0">
               {#if status === 'loading'}
                 <div class="relative">
-                  <svelte:component
-                    this={getOperationIcon(operation)}
+                  {@const OperationIcon = getOperationIcon(operation)}
+                  <OperationIcon
                     class="{iconSize[size]} {getStatusColor(status)} animate-pulse"
                   />
                   {#if operation === 'ai' || operation === 'gpu'}
@@ -240,8 +240,8 @@
                   {/if}
                 </div>
               {:else}
-                <svelte:component
-                  this={getStatusIcon(status)}
+                {@const StatusIcon = getStatusIcon(status)}
+                <StatusIcon
                   class="{iconSize[size]} {getStatusColor(status)}"
                 />
               {/if}
@@ -318,8 +318,8 @@
           <div class="flex-shrink-0">
             {#if status === 'loading'}
               <div class="relative">
-                <svelte:component
-                  this={getOperationIcon(operation)}
+                {@const OperationIcon = getOperationIcon(operation)}
+                <OperationIcon
                   class="{iconSize[size]} {getStatusColor(status)} animate-pulse"
                 />
                 {#if operation === 'ai' || operation === 'gpu'}
@@ -327,8 +327,8 @@
                 {/if}
               </div>
             {:else}
-              <svelte:component
-                this={getStatusIcon(status)}
+              {@const StatusIcon = getStatusIcon(status)}
+              <StatusIcon
                 class="{iconSize[size]} {getStatusColor(status)}"
               />
             {/if}

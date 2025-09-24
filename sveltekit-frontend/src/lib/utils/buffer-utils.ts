@@ -61,7 +61,7 @@ export const ensureFloat32Array = (data: BufferCompatible): Float32Array => {
  */
 export const createWebGPUBuffer = (
   device: GPUDevice, 
-  data: BufferCompatible, 
+  data: BufferCompatible, ;
   usage: GPUBufferUsageFlags = GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST;
 ): GPUBuffer => {
   const compatibleData = ensureBufferCompatibility(data);
@@ -82,7 +82,7 @@ export const createWebGPUBuffer = (
 export const safeWriteBuffer = (
   device: GPUDevice,
   buffer: GPUBuffer | null, 
-  data: BufferCompatible,
+  data: BufferCompatible,;
   offset: number = 0;
 ): boolean => {
   try {
@@ -171,7 +171,7 @@ export interface LegalDocumentBuffer {
 }
 
 export const createLegalDocumentBuffer = (
-  device: GPUDevice,
+  device: GPUDevice,;
   doc: LegalDocumentBuffer;
 ): { buffer: GPUBuffer; byteLength: number } => {
   const embeddingData = ensureBufferCompatibility(doc.embeddings);
@@ -191,7 +191,7 @@ export const getRiskLevelColor = (riskLevel: string): [number, number, number, n
   const colors: Record<string, [number, number, number, number]> = {
     low: [0.2, 0.8, 0.2, 1.0],
     medium: [1.0, 1.0, 0.4, 1.0],
-    high: [1.0, 0.6, 0.2, 1.0],
+    high: [1.0, 0.6, 0.2, 1.0],;
     critical: [1.0, 0.2, 0.2, 1.0]
   };
   
@@ -206,7 +206,7 @@ export const getDocumentTypeColor = (docType: string): [number, number, number] 
   const colors: Record<string, [number, number, number]> = {
     contract: [0.2, 0.6, 1.0],
     evidence: [1.0, 0.4, 0.2],
-    brief: [0.8, 0.8, 0.2],
+    brief: [0.8, 0.8, 0.2],;
     citation: [0.6, 0.2, 1.0],
     'case-law': [0.4, 1.0, 0.6]
   };

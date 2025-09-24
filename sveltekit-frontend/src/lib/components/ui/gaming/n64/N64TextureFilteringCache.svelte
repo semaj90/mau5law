@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -87,7 +87,7 @@ https://svelte.dev/e/js_parse_error -->
     memoryUsage: 0,
     cacheEfficiency: 0,
     filteringQuality: 0,
-    gpuUtilization: 0
+    gpuUtilization: 0;
   });
   // Animation state
   let animationId = $state<number | null >(null);
@@ -112,7 +112,7 @@ https://svelte.dev/e/js_parse_error -->
       enableBilinearFiltering: true,
       enableTrilinearFiltering: true,
       anisotropicLevel: 8
-    },
+    },;
     ultra: {
       ...N64_TEXTURE_PRESETS.ultra,
       enableBilinearFiltering: true,
@@ -232,7 +232,7 @@ https://svelte.dev/e/js_parse_error -->
       cacheEntry = {
         id: textureId,
         textureType: 'n64',
-        filteringType: determineFilteringType(renderingOptions),
+        filteringType: determineFilteringType(renderingOptions),;
         dimensions: { width: image.width, height: image.height },
         gpuTexture: null,
         gpuBuffer: null,
@@ -350,10 +350,12 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Component lifecycle
    */
-  $effect(async () => {
-    if (preloadTextures) {
+  $effect(() => {
+    (async () => {
+if (preloadTextures) {
       await initializeTextureCache();
     }
+    })();
   });
 
   onDestroy(() => {
@@ -477,7 +479,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .n64-texture-cache-container {
+  .n64-texture-cache-container {;
     position: relative;
     display: inline-block;
     border-radius: 4px;

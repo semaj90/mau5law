@@ -214,7 +214,7 @@
 </div>
 
 <style>
-	.search-page {
+	.search-page {;
 		min-height: 100vh;
 		font-family: 'Press Start 2P', monospace;
 		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);

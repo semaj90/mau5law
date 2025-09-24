@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 // TypeScript Optimizer Benchmark Suite
 // Performance testing and comparison across different processing strategies
@@ -7,55 +7,55 @@ import type {
 	BenchmarkRequest, 
 	BenchmarkResult, 
 	PerformanceComparison 
-} from '$lib/types/typescript-optimizer';
+} from '$lib/types/typescript-optimizer'
 
-const ENHANCED_API_BASE_URL = 'http://localhost:8094';
+const ENHANCED_API_BASE_URL = 'http://localhost:8094'
 
-/* POST /api/v1/typescript-optimizer/benchmark - Run performance benchmarks */;
+/* POST /api/v1/typescript-optimizer/benchmark - Run performance benchmarks */
 export const POST: RequestHandler = async ({ request }) => {
 	try {
-		const body = await request.json() as BenchmarkRequest;
+		const body = await request.json() as BenchmarkRequest
 
-		// Validate benchmark request;
+		// Validate benchmark request
 		if (!body.error_count || body.error_count < 1) {
 			return json({ 
-				success: false, 
+				success: false,
 				error: 'Invalid benchmark: error_count required (minimum 1)' 
-			}, { status: 400 });
+			}, { status: 400 })
 		}
 
 		if (!body.strategy || !['speed', 'quality', 'comparison'].includes(body.strategy)) {
 			return json({
 				success: false,
 				error: 'Invalid strategy: must be "speed", "quality", or "comparison"'
-			}, { status: 400 });
+			}, { status: 400 })
 		}
 
-		const iterations = body.iterations || 3;
+		const iterations = body.iterations || 3
 		const errorCount = Math.min(body.error_count, 200); // Cap for safety
 
-		console.log(`📊 Benchmark: Starting ${body.strategy} benchmark with ${errorCount} errors, ${iterations} iterations`);
+		console.log(`📊 Benchmark: Starting ${body.strategy} benchmark with ${errorCount} errors, ${iterations} iterations`)
 
-		let results: BenchmarkResult[];
+		let results: BenchmarkResult[]
 
 		switch (body.strategy) {
 			case 'speed':
-				results = await runSpeedBenchmark(errorCount, iterations);
-				break;
+				results = await runSpeedBenchmark(errorCount, iterations)
+				break
 			case 'quality':
-				results = await runQualityBenchmark(errorCount, iterations);
-				break;
+				results = await runQualityBenchmark(errorCount, iterations)
+				break
 			case 'comparison':
-				results = await runComparisonBenchmark(errorCount, iterations);
-				break;
+				results = await runComparisonBenchmark(errorCount, iterations)
+				break
 			default:
-				throw new Error('Invalid benchmark strategy');
+				throw new Error('Invalid benchmark strategy')
 		}
 
 		// Analyze results
-		const analysis = analyzeBenchmarkResults(results, body.strategy);
+		const analysis = analyzeBenchmarkResults(results, body.strategy)
 
-		console.log(`✅ Benchmark: Completed ${results.length} tests in ${analysis.total_time_ms}ms`);
+		console.log(`✅ Benchmark: Completed ${results.length} tests in ${analysis.total_time_ms}ms`)
 
 		return json({
 			success: true,
@@ -74,25 +74,25 @@ export const POST: RequestHandler = async ({ request }) => {
 				sveltekit_benchmark_suite: true,
 				hardware_info: 'NVIDIA RTX 3060 Ti, 16GB RAM'
 			}
-		});
+		})
 
 	} catch (error: any) {
-		console.error('Benchmark Error:', error);
+		console.error('Benchmark Error:', error)
 		
 		return json({
 			success: false,
 			error: 'Benchmark execution failed',
 			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString()
-		}, { status: 500 });
+		}, { status: 500 })
 	}
-};
+}
 
-/* GET /api/v1/typescript-optimizer/benchmark - Get benchmark capabilities */;
+/* GET /api/v1/typescript-optimizer/benchmark - Get benchmark capabilities */
 export const GET: RequestHandler = async () => {
 	return json({
 		service: 'TypeScript Optimizer Benchmark Suite',
-		available_benchmarks: [;
+		available_benchmarks: [
 			{
 				type: 'speed',
 				description: 'Performance comparison across different processing endpoints',
@@ -104,7 +104,7 @@ export const GET: RequestHandler = async () => {
 				description: 'Fix quality and accuracy assessment',
 				tests: ['template_matching', 'ai_inference', 'hybrid_approach'],
 				metrics: ['success_rate', 'confidence_score', 'fix_correctness']
-			},);
+			},)
 			{
 				type: 'comparison',
 				description: 'Comprehensive comparison across all strategies',
@@ -125,30 +125,30 @@ export const GET: RequestHandler = async () => {
 			go_service_version: '2.0.0'
 		},
 		timestamp: new Date().toISOString()
-	});
-};
+	})
+}
 
 // Benchmark implementations
 
 async function runSpeedBenchmark(errorCount: number, iterations: number): Promise<BenchmarkResult[]> {
-	const results: BenchmarkResult[] = [];
+	const results: BenchmarkResult[] = []
 	
 	const endpoints = [
 		{ name: 'cpu_baseline', url: '/api/auto-solve', config: { use_gpu: false, use_llama: false } },
 		{ name: 'optimized', url: '/api/optimized/auto-solve', config: { use_gpu: false, use_llama: false } },
 		{ name: 'gpu_accelerated', url: '/api/gpu/batch-process', config: { use_gpu: true, use_llama: false } },
 		{ name: 'go_llama_direct', url: '/api/go-llama/batch', config: { use_gpu: false, use_llama: true } }
-	];
+	]
 
 	for (const endpoint of endpoints) {
-		console.log(`🔧 Benchmarking ${endpoint.name}...`);
+		console.log(`🔧 Benchmarking ${endpoint.name}...`)
 		
-		const endpointResults: number[] = [];
-		let successfulRuns = 0;
+		const endpointResults: number[] = []
+		let successfulRuns = 0
 
 		for (let i = 0; i < iterations; i++) {
 			try {
-				const startTime = Date.now();
+				const startTime = Date.now()
 				
 				const response = await fetch(`${ENHANCED_API_BASE_URL}${endpoint.url}`, {
 					method: 'POST',
@@ -158,21 +158,21 @@ async function runSpeedBenchmark(errorCount: number, iterations: number): Promis
 						...endpoint.config,
 						max_fixes: errorCount
 					})
-				});
+				})
 
 				if ((response as { ok?: any; json?: any }).ok) {
-					const duration = Date.now() - startTime;
-					endpointResults.push(duration);
-					successfulRuns++;
+					const duration = Date.now() - startTime
+					endpointResults.push(duration)
+					successfulRuns++
 				}
 			} catch (error: any) {
-				console.warn(`Benchmark iteration ${i + 1} failed for ${endpoint.name}:`, error);
+				console.warn(`Benchmark iteration ${i + 1} failed for ${endpoint.name}:`, error)
 			}
 		}
 
 		if (endpointResults.length > 0) {
-			const avgLatency = endpointResults.reduce((a, b) => a + b, 0) / endpointResults.length;
-			const throughput = (errorCount / avgLatency) * 1000;
+			const avgLatency = endpointResults.reduce((a, b) => a + b, 0) / endpointResults.length
+			const throughput = (errorCount / avgLatency) * 1000
 
 			results.push({
 				endpoint: endpoint.name,
@@ -182,29 +182,29 @@ async function runSpeedBenchmark(errorCount: number, iterations: number): Promis
 				success_rate: (successfulRuns / iterations) * 100,
 				iterations: successfulRuns,
 				all_results: endpointResults
-			});
+			})
 		}
 	}
 
-	return results;
+	return results
 }
 
 async function runQualityBenchmark(errorCount: number, iterations: number): Promise<BenchmarkResult[]> {
 	// Quality benchmark focuses on fix accuracy and confidence
-	const results: BenchmarkResult[] = [];
+	const results: BenchmarkResult[] = []
 	
 	const strategies = [
 		{ name: 'template_matching', config: { strategy: 'template_only', use_cache: true } },
 		{ name: 'ai_inference', config: { strategy: 'llama_thinking', use_thinking: true } },
 		{ name: 'hybrid_approach', config: { strategy: 'optimized', use_gpu: true, use_llama: true } }
-	];
+	]
 
 	for (const strategy of strategies) {
-		console.log(`🎯 Quality testing ${strategy.name}...`);
+		console.log(`🎯 Quality testing ${strategy.name}...`)
 
-		let totalConfidence = 0;
-		let totalSuccess = 0;
-		const qualityScores: number[] = [];
+		let totalConfidence = 0
+		let totalSuccess = 0
+		const qualityScores: number[] = []
 
 		for (let i = 0; i < iterations; i++) {
 			try {
@@ -216,19 +216,19 @@ async function runQualityBenchmark(errorCount: number, iterations: number): Prom
 						...strategy.config,
 						max_fixes: errorCount
 					})
-				});
+				})
 
 				if ((response as { ok?: any; json?: any }).ok) {
-					const result = await (response as { ok?: any; json?: any }).json();
-					const confidence = (result as { metadata?: any; fixes_applied?: any; processed_count?: any }).metadata?.avg_confidence || 0.7;
-					const successRate = ((result as { metadata?: any; fixes_applied?: any; processed_count?: any }).fixes_applied / (result as { metadata?: any; fixes_applied?: any; processed_count?: any }).processed_count) * 100;
+					const result = await (response as { ok?: any; json?: any }).json()
+					const confidence = (result as { metadata?: any; fixes_applied?: any; processed_count?: any }).metadata?.avg_confidence || 0.7
+					const successRate = ((result as { metadata?: any; fixes_applied?: any; processed_count?: any }).fixes_applied / (result as { metadata?: any; fixes_applied?: any; processed_count?: any }).processed_count) * 100
 					
-					totalConfidence += confidence;
-					totalSuccess += successRate;
-					qualityScores.push(confidence * 100);
+					totalConfidence += confidence
+					totalSuccess += successRate
+					qualityScores.push(confidence * 100)
 				}
 			} catch (error: any) {
-				console.warn(`Quality test iteration ${i + 1} failed for ${strategy.name}:`, error);
+				console.warn(`Quality test iteration ${i + 1} failed for ${strategy.name}:`, error)
 			}
 		}
 
@@ -240,27 +240,27 @@ async function runQualityBenchmark(errorCount: number, iterations: number): Prom
 			quality_score: qualityScores.reduce((a, b) => a + b, 0) / qualityScores.length,
 			iterations,
 			quality_distribution: qualityScores
-		});
+		})
 	}
 
-	return results;
+	return results
 }
 
 async function runComparisonBenchmark(errorCount: number, iterations: number): Promise<BenchmarkResult[]> {
 	// Comprehensive comparison combining speed and quality metrics
-	console.log('🏁 Running comprehensive comparison benchmark...');
+	console.log('🏁 Running comprehensive comparison benchmark...')
 	
-	const speedResults = await runSpeedBenchmark(errorCount, iterations);
-	const qualityResults = await runQualityBenchmark(errorCount, iterations);
+	const speedResults = await runSpeedBenchmark(errorCount, iterations)
+	const qualityResults = await runQualityBenchmark(errorCount, iterations)
 	
 	// Combine results for comprehensive analysis
-	return [...speedResults, ...qualityResults];
+	return [...speedResults, ...qualityResults]
 }
 
 // Analysis functions
 
 function analyzeBenchmarkResults(results: BenchmarkResult[], strategy: string): PerformanceComparison {
-	const totalTime = results.reduce((sum, r) => sum + (r.avg_latency_ms || 0), 0);
+	const totalTime = results.reduce((sum, r) => sum + (r.avg_latency_ms || 0), 0)
 	
 	return {
 		total_time_ms: totalTime,
@@ -269,7 +269,7 @@ function analyzeBenchmarkResults(results: BenchmarkResult[], strategy: string): 
 		best_overall: findBestOverall(results),
 		performance_summary: generatePerformanceSummary(results, strategy),
 		resource_efficiency: calculateResourceEfficiency(results)
-	};
+	}
 }
 
 function findFastestEndpoint(results: BenchmarkResult[]): string {
@@ -277,7 +277,7 @@ function findFastestEndpoint(results: BenchmarkResult[]): string {
 		.filter(r => r.avg_latency_ms)
 		.reduce((fastest, current) => 
 			(current.avg_latency_ms || Infinity) < (fastest.avg_latency_ms || Infinity) ? current : fastest
-		)?.endpoint || 'unknown';
+		)?.endpoint || 'unknown'
 }
 
 function findMostAccurate(results: BenchmarkResult[]): string {
@@ -285,11 +285,11 @@ function findMostAccurate(results: BenchmarkResult[]): string {
 		.filter(r => r.avg_confidence)
 		.reduce((best, current) => 
 			(current.avg_confidence || 0) > (best.avg_confidence || 0) ? current : best
-		)?.endpoint || 'unknown';
+		)?.endpoint || 'unknown'
 }
 
 function findBestOverall(results: BenchmarkResult[]): string {
-	// Weighted score: 40% speed, 40% accuracy, 20% resource efficiency;
+	// Weighted score: 40% speed, 40% accuracy, 20% resource efficiency
 	const scored = results.map(r => ({
 		...r,
 		score: (
@@ -297,11 +297,11 @@ function findBestOverall(results: BenchmarkResult[]): string {
 			((r.avg_confidence || 0) * 100) * 0.004 + // Accuracy component
 			(100 - (r.avg_latency_ms || 1000) / 10) * 0.002 // Efficiency component
 		)
-	});
+	})
 
 	return scored.reduce((best, current) => 
 		current.score > best.score ? current : best
-	)?.endpoint || 'unknown';
+	)?.endpoint || 'unknown'
 }
 
 function generatePerformanceSummary(results: BenchmarkResult[], strategy: string): Record<string, any> {
@@ -311,7 +311,7 @@ function generatePerformanceSummary(results: BenchmarkResult[], strategy: string
 		avg_latency: results.reduce((sum, r) => sum + (r.avg_latency_ms || 0), 0) / results.length,
 		avg_throughput: results.reduce((sum, r) => sum + (r.throughput_eps || 0), 0) / results.length,
 		avg_success_rate: results.reduce((sum, r) => sum + (r.success_rate || 0), 0) / results.length
-	};
+	}
 }
 
 function calculateResourceEfficiency(results: BenchmarkResult[]): Record<string, number> {
@@ -320,25 +320,25 @@ function calculateResourceEfficiency(results: BenchmarkResult[]): Record<string,
 		memory_efficiency: 78.0,
 		gpu_utilization: 92.0,
 		overall_score: 85.0
-	};
+	}
 }
 
 function generateRecommendations(analysis: PerformanceComparison): string[] {
-	const recommendations: string[] = [];
+	const recommendations: string[] = []
 	
-	recommendations.push(`For fastest processing: Use ${analysis.fastest_endpoint}`);
-	recommendations.push(`For highest accuracy: Use ${analysis.most_accurate}`);
-	recommendations.push(`For best overall performance: Use ${analysis.best_overall}`);
+	recommendations.push(`For fastest processing: Use ${analysis.fastest_endpoint}`)
+	recommendations.push(`For highest accuracy: Use ${analysis.most_accurate}`)
+	recommendations.push(`For best overall performance: Use ${analysis.best_overall}`)
 	
 	if (analysis.performance_summary.avg_latency > 50) {
-		recommendations.push('Consider GPU acceleration for better performance');
+		recommendations.push('Consider GPU acceleration for better performance')
 	}
 	
 	if (analysis.performance_summary.avg_success_rate < 85) {
-		recommendations.push('Consider using AI inference for better fix quality');
+		recommendations.push('Consider using AI inference for better fix quality')
 	}
 	
-	return recommendations;
+	return recommendations
 }
 
 function generateSampleErrors(count: number) {
@@ -349,11 +349,11 @@ function generateSampleErrors(count: number) {
 		message: 'Property "handleClick" does not exist on type "EventTarget"',
 		code: 'event.target.handleClick()',
 		context: 'Event handler in Svelte component'
-	};
+	}
 
 	return Array(count).fill(0).map((_, i) => ({
 		...sampleError,
 		line: sampleError.line + i,
 		file: `src/lib/components/TestComponent${i + 1}.svelte`
-	});
+	})
 }

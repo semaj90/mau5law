@@ -24,32 +24,32 @@
     columns = 1,
     class: className = '',
     children,
-    ...restProps
+    ...restProps;
   }: Props = $props();
 
   let sectionClass = $derived(() => {
     const baseClass = "flex flex-col";
     const variantClasses = {
       default: "",
-      card: "nes-legal-priority-medium yorha-3d-button rounded-lg",
-      panel: "yorha-3d-panel neural-sprite-active border border-yellow-400/30",
-      grid: "grid-responsive"
+      card: "nes-legal-priority-medium yorha-3d-button rounded-lg",;
+      panel: "yorha-3d-panel neural-sprite-active border border-yellow-400/30",;
+      grid: "grid-responsive";
     };
 
     const paddingClasses = {
       none: "p-0",
       sm: "p-2",
-      md: "p-4",
-      lg: "p-6",
-      xl: "p-8"
+      md: "p-4",;
+      lg: "p-6",;
+      xl: "p-8";
     };
 
     const gapClasses = {
       none: "gap-0",
       sm: "gap-2",
-      md: "gap-4",
-      lg: "gap-6",
-      xl: "gap-8"
+      md: "gap-4",;
+      lg: "gap-6",;
+      xl: "gap-8";
     };
 
     const columnClasses = variant === 'grid' ? {
@@ -58,7 +58,7 @@
       3: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
       4: "grid-cols-1 md:grid-cols-2 lg:grid-cols-4",
       6: "grid-cols-2 md:grid-cols-3 lg:grid-cols-6",
-      12: "grid-cols-4 md:grid-cols-6 lg:grid-cols-12"
+      12: "grid-cols-4 md:grid-cols-6 lg:grid-cols-12";
     } : null;
 
     return cn(

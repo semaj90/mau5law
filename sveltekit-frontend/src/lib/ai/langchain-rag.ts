@@ -162,7 +162,7 @@ Only return the queries, one per line.`)
       apiKey: config.apiKey,
       // Note: baseURL may not be supported in this version
       temperature: 0.1, // Low temperature for legal accuracy
-      maxTokens: 4096,
+      maxTokens: 4096,;
       timeout: 120000
     } as any);
 
@@ -170,7 +170,7 @@ Only return the queries, one per line.`)
     this.embeddings = new OpenAIEmbeddings({
       model: 'nomic-embed-legal',
       apiKey: config.apiKey,
-      // Note: baseURL may not be supported in this version
+      // Note: baseURL may not be supported in this version;
       dimensions: config.embeddingDimensions
     } as any);
 
@@ -207,7 +207,7 @@ Only return the queries, one per line.`)
     try {
       // Mock vector store initialization;
       this.vectorStore = {
-        embeddings: this.embeddings,
+        embeddings: this.embeddings,;
         client: this.qdrantClient,
         collectionName: this.config.collectionName,
         contentPayloadKey: 'content',
@@ -265,7 +265,7 @@ Only return the queries, one per line.`)
               limit: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs,
               threshold: confidenceThreshold,
               filters: {
-                category: documentType,
+                category: documentType,;
                 jurisdiction: jurisdiction,
                 practice_area: practiceArea
               }
@@ -282,7 +282,7 @@ Only return the queries, one per line.`)
                   (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).content ||
                   `${(result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).title}\n\n${(result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).metadata?.summary || 'No content available'}`,
                 metadata: {
-                  ...result.metadata,
+                  ...result.metadata,;
                   title: (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).title,
                   score: (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).semantic_score || 1 - (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).distance,
                   document_type: (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).document_type,
@@ -303,7 +303,7 @@ Only return the queries, one per line.`)
 
               // Generate answer using LLM with semantic context;
               const formattedPrompt = await promptTemplate.format({
-                context: contextText,
+                context: contextText,;
                 question: question
               });
 
@@ -332,7 +332,7 @@ Only return the queries, one per line.`)
                 confidence,
                 reasoning: thinkingMode
                   ? `Applied enhanced semantic search with ${semanticData.results.length} relevant documents. Average semantic score: ${avgSemanticScore.toFixed(3)}`
-                  : undefined,
+                  : undefined,;
                 metadata: {
                   retrievedChunks: enhancedRetrievedDocs.length,
                   processingTime,
@@ -354,7 +354,7 @@ Only return the queries, one per line.`)
 
       // Create retriever with legal-specific filtering;
       let retriever: any = this.vectorStore.asRetriever({
-        k: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs,
+        k: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs,;
         filter: this.buildMetadataFilter(documentType, jurisdiction, practiceArea)
       });
 
@@ -399,7 +399,7 @@ Only return the queries, one per line.`)
 
       const ragChain = RunnableSequence.from([;
         RunnableMap.from({
-          context: contextRetriever,
+          context: contextRetriever,;
           question: new RunnablePassthrough()
         }),
         promptTemplate,
@@ -430,7 +430,7 @@ Only return the queries, one per line.`)
         confidence,
         reasoning: thinkingMode
           ? 'Applied multi-query retrieval with comprehensive analysis'
-          : undefined,
+          : undefined,;
         metadata: {
           retrievedChunks: retrievedDocs.length,
           processingTime,
@@ -443,7 +443,7 @@ Only return the queries, one per line.`)
       return {
         answer: 'I apologize, but I encountered an error processing your query. Please try again.',
         sourceDocuments: [],
-        confidence: 0,
+        confidence: 0,;
         metadata: {
           retrievedChunks: 0,
           processingTime: Date.now() - startTime,
@@ -535,7 +535,7 @@ Only return the queries, one per line.`)
    */
   async extractLegalEntities(
     query: string,
-    documentType?: string,
+    documentType?: string,;
     options: RAGQueryOptions = {}
   ): Promise<RAGResult> {
     const entityQuery = `Extract and list all ${query} mentioned in the legal documents.
@@ -567,7 +567,7 @@ Only return the queries, one per line.`)
 
     if (practiceArea) {
       must.push({
-        key: 'classification.practiceArea',
+        key: 'classification.practiceArea',;
         match: { value: practiceArea }
       });
     }
@@ -712,7 +712,7 @@ Only return the queries, one per line.`)
         },
         ...options?.metadata,
         filePath,
-        caseId: options?.caseId,
+        caseId: options?.caseId,;
         title: options?.title || this.generateDocumentTitle(documentContent, fileName)
       };
 
@@ -727,7 +727,7 @@ Only return the queries, one per line.`)
           await this.notifySemanticSearchAPI(documentId, {
             title: metadata.title,
             content: documentContent.substring(0, 1000), // Preview for API
-            metadata: metadata,
+            metadata: metadata,;
             chunks: chunkIds.length
           });
         } catch (error) {
@@ -737,7 +737,7 @@ Only return the queries, one per line.`)
 
       return {
         success: true,
-        documentId,
+        documentId,;
         chunks: chunkIds.length,
         processingDetails: {
           fileSize,
@@ -748,7 +748,7 @@ Only return the queries, one per line.`)
       };
     } catch (error: any) {
       return {
-        success: false,
+        success: false,;
         error: error instanceof Error ? error.message: 'Unknown error during document processing',
         processingDetails: {
           fileSize: 0,
@@ -1129,7 +1129,7 @@ Only return the queries, one per line.`)
       txt: 'text/plain',
       md: 'text/markdown',
       html: 'text/html',
-      htm: 'text/html',
+      htm: 'text/html',;
       rtf: 'application/rtf'
     };
 
@@ -1146,7 +1146,7 @@ Only return the queries, one per line.`)
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            documentId,
+            documentId,;
             action: 'indexed',
             ...documentInfo
           })

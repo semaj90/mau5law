@@ -29,7 +29,7 @@ const logWorker = new Worker<LogEntryData>('logQueue', async (job) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: embeddingModel,
+        model: embeddingModel,;
         prompt: message
       })
     });
@@ -61,7 +61,7 @@ const logWorker = new Worker<LogEntryData>('logQueue', async (job) => {
   }
 }, {
   connection: {
-    host: 'localhost',
+    host: 'localhost',;
     port: 6379
   }
 });

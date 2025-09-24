@@ -10,37 +10,37 @@ https://svelte.dev/e/expected_token -->
   import { page } from '$app/stores';
   import Button from '$lib/components/ui/nes-button.svelte';
   import NesCard from '$lib/components/ui/nes-card.svelte';
-  
+
   let mounted = $state(false);
   let persistedStates = $state([]);
   let loading = $state(true);
   let selectedState = $state(null);
   let restoring = $state(false);
-  
+
   // Mock persisted state data
   let mockPersistedStates = [
     {
       id: 'auth_user_123_20240110_143022',
       machineId: 'auth-machine',
       userId: 'user_123',
-      state: 'authenticated',
+      state: 'authenticated',;
       context: {
         userId: 'user_123',
         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
         sessionId: 'sess_456',
         permissions: ['read', 'write', 'admin'],
-        lastActivity: '2024-01-10T14:30:22.000Z'
+        lastActivity: '2024-01-10T14:30:22.000Z';
       },
       timestamp: '2024-01-10T14:30:22.000Z',
       version: '1.0.2',
       size: 1247,
-      checksum: 'sha256:a1b2c3d4...'
+      checksum: 'sha256:a1b2c3d4...';
     },
     {
       id: 'case_case_789_20240110_142015',
       machineId: 'case-management-machine',
       userId: 'user_123',
-      state: 'reviewing',
+      state: 'reviewing',;
       context: {
         caseId: 'case_789',
         title: 'Smith vs. Johnson Contract Dispute',
@@ -49,18 +49,18 @@ https://svelte.dev/e/expected_token -->
         documents: ['doc_001', 'doc_002', 'doc_003'],
         evidence: ['evidence_456', 'evidence_789'],
         deadline: '2024-01-15T00:00:00.000Z',
-        notes: 'Awaiting additional documentation from plaintiff.'
+        notes: 'Awaiting additional documentation from plaintiff.';
       },
       timestamp: '2024-01-10T14:20:15.000Z',
       version: '2.1.0',
       size: 2891,
-      checksum: 'sha256:e5f6g7h8...'
+      checksum: 'sha256:e5f6g7h8...';
     },
     {
       id: 'rag_pipeline_20240110_141030',
       machineId: 'rag-pipeline-machine',
       userId: 'system',
-      state: 'processing',
+      state: 'processing',;
       context: {
         pipelineId: 'pipeline_001',
         documents: [
@@ -74,17 +74,17 @@ https://svelte.dev/e/expected_token -->
         modelVersion: 'gemma-3-legal-v1.2'
       },
       timestamp: '2024-01-10T14:10:30.000Z',
-      version: '3.0.1',
-      size: 5672,
-      checksum: 'sha256:i9j0k1l2...'
+      version: '3.0.1',;
+      size: 5672,;
+      checksum: 'sha256:i9j0k1l2...';
     }
   ];
-  
+
   $effect(() => {
     mounted = true;
     loadPersistedStates();
   });
-  
+
   async function loadPersistedStates() {
     loading = true;
     try {
@@ -97,7 +97,7 @@ https://svelte.dev/e/expected_token -->
       loading = false;
     }
   }
-  
+
   async function restoreState(stateId: string) {
     restoring = true;
     try {
@@ -112,12 +112,12 @@ https://svelte.dev/e/expected_token -->
       restoring = false;
     }
   }
-  
+
   async function deletePersistedState(stateId: string) {
     if (!confirm('Are you sure you want to delete this persisted state? This action cannot be undone.')) {
       return;
     }
-    
+
     try {
       // await fetch(`/api/state/persistence/${stateId}`, { method: 'DELETE' });
       console.log('Deleting state:', stateId);
@@ -130,7 +130,7 @@ https://svelte.dev/e/expected_token -->
       alert('Failed to delete state');
     }
   }
-  
+
   function formatBytes(bytes: number) {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -138,14 +138,14 @@ https://svelte.dev/e/expected_token -->
     const i = Math.floor(Math.log(bytes) / Math.log(k);
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-  
+
   function getStateColor(state: string) {
     if (state.includes('error')) return 'bg-red-100 text-red-800';
     if (state.includes('processing') || state.includes('reviewing')) return 'bg-yellow-100 text-yellow-800';
     if (state.includes('authenticated') || state.includes('completed')) return 'bg-green-100 text-green-800';
     return 'bg-blue-100 text-blue-800';
   }
-  
+
   function getMachineDisplayName(machineId: string) {
     const names = {
       'auth-machine': 'Authentication',
@@ -170,11 +170,11 @@ https://svelte.dev/e/expected_token -->
         <span class="breadcrumb-separator">→</span>
         <span class="breadcrumb-current">Persistence</span>
       </div>
-      
+
       <h1>💾 State Persistence Manager</h1>
       <p>Manage state snapshots, restoration, and hydration across the legal AI platform</p>
     </div>
-    
+
     <div class="stats-grid">
       <div class="stat-nier-bits-card">
         <span class="stat-number">{persistedStates.length}</span>
@@ -210,13 +210,13 @@ https://svelte.dev/e/expected_token -->
       <div class="states-grid">
         <div class="states-list">
           <h2>📋 Persisted States ({persistedStates.length})</h2>
-          
+
           <div class="filter-controls">
             <button class="nes-btn" variant="ghost" onclick={loadPersistedStates}>
               🔄 Refresh
             </button>
           </div>
-          
+
           <div class="states-container">
             {#each persistedStates.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()) as state}
               <div class="state-nier-bits-card {selectedState?.id === state.id ? 'selected' : ''}"
@@ -232,7 +232,7 @@ https://svelte.dev/e/expected_token -->
                     <span class="state-time">{new Date(state.timestamp).toLocaleString()}</span>
                   </div>
                 </div>
-                
+
                 <div class="state-details">
                   <div class="detail-row">
                     <span class="detail-label">ID:</span>
@@ -251,9 +251,9 @@ https://svelte.dev/e/expected_token -->
                     <code class="detail-value checksum">{state.checksum}</code>
                   </div>
                 </div>
-                
+
                 <div class="state-actions">
-                  <button class="nes-btn" 
+                  <button class="nes-btn"
                     size="sm"
                     onclick={(e) => {
                       e.stopPropagation();
@@ -263,7 +263,7 @@ https://svelte.dev/e/expected_token -->
                   >
                     {restoring ? 'Restoring...' : '🔄 Restore'}
                   </button>
-                  
+
                   <button class="nes-btn is-error"
                     size="sm"
                     onclick={(e) => {
@@ -278,7 +278,7 @@ https://svelte.dev/e/expected_token -->
             {/each}
           </div>
         </div>
-        
+
         {#if selectedState}
           <div class="state-inspector">
             <div class="inspector-nier-bits-card">
@@ -286,13 +286,13 @@ https://svelte.dev/e/expected_token -->
                 <divTitle>🔍 State Inspector</h3>
                 <p class="inspector-subtitle">{selectedState.id}</p>
               </div>
-              
+
               <divContent>
                 <div class="context-viewer">
                   <h4>State Context</h4>
                   <pre class="context-display">{JSON.stringify(selectedState.context, null, 2)}</pre>
                 </div>
-                
+
                 <div class="metadata-viewer">
                   <h4>Metadata</h4>
                   <div class="metadata-grid">
@@ -385,7 +385,7 @@ https://svelte.dev/e/expected_token -->
 
   .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
   }
 

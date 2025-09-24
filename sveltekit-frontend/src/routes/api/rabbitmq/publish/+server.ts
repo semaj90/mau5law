@@ -4,24 +4,24 @@
  * Handles publishing messages to RabbitMQ queues for NLP processing pipeline
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 export const POST: RequestHandler = async ({ request }) => {
 	try {
-		const { exchange, routingKey, message, headers } = await request.json();
+		const { exchange, routingKey, message, headers } = await request.json()
 
-		// Validate required fields;
+		// Validate required fields
 		if (!exchange || !routingKey || !message) {
 			return json({
 				error: 'Missing required fields: exchange, routingKey, message'
-			}, { status: 400 });
+			}, { status: 400 })
 		}
 
 		// In a real implementation, this would publish to actual RabbitMQ
 		// For development, we'll simulate the publish operation and log it
 		
-		const messageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+		const messageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 		const publishResult = {
 			messageId,
 			exchange,
@@ -30,30 +30,30 @@ export const POST: RequestHandler = async ({ request }) => {
 			status: 'published',
 			messageSize: JSON.stringify(message).length,
 			headers: headers || {}
-		};
+		}
 
-		// Log the message for debugging;
+		// Log the message for debugging
 		console.log('📤 RabbitMQ Message Published:', {
 			messageId,
 			exchange,
 			routingKey,
 			messageType: headers?.messageType,
 			messageSize: publishResult.messageSize
-		});
+		})
 
-		// Simulate different processing flows based on routing key;
+		// Simulate different processing flows based on routing key
 		switch (routingKey) {
 			case 'document':
-				console.log('📄 Document queued for chunking:', message.document_id);
-				break;
+				console.log('📄 Document queued for chunking:', message.document_id)
+				break
 			case 'chunk':
-				console.log('🧩 Chunk queued for embedding:', message.chunk_id);
-				break;
+				console.log('🧩 Chunk queued for embedding:', message.chunk_id)
+				break
 			case 'embedding':
-				console.log('🧠 Embedding queued for Neo4j storage:', message.chunk_id);
-				break;
+				console.log('🧠 Embedding queued for Neo4j storage:', message.chunk_id)
+				break
 			default:
-				console.log('📝 Generic message published to:', routingKey);
+				console.log('📝 Generic message published to:', routingKey)
 		}
 
 		// In a real system, you might want to store this in a database
@@ -66,21 +66,21 @@ export const POST: RequestHandler = async ({ request }) => {
 				'X-Exchange': exchange,
 				'X-Routing-Key': routingKey
 			}
-		});
+		})
 
 	} catch (error) {
-		console.error('Failed to publish RabbitMQ message:', error);
+		console.error('Failed to publish RabbitMQ message:', error)
 		
 		return json({
 			error: 'Failed to publish message',
 			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString()
-		}, { status: 500 });
+		}, { status: 500 })
 	}
-};
+}
 
 export const GET: RequestHandler = async () => {
-	// Return publish statistics;
+	// Return publish statistics
 	const stats = {
 		endpoint: '/api/rabbitmq/publish',
 		method: 'POST',
@@ -124,7 +124,7 @@ export const GET: RequestHandler = async () => {
 				}
 			}
 		}
-	};
+	}
 
-	return json(stats);
-};
+	return json(stats)
+}

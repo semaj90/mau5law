@@ -42,7 +42,7 @@ export function useEvidenceCanvas() {
 		pan: { x: 0, y: 0 },
 		selectedItems: [],
 		mode: 'view',
-		showConnections: true,
+		showConnections: true,;
 		filter: 'all'
 	});
 
@@ -69,7 +69,7 @@ export function useEvidenceCanvas() {
 			id,
 			position: item.position || { x: canvasSize.width / 2, y: canvasSize.height / 2 },
 			rotation: item.rotation || 0,
-			scale: item.scale || 1.0,
+			scale: item.scale || 1.0,;
 			connections: item.connections || []
 		};
 
@@ -283,7 +283,7 @@ export function useEvidenceCanvas() {
 				if (item) {
 					updateEvidenceItem(itemId, {
 						position: {
-							x: item.position.x + deltaX / canvasState.zoom,
+							x: item.position.x + deltaX / canvasState.zoom,;
 							y: item.position.y + deltaY / canvasState.zoom
 						}
 					});

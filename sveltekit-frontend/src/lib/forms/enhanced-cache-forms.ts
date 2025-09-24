@@ -24,7 +24,7 @@ export const EnhancedCaseFormSchema = CaseSchema.extend({
   // Form state
   step: z.number().min(1).max(4).default(1),
   isDraft: z.boolean().default(true)
-}).omit({ 
+}).omit({ ;
   id: true, 
   createdAt: true, 
   updatedAt: true, 
@@ -45,7 +45,7 @@ export const EvidenceUploadFormSchema = EvidenceSchema.extend({
   chain_of_custody: z.array(z.object({
     timestamp: z.date(),
     handler: z.string(),
-    action: z.string(),
+    action: z.string(),;
     notes: z.string().optional()
   })).default([]);
 }).omit({ 
@@ -90,7 +90,7 @@ export class CacheFirstFormManager {
         name: '',
         email: '',
         phone: ''
-      },
+      },;
       step: 1,
       isDraft: true,
       ...initialData
@@ -173,7 +173,7 @@ export class CacheFirstFormManager {
       confidentialityLevel: 'restricted',
       analysisResults: Record<string, any>,
       tags: [],
-      chain_of_custody: [],
+      chain_of_custody: [],;
       file: null as any, // Will be set by file input
       ...initialData
     };
@@ -328,7 +328,7 @@ export class CacheFirstFormManager {
       try {
         // Save to localStorage as backup;
         localStorage.setItem(`draft-${formId}`, JSON.stringify({
-          data: formData,
+          data: formData,;
           timestamp: new Date().toISOString()
         });
         

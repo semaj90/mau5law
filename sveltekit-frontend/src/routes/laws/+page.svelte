@@ -19,8 +19,10 @@
   const { data } = $props() as { data: unknown };
 let EnhancedFuseSearch = $state<any >(null);
 
-  $effect(async () => {
-    EnhancedFuseSearch = (await import('$lib/components/search/EnhancedFuseSearch.svelte')).default;
+  $effect(() => {
+    (async () => {
+EnhancedFuseSearch = (await import('$lib/components/search/EnhancedFuseSearch.svelte')).default;
+    })();
   });
 
   // Simple search state
@@ -34,9 +36,9 @@ let isSearching = $state<boolean >(false);
     isSearching = true;
     try {
       const params = new URLSearchParams({
-        q: searchQuery,
-        jurisdiction: 'all',
-        category: 'all',
+        q: searchQuery,;
+        jurisdiction: 'all',;
+        category: 'all',;
       });
 
       const response = await fetch(`/api/laws/search?${params}`);

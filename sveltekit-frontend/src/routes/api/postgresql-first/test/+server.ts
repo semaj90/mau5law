@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 /*
  * PostgreSQL-First Architecture Test Endpoint
@@ -11,15 +11,15 @@ import type { RequestHandler } from './$types.js';
  * 5. Qdrant sync → Search index mirroring
  */
 
-import { db } from '$lib/server/db/index.js';
-import { evidence, documentMetadata, documentEmbeddings } from '$lib/server/db/schema-unified.js';
-import { eq, sql } from 'drizzle-orm';
-import { v4 as uuidv4 } from 'uuid';
-import { createClient } from 'redis';
-import { postgresqlQdrantSync } from '$lib/services/postgresql-qdrant-sync.js';
-import { URL } from "url";
+import { db } from '$lib/server/db/index.js'
+import { evidence, documentMetadata, documentEmbeddings } from '$lib/server/db/schema-unified.js'
+import { eq, sql } from 'drizzle-orm'
+import { v4 as uuidv4 } from 'uuid'
+import { createClient } from 'redis'
+import { postgresqlQdrantSync } from '$lib/services/postgresql-qdrant-sync.js'
+import { URL } from "url"
 
-// Test data for demonstration;
+// Test data for demonstration
 const SAMPLE_EVIDENCE = {
   title: 'Test Contract Document',
   description: 'Sample legal contract for testing PostgreSQL-first workflow',
@@ -46,32 +46,32 @@ const SAMPLE_EVIDENCE = {
     
     This agreement is governed by the laws of the State of California.
   `
-};
+}
 }
 
 export interface TestWorkflowRequest {
-  userId?: string;
-  caseId?: string;
-  enableIngestService?: boolean;
-  enableQdrantSync?: boolean;
-  testType?: 'full' | 'evidence_only' | 'ingest_only' | 'sync_only';
+  userId?: string
+  caseId?: string
+  enableIngestService?: boolean
+  enableQdrantSync?: boolean
+  testType?: 'full' | 'evidence_only' | 'ingest_only' | 'sync_only'
 }
 
 export const POST: RequestHandler = async ({ request, url }) => {
-  const testType = url.searchParams.get('type') || 'full';
-  const correlationId = uuidv4();
+  const testType = url.searchParams.get('type') || 'full'
+  const correlationId = uuidv4()
   
   try {
-    const body: TestWorkflowRequest = await request.json();
+    const body: TestWorkflowRequest = await request.json()
     const {
       userId = 'test-user-' + Date.now(),
       caseId = 'test-case-' + Date.now(),
       enableIngestService = true,
       enableQdrantSync = true
-    } = body;
+    } = body
 
-    console.log(`🧪 Starting PostgreSQL-first workflow test (${testType})`);
-    console.log(`📋 Correlation ID: ${correlationId}`);
+    console.log(`🧪 Starting PostgreSQL-first workflow test (${testType})`)
+    console.log(`📋 Correlation ID: ${correlationId}`)
 
     const results: any = {
       correlationId,
@@ -83,14 +83,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
       ingestService: { status: 'pending' },
       qdrantSync: { status: 'pending' },
       summary: { success: false, errors: [] }
-    };
+    }
 
-    // Step 1: Test PostgreSQL Evidence Creation;
+    // Step 1: Test PostgreSQL Evidence Creation
     if (testType === 'full' || testType === 'evidence_only') {
       try {
-        const evidenceId = uuidv4();
+        const evidenceId = uuidv4()
         
-        // Insert test evidence into PostgreSQL;
+        // Insert test evidence into PostgreSQL
         const [createdEvidence] = await db.insert(evidence).values({
           id: evidenceId,
           userId: userId,
@@ -106,31 +106,31 @@ export const POST: RequestHandler = async ({ request, url }) => {
           tags: ['contract', 'legal-agreement'],
           isAdmissible: true,
           confidentialityLevel: 'internal'
-        }).returning();
+        }).returning()
 
         results.postgresql = {
           status: 'success',
           evidenceId: evidenceId,
           createdAt: createdEvidence.createdAt
-        };
+        }
 
         results.steps.push({
           step: 'postgresql_evidence_creation',
           status: 'success',
           timestamp: new Date().toISOString(),
           details: { evidenceId, userId, caseId }
-        });
+        })
 
-        console.log(`✅ Step 1: Created evidence ${evidenceId} in PostgreSQL`);
+        console.log(`✅ Step 1: Created evidence ${evidenceId} in PostgreSQL`)
 
-        // Step 2: Test Redis Event Publishing;
+        // Step 2: Test Redis Event Publishing
         if (testType === 'full') {
           try {
             const redisClient = createClient({
               url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
-            });
+            })
             
-            await redisClient.connect();
+            await redisClient.connect()
 
             const eventData = {
               type: 'evidence',
@@ -141,36 +141,36 @@ export const POST: RequestHandler = async ({ request, url }) => {
               correlationId: correlationId,
               priority: 'high',
               timestamp: new Date().toISOString()
-            };
+            }
 
-            await redisClient.xAdd('autotag:requests', '*', eventData);
-            await redisClient.disconnect();
+            await redisClient.xAdd('autotag:requests', '*', eventData)
+            await redisClient.disconnect()
 
             results.redis = {
               status: 'success',
               streamName: 'autotag:requests',
               eventId: 'published'
-            };
+            }
 
             results.steps.push({
               step: 'redis_event_publishing',
               status: 'success',
               timestamp: new Date().toISOString(),
               details: { streamName: 'autotag:requests', eventData }
-            });
+            })
 
-            console.log(`✅ Step 2: Published Redis event for evidence ${evidenceId}`);
+            console.log(`✅ Step 2: Published Redis event for evidence ${evidenceId}`)
           } catch (error: any) {
             results.redis = {
               status: 'error',
               error: error.message
-            };
-            results.summary.errors.push(`Redis event publishing failed: ${error.message}`);
-            console.error(`❌ Step 2 failed:`, error);
+            }
+            results.summary.errors.push(`Redis event publishing failed: ${error.message}`)
+            console.error(`❌ Step 2 failed:`, error)
           }
         }
 
-        // Step 3: Test Go Ingest Service Integration;
+        // Step 3: Test Go Ingest Service Integration
         if ((testType === 'full' || testType === 'ingest_only') && enableIngestService) {
           try {
             const ingestPayload = {
@@ -182,7 +182,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
                 source: 'test_workflow',
                 correlation_id: correlationId
               }
-            };
+            }
 
             const ingestResponse = await fetch('http://localhost:8227/api/ingest', {
               method: 'POST',
@@ -191,23 +191,23 @@ export const POST: RequestHandler = async ({ request, url }) => {
                 'X-Correlation-ID': correlationId
               },
               body: JSON.stringify(ingestPayload)
-            });
+            })
 
             if (ingestResponse.ok) {
-              const ingestResult = await ingestResponse.json();
+              const ingestResult = await ingestResponse.json()
               
               results.ingestService = {
                 status: 'success',
                 documentId: ingestResult.document_id,
                 embeddingId: ingestResult.embedding_id,
                 processTime: ingestResult.process_time_ms
-              };
+              }
 
-              // Link document to evidence;
+              // Link document to evidence
               if (ingestResult.document_id) {
                 await db.update(documentMetadata)
                   .set({ evidenceId: evidenceId })
-                  .where(eq(documentMetadata.id, ingestResult.document_id);
+                  .where(eq(documentMetadata.id, ingestResult.document_id)
               }
 
               results.steps.push({
@@ -215,55 +215,55 @@ export const POST: RequestHandler = async ({ request, url }) => {
                 status: 'success',
                 timestamp: new Date().toISOString(),
                 details: ingestResult
-              });
+              })
 
-              console.log(`✅ Step 3: Go ingest service processed document ${ingestResult.document_id}`);
+              console.log(`✅ Step 3: Go ingest service processed document ${ingestResult.document_id}`)
             } else {
-              throw new Error(`Ingest service responded with ${ingestResponse.status}`);
+              throw new Error(`Ingest service responded with ${ingestResponse.status}`)
             }
           } catch (error: any) {
             results.ingestService = {
               status: 'error',
               error: error.message
-            };
-            results.summary.errors.push(`Ingest service failed: ${error.message}`);
-            console.error(`❌ Step 3 failed:`, error);
+            }
+            results.summary.errors.push(`Ingest service failed: ${error.message}`)
+            console.error(`❌ Step 3 failed:`, error)
           }
         }
 
-        // Step 4: Test Qdrant Sync Service;
+        // Step 4: Test Qdrant Sync Service
         if ((testType === 'full' || testType === 'sync_only') && enableQdrantSync) {
           try {
             // Wait a moment for ingest service to complete
-            await new Promise(resolve => setTimeout(resolve, 2000);
+            await new Promise(resolve => setTimeout(resolve, 2000)
 
-            const syncResult = await postgresqlQdrantSync.syncEvidenceById(evidenceId);
+            const syncResult = await postgresqlQdrantSync.syncEvidenceById(evidenceId)
             
             if (syncResult) {
               results.qdrantSync = {
                 status: 'success',
                 synced: true,
                 evidenceId: evidenceId
-              };
+              }
 
               results.steps.push({
                 step: 'qdrant_sync',
                 status: 'success',
                 timestamp: new Date().toISOString(),
                 details: { evidenceId, synced: true }
-              });
+              })
 
-              console.log(`✅ Step 4: Evidence ${evidenceId} synced to Qdrant`);
+              console.log(`✅ Step 4: Evidence ${evidenceId} synced to Qdrant`)
             } else {
-              throw new Error('Sync returned false - no embedding available');
+              throw new Error('Sync returned false - no embedding available')
             }
           } catch (error: any) {
             results.qdrantSync = {
               status: 'error',
               error: error.message
-            };
-            results.summary.errors.push(`Qdrant sync failed: ${error.message}`);
-            console.error(`❌ Step 4 failed:`, error);
+            }
+            results.summary.errors.push(`Qdrant sync failed: ${error.message}`)
+            console.error(`❌ Step 4 failed:`, error)
           }
         }
 
@@ -271,20 +271,20 @@ export const POST: RequestHandler = async ({ request, url }) => {
         results.postgresql = {
           status: 'error',
           error: error.message
-        };
-        results.summary.errors.push(`PostgreSQL operation failed: ${error.message}`);
-        console.error(`❌ PostgreSQL step failed:`, error);
+        }
+        results.summary.errors.push(`PostgreSQL operation failed: ${error.message}`)
+        console.error(`❌ PostgreSQL step failed:`, error)
       }
     }
 
     // Determine overall success
-    const hasErrors = results.summary.errors.length > 0;
-    results.summary.success = !hasErrors;
+    const hasErrors = results.summary.errors.length > 0
+    results.summary.success = !hasErrors
 
     if (results.summary.success) {
-      console.log(`🎉 PostgreSQL-first workflow test completed successfully!`);
+      console.log(`🎉 PostgreSQL-first workflow test completed successfully!`)
     } else {
-      console.log(`⚠️  PostgreSQL-first workflow test completed with errors:`, results.summary.errors);
+      console.log(`⚠️  PostgreSQL-first workflow test completed with errors:`, results.summary.errors)
     }
 
     return json({
@@ -293,52 +293,52 @@ export const POST: RequestHandler = async ({ request, url }) => {
         ? 'PostgreSQL-first workflow test completed successfully'
         : 'PostgreSQL-first workflow test completed with errors',
       data: results
-    });
+    })
 
   } catch (error: any) {
-    console.error('❌ Test endpoint error:', error);
+    console.error('❌ Test endpoint error:', error)
     return json({
       success: false,
       message: 'Test workflow failed',
       error: error.message,
       correlationId
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const action = url.searchParams.get('action') || 'status';
+    const action = url.searchParams.get('action') || 'status'
 
     switch (action) {
       case 'health':
         // Check health of all services
-        const health = await checkSystemHealth();
+        const health = await checkSystemHealth()
         return json({
           success: true,
           message: 'System health check completed',
           data: health
-        });
+        })
 
       case 'stats':
         // Get PostgreSQL statistics
-        const stats = await getPostgreSQLStats();
+        const stats = await getPostgreSQLStats()
         return json({
           success: true,
           message: 'PostgreSQL statistics retrieved',
           data: stats
-        });
+        })
 
       case 'sync-stats':
         // Get Qdrant sync statistics
-        const syncStats = postgresqlQdrantSync.getStats();
+        const syncStats = postgresqlQdrantSync.getStats()
         return json({
           success: true,
           message: 'Qdrant sync statistics retrieved',
           data: syncStats
-        });
+        })
 
-      default:;
+      default:
         return json({
           success: true,
           message: 'PostgreSQL-first test endpoint is ready',
@@ -356,16 +356,16 @@ export const GET: RequestHandler = async ({ url }) => {
               'sync_only - Qdrant sync test only'
             ]
           }
-        });
+        })
     }
   } catch (error: any) {
     return json({
       success: false,
       message: 'Failed to process request',
       error: error.message
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 async function checkSystemHealth(): Promise<any> {
   const health = {
@@ -374,69 +374,69 @@ async function checkSystemHealth(): Promise<any> {
     ingestService: { status: 'unknown', details: null },
     qdrant: { status: 'unknown', details: null },
     overall: 'unknown'
-  };
+  }
 
-  // Check PostgreSQL;
+  // Check PostgreSQL
   try {
-    await db.execute(sql`SELECT 1`);
-    const [evidenceCount] = await db.execute(sql`SELECT COUNT(*) as count FROM evidence`);
+    await db.execute(sql`SELECT 1`)
+    const [evidenceCount] = await db.execute(sql`SELECT COUNT(*) as count FROM evidence`)
     health.postgresql = { 
-      status: 'healthy', 
+      status: 'healthy',
       details: { connected: true, evidenceCount: evidenceCount.count }
-    };
-  } catch (error: any) {
-    health.postgresql = { status: 'unhealthy', details: { error: error.message } };
-  }
-
-  // Check Redis;
-  try {
-    const redisClient = createClient({ url: import.meta.env.REDIS_URL || 'redis://localhost:6379' });
-    await redisClient.connect();
-    await redisClient.ping();
-    await redisClient.disconnect();
-    health.redis = { status: 'healthy', details: { connected: true } };
-  } catch (error: any) {
-    health.redis = { status: 'unhealthy', details: { error: error.message } };
-  }
-
-  // Check Go Ingest Service;
-  try {
-    const response = await fetch('http://localhost:8227/api/health');
-    if (response.ok) {
-      const healthData = await response.json();
-      health.ingestService = { status: 'healthy', details: healthData };
-    } else {
-      health.ingestService = { status: 'unhealthy', details: { httpStatus: response.status } };
     }
   } catch (error: any) {
-    health.ingestService = { status: 'unhealthy', details: { error: error.message } };
+    health.postgresql = { status: 'unhealthy', details: { error: error.message } }
   }
 
-  // Check Qdrant via sync service;
+  // Check Redis
   try {
-    const qdrantHealth = await postgresqlQdrantSync.healthCheck();
-    health.qdrant = { 
-      status: qdrantHealth.status === 'healthy' ? 'healthy' : 'unhealthy', 
-      details: qdrantHealth 
-    };
+    const redisClient = createClient({ url: import.meta.env.REDIS_URL || 'redis://localhost:6379' })
+    await redisClient.connect()
+    await redisClient.ping()
+    await redisClient.disconnect()
+    health.redis = { status: 'healthy', details: { connected: true } }
   } catch (error: any) {
-    health.qdrant = { status: 'unhealthy', details: { error: error.message } };
+    health.redis = { status: 'unhealthy', details: { error: error.message } }
+  }
+
+  // Check Go Ingest Service
+  try {
+    const response = await fetch('http://localhost:8227/api/health')
+    if (response.ok) {
+      const healthData = await response.json()
+      health.ingestService = { status: 'healthy', details: healthData }
+    } else {
+      health.ingestService = { status: 'unhealthy', details: { httpStatus: response.status } }
+    }
+  } catch (error: any) {
+    health.ingestService = { status: 'unhealthy', details: { error: error.message } }
+  }
+
+  // Check Qdrant via sync service
+  try {
+    const qdrantHealth = await postgresqlQdrantSync.healthCheck()
+    health.qdrant = { 
+      status: qdrantHealth.status === 'healthy' ? 'healthy' : 'unhealthy',
+      details: qdrantHealth 
+    }
+  } catch (error: any) {
+    health.qdrant = { status: 'unhealthy', details: { error: error.message } }
   }
 
   // Determine overall health
-  const healthyServices = Object.values(health).filter(item => item.length);
+  const healthyServices = Object.values(health).filter(item => item.length)
   
-  const totalServices = 4;
+  const totalServices = 4
   
   if (healthyServices === totalServices) {
-    health.overall = 'healthy';
+    health.overall = 'healthy'
   } else if (healthyServices >= totalServices / 2) {
-    health.overall = 'degraded';
+    health.overall = 'degraded'
   } else {
-    health.overall = 'unhealthy';
+    health.overall = 'unhealthy'
   }
 
-  return health;
+  return health
 }
 
 async function getPostgreSQLStats(): Promise<any> {
@@ -449,14 +449,14 @@ async function getPostgreSQLStats(): Promise<any> {
         COUNT(CASE WHEN title_embedding IS NOT NULL THEN 1 END) as evidence_with_title_embeddings,
         COUNT(CASE WHEN content_embedding IS NOT NULL THEN 1 END) as evidence_with_content_embeddings
       FROM evidence
-    `);
+    `)
 
     const [documentStats] = await db.execute(sql`
       SELECT 
         COUNT(*) as total_documents,
         COUNT(CASE WHEN processing_status = 'completed' THEN 1 END) as completed_documents
       FROM document_metadata
-    `);
+    `)
 
     const [embeddingStats] = await db.execute(sql`
       SELECT 
@@ -464,15 +464,15 @@ async function getPostgreSQLStats(): Promise<any> {
         COUNT(DISTINCT embedding_model) as unique_models,
         AVG(chunk_size) as avg_chunk_size
       FROM document_embeddings
-    `);
+    `)
 
     return {
       evidence: evidenceStats,
       documents: documentStats,
       embeddings: embeddingStats,
       timestamp: new Date().toISOString()
-    };
+    }
   } catch (error: any) {
-    throw new Error(`Failed to get PostgreSQL stats: ${error.message}`);
+    throw new Error(`Failed to get PostgreSQL stats: ${error.message}`)
   }
 }

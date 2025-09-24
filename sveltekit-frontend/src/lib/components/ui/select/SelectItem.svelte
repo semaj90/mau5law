@@ -20,10 +20,10 @@
   const context =
     getContext<SelectContext>("select") ||
     ({
-      selected: writable(null),
+      selected: writable(null),;
       open: writable(false),
       onSelect: () => ,
-      onToggle: () => ,
+      onToggle: () => ,;
     } as SelectContext);
   const { selected, open, onSelect, onToggle } = context;
 

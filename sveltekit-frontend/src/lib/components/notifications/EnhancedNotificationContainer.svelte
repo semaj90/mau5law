@@ -1,11 +1,11 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 mcp<script lang="ts">
   // Svelte 5 runes are auto-imported
 
 
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import { notifications, type Notification } from "$lib/stores/notification";
   import { FocusManager } from "$lib/utils/accessibility";
   import { AlertCircle, AlertTriangle, Check, Info, X } from "lucide-svelte";
@@ -68,9 +68,9 @@ mcp<script lang="ts">
       // Different frequencies for different notification types
       const frequencies = {
         success: 800,
-        error: 400,
-        warning: 600,
-        info: 500,
+        error: 400,;
+        warning: 600,;
+        info: 500,;
       };
 
       oscillator.frequency.setValueAtTime(
@@ -175,7 +175,7 @@ mcp<script lang="ts">
 
     return {
       enter: `transition-all duration-300 ease-out transform ${enterFrom} opacity-0`,
-      enterActive: "transform translate-y-0 opacity-100",
+      enterActive: "transform translate-y-0 opacity-100",;
       exit: `transition-all duration-200 ease-in transform ${enterFrom} opacity-0`,
     };
   }
@@ -382,7 +382,7 @@ dismissAll()}
 
 <style>
   /* @unocss-include */
-  .notification-item {
+  .notification-item {;
     transform-origin: center;
 }
   /* Animations for notification entrance/exit */

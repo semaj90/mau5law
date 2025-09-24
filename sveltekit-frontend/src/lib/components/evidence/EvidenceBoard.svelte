@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: 'return' outside of function
+<!-- @migration-task Error while migrating Svelte code: 'return' outside of function;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: 'return' outside of function -->
 <!--
@@ -120,7 +120,7 @@ https://svelte.dev/e/js_parse_error -->
           confidence: 0.85,
           tags: ['contract', 'legal', 'mock'],
           mockData: true,
-          uploadedAt: new Date(Date.now() - 86400000).toISOString()
+          uploadedAt: new Date(Date.now() - 86400000).toISOString();
         },
         {
           id: 'mock-evidence-2',
@@ -130,11 +130,11 @@ https://svelte.dev/e/js_parse_error -->
           fileName: 'mock_email.eml',
           fileSize: 32768,
           mimeType: 'message/rfc822',
-          analyzed: false,
+          analyzed: false,;
           confidence: 0.72,
           tags: ['email', 'communication', 'mock'],
           mockData: true,
-          uploadedAt: new Date(Date.now() - 172800000).toISOString()
+          uploadedAt: new Date(Date.now() - 172800000).toISOString();
         }
       ];
     }
@@ -159,7 +159,7 @@ https://svelte.dev/e/js_parse_error -->
             type: 'time_anomaly',
             description: 'Mock suspicious pattern: Unusual timing in document creation',
             severity: 'medium',
-            evidence: ['mock-evidence-1']
+            evidence: ['mock-evidence-1'];
           }
         ],
         entityConnections: [
@@ -167,7 +167,7 @@ https://svelte.dev/e/js_parse_error -->
             source: 'mock-evidence-1',
             target: 'mock-evidence-2',
             confidence: 0.85,
-            relationship: 'references'
+            relationship: 'references';
           }
         ],
         crossReferences: [
@@ -175,15 +175,15 @@ https://svelte.dev/e/js_parse_error -->
             sourceEvidence: 'mock-evidence-1',
             targetEvidence: 'mock-evidence-2',
             relevance: 0.75,
-            type: 'temporal'
+            type: 'temporal';
           }
         ],
         timeline: {
           events: [
             {
               timestamp: new Date(Date.now() - 86400000).toISOString(),
-              evidenceId: 'mock-evidence-1',
-              description: 'Mock contract document created'
+              evidenceId: 'mock-evidence-1',;
+              description: 'Mock contract document created';
             }
           ]
         }
@@ -203,9 +203,9 @@ https://svelte.dev/e/js_parse_error -->
       connections.push({
         type: 'entity',
         source: connection.source,
-        target: connection.target,
-        strength: connection.confidence || 0.5,
-        label: connection.relationship || 'related',
+        target: connection.target,;
+        strength: connection.confidence || 0.5,;
+        label: connection.relationship || 'related',;
       });
     });
 
@@ -214,9 +214,9 @@ https://svelte.dev/e/js_parse_error -->
       connections.push({
         type: 'reference',
         source: ref.sourceEvidence,
-        target: ref.targetEvidence,
-        strength: ref.relevance || 0.5,
-        label: ref.type,
+        target: ref.targetEvidence,;
+        strength: ref.relevance || 0.5,;
+        label: ref.type,;
       });
     });
 
@@ -311,9 +311,9 @@ https://svelte.dev/e/js_parse_error -->
         {
           type: 'manual',
           source: sourceId,
-          target: targetId,
-          strength: 1.0,
-          label: 'User Created',
+          target: targetId,;
+          strength: 1.0,;
+          label: 'User Created',;
         }
       ]);
     } catch (error) {
@@ -721,7 +721,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .evidence-board {
+  .evidence-board {;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -1119,7 +1119,7 @@ https://svelte.dev/e/js_parse_error -->
     padding-left: 2rem;
   }
 
-  .evidence-timeline: :before {
+  .evidence-timeline::before {
     content: '';
     position: absolute;
     left: 0.875rem;

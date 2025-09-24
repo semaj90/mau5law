@@ -5,23 +5,23 @@
  * Used by chat components to determine if WebAssembly fallback should be used
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 export const GET: RequestHandler = async () => {
   try {
-    const ollamaBaseUrl = import.meta.env.OLLAMA_BASE_URL || 'http://localhost:11434';
+    const ollamaBaseUrl = import.meta.env.OLLAMA_BASE_URL || 'http://localhost:11434'
     
-    // Check if Ollama is responding;
+    // Check if Ollama is responding
     const response = await fetch(`${ollamaBaseUrl}/api/tags`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       }
-    });
+    })
 
     if (response.ok) {
-      const data = await response.json();
+      const data = await response.json()
       
       return json({
         success: true,
@@ -29,7 +29,7 @@ export const GET: RequestHandler = async () => {
         baseUrl: ollamaBaseUrl,
         models: data.models || [],
         timestamp: new Date().toISOString()
-      });
+      })
     } else {
       return json({
         success: false,
@@ -37,10 +37,10 @@ export const GET: RequestHandler = async () => {
         error: `HTTP ${response.status}: ${response.statusText}`,
         baseUrl: ollamaBaseUrl,
         timestamp: new Date().toISOString()
-      }, { status: 503 });
+      }, { status: 503 })
     }
   } catch (error: any) {
-    console.error('Ollama health check failed:', error);
+    console.error('Ollama health check failed:', error)
     
     return json({
       success: false,
@@ -48,6 +48,6 @@ export const GET: RequestHandler = async () => {
       error: error.message || 'Connection failed',
       baseUrl: import.meta.env.OLLAMA_BASE_URL || 'http://localhost:11434',
       timestamp: new Date().toISOString()
-    }, { status: 503 });
+    }, { status: 503 })
   }
-};
+}

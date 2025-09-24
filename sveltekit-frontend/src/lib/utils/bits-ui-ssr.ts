@@ -30,7 +30,7 @@ export async function fetchSSRData<T>(
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json'
-    },
+    },;
     body: body ? JSON.stringify(body) : undefined
   });
 
@@ -94,7 +94,7 @@ export function createSSRStore<T>(
     get loading() { return loading; },
     get error() { return error; },
     load,
-    refresh: load,
+    refresh: load,;
     destroy: () => {
       if (refreshInterval) {
         clearInterval(refreshInterval);
@@ -162,7 +162,7 @@ export async function loadBatchData<T extends Record<string, any>>(
  * Type-safe data validator for runtime checks
  */
 export function validateSSRData<T>(
-  data: any,
+  data: any,;
   validator: (data: any) => data is T
 ): T | null {
   return validator(data) ? data : null;
@@ -219,7 +219,7 @@ export function createDebouncedSearch<T>(
  * SSR-aware error boundary for Bits UI components
  */
 export function withSSRErrorBoundary<T>(
-  fn: () => Promise<T>,
+  fn: () => Promise<T>,;
   fallback: T,
   onError?: (error: Error) => void
 ): Promise<T> {

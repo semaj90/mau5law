@@ -53,13 +53,15 @@
     context_window: 4096,
   });
 
-  $effect(async () => {
-    const { fabric } = await import("fabric");
+  $effect(() => {
+    (async () => {
+const { fabric } = await import("fabric");
     fabricCanvas = new fabric.Canvas(canvasEl, {
       backgroundColor: '#ffffff',
       selection: true,
-      preserveObjectStacking: true,
-    });
+      preserveObjectStacking: true,;
+    })();
+  });
 
     // Register canvas with concurrency orchestrator
     const canvasId = `evidence-canvas-${Date.now()}`;
@@ -84,7 +86,7 @@
           name: (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).title || (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).name || 'Evidence Item',
           type: (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).type || (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).evidenceType || 'document',
           uploadedAt: (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).createdAt || new Date().toISOString(),
-          status: 'uploaded' as const
+          status: 'uploaded' as const;
         }));
 
         // Add visual representations to canvas
@@ -107,11 +109,11 @@
 
     defaultItems.forEach((item, index) => {
       const evidenceItem = {
-        id: crypto.randomUUID(),
+        id: crypto.randomUUID(),;
         name: (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).name,
         type: (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).type,
         uploadedAt: new Date().toISOString(),
-        status: 'uploaded' as const
+        status: 'uploaded' as const;
       };
       evidenceList.push(evidenceItem);
       addEvidenceToCanvas(evidenceItem, index, (item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).color);
@@ -131,10 +133,10 @@
       height: 120,
       stroke: '#333',
       strokeWidth: 2,
-      rx: 10,
-      ry: 10,
+      rx: 10,;
+      ry: 10,;
       selectable: true,
-      evidenceId: evidence.id
+      evidenceId: evidence.id;
     });
 
     // Add evidence label
@@ -144,9 +146,9 @@
       fontFamily: 'Arial',
       fontSize: 14,
       fill: '#ffffff',
-      fontWeight: 'bold',
-      selectable: false,
-      evented: false
+      fontWeight: 'bold',;
+      selectable: false,;
+      evented: false;
     });
 
     // Add type label
@@ -155,9 +157,9 @@
       top: y + 35,
       fontFamily: 'Arial',
       fontSize: 12,
-      fill: '#ffffff',
-      selectable: false,
-      evented: false
+      fill: '#ffffff',;
+      selectable: false,;
+      evented: false;
     });
 
     // Add status indicator
@@ -166,9 +168,9 @@
       top: y + 55,
       fontFamily: 'Arial',
       fontSize: 10,
-      fill: '#ffffff',
-      selectable: false,
-      evented: false
+      fill: '#ffffff',;
+      selectable: false,;
+      evented: false;
     });
 
     fabricCanvas.add(rect);
@@ -183,9 +185,9 @@
       communication: '#10b981',
       financial: '#f59e0b',
       testimony: '#8b5cf6',
-      physical: '#ef4444',
-      digital: '#06b6d4',
-      default: '#6b7280'
+      physical: '#ef4444',;
+      digital: '#06b6d4',;
+      default: '#6b7280';
     };
     return colors[type] || colors.default;
   }
@@ -226,10 +228,10 @@
 
       // Call our real analysis endpoint
       const response = await fetch(`/api/cases/${caseId}/analyze`, {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          canvas_data: {
+          canvas_data: {;
             objects: collectObjects(),
             evidence_items: evidenceList,
             canvas_size: { width: canvasEl.width, height: canvasEl.height }
@@ -287,10 +289,10 @@
     for (const file of Array.from(files)) {
       const evidenceItem = {
         id: crypto.randomUUID(),
-        name: file.name,
+        name: file.name,;
         type: getFileType(file.type),
-        uploadedAt: new Date().toISOString(),
-        status: 'uploading' as const
+        uploadedAt: new Date().toISOString(),;
+        status: 'uploading' as const;
       };
 
       evidenceList.push(evidenceItem);
@@ -303,8 +305,8 @@
         formData.append('evidenceType', evidenceItem.type);
 
         const response = await fetch('/api/v1/minio/upload', {
-          method: 'POST',
-          body: formData
+          method: 'POST',;
+          body: formData;
         });
 
         if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
@@ -335,10 +337,10 @@
   function saveCanvas() {
     const canvasData = {
       version: fabricCanvas.version,
-      objects: fabricCanvas.toJSON(),
-      evidence: evidenceList,
+      objects: fabricCanvas.toJSON(),;
+      evidence: evidenceList,;
       timestamp: new Date().toISOString(),
-      caseId
+      caseId;
     };
 
     // Save to localStorage as backup
@@ -433,7 +435,7 @@
         Context Window:
         <input
           type="number"
-          class="nes-input"
+          class="nes-input";
           bind:value={options.context_window}
           min={512}
           max={16384}

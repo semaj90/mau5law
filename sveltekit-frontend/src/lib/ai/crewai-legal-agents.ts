@@ -101,7 +101,7 @@ export const legalAgents: LegalAgent[] = [;
     - Mitigation strategies
 
     Quantify risks where possible with probability assessments.`,
-    maxTokens: 1500,
+    maxTokens: 1500,;
     temperature: 0.2
   }
 ];
@@ -148,7 +148,7 @@ export class CrewAILegalReviewSystem {
             recommendations: ['Review agent failed - manual review required'],
             riskLevel: 'high',
             confidence: 0,
-            processingTime: 0,
+            processingTime: 0,;
             errors: [(result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error']
           });
         }
@@ -175,7 +175,7 @@ export class CrewAILegalReviewSystem {
     try {
       const ollama = new ChatOllama({
         baseUrl: "http://localhost:11434",
-        model: "gemma3:legal-latest",
+        model: "gemma3:legal-latest",;
         temperature: agent.temperature,
         maxTokens: agent.maxTokens
       });
@@ -214,7 +214,7 @@ Please provide your analysis in the following JSON format:;
         reviewSummary: analysis.summary,
         findings: analysis.findings,
         recommendations: analysis.recommendations,
-        riskLevel: analysis.riskLevel,
+        riskLevel: analysis.riskLevel,;
         confidence: analysis.confidence,
         processingTime: Date.now() - startTime
       };
@@ -230,7 +230,7 @@ Please provide your analysis in the following JSON format:;
         recommendations: ['Manual review required due to processing error'],
         riskLevel: 'high',
         confidence: 0,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime,;
         errors: [error instanceof Error ? error.message: String(error)]
       };
     }
@@ -252,7 +252,7 @@ Please provide your analysis in the following JSON format:;
       summary: responseText.substring(0, 200) + '...',
       findings: [responseText],
       recommendations: ['Manual review recommended'],
-      riskLevel: 'medium' as const,
+      riskLevel: 'medium' as const,;
       confidence: 0.5
     };
   }
@@ -267,11 +267,11 @@ Please provide your analysis in the following JSON format:;
         prompt: `Legal document review: ${task.reviewType}`,
         response: JSON.stringify(responses),
         model: 'gemma3:legal-latest',
-        tokensUsed: Math.floor((task.documentContent.length + responses.reduce((acc, r) => acc + r.reviewSummary.length, 0)) / 4),
+        tokensUsed: Math.floor((task.documentContent.length + responses.reduce((acc, r) => acc + r.reviewSummary.length, 0)) / 4),;
         cost: 0, // TODO: Calculate based on token usage;
         metadata: {
           taskType: 'legal-document-review',
-          reviewType: task.reviewType,
+          reviewType: task.reviewType,;
           priority: task.priority,
           agentCount: responses.length
         }

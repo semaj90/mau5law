@@ -12,7 +12,7 @@ import {
   type Readable
 } from "svelte/store";
 // TODO: Fix import - // Orphaned content: import { vscodeCache  // Base interfaces for the barrel pattern
-export interface StoreMetadata {
+export interface StoreMetadata {;
   id: string;
   version: string;
   lastUpdated: number;
@@ -94,7 +94,7 @@ export class BarrelStoreManager {
       version: "1.0.0",
       lastUpdated: Date.now(),
       dependencies,
-      cacheable,
+      cacheable,;
       ttl: cacheable ? ttl : undefined
     };
 
@@ -104,7 +104,7 @@ export class BarrelStoreManager {
       metadata,
       validator,
       serializer: {
-        serialize: (value: T) => JSON.stringify(value),
+        serialize: (value: T) => JSON.stringify(value),;
         deserialize: (value: string) => JSON.parse(value)
       }
     };
@@ -127,7 +127,7 @@ export class BarrelStoreManager {
    * Create a computed store that depends on other stores
    */
   createComputed<T>(
-    id: string,
+    id: string,;
     dependencies: string[],
     computeFn: (values: any[]) => T,
     options?: { cacheable?: boolean; ttl?: number }
@@ -203,7 +203,7 @@ export class BarrelStoreManager {
     for (const [id, entry] of this.stores) {
       const currentValue = await this.getCurrentValue(entry.store);
       exports[id] = {
-        value: currentValue,
+        value: currentValue,;
         metadata: entry.metadata
       };
     }
@@ -319,7 +319,7 @@ export class BarrelStoreManager {
   }
 
   private setupCaching<T>(
-    store: Writable<T> | Readable<T>,
+    store: Writable<T> | Readable<T>,;
     id: string,
     ttl?: number;
   ): void {
@@ -353,7 +353,7 @@ export const legalAIStores = {
   currentCase: barrelStore.createStore({
     id: "legal-ai-current-case",
     initialValue: null,
-    persistent: true,
+    persistent: true,;
     cacheable: true
   }),
 
@@ -361,7 +361,7 @@ export const legalAIStores = {
   documentQueue: barrelStore.createStore({
     id: "legal-ai-document-queue",
     initialValue: [],
-    persistent: true,
+    persistent: true,;
     cacheable: true
   }),
 
@@ -370,7 +370,7 @@ export const legalAIStores = {
     id: "legal-ai-analysis-results",
     initialValue: Record<string, any>,
     persistent: true,
-    cacheable: true,
+    cacheable: true,;
     ttl: 1000 * 60 * 60, // 1 hour
   }),
 
@@ -383,7 +383,7 @@ export const legalAIStores = {
       autoSave: true,
       notifications: true
     },
-    persistent: true,
+    persistent: true,;
     validator: (prefs) => {
       return (
         typeof prefs === "object" &&
@@ -401,7 +401,7 @@ export const legalAIStores = {
       error: null,
       currentStep: 0,
       totalSteps: 5
-    },
+    },;
     cacheable: true
   }),
 
@@ -413,7 +413,7 @@ export const legalAIStores = {
       progress: 0,
       results: [],
       errors: []
-    },
+    },;
     cacheable: true
   })
 };
@@ -444,7 +444,7 @@ export const legalAIComputed = {
         total,
         processed,
         processing,
-        remaining: total - processed,
+        remaining: total - processed,;
         progress: total > 0 ? (processed / total) * 100 : 0
       };
     }

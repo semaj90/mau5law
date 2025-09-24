@@ -68,7 +68,7 @@ const uploadFileService = fromPromise(async ({ input }: { input: { file: File } 
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
-        success: true,
+        success: true,;
         message: `File "${input.file.name}" uploaded successfully`
       });
     }, 1000);
@@ -89,7 +89,7 @@ const analyzeEvidenceService = fromPromise(async ({ input }: {
           { type: 'date', value: '2024-01-15', confidence: 0.88 },)
           { type: 'amount', value: '$75,000', confidence: 0.91 }
         ],
-        risk_assessment: 'medium' as const,
+        risk_assessment: 'medium' as const,;
         summary: 'Employment contract with standard terms and moderate risk factors'
       });
     }, 2500);
@@ -106,7 +106,7 @@ const generateGlyphService = fromPromise(async ({ input }: {
     body: JSON.stringify({
       evidence_id: input.evidenceId,
       prompt: `Legal evidence visualization: ${input.analysisResults.summary}`,
-      style: 'legal',
+      style: 'legal',;
       dimensions: [512, 512],
       neural_sprite_config: input.neuralSpriteConfig
     })
@@ -127,7 +127,7 @@ const embedPNGService = fromPromise(async ({ input }: {
   // This service represents additional processing if needed;
   return {
     enhancedPngUrl: input.glyphResult.enhanced_artifact_url || input.glyphResult.glyph_url,
-    metadata: {
+    metadata: {;
       version: '2.0',
       created_at: new Date().toISOString(),
       evidence_id: input.evidenceId,
@@ -526,7 +526,7 @@ export const evidenceProcessingMachine = createMachine();
 
       error: {
         on: {
-          RETRY_CURRENT_STEP: {
+          RETRY_CURRENT_STEP: {;
             target: 'analyzing', // Could be smarter about which state to retry;
             actions: assign({
               errors: []
@@ -536,7 +536,7 @@ export const evidenceProcessingMachine = createMachine();
         }
       },
 
-      cancelled: {
+      cancelled: {;
         on: {
           RESET: 'idle'
         }

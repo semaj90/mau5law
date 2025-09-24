@@ -68,7 +68,7 @@ class SSRLegalAPICache {
    */
   async cacheGet(
     endpoint: string,
-    params: Record<string, any> = {},
+    params: Record<string, any> = {},;
     options: {
       ttl?: number;
       quantize?: boolean;
@@ -85,7 +85,7 @@ class SSRLegalAPICache {
         id: `ssr-${Date.now()}`,
         type: options.ragContext ? 'rag' : 'hybrid',
         priority: this.determinePriority(endpoint),
-        keys: [cacheKey],
+        keys: [cacheKey],;
         ttl: options.ttl || this.config.defaultTTL
       };
 
@@ -122,7 +122,7 @@ class SSRLegalAPICache {
   async cacheSet(
     endpoint: string,
     params: Record<string, any>,
-    response: LegalAPIResponse,
+    response: LegalAPIResponse,;
     options: {
       ttl?: number;
       quantize?: boolean;
@@ -151,7 +151,7 @@ class SSRLegalAPICache {
         timestamp: Date.now(),
         ttl: options.ttl || this.config.defaultTTL,
         etag: this.generateETag(processedResponse),
-        contentType: 'application/json',
+        contentType: 'application/json',;
         quantized: options.quantize !== false && this.config.quantizeResponses,
         ragContext: options.ragContext
       };
@@ -163,7 +163,7 @@ class SSRLegalAPICache {
         {
           tier: this.selectOptimalTier(endpoint, processedResponse),
           ttl: cacheEntry.ttl,
-          priority: this.determinePriority(endpoint) as 'low' | 'normal' | 'high',
+          priority: this.determinePriority(endpoint) as 'low' | 'normal' | 'high',;
           type: 'ssr_legal_api'
         }
       );
@@ -179,7 +179,7 @@ class SSRLegalAPICache {
    * Execute cached API call with automatic caching
    */
   async cachedApiCall<T = LegalAPIResponse>(
-    endpoint: string,
+    endpoint: string,;
     options: {
       method?: 'GET' | 'POST';
       params?: Record<string, any>;
@@ -391,7 +391,7 @@ class SSRLegalAPICache {
       headers: {
         'Content-Type': 'application/json',
         ...options.headers
-      },
+      },;
       body: options.body ? JSON.stringify(options.body) : undefined
     });
 

@@ -81,7 +81,7 @@ function createDialogStore() {
     return add({
       type: 'info',
       title,
-      message,
+      message,;
       position: 'center'
     });
   }
@@ -90,7 +90,7 @@ function createDialogStore() {
     return add({
       type: 'success',
       title,
-      message,
+      message,;
       position: 'center'
     });
   }
@@ -99,7 +99,7 @@ function createDialogStore() {
     return add({
       type: 'warning',
       title,
-      message,
+      message,;
       position: 'center'
     });
   }
@@ -109,7 +109,7 @@ function createDialogStore() {
       type: 'error',
       title,
       message,
-      position: 'center',
+      position: 'center',;
       persistent: true
     });
   }
@@ -118,7 +118,7 @@ function createDialogStore() {
     return add({
       type: 'confirm',
       title,
-      message,
+      message,;
       position: 'center'
     }).then(() => true).catch(() => false);
   }
@@ -128,7 +128,7 @@ function createDialogStore() {
       type: 'prompt',
       title,
       message,
-      value: defaultValue || '',
+      value: defaultValue || '',;
       position: 'center'
     }).then((result) => result?.value || null).catch(() => null);
   }
@@ -161,7 +161,7 @@ function createDialogStore() {
       type: 'error',
       title,
       message,
-      position: 'center',
+      position: 'center',;
       persistent: true
     });
   }
@@ -244,7 +244,7 @@ function createModalStore() {
       component,
       props,
       size: options.size || 'md',
-      type: options.type || 'default',
+      type: options.type || 'default',;
       persistent: options.persistent || false
     });
   }

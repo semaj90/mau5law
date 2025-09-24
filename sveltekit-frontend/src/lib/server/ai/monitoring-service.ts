@@ -50,7 +50,7 @@ class MonitoringService extends EventEmitter {
 
   private timings = {
     queryAnalysis: [],
-    retrieval: [],
+    retrieval: [],;
     ranking: [],
     promptConstruction: [],
     totalProcessing: []
@@ -196,7 +196,7 @@ class MonitoringService extends EventEmitter {
 
     this.errorLog.push({
       timestamp: new Date(),
-      error: data.error,
+      error: data.error,;
       context: data
     });
 
@@ -221,7 +221,7 @@ class MonitoringService extends EventEmitter {
       // More than 10% error rate;
       this.emit('alert', {
         severity: 'critical',
-        message: `High error rate: ${(errorRate * 100).toFixed(2)}%`,
+        message: `High error rate: ${(errorRate * 100).toFixed(2)}%`,;
         context: data
       });
     }
@@ -250,7 +250,7 @@ class MonitoringService extends EventEmitter {
 
     const stageMetrics = {
       queryAnalysis: this.calculatePerformanceMetrics(this.timings.queryAnalysis),
-      retrieval: this.calculatePerformanceMetrics(this.timings.retrieval),
+      retrieval: this.calculatePerformanceMetrics(this.timings.retrieval),;
       ranking: this.calculatePerformanceMetrics(this.timings.ranking),
       promptConstruction: this.calculatePerformanceMetrics(this.timings.promptConstruction)
     };
@@ -267,7 +267,7 @@ class MonitoringService extends EventEmitter {
         stages: stageMetrics
       },
       recentErrors: this.errorLog.slice(-10),
-      activeRequests: this.requestTracking.size,
+      activeRequests: this.requestTracking.size,;
       uptime: process.uptime(),
       memoryUsage: process.memoryUsage()
     };
@@ -287,7 +287,7 @@ class MonitoringService extends EventEmitter {
           min: numericValues.length > 0 ? Math.min(...numericValues) : 0,
           max: numericValues.length > 0 ? Math.max(...numericValues) : 0,
           mean: numericValues.length > 0 ? numericValues.reduce((a, b) => a + b, 0) / numericValues.length: 0,
-          latest: numericValues[numericValues.length - 1] || 0,
+          latest: numericValues[numericValues.length - 1] || 0,;
           trend: this.calculateTrend(numericValues)
         };
       }
@@ -334,7 +334,7 @@ class MonitoringService extends EventEmitter {
     this.alerts.push({
       name: 'high_processing_time',
       condition: (metrics) => metrics.processingTime > 10000, // > 10 seconds
-      message: 'Processing time exceeded 10 seconds',
+      message: 'Processing time exceeded 10 seconds',;
       severity: 'warning'
     });
 
@@ -342,7 +342,7 @@ class MonitoringService extends EventEmitter {
     this.alerts.push({
       name: 'low_confidence',
       condition: (metrics) => metrics.confidence < 0.5,
-      message: 'Low confidence score detected',
+      message: 'Low confidence score detected',;
       severity: 'warning'
     });
 
@@ -350,7 +350,7 @@ class MonitoringService extends EventEmitter {
     this.alerts.push({
       name: 'low_quality',
       condition: (metrics) => metrics.qualityScore < 0.6,
-      message: 'Low quality score detected',
+      message: 'Low quality score detected',;
       severity: 'info'
     });
 
@@ -358,7 +358,7 @@ class MonitoringService extends EventEmitter {
     this.alerts.push({
       name: 'no_sources',
       condition: (metrics) => metrics.sourceCount === 0,
-      message: 'No sources found for query',
+      message: 'No sources found for query',;
       severity: 'warning'
     });
   }
@@ -370,7 +370,7 @@ class MonitoringService extends EventEmitter {
           name: alert.name,
           severity: alert.severity,
           message: alert.message,
-          context: metrics,
+          context: metrics,;
           timestamp: new Date()
         });
 
@@ -389,7 +389,7 @@ class MonitoringService extends EventEmitter {
 
         if (!healthy) {
           this.emit('health:unhealthy', {
-            component: name,
+            component: name,;
             timestamp: new Date()
           });
         }
@@ -400,7 +400,7 @@ class MonitoringService extends EventEmitter {
     }
 
     this.emit('health:check', {
-      results: Object.fromEntries(results),
+      results: Object.fromEntries(results),;
       timestamp: new Date()
     });
   }
@@ -472,7 +472,7 @@ class MonitoringService extends EventEmitter {
     });
 
     // Log summary;
-    logger.info('[Monitoring] Metrics summary:', {
+    logger.info('[Monitoring] Metrics summary:', {;
       requests: this.counters.totalRequests,
       successRate: (stats as any).rates?.successRate,
       cacheHitRate: (stats as any).rates?.cacheHitRate,
@@ -510,7 +510,7 @@ class MonitoringService extends EventEmitter {
    * Record a metric value
    */
   async recordMetric(
-    metric: string,
+    metric: string,;
     value: number,
     labels?: Record<string, string>;
   ): Promise<void> {
@@ -520,7 +520,7 @@ class MonitoringService extends EventEmitter {
       type: 'metric',
       source: labels?.source || 'system',
       level: 'info',
-      category: 'metric',
+      category: 'metric',;
       data: {
         metric,
         value,
@@ -555,7 +555,7 @@ class MonitoringService extends EventEmitter {
               requestId: key,
               processingTime: value,
               confidence: 0.8,
-              sourceCount: 1,
+              sourceCount: 1,;
               strategies: ['default'],
               qualityScore: 0.7
             } as MetricData);

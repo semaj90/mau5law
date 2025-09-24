@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 // TypeScript Error Optimizer API - Production Integration
 // Integrates with enhanced Go service for GPU-accelerated TypeScript error processing
@@ -9,45 +9,45 @@ import type {
 	AutoSolveResponse,
 	OptimizedFixRequest,
 	OptimizedFixResponse 
-} from '$lib/types/typescript-optimizer';
+} from '$lib/types/typescript-optimizer'
 
-const ENHANCED_API_BASE_URL = 'http://localhost:8094';
+const ENHANCED_API_BASE_URL = 'http://localhost:8094'
 
-/* POST /api/v1/typescript-optimizer - Auto-solve TypeScript errors */;
+/* POST /api/v1/typescript-optimizer - Auto-solve TypeScript errors */
 export const POST: RequestHandler = async ({ request }) => {
 	try {
-		const body = await request.json() as AutoSolveRequest;
+		const body = await request.json() as AutoSolveRequest
 
-		// Validate request;
+		// Validate request
 		if (!body.errors || !Array.isArray(body.errors)) {
 			return json({ 
-				success: false, 
+				success: false,
 				error: 'Invalid request: errors array required' 
-			}, { status: 400 });
+			}, { status: 400 })
 		}
 
 		// Route to appropriate endpoint based on strategy
-		const endpoint = determineEndpoint(body);
-		const apiUrl = `${ENHANCED_API_BASE_URL}${endpoint}`;
+		const endpoint = determineEndpoint(body)
+		const apiUrl = `${ENHANCED_API_BASE_URL}${endpoint}`
 
-		console.log(`🔧 TypeScript Optimizer: Processing ${body.errors.length} errors via ${endpoint}`);
+		console.log(`🔧 TypeScript Optimizer: Processing ${body.errors.length} errors via ${endpoint}`)
 
-		// Forward request to Go service;
+		// Forward request to Go service
 		const response = await fetch(apiUrl, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(body)
-		});
+		})
 
 		if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-			throw new Error(`Go service responded with ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
+			throw new Error(`Go service responded with ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`)
 		}
 
-		const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json() as AutoSolveResponse;
+		const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json() as AutoSolveResponse
 
-		// Enhance response with metadata;
+		// Enhance response with metadata
 		const enhancedResult = {
 			...result,
 			metadata: {
@@ -58,34 +58,34 @@ export const POST: RequestHandler = async ({ request }) => {
 				sveltekit_integration: true,
 				performance_tier: getPerformanceTier(body.errors.length)
 			}
-		};
+		}
 
-		console.log(`✅ TypeScript Optimizer: ${(result as { metadata?: any; fixes_applied?: any; remaining_errors?: any }).fixes_applied} fixes applied, ${(result as { metadata?: any; fixes_applied?: any; remaining_errors?: any }).remaining_errors} remaining`);
+		console.log(`✅ TypeScript Optimizer: ${(result as { metadata?: any; fixes_applied?: any; remaining_errors?: any }).fixes_applied} fixes applied, ${(result as { metadata?: any; fixes_applied?: any; remaining_errors?: any }).remaining_errors} remaining`)
 
-		return json(enhancedResult);
+		return json(enhancedResult)
 
 	} catch (error: any) {
-		console.error('TypeScript Optimizer Error:', error);
+		console.error('TypeScript Optimizer Error:', error)
 		
 		return json({
 			success: false,
 			error: 'Internal server error during TypeScript optimization',
 			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString()
-		}, { status: 500 });
+		}, { status: 500 })
 	}
-};
+}
 
-/* GET /api/v1/typescript-optimizer - Get optimizer status */;
+/* GET /api/v1/typescript-optimizer - Get optimizer status */
 export const GET: RequestHandler = async () => {
 	try {
 		// Check Go service health
-		const healthResponse = await fetch(`${ENHANCED_API_BASE_URL}/api/health`);
-		const healthData = healthResponse.ok ? await healthResponse.json() : null;
+		const healthResponse = await fetch(`${ENHANCED_API_BASE_URL}/api/health`)
+		const healthData = healthResponse.ok ? await healthResponse.json() : null
 
 		// Get optimizer performance stats
-		const performanceResponse = await fetch(`${ENHANCED_API_BASE_URL}/api/optimized/performance`);
-		const performanceData = performanceResponse.ok ? await performanceResponse.json() : null;
+		const performanceResponse = await fetch(`${ENHANCED_API_BASE_URL}/api/optimized/performance`)
+		const performanceData = performanceResponse.ok ? await performanceResponse.json() : null
 
 		return json({
 			service: 'TypeScript Error Optimizer',
@@ -119,7 +119,7 @@ export const GET: RequestHandler = async () => {
 				gpu_accelerated: '/api/v1/typescript-optimizer/gpu',
 				benchmark: '/api/v1/typescript-optimizer/benchmark'
 			}
-		});
+		})
 
 	} catch (error: any) {
 		return json({
@@ -128,36 +128,36 @@ export const GET: RequestHandler = async () => {
 			error: 'Unable to connect to Go service',
 			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString()
-		}, { status: 503 });
+		}, { status: 503 })
 	}
-};
+}
 
 // Helper functions
 
 function determineEndpoint(request: AutoSolveRequest): string {
-	const errorCount = request.errors.length;
-	const strategy = request.strategy?.toLowerCase() || 'auto';
+	const errorCount = request.errors.length
+	const strategy = request.strategy?.toLowerCase() || 'auto'
 
-	// Route to optimal endpoint based on request characteristics;
+	// Route to optimal endpoint based on request characteristics
 	if (strategy === 'gpu_first' || errorCount >= 20) {
-		return '/api/gpu/batch-process';
+		return '/api/gpu/batch-process'
 	}
 	
 	if (strategy === 'optimized' || errorCount >= 5) {
-		return '/api/optimized/auto-solve';
+		return '/api/optimized/auto-solve'
 	}
 	
 	if (request.use_thinking || strategy === 'llama_thinking') {
-		return '/api/go-llama/batch';
+		return '/api/go-llama/batch'
 	}
 	
 	// Default to enhanced auto-solver
-	return '/api/auto-solve';
+	return '/api/auto-solve'
 }
 
 function getPerformanceTier(errorCount: number): string {
-	if (errorCount >= 50) return 'enterprise';
-	if (errorCount >= 20) return 'professional';
-	if (errorCount >= 5) return 'standard';
-	return 'basic';
+	if (errorCount >= 50) return 'enterprise'
+	if (errorCount >= 20) return 'professional'
+	if (errorCount >= 5) return 'standard'
+	return 'basic'
 }

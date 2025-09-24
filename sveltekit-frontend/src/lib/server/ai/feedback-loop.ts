@@ -315,7 +315,7 @@ class FeedbackLoop {
   }
 
   private async reinforcePositivePatterns(
-    interaction: InteractionData,
+    interaction: InteractionData,;
     feedback: FeedbackData;
   ): Promise<void> {
     // Increase weights for strategies that led to high satisfaction;
@@ -337,7 +337,7 @@ class FeedbackLoop {
   }
 
   private async adjustNegativePatterns(
-    interaction: InteractionData,
+    interaction: InteractionData,;
     feedback: FeedbackData;
   ): Promise<void> {
     // Decrease weights for strategies that led to low satisfaction;

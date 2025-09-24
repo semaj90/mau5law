@@ -297,7 +297,7 @@ export class LegalDocumentBinarySerializer {
         vectorEmbedding: embedding,
         rankingMatrix,
         version,
-        flags,
+        flags,;
         timestamp: Number(timestamp)
       }
     };

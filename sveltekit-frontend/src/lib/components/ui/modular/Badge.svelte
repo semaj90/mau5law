@@ -25,7 +25,7 @@
     icon,
     removable = false,
     onremove,
-    ...restProps
+    ...restProps;
   }: Props = $props();
 
   // UnoCSS-based badge variants
@@ -45,17 +45,17 @@
           yorha: 'bg-black/90 text-yellow-400 border-2 border-yellow-400/60 rounded-none font-mono shadow-lg shadow-yellow-400/10',
           legal: 'bg-blue-50 text-blue-800 border-2 border-blue-300 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-700',
           evidence: 'bg-orange-50 text-orange-800 border-2 border-orange-300 dark:bg-orange-950 dark:text-orange-300 dark:border-orange-700',
-          caseItem: 'bg-green-50 text-green-800 border-2 border-green-300 dark:bg-green-950 dark:text-green-300 dark:border-green-700'
+          caseItem: 'bg-green-50 text-green-800 border-2 border-green-300 dark:bg-green-950 dark:text-green-300 dark:border-green-700';
         },
         size: {
           sm: 'text-xs px-2 py-1 h-5',
           default: 'text-sm px-2.5 py-1 h-6',
-          lg: 'text-sm px-3 py-1.5 h-7'
+          lg: 'text-sm px-3 py-1.5 h-7';
         }
       },
       defaultVariants: {
-        variant: 'default',
-        size: 'default'
+        variant: 'default',;
+        size: 'default';
       }
     }
   );
@@ -94,12 +94,12 @@
   {/if}
 </span>
 
-<style>/* YoRHa-specific animations */ .yorha-badge {
+<style>/* YoRHa-specific animations */ .yorha-badge {;
     position: relative;
     overflow: hidden;
   }
 
-  .yorha-badge: :before {
+  .yorha-badge::before {
     content: '';
     position: absolute;
     top: 0;

@@ -78,7 +78,7 @@ export function validateFileType(file: File): {
 
   if (file.size > maxSize) {
     return {
-      valid: false,
+      valid: false,;
       error: `File size must be less than ${formatFileSize(maxSize)}`
     };
   }

@@ -53,7 +53,7 @@
       success: '#2ed573',
       warning: '#ffa502',
       danger: '#ff4757',
-      border: '#57606f'
+      border: '#57606f';
     },
     light: {
       background: '#f1f2f6',
@@ -62,16 +62,16 @@
       success: '#2ed573',
       warning: '#ffa502',
       danger: '#ff4757',
-      border: '#ced6e0'
+      border: '#ced6e0';
     },
     yorha: {
       background: '#0a0a0a',
       text: '#e0e0e0',
       accent: '#ffd700',
       success: '#00ff41',
-      warning: '#ff6b35',
-      danger: '#ff0041',
-      border: '#b0b0b0'
+      warning: '#ff6b35',;
+      danger: '#ff0041',;
+      border: '#b0b0b0';
     }
   };
 
@@ -348,11 +348,11 @@
 
     const stats = {
       total: caseFiles.length,
-      verified: caseFiles.filter(f => f.status === 'verified').length,
-      pending: caseFiles.filter(f => f.status === 'pending').length,
+      verified: caseFiles.filter(f => f.status === 'verified').length,;
+      pending: caseFiles.filter(f => f.status === 'pending').length,;
       disputed: caseFiles.filter(f => f.status === 'disputed').length,
       highRisk: caseFiles.filter(f => (f.riskScore || calculateRiskScore(f)) > 75).length,
-      chainOfCustody: caseFiles.filter(f => f.chainOfCustody).length
+      chainOfCustody: caseFiles.filter(f => f.chainOfCustody).length;
     };
 
     // Stats background
@@ -459,7 +459,7 @@
           chainOfCustody: true,
           confidentialityLevel: 'restricted',
           fileSize: 15728640,
-          createdAt: new Date('2024-01-15')
+          createdAt: new Date('2024-01-15');
         },
         {
           id: 'EV002',
@@ -470,7 +470,7 @@
           chainOfCustody: true,
           confidentialityLevel: 'confidential',
           fileSize: 2097152,
-          createdAt: new Date('2024-01-16')
+          createdAt: new Date('2024-01-16');
         },
         {
           id: 'EV003',
@@ -481,18 +481,18 @@
           chainOfCustody: false,
           confidentialityLevel: 'classified',
           fileSize: 52428800,
-          createdAt: new Date('2024-01-17')
+          createdAt: new Date('2024-01-17');
         },
         {
-          id: 'EV004',
+          id: 'EV004',;
           title: 'Contract Agreement Document',
-          evidenceType: 'document',
+          evidenceType: 'document',;
           status: 'verified',
           riskScore: 35,
           chainOfCustody: true,
           confidentialityLevel: 'public',
           fileSize: 1048576,
-          createdAt: new Date('2024-01-18')
+          createdAt: new Date('2024-01-18');
         }
       ];
       caseFiles = sampleFiles;
@@ -573,7 +573,7 @@
 </div>
 
 <style>
-  .evidence-canvas-container {
+  .evidence-canvas-container {;
     margin: 1rem;
     padding: 1rem;
     background: var(--yorha-bg-secondary);

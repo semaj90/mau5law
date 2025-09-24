@@ -76,9 +76,9 @@ let cudaCapabilities = $state<CudaCapabilities | null>(null);
 let errorMessage = $state('');
 let gpuMetrics = $state({
   utilization: 0,
-  memory_usage: 0,
+  memory_usage: 0,;
   temperature: 0,
-  active_streams: 0
+  active_streams: 0;
 });
 
 // Performance tracking
@@ -93,8 +93,9 @@ let performanceHistory = $state<Array<{
 
 
 // Load CUDA capabilities on mount
-$effect(async () => {
-  try {
+$effect(() => {
+    (async () => {
+try {
     const response = await fetch('/api/ai/cuda-indexing?operation=capabilities');
     if (response.ok) {
       const data = await response.json();
@@ -109,7 +110,8 @@ $effect(async () => {
   } catch (error) {
     console.error('Failed to load CUDA capabilities:', error);
   }
-});
+    })();
+  });
 
 // Perform CUDA-accelerated search
 async function performSearch() {
@@ -122,11 +124,11 @@ async function performSearch() {
   try {
     // Step 1: Generate embedding for the query
     const embeddingResponse = await fetch('/api/ai/embedding', {
-      method: 'POST',
+      method: 'POST',;
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        text: query,
-        model: 'embeddinggemma:latest'
+        text: query,;
+        model: 'embeddinggemma:latest';
       })
     });
 
@@ -143,12 +145,12 @@ async function performSearch() {
     if (enableGpuAcceleration && searchType === 'semantic') {
       // Use CUDA indexing for semantic search
       const cudaSearchResponse = await fetch('/api/ai/cuda-indexing', {
-        method: 'PATCH',
+        method: 'PATCH',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query_vector: queryVector,
           k: maxResults,
-          index_type: 'hnsw',
+          index_type: 'hnsw',;
           config: {
             legal_domain: legalDomain,
             use_simd: enableSIMD
@@ -164,13 +166,13 @@ async function performSearch() {
           id: `cuda_result_${index}`,
           title: `Legal Document ${index + 1}`,
           content: 'Document content would be loaded from database...',
-          score: cudaResults.distances?.[0]?.[index] || 0.5,
+          score: cudaResults.distances?.[0]?.[index] || 0.5,;
           metadata: {
             document_type: 'contract',
             jurisdiction: 'federal',
             date: new Date().toISOString.split('T')[0],
-            legal_domain: legalDomain
-          },
+            legal_domain: legalDomain;
+          },;
           performance: {
             gpu_accelerated: true,
             search_time_ms: cudaResults.stats?.search_time_ms || 0,
@@ -182,9 +184,9 @@ async function performSearch() {
         if (cudaResults.stats) {
           gpuMetrics = {
             utilization: cudaResults.stats.gpu_utilization || 0,
-            memory_usage: cudaResults.stats.memory_usage_mb || 0,
+            memory_usage: cudaResults.stats.memory_usage_mb || 0,;
             temperature: 65, // Simulated
-            active_streams: 1
+            active_streams: 1;
           };
         }
       }
@@ -193,14 +195,14 @@ async function performSearch() {
     // Fallback: Use enhanced legal search
     if (searchResults.length === 0) {
       const fallbackResponse = await fetch('/api/ai/enhanced-legal-search', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: query,
+          query: query,;
           limit: maxResults,
           legal_domain: legalDomain,
           search_type: searchType,
-          use_embeddings: true
+          use_embeddings: true;
         })
       });
 
@@ -211,13 +213,13 @@ async function performSearch() {
           id: result.id || `fallback_${index}`,
           title: result.title || `Document ${index + 1}`,
           content: result.content || result.summary || 'No content available',
-          score: result.score || 0.5,
+          score: result.score || 0.5,;
           metadata: {
             document_type: result.document_type || 'unknown',
             jurisdiction: result.jurisdiction || 'unknown',
             date: result.date || new Date().toISOString.split('T')[0],
-            legal_domain: result.legal_domain || legalDomain
-          },
+            legal_domain: result.legal_domain || legalDomain;
+          },;
           performance: {
             gpu_accelerated: false,
             search_time_ms: fallbackData.search_time_ms || 0,
@@ -236,7 +238,7 @@ async function performSearch() {
       search_time_ms: totalSearchTime,
       gpu_utilization: gpuMetrics.utilization,
       query_length: query.length,
-      results_count: searchResults.length
+      results_count: searchResults.length;
     });
 
     // Keep only last 10 searches
@@ -255,7 +257,7 @@ async function performSearch() {
       query,
       results: searchResults,
       searchTime: totalSearchTime,
-      gpuAccelerated: enableGpuAcceleration
+      gpuAccelerated: enableGpuAcceleration;
     });
 
   } catch (error) {

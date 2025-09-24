@@ -75,7 +75,7 @@ export class AdvisoryLockService {
   async acquireLock(
     entityType: LockType,
     entityId: string,
-    mode: LockMode = LOCK_MODES.EXCLUSIVE,
+    mode: LockMode = LOCK_MODES.EXCLUSIVE,;
     options: LockOptions = {}
   ): Promise<LockInfo | null> {
     const lockKey = `${entityType}:${entityId}:${mode}`;
@@ -191,7 +191,7 @@ export class AdvisoryLockService {
     entityType: LockType,
     entityId: string,
     fn: () => Promise<T>,
-    mode: LockMode = LOCK_MODES.EXCLUSIVE,
+    mode: LockMode = LOCK_MODES.EXCLUSIVE,;
     options: LockOptions = {}
   ): Promise<T> {
     const lock = await this.acquireLock(entityType, entityId, mode, options);

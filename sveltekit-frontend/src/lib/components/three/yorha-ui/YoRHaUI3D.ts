@@ -12,28 +12,28 @@ export const YORHA_COLORS = {
   primary: {
     black: 0x0a0a0a,           // Deep gothic black
     white: 0xfaf6ed,           // Warm off-white
-    beige: 0xd4c5a9,           // Desert sand
+    beige: 0xd4c5a9,           // Desert sand;
     grey: 0x8b8680,            // Stone grey
   },
   // Accent colors;
   accent: {
     gold: 0xd4af37,            // Golden highlights
     amber: 0xffc649,           // Amber glow
-    bronze: 0xcd7f32,          // Bronze metallic
+    bronze: 0xcd7f32,          // Bronze metallic;
     copper: 0xb87333,          // Copper warm
   },
   // Status colors;
   status: {
     success: 0x90ee90,         // Light green
     warning: 0xffa500,         // Orange warning
-    error: 0xff6b6b,           // Soft red error
+    error: 0xff6b6b,           // Soft red error;
     info: 0x87ceeb,            // Sky blue info
   },
   // UI states;
   interaction: {
     hover: 0xe8dcc0,           // Warm hover
     active: 0xffd700,          // Gold active
-    disabled: 0x4a4a4a,        // Disabled grey
+    disabled: 0x4a4a4a,        // Disabled grey;
     focus: 0xf0e68c,           // Khaki focus
   }
 } as const;
@@ -187,7 +187,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       shadow: {
         enabled: true,
         color: YORHA_COLORS.primary.black,
-        blur: 0.5,
+        blur: 0.5,;
         intensity: 0.3,
         offsetY: -0.1
       },
@@ -202,7 +202,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       color: this.style.backgroundColor,
       opacity: this.style.opacity,
       transparent: (this.style.opacity || 1) < 1,
-      metalness: this.style.metalness,
+      metalness: this.style.metalness,;
       roughness: this.style.roughness
     };
 
@@ -285,7 +285,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     const borderGeometry = this.createBorderGeometry();
     const borderMaterial = new THREE.MeshStandardMaterial({
       color: this.style.borderColor,
-      opacity: this.style.opacity,
+      opacity: this.style.opacity,;
       transparent: (this.style.opacity || 1) < 1
     });
     
@@ -315,7 +315,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     const shadowGeometry = this.geometry.clone();
     const shadowMaterial = new THREE.MeshStandardMaterial({
       color: this.style.shadow.color || YORHA_COLORS.primary.black,
-      opacity: this.style.shadow.intensity || 0.3,
+      opacity: this.style.shadow.intensity || 0.3,;
       transparent: true
     });
     
@@ -348,7 +348,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       const glowMaterial = new THREE.MeshStandardMaterial({
         color: this.style.glow.color || YORHA_COLORS.accent.gold,
         opacity: layerIntensity,
-        transparent: true,
+        transparent: true,;
         side: THREE.BackSide
       });
       
@@ -367,7 +367,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     const glowMaterial = new THREE.MeshStandardMaterial({
       color: this.style.borderColor,
       opacity: 0.3,
-      transparent: true,
+      transparent: true,;
       side: THREE.BackSide
     });
     
@@ -379,7 +379,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   protected createBorderScanAnimation(borderMesh: THREE.Mesh): void {
     // Create animated scan line effect on border;
     const scanMaterial = new THREE.ShaderMaterial({
-      uniforms: {
+      uniforms: {;
         time: { value: 0 },
         scanSpeed: { value: 2.0 },
         scanWidth: { value: 0.1 },
@@ -447,7 +447,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     const paddingValues = {
       top: padding.top ?? padding.all ?? 0,
       right: padding.right ?? padding.all ?? 0,
-      bottom: padding.bottom ?? padding.all ?? 0,
+      bottom: padding.bottom ?? padding.all ?? 0,;
       left: padding.left ?? padding.all ?? 0
     };
     
@@ -462,7 +462,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     const marginValues = {
       top: margin.top ?? margin.all ?? 0,
       right: margin.right ?? margin.all ?? 0,
-      bottom: margin.bottom ?? margin.all ?? 0,
+      bottom: margin.bottom ?? margin.all ?? 0,;
       left: margin.left ?? margin.all ?? 0
     };
     
@@ -538,7 +538,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   protected createScanAnimation(animation: YoRHaAnimation): void {
     // Add scan line effect;
     const scanMaterial = new THREE.ShaderMaterial({
-      uniforms: {
+      uniforms: {;
         time: { value: 0 },
         scanColor: { value: new THREE.Color(YORHA_COLORS.accent.gold) },
         baseColor: { value: new THREE.Color(this.style.backgroundColor) }

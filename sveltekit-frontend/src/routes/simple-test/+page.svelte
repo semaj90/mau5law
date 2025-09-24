@@ -8,9 +8,9 @@ let isSubmitting = $state(false);
 let submitResult = $state('');
 let formData = $state({
     caseNumber: '',
-    title: '',
-    description: '',
-    priority: 'medium'
+    title: '',;
+    description: '',;
+    priority: 'medium';
 });
 
 async function handleSubmit(event: Event) {
@@ -20,11 +20,11 @@ async function handleSubmit(event: Event) {
 
     try {
       const response = await fetch('/api/test-case', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
+        },;
+        body: JSON.stringify(formData);
       });
 
       const result = await (response as { json?: unknown; ok?: unknown }).json();

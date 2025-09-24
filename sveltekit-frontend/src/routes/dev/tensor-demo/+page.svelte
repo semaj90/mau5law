@@ -42,11 +42,11 @@
     <div class="grid grid-cols-2 gap-4">
       <div>
         <h3 class="font-semibold mb-2">Embedding</h3>
-        <pre class="text-xs max-h-48 overflow-auto">{JSON.stringify.embedding?.slice?.(0, 16))} … ({(result as { embedding?: unknown; tensorMeta?: unknown }).embedding?.length})</pre>
+        <pre class="text-xs max-h-48 overflow-auto">{JSON.stringify(embedding)?.slice?.(0, 16))} … ({(result as { embedding?: unknown; tensorMeta?: unknown }).embedding?.length})</pre>
       </div>
       <div>
         <h3 class="font-semibold mb-2">SIMD Meta</h3>
-        <pre class="text-xs">{JSON.stringify.tensorMeta, null, 2)}</pre>
+        <pre class="text-xs">{JSON.stringify(tensorMeta), null, 2)}</pre>
       </div>
     </div>
   {/if}

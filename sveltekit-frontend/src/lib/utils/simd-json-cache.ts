@@ -232,7 +232,7 @@ class SIMDJSONCache {
       // Check Redis cache
       const response = await fetch('/api/cache/get', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ key })
       });
 
@@ -245,7 +245,7 @@ class SIMDJSONCache {
           // Store in memory cache
           this.cache.set(key, {
             data: parsed,
-            timestamp: Date.now(),
+            timestamp: Date.now(),;
             ttl: this.config.defaultTTL
           });
 
@@ -280,7 +280,7 @@ class SIMDJSONCache {
         body: JSON.stringify({
           key,
           data: compressed,
-          ttl,
+          ttl,;
           compressed: this.config.compressionEnabled
         })
       });
@@ -433,7 +433,7 @@ class SIMDJSONCache {
       }
     } catch (error) {
       return {
-        valid: false,
+        valid: false,;
         error: error instanceof Error ? error.message : 'Invalid JSON'
       };
     }
@@ -484,7 +484,7 @@ class SIMDJSONCache {
 
     return {
       loaded: this.simdLoaded,
-      available: this.simdModule !== null,
+      available: this.simdModule !== null,;
       performance: simdPerformance
     };
   }

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script lang="ts">
@@ -10,15 +10,15 @@ https://svelte.dev/e/js_parse_error -->
 </script>` element
 https://svelte.dev/e/script_duplicate -->
 <script lang="ts">
-  
+
   let query = $state('contract liability terms'
   let results: unknown[] = []
   let wsMsg = ''
 
   async function runSearch() {
     const res = await fetch('/api/ai/vector-search', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST',;
+      headers: { 'Content-Type': 'application/json' },;
       body: JSON.stringify({ query, model: 'gemma', limit: 5 })
     })
     results = await res.json()
@@ -59,7 +59,7 @@ https://svelte.dev/e/script_duplicate -->
   </style>
   <script lang="ts">
 </script>
-  
+
 
   interface SearchResult {
     id: string;
@@ -117,16 +117,16 @@ https://svelte.dev/e/script_duplicate -->
 
     try {
       const response = await fetch('/api/ai/vector-search', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
+        body: JSON.stringify({;
           query: query.trim(),
           model,
           threshold,
           limit,
-          caseId: caseId.trim() || undefined
+          caseId: caseId.trim() || undefined;
         })
       });
 
@@ -147,20 +147,20 @@ https://svelte.dev/e/script_duplicate -->
     try {
       const sampleDoc = {
         documentId: 'demo-doc-' + Date.now(),
-        content: 'This is a sample legal document containing contract liability terms and clauses. It discusses legal obligations, breach of contract scenarios, and damages.',
+        content: 'This is a sample legal document containing contract liability terms and clauses. It discusses legal obligations, breach of contract scenarios, and damages.',;
         filename: 'sample-contract.pdf',
         caseId: 'demo-case-001',
         documentType: 'contract',
         generateSummary: true,
-        extractKeywords: true
+        extractKeywords: true;
       };
 
       const response = await fetch('/api/ai/vector-search/index', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(sampleDoc)
+        },;
+        body: JSON.stringify(sampleDoc);
       });
 
       if (response.ok) {
@@ -356,7 +356,7 @@ https://svelte.dev/e/script_duplicate -->
 </div>
 
 <style>
-  .vector-search-demo {
+  .vector-search-demo {;
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
@@ -523,7 +523,7 @@ https://svelte.dev/e/script_duplicate -->
 
   .metadata-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 0.5rem;
     margin-top: 0.5rem;
   }

@@ -5,7 +5,7 @@
 }
 
 export interface RabbitMQConfig {
-  connection: {
+  connection: {;
     protocol: 'amqp' | 'amqps';
     hostname: string;
     port: number;
@@ -16,7 +16,7 @@ export interface RabbitMQConfig {
     connection_timeout?: number;
     channel_max?: number;
   };
-  exchanges: {
+  exchanges: {;
     name: string;
     type: 'direct' | 'topic' | 'fanout' | 'headers';
     options?: {
@@ -24,7 +24,7 @@ export interface RabbitMQConfig {
       autoDelete?: boolean;
     };
   }[];
-  queues: {
+  queues: {;
     name: string;
     routingKey?: string;
     exchange?: string;
@@ -124,7 +124,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
     heartbeat: 60,
     connection_timeout: 10000,
     channel_max: 100
-  },
+  },;
   exchanges: [;
     {
       name: EXCHANGES.LEGAL_AI_MAIN,
@@ -142,7 +142,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
         autoDelete: false
       }
     }
-  ],
+  ],;
   queues: [
     // Document processing queues;
     {
@@ -175,7 +175,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
       name: QUEUES.DOCUMENT_ANALYSIS,
       routingKey: ROUTING_KEYS.ANALYZE_DOCUMENT,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
-      options: {
+      options: {;
         durable: true,
         autoDelete: false,
         messageTtl: 1200000, // 20 minutes (AI processing can be slow)
@@ -203,7 +203,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
       name: QUEUES.CASE_SIMILARITY,
       routingKey: ROUTING_KEYS.FIND_SIMILAR_CASES,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
-      options: {
+      options: {;
         durable: true,
         autoDelete: false,
         messageTtl: 180000, // 3 minutes
@@ -244,7 +244,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
       name: QUEUES.AI_CLASSIFICATION,
       routingKey: ROUTING_KEYS.CLASSIFY_DOCUMENT,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
-      options: {
+      options: {;
         durable: true,
         autoDelete: false,
         messageTtl: 300000, // 5 minutes
@@ -259,7 +259,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
       name: QUEUES.VECTOR_SEARCH_UPDATE,
       routingKey: ROUTING_KEYS.VECTOR_SEARCH,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
-      options: {
+      options: {;
         durable: true,
         autoDelete: false,
         messageTtl: 120000, // 2 minutes
@@ -283,7 +283,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({
       name: QUEUES.RETRY,
       routingKey: ROUTING_KEYS.RETRY_FAILED_JOB,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
-      options: {
+      options: {;
         durable: true,
         autoDelete: false,
         messageTtl: 300000, // 5 minutes
@@ -372,6 +372,6 @@ export const getRabbitMQConnectionURL = (): string => {
 // Health check configuration;
 export const HEALTH_CHECK = {
   interval: 30000, // 30 seconds
-  timeout: 5000,   // 5 seconds
+  timeout: 5000,   // 5 seconds;
   retries: 3
 } as const;

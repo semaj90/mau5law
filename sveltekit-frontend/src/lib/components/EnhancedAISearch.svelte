@@ -27,7 +27,7 @@
     practiceArea = "contract_law",
     jurisdiction = "US",
     onResults,
-    class: className = "",
+    class: className = "",;
   }: Props = $props();
 
   // Reactive state
@@ -47,7 +47,7 @@
     useCache: true,
     useGPU: true,
     ragMode: "enhanced",
-    includeContext: true,
+    includeContext: true,;
   });
 
   // Practice areas options with proper mapping
@@ -121,7 +121,7 @@
       const searchResults = await enhancedAiPipeline.semanticSearch(query, {
         ...searchOptions,
         practiceArea: selectedPracticeArea,
-        jurisdiction: selectedJurisdiction,
+        jurisdiction: selectedJurisdiction,;
       });
 
       const endTime = performance.now();
@@ -199,7 +199,7 @@
           keydown={handleKeydown}
           placeholder="Search legal documents with AI..."
           class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600
-                 bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                 bg-white dark:bg-gray-800 text-gray-900 dark:text-white;
                  focus:ring-2 focus:ring-blue-500 focus:border-transparent
                  placeholder-gray-500 dark:placeholder-gray-400"
           disabled={loading}
@@ -217,7 +217,7 @@
       <Button.Root
         onclick={performSearch}
         disabled={loading || !query.trim()}
-        class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg
+        class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg;
                disabled:opacity-50 disabled:cursor-not-allowed
                flex items-center gap-2 bits-btn bits-btn"
       >
@@ -484,7 +484,7 @@
 </div>
 
 <style>
-  .line-clamp-3 {
+  .line-clamp-3 {;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;

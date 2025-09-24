@@ -24,7 +24,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     loadingText = 'Loading chart...',
     errorText = 'Failed to load chart',
     // Component state binding
-    lazyState = $bindable() as LazyComponentState | undefined
+    lazyState = $bindable() as LazyComponentState | undefined;
   } = $props();
 
   // Dynamic import for chart library
@@ -46,7 +46,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
           // Mock component for now - replace with actual chart import
           chartComponent = {
             // This would be your actual chart component
-            component: null,
+            component: null,;
             props: { data, config, height, width }
           };
           break;
@@ -71,8 +71,8 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
   function generatePlaceholderBars() {
     const barCount = Math.min(data.length || 5, 10);
     return Array.from({ length: barCount }, (_, i) => ({
-      height: Math.random() * 60 + 20, // 20-80% height
-      delay: i * 0.1 // Staggered animation
+      height: Math.random() * 60 + 20, // 20-80% height;
+      delay: i * 0.1 // Staggered animation;
     }));
   }
 
@@ -186,7 +186,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
 </LazyLoader>
 
 <style>
-  .lazy-chart-container {
+  .lazy-chart-container {;
     position: relative;
     background: rgba(0, 0, 0, 0.02);
     border-radius: 8px;

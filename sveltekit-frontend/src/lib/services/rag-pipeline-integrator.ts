@@ -72,7 +72,7 @@ export class RAGPipelineIntegrator {
   }
 
   async processRAGQuery(
-    query: string,
+    query: string,;
     documents: LegalDocument[],
     request?: Partial<SummaryRequest>;
   ): Promise<RAGPipelineResult> {
@@ -108,7 +108,7 @@ export class RAGPipelineIntegrator {
         title: doc.title,
         content: doc.content,
         summary: doc.summary,
-        excerpt: doc.excerpt,
+        excerpt: doc.excerpt,;
         metadata: doc.metadata
       });
 
@@ -155,7 +155,7 @@ export class RAGPipelineIntegrator {
           summaryGenerated,
           rerankingApplied,
           cacheHit: false
-        },
+        },;
         confidence: this.calculateOverallConfidence(rerankedResults, summaryGenerated)
       };
 
@@ -194,14 +194,14 @@ export class RAGPipelineIntegrator {
           summaryGenerated: false,
           rerankingApplied: false,
           cacheHit: false
-        },
+        },;
         confidence: 0.3
       };
     }
   }
 
   async processRAGQueryStreaming(
-    query: string,
+    query: string,;
     documents: LegalDocument[],
     request?: Partial<SummaryRequest>;
   ): Promise<ReadableStream<string> {
@@ -227,7 +227,7 @@ export class RAGPipelineIntegrator {
             progress: 0,
             documents: documents.slice(0, this.config.maxDocuments),
             rerankedResults: [],
-            summary: '',
+            summary: '',;
             metadata: {
               processingTime: 0,
               documentsProcessed: 0,
@@ -241,7 +241,7 @@ export class RAGPipelineIntegrator {
           // Send initial state;
           controller.enqueue(JSON.stringify({
               type: 'progress',
-              data: progress,
+              data: progress,;
               timestamp: Date.now()
             }) + '\n'
           );
@@ -252,7 +252,7 @@ export class RAGPipelineIntegrator {
             progress.progress = 20;
             controller.enqueue(JSON.stringify({
                 type: 'progress',
-                data: progress,
+                data: progress,;
                 timestamp: Date.now()
               }) + '\n'
             );
@@ -266,7 +266,7 @@ export class RAGPipelineIntegrator {
           progress.progress = 40;
           controller.enqueue(JSON.stringify({
               type: 'progress',
-              data: progress,
+              data: progress,;
               timestamp: Date.now()
             }) + '\n'
           );
@@ -279,7 +279,7 @@ export class RAGPipelineIntegrator {
             title: doc.title,
             content: doc.content,
             summary: doc.summary,
-            excerpt: doc.excerpt,
+            excerpt: doc.excerpt,;
             metadata: doc.metadata
           });
 
@@ -289,7 +289,7 @@ export class RAGPipelineIntegrator {
             progress.progress = 60;
             controller.enqueue(JSON.stringify({
                 type: 'progress',
-                data: progress,
+                data: progress,;
                 timestamp: Date.now()
               }) + '\n'
             );
@@ -306,7 +306,7 @@ export class RAGPipelineIntegrator {
             progress.progress = 80;
             controller.enqueue(JSON.stringify({
                 type: 'progress',
-                data: progress,
+                data: progress,;
                 timestamp: Date.now()
               }) + '\n'
             );
@@ -331,7 +331,7 @@ export class RAGPipelineIntegrator {
 
           controller.enqueue(JSON.stringify({
               type: 'complete',
-              data: progress,
+              data: progress,;
               timestamp: Date.now()
             }) + '\n'
           );
@@ -350,7 +350,7 @@ export class RAGPipelineIntegrator {
 
       return documents.map((doc) => ({
         ...doc,
-        content: splitSentencesEnhanced(doc.content).join(' '),
+        content: splitSentencesEnhanced(doc.content).join(' '),;
         metadata: {
           ...doc.metadata,
           sentenceSplittingApplied: true,
@@ -380,7 +380,7 @@ export class RAGPipelineIntegrator {
   }
 
   private async generateMMRSummary(
-    query: string,
+    query: string,;
     documents: LegalDocument[],
     request?: Partial<SummaryRequest>;
   ): Promise<any> {
@@ -463,7 +463,7 @@ export class RAGPipelineIntegrator {
 
   getCacheStats(): { size: number; keys: string[] } {
     return {
-      size: this.resultCache.size,
+      size: this.resultCache.size,;
       keys: Array.from(this.resultCache.keys()).slice(0, 10)
     };
   }
@@ -471,7 +471,7 @@ export class RAGPipelineIntegrator {
 
 // Convenience functions
 export async function processLegalQuery(
-  query: string,
+  query: string,;
   documents: LegalDocument[],
   config?: Partial<RAGPipelineConfig>;
 ): Promise<RAGPipelineResult> {
@@ -480,7 +480,7 @@ export async function processLegalQuery(
 }
 
 export async function processLegalQueryStreaming(
-  query: string,
+  query: string,;
   documents: LegalDocument[],
   config?: Partial<RAGPipelineConfig>;
 ): Promise<ReadableStream<string> {
@@ -505,7 +505,7 @@ export async function testRAGPipelineIntegration(): Promise<boolean> {
         id: 'doc2',
         title: 'Employment Termination',
         content:
-          'Employment contracts may be terminated with proper notice. Wrongful termination claims require proof.',
+          'Employment contracts may be terminated with proper notice. Wrongful termination claims require proof.',;
         type: 'legal',
         createdAt: new Date(),
         updatedAt: new Date()

@@ -11,7 +11,7 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
   // System status and metrics stores
   const systemStatus = writable({
     status: 'unknown',
-    services: ,
+    services: ,;
     metrics: {
       totalProcessed: 0,
       gpuProcessed: 0, 
@@ -21,8 +21,8 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
       errorRate: 0
     },
     activeJobs: { gpu: 0, cpu: 0 },
-    uptime: 0,
-    version: '2.0.0'
+    uptime: 0,;
+    version: '2.0.0';
   });
   const processingResults = writable([]);
   const isProcessing = writable(false);
@@ -53,13 +53,13 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
     2. COMPENSATION: Payment terms as specified herein
     3. CONFIDENTIALITY: All information shall remain confidential
     4. TERMINATION: This agreement may be terminated with 30 days notice
-    This document demonstrates the integration of GPU-accelerated processing with the standard production pipeline.`,
+    This document demonstrates the integration of GPU-accelerated processing with the standard production pipeline.`,;
     metadata: {
       document_type: 'contract',
-      court_level: 'appellate',
+      court_level: 'appellate',;
       jurisdiction: 'federal',
       practice_areas: ['contract', 'commercial'],
-      estimated_complexity: 'medium'
+      estimated_complexity: 'medium';
     },
     createdAt: new Date().toISOString()
   });
@@ -67,13 +67,15 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
   let processingOptions = $state({
     priority: 0.8,
     forceGPU: false,
-    batchMode: false,
+    batchMode: false,;
     query: { query: 'legal contract analysis', keywords: ['contract', 'agreement'] }
   });
-  $effect(async () => {
-    await refreshSystemStatus();
+  $effect(() => {
+    (async () => {
+await refreshSystemStatus();
     // Start periodic status updates
     statusInterval = setInterval(refreshSystemStatus, 5000);
+    })();
   });
   onDestroy(() => {
     if (statusInterval) {
@@ -95,11 +97,11 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
     isProcessing.set(true);
     try {
       const response = await fetch('/api/unified/process', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          document: testDocument,
-          options: processingOptions
+          document: testDocument,;
+          options: processingOptions;
         })
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -107,8 +109,8 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
         if ((data as { success?: unknown; result?: unknown; document_type?: unknown; court_level?: unknown; gpuUtilization?: unknown }).success) {
           // Add to results
           processingResults.update(results => [{
-            timestamp: Date.now(),
-            document: testDocument,
+            timestamp: Date.now(),;
+            document: testDocument,;
             result: (data as { success?: unknown; result?: unknown; document_type?: unknown; court_level?: unknown; gpuUtilization?: unknown }).result,
             processingTime: (data as { success?: unknown; result?: unknown; document_type?: unknown; court_level?: unknown; gpuUtilization?: unknown }).result.processingTime
           }, ...results.slice(0, 9)]); // Keep last 10 results
@@ -317,7 +319,7 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
           </div>
           
           <button onclick={processDocument} disabled={$isProcessing}
-                  class="w-full py-3 px-4 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 
+                  class="w-full py-3 px-4 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 ;
                          disabled:cursor-not-allowed rounded-lg font-medium transition-colors">
             {#if $isProcessing}
               <div class="flex items-center justify-center">
@@ -419,26 +421,26 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
 </div>
 
 <style>
-  .unified-dashboard {
+  .unified-dashboard {;
     font-family: 'Inter', system-ui, sans-serif;
   }
   
   /* Custom scrollbar for results */
-  .max-h-96: :-webkit-scrollbar {
+  .max-h-96::-webkit-scrollbar {
     width: 6px;
   }
   
-  .max-h-96: :-webkit-scrollbar-track {
+  .max-h-96::-webkit-scrollbar-track {
     background: #374151;
     border-radius: 3px;
   }
   
-  .max-h-96: :-webkit-scrollbar-thumb {
+  .max-h-96::-webkit-scrollbar-thumb {
     background: #6b7280;
     border-radius: 3px;
   }
   
-  .max-h-96: :-webkit-scrollbar-thumb:hover {
+  .max-h-96::-webkit-scrollbar-thumb:hover {
     background: #9ca3af;
   }
 </style>

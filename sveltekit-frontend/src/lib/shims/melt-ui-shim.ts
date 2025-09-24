@@ -8,7 +8,7 @@ function createPrimitive() {
     open: false,
     options: Record<string, any>,
     openModal: () => {},
-    closeModal: () => {},
+    closeModal: () => {},;
     toggle: () => {}
   } as any;
 }

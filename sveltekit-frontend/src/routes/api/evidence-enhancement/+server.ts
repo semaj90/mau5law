@@ -1,19 +1,19 @@
 /// <reference types="vite/client" />
 
-import type { RequestHandler } from './$types.js';
-import { json, error } from '@sveltejs/kit';
-import { ollamaConfig } from '$lib/services/ollama-config-service.js';
-import { ENV_CONFIG } from '$lib/config/environment.js';
+import type { RequestHandler } from './$types.js'
+import { json, error } from '@sveltejs/kit'
+import { ollamaConfig } from '$lib/services/ollama-config-service.js'
+import { ENV_CONFIG } from '$lib/config/environment.js'
 
 /*
  * Evidence Enhancement API
  * Analyzes uploaded evidence and suggests relevant labels and classifications
  */
 
-import { Pool } from "pg";
-import { z } from "zod";
+import { Pool } from "pg"
+import { z } from "zod"
 
-// Configuration;
+// Configuration
 const CONFIG = {
     database: {
         user: import.meta.env.DB_USER || 'postgres',
@@ -35,9 +35,9 @@ const CONFIG = {
         maxSuggestions: 10,
         similarityThreshold: 0.7
     }
-};
+}
 
-// Validation schemas;
+// Validation schemas
 const EvidenceEnhancementRequestSchema = z.object({
     evidence_text: z.string().min(10).max(50000),
     evidence_type: z.enum(['document', 'testimony', 'physical', 'digital', 'audio', 'video']),
@@ -55,7 +55,7 @@ const EvidenceEnhancementRequestSchema = z.object({
         prosecution_analysis: z.boolean().optional(),
         fact_checking: z.boolean().optional()
     }).optional()
-});
+})
 
 const EvidenceEnhancementResponseSchema = z.object({
     analysis: z.object({
@@ -93,44 +93,44 @@ const EvidenceEnhancementResponseSchema = z.object({
         enhancement_version: z.string(),
         data_sources: z.array(z.string()
     })
-});
+})
 
 // Initialize connections
-let db: Pool | null = null;
-let redis: any = null;
+let db: Pool | null = null
+let redis: any = null
 
 function getDB() {
     if (!db) {
-        db = new Pool(CONFIG.database);
+        db = new Pool(CONFIG.database)
     }
-    return db;
+    return db
 }
 
 async function getRedis() {
         if (!redis) {
                 try {
-                    const { createRedisInstance } = await import('$lib/server/redis');
-                    redis = createRedisInstance();
+                    const { createRedisInstance } = await import('$lib/server/redis')
+                    redis = createRedisInstance()
                 } catch {
-                    const RedisCtor = (await import('ioredis')).default;
-                    redis = new RedisCtor(CONFIG.redis.url);
+                    const RedisCtor = (await import('ioredis')).default
+                    redis = new RedisCtor(CONFIG.redis.url)
                 }
         }
-        return redis;
+        return redis
 }
 
 export const POST: RequestHandler = async ({ request }) => {
-  const startTime = Date.now();
+  const startTime = Date.now()
 
   try {
-    const requestData = await request.json();
+    const requestData = await request.json()
 
     // Validate request
-    const validatedRequest = EvidenceEnhancementRequestSchema.parse(requestData);
+    const validatedRequest = EvidenceEnhancementRequestSchema.parse(requestData)
 
-    console.log(`🔍 Enhancing evidence: ${validatedRequest.evidence_type}`);
+    console.log(`🔍 Enhancing evidence: ${validatedRequest.evidence_type}`)
 
-    // Set default enhancement options;
+    // Set default enhancement options
     const options = {
       suggest_labels: true,
       extract_entities: true,
@@ -138,7 +138,7 @@ export const POST: RequestHandler = async ({ request }) => {
       prosecution_analysis: true,
       fact_checking: false,
       ...validatedRequest.enhancement_options
-    };
+    }
 
     // Parallel processing of different enhancement tasks
     const [
@@ -159,19 +159,19 @@ export const POST: RequestHandler = async ({ request }) => {
         ? findSimilarEvidence(validatedRequest.evidence_text, validatedRequest.case_context)
         : Promise.resolve([]),
       options.prosecution_analysis
-        ? analyzeProsecutionValue(validatedRequest.evidence_text, validatedRequest.case_context);
+        ? analyzeProsecutionValue(validatedRequest.evidence_text, validatedRequest.case_context)
         : Promise.resolve({
             strengths: [],
             weaknesses: [],
             recommendations: [],
             precedent_support: 0
           })
-    ]);
+    ])
 
-    // Compile results;
+    // Compile results
     const response = {
       analysis:
-        analysisResult.status === 'fulfilled';
+        analysisResult.status === 'fulfilled'
           ? analysisResult.value:  {
               evidence_type: validatedRequest.evidence_type,
               confidence_score: 0.5,
@@ -183,7 +183,7 @@ export const POST: RequestHandler = async ({ request }) => {
       similar_evidence: similarEvidence.status === 'fulfilled' ? similarEvidence.value : [],
       prosecution_insights:
         prosecutionInsights.status === 'fulfilled'
-          ? prosecutionInsights.value;
+          ? prosecutionInsights.value
           : {
               strengths: [],
               weaknesses: [],
@@ -195,17 +195,17 @@ export const POST: RequestHandler = async ({ request }) => {
         enhancement_version: '2.0.0',
         data_sources: ['legal_documents_processed', 'semantic_phrases_ranking']
       }
-    };
+    }
 
     // Validate response
-    const validatedResponse = EvidenceEnhancementResponseSchema.parse(response);
+    const validatedResponse = EvidenceEnhancementResponseSchema.parse(response)
 
     // Cache results for future reference
-    await cacheEnhancementResults(validatedRequest.evidence_text, validatedResponse);
+    await cacheEnhancementResults(validatedRequest.evidence_text, validatedResponse)
 
-    return json(validatedResponse);
+    return json(validatedResponse)
   } catch (err: any) {
-    console.error('❌ Evidence enhancement error:', err);
+    console.error('❌ Evidence enhancement error:', err)
 
     if (err instanceof z.ZodError) {
       return json({
@@ -213,7 +213,7 @@ export const POST: RequestHandler = async ({ request }) => {
           errors: err.errors
         },)
         { status: 400 }
-      );
+      )
     }
 
     return json({
@@ -221,9 +221,9 @@ export const POST: RequestHandler = async ({ request }) => {
         details: err instanceof Error ? err.message: 'Unknown error'
       },)
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 async function analyzeEvidence(evidenceText: string, evidenceType: string): Promise<any> {
   try {
@@ -233,7 +233,7 @@ async function analyzeEvidence(evidenceText: string, evidenceType: string): Prom
 Evidence Text:
 ${evidenceText}
 
-Analyze and respond with ONLY a JSON object in this format:;
+Analyze and respond with ONLY a JSON object in this format:
 {
   "evidence_type": "${evidenceType}",
   "confidence_score": 0.0-1.0,
@@ -245,7 +245,7 @@ Consider:
 - How clear and compelling is this evidence?
 - What is its potential value for prosecution?
 - How legally relevant is this evidence?
-- Rate the overall quality and reliability`;
+- Rate the overall quality and reliability`
 
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/generate`, {
       method: 'POST',
@@ -259,32 +259,32 @@ Consider:
           top_p: 0.8
         }
       })
-    });
+    })
 
     if (response.ok) {
-      const data = await response.json();
-      const analysisText = data.response.trim();
+      const data = await response.json()
+      const analysisText = data.response.trim()
 
-      const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
+      const jsonMatch = analysisText.match(/\{[\s\S]*\}/)
       if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
+        return JSON.parse(jsonMatch[0])
       }
     }
   } catch (error: any) {
-    console.warn('LLM analysis failed, using fallback:', error);
+    console.warn('LLM analysis failed, using fallback:', error)
   }
 
-  // Fallback analysis;
+  // Fallback analysis
   return {
     evidence_type: evidenceType,
     confidence_score: 0.7,
     prosecution_strength: 65,
     legal_relevance: 0.6
-  };
+  }
 }
 
 async function suggestLabels(evidenceText: string, caseContext?: unknown): Promise<any> {
-  const db = getDB();
+  const db = getDB()
 
   try {
     // Find relevant phrases that match the evidence
@@ -306,17 +306,17 @@ async function suggestLabels(evidenceText: string, caseContext?: unknown): Promi
             LIMIT 20
         `,
       [evidenceText, evidenceText.split(' ').slice(0, 10).join(' ')]
-    );
+    )
 
     // Categorize and score the labels
-    const labels = [];
+    const labels = []
 
     for (const phrase of relevantPhrases.rows) {
-      const category = categorizeLegalPhrase(phrase.phrase);
+      const category = categorizeLegalPhrase(phrase.phrase)
       const confidence = Math.min(
         (phrase.avg_prosecution_score / 100) * phrase.correlation_strength,
         0.95
-      );
+      )
 
       if (confidence >= CONFIG.enhancement.minConfidence) {
         labels.push({
@@ -324,11 +324,11 @@ async function suggestLabels(evidenceText: string, caseContext?: unknown): Promi
           confidence,
           category,
           justification: `High prosecution correlation (${phrase.avg_prosecution_score}%) based on ${phrase.frequency} similar cases`
-        });
+        })
       }
     }
 
-    // Add contextual labels based on case information;
+    // Add contextual labels based on case information
     if (caseContext?.charges) {
       for (const charge of caseContext.charges) {
         labels.push({
@@ -336,21 +336,21 @@ async function suggestLabels(evidenceText: string, caseContext?: unknown): Promi
           confidence: 0.8,
           category: 'charge_support',
           justification: 'Evidence directly relates to stated charges'
-        });
+        })
       }
     }
 
-    return labels.slice(0, CONFIG.enhancement.maxSuggestions);
+    return labels.slice(0, CONFIG.enhancement.maxSuggestions)
   } catch (error: any) {
-    console.error('Label suggestion failed:', error);
-    return [];
+    console.error('Label suggestion failed:', error)
+    return []
   }
 }
 
 async function extractEntities(evidenceText: string): Promise<any> {
   try {
     const entityPrompt = `Extract legal entities from this text. Respond with ONLY a JSON array in this format:
-[;
+[
   {
     "entity": "entity name",
     "type": "PERSON|ORGANIZATION|LOCATION|DATE|STATUTE|CASE_NUMBER|AMOUNT",
@@ -360,7 +360,7 @@ async function extractEntities(evidenceText: string): Promise<any> {
 ]
 
 Text to analyze:
-${evidenceText}`;
+${evidenceText}`
 
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/generate`, {
       method: 'POST',
@@ -374,40 +374,40 @@ ${evidenceText}`;
           top_p: 0.7
         }
       })
-    });
+    })
 
     if (response.ok) {
-      const data = await response.json();
-      const entitiesText = data.response.trim();
+      const data = await response.json()
+      const entitiesText = data.response.trim()
 
-      const jsonMatch = entitiesText.match(/\[[\s\S]*\]/);
+      const jsonMatch = entitiesText.match(/\[[\s\S]*\]/)
       if (jsonMatch) {
-        const entities = JSON.parse(jsonMatch[0]);
-        return entities.filter((e: any) => e.confidence >= 0.5);
+        const entities = JSON.parse(jsonMatch[0])
+        return entities.filter((e: any) => e.confidence >= 0.5)
       }
     }
   } catch (error: any) {
-    console.warn('Entity extraction failed:', error);
+    console.warn('Entity extraction failed:', error)
   }
 
   // Fallback entity extraction using regex patterns
-  return extractEntitiesWithRegex(evidenceText);
+  return extractEntitiesWithRegex(evidenceText)
 }
 
 function extractEntitiesWithRegex(text: string) {
-  const entities = [];
+  const entities = []
 
-  // Common legal entity patterns;
+  // Common legal entity patterns
   const patterns = {
     PERSON: /\b[A-Z][a-z]+ [A-Z][a-z]+\b/g,
     DATE: /\b\d{1,2}\/\d{1,2}\/\d{4}\b|\b\d{4}-\d{2}-\d{2}\b/g,
     AMOUNT: /\$[\d]+(?:\.\d{2})?/g,
     CASE_NUMBER: /\b\d{2,4}-\w{2,4}-\d{4,6}\b/g,
     STATUTE: /\b\d+\s+U\.?S\.?C\.?\s+§?\s*\d+/g
-  };
+  }
 
   for (const [type, pattern] of Object.entries(patterns)) {
-    const matches = text.match(pattern);
+    const matches = text.match(pattern)
     if (matches) {
       for (const match of matches) {
         entities.push({
@@ -415,7 +415,7 @@ function extractEntitiesWithRegex(text: string) {
           type,
           confidence: 0.7,
           context: getContext(text, match)
-        });
+        })
       }
     }
   }
@@ -424,18 +424,18 @@ function extractEntitiesWithRegex(text: string) {
 }
 
 function getContext(text: string, entity: string): string {
-  const index = text.indexOf(entity);
-  const start = Math.max(0, index - 50);
-  const end = Math.min(text.length, index + entity.length + 50);
-  return text.substring(start, end).trim();
+  const index = text.indexOf(entity)
+  const start = Math.max(0, index - 50)
+  const end = Math.min(text.length, index + entity.length + 50)
+  return text.substring(start, end).trim()
 }
 
 async function findSimilarEvidence(evidenceText: string, caseContext?: unknown): Promise<any> {
-  const db = getDB();
+  const db = getDB()
 
   try {
     // Generate embedding for the evidence
-    const embedding = await generateEmbedding(evidenceText);
+    const embedding = await generateEmbedding(evidenceText)
 
     // Find similar documents using vector similarity
     // Note: This is a simplified version - full implementation would use pgvector
@@ -456,30 +456,30 @@ async function findSimilarEvidence(evidenceText: string, caseContext?: unknown):
             LIMIT 20
         `,
       [caseContext?.jurisdiction]
-    );
+    )
 
     // Calculate text similarity (simplified)
-    const similarEvidence = [];
+    const similarEvidence = []
 
     for (const doc of similarDocs.rows) {
-      const similarity = calculateTextSimilarity(evidenceText, doc.text_chunk);
+      const similarity = calculateTextSimilarity(evidenceText, doc.text_chunk)
 
       if (similarity >= CONFIG.enhancement.similarityThreshold) {
-        const phrases = JSON.parse(doc.semantic_phrases || '[]');
+        const phrases = JSON.parse(doc.semantic_phrases || '[]')
 
         similarEvidence.push({
           document_id: doc.document_id,
           similarity_score: similarity,
           relevant_phrases: phrases.slice(0, 5),
           prosecution_outcome: doc.judgement_outcome || 'Unknown'
-        });
+        })
       }
     }
 
-    return similarEvidence.sort((a, b) => b.similarity_score - a.similarity_score).slice(0, 5);
+    return similarEvidence.sort((a, b) => b.similarity_score - a.similarity_score).slice(0, 5)
   } catch (error: any) {
-    console.error('Similar evidence search failed:', error);
-    return [];
+    console.error('Similar evidence search failed:', error)
+    return []
   }
 }
 
@@ -492,7 +492,7 @@ ${evidenceText}
 
 ${caseContext ? `Case Context: ${JSON.stringify(caseContext)}` : ''}
 
-Respond with ONLY a JSON object:;
+Respond with ONLY a JSON object:
 {
   "strengths": ["strength1", "strength2"],
   "weaknesses": ["weakness1", "weakness2"],
@@ -504,7 +504,7 @@ Focus on:
 - What makes this evidence strong for prosecution?
 - What potential weaknesses should be addressed?
 - Strategic recommendations for using this evidence
-- How well does this align with legal precedents?`;
+- How well does this align with legal precedents?`
 
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/generate`, {
       method: 'POST',
@@ -518,28 +518,28 @@ Focus on:
           top_p: 0.9
         }
       })
-    });
+    })
 
     if (response.ok) {
-      const data = await response.json();
-      const analysisText = data.response.trim();
+      const data = await response.json()
+      const analysisText = data.response.trim()
 
-      const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
+      const jsonMatch = analysisText.match(/\{[\s\S]*\}/)
       if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
+        return JSON.parse(jsonMatch[0])
       }
     }
   } catch (error: any) {
-    console.warn('Prosecution analysis failed:', error);
+    console.warn('Prosecution analysis failed:', error)
   }
 
-  // Fallback analysis;
+  // Fallback analysis
   return {
     strengths: ['Documentary evidence', 'Clear factual content'],
     weaknesses: ['May require corroboration', 'Context dependent'],
     recommendations: ['Verify authenticity', 'Gather supporting evidence'],
     precedent_support: 0.6
-  };
+  }
 }
 
 async function generateEmbedding(text: string): Promise<number[]> {
@@ -551,53 +551,53 @@ async function generateEmbedding(text: string): Promise<number[]> {
         model: CONFIG.ollama.embeddingModel,
         prompt: text
       })
-    });
+    })
 
     if (response.ok) {
-      const data = await response.json();
-      return data.embedding;
+      const data = await response.json()
+      return data.embedding
     }
   } catch (error: any) {
-    console.warn('Embedding generation failed:', error);
+    console.warn('Embedding generation failed:', error)
   }
 
   // Return random embedding as fallback
-  return Array.from({ length: 384 }, () => Math.random() - 0.5);
+  return Array.from({ length: 384 }, () => Math.random() - 0.5)
 }
 
 function calculateTextSimilarity(text1: string, text2: string): number {
   // Simple word-based similarity (Jaccard index)
-  const words1 = new Set(text1.toLowerCase().split(/\s+/);
-  const words2 = new Set(text2.toLowerCase().split(/\s+/);
+  const words1 = new Set(text1.toLowerCase().split(/\s+/)
+  const words2 = new Set(text2.toLowerCase().split(/\s+/)
 
-  const intersection = new Set([...words1].filter((x: any) => words2.has(x));
-  const union = new Set([...words1, ...words2]);
+  const intersection = new Set([...words1].filter((x: any) => words2.has(x))
+  const union = new Set([...words1, ...words2])
 
-  return intersection.size / union.size;
+  return intersection.size / union.size
 }
 
 function categorizeLegalPhrase(phrase: string): string {
-  const lowerPhrase = phrase.toLowerCase();
+  const lowerPhrase = phrase.toLowerCase()
 
   if (lowerPhrase.includes('evidence') || lowerPhrase.includes('proof')) {
-    return 'evidence';
+    return 'evidence'
   } else if (lowerPhrase.includes('testimony') || lowerPhrase.includes('witness')) {
-    return 'witness_testimony';
+    return 'witness_testimony'
   } else if (lowerPhrase.includes('guilty') || lowerPhrase.includes('conviction')) {
-    return 'guilt_indicators';
+    return 'guilt_indicators'
   } else if (lowerPhrase.includes('precedent') || lowerPhrase.includes('case law')) {
-    return 'legal_precedent';
+    return 'legal_precedent'
   } else if (lowerPhrase.includes('motion') || lowerPhrase.includes('procedure')) {
-    return 'procedural';
+    return 'procedural'
   } else {
-    return 'general_legal';
+    return 'general_legal'
   }
 }
 
 async function cacheEnhancementResults(evidenceText: string, results: any): Promise<any> {
   try {
-    const redis = getRedis();
-    const cacheKey = `enhancement:${Buffer.from(evidenceText).toString('base64').substring(0, 32)}`;
+    const redis = getRedis()
+    const cacheKey = `enhancement:${Buffer.from(evidenceText).toString('base64').substring(0, 32)}`
 
     await redis.setex(
       cacheKey,
@@ -606,16 +606,16 @@ async function cacheEnhancementResults(evidenceText: string, results: any): Prom
         results,
         timestamp: new Date().toISOString()
       })
-    );
+    )
   } catch (error: any) {
-    console.warn('Failed to cache enhancement results:', error);
+    console.warn('Failed to cache enhancement results:', error)
   }
 }
 
-// GET endpoint for enhancement statistics;
+// GET endpoint for enhancement statistics
 export const GET: RequestHandler = async () => {
   try {
-    const db = getDB();
+    const db = getDB()
 
     const stats = await db.query(`
             SELECT
@@ -624,7 +624,7 @@ export const GET: RequestHandler = async () => {
                 COUNT(DISTINCT jurisdiction) as jurisdictions_covered,
                 COUNT(DISTINCT case_type) as case_types_covered
             FROM legal_documents_processed
-        `);
+        `)
 
     const phrasesStats = await db.query(`
             SELECT
@@ -632,7 +632,7 @@ export const GET: RequestHandler = async () => {
                 COUNT(CASE WHEN avg_prosecution_score >= 70 THEN 1 END) as high_value_phrases,
                 AVG(frequency) as avg_phrase_frequency
             FROM semantic_phrases_ranking
-        `);
+        `)
 
     return json({
       status: 'operational',
@@ -654,9 +654,9 @@ export const GET: RequestHandler = async () => {
         'prosecution_analysis',
         'fact_checking'
       ]
-    });
+    })
   } catch (err: any) {
-    console.error('Enhancement stats error:', err);
-    throw error(500, 'Unable to fetch enhancement statistics');
+    console.error('Enhancement stats error:', err)
+    throw error(500, 'Unable to fetch enhancement statistics')
   }
-};
+}

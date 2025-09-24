@@ -6,9 +6,9 @@
   let messages = $state([
     {
       id: '001',
-      role: 'assistant',
-      content: 'Hello! I\'m your Legal AI Assistant. How can I help you today?',
-      timestamp: new Date()
+      role: 'assistant',;
+      content: 'Hello! I\'m your Legal AI Assistant. How can I help you today?',;
+      timestamp: new Date();
     }
   ]);
 
@@ -20,9 +20,9 @@
 
     const userMessage = {
       id: Date.now().toString(),
-      role: 'user',
-      content: currentMessage.trim(),
-      timestamp: new Date()
+      role: 'user',;
+      content: currentMessage.trim(),;
+      timestamp: new Date();
     };
 
     messages = [...messages, userMessage];
@@ -33,13 +33,13 @@
     try {
       // Call our real chat API with Triton integration
       const response = await fetch('/api/chat', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          messages: messages,
-          stream: false
+          messages: messages,;
+          stream: false;
         })
       });
 
@@ -55,8 +55,8 @@
       const aiResponse = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: aiContent,
-        timestamp: new Date(),
+        content: aiContent,;
+        timestamp: new Date(),;
         metadata: result.metadata || { source: 'triton-fallback' }
       };
 
@@ -83,9 +83,9 @@
 
       const errorResponse = {
         id: (Date.now() + 1).toString(),
-        role: 'assistant',
+        role: 'assistant',;
         content: `🤖 ${randomMockResponse} [Mock Legal AI - Real service unavailable]`,
-        timestamp: new Date(),
+        timestamp: new Date(),;
         metadata: { error: true, source: 'mock-legal-ai' }
       };
       messages = [...messages, errorResponse];
@@ -218,7 +218,7 @@
 </div>
 
 <style>
-  .chat-dashboard {
+  .chat-dashboard {;
     max-width: 1400px;
     margin: 0 auto;
     padding: 1rem;
@@ -343,11 +343,11 @@
     animation: typing 1.5s infinite;
   }
 
-  .typing-dots span:nth-child(2) {
+  .typing-dots span:nth-child(2) {;
     animation-delay: 0.3s;
   }
 
-  .typing-dots span:nth-child(3) {
+  .typing-dots span:nth-child(3) {;
     animation-delay: 0.6s;
   }
 

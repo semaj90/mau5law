@@ -9,11 +9,11 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
-  import Button from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { Progress } from '$lib/components/ui/progress';
   import {
@@ -76,7 +76,7 @@
         enableClustering: true,
         enableReranking: true,
         enableMLOptimization: true,
-        cacheStrategy: optimizationLevel === 'neural' ? 'aggressive' : 'balanced'
+        cacheStrategy: optimizationLevel === 'neural' ? 'aggressive' : 'balanced';
       });
 
       searchDuration = performance.now() - searchStartTime;
@@ -84,8 +84,8 @@
       // Auto-scroll to results after search
       await tick();
       document.querySelector('#search-results')?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
+        behavior: 'smooth',;
+        block: 'start';
       });
 
     } catch (error) {
@@ -139,7 +139,7 @@
     resultsCount: optimizedResults.length,
     cacheHitRate: ragState.cacheMetrics.hitRate,
     memoryUsage: ragState.cacheMetrics.memoryUsageMB,
-    predictionAccuracy: ragState.cacheMetrics.predictionAccuracy
+    predictionAccuracy: ragState.cacheMetrics.predictionAccuracy;
   });
 
   let clusterVisualization = $derived(
@@ -151,10 +151,10 @@
   );
 
   let performanceIndicators = $derived({
-    throughput: performanceMetrics.throughputQPS,
+    throughput: performanceMetrics.throughputQPS,;
     efficiency: performanceMetrics.memoryEfficiency,
     cacheOptimization: ragState.cacheMetrics.hitRate * 100,
-    neuralAccuracy: ragState.cacheMetrics.predictionAccuracy * 100
+    neuralAccuracy: ragState.cacheMetrics.predictionAccuracy * 100;
   });
 </script>
 
@@ -210,7 +210,7 @@
         <div class="flex gap-2">
           <div class="relative flex-1">
             <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
+            <Input;
               bind:value={searchQuery}
               keydown={handleKeyPress}
               placeholder="Ask anything about your legal documents..."
@@ -262,7 +262,7 @@ showAdvancedOptions = !showAdvancedOptions}
           </div>
           <div class="flex flex-wrap gap-2">
             {#each intelligentSuggestions as suggestion}
-              <Button 
+              <Button
                 class="h-8 px-3 bg-yellow-50 hover:bg-yellow-100 text-yellow-800 border border-yellow-200"
                 variant="ghost"
                 size="sm"
@@ -548,7 +548,7 @@ visualizationMode = 'clusters'}
 </div>
 
 <style>
-  .enhanced-rag-interface {
+  .enhanced-rag-interface {;
     max-width: 1200px;
     margin: 0 auto;
     padding: 1rem;
@@ -559,7 +559,7 @@ visualizationMode = 'clusters'}
     50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.8); }
   }
 
-  .enhanced-rag-interface: global(.searching) {
+  .enhanced-rag-interface :global(.searching) {
     animation: pulse-glow 2s infinite;
   }
 </style>

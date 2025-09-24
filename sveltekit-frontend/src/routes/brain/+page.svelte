@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -28,9 +28,9 @@ https://svelte.dev/e/js_parse_error -->
     edge: 0xef4444,
     'ui-lib': 0x94a3b8,
     routing: 0x22c55e,
-    automation: 0x14b8a6,
-    table: 0x8b5cf6,
-    default: 0xffffff
+    automation: 0x14b8a6,;
+    table: 0x8b5cf6,;
+    default: 0xffffff;
   };
 
   function initThree() {
@@ -99,8 +99,9 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  $effect(async () => {
-    initThree();
+  $effect(() => {
+    (async () => {
+initThree();
     try {
       await client.loadLayout('/api/yorha/layout');
       layout = client.getLayout();
@@ -115,6 +116,7 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Brain page init failed', e);
     }
     return () => { cancelAnimationFrame(animationId); };
+    })();
   });
 </script>
 

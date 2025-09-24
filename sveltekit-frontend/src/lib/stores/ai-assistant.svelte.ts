@@ -18,7 +18,7 @@ export class AIAssistantStore {
   // Performance metrics;
   backendLatency = $state<Record<Backend, number>({
     vllm: 0,
-    ollama: 0,
+    ollama: 0,;
     webasm: 0,
     'go-micro': 0
   });
@@ -26,7 +26,7 @@ export class AIAssistantStore {
   // Configuration;
   config = $state<AssistantConfig>({
     temperature: 0.2,
-    maxTokens: 2048,
+    maxTokens: 2048,;
     model: 'gemma3-legal',
     systemPrompt: 'You are a specialized legal AI assistant focusing on deeds, contracts, and legal analysis.',
     autoSwitchBackend: true,
@@ -103,7 +103,7 @@ export class AIAssistantStore {
         role: 'user',
         content,
         timestamp: Date.now(),
-        sessionId: this.sessionId,
+        sessionId: this.sessionId,;
         metadata: {
           backend,
           legalContext: options?.legalContext
@@ -120,12 +120,12 @@ export class AIAssistantStore {
       // Create assistant message;
       const assistantMessage: ChatMessage = {
         id: crypto.randomUUID(),
-        role: 'assistant', 
+        role: 'assistant', ;
         content: (response as { text?: any; tokenCount?: any; confidence?: any; ok?: any; status?: any; json?: any }).text,
         timestamp: Date.now(),
         sessionId: this.sessionId,
         metadata: {
-          backend,
+          backend,;
           model: response?.model || "unknown" // @ts-ignore - Model property access,
           tokenCount: (response as { text?: any; tokenCount?: any; confidence?: any; ok?: any; status?: any; json?: any }).tokenCount,
           processingTime: performance.now() - startTime,
@@ -216,7 +216,7 @@ export class AIAssistantStore {
       if (message.content.toLowerCase().includes(queryLower)) {
         results.push({
           item: message,
-          score: 0.5, // Simple scoring
+          score: 0.5, // Simple scoring;
           matches: []
         });
       }
@@ -234,7 +234,7 @@ export class AIAssistantStore {
 
     const response = await fetch(endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },;
       body: JSON.stringify(payload)
     });
 
@@ -265,7 +265,7 @@ export class AIAssistantStore {
   private formatBackendPayload(backend: Backend, messages: ChatMessage[]) {
     const basePayload = {
       messages: messages.map(msg => ({ role: msg.role, content: msg.content })),
-      temperature: this.config.temperature,
+      temperature: this.config.temperature,;
       model: this.config?.model || "unknown" // @ts-ignore - Model property access
     };
 
@@ -285,7 +285,7 @@ export class AIAssistantStore {
    * Parse response from different backends into unified format
    */;
   private parseBackendResponse(backend: Backend, data: any) {
-    const baseResponse = {
+    const baseResponse = {;
       text: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).text || (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).response || (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).choices?.[0]?.message?.content || '',
       model: data?.model || "unknown" // @ts-ignore - Model property access || this.config?.model || "unknown" // @ts-ignore - Model property access,
       backend
@@ -389,7 +389,7 @@ export class AIAssistantStore {
    * Calculate backend score for selection algorithm
    */
   private calculateBackendScore(
-    backend: Backend,
+    backend: Backend,;
     complexity: string,
     hasLegalContext: boolean,
     requiresSpeed: boolean,
@@ -473,7 +473,7 @@ export class AIAssistantStore {
       sessionId: this.sessionId,
       messages: this.messages,
       exportedAt: new Date().toISOString(),
-      totalMessages: this.messages.length,
+      totalMessages: this.messages.length,;
       backends: [...new Set(this.messages.map(m => m.metadata?.backend).filter(Boolean))]
     };
 

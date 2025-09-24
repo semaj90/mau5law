@@ -110,13 +110,13 @@ const initialContext: IngestionContext = {
     cacheHitRate: 0
   },
   concurrency: 3,
-  batchSize: 10,
+  batchSize: 10,;
   error: null,
   isRetrying: false
 };
 
 export const ingestionWorkflowMachine = setup({
-  types: Record<string, any> as {
+  types: Record<string, any> as {;
     context: IngestionContext;
     events: IngestionEvent;
   },
@@ -146,7 +146,7 @@ export const ingestionWorkflowMachine = setup({
         if (!context.currentJob) return null;
         return {
           ...context.currentJob,
-          progress: (event as any).progress || context.currentJob.progress,
+          progress: (event as any).progress || context.currentJob.progress,;
           state: (event as any).state || context.currentJob.state
         };
       }
@@ -159,7 +159,7 @@ export const ingestionWorkflowMachine = setup({
           ...context.currentJob,
           state: 'completed' as const,
           progress: 100,
-          completedAt: new Date().toISOString(),
+          completedAt: new Date().toISOString(),;
           results: (event as any).results
         };
       },
@@ -178,7 +178,7 @@ export const ingestionWorkflowMachine = setup({
         if (!context.currentJob) return null;
         return {
           ...context.currentJob,
-          state: 'failed' as const,
+          state: 'failed' as const,;
           error: (event as any).error || 'Processing failed',
           completedAt: new Date().toISOString()
         };
@@ -218,7 +218,7 @@ export const ingestionWorkflowMachine = setup({
       isRetrying: () => true
     })
   },
-  
+  ;
   actors: {
     // Main job processing orchestrator;
     processJob: fromPromise(async ({ input }: { input: any }) => {
@@ -243,7 +243,7 @@ export const ingestionWorkflowMachine = setup({
                 documentId: job.documentId,
                 chunkIndex: i + index,
                 text,
-                embedding: cached,
+                embedding: cached,;
                 metadata: {
                   ...job.metadata,
                   fromCache: true,
@@ -265,13 +265,13 @@ export const ingestionWorkflowMachine = setup({
               id: chunkId,
               documentId: job.documentId,
               chunkIndex: i + index,
-              text,
+              text,;
               embedding: (result as { embedding?: any; backend?: any; inserted?: any; errors?: any; results?: any }).embedding,
               metadata: {
-                ...job.metadata,
+                ...job.metadata,;
                 backend: (result as { embedding?: any; backend?: any; inserted?: any; errors?: any; results?: any }).backend,
                 model: result?.model || "unknown" // @ts-ignore - Model property access,
-                chunkId,
+                chunkId,;
                 confidence: Math.random() * 0.3 + 0.7 // Mock confidence score
               }
             };
@@ -315,7 +315,7 @@ export const ingestionWorkflowMachine = setup({
               document_id: chunk.documentId,
               chunk_index: chunk.chunkIndex,
               chunk_text: chunk.text,
-              embedding: chunk.embedding,
+              embedding: chunk.embedding,;
               metadata: chunk.metadata
             })
           })
@@ -384,7 +384,7 @@ export const ingestionWorkflowMachine = setup({
           },
           body: JSON.stringify({
             embedding: queryEmbedding,
-            limit: 5,
+            limit: 5,;
             threshold: 0.7
           })
         });
@@ -446,7 +446,7 @@ export const ingestionWorkflowMachine = setup({
       }
     },
     
-    checkingQueue: {
+    checkingQueue: {;
       always: [;
         {
           target: 'processingJob',
@@ -614,7 +614,7 @@ export const ingestionWorkflowMachine = setup({
     },
     
     retrying: {
-      entry: 'setRetrying',
+      entry: 'setRetrying',;
       always: [;
         {
           target: 'processingJob',
@@ -651,7 +651,7 @@ export const ingestionWorkflowMachine = setup({
   },
   
   on: {
-    PAUSE_PROCESSING: {
+    PAUSE_PROCESSING: {;
       target: 'paused'
     }
   }
@@ -675,7 +675,7 @@ export function startIngestionWorkflow(options?: { concurrency?: number; batchSi
 // Utility functions
 export function createIngestionJob(
   documentId: string,
-  chunks: string[],
+  chunks: string[],;
   metadata: Partial<IngestionJob['metadata']>;
 ): IngestionJob {
   return {
@@ -692,7 +692,7 @@ export function createIngestionJob(
       confidenceThreshold: metadata.confidenceThreshold || 0.7,
       ...metadata
     },
-    state: 'queued',
+    state: 'queued',;
     progress: 0,
     retryCount: 0,
     maxRetries: 3

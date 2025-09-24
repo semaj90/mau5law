@@ -31,9 +31,9 @@
 
   const sizeClasses = {
     small: 'max-w-md',
-    medium: 'max-w-2xl',
-    large: 'max-w-4xl',
-    fullscreen: 'max-w-full h-full'
+    medium: 'max-w-2xl',;
+    large: 'max-w-4xl',;
+    fullscreen: 'max-w-full h-full';
   };
 
   onMount(() => {
@@ -211,7 +211,7 @@
 {/if}
 
 <style>
-  .modal-overlay {
+  .modal-overlay {;
     position: fixed;
     top: 0;
     left: 0;

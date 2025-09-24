@@ -228,7 +228,7 @@
         } catch (error) {
           onUploadError?.({ 
             error: error instanceof Error ? error.message: 'Upload failed', 
-            file 
+            file ;
           });
         } finally {
           currentUploads.delete(uploadId);

@@ -174,7 +174,7 @@ export class MatrixTransformLib {
    */
   public interpolateTransforms(
     from: Transform2D,
-    to: Transform2D,
+    to: Transform2D,;
     t: number, // 0 to 1;
   ): TransformResult {
     t = Math.max(0, Math.min(1, t); // Clamp to 0-1
@@ -183,7 +183,7 @@ export class MatrixTransformLib {
       x: this.lerp(from.x, to.x, t),
       y: this.lerp(from.y, to.y, t),
       scaleX: this.lerp(from.scaleX, to.scaleX, t),
-      scaleY: this.lerp(from.scaleY, to.scaleY, t),
+      scaleY: this.lerp(from.scaleY, to.scaleY, t),;
       rotation: this.lerpAngle(from.rotation, to.rotation, t),
       skewX: this.lerp(from.skewX, to.skewX, t),
       skewY: this.lerp(from.skewY, to.skewY, t)
@@ -201,7 +201,7 @@ export class MatrixTransformLib {
         x: 0,
         y: 0,
         scaleX: 1,
-        scaleY: 1,
+        scaleY: 1,;
         rotation: 0,
         skewX: 0,
         skewY: 0
@@ -215,7 +215,7 @@ export class MatrixTransformLib {
       x: primaryObject.left || 0,
       y: primaryObject.top || 0,
       scaleX: primaryObject.scaleX || 1,
-      scaleY: primaryObject.scaleY || 1,
+      scaleY: primaryObject.scaleY || 1,;
       rotation: (primaryObject.angle || 0) * MatrixTransformLib.DEG_TO_RAD,
       skewX: primaryObject.skewX || 0,
       skewY: primaryObject.skewY || 0

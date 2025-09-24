@@ -51,7 +51,7 @@ const initialState: VectorSearchState = {
   searchLatency: 0,
   ragLatency: 0,
   vectorDbConnected: false,
-  searchHistory: [],
+  searchHistory: [],;
   error: null
 };
 
@@ -104,7 +104,7 @@ export const vectorSearchActions = {
           query,
           userId,
           caseId,
-          limit: initialState.searchLimit,
+          limit: initialState.searchLimit,;
           threshold: initialState.searchThreshold
         })
       });
@@ -170,7 +170,7 @@ export const vectorSearchActions = {
           query,
           userId,
           caseId,
-          useContext: true,
+          useContext: true,;
           model: 'gemma3-legal'
         })
       });
@@ -206,14 +206,14 @@ export const vectorSearchActions = {
   async findSimilarCases(caseId: string, userId: string, limit: number = 5): Promise<void> {
     vectorSearchStore.update(state => ({
       ...state,
-      isSearching: true,
+      isSearching: true,;
       error: null
     });
 
     try {
       const response = await fetch('/api/v1/vector/similar-cases', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ caseId, userId, limit })
       });
 
@@ -258,7 +258,7 @@ export const vectorSearchActions = {
       query: '',
       results: [],
       ragContext: [],
-      ragResponse: null,
+      ragResponse: null,;
       error: null
     });
   },

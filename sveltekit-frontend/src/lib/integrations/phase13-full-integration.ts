@@ -52,7 +52,7 @@ export class Phase13IntegrationManager {
       database: false,
       redis: false,
       ollama: false,
-      qdrant: false,
+      qdrant: false,;
       docker: false
     };
   }
@@ -85,7 +85,7 @@ export class Phase13IntegrationManager {
       recommendations,
       performance: {
         database: dbConfig,
-        ai: aiConfig,
+        ai: aiConfig,;
         optimization: perfConfig
       }
     };
@@ -126,7 +126,7 @@ export class Phase13IntegrationManager {
   private async checkOllama(): Promise<boolean> {
     try {
       const response = await fetch('http://localhost:11434/api/version', { 
-        method: 'GET', 
+        method: 'GET', ;
         signal: AbortSignal.timeout(2000) 
       });
       return (response as { ok?: any }).ok;
@@ -138,7 +138,7 @@ export class Phase13IntegrationManager {
   private async checkQdrant(): Promise<boolean> {
     try {
       const response = await fetch('http://localhost:6333/collections', { 
-        method: 'GET', 
+        method: 'GET', ;
         signal: AbortSignal.timeout(2000) 
       });
       return (response as { ok?: any }).ok;
@@ -150,7 +150,7 @@ export class Phase13IntegrationManager {
   private async checkDatabase(): Promise<boolean> {
     try {
       const response = await fetch('/api/health/database', { 
-        method: 'GET', 
+        method: 'GET', ;
         signal: AbortSignal.timeout(2000) 
       });
       return (response as { ok?: any }).ok;
@@ -162,7 +162,7 @@ export class Phase13IntegrationManager {
   private async checkRedis(): Promise<boolean> {
     try {
       const response = await fetch('/api/health/redis', { 
-        method: 'GET', 
+        method: 'GET', ;
         signal: AbortSignal.timeout(2000) 
       });
       return (response as { ok?: any }).ok;
@@ -235,7 +235,7 @@ export class Phase13IntegrationManager {
     try {
       // Test PostgreSQL connection;
       const pgResponse = await fetch('/api/health/database', {
-        method: 'GET',
+        method: 'GET',;
         signal: AbortSignal.timeout(5000)
       });
       
@@ -264,7 +264,7 @@ export class Phase13IntegrationManager {
         fallbackMode: !this.serviceHealth.database
       },
       endpoints: {
-        primary: this.serviceHealth.database ? 'postgresql://localhost:5433/legal_ai_db' : 'development-mode',
+        primary: this.serviceHealth.database ? 'postgresql://localhost:5433/legal_ai_db' : 'development-mode',;
         vector: this.serviceHealth.qdrant ? 'http://localhost:6333' : 'embedded-vector-store'
       }
     };
@@ -281,7 +281,7 @@ export class Phase13IntegrationManager {
     let enhancedRAGAvailable = false;
     try {
       const ragResponse = await fetch('http://localhost:8094/health', {
-        method: 'GET',
+        method: 'GET',;
         signal: AbortSignal.timeout(3000)
       });
       enhancedRAGAvailable = ragResponse.ok;
@@ -323,7 +323,7 @@ export class Phase13IntegrationManager {
           endpoint: 'http://localhost:8093',
           capabilities: ['file-processing', 'metadata-extraction', 'document-analysis']
         }
-      },
+      },;
       features: {
         semanticSearch: this.serviceHealth.qdrant || this.serviceHealth.database || enhancedRAGAvailable,
         aiEnhancement: this.serviceHealth.ollama || enhancedRAGAvailable,
@@ -337,7 +337,7 @@ export class Phase13IntegrationManager {
     // Test upload service;
     try {
       const uploadResponse = await fetch('http://localhost:8093/health', {
-        method: 'GET',
+        method: 'GET',;
         signal: AbortSignal.timeout(2000)
       });
       if (uploadResponse.ok) {
@@ -393,7 +393,7 @@ export class Phase13IntegrationManager {
           strategy: 'lru'
         }
       },
-      monitoring: {
+      monitoring: {;
         performance: true,
         aiResponseTimes: true,
         databaseQueries: true
@@ -416,7 +416,7 @@ export class Phase13IntegrationManager {
         type: 'enhancement',
         original: 'Development database mode',
         suggested: 'Enable PostgreSQL with pgvector extension',
-        reasoning: 'Connect to production PostgreSQL database for vector search and data persistence',
+        reasoning: 'Connect to production PostgreSQL database for vector search and data persistence',;
         confidence: 0.9
       });
     }
@@ -428,7 +428,7 @@ export class Phase13IntegrationManager {
         type: 'enhancement',
         original: 'Fallback AI responses',
         suggested: 'Enable Enhanced RAG Go microservice',
-        reasoning: 'Start Enhanced RAG service (port 8094) for production-grade legal AI analysis',
+        reasoning: 'Start Enhanced RAG service (port 8094) for production-grade legal AI analysis',;
         confidence: 0.95
       });
     }
@@ -438,7 +438,7 @@ export class Phase13IntegrationManager {
         type: 'enhancement',
         original: 'Pattern-based AI responses',
         suggested: 'Enable Ollama local LLM service',
-        reasoning: 'Start Ollama service with gemma3-legal model for AI-powered features',
+        reasoning: 'Start Ollama service with gemma3-legal model for AI-powered features',;
         confidence: 0.8
       });
     }
@@ -449,7 +449,7 @@ export class Phase13IntegrationManager {
         type: 'enhancement',
         original: 'In-memory caching only',
         suggested: 'Enable Redis caching layer',
-        reasoning: 'Improve response times with distributed caching',
+        reasoning: 'Improve response times with distributed caching',;
         confidence: 0.7
       });
     }
@@ -460,7 +460,7 @@ export class Phase13IntegrationManager {
         type: 'enhancement',
         original: 'Basic text search only',
         suggested: 'Enable Qdrant vector database',
-        reasoning: 'Enhanced semantic search capabilities',
+        reasoning: 'Enhanced semantic search capabilities',;
         confidence: 0.8
       });
     }
@@ -471,7 +471,7 @@ export class Phase13IntegrationManager {
         type: 'enhancement',
         original: 'Direct server deployment',
         suggested: 'Enable Docker service orchestration',
-        reasoning: 'Containerized deployment for scalability',
+        reasoning: 'Containerized deployment for scalability',;
         confidence: 0.6
       });
     }
@@ -486,7 +486,7 @@ export class Phase13IntegrationManager {
   private async testEnhancedRAGService(): Promise<boolean> {
     try {
       const response = await fetch('http://localhost:8094/health', {
-        method: 'GET',
+        method: 'GET',;
         signal: AbortSignal.timeout(3000)
       });
       return (response as { ok?: any }).ok;
@@ -507,7 +507,7 @@ export class Phase13IntegrationManager {
 
     // Try multiple Docker service endpoints concurrently;
     const dockerChecks = await Promise.allSettled(dockerEndpoints.map((endpoint: any) => fetch(endpoint, { 
-          method: 'GET', 
+          method: 'GET', ;
           signal: AbortSignal.timeout(1500) 
         })
       )
@@ -529,7 +529,7 @@ export class Phase13IntegrationManager {
     return {
       level: integrationLevel,
       services: this.serviceHealth,
-      status: integrationLevel > 80 ? 'production' : integrationLevel > 50 ? 'development' : 'fallback',
+      status: integrationLevel > 80 ? 'production' : integrationLevel > 50 ? 'development' : 'fallback',;
       recommendations: integrationLevel < 100 ? 'optimization-available' : 'fully-integrated'
     };
   }
@@ -548,7 +548,7 @@ export class Phase13IntegrationManager {
           useSemanticSearch: true,
           useMemory: true,
           synthesizeOutputs: true,
-          agents: ['claude'],
+          agents: ['claude'],;
           context: {
             suggestion,
             currentServices: this.serviceHealth
@@ -558,14 +558,14 @@ export class Phase13IntegrationManager {
 
       return {
         success: true,
-        action: `Applied ${suggestion.type} suggestion`,
+        action: `Applied ${suggestion.type} suggestion`,;
         result: orchestrationResult
       };
     } catch (error: any) {
       console.error('Failed to apply suggestion:', error);
       return {
         success: false,
-        action: `Failed to apply ${suggestion.type} suggestion`,
+        action: `Failed to apply ${suggestion.type} suggestion`,;
         result: error instanceof Error ? error.message: 'Unknown error'
       };
     }
@@ -614,7 +614,7 @@ export async function getSystemHealth(): Promise<any> {
     services: integrationStatus.services,
     performance: {
       integrationLevel: integrationStatus.level,
-      status: integrationStatus.status,
+      status: integrationStatus.status,;
       timestamp: new Date().toISOString()
     },
     recommendations

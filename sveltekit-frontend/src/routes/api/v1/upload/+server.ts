@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 /*
  * Enhanced Upload API Endpoint - SvelteKit 2 Production
@@ -7,18 +7,18 @@ import type { RequestHandler } from './$types.js';
  */
 
 
-import { ensureError } from '$lib/utils/ensure-error';
-import { dev } from '$app/environment';
+import { ensureError } from '$lib/utils/ensure-error'
+import { dev } from '$app/environment'
 import type { 
   EnhancedUploadRequest, 
   EnhancedUploadResponse, 
   APIRequestContext 
-} from '$lib/types/api.js';
-import { embeddingService } from '$lib/server/embedding-service.js';
-import crypto from "crypto";
-import { URL } from "url";
+} from '$lib/types/api.js'
+import { embeddingService } from '$lib/server/embedding-service.js'
+import crypto from "crypto"
+import { URL } from "url"
 
-// Upload Service Configuration;
+// Upload Service Configuration
 const UPLOAD_SERVICE_CONFIG = {
   http: 'http://localhost:8093',
   health: '/health',
@@ -29,9 +29,9 @@ const UPLOAD_SERVICE_CONFIG = {
     metadata: '/api/metadata',
     health: '/health'
   }
-};
+}
 
-// Document Processor Configuration;
+// Document Processor Configuration
 const DOCUMENT_PROCESSOR_CONFIG = {
   http: 'http://localhost:8081',
   endpoints: {
@@ -40,9 +40,9 @@ const DOCUMENT_PROCESSOR_CONFIG = {
     analyze: '/api/analyze',
     health: '/api/health'
   }
-};
+}
 
-// Supported file types and limits;
+// Supported file types and limits
 const FILE_CONFIG = {
   maxSize: 100 * 1024 * 1024, // 100MB
   allowedTypes: [
@@ -67,48 +67,48 @@ const FILE_CONFIG = {
     'application/msword',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
   ]
-};
+}
 
 /*
  * POST /api/v1/upload - Enhanced File Upload with Processing
- */;
+ */
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
-  const startTime = Date.now();
-  const requestId = crypto.randomUUID();
+  const startTime = Date.now()
+  const requestId = crypto.randomUUID()
   
   try {
-    const formData = await request.formData();
-    const file = formData.get('file') as File;
+    const formData = await request.formData()
+    const file = formData.get('file') as File
     
-    // Validate file presence;
+    // Validate file presence
     if (!file) {
       return error(400, ensureError({
         message: 'File is required',
         code: 'MISSING_FILE',
         requestId
-      });
+      })
     }
 
-    // Validate file size;
+    // Validate file size
     if (file.size > FILE_CONFIG.maxSize) {
       return error(400, ensureError({
         message: `File too large. Maximum size: ${FILE_CONFIG.maxSize / 1024 / 1024}MB`,
         code: 'FILE_TOO_LARGE',
         requestId
-      });
+      })
     }
 
-    // Validate file type;
+    // Validate file type
     if (!FILE_CONFIG.allowedTypes.includes(file.type)) {
       return error(400, ensureError({
         message: `File type not supported: ${file.type}`,
         code: 'UNSUPPORTED_FILE_TYPE',
         requestId,
         details: { supportedTypes: FILE_CONFIG.allowedTypes }
-      });
+      })
     }
 
-    // Extract additional parameters;
+    // Extract additional parameters
     const uploadRequest: EnhancedUploadRequest = {
       file,
       filename: file.name,
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       caseId: formData.get('caseId') as string,
       tags: formData.getAll('tags') as string[],
       metadata: Record<string, any>
-    };
+    }
 
     const context: APIRequestContext = {
       requestId,
@@ -132,15 +132,15 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       clientIP: getClientAddress(),
       userAgent: request.headers.get('user-agent') || undefined,
       caseId: uploadRequest.caseId
-    };
+    }
 
     // Process upload
-    const uploadResponse = await processEnhancedUpload(uploadRequest, context);
+    const uploadResponse = await processEnhancedUpload(uploadRequest, context)
 
-    return json(uploadResponse);
+    return json(uploadResponse)
 
   } catch (err: any) {
-    console.error('Upload API Error:', err);
+    console.error('Upload API Error:', err)
     
     return error(500, ensureError({
       message: 'Upload processing failed',
@@ -149,29 +149,29 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       requestId,
       timestamp: new Date().toISOString(),
       retryable: true
-    });
+    })
   }
-};
+}
 
 /*
  * GET /api/v1/upload - Upload Service Info and Health
- */;
+ */
 export const GET: RequestHandler = async ({ url }) => {
-  const action = url.searchParams.get('action');
-  const documentId = url.searchParams.get('id');
+  const action = url.searchParams.get('action')
+  const documentId = url.searchParams.get('id')
   
   try {
     switch (action) {
       case 'health':
-        return await handleHealthCheck();
-      case 'status':;
+        return await handleHealthCheck()
+      case 'status':
         if (!documentId) {
-          return error(400, ensureError({ message: 'Document ID required for status check' });
+          return error(400, ensureError({ message: 'Document ID required for status check' })
         }
-        return await handleStatusCheck(documentId);
+        return await handleStatusCheck(documentId)
       case 'config':
-        return await handleConfigInfo();
-      default:;
+        return await handleConfigInfo()
+      default:
         return json({
           service: 'Enhanced Upload API',
           version: '2.0.0',
@@ -190,21 +190,21 @@ export const GET: RequestHandler = async ({ url }) => {
             'Metadata Extraction'
           ],
           timestamp: new Date().toISOString()
-        });
+        })
     }
   } catch (err: any) {
-    console.error('Upload GET Error:', err);
+    console.error('Upload GET Error:', err)
     return error(500, ensureError({
       message: 'Service unavailable',
       error: dev ? String(err) : 'Internal error'
-    });
+    })
   }
-};
+}
 
 // Implementation functions would be added here...
-// (The complete implementation is too long for this response);
+// (The complete implementation is too long for this response)
 async function processEnhancedUpload(request: EnhancedUploadRequest, context: APIRequestContext): Promise<EnhancedUploadResponse> {
-  // Implementation stub - full implementation would include all stages;
+  // Implementation stub - full implementation would include all stages
   return {
     success: true,
     documentId: crypto.randomUUID(),
@@ -216,7 +216,7 @@ async function processEnhancedUpload(request: EnhancedUploadRequest, context: AP
     metadata: Record<string, any>,
     requestId: context.requestId,
     timestamp: new Date().toISOString()
-  };
+  }
 }
 
 async function handleHealthCheck(): Promise<Response> {
@@ -229,7 +229,7 @@ async function handleHealthCheck(): Promise<Response> {
       embeddingService: { status: 'healthy', model: 'nomic-embed-text' }
     },
     timestamp: new Date().toISOString()
-  });
+  })
 }
 
 async function handleStatusCheck(documentId: string): Promise<Response> {
@@ -237,7 +237,7 @@ async function handleStatusCheck(documentId: string): Promise<Response> {
     documentId,
     status: 'completed',
     timestamp: new Date().toISOString()
-  });
+  })
 }
 
 async function handleConfigInfo(): Promise<Response> {
@@ -254,5 +254,5 @@ async function handleConfigInfo(): Promise<Response> {
       }
     },
     timestamp: new Date().toISOString()
-  });
+  })
 }

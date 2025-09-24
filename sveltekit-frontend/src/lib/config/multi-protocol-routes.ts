@@ -79,7 +79,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     port: 11434,
     protocols: ['http'],
     healthEndpoint: '/api/tags',
-    tier: 1,
+    tier: 1,;
     priority: 'critical'
   },
 
@@ -117,7 +117,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     protocols: ['http'],
     healthEndpoint: '/health',
     binary: 'ai-enhanced.exe',
-    tier: 2,
+    tier: 2,;
     priority: 'high'
   },
 
@@ -164,7 +164,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     protocols: ['http'],
     healthEndpoint: '/health',
     binary: 'context7-error-pipeline.exe',
-    tier: 3,
+    tier: 3,;
     priority: 'medium'
   },
 
@@ -256,7 +256,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     protocols: ['http'],
     healthEndpoint: '/health',
     binary: 'simple-upload.exe',
-    tier: 4,
+    tier: 4,;
     priority: 'low'
   },
 
@@ -312,7 +312,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     protocols: ['quic', 'http'],
     healthEndpoint: '/health',
     binary: 'rag-quic-proxy.exe',
-    tier: 5,
+    tier: 5,;
     priority: 'medium'
   },
 
@@ -332,7 +332,7 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     protocols: ['grpc'],
     healthEndpoint: '/grpc.health.v1.Health/Check',
     binary: 'kratos-server.exe',
-    tier: 2,
+    tier: 2,;
     priority: 'high'
   }
 };
@@ -349,7 +349,7 @@ export const API_ROUTES: ProtocolRoute[] = [
       http: 'http://localhost:8094/api/v1/rag',
       ws: 'ws://localhost:8094/api/v1/rag/stream'
     },
-    fallback: ['quic', 'grpc', 'http'],
+    fallback: ['quic', 'grpc', 'http'],;
     timeout: 30000
   },
 
@@ -361,7 +361,7 @@ export const API_ROUTES: ProtocolRoute[] = [
       http: 'http://localhost:8093/upload',
       ws: 'ws://localhost:8093/upload/stream'
     },
-    fallback: ['http'],
+    fallback: ['http'],;
     timeout: 60000
   },
 
@@ -373,7 +373,7 @@ export const API_ROUTES: ProtocolRoute[] = [
       http: 'http://localhost:8097/api/v1/summary',
       ws: 'ws://localhost:8097/api/v1/summary/stream'
     },
-    fallback: ['http'],
+    fallback: ['http'],;
     timeout: 45000
   },
 
@@ -385,7 +385,7 @@ export const API_ROUTES: ProtocolRoute[] = [
       grpc: 'grpc://localhost:50051/legal.v1.LegalService',
       http: 'http://localhost:8202/api/v1/legal'
     },
-    fallback: ['grpc', 'http'],
+    fallback: ['grpc', 'http'],;
     timeout: 30000
   },
 
@@ -397,7 +397,7 @@ export const API_ROUTES: ProtocolRoute[] = [
       quic: 'quic://localhost:8216/api/v1/gateway',
       http: 'http://localhost:8216/api/v1/gateway'
     },
-    fallback: ['quic', 'http'],
+    fallback: ['quic', 'http'],;
     timeout: 5000
   },
 
@@ -408,7 +408,7 @@ export const API_ROUTES: ProtocolRoute[] = [
     protocols: {
       http: 'http://localhost:8213/api/v1/cluster'
     },
-    fallback: ['http'],
+    fallback: ['http'],;
     timeout: 15000
   },
 
@@ -420,7 +420,7 @@ export const API_ROUTES: ProtocolRoute[] = [
       http: 'http://localhost:8212/api/v1/state',
       ws: 'ws://localhost:8212/api/v1/state/events'
     },
-    fallback: ['http'],
+    fallback: ['http'],;
     timeout: 10000
   },
 
@@ -431,7 +431,7 @@ export const API_ROUTES: ProtocolRoute[] = [
     protocols: {
       http: 'http://localhost:8222/api/v1/balance'
     },
-    fallback: ['http'],
+    fallback: ['http'],;
     timeout: 5000
   },
 
@@ -442,7 +442,7 @@ export const API_ROUTES: ProtocolRoute[] = [
     protocols: {
       http: 'http://localhost:8220/api/v1/index'
     },
-    fallback: ['http'],
+    fallback: ['http'],;
     timeout: 60000
   },
 
@@ -453,7 +453,7 @@ export const API_ROUTES: ProtocolRoute[] = [
     protocols: {
       http: 'http://localhost:8223/api/v1/recommend'
     },
-    fallback: ['http'],
+    fallback: ['http'],;
     timeout: 15000
   }
 ];
@@ -461,14 +461,14 @@ export const API_ROUTES: ProtocolRoute[] = [
 // Protocol Priority Configuration;
 export const PROTOCOL_PRIORITY = {
   performance: ['quic', 'grpc', 'http', 'ws'],
-  reliability: ['http', 'grpc', 'quic', 'ws'],
+  reliability: ['http', 'grpc', 'quic', 'ws'],;
   realtime: ['ws', 'quic', 'grpc', 'http']
 } as const;
 
 // Service Health Check Configuration;
 export const HEALTH_CHECK_CONFIG = {
   interval: 30000, // 30 seconds
-  timeout: 5000,   // 5 seconds
+  timeout: 5000,   // 5 seconds;
   retries: 3,
   unhealthyThreshold: 3,
   healthyThreshold: 2
@@ -496,7 +496,7 @@ export const PROTOCOL_CONFIG = {
     keepAlive: true,
     maxStreams: 100
   },
-  ws: {
+  ws: {;
     timeout: 0, // No timeout for WebSocket
     pingInterval: 30000,
     pongTimeout: 5000,

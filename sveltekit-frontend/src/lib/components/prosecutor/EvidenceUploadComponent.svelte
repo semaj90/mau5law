@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use rune without parentheses
+<!-- @migration-task Error while migrating Svelte code: Cannot use rune without parentheses;
 https://svelte.dev/e/rune_missing_parentheses -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use rune without parentheses -->
 <!--
@@ -14,11 +14,11 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
-  import Button from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Label } from '$lib/components/ui/label';
   import { Textarea } from '$lib/components/ui/textarea';
   import { Badge } from '$lib/components/ui/badge';
@@ -158,8 +158,8 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
           formData.append('isAdmissible', isAdmissible.toString());
   let response = $state<Responsetry {
           response  | null>(null); const data = await fetch('/api/evidence/upload', {
-            method: 'POST',
-            body: formData
+            method: 'POST',;
+            body: formData;
           }));
           if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
             throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
@@ -193,9 +193,9 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
   const analyzeImageWithYOLO = async (file: File) => {
     // This would integrate with YOLO for object detection
     return {
-      objects: ['person', 'document', 'weapon'],
+      objects: ['person', 'document', 'weapon'],;
       confidence: 0.92,
-      boundingBoxes: []
+      boundingBoxes: [];
     };
   };
 </script>
@@ -220,7 +220,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
       <div class="space-y-2">
         <Label for="evidence-title">Evidence Title *</Label>
         <Input 
-          id="evidence-title" 
+          id="evidence-title" ;
           bind:value={evidenceTitle}
           placeholder="e.g., Contract Agreement, Crime Scene Photo"
         />
@@ -270,7 +270,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
       <div class="space-y-2">
         <Label for="tags">Tags (comma-separated)</Label>
         <Input 
-          id="tags" 
+          id="tags" ;
           bind:value={tags}
           placeholder="contract, fraud, witness, DNA"
         />
@@ -279,7 +279,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
       <div class="flex items-center space-x-2">
         <input 
           type="checkbox" 
-          id="admissible" 
+          id="admissible" ;
           bind:checked={isAdmissible}
           class="w-4 h-4"
         />

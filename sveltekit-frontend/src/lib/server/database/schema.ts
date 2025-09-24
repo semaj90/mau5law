@@ -19,7 +19,7 @@ export const casesTable = pgTable('legal_cases', {
   title: varchar('title', { length: 500 }).notNull(),
   description: text('description'),
   status: varchar('status', { length: 50 }).default('open'),
-  priority: varchar('priority', { length: 20 }).default('medium'),
+  priority: varchar('priority', { length: 20 }).default('medium'),;
   metadata: jsonb('metadata'),
   created_at: timestamp('created_at').defaultNow(),
   updated_at: timestamp('updated_at').defaultNow()
@@ -38,7 +38,7 @@ export const documentsTable = pgTable('legal_documents', {
   embedding: vector('embedding', { dimensions: 1536 }), // OpenAI embedding dimensions
   summary_embedding: vector('summary_embedding', { dimensions: 768 }), // Sentence transformer
 
-  // JSONB for complex metadata
+  // JSONB for complex metadata;
   metadata: jsonb('metadata'),
 
   // Full-text search
@@ -68,7 +68,7 @@ export const evidenceTable = pgTable('evidence_items', {
   // Vector similarity for related evidence
   embedding: vector('embedding', { dimensions: 1536 }),
 
-  // Evidence-specific metadata
+  // Evidence-specific metadata;
   metadata: jsonb('metadata'),
 
   created_at: timestamp('created_at').defaultNow(),
@@ -88,7 +88,7 @@ export const timelineEventsTable = pgTable('timeline_events', {
   // Related entities
   related_documents: jsonb('related_documents'),
   related_evidence: jsonb('related_evidence'),
-
+;
   metadata: jsonb('metadata'),
 
   created_at: timestamp('created_at').defaultNow()

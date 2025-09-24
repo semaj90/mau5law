@@ -79,7 +79,7 @@ export class FullSystemOrchestrator {
         servicesOnline: 0,
         totalServices: 3
       },
-      recommendations: [],
+      recommendations: [],;
       errors: []
     };
 
@@ -137,7 +137,7 @@ export class FullSystemOrchestrator {
       (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.flashAttention2 = {
         initialized: status.initialized,
         gpuEnabled: status.gpuEnabled,
-        memoryOptimization: status.memoryOptimization,
+        memoryOptimization: status.memoryOptimization,;
         performance: {
           maxSequenceLength: status.maxSequenceLength,
           batchSize: status.batchSize,
@@ -182,7 +182,7 @@ export class FullSystemOrchestrator {
         integrationLevel: systemHealth.phase13.level,
         status: systemHealth.phase13.status,
         services: systemHealth.services,
-        performance: systemHealth.performance,
+        performance: systemHealth.performance,;
         recommendations: systemHealth.recommendations
       };
 
@@ -219,7 +219,7 @@ export class FullSystemOrchestrator {
             category: 'svelte5_migration',
             status: 'analyzed',
             estimated_fixes: 800,
-            confidence: 0.9,
+            confidence: 0.9,;
             recommendations: [
               'Apply automated Svelte 5 props migration',
               'Update component event binding patterns',
@@ -252,7 +252,7 @@ export class FullSystemOrchestrator {
             category: 'binding_issues',
             status: 'analyzed',
             estimated_fixes: 162,
-            confidence: 0.8,
+            confidence: 0.8,;
             recommendations: [
               'Fix non-bindable property bindings',
               'Update event handler patterns',
@@ -310,7 +310,7 @@ export class FullSystemOrchestrator {
       }
 
       (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.autoRemediation = {
-        applied: remediationResults.length,
+        applied: remediationResults.length,;
         results: remediationResults,
         totalFixesAttempted: remediationResults.reduce((sum, r) => sum + (r.fixesApplied || 0), 0)
       };
@@ -330,7 +330,7 @@ export class FullSystemOrchestrator {
       category: category.category,
       attempted: true,
       fixesApplied: 0,
-      success: false,
+      success: false,;
       details: []
     };
 
@@ -449,7 +449,7 @@ export class FullSystemOrchestrator {
       },
       recommendations: [
         'System status check - all services operational'
-      ],
+      ],;
       errors: []
     };
   }
@@ -523,7 +523,7 @@ export async function getCompleteSystemHealth(): Promise<any> {
       flashAttention2: flashAttentionStatus.initialized,
       phase13: phase13Status.level > 50,
       errorAnalysis: true
-    },
+    },;
     recommendations: orchestratorStatus.recommendations
   };
 }

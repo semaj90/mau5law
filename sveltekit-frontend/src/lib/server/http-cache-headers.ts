@@ -128,7 +128,7 @@ function generateETag(content: any): string {
  */
 export function applyCacheHeaders(
   response: Response, 
-  strategy: keyof typeof CACHE_STRATEGIES | CacheConfig,
+  strategy: keyof typeof CACHE_STRATEGIES | CacheConfig,;
   options: {
     content?: any;
     generateETag?: boolean;
@@ -169,7 +169,7 @@ export function applyCacheHeaders(
  */
 export function cachedJson(
   data: any,
-  strategy: keyof typeof CACHE_STRATEGIES | CacheConfig,
+  strategy: keyof typeof CACHE_STRATEGIES | CacheConfig,;
   options: {
     status?: number;
     generateETag?: boolean;
@@ -178,7 +178,7 @@ export function cachedJson(
 ) {
   const jsonString = JSON.stringify(data);
   const response = new Response(jsonString, {
-    status: options.status || 200,
+    status: options.status || 200,;
     headers: {
       'Content-Type': 'application/json'
     }
@@ -251,7 +251,7 @@ export function notModifiedResponse(etag?: string, lastModified?: Date): Respons
  */
 export function withCacheHeaders<T extends (...args: any[]) => Promise<Response>(
   handler: T,
-  strategy: keyof typeof CACHE_STRATEGIES | CacheConfig,
+  strategy: keyof typeof CACHE_STRATEGIES | CacheConfig,;
   options: {
     generateETag?: boolean;
     getLastModified?: (...args: any[]) => Date | undefined;

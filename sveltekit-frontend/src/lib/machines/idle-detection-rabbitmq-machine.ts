@@ -127,7 +127,7 @@ const idleDetectionServices = {
             timestamp: Date.now()
           },
           headers: {
-            messageType: 'background_job',
+            messageType: 'background_job',;
             priority: job.priority,
             retryCount: job.retryCount.toString()
           }
@@ -161,7 +161,7 @@ const idleDetectionServices = {
         successRate: context.performanceMetrics.successRate,
         availableServices: {
           neo4j: context.neo4jConnected,
-          minio: context.minioConnected,
+          minio: context.minioConnected,;
           rabbitmq: context.rabbitmqConnected
         }
       };
@@ -181,7 +181,7 @@ const idleDetectionServices = {
             data: selectedPrompt,
             metadata: {
               type: 'self_prompt',
-              sessionId: context.sessionId,
+              sessionId: context.sessionId,;
               timestamp: selectedPrompt.timestamp.toString()
             }
           })
@@ -213,7 +213,7 @@ const idleDetectionServices = {
 
     return {
       neo4j: serviceChecks[0].status === 'fulfilled' && serviceChecks[0].value,
-      minio: serviceChecks[1].status === 'fulfilled' && serviceChecks[1].value,
+      minio: serviceChecks[1].status === 'fulfilled' && serviceChecks[1].value,;
       rabbitmq: serviceChecks[2].status === 'fulfilled' && serviceChecks[2].value
     };
   }
@@ -235,7 +235,7 @@ const idleDetectionActions = {
       const newJob: BackgroundJob = {
         ...event.job,
         id: crypto.randomUUID(),
-        createdAt: Date.now(),
+        createdAt: Date.now(),;
         status: 'pending',
         retryCount: 0
       };
@@ -283,7 +283,7 @@ const idleDetectionActions = {
         prompt: '', // Would be populated from the original prompt
         context: Record<string, any>,
         response: event.response,
-        confidence: 0.8, // Would be calculated based on response quality
+        confidence: 0.8, // Would be calculated based on response quality;
         timestamp: Date.now(),
         triggerReason: 'idle_detected',
         processedByNeo4j: true,
@@ -360,7 +360,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
         id: 'connectServices',
         src: 'connectBackendServices',
         onDone: {
-          target: 'monitoring',
+          target: 'monitoring',;
           actions: [;
             assign({
               neo4jConnected: (_, event) => event.data.neo4j,
@@ -408,7 +408,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
           initial: 'checking_services',
 
           states: {
-            checking_services: {
+            checking_services: {;
               always: [;
                 {
                   target: 'generating_prompts',
@@ -443,7 +443,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
                 id: 'generateSelfPrompt',
                 src: 'generateSelfPrompt',
                 onDone: {
-                  target: 'processing_jobs',
+                  target: 'processing_jobs',;
                   actions: [;
                     assign({
                       jobQueue: (context, event) => {
@@ -452,7 +452,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
                           type: 'self_prompting',
                           priority: 'medium',
                           payload: event.data,
-                          createdAt: Date.now(),
+                          createdAt: Date.now(),;
                           status: 'pending',
                           retryCount: 0,
                           maxRetries: 3,
@@ -470,7 +470,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
               }
             },
 
-            processing_jobs: {
+            processing_jobs: {;
               always: [;
                 {
                   target: 'job_execution',
@@ -492,7 +492,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
                   actions: ['completeJob']
                 },
                 onError: {
-                  target: 'processing_jobs',
+                  target: 'processing_jobs',;
                   actions: [(context, event) => {
                     console.error('❌ Job processing failed:', event.data);
                     // Could implement retry logic here
@@ -547,7 +547,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
   }
 }, {
   services: idleDetectionServices,
-  actions: idleDetectionActions,
+  actions: idleDetectionActions,;
   guards: idleDetectionGuards
 });
 
@@ -561,7 +561,7 @@ async function generateContextualPrompts(systemContext: any): Promise<SelfPrompt
       id: crypto.randomUUID(),
       prompt: "Analyze the current legal research session for potential gaps and suggest next steps",
       context: systemContext,
-      confidence: 0.8,
+      confidence: 0.8,;
       timestamp: Date.now(),
       triggerReason: 'idle_detected',
       processedByNeo4j: false,
@@ -574,7 +574,7 @@ async function generateContextualPrompts(systemContext: any): Promise<SelfPrompt
       id: crypto.randomUUID(),
       prompt: "Identify patterns in completed legal document processing tasks to optimize future workflows",
       context: systemContext,
-      confidence: 0.9,
+      confidence: 0.9,;
       timestamp: Date.now(),
       triggerReason: 'pattern_recognition',
       processedByNeo4j: false,

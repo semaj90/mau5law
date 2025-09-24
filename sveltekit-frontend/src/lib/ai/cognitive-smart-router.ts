@@ -71,7 +71,7 @@ const ROUTING_CONFIG = {
       memoryFootprint: 7300777888, // 7.3GB model size
     },
     'llamacpp-cuda': {
-      maxLatency: 150,
+      maxLatency: 150,;
       strengths: ['production', 'balanced-performance'],
       gpuRequired: true,
       memoryFootprint: 7300777888
@@ -182,7 +182,7 @@ class CognitiveSmartRouter {
           engine: 'ollama',
           reasoning: 'Fallback due to routing failure',
           expectedLatency: 200,
-          fallbackChain: [],
+          fallbackChain: [],;
           confidence: 0.5
         }
       } as WebLlamaResponse;
@@ -204,7 +204,7 @@ class CognitiveSmartRouter {
         engine: 'webasm-cache',
         reasoning: `High cache probability (${(cacheScore * 100).toFixed(1)}%)`,
         expectedLatency: 5,
-        fallbackChain: ['nes-orchestrator', 'ollama'],
+        fallbackChain: ['nes-orchestrator', 'ollama'],;
         confidence: cacheScore
       };
     }
@@ -216,7 +216,7 @@ class CognitiveSmartRouter {
           engine: 'nes-orchestrator',
           reasoning: 'Critical latency requirement with GPU acceleration',
           expectedLatency: 50,
-          fallbackChain: ['webasm-cache', 'ollama'],
+          fallbackChain: ['webasm-cache', 'ollama'],;
           confidence: 0.9
         };
       }
@@ -235,7 +235,7 @@ class CognitiveSmartRouter {
             ROUTING_CONFIG.engineCapabilities[
               engine as keyof typeof ROUTING_CONFIG.engineCapabilities
             ]?.maxLatency || 200,
-          fallbackChain: preferredEngines.slice(1),
+          fallbackChain: preferredEngines.slice(1),;
           confidence: 0.8
         };
       }
@@ -246,7 +246,7 @@ class CognitiveSmartRouter {
       engine: 'ollama',
       reasoning: 'Default fallback - most reliable',
       expectedLatency: 200,
-      fallbackChain: [],
+      fallbackChain: [],;
       confidence: 0.6
     };
   }
@@ -299,7 +299,7 @@ class CognitiveSmartRouter {
       fromCache: false,
       cacheHit: false,
       vectorSimilarity: 0,
-      processingPath: 'worker',
+      processingPath: 'worker',;
       metrics: {
         embeddingTime: 5,
         inferenceTime: 45,
@@ -326,7 +326,7 @@ class CognitiveSmartRouter {
           model: 'gemma3:legal-latest',
           prompt: request.prompt,
           stream: false,
-          options: {
+          options: {;
             temperature: 0.1,
             num_ctx: 8192,
             num_gpu: this.gpuLayers, // Use reasonable GPU layers
@@ -344,7 +344,7 @@ class CognitiveSmartRouter {
         fromCache: false,
         cacheHit: false,
         vectorSimilarity: 0,
-        processingPath: 'ollama',
+        processingPath: 'ollama',;
         metrics: {
           embeddingTime: 0,
           inferenceTime: (result as { response?: any; eval_count?: any; eval_duration?: any }).eval_duration / 1000000 || 0, // ns to ms

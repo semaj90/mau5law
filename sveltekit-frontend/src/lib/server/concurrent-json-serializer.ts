@@ -115,7 +115,7 @@ class WorkerPool {
                 originalSize: JSON.stringify(data).length,
                 serializedSize: serialized.length,
                 compressionRatio: JSON.stringify(data).length / serialized.length,
-                processingTime,
+                processingTime,;
                 method: 'worker'
               }
             };
@@ -126,7 +126,7 @@ class WorkerPool {
                 originalSize: 0,
                 serializedSize: 0,
                 compressionRatio: 1,
-                processingTime: performance.now() - start,
+                processingTime: performance.now() - start,;
                 method: 'worker'
               }
             };
@@ -208,7 +208,7 @@ class WorkerPool {
 
     worker.postMessage({
       id: task.id,
-      data: task.data,
+      data: task.data,;
       options: task.options
     });
   }
@@ -257,7 +257,7 @@ export class ConcurrentJSONSerializer {
    * Thread-safe JSON serialization with automatic method selection
    */
   async serialize<T>(
-    data: T,
+    data: T,;
     options: SerializationOptions = {}
   ): Promise<SerializationResult> {
     const taskId = `serialize_${++this.taskCounter}_${Date.now()}`;
@@ -275,7 +275,7 @@ export class ConcurrentJSONSerializer {
         legalDocumentMode: false,
         ...options
       },
-      priority: this.determinePriority(data, options),
+      priority: this.determinePriority(data, options),;
       timestamp: Date.now()
     };
 
@@ -309,7 +309,7 @@ export class ConcurrentJSONSerializer {
 
       // Create GPU buffer;
       const buffer = this.gpuContext.createBuffer({
-        size: inputData.byteLength,
+        size: inputData.byteLength,;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
         mappedAtCreation: true
       });
@@ -391,7 +391,7 @@ export class ConcurrentJSONSerializer {
           originalSize: originalStr.length,
           serializedSize: serialized.length,
           compressionRatio: originalStr.length / serialized.length,
-          processingTime,
+          processingTime,;
           method: 'cpu'
         }
       };
@@ -407,7 +407,7 @@ export class ConcurrentJSONSerializer {
           compressionRatio: 1,
           processingTime,
           method: 'cpu'
-        },
+        },;
         error: error instanceof Error ? error.message: 'Unknown serialization error'
       };
     }
@@ -421,7 +421,7 @@ export class ConcurrentJSONSerializer {
     options: SerializationOptions = {}
   ): Promise<SerializationResult[]> {
     const batchOptions = {
-      ...options,
+      ...options,;
       priority: 'medium' as const
     };
 
@@ -539,7 +539,7 @@ export async function serializeForAPI<T>(
   data: T,
   options?: Partial<SerializationOptions>, 
 ): Promise<string> {
-  const result = await concurrentSerializer.serialize(data, {
+  const result = await concurrentSerializer.serialize(data, {;
     compress: true,
     validateStructure: true,
     legalDocumentMode: false,
@@ -558,7 +558,7 @@ export async function serializeLegalDocument<T>(
   options?: Partial<SerializationOptions>, 
 ): Promise<string> {
   const result = await concurrentSerializer.serialize(document, {
-    legalDocumentMode: true,
+    legalDocumentMode: true,;
     compress: false,
     validateStructure: true,
     maxDepth: 15, // Legal docs can be deeply nested
@@ -576,7 +576,7 @@ export async function serializeBatchForCache<T>(
   items: T[],
   options?: Partial<SerializationOptions>, 
 ): Promise<SerializationResult[]> {
-  return await concurrentSerializer.serializeBatch(items, {
+  return await concurrentSerializer.serializeBatch(items, {;
     compress: true,
     gpuAccelerated: items.length > 100,
     ...options

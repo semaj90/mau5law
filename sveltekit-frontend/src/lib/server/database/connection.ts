@@ -19,7 +19,7 @@ const connectionString =
 const client = postgres(connectionString, {
   max: 10,
   idle_timeout: 20,
-  connect_timeout: 10,
+  connect_timeout: 10,;
   prepare: false, // Required for pgvector
 });
 
@@ -32,7 +32,7 @@ export const db = drizzle(client, {
     timelineEvents: timelineEventsTable,
     analytics: analyticsEvents,
     vectorSimilarity: vectorSimilarityView
-  },
+  },;
   logger: process.env.NODE_ENV === 'development'
 });
 
@@ -141,7 +141,7 @@ export class QueryCacheManager {
         expires_at: expiresAt
       });
       .onConflictDoUpdate({
-        target: [queryCacheTable.cache_key],
+        target: [queryCacheTable.cache_key],;
         set: {
           result_data: data,
           expires_at: expiresAt,
@@ -213,13 +213,13 @@ export async function checkDatabaseHealth() {
 
     return {
       connected: true,
-      pgvector: extensions.length > 0,
+      pgvector: extensions.length > 0,;
       timestamp: new Date().toISOString()
     };
   } catch (error: any) {
     return {
       connected: false,
-      error: error.message,
+      error: error.message,;
       timestamp: new Date().toISOString()
     };
   }

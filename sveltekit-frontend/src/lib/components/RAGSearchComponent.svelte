@@ -26,9 +26,9 @@
   let systemStatus = $state(null);
   // Search configuration
   let searchConfig = $state({
-    limit: 5,
+    limit: 5,;
     threshold: 0.7,
-    includeRAGResponse: true
+    includeRAGResponse: true;
   });
 
   $effect(() => {
@@ -56,13 +56,13 @@
     try {
       // Use the new enhanced semantic search API for better performance
       const response = await fetch('/api/rag/semantic-search', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query: searchQuery,
-          limit: searchConfig.limit,
+          limit: searchConfig.limit,;
           threshold: searchConfig.threshold,
-          // Optional filters can be added here
+          // Optional filters can be added here;
           filters: {}
         })
       });
@@ -80,13 +80,13 @@
         if (searchConfig.includeRAGResponse && Array.isArray(data.results) && data.results.length > 0) {
           try {
             const ragResponseFetch = await fetch('/api/rag/enhanced', {
-              method: 'POST',
+              method: 'POST',;
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 query: searchQuery,
-                mode: 'semantic_search', // Use our enhanced semantic search mode
-                limit: searchConfig.limit,
-                threshold: searchConfig.threshold
+                mode: 'semantic_search', // Use our enhanced semantic search mode;
+                limit: searchConfig.limit,;
+                threshold: searchConfig.threshold;
               })
             });
 
@@ -103,10 +103,10 @@
         // Add to search history
         searchHistory.unshift({
           query: searchQuery,
-          resultCount: Array.isArray(data.results) ? data.results.length : 0,
+          resultCount: Array.isArray(data.results) ? data.results.length : 0,;
           timestamp: new Date(),
           hasRAGResponse: !!ragResponse,
-          processingTime: data.processingTime || 0
+          processingTime: data.processingTime || 0;
         });
 
         // Keep only last 5 searches
@@ -140,16 +140,16 @@
       try {
         const text = await file.text();
         const response = await fetch('/api/embed/ingest', {
-          method: 'POST',
+          method: 'POST',;
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             text: text,
             entityType: 'document',
-            entityId: crypto.randomUUID(),
+            entityId: crypto.randomUUID(),;
             metadata: {
-              filename: file.name,
+              filename: file.name,;
               filesize: file.size,
-              uploadedAt: new Date().toISOString()
+              uploadedAt: new Date().toISOString();
             }
           })
         });
@@ -409,7 +409,7 @@
 
 <style>
   /* Enhanced bits-ui styling for legal AI search */
-  :global(.legal-ai-search-input) {
+  :global(.legal-ai-search-input) {;
     background: var(--nier-bg-primary);
     border: 2px solid var(--nier-border-muted);
     transition: all 0.3s ease;

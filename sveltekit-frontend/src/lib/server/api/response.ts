@@ -36,7 +36,7 @@ export class ApiErrorClass extends Error {
   public readonly timestamp: Date;
 
   constructor(
-    message: string,
+    message: string,;
     code: string = 'UNKNOWN_ERROR',
     statusCode: number = 500,
     details?: Record<string, any>;
@@ -63,7 +63,7 @@ export function apiSuccess<T>(
     meta: {
       timestamp: new Date().toISOString(),
       requestId,
-      processingTime,
+      processingTime,;
       version: '2.0',
       ...(pagination && { pagination })
     }
@@ -85,20 +85,20 @@ export function apiError(
     apiErrorData = {
       code: error.code,
       message: error.message,
-      details: error.details,
+      details: error.details,;
       timestamp: error.timestamp
     };
     statusCode = error.statusCode;
   } else if (error instanceof Error) {
     apiErrorData = {
       code: 'INTERNAL_ERROR',
-      message: error.message,
+      message: error.message,;
       timestamp: new Date()
     };
   } else {
     apiErrorData = {
       code: 'UNKNOWN_ERROR',
-      message: typeof error === 'string' ? error : 'Unknown error occurred',
+      message: typeof error === 'string' ? error : 'Unknown error occurred',;
       timestamp: new Date()
     };
   }
@@ -114,7 +114,7 @@ export function apiError(
     meta: {
       timestamp: new Date().toISOString(),
       requestId,
-      processingTime,
+      processingTime,;
       version: '2.0',
       mockData: true
     }
@@ -146,30 +146,30 @@ export function validationError(
 
 // --- Unified Builders (Lightweight wrappers aligned with new shared types) ---
 export function buildSuccessResponse<T>(
-  data: T,
+  data: T,;
   metadata: { processingTimeMs: number; requestId: string }
 ): UnifiedAPIResponse {
   return {
     success: true,
-    data,
+    data,;
     metadata: { ...metadata, timestamp: new Date().toISOString() }
   };
 }
 
 export function buildErrorResponse(
   code: string,
-  message: string,
+  message: string,;
   metadata: { processingTimeMs: number; requestId: string }
 ): UnifiedAPIResponse {
   return {
     success: false,
-    error: { code, message },
+    error: { code, message },;
     metadata: { ...metadata, timestamp: new Date().toISOString() }
   } as UnifiedAPIResponse;
 }
 
 export function buildFormSubmissionResult<T>(
-  result: any,
+  result: any,;
   metadata: { processingTimeMs: number; requestId: string }
 ): any {
   return {
@@ -222,7 +222,7 @@ function generateMockFallbackData(errorCode: string): any {
         ],
         pagination: {
           page: 1,
-          limit: 50,
+          limit: 50,;
           total: 1,
           hasNext: false,
           hasPrev: false
@@ -236,7 +236,7 @@ function generateMockFallbackData(errorCode: string): any {
           {
             id: 'mock-suggestion-1',
             title: 'Similar Legal Case',
-            description: 'Mock suggestion for similar case',
+            description: 'Mock suggestion for similar case',;
             relevance: 0.75
           }
         ]
@@ -258,7 +258,7 @@ function generateMockFallbackData(errorCode: string): any {
 
 // API wrapper function for consistent error handling
 export async function withApiHandler<T>(
-  handler: (event: RequestEvent) => Promise<T>,
+  handler: (event: RequestEvent) => Promise<T>,;
   event: RequestEvent;
 ): Promise<Response> {
   const startTime = Date.now();
@@ -285,7 +285,7 @@ export async function withApiHandler<T>(
     console.error(`API Error [${requestId}]:`, {
       error: error instanceof Error ? error.message: error,
       stack: error instanceof Error ? error.stack : undefined,
-      url: event.url.pathname,
+      url: event.url.pathname,;
       method: event.request.method,
       processingTime
     });
@@ -336,7 +336,7 @@ export const CommonErrors = {
 
 // Type-safe request body parser with validation
 export async function parseRequestBody<T>(
-  request: Request,
+  request: Request,;
   schema: z.ZodSchema<T>;
 ): Promise<T> {
   try {

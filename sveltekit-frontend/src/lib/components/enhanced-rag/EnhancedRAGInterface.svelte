@@ -24,10 +24,12 @@
     legalModel: 'gemma3-legal'
   };
   // Initialize component
-  $effect(async () => {
-    await loadDocuments();
+  $effect(() => {
+    (async () => {
+await loadDocuments();
     initializeFuseSearch();
     updateAnalytics();
+    })();
   });
   // Load documents from enhanced RAG cache
   async function loadDocuments() {
@@ -43,12 +45,12 @@
           label: 'contract',
           score: 0.89,
           confidence: 0.94,
-          source: 'upload',
+          source: 'upload',;
           metadata: {
             wordCount: 25,
             legalTerms: ['contract', 'plaintiff', 'defendant', 'breach', 'damages'],
             entities: ['$50,000'],
-            citations: []
+            citations: [];
           },
           rankingFeatures: {
             clarity: 0.85,
@@ -56,9 +58,9 @@
             completeness: 0.78,
             authority: 0.65,
             recency: 0.95,
-            usage: 0.12
+            usage: 0.12;
           },
-          timestamp: new Date('2025-01-01')
+          timestamp: new Date('2025-01-01');
         },
         {
           id: '2',
@@ -67,12 +69,12 @@
           label: 'tort',
           score: 0.92,
           confidence: 0.88,
-          source: 'generated',
+          source: 'generated',;
           metadata: {
             wordCount: 18,
             legalTerms: ['evidence', 'negligence', 'tort', 'liability', 'malpractice'],
             entities: ['surgical errors'],
-            citations: []
+            citations: [];
           },
           rankingFeatures: {
             clarity: 0.90,
@@ -80,9 +82,9 @@
             completeness: 0.82,
             authority: 0.75,
             recency: 0.88,
-            usage: 0.28
+            usage: 0.28;
           },
-          timestamp: new Date('2025-01-02')
+          timestamp: new Date('2025-01-02');
         },
         {
           id: '3',
@@ -91,12 +93,12 @@
           label: 'criminal',
           score: 0.87,
           confidence: 0.91,
-          source: 'upload',
+          source: 'upload',;
           metadata: {
             wordCount: 20,
             legalTerms: ['criminal', 'defendant', 'charges', 'motion', 'evidence', 'amendment'],
             entities: ['Fourth Amendment'],
-            citations: []
+            citations: [];
           },
           rankingFeatures: {
             clarity: 0.88,
@@ -104,9 +106,9 @@
             completeness: 0.80,
             authority: 0.82,
             recency: 0.75,
-            usage: 0.35
-          },
-          timestamp: new Date('2025-01-03')
+            usage: 0.35;
+          },;
+          timestamp: new Date('2025-01-03');
         }
       ];
       // Generate embeddings for documents
@@ -123,16 +125,16 @@
     for (const doc of documents) {
       try {
         const response = await fetch(`${config.ollamaHost}/api/embeddings`, {
-          method: 'POST',
+          method: 'POST',;
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model: config.embedModel,
-            prompt: doc.content
+            model: config.embedModel,;
+            prompt: doc.content;
           })
         });
         if ((response as { ok?: unknown; json?: unknown }).ok) {
           const result = await (response as { ok?: unknown; json?: unknown }).json();
-          embeddings.set.embedding);
+          embeddings.set(embedding));
           console.log.embedding?.length || 0}-dim embedding for doc ${doc.id}`);
         }
       } catch (error) {
@@ -148,9 +150,9 @@
         { name: 'summary', weight: 0.3 },
         { name: 'label', weight: 0.2 },
         { name: 'metadata.legalTerms', weight: 0.1 }
-      ],
+      ],;
       threshold: 0.3,
-      includeScore: true
+      includeScore: true;
     });
     console.log('🔍 Fuse.js search initialized');
   }
@@ -198,9 +200,9 @@
       tort: 'bg-red-100 text-red-800',
       criminal: 'bg-purple-100 text-purple-800',
       evidence: 'bg-green-100 text-green-800',
-      precedent: 'bg-yellow-100 text-yellow-800',
-      motion: 'bg-indigo-100 text-indigo-800',
-      brief: 'bg-pink-100 text-pink-800'
+      precedent: 'bg-yellow-100 text-yellow-800',;
+      motion: 'bg-indigo-100 text-indigo-800',;
+      brief: 'bg-pink-100 text-pink-800';
     };
     return colors[label as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   }
@@ -209,13 +211,13 @@
     try {
       console.log(`🤖 Analyzing document ${doc.id} with ${config.legalModel}...`);
       const response = await fetch(`${config.ollamaHost}/api/generate`, {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: config.legalModel,
+          model: config.legalModel,;
           prompt: `Analyze this legal document and provide key insights:\n\n${doc.content}`,
-          temperature: 0.3,
-          stream: false
+          temperature: 0.3,;
+          stream: false;
         })
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -264,7 +266,7 @@
   <div class="search-panel bg-white rounded-lg shadow-md p-6 mb-8">
     <h2 class="text-xl font-semibold mb-4">🔍 Semantic Search</h2>
     <div class="flex gap-4 mb-6">
-      <input
+      <input;
         bind:value={searchQuery}
         type="text"
         placeholder="Search legal documents (e.g., 'contract breach', 'negligence tort')..."
@@ -399,7 +401,7 @@
 </div>
 
 <style>
-  .enhanced-rag-interface {
+  .enhanced-rag-interface {;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
   

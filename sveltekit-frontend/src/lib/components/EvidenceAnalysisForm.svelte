@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -110,9 +110,9 @@ https://svelte.dev/e/js_parse_error -->
         for (const match of matches) {
           if (match[1] && !entities.some(e => e.value === match[1] && e.type === pattern.type)) {
             entities.push({
-              type: pattern.type,
-              value: match[1],
-              confidence: pattern.confidence
+              type: pattern.type,;
+              value: match[1],;
+              confidence: pattern.confidence;
             });
           }
         }
@@ -181,17 +181,17 @@ https://svelte.dev/e/js_parse_error -->
       {
         case_name: "Smith v. Jones Contract Dispute",
         relevance: 0.92,
-        summary: "Landmark case establishing principles for contract interpretation in commercial disputes."
+        summary: "Landmark case establishing principles for contract interpretation in commercial disputes.";
       },
       {
         case_name: "Brown v. Board of Education",
         relevance: 0.85,
-        summary: "Supreme Court decision on constitutional rights and equal protection under law."
+        summary: "Supreme Court decision on constitutional rights and equal protection under law.";
       },
       {
         case_name: "Carlill v. Carbolic Smoke Ball Co.",
-        relevance: 0.78,
-        summary: "Classic contract law case defining unilateral contracts and consideration."
+        relevance: 0.78,;
+        summary: "Classic contract law case defining unilateral contracts and consideration.";
       }
     ];
 
@@ -339,7 +339,7 @@ https://svelte.dev/e/js_parse_error -->
         {#each formData.key_facts as fact, index}
           <div class="flex gap-3" transition:fade>
             <div class="flex-1">
-              <textarea
+              <textarea;
                 bind:value={formData.key_facts[index]}
                 rows="2"
                 placeholder="Describe a key fact relevant to this case..."
@@ -376,7 +376,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="space-y-3">
         {#each formData.legal_issues as issue, index}
           <div class="flex gap-3" transition:fade>
-            <select
+            <select;
               bind:value={formData.legal_issues[index]}
               class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >

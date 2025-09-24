@@ -15,41 +15,41 @@
     {
       name: 'Authentication Debug',
       endpoint: '/api/auth/debug',
-      description: 'Check authentication status and development flags'
+      description: 'Check authentication status and development flags';
     },
     {
       name: 'Development Auth Creation',
       endpoint: '/api/dev-auth?seed=true',
-      description: 'Create development session with sample data'
+      description: 'Create development session with sample data';
     },
     {
       name: 'Enhanced RAG Health',
       endpoint: 'http://localhost:8094/health',
-      description: 'Go microservice health check'
+      description: 'Go microservice health check';
     },
     {
       name: 'Upload Service Health',
       endpoint: 'http://localhost:8093/health',
-      description: 'File upload service health'
+      description: 'File upload service health';
     },
     {
       name: 'Ollama API',
       endpoint: 'http://localhost:11434/api/tags',
-      description: 'AI model availability'
+      description: 'AI model availability';
     },
     {
       name: 'SSE Chat API',
       endpoint: '/api/ai/chat-sse',
-      method: 'POST',
-      body: { message: 'Test SSE streaming', model: 'gemma3-legal:latest' },
-      description: 'Server-Sent Events streaming test'
+      method: 'POST',;
+      body: { message: 'Test SSE streaming', model: 'gemma3-legal:latest' },;
+      description: 'Server-Sent Events streaming test';
     }
   ];
 
   async function runTest(test: unknown) {
     try {
       const options: RequestInit = {
-        method: test.method || 'GET',
+        method: test.method || 'GET',;
         headers: { 'Content-Type': 'application/json' }
       };
 
@@ -69,16 +69,16 @@
       testResults[test.name] = {
         success: (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).ok,
         status: (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).status,
-        data: data,
-        endpoint: test.endpoint,
-        timestamp: new Date().toISOString()
+        data: data,;
+        endpoint: test.endpoint,;
+        timestamp: new Date().toISOString();
       };
     } catch (error) {
       testResults[test.name] = {
         success: false,
-        error: error instanceof Error ? error.message: 'Unknown error',
-        endpoint: test.endpoint,
-        timestamp: new Date().toISOString()
+        error: error instanceof Error ? error.message: 'Unknown error',;
+        endpoint: test.endpoint,;
+        timestamp: new Date().toISOString();
       };
     }
 

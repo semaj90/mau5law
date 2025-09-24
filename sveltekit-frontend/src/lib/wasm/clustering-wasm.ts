@@ -57,7 +57,7 @@ export class WebAssemblyClusteringService {
 
   async performKMeansClustering(
     embeddings: number[][],
-    k: number,
+    k: number,;
     config: any;
   ): Promise<any> {
     if (this.wasmInstance && this.isWasmSupported) {
@@ -84,7 +84,7 @@ export class WebAssemblyClusteringService {
   }
 
   async performSOMTraining(
-    embeddings: number[][],
+    embeddings: number[][],;
     config: any;
   ): Promise<any> {
     if (this.wasmInstance && this.isWasmSupported) {
@@ -162,7 +162,7 @@ export class WebAssemblyClusteringService {
   // JavaScript fallback implementations
   private async jsKMeansClustering(
     embeddings: number[][],
-    k: number,
+    k: number,;
     config: any;
   ): Promise<any> {
     console.log('Using JavaScript K-Means clustering fallback...');
@@ -179,7 +179,7 @@ export class WebAssemblyClusteringService {
   }
 
   private async jsSOMTraining(
-    embeddings: number[][],
+    embeddings: number[][],;
     config: any;
   ): Promise<any> {
     console.log('Using JavaScript SOM training fallback...');

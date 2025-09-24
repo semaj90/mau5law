@@ -17,7 +17,7 @@ NES-styled alert with legal AI theming
   let {
     variant = 'default',
     class: className = '',
-    children
+    children;
   }: AlertProps = $props();
   
   // NES-style alert classes

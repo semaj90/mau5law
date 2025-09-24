@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class'
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
@@ -56,7 +56,7 @@ https://svelte.dev/e/js_parse_error -->
   bind:this={containerElement}
   class="space-y-4"
   class:expanded={isExpanded}
-  style="
+  style=";
     --columns: {currentColumns};
     --gap: {gap};
     --expand-duration: {expandDuration};
@@ -91,16 +91,16 @@ https://svelte.dev/e/js_parse_error -->
     border-color: #e5e7eb;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
-/* Grid item styling */ .expand-grid: global(.grid-item) {
+/* Grid item styling */ .expand-grid :global(.grid-item) {
     transition: all var(--expand-duration) var(--easing);
     border-radius: 0.375rem;
     overflow: hidden;
     position: relative;
 }
-  .expand-grid.expanded: global(.grid-item) {
+  .expand-grid.expanded :global(.grid-item) {
     transform: scale(1.02);
 }
-  .expand-grid: global(.grid-item:hover) {
+  .expand-grid :global(.grid-item:hover) {
     transform: scale(1.05);
     z-index: 10;
 }

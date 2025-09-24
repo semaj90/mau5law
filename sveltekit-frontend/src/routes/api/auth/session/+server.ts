@@ -1,17 +1,17 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
 
 /*
  * Session Validation API Endpoint
  * GET /api/auth/session - Check current session status
  */
 
-import { ExistingUserAuthService as UserAuthService } from '$lib/server/db/existing-user-operations.js';
-import { dev } from '$app/environment';
+import { ExistingUserAuthService as UserAuthService } from '$lib/server/db/existing-user-operations.js'
+import { dev } from '$app/environment'
 
 export const GET: RequestHandler = async ({ cookies }) => {
   try {
-    const sessionId = cookies.get('session_id');
+    const sessionId = cookies.get('session_id')
     
     if (!sessionId) {
       return json({
@@ -31,20 +31,20 @@ export const GET: RequestHandler = async ({ cookies }) => {
           'Content-Type': 'application/json',
           ...(dev && { 'Access-Control-Allow-Origin': '*' })
         }
-      });
+      })
     }
 
     // Validate session
-    const result = await UserAuthService.validateSession(sessionId);
+    const result = await UserAuthService.validateSession(sessionId)
     
     if (!(result as { success?: any; user?: any; session?: any }).success || !(result as { success?: any; user?: any; session?: any }).user) {
-      // Clear invalid session cookie;
+      // Clear invalid session cookie
       cookies.delete('session_id', {
         path: '/',
         httpOnly: true,
         secure: !dev,
         sameSite: 'strict'
-      });
+      })
 
       return json({
         success: false,
@@ -63,11 +63,11 @@ export const GET: RequestHandler = async ({ cookies }) => {
           'Content-Type': 'application/json',
           ...(dev && { 'Access-Control-Allow-Origin': '*' })
         }
-      });
+      })
     }
 
     // Remove sensitive information from user object
-    const { passwordHash, ...safeUser } = (result as { success?: any; user?: any; session?: any }).user;
+    const { passwordHash, ...safeUser } = (result as { success?: any; user?: any; session?: any }).user
     
     return json({
       success: true,
@@ -91,18 +91,18 @@ export const GET: RequestHandler = async ({ cookies }) => {
         'Content-Type': 'application/json',
         ...(dev && { 'Access-Control-Allow-Origin': '*' })
       }
-    });
+    })
 
   } catch (err: any) {
-    console.error('Session validation API error:', err);
+    console.error('Session validation API error:', err)
 
-    // Clear potentially corrupted session cookie;
+    // Clear potentially corrupted session cookie
     cookies.delete('session_id', {
       path: '/',
       httpOnly: true,
       secure: !dev,
       sameSite: 'strict'
-    });
+    })
 
     return json({
       success: false,
@@ -119,11 +119,11 @@ export const GET: RequestHandler = async ({ cookies }) => {
     }, { 
       status: 200, // Return 200 but with authenticated: false,
       headers: { 'Content-Type': 'application/json' }
-    });
+    })
   }
-};
+}
 
-// OPTIONS handler for CORS preflight requests;
+// OPTIONS handler for CORS preflight requests
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {
     status: 200,
@@ -133,5 +133,5 @@ export const OPTIONS: RequestHandler = async () => {
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       'Access-Control-Max-Age': '86400', // 24 hours
     }
-  });
-};
+  })
+}

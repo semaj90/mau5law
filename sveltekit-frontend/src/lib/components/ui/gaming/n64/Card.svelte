@@ -95,7 +95,7 @@
     onClick,
     onHover,
     onFocus,
-    class: className = ''
+    class: className = '';
   }: Props = $props();
 
   
@@ -236,7 +236,7 @@
       secondary: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748', accent: '#6c757d' },
       success: { base: '#2d5016', highlight: '#38a169', shadow: '#1a365d', accent: '#28a745' },
       warning: { base: '#744210', highlight: '#d69e2e', shadow: '#452f06', accent: '#ffc107' },
-      error: { base: '#742a2a', highlight: '#e53e3e', shadow: '#451b1b', accent: '#dc3545' },
+      error: { base: '#742a2a', highlight: '#e53e3e', shadow: '#451b1b', accent: '#dc3545' },;
       info: { base: '#2a4365', highlight: '#3182ce', shadow: '#1a202c', accent: '#17a2b8' }
     };
 
@@ -261,7 +261,7 @@
           0 ${elevation * 2}px ${elevation * 2}px rgba(0,0,0,0.4)
         `
       },
-      pbr: {
+      pbr: {;
         background: `
           linear-gradient(145deg, ${colors.highlight} 0%, ${colors.base} 30%, ${colors.shadow} 70%, ${colors.base} 100%),
           radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2) 0%, transparent 50%)
@@ -284,9 +284,9 @@
     const paddingMap = {
       none: '0',
       small: '12px',
-      medium: '20px',
-      large: '28px',
-      xl: '36px'
+      medium: '20px',;
+      large: '28px',;
+      xl: '36px';
     };
     return paddingMap[padding as keyof typeof paddingMap] || paddingMap.medium;
   };
@@ -379,11 +379,11 @@
   class:clickable
   class:hoverable
   class:disabled
-  class:loading
+  class:loading;
   class:hovered={isHovered}
   class:focused={isFocused}
   class:pressed={isPressed}
-  style="
+  style=";
     --material-bg: {materialStyles.background};
     --material-border: {materialStyles.borderColor};
     --material-shadow: {materialStyles.boxShadow};
@@ -655,7 +655,7 @@ filter: contrast(1.02) brightness(1.01) saturate(1.05);
   .n64-card.anisotropic-16x {
     filter: contrast(1.08) brightness(1.02);
   }
-/* Fog effects */ .n64-card: :before {
+/* Fog effects */ .n64-card::before {
     content: '';
     position: absolute;
     top: 0;
@@ -677,7 +677,7 @@ background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040)
       display: none;
     }
 
-    .n64-card: :before {
+    .n64-card::before {
       display: none;
     }
   }
@@ -711,7 +711,7 @@ background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040)
       transform: none;
       box-shadow: 0 6px 0 rgba(0, 0, 0, 0.3), 0 12px 24px rgba(0, 0, 0, 0.2);
     }
-.lighting-overlay, .reflection-overlay, .atmosphere-overlay, .depth-shadow, .n64-card: :before {
+.lighting-overlay, .reflection-overlay, .atmosphere-overlay, .depth-shadow, .n64-card::before {
       display: none;
     }
   }

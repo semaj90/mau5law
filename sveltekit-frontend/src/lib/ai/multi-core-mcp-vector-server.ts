@@ -396,7 +396,7 @@ export class MultiCoreMCPVectorServer {
         processingTime: totalTime,
         throughput: processedVectors.length / (totalTime / 1000),
         memoryPeak: process.memoryUsage().heapUsed / 1024 / 1024,
-        cacheHitRate: this.metrics.cacheHitRate,
+        cacheHitRate: this.metrics.cacheHitRate,;
         metrics: this.metrics
       };
 
@@ -422,7 +422,7 @@ export class MultiCoreMCPVectorServer {
 
       if (start < end) {
         const chunk = {
-          vectors: batch.vectors.slice(start, end),
+          vectors: batch.vectors.slice(start, end),;
           metadata: batch.metadata.slice(start, end),
           chunkId: i
         };
@@ -469,7 +469,7 @@ export class MultiCoreMCPVectorServer {
    */
   private async createDatabaseIndexes(
     table: string,
-    algorithm: string,
+    algorithm: string,;
     vectors: ProcessedVector[];
   ): Promise<IndexCreationResult[]> {
     const client = await this.db.connect();
@@ -500,7 +500,7 @@ export class MultiCoreMCPVectorServer {
    * Create IVF_FLAT index with optimized parameters
    */
   private async createIVFFlatIndex(
-    client: any,
+    client: any,;
     table: string,
     vectorCount: number;
   ): Promise<IndexCreationResult> {
@@ -522,7 +522,7 @@ export class MultiCoreMCPVectorServer {
 
     return {
       algorithm: 'IVF_FLAT',
-      indexName,
+      indexName,;
       parameters: { lists },
       vectorCount,
       creationTime: createTime,
@@ -535,7 +535,7 @@ export class MultiCoreMCPVectorServer {
    * Create HNSW index with optimized parameters
    */
   private async createHNSWIndex(
-    client: any,
+    client: any,;
     table: string,
     vectorCount: number;
   ): Promise<IndexCreationResult> {
@@ -558,7 +558,7 @@ export class MultiCoreMCPVectorServer {
 
     return {
       algorithm: 'HNSW',
-      indexName,
+      indexName,;
       parameters: { m, efConstruction },
       vectorCount,
       creationTime: createTime,
@@ -572,7 +572,7 @@ export class MultiCoreMCPVectorServer {
    */
   private async insertVectorsInBatches(
     client: any,
-    table: string,
+    table: string,;
     vectors: ProcessedVector[],
     batchSize: number = 1000;
   ): Promise<void> {
@@ -614,7 +614,7 @@ export class MultiCoreMCPVectorServer {
       const cacheKey = `vector:${vector.documentId}`;
       const cacheData = {
         embedding: Array.from(vector.embedding),
-        metadata: vector.metadata,
+        metadata: vector.metadata,;
         norm: vector.norm,
         cached_at: Date.now()
       };
@@ -708,7 +708,7 @@ export class MultiCoreMCPVectorServer {
    * Simple vector search by document content
    */
   async searchDocuments(
-    query: string,
+    query: string,;
     options: {
       limit?: number;
       threshold?: number;
@@ -749,7 +749,7 @@ export class MultiCoreMCPVectorServer {
       const searchResults: DocumentSearchResult[] = results.map(row => ({
         document_id: row.document_id,
         content: row.content,
-        similarity: row.similarity,
+        similarity: row.similarity,;
         metadata: row.metadata || {},
         searchTime: performance.now() - startTime
       });
@@ -773,7 +773,7 @@ export class MultiCoreMCPVectorServer {
    * Semantic search across multiple document collections
    */
   async semanticSearch(
-    query: string,
+    query: string,;
     options: {
       collections?: string[];
       limit?: number;
@@ -845,7 +845,7 @@ export class MultiCoreMCPVectorServer {
             default:
               // Generic text search fallback
               searchResults = await this.sql`
-                SELECT
+                SELECT;
                   id::text as document_id,
                   ${includeContent ? this.sql`content` : this.sql`'' as content`},
                   '{}' as metadata,
@@ -860,7 +860,7 @@ export class MultiCoreMCPVectorServer {
           return searchResults.map(row => ({
             document_id: row.document_id,
             content: row.content,
-            similarity: row.similarity,
+            similarity: row.similarity,;
             metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
             source_collection: row.source_collection
           });
@@ -919,7 +919,7 @@ export class MultiCoreMCPVectorServer {
    * Full-text search with ranking
    */
   async fullTextSearch(
-    query: string,
+    query: string,;
     options: {
       collections?: string[];
       limit?: number;
@@ -970,7 +970,7 @@ export class MultiCoreMCPVectorServer {
             document_id: row.document_id,
             content: row.content,
             snippet: row.snippet,
-            rank: row.rank,
+            rank: row.rank,;
             metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata || '{}') : row.metadata,
             source_collection: row.source_collection
           });
@@ -1025,7 +1025,7 @@ export class MultiCoreMCPVectorServer {
    * Hybrid search combining vector similarity + full-text + keyword matching
    */
   async hybridSearch(
-    query: string,
+    query: string,;
     options: {
       limit?: number;
       vectorWeight?: number;
@@ -1069,7 +1069,7 @@ export class MultiCoreMCPVectorServer {
       vectorResults.forEach(result => {
         const existing = scoredResults.get(result.document_id) || {
           document_id: result.document_id,
-          content: result.content,
+          content: result.content,;
           metadata: result.metadata,
           vector_score: 0,
           text_score: 0,
@@ -1087,7 +1087,7 @@ export class MultiCoreMCPVectorServer {
       textResults.results.forEach(result => {
         const existing = scoredResults.get(result.document_id) || {
           document_id: result.document_id,
-          content: result.content,
+          content: result.content,;
           metadata: result.metadata,
           vector_score: 0,
           text_score: 0,
@@ -1140,7 +1140,7 @@ export class MultiCoreMCPVectorServer {
         query,
         results: finalResults,
         total_results: finalResults.length,
-        search_time: performance.now() - startTime,
+        search_time: performance.now() - startTime,;
         weights: { vectorWeight, textWeight, keywordWeight },
         cache_hit: false
       };
@@ -1241,7 +1241,7 @@ export class MultiCoreMCPVectorServer {
         query: queryText,
         results: filteredResults,
         searchStrategy,
-        totalTime,
+        totalTime,;
         metrics: {
           embeddingTime: 0, // Would be measured separately
           searchTime: totalTime,
@@ -1295,7 +1295,7 @@ export class MultiCoreMCPVectorServer {
       document_id: row.document_id,
       content: row.document_content,
       similarity: row.similarity,
-      metadata: row.document_metadata,
+      metadata: row.document_metadata,;
       score: row.similarity
     });
   }
@@ -1327,7 +1327,7 @@ export class MultiCoreMCPVectorServer {
       document_id: row.document_id,
       content: row.document_content,
       similarity: row.similarity,
-      metadata: row.document_metadata,
+      metadata: row.document_metadata,;
       score: row.similarity
     });
   }  /**
@@ -1348,7 +1348,7 @@ export class MultiCoreMCPVectorServer {
     return docs.map(([doc, score]) => ({
       document_id: doc.metadata.document_id || 'unknown',
       content: doc.pageContent,
-      similarity: 1 - score, // Convert distance to similarity
+      similarity: 1 - score, // Convert distance to similarity;
       metadata: doc.metadata,
       score
     });
@@ -1515,7 +1515,7 @@ if (!isMainThread) {
           workerId,
           processedAt: Date.now()
         },
-        norm,
+        norm,;
         hash: hashVector(quantizedVector)
       });
 

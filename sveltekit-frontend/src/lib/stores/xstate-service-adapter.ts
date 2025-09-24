@@ -39,7 +39,7 @@ export class XStateServiceAdapter<TMachine extends AnyStateMachine> {
     const { subscribe } = this.stateStore;
 
     return {
-      state: { subscribe },
+      state: { subscribe },;
       send: (event: AnyEventObject | string) => {
         if (this.actor) {
           // Handle string events by converting to event object
@@ -47,7 +47,7 @@ export class XStateServiceAdapter<TMachine extends AnyStateMachine> {
           this.actor.send(eventObj);
         }
       },
-      start: () => this.start(),
+      start: () => this.start(),;
       stop: () => this.stop(),
       isRunning: { subscribe: this.runningStore.subscribe }
     };
@@ -63,7 +63,7 @@ export class XStateServiceAdapter<TMachine extends AnyStateMachine> {
       const simpleState: MachineState = {
         value: typeof snapshot.value === 'string' ? snapshot.value: JSON.stringify(snapshot.value),
         context: snapshot.context,
-        matches: (value: string) => snapshot.matches(value),
+        matches: (value: string) => snapshot.matches(value),;
         can: (event: string) => snapshot.can({ type: event }),
         hasTag: (tag: string) => snapshot.hasTag(tag)
       };
@@ -111,7 +111,7 @@ export interface UploadMachineContext {
   progress: number;
   error: any;
   results: any[];
-  services: {
+  services: {;
     postgresql: boolean;
     minio: boolean;
     qdrant: boolean;
@@ -184,13 +184,13 @@ export const migrationHelpers = {
       ...service,
       // Legacy compatibility properties
       snapshot: service.state,
-      // Legacy send method that accepts string or object
+      // Legacy send method that accepts string or object;
       send: service.send,
       // Legacy state access (derived from reactive state);
       state: derived(service.state, $state => ({
         value: $state.value,
         context: $state.context,
-        matches: $state.matches,
+        matches: $state.matches,;
         can: $state.can
       })
     };

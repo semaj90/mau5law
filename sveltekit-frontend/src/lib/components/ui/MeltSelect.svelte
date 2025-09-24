@@ -55,7 +55,7 @@
   		required = false,
   		'aria-label': ariaLabel,
   		'aria-labelledby': ariaLabelledBy,
-  		'data-testid': testId
+  		'data-testid': testId;
   	}: Props = $props();
   	
 

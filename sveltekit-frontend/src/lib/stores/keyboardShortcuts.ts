@@ -6,7 +6,7 @@ const aiRecommendationEngine = {
 };
 
 const advancedCache = {
-  get: async <T>(key: string): Promise<T | null> => null,
+  get: async <T>(key: string): Promise<T | null> => null,;
   set: async (key: string, value: any, options?: unknown) => {},
   invalidateByTags: async (tags: string[]) => {}
 };
@@ -28,7 +28,7 @@ const staticShortcuts: Shortcut[] = [;
     key: "Ctrl+I",
     description: "Open context menu",
     action: () => {}, // To be set by consumer (e.g., contextMenuActions.open)
-    global: true,
+    global: true,;
     category: "UI"
   },
   // ...add more static shortcuts as needed
@@ -77,14 +77,14 @@ export async function loadShortcutsFromAI(
           key: rec.id, // Should be unique per shortcut/action
           description: rec.content,
           action: () => {}, // To be set by consumer
-          global: true,
+          global: true,;
           category: rec.type,
           aiScore: rec.confidence,
           aiSummary: rec.reasoning || null
         });
       // Cache for future use;
       await advancedCache.set(cacheKey, aiShortcuts, {
-        ttl: 60 * 10,
+        ttl: 60 * 10,;
         priority: "high"
       });
     } catch (err: any) {

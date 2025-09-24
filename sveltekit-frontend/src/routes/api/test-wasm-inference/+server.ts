@@ -1,29 +1,29 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 /*
  * WebAssembly Inference Test API Endpoint
  * Tests the complete WebAssembly RAG inference pipeline
  */
 
-import { json } from '@sveltejs/kit';
-import { wasmInferenceMachine, WASMInferenceRAGService } from '$lib/services/webasm-inference-rag.js';
-import { rabbitMQIntegration } from '$lib/messaging/rabbitmq-xstate-integration.js';
+import { json } from '@sveltejs/kit'
+import { wasmInferenceMachine, WASMInferenceRAGService } from '$lib/services/webasm-inference-rag.js'
+import { rabbitMQIntegration } from '$lib/messaging/rabbitmq-xstate-integration.js'
 
 export const POST: RequestHandler = async ({ request }) => {
-  const startTime = Date.now();
-  console.log('🧠 WebAssembly inference test request received');
+  const startTime = Date.now()
+  console.log('🧠 WebAssembly inference test request received')
 
   try {
-    const { prompt, enableRAG = true, maxTokens = 1024, temperature = 0.7 } = await request.json();
+    const { prompt, enableRAG = true, maxTokens = 1024, temperature = 0.7 } = await request.json()
 
     if (!prompt) {
-      return json({ error: 'Prompt is required' }, { status: 400 });
+      return json({ error: 'Prompt is required' }, { status: 400 })
     }
 
-    console.log(`🔍 Processing WASM inference: "${prompt.slice(0, 50)}..."`);
+    console.log(`🔍 Processing WASM inference: "${prompt.slice(0, 50)}..."`)
 
     // Test 1: Direct WebAssembly Inference Service
-    console.log('📊 Test 1: Direct WASM Inference Service');
+    console.log('📊 Test 1: Direct WASM Inference Service')
 
     const wasmRequest = {
       id: `test_wasm_${Date.now()}_${Math.random().toString(36).slice(2)}`,
@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
       priority: 'high' as const,
       systemMessage:
         'You are a legal AI assistant specialized in analyzing legal documents and providing expert insights.'
-    };
+    }
 
     const wasmContext = {
       wasmModule: null,
@@ -57,18 +57,18 @@ export const POST: RequestHandler = async ({ request }) => {
         memoryPeak: 0
       },
       error: null
-    };
+    }
 
     const directResult = await WASMInferenceRAGService.processInferenceWithRAG(
       wasmRequest,
       wasmContext
-    );
-    console.log('✅ Direct WASM inference completed');
+    )
+    console.log('✅ Direct WASM inference completed')
 
     // Test 2: RabbitMQ Message Queue Integration
-    console.log('📊 Test 2: RabbitMQ Integration');
+    console.log('📊 Test 2: RabbitMQ Integration')
 
-    let rabbitMQResult = null;
+    let rabbitMQResult = null
     try {
       await rabbitMQIntegration.publishMessage({
         type: 'wasm_inference',
@@ -82,56 +82,56 @@ export const POST: RequestHandler = async ({ request }) => {
           startTime: Date.now()
         },
         priority: 8
-      });
+      })
 
       rabbitMQResult = {
         status: 'queued',
         messageType: 'wasm_inference',
         queuedAt: new Date().toISOString()
-      };
+      }
 
-      console.log('✅ RabbitMQ message queued successfully');
+      console.log('✅ RabbitMQ message queued successfully')
     } catch (rabbitError) {
-      console.warn('⚠️ RabbitMQ test failed:', rabbitError);
+      console.warn('⚠️ RabbitMQ test failed:', rabbitError)
       rabbitMQResult = {
         status: 'failed',
         error: rabbitError.message,
         fallback: 'Direct processing mode available'
-      };
+      }
     }
 
     // Test 3: PostgreSQL-Qdrant Sync Integration
-    console.log('📊 Test 3: PostgreSQL-Qdrant Sync');
+    console.log('📊 Test 3: PostgreSQL-Qdrant Sync')
 
-    let syncResult = null;
+    let syncResult = null
     try {
-      const { postgresqlQdrantSync } = await import('$lib/services/postgresql-qdrant-sync.js');
+      const { postgresqlQdrantSync } = await import('$lib/services/postgresql-qdrant-sync.js')
 
       // Test health check
-      const health = await postgresqlQdrantSync.healthCheck();
+      const health = await postgresqlQdrantSync.healthCheck()
 
       // Test WASM statistics
-      const wasmStats = postgresqlQdrantSync.getWASMStats();
+      const wasmStats = postgresqlQdrantSync.getWASMStats()
 
       syncResult = {
         health,
         wasmStats,
         status: 'operational',
         optimizedRetrieval: true
-      };
+      }
 
-      console.log('✅ PostgreSQL-Qdrant sync test completed');
+      console.log('✅ PostgreSQL-Qdrant sync test completed')
     } catch (syncError) {
-      console.warn('⚠️ PostgreSQL-Qdrant sync test failed:', syncError);
+      console.warn('⚠️ PostgreSQL-Qdrant sync test failed:', syncError)
       syncResult = {
         status: 'failed',
         error: syncError.message,
         fallback: 'Enhanced RAG service fallback available'
-      };
+      }
     }
 
     // Test 4: XState Machine Integration
-    console.log('📊 Test 4: XState Machine');
+    console.log('📊 Test 4: XState Machine')
 
     const machineResult = {
       machineId: wasmInferenceMachine.id,
@@ -143,13 +143,13 @@ export const POST: RequestHandler = async ({ request }) => {
         hasActiveRequests: 'activeRequests' in (wasmInferenceMachine.config.context || {})
       },
       status: 'configured'
-    };
+    }
 
-    console.log('✅ XState machine test completed');
+    console.log('✅ XState machine test completed')
 
-    const totalTime = Date.now() - startTime;
+    const totalTime = Date.now() - startTime
 
-    // Comprehensive test results;
+    // Comprehensive test results
     const testResults = {
       success: true,
       processingTime: totalTime,
@@ -198,9 +198,9 @@ export const POST: RequestHandler = async ({ request }) => {
           'Test batch inference and streaming inference modes'
         ]
       }
-    };
+    }
 
-    console.log(`🎉 WebAssembly inference test completed successfully in ${totalTime}ms`);
+    console.log(`🎉 WebAssembly inference test completed successfully in ${totalTime}ms`)
 
     return json(testResults, {
       status: 200,
@@ -210,13 +210,13 @@ export const POST: RequestHandler = async ({ request }) => {
         'X-WASM-Version': '1.0.0',
         'X-Integration-Status': 'fully-operational'
       }
-    });
+    })
   } catch (error: unknown) {
-    const err = error instanceof Error ? error : new Error('Unknown error');
-    console.error('❌ WebAssembly inference test failed:', err);
+    const err = error instanceof Error ? error : new Error('Unknown error')
+    console.error('❌ WebAssembly inference test failed:', err)
 
-    const errorTime = Date.now() - startTime;
-    return json();
+    const errorTime = Date.now() - startTime
+    return json()
       {
         success: false,
         error: err.message,
@@ -248,45 +248,45 @@ export const POST: RequestHandler = async ({ request }) => {
           'X-Error-Source': 'wasm-inference-test'
         }
       }
-    );
+    )
   }
-};
+}
 
-// GET endpoint for quick health check;
+// GET endpoint for quick health check
 export const GET: RequestHandler = async () => {
   try {
-    console.log('🏥 WebAssembly inference health check');
+    console.log('🏥 WebAssembly inference health check')
 
-    const { WASMInferenceRAGService } = await import('$lib/services/webasm-inference-rag.js');
-    const healthStatus = WASMInferenceRAGService.getHealthStatus();
+    const { WASMInferenceRAGService } = await import('$lib/services/webasm-inference-rag.js')
+    const healthStatus = WASMInferenceRAGService.getHealthStatus()
 
-    // Quick connectivity tests;
+    // Quick connectivity tests
     const services = {
       wasmInferenceService: healthStatus.status === 'healthy',
       enhancedRAGService: false,
       postgresqlQdrantSync: false
-    };
+    }
 
-    // Test Enhanced RAG Service;
+    // Test Enhanced RAG Service
     try {
       const ragResponse = await fetch('http://localhost:8094/api/health', {
         method: 'GET'
-      });
-      services.enhancedRAGService = ragResponse.ok;
+      })
+      services.enhancedRAGService = ragResponse.ok
     } catch {
-      services.enhancedRAGService = false;
+      services.enhancedRAGService = false
     }
 
-    // Test PostgreSQL-Qdrant Sync;
+    // Test PostgreSQL-Qdrant Sync
     try {
-      const { postgresqlQdrantSync } = await import('$lib/services/postgresql-qdrant-sync.js');
-      const syncHealth = await postgresqlQdrantSync.healthCheck();
-      services.postgresqlQdrantSync = syncHealth.status === 'healthy';
+      const { postgresqlQdrantSync } = await import('$lib/services/postgresql-qdrant-sync.js')
+      const syncHealth = await postgresqlQdrantSync.healthCheck()
+      services.postgresqlQdrantSync = syncHealth.status === 'healthy'
     } catch {
-      services.postgresqlQdrantSync = false;
+      services.postgresqlQdrantSync = false
     }
 
-    const overallHealth = Object.values(services).every((service) => service === true);
+    const overallHealth = Object.values(services).every((service) => service === true)
 
     return json({
       status: overallHealth ? 'healthy' : 'degraded',
@@ -299,16 +299,16 @@ export const GET: RequestHandler = async () => {
         enhancedRAG: 'http://localhost:8094/api/rag'
       },
       version: '1.0.0'
-    });
+    })
   } catch (error: unknown) {
-    const err = error instanceof Error ? error : new Error('Unknown error');
-    return json();
+    const err = error instanceof Error ? error : new Error('Unknown error')
+    return json()
       {
         status: 'unhealthy',
         error: err.message,
         timestamp: new Date().toISOString()
       },
       { status: 500 }
-    );
+    )
   }
-};
+}

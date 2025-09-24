@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 export // Melt UI component creation removed - replace with bits-ui declarative components\n```\n```svelte\n<button >Click</button>\n```',
         metadata: {
@@ -8,7 +8,7 @@ export // Melt UI component creation removed - replace with bits-ui declarative 
           topic: topic || 'builders',
           tokenCount: 120
         },
-        snippets: [;
+        snippets: [
           {
             title: 'Button',
             code: '// Melt UI component creation removed - replace with bits-ui declarative components',
@@ -38,7 +38,7 @@ export // Melt UI component creation removed - replace with bits-ui declarative 
 
 ### Basic Connection
 \`\`\`typescript
-import Redis from 'ioredis';
+import Redis from 'ioredis'
 
 const redis = new Redis({
   host: 'localhost',
@@ -52,22 +52,22 @@ const redis = new Redis({
   keepAlive: 30000,
   family: 4,          // IPv4
   keyPrefix: 'myapp:', // Auto-prefix keys
-});
+})
 \`\`\`
 
 ### Connection Pool with Pub/Sub
-\`\`\`typescript;
+\`\`\`typescript
 class RedisService {
   private pool: {
-    primary: Redis;
-    subscriber: Redis;
-    publisher: Redis;
-  };
+    primary: Redis
+    subscriber: Redis
+    publisher: Redis
+  }
 
   async initialize() {
     this.pool = {
       // Primary connection for read/write
-  // (Note) In production, prefer a centralized helper (createRedisInstance) instead of raw new Redis.;
+  // (Note) In production, prefer a centralized helper (createRedisInstance) instead of raw new Redis.
   primary: new Redis({
         host: 'localhost',
         port: 6379,
@@ -76,7 +76,7 @@ class RedisService {
       }),
 
       // Dedicated subscriber (required for pub/sub)
-  // (Note) Use createRedisInstance or a small wrapper for subscriber in real code.;
+  // (Note) Use createRedisInstance or a small wrapper for subscriber in real code.
   subscriber: new Redis({
         host: 'localhost',
         port: 6379,
@@ -84,20 +84,20 @@ class RedisService {
       }),
 
       // Dedicated publisher
-  // (Note) Use createRedisInstance or a small wrapper for publisher in real code.;
+  // (Note) Use createRedisInstance or a small wrapper for publisher in real code.
   publisher: new Redis({
         host: 'localhost',
         port: 6379,
         connectionName: 'publisher'
       })
-    };
+    }
 
     // Setup event handlers
-    this.pool.primary.on('connect', () => console.log('Primary connected');
-    this.pool.primary.on('ready', () => console.log('Primary ready');
-    this.pool.primary.on('error', (err) => console.error('Primary error:', err);
-    this.pool.primary.on('close', () => console.log('Primary closed');
-    this.pool.primary.on('reconnecting', () => console.log('Primary reconnecting');
+    this.pool.primary.on('connect', () => console.log('Primary connected')
+    this.pool.primary.on('ready', () => console.log('Primary ready')
+    this.pool.primary.on('error', (err) => console.error('Primary error:', err)
+    this.pool.primary.on('close', () => console.log('Primary closed')
+    this.pool.primary.on('reconnecting', () => console.log('Primary reconnecting')
   }
 }
 \`\`\`
@@ -105,35 +105,35 @@ class RedisService {
 ## Event Handling and Error Management
 
 ### Connection Events
-\`\`\`typescript;
+\`\`\`typescript
 redis.on('connect', () => {
-  console.log('Connected to Redis');
-});
+  console.log('Connected to Redis')
+})
 
 redis.on('ready', () => {
-  console.log('Redis ready to receive commands');
-});
+  console.log('Redis ready to receive commands')
+})
 
 redis.on('error', (err) => {
-  console.error('Redis connection error:', err);
+  console.error('Redis connection error:', err)
   // Handle graceful degradation
-});
+})
 
 redis.on('close', () => {
-  console.log('Redis connection closed');
-});
+  console.log('Redis connection closed')
+})
 
 redis.on('reconnecting', (delay: number) => {
-  console.log(\`Reconnecting in \${delay}ms\`);
-});
+  console.log(\`Reconnecting in \${delay}ms\`)
+})
 
 redis.on('end', () => {
-  console.log('Redis connection ended');
-});
+  console.log('Redis connection ended')
+})
 \`\`\`
 
 ### Automatic Reconnection
-\`\`\`typescript;
+\`\`\`typescript
 const redis = new Redis({
   host: 'localhost',
   port: 6379,
@@ -142,82 +142,82 @@ const redis = new Redis({
   maxRetriesPerRequest: 3,
   enableReadyCheck: true,
   lazyConnect: true
-});
+})
 
-// Exponential backoff for reconnection;
+// Exponential backoff for reconnection
 redis.on('error', (err) => {
   if (err.code === 'ECONNREFUSED') {
-    console.log('Redis server refused connection');
+    console.log('Redis server refused connection')
     // Implement custom backoff logic
   }
-});
+})
 \`\`\`
 
 ## Pub/Sub Implementation
 
 ### Setting Up Subscriber
 \`\`\`typescript
-// Subscriber client (separate from main client);
+// Subscriber client (separate from main client)
 const subscriber = new Redis({
   host: 'localhost',
   port: 6379
-});
+})
 
 // Subscribe to patterns
-await subscriber.psubscribe('legal-ai:document:*');
-await subscriber.subscribe('legal-ai:cache:invalidate');
+await subscriber.psubscribe('legal-ai:document:*')
+await subscriber.subscribe('legal-ai:cache:invalidate')
 
-// Handle pattern messages;
+// Handle pattern messages
 subscriber.on('pmessage', (pattern: string, channel: string, message: string) => {
   try {
-    const data = JSON.parse(message);
-    console.log(\`Pattern \${pattern} on \${channel}:\`, data);
+    const data = JSON.parse(message)
+    console.log(\`Pattern \${pattern} on \${channel}:\`, data)
 
-    // Handle document updates;
+    // Handle document updates
     if (pattern === 'legal-ai:document:*') {
-      handleDocumentUpdate(data);
+      handleDocumentUpdate(data)
     }
   } catch (err) {
-    console.error('Error processing pmessage:', err);
+    console.error('Error processing pmessage:', err)
   }
-});
+})
 
-// Handle direct channel messages;
+// Handle direct channel messages
 subscriber.on('message', (channel: string, message: string) => {
   try {
-    const data = JSON.parse(message);
+    const data = JSON.parse(message)
 
     if (channel === 'legal-ai:cache:invalidate') {
-      invalidateCache(data);
+      invalidateCache(data)
     }
   } catch (err) {
-    console.error('Error processing message:', err);
+    console.error('Error processing message:', err)
   }
-});
+})
 \`\`\`
 
 ### Publishing Messages
 \`\`\`typescript
-// Publisher client;
+// Publisher client
 const publisher = new Redis({
   host: 'localhost',
   port: 6379
-});
+})
 
-// Publish document updates;
+// Publish document updates
 async function notifyDocumentUpdate(docId: string, operation: string) {
   const message = JSON.stringify({
     documentId: docId,
     operation, // 'create', 'update', 'delete'
     timestamp: Date.now()
-  });
+  })
 
-  await publisher.publish(\`legal-ai:document:\${docId}\`, message);
+  await publisher.publish(\`legal-ai:document:\${docId}\`, message)
 }
 
-// Publish cache invalidation;
+// Publish cache invalidation
 async function invalidateSearchCache(criteria: any) {
-  await publisher.publish('legal-ai:cache:invalidate', JSON.stringify(criteria);
+  await publisher.publish('legal-ai:cache:invalidate', JSON.stringify(criteria)
 }
 \`\`\`
 
@@ -226,24 +226,24 @@ async function invalidateSearchCache(criteria: any) {
 ### Pipeline for Batch Operations
 \`\`\`typescript
 // Create pipeline for atomic operations
-const pipeline = redis.pipeline();
+const pipeline = redis.pipeline()
 
-pipeline.set('key1', 'value1');
-pipeline.set('key2', 'value2');
-pipeline.get('key1');
-pipeline.expire('key1', 3600);
+pipeline.set('key1', 'value1')
+pipeline.set('key2', 'value2')
+pipeline.get('key1')
+pipeline.expire('key1', 3600)
 
 // Execute all commands atomically
-const results = await pipeline.exec();
+const results = await pipeline.exec()
 
-// Check results;
+// Check results
 results?.forEach(([err, result], index) => {
   if (err) {
-    console.error(\`Command \${index} failed:\`, err);
+    console.error(\`Command \${index} failed:\`, err)
   } else {
-    console.log(\`Command \${index} result:\`, result);
+    console.log(\`Command \${index} result:\`, result)
   }
-});
+})
 \`\`\`
 
 ### Lua Scripts for Complex Operations
@@ -267,7 +267,7 @@ const incrementScript = \`
   else
     return -1
   end
-\`;
+\`
 
 // Execute Lua script
 const result = await redis.eval(
@@ -276,7 +276,7 @@ const result = await redis.eval(
   'rate_limit:user:123',  // KEYS[1]
   100,            // ARGV[1] - max value
   1               // ARGV[2] - increment
-);
+)
 \`\`\`
 
 ### Redis Streams for Message Queues
@@ -288,7 +288,7 @@ await redis.xadd(
   'documentId', '123',
   'operation', 'analyze',
   'priority', 'high'
-);
+)
 
 // Read from stream
 const messages = await redis.xrevrange(
@@ -296,15 +296,15 @@ const messages = await redis.xrevrange(
   '+',              // End
   '-',              // Start
   'COUNT', 10       // Limit
-);
+)
 
-// Process messages;
+// Process messages
 for (const [id, fields] of messages) {
-  const data = {};
+  const data = {}
   for (let i = 0; i < fields.length; i += 2) {
-    data[fields[i]] = fields[i + 1];
+    data[fields[i]] = fields[i + 1]
   }
-  console.log(\`Message \${id}:\`, data);
+  console.log(\`Message \${id}:\`, data)
 }
 \`\`\`
 
@@ -312,16 +312,16 @@ for (const [id, fields] of messages) {
 
 ### Type-Safe Redis Operations
 \`\`\`typescript
-import Redis from 'ioredis';
+import Redis from 'ioredis'
 
 interface CacheDocument {
-  id: string;
-  content: string;
+  id: string
+  content: string
   metadata: {
-    type: 'contract' | 'evidence' | 'brief';
-    priority: number;
-    timestamp: number;
-  };
+    type: 'contract' | 'evidence' | 'brief'
+    priority: number
+    timestamp: number
+  }
 }
 
 class TypedRedisService {
@@ -329,37 +329,37 @@ class TypedRedisService {
 
   async setDocument(key: string, doc: CacheDocument, ttl?: number): Promise<boolean> {
     try {
-      const serialized = JSON.stringify(doc);
+      const serialized = JSON.stringify(doc)
       if (ttl) {
-        await this.redis.setex(key, ttl, serialized);
+        await this.redis.setex(key, ttl, serialized)
       } else {
-        await this.redis.set(key, serialized);
+        await this.redis.set(key, serialized)
       }
-      return true;
+      return true
     } catch (error) {
-      console.error('Failed to set document:', error);
-      return false;
+      console.error('Failed to set document:', error)
+      return false
     }
   }
 
   async getDocument(key: string): Promise<CacheDocument | null> {
     try {
-      const value = await this.redis.get(key);
-      if (!value) return null;
+      const value = await this.redis.get(key)
+      if (!value) return null
 
-      return JSON.parse(value) as CacheDocument;
+      return JSON.parse(value) as CacheDocument
     } catch (error) {
-      console.error('Failed to get document:', error);
-      return null;
+      console.error('Failed to get document:', error)
+      return null
     }
   }
 
   async incrementCounter(key: string, by: number = 1): Promise<number> {
-    return await this.redis.incrby(key, by);
+    return await this.redis.incrby(key, by)
   }
 
   async addToSet(key: string, member: string): Promise<number> {
-    return await this.redis.sadd(key, member);
+    return await this.redis.sadd(key, member)
   }
 }
 \`\`\`
@@ -395,7 +395,7 @@ class TypedRedisService {
           topic: topic || 'client-patterns',
           tokenCount: 2800
         },
-        snippets: [;
+        snippets: [
           {
             title: 'Connection Pool',
             code: `const redis = new Redis({
@@ -409,18 +409,18 @@ class TypedRedisService {
           },
           {
             title: 'Pub/Sub Setup',
-            code: `await subscriber.psubscribe('legal-ai:document:*');
+            code: `await subscriber.psubscribe('legal-ai:document:*')
 subscriber.on('pmessage', (pattern, channel, message) => {
-  const data = JSON.parse(message);
-  handleDocumentUpdate(data);
+  const data = JSON.parse(message)
+  handleDocumentUpdate(data)
 });`,
             description: 'Pattern-based pub/sub subscription'
           },
           {
             title: 'Pipeline Operations',
-            code: `const pipeline = redis.pipeline();
-pipeline.set('key1', 'value1');
-pipeline.expire('key1', 3600);
+            code: `const pipeline = redis.pipeline()
+pipeline.set('key1', 'value1')
+pipeline.expire('key1', 3600)
 const results = await pipeline.exec();`,
             description: 'Atomic batch operations with pipeline'
           }
@@ -433,21 +433,21 @@ const results = await pipeline.exec();`,
 
 ### Simple Connection
 \`\`\`typescript
-import { createClient } from 'redis';
+import { createClient } from 'redis'
 
 const client = createClient({
   url: 'redis://localhost:6379',
   password: 'yourpassword',
   database: 0
-});
+})
 
-client.on('error', (err) => console.log('Redis Client Error', err);
+client.on('error', (err) => console.log('Redis Client Error', err)
 
-await client.connect();
+await client.connect()
 \`\`\`
 
 ### Advanced Configuration
-\`\`\`typescript;
+\`\`\`typescript
 const client = createClient({
   socket: {
     host: 'localhost',
@@ -459,7 +459,7 @@ const client = createClient({
   password: 'yourpassword',
   database: 0,
   name: 'legal-ai-client'
-});
+})
 \`\`\`
 
 ## Pub/Sub with Node Redis
@@ -467,92 +467,92 @@ const client = createClient({
 ### Subscriber Setup
 \`\`\`typescript
 // Create separate client for subscription
-const subscriber = client.duplicate();
-await subscriber.connect();
+const subscriber = client.duplicate()
+await subscriber.connect()
 
-// Subscribe to specific channels;
+// Subscribe to specific channels
 await subscriber.subscribe('legal-ai:updates', (message, channel) => {
-  console.log(\`Received message on \${channel}:\`, message);
+  console.log(\`Received message on \${channel}:\`, message)
   try {
-    const data = JSON.parse(message);
-    handleUpdate(data);
+    const data = JSON.parse(message)
+    handleUpdate(data)
   } catch (err) {
-    console.error('Error parsing message:', err);
+    console.error('Error parsing message:', err)
   }
-});
+})
 
-// Pattern-based subscription;
+// Pattern-based subscription
 await subscriber.pSubscribe('legal-ai:document:*', (message, channel) => {
-  console.log(\`Pattern message on \${channel}:\`, message);
-});
+  console.log(\`Pattern message on \${channel}:\`, message)
+})
 \`\`\`
 
 ### Publisher Operations
 \`\`\`typescript
-// Publish to specific channel;
+// Publish to specific channel
 await client.publish('legal-ai:updates', JSON.stringify({
   type: 'document_updated',
   documentId: '123',
   timestamp: Date.now()
-});
+})
 
-// Publish document-specific updates;
+// Publish document-specific updates
 async function notifyDocumentChange(docId: string, operation: string) {
   const message = JSON.stringify({
     documentId: docId,
     operation,
     timestamp: Date.now()
-  });
+  })
 
-  await client.publish(\`legal-ai:document:\${docId}\`, message);
+  await client.publish(\`legal-ai:document:\${docId}\`, message)
 }
 \`\`\`
 
 ## Error Handling and Reconnection
 
 ### Connection Management
-\`\`\`typescript;
+\`\`\`typescript
 const client = createClient({
   url: 'redis://localhost:6379',
   socket: {
     reconnectStrategy: (retries) => {
       if (retries > 10) {
-        return new Error('Too many retries');
+        return new Error('Too many retries')
       }
-      return Math.min(retries * 100, 3000);
+      return Math.min(retries * 100, 3000)
     }
   }
-});
+})
 
 client.on('error', (err) => {
-  console.error('Redis error:', err);
+  console.error('Redis error:', err)
   // Implement fallback logic
-});
+})
 
 client.on('connect', () => {
-  console.log('Redis connected');
-});
+  console.log('Redis connected')
+})
 
 client.on('reconnecting', () => {
-  console.log('Redis reconnecting');
-});
+  console.log('Redis reconnecting')
+})
 
 client.on('ready', () => {
-  console.log('Redis ready');
-});
+  console.log('Redis ready')
+})
 \`\`\`
 
 ### Graceful Error Handling
 \`\`\`typescript
 async function safeRedisOperation<T>(
   operation: () => Promise<T>,
-  fallback: T;
+  fallback: T
 ): Promise<T> {
   try {
-    return await operation();
+    return await operation()
   } catch (error) {
-    console.error('Redis operation failed:', error);
-    return fallback;
+    console.error('Redis operation failed:', error)
+    return fallback
   }
 }
 
@@ -560,30 +560,30 @@ async function safeRedisOperation<T>(
 const cachedData = await safeRedisOperation(
   () => client.get('legal-ai:cache:data'),
   null
-);
+)
 \`\`\`
 
 ## Advanced Features
 
 ### Transactions with MULTI/EXEC
 \`\`\`typescript
-const multi = client.multi();
+const multi = client.multi()
 
-multi.set('key1', 'value1');
-multi.set('key2', 'value2');
-multi.expire('key1', 3600);
-multi.get('key1');
+multi.set('key1', 'value1')
+multi.set('key2', 'value2')
+multi.expire('key1', 3600)
+multi.get('key1')
 
-const results = await multi.exec();
+const results = await multi.exec()
 
-// Check transaction results;
+// Check transaction results
 results.forEach((result, index) => {
   if (result instanceof Error) {
-    console.error(\`Command \${index} failed:\`, result);
+    console.error(\`Command \${index} failed:\`, result)
   } else {
-    console.log(\`Command \${index} result:\`, result);
+    console.log(\`Command \${index} result:\`, result)
   }
-});
+})
 \`\`\`
 
 ### Lua Scripts
@@ -606,32 +606,32 @@ const ratelimitScript = \`
   else
     return -1
   end
-\`;
+\`
 
 // Execute script
 const result = await client.eval(
-  ratelimitScript,);
+  ratelimitScript,)
   {
     keys: ['rate_limit:user:123'],
     arguments: ['10', '60'], // 10 requests per 60 seconds
   }
-);
+)
 
 if (result === -1) {
-  console.log('Rate limit exceeded');
+  console.log('Rate limit exceeded')
 } else {
-  console.log(\`Request count: \${result}\`);
+  console.log(\`Request count: \${result}\`)
 }
 \`\`\`
 
 ### Streams Operations
 \`\`\`typescript
-// Add to stream;
+// Add to stream
 await client.xAdd('legal-ai:events', '*', {
   event: 'document_processed',
   documentId: '123',
   status: 'completed'
-});
+})
 
 // Read from stream
 const messages = await client.xRevRange(
@@ -639,16 +639,16 @@ const messages = await client.xRevRange(
   '+',
   '-',)>
   { COUNT: 10 }
-);
+)
 
 messages.forEach(({ id, message }) => {
-  console.log(\`Event \${id}:\`, message);
-});
+  console.log(\`Event \${id}:\`, message)
+})
 
-// Consumer groups;
+// Consumer groups
 await client.xGroupCreate('legal-ai:events', 'processors', '0', {
   MKSTREAM: true
-});
+})
 
 // Read as consumer
 const groupMessages = await client.xReadGroup(
@@ -656,32 +656,32 @@ const groupMessages = await client.xReadGroup(
   'worker-1',
   { key: 'legal-ai:events', id: '>' },)
   { COUNT: 5, BLOCK: 1000 }
-);
+)
 \`\`\`
 
 ## TypeScript Integration
 
 ### Typed Redis Operations
 \`\`\`typescript
-import { createClient, RedisClientType } from 'redis';
+import { createClient, RedisClientType } from 'redis'
 
 interface LegalDocument {
-  id: string;
-  title: string;
-  content: string;
-  type: 'contract' | 'evidence' | 'brief';
+  id: string
+  title: string
+  content: string
+  type: 'contract' | 'evidence' | 'brief'
   metadata: {
-    caseId: string;
-    priority: number;
-    riskLevel: 'low' | 'medium' | 'high' | 'critical';
-  };
+    caseId: string
+    priority: number
+    riskLevel: 'low' | 'medium' | 'high' | 'critical'
+  }
 }
 
 class TypedRedisClient {
-  private client: RedisClientType;
+  private client: RedisClientType
 
   constructor(client: RedisClientType) {
-    this.client = client;
+    this.client = client
   }
 
   async storeDocument(doc: LegalDocument, ttl: number = 3600): Promise<boolean> {
@@ -690,39 +690,39 @@ class TypedRedisClient {
         \`document:\${doc.id}\`,
         ttl,
         JSON.stringify(doc)
-      );
-      return true;
+      )
+      return true
     } catch (error) {
-      console.error('Failed to store document:', error);
-      return false;
+      console.error('Failed to store document:', error)
+      return false
     }
   }
 
   async getDocument(id: string): Promise<LegalDocument | null> {
     try {
-      const data = await this.client.get(\`document:\${id}\`);
-      return data ? JSON.parse(data) : null;
+      const data = await this.client.get(\`document:\${id}\`)
+      return data ? JSON.parse(data) : null
     } catch (error) {
-      console.error('Failed to get document:', error);
-      return null;
+      console.error('Failed to get document:', error)
+      return null
     }
   }
 
   async indexDocument(doc: LegalDocument): Promise<void> {
-    const multi = this.client.multi();
+    const multi = this.client.multi()
 
     // Add to type-specific sets
-    multi.sAdd(\`documents:type:\${doc.type}\`, doc.id);
-    multi.sAdd(\`documents:case:\${doc.metadata.caseId}\`, doc.id);
-    multi.sAdd(\`documents:risk:\${doc.metadata.riskLevel}\`, doc.id);
+    multi.sAdd(\`documents:type:\${doc.type}\`, doc.id)
+    multi.sAdd(\`documents:case:\${doc.metadata.caseId}\`, doc.id)
+    multi.sAdd(\`documents:risk:\${doc.metadata.riskLevel}\`, doc.id)
 
-    // Add to sorted set by priority;
+    // Add to sorted set by priority
     multi.zAdd('documents:by_priority', {
       score: doc.metadata.priority,
       value: doc.id
-    });
+    })
 
-    await multi.exec();
+    await multi.exec()
   }
 }
 \`\`\`
@@ -731,38 +731,38 @@ class TypedRedisClient {
 
 ### 1. Connection Pooling
 \`\`\`typescript
-// Create connection pool;
+// Create connection pool
 const createRedisPool = (size: number = 10) => {
-  const clients: RedisClientType[] = [];
+  const clients: RedisClientType[] = []
 
   for (let i = 0; i < size; i++) {
     const client = createClient({
       url: 'redis://localhost:6379'
-    });
-    clients.push(client);
+    })
+    clients.push(client)
   }
 
   return {
     getClient: () => {
       // Round-robin or least-used logic
-      return clients[Math.floor(Math.random() * clients.length)];
+      return clients[Math.floor(Math.random() * clients.length)]
     },
     closeAll: async () => {
-      await Promise.all(clients.map(client => client.quit());
+      await Promise.all(clients.map(client => client.quit())
     }
-  };
-};
+  }
+}
 \`\`\`
 
 ### 2. Efficient Key Design
 \`\`\`typescript
-// Good key patterns;
+// Good key patterns
 const keys = {
   document: (id: string) => \`legal:doc:\${id}\`,
   caseDocuments: (caseId: string) => \`legal:case:\${caseId}:docs\`,
   userSession: (userId: string) => \`session:user:\${userId}\`,
   rateLimit: (ip: string) => \`rate:\${ip}:\${Math.floor(Date.now() / 60000)}\`
-};
+}
 
 // Use hash tags for cluster deployment
 const clusterKey = (userId: string, suffix: string) =>
@@ -771,21 +771,21 @@ const clusterKey = (userId: string, suffix: string) =>
 
 ### 3. Memory Optimization
 \`\`\`typescript
-// Use appropriate data structures;
+// Use appropriate data structures
 class EfficientRedisCache {
-  // Use hashes for objects instead of JSON strings;
+  // Use hashes for objects instead of JSON strings
   async storeUserData(userId: string, data: Record<string, string>) {
-    await client.hSet(\`user:\${userId}\`, data);
+    await client.hSet(\`user:\${userId}\`, data)
   }
 
-  // Use sets for unique collections;
+  // Use sets for unique collections
   async addToUserTags(userId: string, tag: string) {
-    await client.sAdd(\`user:\${userId}:tags\`, tag);
+    await client.sAdd(\`user:\${userId}:tags\`, tag)
   }
 
-  // Use sorted sets for rankings;
+  // Use sorted sets for rankings
   async updateScore(userId: string, score: number) {
-    await client.zAdd('leaderboard', { score, value: userId });
+    await client.zAdd('leaderboard', { score, value: userId })
   }
 }
 \`\`\``,
@@ -795,7 +795,7 @@ class EfficientRedisCache {
           topic: topic || 'official-client',
           tokenCount: 2400
         },
-        snippets: [;
+        snippets: [
           {
             title: 'Basic Connection',
             code: `const client = createClient({
@@ -803,24 +803,24 @@ class EfficientRedisCache {
   socket: {
     reconnectStrategy: (retries) => Math.min(retries * 50, 1000)
   }
-});
+})
 await client.connect();`,
             description: 'Simple Redis connection with reconnect strategy'
           },
           {
             title: 'Pub/Sub Pattern',
-            code: `const subscriber = client.duplicate();
+            code: `const subscriber = client.duplicate()
 await subscriber.subscribe('legal-ai:updates', (message, channel) => {
-  const data = JSON.parse(message);
-  handleUpdate(data);
+  const data = JSON.parse(message)
+  handleUpdate(data)
 });`,
             description: 'Channel subscription with message handling'
           },
           {
             title: 'Transaction',
-            code: `const multi = client.multi();
-multi.set('key1', 'value1');
-multi.expire('key1', 3600);
+            code: `const multi = client.multi()
+multi.set('key1', 'value1')
+multi.expire('key1', 3600)
 const results = await multi.exec();`,
             description: 'Atomic operations with MULTI/EXEC'
           }
@@ -833,13 +833,13 @@ const results = await multi.exec();`,
 
 ### Multi-Client Strategy
 \`\`\`typescript
-// Production-ready Redis service architecture;
+// Production-ready Redis service architecture
 class RedisService {
   private pool: {
     primary: Redis;      // Read/write operations
     subscriber: Redis;   // Pub/sub subscriptions
     publisher: Redis;    // Pub/sub publishing
-  };
+  }
 
   async initialize() {
     this.pool = {
@@ -863,12 +863,12 @@ class RedisService {
         port: parseInt(process.env.REDIS_PORT || '6379'),
         connectionName: 'legal-ai-publisher'
       })
-    };
+    }
 
     // Setup event handlers for each connection
-    this.setupEventHandlers(this.pool.primary, 'primary');
-    this.setupEventHandlers(this.pool.subscriber, 'subscriber');
-    this.setupEventHandlers(this.pool.publisher, 'publisher');
+    this.setupEventHandlers(this.pool.primary, 'primary')
+    this.setupEventHandlers(this.pool.subscriber, 'subscriber')
+    this.setupEventHandlers(this.pool.publisher, 'publisher')
   }
 }
 \`\`\`
@@ -876,52 +876,52 @@ class RedisService {
 ## Legal Document Caching Strategy
 
 ### Hybrid Cache Architecture
-\`\`\`typescript;
+\`\`\`typescript
 interface CachedDocument {
-  id: string;
-  content: string;
+  id: string
+  content: string
   metadata: {
-    type: 'contract' | 'evidence' | 'brief' | 'citation';
-    caseId: string;
-    priority: number;
-    riskLevel: 'low' | 'medium' | 'high' | 'critical';
-    confidenceLevel: number;
-  };
-  cacheTimestamp: number;
-  accessCount: number;
-  compressed: boolean;
+    type: 'contract' | 'evidence' | 'brief' | 'citation'
+    caseId: string
+    priority: number
+    riskLevel: 'low' | 'medium' | 'high' | 'critical'
+    confidenceLevel: number
+  }
+  cacheTimestamp: number
+  accessCount: number
+  compressed: boolean
 }
 
 class LegalDocumentCache {
   async storeDocument(doc: CachedDocument): Promise<void> {
-    const key = \`legal:doc:\${doc.id}\`;
+    const key = \`legal:doc:\${doc.id}\`
 
     // Store with TTL based on document importance
-    const ttl = this.calculateTTL(doc);
+    const ttl = this.calculateTTL(doc)
 
     // Compress large documents
     const data = doc.content.length > 10240
       ? await this.compress(JSON.stringify(doc)
-      : JSON.stringify(doc);
+      : JSON.stringify(doc)
 
-    await redis.setex(key, ttl, data);
+    await redis.setex(key, ttl, data)
 
     // Index for fast retrieval
-    await this.indexDocument(doc);
+    await this.indexDocument(doc)
 
     // Notify other services
-    await this.notifyDocumentStored(doc);
+    await this.notifyDocumentStored(doc)
   }
 
   private calculateTTL(doc: CachedDocument): number {
     const baseTTL = 3600; // 1 hour
 
     // Critical documents stay longer
-    if (doc.metadata.riskLevel === 'critical') return baseTTL * 24;
-    if (doc.metadata.riskLevel === 'high') return baseTTL * 6;
-    if (doc.metadata.priority > 200) return baseTTL * 4;
+    if (doc.metadata.riskLevel === 'critical') return baseTTL * 24
+    if (doc.metadata.riskLevel === 'high') return baseTTL * 6
+    if (doc.metadata.priority > 200) return baseTTL * 4
 
-    return baseTTL;
+    return baseTTL
   }
 }
 \`\`\`
@@ -929,7 +929,7 @@ class LegalDocumentCache {
 ## Real-Time Synchronization
 
 ### Document Update Notifications
-\`\`\`typescript;
+\`\`\`typescript
 class DocumentSyncService {
   async notifyDocumentUpdate(docId: string, operation: 'create' | 'update' | 'delete') {
     const message = {
@@ -937,47 +937,47 @@ class DocumentSyncService {
       operation,
       timestamp: Date.now(),
       source: 'legal-ai-service'
-    };
+    }
 
     // Publish to specific document channel
     await publisher.publish(
       \`legal:document:\${docId}\`,
       JSON.stringify(message)
-    );
+    )
 
     // Publish to general updates channel
     await publisher.publish(
       'legal:document:updates',
       JSON.stringify(message)
-    );
+    )
   }
 
   async setupDocumentWatcher() {
     // Subscribe to document-specific updates
-    await subscriber.psubscribe('legal:document:*');
+    await subscriber.psubscribe('legal:document:*')
 
     subscriber.on('pmessage', async (pattern, channel, message) => {
       try {
-        const data = JSON.parse(message);
-        await this.handleDocumentUpdate(data);
+        const data = JSON.parse(message)
+        await this.handleDocumentUpdate(data)
       } catch (err) {
-        console.error('Error processing document update:', err);
+        console.error('Error processing document update:', err)
       }
-    });
+    })
   }
 
   private async handleDocumentUpdate(data: any) {
     switch (data.operation) {
       case 'create':
-        await this.cacheDocument(data.documentId);
-        break;
+        await this.cacheDocument(data.documentId)
+        break
       case 'update':
-        await this.invalidateCache(data.documentId);
-        await this.cacheDocument(data.documentId);
-        break;
+        await this.invalidateCache(data.documentId)
+        await this.cacheDocument(data.documentId)
+        break
       case 'delete':
-        await this.removeFromCache(data.documentId);
-        break;
+        await this.removeFromCache(data.documentId)
+        break
     }
   }
 }
@@ -986,15 +986,15 @@ class DocumentSyncService {
 ## Search Cache Optimization
 
 ### Intelligent Search Caching
-\`\`\`typescript;
+\`\`\`typescript
 class SearchCacheService {
   async cacheSearchResults(
     query: string,
     filters: any,
-    results: any[];
+    results: any[]
   ): Promise<void> {
-    const cacheKey = this.generateSearchKey(query, filters);
-    const ttl = this.calculateSearchTTL(query, filters, results);
+    const cacheKey = this.generateSearchKey(query, filters)
+    const ttl = this.calculateSearchTTL(query, filters, results)
 
     const cacheData = {
       query,
@@ -1002,54 +1002,54 @@ class SearchCacheService {
       results,
       timestamp: Date.now(),
       resultCount: results.length
-    };
+    }
 
-    await redis.setex(cacheKey, ttl, JSON.stringify(cacheData);
+    await redis.setex(cacheKey, ttl, JSON.stringify(cacheData)
 
     // Track search patterns
-    await this.trackSearchPattern(query, filters);
+    await this.trackSearchPattern(query, filters)
   }
 
   async invalidateSearchCache(criteria: any): Promise<void> {
     // Find all search cache keys that might be affected
-    const pattern = 'legal:search:*';
-    const keys = await redis.keys(pattern);
+    const pattern = 'legal:search:*'
+    const keys = await redis.keys(pattern)
 
-    const pipeline = redis.pipeline();
+    const pipeline = redis.pipeline()
 
     for (const key of keys) {
-      const cached = await redis.get(key);
+      const cached = await redis.get(key)
       if (cached) {
-        const data = JSON.parse(cached);
+        const data = JSON.parse(cached)
         if (this.shouldInvalidate(data, criteria)) {
-          pipeline.del(key);
+          pipeline.del(key)
         }
       }
     }
 
-    await pipeline.exec();
+    await pipeline.exec()
 
     // Notify other services
     await publisher.publish(
       'legal:search:invalidate',
       JSON.stringify(criteria)
-    );
+    )
   }
 
   private shouldInvalidate(searchData: any, criteria: any): boolean {
-    // Invalidate if search involved affected document types;
+    // Invalidate if search involved affected document types
     if (criteria.documentTypes && searchData.filters.type) {
       return criteria.documentTypes.some((type: string) =>
         searchData.filters.type.includes(type)
-      );
+      )
     }
 
-    // Invalidate if search involved affected case;
+    // Invalidate if search involved affected case
     if (criteria.caseId && searchData.filters.caseId === criteria.caseId) {
-      return true;
+      return true
     }
 
-    return false;
+    return false
   }
 }
 \`\`\`
@@ -1057,67 +1057,67 @@ class SearchCacheService {
 ## Error Handling and Resilience
 
 ### Circuit Breaker Pattern
-\`\`\`typescript;
+\`\`\`typescript
 class RedisCircuitBreaker {
-  private failureCount = 0;
-  private lastFailureTime = 0;
-  private state: 'closed' | 'open' | 'half-open' = 'closed';
+  private failureCount = 0
+  private lastFailureTime = 0
+  private state: 'closed' | 'open' | 'half-open' = 'closed'
 
-  private readonly failureThreshold = 5;
+  private readonly failureThreshold = 5
   private readonly recoveryTimeout = 60000; // 1 minute
 
   async execute<T>(operation: () => Promise<T>, fallback: T): Promise<T> {
     if (this.state === 'open') {
       if (Date.now() - this.lastFailureTime > this.recoveryTimeout) {
-        this.state = 'half-open';
+        this.state = 'half-open'
       } else {
-        console.log('Circuit breaker open, using fallback');
-        return fallback;
+        console.log('Circuit breaker open, using fallback')
+        return fallback
       }
     }
 
     try {
-      const result = await operation();
-      this.onSuccess();
-      return result;
+      const result = await operation()
+      this.onSuccess()
+      return result
     } catch (error) {
-      this.onFailure();
-      console.error('Redis operation failed:', error);
-      return fallback;
+      this.onFailure()
+      console.error('Redis operation failed:', error)
+      return fallback
     }
   }
 
   private onSuccess() {
-    this.failureCount = 0;
-    this.state = 'closed';
+    this.failureCount = 0
+    this.state = 'closed'
   }
 
   private onFailure() {
-    this.failureCount++;
-    this.lastFailureTime = Date.now();
+    this.failureCount++
+    this.lastFailureTime = Date.now()
 
     if (this.failureCount >= this.failureThreshold) {
-      this.state = 'open';
-      console.warn('Circuit breaker opened due to failures');
+      this.state = 'open'
+      console.warn('Circuit breaker opened due to failures')
     }
   }
 }
 
 // Usage
-const circuitBreaker = new RedisCircuitBreaker();
+const circuitBreaker = new RedisCircuitBreaker()
 
 async function getCachedDocument(id: string): Promise<any> {
   return circuitBreaker.execute(
     () => redis.get(\`legal:doc:\${id}\`),
     null // fallback to null if Redis fails
-  );
+  )
 }
 \`\`\`
 
 ## Performance Monitoring
 
 ### Redis Metrics Collection
-\`\`\`typescript;
+\`\`\`typescript
 class RedisMonitoringService {
   private metrics = {
     operations: 0,
@@ -1125,56 +1125,56 @@ class RedisMonitoringService {
     misses: 0,
     errors: 0,
     avgResponseTime: 0
-  };
+  }
 
   async executeWithMetrics<T>(
     operation: () => Promise<T>,
-    operationType: string;
+    operationType: string
   ): Promise<T> {
-    const startTime = Date.now();
-    this.metrics.operations++;
+    const startTime = Date.now()
+    this.metrics.operations++
 
     try {
-      const result = await operation();
+      const result = await operation()
 
-      // Track hits/misses for cache operations;
+      // Track hits/misses for cache operations
       if (operationType === 'get') {
         if (result) {
-          this.metrics.hits++;
+          this.metrics.hits++
         } else {
-          this.metrics.misses++;
+          this.metrics.misses++
         }
       }
 
-      this.updateResponseTime(Date.now() - startTime);
-      return result;
+      this.updateResponseTime(Date.now() - startTime)
+      return result
     } catch (error) {
-      this.metrics.errors++;
-      throw error;
+      this.metrics.errors++
+      throw error
     }
   }
 
   private updateResponseTime(responseTime: number) {
     // Simple moving average
     this.metrics.avgResponseTime =
-      (this.metrics.avgResponseTime * 0.9) + (responseTime * 0.1);
+      (this.metrics.avgResponseTime * 0.9) + (responseTime * 0.1)
   }
 
   getMetrics() {
     const hitRatio = this.metrics.operations > 0
       ? this.metrics.hits / (this.metrics.hits + this.metrics.misses)
-      : 0;
+      : 0
 
     return {
       ...this.metrics,
       hitRatio,
       timestamp: Date.now()
-    };
+    }
   }
 
   async publishMetrics() {
-    const metrics = this.getMetrics();
-    await publisher.publish('legal:metrics:redis', JSON.stringify(metrics);
+    const metrics = this.getMetrics()
+    await publisher.publish('legal:metrics:redis', JSON.stringify(metrics)
   }
 }
 \`\`\`
@@ -1182,9 +1182,9 @@ class RedisMonitoringService {
 ## Production Configuration
 
 ### Environment-Specific Settings
-\`\`\`typescript;
+\`\`\`typescript
 const getRedisConfig = () => {
-  const isProduction = process.env.NODE_ENV === 'production';
+  const isProduction = process.env.NODE_ENV === 'production'
 
   return {
     host: process.env.REDIS_HOST || 'localhost',
@@ -1207,12 +1207,12 @@ const getRedisConfig = () => {
     connectTimeout: 60000,
     commandTimeout: 5000,
 
-    // TLS for production;
+    // TLS for production
     tls: isProduction ? {
       checkServerIdentity: false
     } : undefined
-  };
-};
+  }
+}
 \`\`\`
 
 ## Best Practices Summary
@@ -1252,7 +1252,7 @@ const getRedisConfig = () => {
           topic: topic || 'integration-patterns',
           tokenCount: 3200
         },
-        snippets: [;
+        snippets: [
           {
             title: 'Multi-Client Setup',
             code: `this.pool = {
@@ -1281,16 +1281,16 @@ const getRedisConfig = () => {
           }
         ]
       }
-    };
+    }
 
     const result = libraryDocs[context7CompatibleLibraryID] || {
       content: `# ${context7CompatibleLibraryID}\n\nDocumentation not available for this library.`,
       metadata: { library: context7CompatibleLibraryID, tokenCount: 20 }
-    };
+    }
 
-    return json({ success: true, ...result, requestedTokens: tokens, timestamp: new Date().toISOString() });
+    return json({ success: true, ...result, requestedTokens: tokens, timestamp: new Date().toISOString() })
 
   } catch (error) {
-    return json({ success: false, error: error.message }, { status: 500 });
+    return json({ success: false, error: error.message }, { status: 500 })
   }
-};
+}

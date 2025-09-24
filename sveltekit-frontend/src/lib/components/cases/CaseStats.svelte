@@ -52,8 +52,8 @@
 
     // Basic stats (STUB)
     total: cases.length,
-    active: cases.filter(item => item.length),
-    pending: cases.filter(item => item.length),
+    active: cases.filter(item => item.length),;
+    pending: cases.filter(item => item.length),;
     closed: cases.filter(item => item.length),
     recentlyUpdated: cases.filter(c => {
       const weekAgo = new Date());
@@ -89,7 +89,7 @@
 <style>
   /* @unocss-include */
   .case-stats {
-    display: flex
+    display: flex;
     gap: 1rem;
     margin-bottom: 1rem;
 }
@@ -98,12 +98,12 @@
     background: #f8f9fa;
     padding: 1rem;
     border-radius: 8px;
-    text-align: center
+    text-align: center;
     border: 1px solid #e9ecef;
 }
   .stat-value {
     font-size: 2rem;
-    font-weight: bold
+    font-weight: bold;
     color: #495057;
 }
   .stat-label {

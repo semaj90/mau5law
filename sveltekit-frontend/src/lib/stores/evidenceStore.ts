@@ -104,7 +104,7 @@ class RealTimeEvidenceStore {
 
           // Subscribe to evidence updates;
           this.websocket?.send(JSON.stringify({
-              type: "subscribe",
+              type: "subscribe",;
               channels: ["evidence_update", "case_update"]
             }),
           );
@@ -215,7 +215,7 @@ class RealTimeEvidenceStore {
       // Add operation to history;
       this.addToHistory({
         id: crypto.randomUUID(),
-        type: "CREATE",
+        type: "CREATE",;
         timestamp: new Date().toISOString(),
         userId,
         evidenceId: evidenceData.id,
@@ -246,7 +246,7 @@ class RealTimeEvidenceStore {
       // Add operation to history;
       this.addToHistory({
         id: crypto.randomUUID(),
-        type: "UPDATE",
+        type: "UPDATE",;
         timestamp: new Date().toISOString(),
         userId,
         evidenceId,
@@ -274,7 +274,7 @@ class RealTimeEvidenceStore {
       // Add operation to history;
       this.addToHistory({
         id: crypto.randomUUID(),
-        type: "DELETE",
+        type: "DELETE",;
         timestamp: new Date().toISOString(),
         userId,
         evidenceId,
@@ -294,7 +294,7 @@ class RealTimeEvidenceStore {
     const evidenceId = crypto.randomUUID();
     const newEvidence: Evidence = {
       ...evidenceData,
-      id: evidenceId,
+      id: evidenceId,;
       timeline: {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -309,7 +309,7 @@ class RealTimeEvidenceStore {
       // Send to server;
       const response = await fetch("/api/evidence", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },;
         body: JSON.stringify(newEvidence)
       });
 
@@ -341,7 +341,7 @@ class RealTimeEvidenceStore {
       // Send to server;
       const response = await fetch(`/api/evidence/${evidenceId}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },;
         body: JSON.stringify(changes)
       });
 

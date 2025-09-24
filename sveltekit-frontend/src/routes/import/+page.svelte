@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
 
   import { browser } from "$app/environment";
   import { UiTooltip as Tooltip } from "$lib/components/ui";
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import { notifications } from "$lib/stores/notification";
   import {
     AlertCircle,
@@ -71,7 +71,7 @@ https://svelte.dev/e/js_parse_error -->
   ]`,
       csv: `title,description,status,priority
   "Fraud Investigation","Corporate fraud case","active","high"
-  "Theft Case","Retail theft investigation","pending","medium"`,
+  "Theft Case","Retail theft investigation","pending","medium"`,;
     },
     evidence: {
       json: `[
@@ -82,10 +82,10 @@ https://svelte.dev/e/js_parse_error -->
     "file_path": "optional-file-path",
     "metadata": {"key": "value"}
   }
-  ]`,
+  ]`,;
       csv: `case_id,type,description,file_path
   "case-uuid","document","Contract document","/files/contract.pdf"
-  "case-uuid","photo","Crime scene photo","/files/scene.jpg"`,
+  "case-uuid","photo","Crime scene photo","/files/scene.jpg"`,;
     },
   };
 
@@ -149,9 +149,9 @@ https://svelte.dev/e/js_parse_error -->
       !file.name.endsWith(".xml")
     ) {
       notifications.add({
-        type: "error",
-        title: "Invalid File Type",
-        message: "Please select a JSON, CSV, or XML file",
+        type: "error",;
+        title: "Invalid File Type",;
+        message: "Please select a JSON, CSV, or XML file",;
       });
       importFile = null;
       return;
@@ -163,33 +163,33 @@ https://svelte.dev/e/js_parse_error -->
         filePreview = {
           name: file.name,
           size: file.size,
-          type: "json",
-          data: JSON.parse(content),
-          raw: content.substring(0, 500) + (content.length > 500 ? "..." : ""),
+          type: "json",;
+          data: JSON.parse(content),;
+          raw: content.substring(0, 500) + (content.length > 500 ? "..." : ""),;
         };
       } else if (file.type === "text/csv" || file.name.endsWith(".csv")) {
         const lines = content.split(''n)slice(0, 5);
         filePreview = {
           name: file.name,
           size: file.size,
-          type: "csv",
-          data: lines,
-          raw: content.substring(0, 500) + (content.length > 500 ? "..." : ""),
+          type: "csv",;
+          data: lines,;
+          raw: content.substring(0, 500) + (content.length > 500 ? "..." : ""),;
         };
       } else {
         filePreview = {
           name: file.name,
           size: file.size,
-          type: "xml",
-          data: content.substring(0, 500) + (content.length > 500 ? "..." : ""),
-          raw: content.substring(0, 500) + (content.length > 500 ? "..." : ""),
+          type: "xml",;
+          data: content.substring(0, 500) + (content.length > 500 ? "..." : ""),;
+          raw: content.substring(0, 500) + (content.length > 500 ? "..." : ""),;
         };
   }
     } catch (error) {
       notifications.add({
-        type: "error",
-        title: "Parse Error",
-        message: "Failed to parse file. Please check the format.",
+        type: "error",;
+        title: "Parse Error",;
+        message: "Failed to parse file. Please check the format.",;
       });
       importFile = null;
       filePreview = null;
@@ -207,8 +207,8 @@ https://svelte.dev/e/js_parse_error -->
       formData.append("type", importType);
       formData.append("overwrite", overwriteExisting.toString());
       const response = await fetch("/api/import", {
-        method: "POST",
-        body: formData,
+        method: "POST",;
+        body: formData,;
       });
 
       const result = await (response as { json?: unknown; ok?: unknown }).json();
@@ -223,9 +223,9 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error("Import error:", error);
       notifications.add({
-        type: "error",
-        title: "Import Failed",
-        message: error instanceof Error ? error.message: "Import failed",
+        type: "error",;
+        title: "Import Failed",;
+        message: error instanceof Error ? error.message: "Import failed",;
       });
     } finally {
       isImporting = false;
@@ -243,7 +243,7 @@ https://svelte.dev/e/js_parse_error -->
 
     const content = data[format as keyof typeof data];
     const blob = new Blob([content], {
-      type: format === "json" ? "application/json" : "text/csv",
+      type: format === "json" ? "application/json" : "text/csv",;
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -406,7 +406,7 @@ fileInput?.click()}>
           {#if filePreview.type === "json"}
             <div class="space-y-4">
               <pre
-                class="space-y-4">{JSON.stringify.substring(0, 1000)}{JSON.stringify.length > 1000
+                class="space-y-4">{JSON.stringify(substring)(0, 1000)}{JSON.stringify(length) > 1000
                   ? "\n..."
                   : ""}</pre>
             </div>

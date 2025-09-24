@@ -9,7 +9,7 @@
  * - Binary protocol optimization for 60% performance gain
  *
  * Usage:
- * POST /api/ai/enhanced-analysis;
+ * POST /api/ai/enhanced-analysis
  * {
  *   "documents": [{ "id": "doc1", "content": "legal text...", "type": "contract" }],
  *   "analysisType": "full" | "semantic" | "entities" | "reasoning" | "batch",
@@ -17,229 +17,229 @@
  * }
  */
 
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json, error } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
-import { enhancedAIAnalysis } from '$lib/services/enhanced-ai-analysis';
-import { grpcAIOrchestrator } from '$lib/services/grpc-ai-orchestrator';
+import { enhancedAIAnalysis } from '$lib/services/enhanced-ai-analysis'
+import { grpcAIOrchestrator } from '$lib/services/grpc-ai-orchestrator'
 import type {
   LegalDocument,
   SemanticAnalysis,
   LegalReasoning,
   LegalEntity
-} from '$lib/services/enhanced-ai-analysis';
+} from '$lib/services/enhanced-ai-analysis'
 
 // Request interface
 interface EnhancedAnalysisRequest {
-  documents: LegalDocument[];
-  analysisType: 'full' | 'semantic' | 'entities' | 'reasoning' | 'batch';
+  documents: LegalDocument[]
+  analysisType: 'full' | 'semantic' | 'entities' | 'reasoning' | 'batch'
   options?: {
-    includeReasoning?: boolean;
-    enableStreaming?: boolean;
-    batchSize?: number;
-    useGRPCOptimization?: boolean;
-  };
+    includeReasoning?: boolean
+    enableStreaming?: boolean
+    batchSize?: number
+    useGRPCOptimization?: boolean
+  }
 }
 
 // Response interface
 interface EnhancedAnalysisResponse {
-  success: boolean;
+  success: boolean
   results: {
-    documentCount: number;
-    analysisType: string;
-    processingTime: number;
-    performanceGain?: number;
-    data: any;
-  };
+    documentCount: number
+    analysisType: string
+    processingTime: number
+    performanceGain?: number
+    data: any
+  }
   metrics: {
-    protocol: 'grpc-binary' | 'json-http';
-    totalEntities: number;
-    averageComplexity: number;
-    serviceChain: string[];
-  };
+    protocol: 'grpc-binary' | 'json-http'
+    totalEntities: number
+    averageComplexity: number
+    serviceChain: string[]
+  }
   orchestration: {
-    healthy: boolean;
-    servicesUsed: string[];
-    compressionRatio?: number;
-  };
+    healthy: boolean
+    servicesUsed: string[]
+    compressionRatio?: number
+  }
 }
 
 export const POST: RequestHandler = async ({ request }) => {
-  const startTime = Date.now();
+  const startTime = Date.now()
 
   try {
-    console.log('🚀 Enhanced AI Analysis API called');
+    console.log('🚀 Enhanced AI Analysis API called')
 
     // Parse request body
-    let requestData: EnhancedAnalysisRequest;
+    let requestData: EnhancedAnalysisRequest
     try {
-      requestData = await request.json();
+      requestData = await request.json()
     } catch (err) {
-      throw error(400, 'Invalid JSON in request body');
+      throw error(400, 'Invalid JSON in request body')
     }
 
-    // Validate request;
+    // Validate request
     if (!requestData.documents || !Array.isArray(requestData.documents) || requestData.documents.length === 0) {
-      throw error(400, 'documents array is required and must not be empty');
+      throw error(400, 'documents array is required and must not be empty')
     }
 
     if (!requestData.analysisType) {
-      requestData.analysisType = 'full';
+      requestData.analysisType = 'full'
     }
 
     const {
       documents,
       analysisType,
       options = {}
-    } = requestData;
+    } = requestData
 
     const {
       includeReasoning = true,
       enableStreaming = false,
       batchSize = 5,
       useGRPCOptimization = true
-    } = options;
+    } = options
 
-    console.log(`📋 Processing ${documents.length} documents with ${analysisType} analysis`);
+    console.log(`📋 Processing ${documents.length} documents with ${analysisType} analysis`)
 
-    // Validate documents;
+    // Validate documents
     for (const doc of documents) {
       if (!doc.id || !doc.content) {
-        throw error(400, 'Each document must have id and content fields');
+        throw error(400, 'Each document must have id and content fields')
       }
     }
 
-    let analysisResults: any;
-    let serviceChain: string[] = [];
-    let performanceGain = 0;
+    let analysisResults: any
+    let serviceChain: string[] = []
+    let performanceGain = 0
 
-    // Route to appropriate analysis based on type;
+    // Route to appropriate analysis based on type
     switch (analysisType) {
       case 'full':
-        // Full orchestrated analysis;
+        // Full orchestrated analysis
         if (documents.length === 1) {
           const result = await grpcAIOrchestrator.orchestrateDocumentAnalysis(
             documents[0],
             includeReasoning
-          );
-          analysisResults = (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).data;
-          serviceChain = (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).serviceChain;
-          performanceGain = (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).metrics.performanceGain || 0;
+          )
+          analysisResults = (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).data
+          serviceChain = (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).serviceChain
+          performanceGain = (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).metrics.performanceGain || 0
         } else {
           // Multiple documents - use batch processing
-          const result = await grpcAIOrchestrator.orchestrateBatchProcessing(documents, batchSize);
+          const result = await grpcAIOrchestrator.orchestrateBatchProcessing(documents, batchSize)
           analysisResults = (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).data.map((semantic, index) => ({
             documentId: documents[index].id,
             semantic
-          });
-          serviceChain = (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).serviceChain;
-          performanceGain = (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).metrics.performanceGain || 0;
+          })
+          serviceChain = (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).serviceChain
+          performanceGain = (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).metrics.performanceGain || 0
         }
-        break;
+        break
 
       case 'semantic':
         // Semantic analysis only
-        serviceChain = ['enhanced-ai-analysis'];
+        serviceChain = ['enhanced-ai-analysis']
         if (documents.length === 1) {
-          analysisResults = await enhancedAIAnalysis.analyzeDocument(documents[0]);
+          analysisResults = await enhancedAIAnalysis.analyzeDocument(documents[0])
         } else {
-          analysisResults = await enhancedAIAnalysis.batchAnalyzeDocuments(documents);
+          analysisResults = await enhancedAIAnalysis.batchAnalyzeDocuments(documents)
         }
-        break;
+        break
 
       case 'entities':
         // Entity extraction only
-        const entityResult = await grpcAIOrchestrator.orchestrateEntityExtraction(documents);
-        analysisResults = Object.fromEntries(entityResult.data);
-        serviceChain = entityResult.serviceChain;
-        performanceGain = entityResult.metrics.performanceGain || 0;
-        break;
+        const entityResult = await grpcAIOrchestrator.orchestrateEntityExtraction(documents)
+        analysisResults = Object.fromEntries(entityResult.data)
+        serviceChain = entityResult.serviceChain
+        performanceGain = entityResult.metrics.performanceGain || 0
+        break
 
       case 'reasoning':
         // Legal reasoning analysis only
-        serviceChain = ['legal-reasoning'];
+        serviceChain = ['legal-reasoning']
         if (documents.length === 1) {
-          analysisResults = await enhancedAIAnalysis.analyzeLegalReasoning(documents[0]);
+          analysisResults = await enhancedAIAnalysis.analyzeLegalReasoning(documents[0])
         } else {
           // Reasoning analysis for multiple documents
           const reasoningPromises = documents.map(doc =>
             enhancedAIAnalysis.analyzeLegalReasoning(doc)
-          );
-          const reasoningResults = await Promise.allSettled(reasoningPromises);
+          )
+          const reasoningResults = await Promise.allSettled(reasoningPromises)
           analysisResults = reasoningResults.map((result, index) => ({
             documentId: documents[index].id,
             reasoning: (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).status === 'fulfilled' ? (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).value: null,
             error: (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).status === 'rejected' ? String((result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).reason) : null
-          });
+          })
         }
-        break;
+        break
 
       case 'batch':
         // Optimized batch processing
-        const batchResult = await grpcAIOrchestrator.orchestrateBatchProcessing(documents, batchSize);
-        analysisResults = batchResult.data;
-        serviceChain = batchResult.serviceChain;
-        performanceGain = batchResult.metrics.performanceGain || 0;
-        break;
+        const batchResult = await grpcAIOrchestrator.orchestrateBatchProcessing(documents, batchSize)
+        analysisResults = batchResult.data
+        serviceChain = batchResult.serviceChain
+        performanceGain = batchResult.metrics.performanceGain || 0
+        break
 
       default:
-        throw error(400, `Unsupported analysis type: ${analysisType}`);
+        throw error(400, `Unsupported analysis type: ${analysisType}`)
     }
 
     // Calculate metrics
-    const processingTime = Date.now() - startTime;
+    const processingTime = Date.now() - startTime
 
     // Extract entity statistics
-    let totalEntities = 0;
-    let totalComplexity = 0;
-    let documentCount = 0;
+    let totalEntities = 0
+    let totalComplexity = 0
+    let documentCount = 0
 
     if (Array.isArray(analysisResults)) {
-      // Handle array of results;
+      // Handle array of results
       analysisResults.forEach((result: any) => {
         if ((result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).legalEntities) {
-          totalEntities += (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).legalEntities.length;
+          totalEntities += (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).legalEntities.length
         } else if ((result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).semantic?.legalEntities) {
-          totalEntities += (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).semantic.legalEntities.length;
+          totalEntities += (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).semantic.legalEntities.length
         }
 
         if ((result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).complexity?.score !== undefined) {
-          totalComplexity += (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).complexity.score;
-          documentCount++;
+          totalComplexity += (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).complexity.score
+          documentCount++
         } else if ((result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).semantic?.complexity?.score !== undefined) {
-          totalComplexity += (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).semantic.complexity.score;
-          documentCount++;
+          totalComplexity += (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).semantic.complexity.score
+          documentCount++
         }
-      });
+      })
     } else if (analysisResults) {
-      // Handle single result or object;
+      // Handle single result or object
       if (analysisResults.legalEntities) {
-        totalEntities = analysisResults.legalEntities.length;
+        totalEntities = analysisResults.legalEntities.length
       }
       if (analysisResults.complexity?.score !== undefined) {
-        totalComplexity = analysisResults.complexity.score;
-        documentCount = 1;
+        totalComplexity = analysisResults.complexity.score
+        documentCount = 1
       }
 
-      // Handle full orchestration result;
+      // Handle full orchestration result
       if (analysisResults.semantic) {
         if (analysisResults.semantic.legalEntities) {
-          totalEntities = analysisResults.semantic.legalEntities.length;
+          totalEntities = analysisResults.semantic.legalEntities.length
         }
         if (analysisResults.semantic.complexity?.score !== undefined) {
-          totalComplexity = analysisResults.semantic.complexity.score;
-          documentCount = 1;
+          totalComplexity = analysisResults.semantic.complexity.score
+          documentCount = 1
         }
       }
     }
 
-    const averageComplexity = documentCount > 0 ? totalComplexity / documentCount : 0;
+    const averageComplexity = documentCount > 0 ? totalComplexity / documentCount : 0
 
     // Get orchestrator health status
-    const healthStatus = await grpcAIOrchestrator.healthCheck();
-    const orchestratorMetrics = grpcAIOrchestrator.getMetrics();
+    const healthStatus = await grpcAIOrchestrator.healthCheck()
+    const orchestratorMetrics = grpcAIOrchestrator.getMetrics()
 
-    // Build response;
+    // Build response
     const response: EnhancedAnalysisResponse = {
       success: true,
       results: {
@@ -260,30 +260,30 @@ export const POST: RequestHandler = async ({ request }) => {
         servicesUsed: serviceChain,
         compressionRatio: orchestratorMetrics.compressionRatio
       }
-    };
+    }
 
-    console.log(`✅ Enhanced AI Analysis complete: ${documents.length} docs, ${totalEntities} entities, ${processingTime}ms`);
+    console.log(`✅ Enhanced AI Analysis complete: ${documents.length} docs, ${totalEntities} entities, ${processingTime}ms`)
 
-    // Log performance achievements;
+    // Log performance achievements
     if (performanceGain > 0) {
-      console.log(`🚀 Performance gain: ${performanceGain.toFixed(1)}% vs baseline JSON HTTP`);
+      console.log(`🚀 Performance gain: ${performanceGain.toFixed(1)}% vs baseline JSON HTTP`)
     }
 
     if (orchestratorMetrics.binaryProtocolSavings > 0) {
-      console.log(`⚡ Binary protocol savings: ${orchestratorMetrics.binaryProtocolSavings.toFixed(1)}%`);
+      console.log(`⚡ Binary protocol savings: ${orchestratorMetrics.binaryProtocolSavings.toFixed(1)}%`)
     }
 
-    return json(response);
+    return json(response)
 
   } catch (err) {
-    console.error('❌ Enhanced AI Analysis failed:', err);
+    console.error('❌ Enhanced AI Analysis failed:', err)
 
     if (err && typeof err === 'object' && 'status' in err) {
       throw err; // Re-throw SvelteKit errors
     }
 
     // Return detailed error for debugging
-    const processingTime = Date.now() - startTime;
+    const processingTime = Date.now() - startTime
 
     return json({
       success: false,
@@ -292,17 +292,17 @@ export const POST: RequestHandler = async ({ request }) => {
         processingTime,
         timestamp: new Date().toISOString()
       }
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 export const GET: RequestHandler = async () => {
   // Health check and capabilities endpoint
-  console.log('🏥 Enhanced AI Analysis health check');
+  console.log('🏥 Enhanced AI Analysis health check')
 
   try {
-    const healthStatus = await grpcAIOrchestrator.healthCheck();
-    const metrics = grpcAIOrchestrator.getMetrics();
+    const healthStatus = await grpcAIOrchestrator.healthCheck()
+    const metrics = grpcAIOrchestrator.getMetrics()
 
     return json({
       healthy: healthStatus.healthy,
@@ -323,16 +323,16 @@ export const GET: RequestHandler = async () => {
       },
       supportedAnalysisTypes: ['full', 'semantic', 'entities', 'reasoning', 'batch'],
       version: '2.0.0-phase2'
-    });
+    })
 
   } catch (error) {
-    console.error('❌ Health check failed:', error);
+    console.error('❌ Health check failed:', error)
 
     return json({
       healthy: false,
       error: String(error),
       capabilities: Record<string, any>,
       metrics: Record<string, any>
-    }, { status: 503 });
+    }, { status: 503 })
   }
-};
+}

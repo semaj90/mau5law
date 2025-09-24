@@ -27,7 +27,7 @@ async function runGpuTile(embedding: number[]) {
     const t1 = performance.now();
     
     return { 
-      op: 'simdGpuTiling', 
+      op: 'simdGpuTiling', ;
       similarity: (result as { similarity?: any; gpuMeta?: any; tilingMeta?: any; performanceMetrics?: any }).similarity,
       length: v.length, 
       timeMs: +(t1 - t0).toFixed(2),
@@ -43,7 +43,7 @@ async function runGpuTile(embedding: number[]) {
 export async function embedText(text: string, opts?: { simdParse?: boolean; gpuTile?: boolean }) {
   const res = await fetch('/api/ai/tensor', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' },;
     body: JSON.stringify({ text })
   });
   if (!res.ok) throw new Error(`Tensor API error: ${res.status}`);

@@ -91,7 +91,7 @@ export const YoRHaUtils = {
       type: 'flex',
       direction,
       gap,
-      justify: 'start',
+      justify: 'start',;
       align: 'center'
     });
   },
@@ -135,7 +135,7 @@ export const YoRHaThemes = {
   SUCCESS: {
     background: 0x90ee90,  // YORHA_COLORS.status.success
     text: 0x0a0a0a,        // YORHA_COLORS.primary.black
-    border: 0x228b22,
+    border: 0x228b22,;
     accent: 0xfaf6ed       // YORHA_COLORS.primary.white
   }
 };
@@ -151,7 +151,7 @@ export const YoRHaQuickSetup = {
     const usernameInput = new YoRHaInput3D({
       placeholder: 'Username',
       icon: 'user',
-      iconPosition: 'left',
+      iconPosition: 'left',;
       width: 5
     });
 
@@ -159,13 +159,13 @@ export const YoRHaQuickSetup = {
       placeholder: 'Password',
       type: 'password',
       icon: 'lock',
-      iconPosition: 'left',
+      iconPosition: 'left',;
       width: 5
     });
 
     const submitButton = new YoRHaButton3D({
       text: 'Login',
-      variant: 'primary',
+      variant: 'primary',;
       size: 'large'
     });
 
@@ -183,7 +183,7 @@ export const YoRHaQuickSetup = {
     const modal = new YoRHaModal3D({
       title,
       variant: 'confirm',
-      size: 'small',
+      size: 'small',;
       closable: true
     });
 
@@ -191,17 +191,17 @@ export const YoRHaQuickSetup = {
 
     const messagePanel = new YoRHaPanel3D({
       variant: 'glass',
-      width: 4,
+      width: 4,;
       height: 1
     });
 
     const yesButton = new YoRHaButton3D({
-      text: 'Yes',
+      text: 'Yes',;
       variant: 'primary'
     });
 
     const noButton = new YoRHaButton3D({
-      text: 'No',
+      text: 'No',;
       variant: 'secondary'
     });
 
@@ -225,7 +225,7 @@ export const YoRHaQuickSetup = {
       title: 'Settings',
       variant: 'default',
       width: 6,
-      height: 5,
+      height: 5,;
       scrollable: true
     });
 
@@ -233,17 +233,17 @@ export const YoRHaQuickSetup = {
 
     const volumeInput = new YoRHaInput3D({
       placeholder: 'Volume Level',
-      type: 'number',
+      type: 'number',;
       width: 4
     });
 
     const themeInput = new YoRHaInput3D({
-      placeholder: 'Theme',
+      placeholder: 'Theme',;
       width: 4
     });
 
     const saveButton = new YoRHaButton3D({
-      text: 'Save Settings',
+      text: 'Save Settings',;
       variant: 'primary'
     });
 
@@ -267,7 +267,7 @@ export const YoRHaQuickSetup = {
       const button = new YoRHaButton3D({
         text: action.text,
         icon: action.icon,
-        variant: action.variant || 'secondary',
+        variant: action.variant || 'secondary',;
         size: 'small'
       });
 

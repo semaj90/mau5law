@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -261,7 +261,7 @@ https://svelte.dev/e/js_parse_error -->
 {/if}
 
 <style>
-  .drag-drop-zone {
+  .drag-drop-zone {;
     position: relative;
     min-height: 200px;
     border: 3px dashed var(--nes-blue, #3cbcfc);

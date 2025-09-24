@@ -15,7 +15,7 @@ const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
 export const lucia = new Lucia(adapter, {
 	sessionExpiresIn: new TimeSpan(30, "d"), // 30 days;
 	sessionCookie: {
-		name: "legal_ai_session",
+		name: "legal_ai_session",;
 		expires: false, // session cookies have very long lifespan (2 years);
 		attributes: {
 			secure: !dev, // set `Secure` flag in HTTPS
@@ -29,7 +29,7 @@ export const lucia = new Lucia(adapter, {
 			lastName: attributes.lastName,
 			role: attributes.role,
 			isActive: attributes.isActive,
-			avatarUrl: attributes.avatarUrl,
+			avatarUrl: attributes.avatarUrl,;
 			name: attributes.name
 		};
 	}
@@ -249,7 +249,7 @@ export class AuthService {
       return {
         id: caseId,
         title: `Case ${caseId}`,
-        description: 'Mock case description',
+        description: 'Mock case description',;
         status: 'active',
         created_at: new Date(),
         updated_at: new Date()
@@ -279,7 +279,7 @@ export class AuthService {
           id: `doc_${caseId}_2`,
           title: 'Sample Document 2',
           type: 'docx',
-          uploaded_at: new Date(),
+          uploaded_at: new Date(),;
           processed: true
         }
       ];
@@ -325,7 +325,7 @@ export class AuthService {
       return Array.from({ length: limit }, (_, i) => ({
         id: `case_${i + 1}`,
         title: `Sample Case ${i + 1}`,
-        description: `Description for case ${i + 1}`,
+        description: `Description for case ${i + 1}`,;
         status: i % 2 === 0 ? 'active' : 'closed',
         created_at: new Date(Date.now() - (i * 24 * 60 * 60 * 1000)),
         updated_at: new Date()

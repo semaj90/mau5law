@@ -99,7 +99,7 @@ export function createSession(input: {
     created: input.created ?? now,
     updated: now,
     messageCount: 0,
-    status: "active",
+    status: "active",;
     context: input.context
   };
   chatStore.sessions = [session, ...chatStore.sessions.filter((s) => s.id !== session.id)];
@@ -164,7 +164,7 @@ export function getContextWindow(opts: {
     role === "assistant" ? 1.0 : role === "user" ? 0.9 : 0.5;
 
   const scored = messages.map((m) => ({
-    msg: m,
+    msg: m,;
     score: decay(m.timestamp) * roleWeight(m.role),
     estTokens: Math.ceil(m.content.length / 4)
   });
@@ -273,7 +273,7 @@ export function sendRealtime(payload: any) {
   if (!ws && typeof fetch !== "undefined") {
     fetch("/api/realtime", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" },;
       body: JSON.stringify(payload)
     }).catch(() => {});
   }

@@ -37,7 +37,7 @@ declare global {
 }
 
 export interface RuntimeCapabilities {
-  webgpu: {
+  webgpu: {;
     available: boolean;
     adapter?: GPUAdapter;
     device?: GPUDevice;
@@ -84,7 +84,7 @@ export interface InferenceRequest {
 export interface InferenceResponse {
   text: string;
   embedding?: Float32Array;
-  metadata: {
+  metadata: {;
     runtime: 'webgpu' | 'webgl2' | 'wasm' | 'tensorrt';
     executionTime: number;
     tokensGenerated: number;
@@ -147,7 +147,7 @@ export class UnifiedRuntimeAbstraction {
 
       this.initialized = true;
 
-      console.log('[Runtime] Capabilities detected:', {
+      console.log('[Runtime] Capabilities detected:', {;
         webgpu: this.capabilities.webgpu.available,
         webgl2: this.capabilities.webgl2.available,
         wasmSIMD: this.capabilities.wasmSIMD.available,
@@ -186,7 +186,7 @@ export class UnifiedRuntimeAbstraction {
         available: true,
         adapter,
         device,
-        features: Array.from(adapter.features),
+        features: Array.from(adapter.features),;
         limits: Object.fromEntries(
           Object.entries(adapter.limits).map(([key, value]) => [key, Number(value)])
         )
@@ -209,7 +209,7 @@ export class UnifiedRuntimeAbstraction {
       const gl = canvas.getContext('webgl2', {
         powerPreference: 'high-performance',
         antialias: false,
-        depth: false,
+        depth: false,;
         stencil: false
       });
 
@@ -221,12 +221,12 @@ export class UnifiedRuntimeAbstraction {
       this.webgl2Context = gl;
       this.capabilities.webgl2 = {
         available: true,
-        context: gl,
+        context: gl,;
         extensions: gl.getSupportedExtensions() || [],
         maxTextureSize: gl.getParameter(gl.MAX_TEXTURE_SIZE)
       };
 
-      console.log('[Runtime] WebGL2 initialized:', {
+      console.log('[Runtime] WebGL2 initialized:', {;
         extensions: this.capabilities.webgl2.extensions.length,
         maxTextureSize: this.capabilities.webgl2.maxTextureSize
       });
@@ -272,7 +272,7 @@ export class UnifiedRuntimeAbstraction {
       };
 
       console.log('[Runtime] WASM SIMD initialized:', {
-        instructions: supportedInstructions,
+        instructions: supportedInstructions,;
         threads: this.capabilities.wasmSIMD.threadCount
       });
 
@@ -287,7 +287,7 @@ export class UnifiedRuntimeAbstraction {
   private async initializeTensorRT(): Promise<void> {
     try {
       const response = await fetch(`${this.tensorRTEndpoint}/health`, {
-        method: 'GET',
+        method: 'GET',;
         signal: AbortSignal.timeout(3000)
       });
 
@@ -295,12 +295,12 @@ export class UnifiedRuntimeAbstraction {
         const data = await response.json();
         this.capabilities.tensorRT = {
           available: true,
-          endpoint: this.tensorRTEndpoint,
+          endpoint: this.tensorRTEndpoint,;
           models: data.models || ['gemma3-legal:latest']
         };
 
         console.log('[Runtime] TensorRT available:', {
-          endpoint: this.tensorRTEndpoint,
+          endpoint: this.tensorRTEndpoint,;
           models: this.capabilities.tensorRT.models
         });
       }
@@ -315,7 +315,7 @@ export class UnifiedRuntimeAbstraction {
   private async initializeCHRROMCache(): Promise<void> {
     try {
       const response = await fetch('/api/chrrom/events', {
-        method: 'GET',
+        method: 'GET',;
         signal: AbortSignal.timeout(2000)
       });
 
@@ -323,13 +323,13 @@ export class UnifiedRuntimeAbstraction {
         const cacheStatus = await response.json();
         this.capabilities.chrRomCache = {
           available: true,
-          redisConnected: cacheStatus.redis_connected || false,
+          redisConnected: cacheStatus.redis_connected || false,;
           patterns: cacheStatus.pattern_count || 0,
           hitRate: cacheStatus.hit_rate || 0,
           avgResponseTime: cacheStatus.avg_response_time || 0
         };
 
-        console.log('[Runtime] CHR-ROM cache available:', {
+        console.log('[Runtime] CHR-ROM cache available:', {;
           patterns: this.capabilities.chrRomCache.patterns,
           hitRate: `${(this.capabilities.chrRomCache.hitRate * 100).toFixed(1)}%`,
           avgResponseTime: `${this.capabilities.chrRomCache.avgResponseTime.toFixed(2)}ms`
@@ -473,7 +473,7 @@ export class UnifiedRuntimeAbstraction {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         operation: 'inference',
-        model: request.model,
+        model: request.model,;
         prompt: request.prompt,
         useWebGL2: true,
         maxTokens: request.maxTokens
@@ -491,7 +491,7 @@ export class UnifiedRuntimeAbstraction {
       metadata: {
         runtime: 'webgl2',
         executionTime: 0,
-        tokensGenerated: data.metadata?.tokensGenerated || 0,
+        tokensGenerated: data.metadata?.tokensGenerated || 0,;
         confidence: data.metadata?.confidence || 0.8,
         deviceInfo: this.webgl2Context.getParameter(this.webgl2Context.RENDERER)
       }
@@ -516,7 +516,7 @@ export class UnifiedRuntimeAbstraction {
       body: JSON.stringify({
         model: request.model,
         prompt: request.prompt,
-        max_tokens: request.maxTokens || 2048,
+        max_tokens: request.maxTokens || 2048,;
         temperature: request.temperature || 0.7,
         use_tensor_cores: true,
         optimize_for_legal: request.model === 'gemma3-legal:latest'
@@ -534,7 +534,7 @@ export class UnifiedRuntimeAbstraction {
       metadata: {
         runtime: 'tensorrt',
         executionTime: 0,
-        tokensGenerated: data.tokens_generated || 0,
+        tokensGenerated: data.tokens_generated || 0,;
         confidence: data.confidence || 0.9,
         deviceInfo: 'RTX-3060Ti-TensorRT'
       }
@@ -617,7 +617,7 @@ export class UnifiedRuntimeAbstraction {
           action: 'get',
           key: cacheKey,
           pattern_type: 'ai_response'
-        }),
+        }),;
         signal: AbortSignal.timeout(100) // Fast cache check
       });
 
@@ -626,7 +626,7 @@ export class UnifiedRuntimeAbstraction {
         if (cached.data) {
           return {
             text: cached.data.text,
-            embedding: cached.data.embedding ? new Float32Array(cached.data.embedding) : undefined,
+            embedding: cached.data.embedding ? new Float32Array(cached.data.embedding) : undefined,;
             metadata: {
               ...cached.data.metadata,
               fromCHRROMCache: true,
@@ -666,7 +666,7 @@ export class UnifiedRuntimeAbstraction {
           model: request.model,
           use_case: request.useCase,
           ttl: 3600 // 1 hour cache
-        }),
+        }),;
         signal: AbortSignal.timeout(200) // Non-blocking cache store
       });
     } catch (error) {

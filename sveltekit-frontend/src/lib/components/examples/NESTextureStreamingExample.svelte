@@ -29,23 +29,23 @@
     {
       id: 'legal_contract_2024_001',
       title: 'Commercial Lease Agreement',
-      complexity: 0.7,
+      complexity: 0.7,;
       size: { width: 1920, height: 2560 },
-      type: 'contract'
+      type: 'contract';
     },
     {
       id: 'evidence_email_2024_042',
       title: 'Email Evidence Chain',
-      complexity: 0.4,
+      complexity: 0.4,;
       size: { width: 1024, height: 768 },
-      type: 'evidence'
+      type: 'evidence';
     },
     {
       id: 'motion_summary_judgment',
       title: 'Motion for Summary Judgment',
-      complexity: 0.9,
-      size: { width: 2048, height: 3200 },
-      type: 'motion'
+      complexity: 0.9,;
+      size: { width: 2048, height: 3200 },;
+      type: 'motion';
     }
   ];
 
@@ -329,7 +329,7 @@
 </div>
 
 <style>
-  .nes-container {
+  .nes-container {;
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;

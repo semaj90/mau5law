@@ -5,7 +5,7 @@
 }
 
 export interface Gemma3LegalConfig {
-  model: {
+  model: {;
     name: string;
     version: string;
     size: string;
@@ -13,7 +13,7 @@ export interface Gemma3LegalConfig {
     gpu_layers: number;
     memory_requirement: string;
   };
-  generation: {
+  generation: {;
     temperature: number;
     top_p: number;
     top_k: number;
@@ -172,7 +172,7 @@ Provide detailed risk matrix with severity and likelihood ratings.`
     enable_gpu: true,
     gpu_memory_fraction: 0.85, // Use 85% of RTX 3060 Ti memory
     batch_size: 8,
-    parallel_requests: 4,
+    parallel_requests: 4,;
     quantization: 'int8', // Balance between speed and quality
     tensor_parallel: false // Single GPU setup
   },
@@ -222,7 +222,7 @@ export const LEGAL_ENTITY_PATTERNS = {
     /\$[\d]+(?:\.\d{2})?/g,
     /\b(\d+(?:,\d{3})*) dollars?\b/gi
   ],
-  
+  ;
   clauses: [
     /\b(indemnification|limitation of liability|force majeure|termination|confidentiality|non-disclosure)\b/gi,
     /\b(warranty|representation|covenant|agreement|obligation)\b/gi
@@ -242,7 +242,7 @@ export const PERFORMANCE_CONFIG = {
   // Memory management;
   memory: {
     mlock: true,
-    mmap: true,
+    mmap: true,;
     numa: false, // Single GPU setup
     low_vram: false // RTX 3060 Ti has sufficient VRAM
   },
@@ -286,7 +286,7 @@ export const API_ENDPOINTS = {
   legal_services: {
     base_url: 'grpc://localhost:50051',
     analyze: '/legal.v1.LegalService/Analyze',
-    review: '/legal.v1.LegalService/Review',
+    review: '/legal.v1.LegalService/Review',;
     search: '/legal.v1.LegalService/Search'
   }
 };

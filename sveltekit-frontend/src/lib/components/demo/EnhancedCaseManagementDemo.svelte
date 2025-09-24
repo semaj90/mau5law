@@ -21,9 +21,9 @@
   // Form data for case creation
   let newCaseData = $state({
     title: '',
-    description: '',
-    priority: 'medium' as const,
-    status: 'open' as const
+    description: '',;
+    priority: 'medium' as const,;
+    status: 'open' as const;
   });
 
   let searchQuery = $state('');
@@ -80,18 +80,18 @@
     // Reset form
     newCaseData = {
       title: '',
-      description: '',
-      priority: 'medium',
-      status: 'open'
+      description: '',;
+      priority: 'medium',;
+      status: 'open';
     };
   }
 
   function searchCases() {
     if (searchQuery.trim()) {
       actor.send({
-        type: 'SEARCH_CASES_COGNITIVE',
+        type: 'SEARCH_CASES_COGNITIVE',;
         query: searchQuery,
-        useML: true
+        useML: true;
       });
     }
   }
@@ -245,7 +245,7 @@ Refresh
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-medium mb-1" for="title">Title</label><input id="title" 
-              type="text" 
+              type="text" ;
               bind:value={newCaseData.title}
               placeholder="Enter case title..."
               class="w-full p-2 border rounded-md"
@@ -299,7 +299,7 @@ Refresh
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-medium mb-1" for="search-query">Search Query</label><input id="search-query" 
-              type="text" 
+              type="text" ;
               bind:value={searchQuery}
               placeholder="Search with ML-powered cognition..."
               class="w-full p-2 border rounded-md"

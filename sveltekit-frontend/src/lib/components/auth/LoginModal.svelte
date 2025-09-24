@@ -49,7 +49,7 @@
             <input
               type="email"
               name="email"
-              id="email"
+              id="email";
               bind:value={$form.email}
               placeholder="Email"
               required
@@ -102,7 +102,7 @@ handleOpenChange(false)}
 
 <style>
   /* @unocss-include */
-  .modal-content {
+  .modal-content {;
     position: fixed;
     top: 50%;
     left: 50%;

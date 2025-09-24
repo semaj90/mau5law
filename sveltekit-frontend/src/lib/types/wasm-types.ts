@@ -80,7 +80,7 @@ export interface WASMLLMResponse {
   tokens: number;
   processingTimeMs: number;
   confidence: number;
-  metadata: {
+  metadata: {;
     model: string;
     promptTokens: number;
     completionTokens: number;

@@ -103,12 +103,13 @@
     textureSize: lodConfig[currentLOD as keyof typeof lodConfig]?.textureSize || 256,
     quality: lodConfig[currentLOD as keyof typeof lodConfig]?.quality || 0.4,
     memoryUsage: calculateMemoryUsage(),
-    renderTime: estimateRenderTime()
+    renderTime: estimateRenderTime();
   }));
 
   // Initialize WebGPU for document rendering
-  $effect(async () => {
-    if (!browser || !enableWebGPU) return;
+  $effect(() => {
+    (async () => {
+if (!browser || !enableWebGPU) return;
     
     try {
       await initializeWebGPU();
@@ -118,6 +119,7 @@
       // Fallback to Canvas2D rendering
       await initializeCanvas2DFallback();
     }
+    })();
   });
 
   onDestroy(() => {
@@ -150,10 +152,10 @@
 
     // Configure canvas with N64-style settings
     context.configure({
-      device: gpuDevice,
+      device: gpuDevice,;
       format: 'bgra8unorm',
-      alphaMode: 'premultiplied',
-      usage: GPUTextureUsage.RENDER_ATTACHMENT
+      alphaMode: 'premultiplied',;
+      usage: GPUTextureUsage.RENDER_ATTACHMENT;
     });
 
     isWebGPUReady = true;
@@ -228,7 +230,7 @@
           textContent: pageData.textContent || '',
           annotations: pageData.annotations || [],
           lodTextures: new Map(),
-          currentLOD: lodLevel
+          currentLOD: lodLevel;
         };
         documentPages.set(pageNumber, page);
       }
@@ -251,8 +253,8 @@
     
     const texture = gpuDevice.createTexture({
       size: { width: size, height: size, depthOrArrayLayers: 1 },
-      format: 'rgba8unorm',
-      usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT
+      format: 'rgba8unorm',;
+      usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT;
     });
     
     // Upload image data to texture
@@ -339,7 +341,7 @@
     // Implementation would include N64-style shader with:
     // - Reduced color palette
     // - Pixelation filter
-    // - Distance fog effect
+    // - Distance fog effect;
   }
 
   async function renderCanvas2DFallback(): Promise<void> {

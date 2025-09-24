@@ -3,9 +3,9 @@
  * Phase 4 - AI Memory Integration
  */
 
-import type { RequestHandler } from '@sveltejs/kit';
-import { contextAwareMemory } from '$lib/services/context-aware-ai-memory';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit'
+import { contextAwareMemory } from '$lib/services/context-aware-ai-memory'
+import { json } from '@sveltejs/kit'
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -14,20 +14,20 @@ export const POST: RequestHandler = async ({ request }) => {
       query,
       consoleTheme = 'n64',
       updateMemory = true
-    } = await request.json();
+    } = await request.json()
 
     if (!caseId || !query) {
-      return json({ error: 'Case ID and query are required' }, { status: 400 });
+      return json({ error: 'Case ID and query are required' }, { status: 400 })
     }
 
-    console.log(`🧠 Context-aware AI query for case ${caseId}: "${query.substring(0, 50)}..."`);
+    console.log(`🧠 Context-aware AI query for case ${caseId}: "${query.substring(0, 50)}..."`)
 
     // Get contextual AI response
     const response = await contextAwareMemory.getContextualAIResponse(
       caseId,
       query,
       consoleTheme
-    );
+    )
 
     return json({
       success: true,
@@ -44,30 +44,30 @@ export const POST: RequestHandler = async ({ request }) => {
         contextItems: response.contextUsed.length,
         integrations: ['ollama-ai', 'vector-search', 'case-memory']
       }
-    });
+    })
 
   } catch (error) {
-    console.error('Context-aware AI error:', error);
+    console.error('Context-aware AI error:', error)
     return json({
         error: 'Failed to generate contextual AI response',
         details: error instanceof Error ? error.message: 'Unknown error'
       },)
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 export const GET: RequestHandler = async ({ url }) => {
-  const caseId = url.searchParams.get('caseId');
-  const consoleTheme = url.searchParams.get('theme') || 'n64';
+  const caseId = url.searchParams.get('caseId')
+  const consoleTheme = url.searchParams.get('theme') || 'n64'
 
   if (!caseId) {
-    return json({ error: 'Case ID is required' }, { status: 400 });
+    return json({ error: 'Case ID is required' }, { status: 400 })
   }
 
   try {
     // Load case memory without query
-    const memory = await contextAwareMemory.loadCaseMemory(caseId, consoleTheme);
+    const memory = await contextAwareMemory.loadCaseMemory(caseId, consoleTheme)
 
     return json({
       success: true,
@@ -82,12 +82,12 @@ export const GET: RequestHandler = async ({ url }) => {
         gameMemory: memory.gameMemory
       },
       timestamp: new Date().toISOString()
-    });
+    })
 
   } catch (error) {
     return json(
       { error: 'Failed to load case memory' },)
       { status: 500 }
-    );
+    )
   }
-};
+}

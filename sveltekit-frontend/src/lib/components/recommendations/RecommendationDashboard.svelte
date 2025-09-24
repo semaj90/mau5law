@@ -28,7 +28,7 @@
     activeSearches: 0,
     workInProgress: 0,
     aiRecommendations: 0,
-    loading: true
+    loading: true;
   });
 
   // Recent activity summary
@@ -84,7 +84,7 @@
         activeSearches: searches.data?.filter((s: any) => s.confidence > 0.7).length || 0,
         workInProgress: work.data?.filter((w: any) => w.status === 'in-progress').length || 0,
         aiRecommendations: 12, // AI recommendation count
-        loading: false
+        loading: false;
       };
 
       // Compile recent activity
@@ -95,7 +95,7 @@
           title: c.title,
           timestamp: c.dateUpdated,
           priority: c.urgency,
-          confidence: c.priority / 250
+          confidence: c.priority / 250;
         })) || []),
         ...(searches.data?.slice(0, 2).map((s: any) => ({
           id: s.id,
@@ -103,14 +103,14 @@
           title: s.query,
           timestamp: s.lastSearched,
           priority: s.confidence > 0.8 ? 'high' : 'medium',
-          confidence: s.confidence
+          confidence: s.confidence;
         })) || []),
         ...(work.data?.slice(0, 2).map((w: any) => ({
           id: w.id,
           type: 'work' as const,
-          title: w.title,
-          timestamp: w.lastWorked,
-          priority: w.priority > 200 ? 'high' : 'medium'
+          title: w.title,;
+          timestamp: w.lastWorked,;
+          priority: w.priority > 200 ? 'high' : 'medium';
         })) || [])
       ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
        .slice(0, 6);
@@ -125,7 +125,7 @@
         activeSearches: 3,
         workInProgress: 2,
         aiRecommendations: 8,
-        loading: false
+        loading: false;
       };
 
       recentActivity = [
@@ -135,7 +135,7 @@
           title: 'Smith vs. Corporate Dynamics',
           timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
           priority: 'high',
-          confidence: 0.85
+          confidence: 0.85;
         },
         {
           id: 'mock-activity-002',
@@ -143,14 +143,14 @@
           title: 'employment contract termination',
           timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
           priority: 'medium',
-          confidence: 0.78
+          confidence: 0.78;
         },
         {
           id: 'mock-activity-003',
           type: 'work',
-          title: 'Patent Prior Art Research',
-          timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-          priority: 'medium'
+          title: 'Patent Prior Art Research',;
+          timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),;
+          priority: 'medium';
         }
       ];
 
@@ -402,4 +402,4 @@
 <!-- Individual Modals -->
 <LastSearchedModal bind:isOpen={showSearchModal} />
 <LastWorkedModal bind:isOpen={showWorkModal} />
-<AIRecommendationAssistant bind:isOpen={showAIModal} />
+<AIRecommendationAssistant bind:isOpen={showAIModal} />;

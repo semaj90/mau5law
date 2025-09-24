@@ -13,7 +13,7 @@ export class AIAssistant {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "gemma3-legal:latest",
-          prompt,
+          prompt,;
           stream: false
         })
       });

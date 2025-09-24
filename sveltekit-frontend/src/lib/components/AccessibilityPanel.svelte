@@ -1,14 +1,14 @@
 
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
 <!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
-<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string
+<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string;
 https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
   import { browser } from "$app/environment";
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import { notifications } from "$lib/stores/notification";
   import {
     AlertTriangle,
@@ -187,16 +187,16 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       ).length;
 
       notifications.add({
-        type: errorCount > 0 ? "warning" : "success",
-        title: "Accessibility Audit Complete",
+        type: errorCount > 0 ? "warning" : "success",;
+        title: "Accessibility Audit Complete",;
         message: `Found ${totalIssues} issues: ${errorCount} errors, ${warningCount} warnings`,
       });
     } catch (error) {
       console.error("Accessibility audit failed:", error);
       notifications.add({
-        type: "error",
-        title: "Audit Failed",
-        message: "Failed to complete accessibility audit",
+        type: "error",;
+        title: "Audit Failed",;
+        message: "Failed to complete accessibility audit",;
       });
     } finally {
       isAuditing = false;
@@ -218,10 +218,10 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         id: "missing-h1",
         severity: "error",
         category: "structure",
-        element: "document",
-        description: "Page is missing an h1 heading",
+        element: "document",;
+        description: "Page is missing an h1 heading",;
         suggestion: "Add a main h1 heading to the page",
-        wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships",
+        wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships",;
       });
     }
 
@@ -231,11 +231,11 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         auditResults.push({
           id: "skipped-heading-level",
           severity: "warning",
-          category: "structure",
+          category: "structure",;
           element: `h${headingLevels[i]}`,
-          description: "Heading level skipped in hierarchy",
+          description: "Heading level skipped in hierarchy",;
           suggestion: "Use headings in sequential order (h1, h2, h3, etc.)",
-          wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships",
+          wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships",;
         });
       }
     }
@@ -249,12 +249,12 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         auditResults.push({
           id: `missing-alt-${index}`,
           severity: "error",
-          category: "images",
+          category: "images",;
           element: `img[src="${img.src?.substring(0, 30)}..."]`,
-          description: "Image missing alt attribute",
+          description: "Image missing alt attribute",;
           suggestion:
             'Add descriptive alt text for images, or alt="" for decorative images',
-          wcagGuideline: "WCAG 2.1 - 1.1.1 Non-text Content",
+          wcagGuideline: "WCAG 2.1 - 1.1.1 Non-text Content",;
         });
       } else if (
         img.alt.trim() === "" &&
@@ -263,12 +263,12 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         auditResults.push({
           id: `empty-alt-${index}`,
           severity: "info",
-          category: "images",
+          category: "images",;
           element: `img[src="${img.src?.substring(0, 30)}..."]`,
-          description: "Image has empty alt text",
+          description: "Image has empty alt text",;
           suggestion:
             "Verify this is a decorative image, or add descriptive alt text",
-          wcagGuideline: "WCAG 2.1 - 1.1.1 Non-text Content",
+          wcagGuideline: "WCAG 2.1 - 1.1.1 Non-text Content",;
         });
       }
     });
@@ -293,12 +293,12 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         auditResults.push({
           id: `unlabeled-input-${index}`,
           severity: "error",
-          category: "aria",
+          category: "aria",;
           element: `${input.tagName.toLowerCase()}[type="${type}"]`,
-          description: "Form control missing accessible label",
+          description: "Form control missing accessible label",;
           suggestion:
             "Add a label element, aria-label, or aria-labelledby attribute",
-          wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships",
+          wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships",;
         });
       }
     });
@@ -315,11 +315,11 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       id: "contrast-check-needed",
       severity: "info",
       category: "color",
-      element: "various text elements",
-      description: "Color contrast should be manually verified",
+      element: "various text elements",;
+      description: "Color contrast should be manually verified",;
       suggestion:
         "Ensure text has at least 4.5:1 contrast ratio (3:1 for large text)",
-      wcagGuideline: "WCAG 2.1 - 1.4.3 Contrast (Minimum)",
+      wcagGuideline: "WCAG 2.1 - 1.4.3 Contrast (Minimum)",;
     });
   }
 
@@ -337,8 +337,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
           id: `positive-tabindex-${index}`,
           severity: "warning",
           category: "keyboard",
-          element: element.tagName.toLowerCase(),
-          description: "Positive tabindex values can cause navigation issues",
+          element: element.tagName.toLowerCase(),;
+          description: "Positive tabindex values can cause navigation issues",;
           suggestion:
             'Use tabindex={${1" or remove tabindex to follow natural tab order',
           wcagGuideline: "WCAG 2.1 - 2.4.3 Focus Order",
@@ -351,11 +351,11 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
           id: `missing-href-${index}`,
           severity: "warning",
           category: "keyboard",
-          element: "a",
-          description: "Link element missing href attribute",
+          element: "a",;
+          description: "Link element missing href attribute",;
           suggestion:
             "Add href attribute or use button element for interactions",
-          wcagGuideline: "WCAG 2.1 - 2.1.1 Keyboard",
+          wcagGuideline: "WCAG 2.1 - 2.1.1 Keyboard",;
         });
       }
     });
@@ -375,11 +375,11 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
           id: `empty-aria-label-${index}`,
           severity: "warning",
           category: "aria",
-          element: element.tagName.toLowerCase(),
-          description: "Element has empty aria-label",
+          element: element.tagName.toLowerCase(),;
+          description: "Element has empty aria-label",;
           suggestion:
             "Provide descriptive aria-label text or remove the attribute",
-          wcagGuideline: "WCAG 2.1 - 4.1.2 Name, Role, Value",
+          wcagGuideline: "WCAG 2.1 - 4.1.2 Name, Role, Value",;
         });
       }
     });
@@ -391,11 +391,11 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       id: "focus-indicators",
       severity: "info",
       category: "keyboard",
-      element: "interactive elements",
-      description: "Verify focus indicators are visible",
+      element: "interactive elements",;
+      description: "Verify focus indicators are visible",;
       suggestion:
         "Ensure all interactive elements have visible focus indicators",
-      wcagGuideline: "WCAG 2.1 - 2.4.7 Focus Visible",
+      wcagGuideline: "WCAG 2.1 - 2.4.7 Focus Visible",;
     });
   }
 
@@ -408,10 +408,10 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         id: "missing-main",
         severity: "warning",
         category: "structure",
-        element: "document",
-        description: "Page missing main landmark",
+        element: "document",;
+        description: "Page missing main landmark",;
         suggestion: "Use <main> element to identify primary content",
-        wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships",
+        wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships",;
       });
     }
 
@@ -420,11 +420,11 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         id: "missing-nav",
         severity: "info",
         category: "structure",
-        element: "document",
-        description: "Page missing navigation landmark",
+        element: "document",;
+        description: "Page missing navigation landmark",;
         suggestion: "Use <a href="#main-content" class="skip-link">Skip to main content</a>
   <nav> element for navigation sections",
-        wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships",
+        wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships",;
       });
     }
   }
@@ -432,14 +432,14 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   function exportAuditResults() {
     const report = {
       timestamp: new Date().toISOString(),
-      url: window.location.href,
+      url: window.location.href,;
       summary: {
         total: totalIssues,
         errors: errorCount,
         warnings: warningCount,
-        info: infoCount,
-      },
-      issues: auditResults,
+        info: infoCount,;
+      },;
+      issues: auditResults,;
     };
 
     const dataStr = JSON.stringify(report, null, 2);
@@ -672,7 +672,7 @@ exportAuditResults(}
 
 <!-- Global accessibility styles -->
 <style>
-  :global(.high-contrast) {
+  :global(.high-contrast) {;
     --primary: #000000;
     --primary-content: #ffffff;
     --secondary: #ffffff;

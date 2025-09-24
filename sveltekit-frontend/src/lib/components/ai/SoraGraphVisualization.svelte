@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -78,7 +78,7 @@ https://svelte.dev/e/js_parse_error -->
         evidence: '#FF5722',
         entity: '#9C27B0',
         concept: '#FFC107',
-        relationship: '#607D8B'
+        relationship: '#607D8B';
       },
       edgeColors: {
         cites: '#FF9800',
@@ -86,7 +86,7 @@ https://svelte.dev/e/js_parse_error -->
         related: '#03DAC6',
         similar: '#E91E63',
         references: '#00BCD4',
-        contradicts: '#F44336'
+        contradicts: '#F44336';
       }
     },
     light: {
@@ -97,7 +97,7 @@ https://svelte.dev/e/js_parse_error -->
         evidence: '#D32F2F',
         entity: '#7B1FA2',
         concept: '#F57C00',
-        relationship: '#455A64'
+        relationship: '#455A64';
       },
       edgeColors: {
         cites: '#E65100',
@@ -105,7 +105,7 @@ https://svelte.dev/e/js_parse_error -->
         related: '#00695C',
         similar: '#AD1457',
         references: '#0097A7',
-        contradicts: '#C62828'
+        contradicts: '#C62828';
       }
     },
     legal: {
@@ -116,22 +116,22 @@ https://svelte.dev/e/js_parse_error -->
         evidence: '#f7931e',
         entity: '#c77dff',
         concept: '#06ffa5',
-        relationship: '#87ceeb'
+        relationship: '#87ceeb';
       },
       edgeColors: {
         cites: '#ff9f40',
         contains: '#4bc0c0',
         related: '#ff6384',
-        similar: '#36a2eb',
-        references: '#9966ff',
-        contradicts: '#ff4757'
+        similar: '#36a2eb',;
+        references: '#9966ff',;
+        contradicts: '#ff4757';
       }
     }
   };
 
   // Reactive statements
-  // TODO: Convert to $derived: currentTheme = themes[theme]
-  // TODO: Convert to $derived: traversalConfig = {
+  let currentTheme = $derived(themes[theme]);
+  let traversalConfig = $derived({
     maxDepth: 5,
     maxNodes: 100,
     scoreThreshold: 0.6,
@@ -145,9 +145,9 @@ https://svelte.dev/e/js_parse_error -->
       discountFactor: 0.95
     },
     ...config
-  } as SoraTraversalOptions
+  } as SoraTraversalOptions);
 
-  // TODO: Convert to $derived: visualizationConfig = {
+  let visualizationConfig = $derived({
     width,
     height,
     backgroundColor: currentTheme.backgroundColor,
@@ -159,19 +159,19 @@ https://svelte.dev/e/js_parse_error -->
     vertexCount: 10000,
     lodLevels: 4,
     colorScheme: 'semantic' as const,
-    layout: 'legal-context' as const,
+    layout: 'legal-context' as const,;
     physics: {
       gravity: 0.1,
       repulsion: 100,
       attraction: 0.05,
-      damping: 0.9
+      damping: 0.9;
     },
-    reinforcementLearning: {
+    reinforcementLearning: {;
       enabled: enableReinforcementLearning,
       showTrainingProgress: true,
       highlightOptimalPaths: true,
       showRewardHeatmap: true,
-      qValueVisualization: true
+      qValueVisualization: true;
     },
     useWebGL: true,
     useWasm: true,
@@ -180,8 +180,9 @@ https://svelte.dev/e/js_parse_error -->
     ...config
   } as MoogleVisualizationConfig
 
-  $effect(async () => {
-    try {
+  $effect(() => {
+    (async () => {
+try {
       await initializeComponents();
       if (query && startNodeId) {
         await performGraphTraversal();
@@ -189,7 +190,9 @@ https://svelte.dev/e/js_parse_error -->
     } catch (err) {
       console.error('Sora component initialization failed:', err);
       error.set(`Initialization failed: ${err.message}`);
-      ondispatch?.({ message: 'Component initialization failed', error: err });
+      ondispatch?.({ message: 'Component initialization failed', error: err;
+    })();
+  });
     }
   });
 
@@ -204,10 +207,10 @@ https://svelte.dev/e/js_parse_error -->
       memoryArch = new NESMemoryArchitecture();
       semanticPipeline = new SemanticAnalysisPipeline();
       tensorStore = new DimensionalTensorStore({
-        documents: 1000,
-        chunks: 10000,
+        documents: 1000,;
+        chunks: 10000,;
         representations: 100,
-        maxLOD: 4
+        maxLOD: 4;
       });
       somCache = new SOMWebGPUCache();
       reranker = new LegalAIReranker();
@@ -288,7 +291,7 @@ https://svelte.dev/e/js_parse_error -->
         avgVisitCount: reinforcementStats.avgVisitCount,
         tensorSlices: tensorStats.totalSlices,
         cacheHitRate: cacheStats.renderingCache.hitRate,
-        renderTime: $visualization2D?.metadata.renderTime || $visualization3D?.metadata.renderTime || 0
+        renderTime: $visualization2D?.metadata.renderTime || $visualization3D?.metadata.renderTime || 0;
       });
 
     } catch (err) {
@@ -430,8 +433,8 @@ https://svelte.dev/e/js_parse_error -->
         return viz.svg;
       case 'json':
         return JSON.stringify({
-          paths: $paths,
-          metadata: viz.metadata
+          paths: $paths,;
+          metadata: viz.metadata;
         }, null, 2);
       default:
         return null;
@@ -442,7 +445,7 @@ https://svelte.dev/e/js_parse_error -->
 <div 
   class="sora-graph-visualization" 
   class:loading={$loading}
-  class:error={$error}
+  class:error={$error};
   bind:this={container}
   style="width: {width}px; height: {height}px;"
 >
@@ -547,7 +550,7 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
 
   <!-- Statistics panel -->
-  {#if Object.keys.length > 0}
+  {#if Object.keys(errors).length > 0}
     <div class="stats-panel">
       <h4>📊 Performance Stats</h4>
       <div class="stat-grid">
@@ -573,7 +576,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .sora-graph-visualization {
+  .sora-graph-visualization {;
     position: relative;
     border-radius: 8px;
     background: var(--bg-color, #0f1419);

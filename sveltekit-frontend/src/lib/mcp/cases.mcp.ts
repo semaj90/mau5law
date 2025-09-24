@@ -64,7 +64,7 @@ export async function loadCase(caseId: string): Promise<CaseData | null> {
     const result = await db.query.cases.findFirst({
       where: eq(schema.cases.id, caseId),
       with: {
-        evidence: {
+        evidence: {;
           limit: 10,
           orderBy: desc(schema.evidence.createdAt)
         }
@@ -115,7 +115,7 @@ export async function createCase(caseData: Omit<CaseData, 'id' | 'createdAt' | '
     await cache.publish('case:created', {
       caseId: newCase.id,
       title: newCase.title,
-      userId: newCase.userId,
+      userId: newCase.userId,;
       timestamp: Date.now()
     });
 
@@ -156,7 +156,7 @@ export async function updateCase(caseId: string, updates: Partial<CaseData>): Pr
     // Publish update event;
     await cache.publish('case:updated', {
       caseId,
-      changes: updates,
+      changes: updates,;
       timestamp: Date.now()
     });
 
@@ -194,7 +194,7 @@ export async function addEvidence(caseId: string, evidence: Omit<EvidenceData, '
       type: evidence.evidenceType,
       evidenceType: evidence.evidenceType,
       createdBy: 'system', // TODO: get from context
-      tags: evidence.tags ? JSON.stringify(evidence.tags) : null,
+      tags: evidence.tags ? JSON.stringify(evidence.tags) : null,;
       metadata: evidence,
       createdAt: new Date()
     }).returning();
@@ -261,7 +261,7 @@ export async function searchCases(query: string, userId: string, filters?: {
       orderBy: desc(schema.cases.updatedAt),
       limit: 50,
       with: {
-        evidence: {
+        evidence: {;
           limit: 3,
           orderBy: desc(schema.evidence.createdAt)
         }
@@ -381,7 +381,7 @@ export async function healthCheck(): Promise<any> {
     return {
       status: 'healthy',
       details: {
-        responseTime,
+        responseTime,;
         timestamp: firstRow?.timestamp || new Date().toISOString(),
         poolTotalCount: pool.totalCount,
         poolIdleCount: pool.idleCount,
@@ -392,7 +392,7 @@ export async function healthCheck(): Promise<any> {
   } catch (error: any) {
     return {
       status: 'unhealthy',
-      details: {
+      details: {;
         error: error instanceof Error ? error.message: 'Unknown error'
       }
     };

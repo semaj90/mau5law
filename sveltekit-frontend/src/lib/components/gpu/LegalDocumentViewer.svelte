@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Expected token >
+<!-- @migration-task Error while migrating Svelte code: Expected token >;
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token > -->
 <!-- 🏛️ NES-GPU Integrated Legal Document Viewer with MinIO Upload
@@ -99,7 +99,7 @@ https://svelte.dev/e/expected_token -->
     documentsCached: 0,
     compressionRatio: 0,
     textureStreamingTime: 0,
-    quantizationSavings: 0
+    quantizationSavings: 0;
   });
   
   // Pipeline performance stats
@@ -154,8 +154,8 @@ https://svelte.dev/e/expected_token -->
       context.configure({
         device,
         format: 'bgra8unorm',
-        alphaMode: 'premultiplied',
-        usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC
+        alphaMode: 'premultiplied',;
+        usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC;
       });
       
       // Initialize integrated systems
@@ -216,7 +216,7 @@ https://svelte.dev/e/expected_token -->
         @location(5) bankId: f32,
         @location(6) riskLevel: f32,
         @location(7) compressionRatio: f32,
-        @location(8) quantizationLevel: f32,
+        @location(8) quantizationLevel: f32,;
       }
       
       struct VertexOutput {
@@ -228,18 +228,18 @@ https://svelte.dev/e/expected_token -->
         @location(4) bankId: f32,
         @location(5) riskLevel: f32,
         @location(6) compressionRatio: f32,
-        @location(7) quantizationLevel: f32,
+        @location(7) quantizationLevel: f32,;
       }
       
       struct Uniforms {
         viewMatrix: mat4x4f,
-        projectionMatrix: mat4x4f,
+        projectionMatrix: mat4x4f,;
         time: f32,
         documentScale: f32,
         highlightOpacity: f32,
         animationPhase: f32,
         nesMemoryMode: f32,
-        visualMemoryPalace: f32,
+        visualMemoryPalace: f32,;
       }
       
       @group(0) @binding(0) var<uniform> uniforms: Uniforms;
@@ -313,18 +313,18 @@ https://svelte.dev/e/expected_token -->
         @location(4) bankId: f32,
         @location(5) riskLevel: f32,
         @location(6) compressionRatio: f32,
-        @location(7) quantizationLevel: f32,
+        @location(7) quantizationLevel: f32,;
       }
       
       struct Uniforms {
         viewMatrix: mat4x4f,
-        projectionMatrix: mat4x4f,
+        projectionMatrix: mat4x4f,;
         time: f32,
         documentScale: f32,
         highlightOpacity: f32,
         animationPhase: f32,
         nesMemoryMode: f32,
-        visualMemoryPalace: f32,
+        visualMemoryPalace: f32,;
       }
       
       @group(0) @binding(0) var<uniform> uniforms: Uniforms;
@@ -407,18 +407,18 @@ https://svelte.dev/e/expected_token -->
     `;
     
     const vertexShaderModule = device.createShaderModule({
-      code: vertexShaderCode
+      code: vertexShaderCode;
     });
     
     const fragmentShaderModule = device.createShaderModule({
-      code: fragmentShaderCode  
+      code: fragmentShaderCode  ;
     });
     
     renderPipeline = device.createRenderPipeline({
-      layout: 'auto',
+      layout: 'auto',;
       vertex: {
         module: vertexShaderModule,
-        entryPoint: 'main',
+        entryPoint: 'main',;
         buffers: [{
           arrayStride: 72, // 3+2+4+1+1+1+1+1+1 floats * 4 bytes = 60, padded to 72 for alignment
           attributes: [
@@ -436,9 +436,9 @@ https://svelte.dev/e/expected_token -->
       },
       fragment: {
         module: fragmentShaderModule,
-        entryPoint: 'main',
+        entryPoint: 'main',;
         targets: [{
-          format: 'bgra8unorm',
+          format: 'bgra8unorm',;
           blend: {
             color: {
               srcFactor: 'src-alpha',
@@ -451,9 +451,9 @@ https://svelte.dev/e/expected_token -->
           }
         }]
       },
-      primitive: {
+      primitive: {;
         topology: 'triangle-list',
-        cullMode: 'back'
+        cullMode: 'back';
       }
     });
   }
@@ -493,9 +493,9 @@ https://svelte.dev/e/expected_token -->
       );
       
       memoryBankVertexBuffer = device.createBuffer({
-        size: memoryBankVertices.byteLength,
+        size: memoryBankVertices.byteLength,;
         usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
-        mappedAtCreation: true
+        mappedAtCreation: true;
       });
       
       new Float32Array(memoryBankVertexBuffer.getMappedRange()).set(
@@ -548,8 +548,8 @@ https://svelte.dev/e/expected_token -->
               confidenceLevel: doc.confidenceLevel || 0.5,
               riskIndicator: doc.riskLevel === 'critical' || doc.riskLevel === 'high'
             },
-            region: getBankForTextureStorage(doc.bankAssignment || 'PRG_ROM'),
-            compress: true
+            region: getBankForTextureStorage(doc.bankAssignment || 'PRG_ROM'),;
+            compress: true;
           }
         );
         
@@ -561,8 +561,8 @@ https://svelte.dev/e/expected_token -->
             height: 256,
             format: 'rgba8unorm',
             size: textureData.byteLength,
-            lastUsed: Date.now(),
-            priority: doc.priority || 1,
+            lastUsed: Date.now(),;
+            priority: doc.priority || 1,;
             compressed: true,
             legalContext: {
               documentType: doc.type as any,
@@ -676,10 +676,10 @@ https://svelte.dev/e/expected_token -->
       
       // Use NES-GPU integration for ultra-fast semantic search
       const searchResults = await nesGPUIntegration.searchLegalDocumentsGPU(query, {
-        limit: 50,
+        limit: 50,;
         threshold: 0.7,
         useNESCache: true,
-        enableGPUAcceleration: true
+        enableGPUAcceleration: true;
       });
       
       // Enhance results with full integration data
@@ -727,7 +727,7 @@ https://svelte.dev/e/expected_token -->
         autoProcess: autoProcessUploads,
         priority: 200,
         caseId,
-        documentType: 'brief' // Default type, will be auto-detected
+        documentType: 'brief' // Default type, will be auto-detected;
       });
       
       uploadedFiles = [...uploadedFiles, ...uploadedMinIOFiles];
@@ -740,10 +740,10 @@ https://svelte.dev/e/expected_token -->
           try {
             await ragIngestionWorker.ingestDocument({
               id: minioFile.id,
-              filename: minioFile.filename,
+              filename: minioFile.filename,;
               content: '', // Content will be fetched from MinIO
               contentType: minioFile.contentType,
-              s3Key: minioFile.objectPath,
+              s3Key: minioFile.objectPath,;
               metadata: {
                 caseId,
                 userId,
@@ -791,7 +791,7 @@ https://svelte.dev/e/expected_token -->
         createdAt: file.uploadedAt,
         updatedAt: file.processedAt || file.uploadedAt,
         riskLevel: file.metadata?.riskLevel || 'medium',
-        priority: file.metadata?.priority || 128,
+        priority: file.metadata?.priority || 128,;
         metadata: {
           caseId: file.metadata?.caseId,
           minioObjectPath: file.objectPath,
@@ -799,9 +799,9 @@ https://svelte.dev/e/expected_token -->
           aiProcessed: file.metadata?.aiProcessed || false,
           vectorEmbedding: file.metadata?.vectorEmbedding
         },
-        renderPosition: calculateMemoryPalacePosition({ 
+        renderPosition: calculateMemoryPalacePosition({ ;
           id: file.id, 
-          riskLevel: file.metadata?.riskLevel || 'medium' 
+          riskLevel: file.metadata?.riskLevel || 'medium' ;
         } as LegalDocument, index),
         vertexBufferId: `vertex_${file.id}`,
         bankAssignment,
@@ -942,7 +942,7 @@ https://svelte.dev/e/expected_token -->
     const baseSize = 64;
     const embeddingSize = file.metadata?.vectorEmbedding ? file.metadata.vectorEmbedding.length * 4 : 384 * 4;
     const matrixSize = 16 * 4;
-    const metadataSize = file.metadata ? JSON.stringify.length: 0;
+    const metadataSize = file.metadata ? JSON.stringify(length): 0;
     return baseSize + embeddingSize + matrixSize + metadataSize;
   }
   
@@ -984,9 +984,9 @@ https://svelte.dev/e/expected_token -->
     const radius = 1.0 + riskBoost;
     
     return {
-      x: radius * Math.cos(angle) + bankOffset.x * 0.5,
-      y: bankOffset.y + riskBoost,
-      z: radius * Math.sin(angle) + bankOffset.z
+      x: radius * Math.cos(angle) + bankOffset.x * 0.5,;
+      y: bankOffset.y + riskBoost,;
+      z: radius * Math.sin(angle) + bankOffset.z;
     };
   }
   
@@ -1111,9 +1111,9 @@ https://svelte.dev/e/expected_token -->
     for (const bank of Object.keys(memoryBankStatus)) {
       memoryBankStatus[bank as keyof typeof memoryBankStatus] = {
         used: 0,
-        capacity: memoryBankStatus[bank as keyof typeof memoryBankStatus].capacity,
-        active: false,
-        documents: []
+        capacity: memoryBankStatus[bank as keyof typeof memoryBankStatus].capacity,;
+        active: false,;
+        documents: [];
       };
     }
     
@@ -1146,7 +1146,7 @@ https://svelte.dev/e/expected_token -->
     const baseSize = 64;
     const embeddingSize = 384 * 4;
     const matrixSize = 16 * 4;
-    const metadataSize = doc.metadata ? JSON.stringify.length: 0;
+    const metadataSize = doc.metadata ? JSON.stringify(length): 0;
     return baseSize + embeddingSize + matrixSize + metadataSize;
   }
   
@@ -1199,8 +1199,9 @@ https://svelte.dev/e/expected_token -->
     }
   });
   
-  $effect(async () => {
-    const success = await initializeGPU();
+  $effect(() => {
+    (async () => {
+const success = await initializeGPU();
     if (success) {
       if (enableRealTimeUpdates) {
         render(); // Start render loop
@@ -1208,6 +1209,7 @@ https://svelte.dev/e/expected_token -->
         render(); // Single render
       }
     }
+    })();
   });
   
   onDestroy(() => {
@@ -1304,7 +1306,7 @@ https://svelte.dev/e/expected_token -->
     </div>
   </div>
   
-  <canvas 
+  <canvas ;
     bind:this={canvas as any}
     width="1200"
     height="800"
@@ -1544,7 +1546,7 @@ https://svelte.dev/e/expected_token -->
 <style>
   /* Essential NES-style animations using N64 theme colors */
   @keyframes nesGlow {
-    0%, 100% { 
+    0%, 100% { ;
       text-shadow: 0 0 5px rgba(100, 255, 218, 0.3);
       box-shadow: 0 0 5px rgba(100, 255, 218, 0.3);
     }

@@ -113,7 +113,7 @@ export async function batchLegalDocumentProcessing(device: GPUDevice) {
   // Batch upload with legal standard profile;
   const batchResults = await uploader.uploadBatch(legalDocuments, {
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-    quantization: 'legal_standard',
+    quantization: 'legal_standard',;
     label: 'legal-document-batch',
     debugMode: true
   });
@@ -157,20 +157,20 @@ export async function legalAIComputePipeline(device: GPUDevice) {
   // Upload for compute shader;
   const weightsBuffer = await uploader.uploadBuffer(weightsQuantized.data.data as any, {
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-    quantization: weightsQuantized.data.originalType,
+    quantization: weightsQuantized.data.originalType,;
     label: 'legal-ai-weights'
   });
   
   const inputBuffer = await uploader.uploadBuffer(inputQuantized.data.data as any, {
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
-    quantization: inputQuantized.data.originalType,
+    quantization: inputQuantized.data.originalType,;
     label: 'legal-ai-input'
   });
   
   // Create output buffer;
   const outputBuffer = device.createBuffer({
     size: inputDocument.byteLength,
-    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,;
     label: 'legal-ai-output'
   });
   
@@ -213,14 +213,14 @@ export async function legalDocumentSimilaritySearch(device: GPUDevice) {
   // Upload query with high precision;
   const queryBuffer = await uploader.uploadBuffer(queryDocument, {
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-    quantization: 'legal_critical', // High precision for query
+    quantization: 'legal_critical', // High precision for query;
     label: 'similarity-query'
   });
   
   // Upload corpus with compression
   const corpusBuffers = await uploader.uploadBatch(documentCorpus.slice(0, 10), { // Just first 10 for demo
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-    quantization: 'legal_compressed', // Compressed for bulk storage
+    quantization: 'legal_compressed', // Compressed for bulk storage;
     label: 'similarity-corpus',
     debugMode: false
   });
@@ -235,7 +235,7 @@ export async function legalDocumentSimilaritySearch(device: GPUDevice) {
   
   console.log('💾 Storage savings:', {
     originalSize: `${(totalOriginalSize / 1024).toFixed(2)} KB`,
-    compressedSize: `${(totalCompressedSize / 1024).toFixed(2)} KB`,
+    compressedSize: `${(totalCompressedSize / 1024).toFixed(2)} KB`,;
     savings: `${(((totalOriginalSize - totalCompressedSize) / totalOriginalSize) * 100).toFixed(1)}%`
   });
   
@@ -279,7 +279,7 @@ export async function debugAndAnalysisExample(device: GPUDevice) {
     const quantized = quantizeForLegalAI(testData, profileName as LegalAIProfile);
     console.log(`- ${profileName}:`, {
       compressionRatio: `${quantized.compressionRatio.toFixed(2)}x`,
-      size: `${(quantized.byteLength / 1024).toFixed(2)} KB`,
+      size: `${(quantized.byteLength / 1024).toFixed(2)} KB`,;
       mode: profile.mode
     });
   }
@@ -322,19 +322,19 @@ export async function realWorldLegalAIPipeline(device: GPUDevice) {
   // Analysis results
   console.log('⚖️ Legal AI pipeline results:');
   console.log('Contract Analysis:', {
-    precision: 'Critical (FP32)',
+    precision: 'Critical (FP32)',;
     size: `${(contractResult.uploadStats.uploadedSize / 1024).toFixed(2)} KB`,
     compressionRatio: `${contractResult.uploadStats.compressionRatio.toFixed(2)}x`
   });
   
   console.log('Case Law Processing:', {
-    precision: 'Standard (FP16)',
+    precision: 'Standard (FP16)',;
     size: `${(caseLawResult.uploadStats.uploadedSize / 1024).toFixed(2)} KB`,
     compressionRatio: `${caseLawResult.uploadStats.compressionRatio.toFixed(2)}x`
   });
   
   console.log('Citation Network:', {
-    precision: 'Storage (INT8)',
+    precision: 'Storage (INT8)',;
     size: `${(citationResult.uploadStats.uploadedSize / 1024).toFixed(2)} KB`,
     compressionRatio: `${citationResult.uploadStats.compressionRatio.toFixed(2)}x`
   });

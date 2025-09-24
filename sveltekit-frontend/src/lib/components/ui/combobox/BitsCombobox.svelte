@@ -50,7 +50,7 @@
     error,
     class: className = '',
     onValueChange,
-    onCreateOption
+    onCreateOption;
   }: ComboboxProps = $props();
 
   let inputValue = $state('');
@@ -81,7 +81,7 @@
 
     return Object.entries.map(([category, options]) => ({
       category: category === 'Other' ? null : category,
-      options
+      options;
     }));
   });
 
@@ -152,7 +152,7 @@
   {/if}
 
   <Combobox.Root 
-    bind:inputValue 
+    bind:inputValue ;
     bind:open
     {disabled}
     {multiple}
@@ -277,11 +277,11 @@
 </div>
 
 <style>
-  :global(.legal-combobox-container input) {
+  :global(.legal-combobox-container input) {;
     transition: all 0.2s ease;
   }
 
-  :global(.legal-combobox-container input:focus) {
+  :global(.legal-combobox-container input:focus) {;
     box-shadow: 0 0 0 1px rgb(var(--yorha-primary) / 0.5);
   }
 </style>

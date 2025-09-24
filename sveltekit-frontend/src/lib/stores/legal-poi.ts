@@ -11,10 +11,10 @@ export interface PersonOfInterest {
   entityType: 'individual' | 'corporation' | 'government' | 'organization' | 'trust' | 'criminal_organization' | 'gang';
 
   // Contact Information
-  contact: {
+  contact: {;
     emails: string[];
     phones: string[];
-    addresses: Array<{
+    addresses: Array<{;
       type: 'home' | 'work' | 'legal' | 'other';
       address: string;
       city: string;
@@ -50,7 +50,7 @@ export interface PersonOfInterest {
   // Criminal Profile (for suspects/fugitives)
   criminalProfile?: {
     aliases: string[];
-    mugshots: Array<{
+    mugshots: Array<{;
       url: string;
       date: string;
       source: string;
@@ -65,7 +65,7 @@ export interface PersonOfInterest {
       lastUpdated: string;
       profileComplete: boolean;
     };
-    warrants: Array<{
+    warrants: Array<{;
       id: string;
       type: 'arrest' | 'search' | 'bench';
       jurisdiction: string;
@@ -130,7 +130,7 @@ export interface PersonOfInterest {
     interactionCount: number;
 
     // AI Analysis
-    personality: {
+    personality: {;
       traits: string[];
       communication: string[];
       predictedBehavior: string[];
@@ -154,7 +154,7 @@ export interface PersonOfInterest {
     }>;
 
     // Network Analysis
-    network: {
+    network: {;
       connections: Array<{
         poiId: string;
         relationship: string;
@@ -168,7 +168,7 @@ export interface PersonOfInterest {
   };
 
   // Timeline and Activity
-  timeline: Array<{
+  timeline: Array<{;
     id: string;
     date: string;
     event: string;
@@ -298,7 +298,7 @@ type POIEvent =
 export const poiMachine = createMachine(
   {
     id: 'poiManagement',
-    types: {} as {
+    types: {} as {;
       context: POIContext;
       events: POIEvent;
     },
@@ -485,7 +485,7 @@ export const poiMachine = createMachine(
       // Load single POI with full details
       loadPersonOfInterest: fromPromise(
         async ({ input }: { input: { poiId: string } }) => {
-          const response = await fetch(`/api/poi/${input.poiId}`, {
+          const response = await fetch(`/api/poi/${input.poiId}`, {;
             headers: { 'Content-Type': 'application/json' }
           });
 
@@ -502,7 +502,7 @@ export const poiMachine = createMachine(
         async ({ input }: { input: { query: POISearchQuery } }) => {
           const response = await fetch('/api/poi/search', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' },;
             body: JSON.stringify(input.query)
           });
 
@@ -519,7 +519,7 @@ export const poiMachine = createMachine(
         async ({ input }: { input: { poi: Omit<PersonOfInterest, 'id' | 'createdAt' | 'updatedAt'> } }) => {
           const response = await fetch('/api/poi', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' },;
             body: JSON.stringify(input.poi)
           });
 
@@ -536,7 +536,7 @@ export const poiMachine = createMachine(
         async ({ input }: { input: { poiId: string; enhancementType: string } }) => {
           const response = await fetch(`/api/poi/${input.poiId}/enhance`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' },;
             body: JSON.stringify({
               enhancementType: input.enhancementType,
               includeNetworkAnalysis: true,
@@ -574,7 +574,7 @@ export const poiMachine = createMachine(
           const response = await fetch('/api/poi/bulk', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
+            body: JSON.stringify({;
               operation: input.operation,
               poiIds: input.poiIds
             })
@@ -630,7 +630,7 @@ export const networkAnalysisStore = writable<{
   centralityScores: Record<string, number>;
 }>({
   nodes: [],
-  edges: [],
+  edges: [],;
   clusters: [],
   centralityScores: {}
 });
@@ -638,7 +638,7 @@ export const networkAnalysisStore = writable<{
 // POI Quick Actions
 export async function quickEnhancePOI(poiId: string): Promise<PersonOfInterest> {
   const response = await fetch(`/api/poi/${poiId}/quick-enhance`, {
-    method: 'POST',
+    method: 'POST',;
     headers: { 'Content-Type': 'application/json' }
   });
 
@@ -652,7 +652,7 @@ export async function quickEnhancePOI(poiId: string): Promise<PersonOfInterest> 
 export async function generatePOIReport(poiId: string, format: 'pdf' | 'docx' | 'html'): Promise<Blob> {
   const response = await fetch(`/api/poi/${poiId}/report`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' },;
     body: JSON.stringify({ format })
   });
 
@@ -666,7 +666,7 @@ export async function generatePOIReport(poiId: string, format: 'pdf' | 'docx' | 
 export async function exportPOINetwork(poiIds: string[], format: 'graphml' | 'json' | 'csv'): Promise<Blob> {
   const response = await fetch('/api/poi/network/export', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' },;
     body: JSON.stringify({ poiIds, format })
   });
 
@@ -681,7 +681,7 @@ export async function exportPOINetwork(poiIds: string[], format: 'graphml' | 'js
 export async function gatherIntelligence(poiId: string, sources: string[]): Promise<any> {
   const response = await fetch(`/api/poi/${poiId}/intelligence`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' },;
     body: JSON.stringify({ sources })
   });
 
@@ -726,7 +726,7 @@ export const savedSearchesStore = writable<Array<{
 }>>([]);
 
 // Criminal Investigation Functions
-export async function createWantedPoster(poiId: string, options: {
+export async function createWantedPoster(poiId: string, options: {;
   priority: 'low' | 'medium' | 'high' | 'critical';
   reward?: number;
   charges: string[];
@@ -734,7 +734,7 @@ export async function createWantedPoster(poiId: string, options: {
 }): Promise<Blob> {
   const response = await fetch(`/api/poi/${poiId}/wanted-poster`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' },;
     body: JSON.stringify(options)
   });
 
@@ -748,7 +748,7 @@ export async function createWantedPoster(poiId: string, options: {
 export async function addToWatchList(poiId: string, listType: string, reason: string, priority: string): Promise<void> {
   const response = await fetch(`/api/poi/${poiId}/watchlist`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' },;
     body: JSON.stringify({
       listType,
       reason,
@@ -762,7 +762,7 @@ export async function addToWatchList(poiId: string, listType: string, reason: st
   }
 }
 
-export async function recordSighting(poiId: string, sighting: {
+export async function recordSighting(poiId: string, sighting: {;
   location: string;
   date: string;
   description: string;
@@ -772,7 +772,7 @@ export async function recordSighting(poiId: string, sighting: {
 }): Promise<void> {
   const response = await fetch(`/api/poi/${poiId}/sighting`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' },;
     body: JSON.stringify(sighting)
   });
 
@@ -781,7 +781,7 @@ export async function recordSighting(poiId: string, sighting: {
   }
 }
 
-export async function issueWarrant(poiId: string, warrant: {
+export async function issueWarrant(poiId: string, warrant: {;
   type: 'arrest' | 'search' | 'bench';
   charges: string[];
   jurisdiction: string;
@@ -793,7 +793,7 @@ export async function issueWarrant(poiId: string, warrant: {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       ...warrant,
-      issuedDate: new Date().toISOString(),
+      issuedDate: new Date().toISOString(),;
       status: 'active'
     })
   });
@@ -819,7 +819,7 @@ export async function analyzeAssociates(poiId: string): Promise<{
   };
 }> {
   const response = await fetch(`/api/poi/${poiId}/associates`, {
-    method: 'POST',
+    method: 'POST',;
     headers: { 'Content-Type': 'application/json' }
   });
 
@@ -846,7 +846,7 @@ export async function predictBehavior(poiId: string): Promise<{
   };
 }> {
   const response = await fetch(`/api/poi/${poiId}/behavior-prediction`, {
-    method: 'POST',
+    method: 'POST',;
     headers: { 'Content-Type': 'application/json' }
   });
 
@@ -882,7 +882,7 @@ export const surveillanceStore = writable<{
     priority: string;
     assignedUnits: string[];
   }>;
-  alerts: Array<{
+  alerts: Array<{;
     id: string;
     poiId: string;
     alertType: 'movement' | 'communication' | 'financial' | 'associate_contact';

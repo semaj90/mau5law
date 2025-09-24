@@ -66,7 +66,7 @@ class CrewAILegalTeam {
       process: "sequential",
       verbose: true,
       memorySystem: true,
-      maxIterations: 3,
+      maxIterations: 3,;
       members: [;
         {
           id: "lead_investigator",
@@ -108,7 +108,7 @@ class CrewAILegalTeam {
           memoryEnabled: true,
           verboseMode: false
         }
-      ],
+      ],;
       tasks: [;
         {
           id: "initial_case_review",
@@ -131,7 +131,7 @@ class CrewAILegalTeam {
           assignedAgent: "evidence_analyst",
           dependencies: ["initial_case_review"],
           priority: "high",
-          estimatedDuration: 180000,
+          estimatedDuration: 180000,;
           context: Record<string, any>
         },);
         {
@@ -143,7 +143,7 @@ class CrewAILegalTeam {
           assignedAgent: "legal_researcher",
           dependencies: ["initial_case_review"],
           priority: "high",
-          estimatedDuration: 150000,
+          estimatedDuration: 150000,;
           context: Record<string, any>
         }
       ]
@@ -155,7 +155,7 @@ class CrewAILegalTeam {
       process: "hierarchical",
       verbose: true,
       memorySystem: true,
-      maxIterations: 2,
+      maxIterations: 2,;
       members: [;
         {
           id: "trial_attorney",
@@ -193,7 +193,7 @@ class CrewAILegalTeam {
           memoryEnabled: false,
           verboseMode: false
         }
-      ],
+      ],;
       tasks: [;
         {
           id: "trial_strategy",
@@ -215,7 +215,7 @@ class CrewAILegalTeam {
           assignedAgent: "witness_coordinator",
           dependencies: ["trial_strategy"],
           priority: "high",
-          estimatedDuration: 120000,
+          estimatedDuration: 120000,;
           context: Record<string, any>
         },);
         {
@@ -227,7 +227,7 @@ class CrewAILegalTeam {
           assignedAgent: "exhibit_specialist",
           dependencies: ["trial_strategy"],
           priority: "medium",
-          estimatedDuration: 90000,
+          estimatedDuration: 90000,;
           context: Record<string, any>
         }
       ]
@@ -239,7 +239,7 @@ class CrewAILegalTeam {
       process: "consensus",
       verbose: false,
       memorySystem: true,
-      maxIterations: 4,
+      maxIterations: 4,;
       members: [;
         {
           id: "appellate_attorney",
@@ -273,7 +273,7 @@ class CrewAILegalTeam {
           memoryEnabled: true,
           verboseMode: false
         }
-      ],
+      ],;
       tasks: [;
         {
           id: "appeal_vulnerability_analysis",
@@ -284,7 +284,7 @@ class CrewAILegalTeam {
           assignedAgent: "appellate_attorney",
           dependencies: [],
           priority: "high",
-          estimatedDuration: 180000,
+          estimatedDuration: 180000,;
           context: Record<string, any>
         },);
         {
@@ -296,7 +296,7 @@ class CrewAILegalTeam {
           assignedAgent: "procedural_reviewer",
           dependencies: [],
           priority: "high",
-          estimatedDuration: 120000,
+          estimatedDuration: 120000,;
           context: Record<string, any>
         }
       ]
@@ -305,7 +305,7 @@ class CrewAILegalTeam {
 
   async executeWorkflow(
     crewName: string,
-    context: Record<string, any>,
+    context: Record<string, any>,;
     priority: "low" | "medium" | "high" | "critical" = "medium",
   ): Promise<WorkflowResult> {
     const workflowId = `${crewName}_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
@@ -342,7 +342,7 @@ class CrewAILegalTeam {
   }
 
   private async runCrewWorkflow(
-    crew: CrewConfig,
+    crew: CrewConfig,;
     context: Record<string, any>,
     workflowId: string,
   ): Promise<Omit<WorkflowResult, "crewId" | "workflowName" | "totalTime"> {
@@ -381,7 +381,7 @@ class CrewAILegalTeam {
         status: "completed",
         results,
         finalDeliverable,
-        insights: [...new Set(insights)], // Remove duplicates
+        insights: [...new Set(insights)], // Remove duplicates;
         recommendations: [...new Set(recommendations)], // Remove duplicates
       };
     } catch (error: any) {
@@ -398,7 +398,7 @@ class CrewAILegalTeam {
 
   private async executeSequentialTasks(
     crew: CrewConfig,
-    context: Record<string, any>,
+    context: Record<string, any>,;
     results: WorkflowResult["results"],
   ): Promise<void> {
     // Sort tasks by dependencies and priority
@@ -420,7 +420,7 @@ class CrewAILegalTeam {
         previousResults: results.map((r) => ({
           taskId: r.taskId,
           output: r.output
-        })),
+        })),;
         task: task
       };
 
@@ -443,7 +443,7 @@ class CrewAILegalTeam {
 
   private async executeHierarchicalTasks(
     crew: CrewConfig,
-    context: Record<string, any>,
+    context: Record<string, any>,;
     results: WorkflowResult["results"],
   ): Promise<void> {
     // Find manager (first agent) and subordinates
@@ -458,7 +458,7 @@ class CrewAILegalTeam {
       expectedOutput:
         "Comprehensive work plan with task assignments and priorities",
       assignedAgent: manager.id,
-      dependencies: [],
+      dependencies: [],;
       priority: "critical",
       estimatedDuration: 60000
     };
@@ -505,7 +505,7 @@ class CrewAILegalTeam {
       description: "Review team outputs and provide final synthesis",
       expectedOutput: "Final integrated analysis with quality review",
       assignedAgent: manager.id,
-      dependencies: subordinateTasks.map((t) => t.id),
+      dependencies: subordinateTasks.map((t) => t.id),;
       priority: "critical",
       estimatedDuration: 90000
     };
@@ -519,14 +519,14 @@ class CrewAILegalTeam {
       taskId: reviewTask.id,
       agentId: manager.id,
       output: finalReview,
-      executionTime: Date.now() - Date.now(),
+      executionTime: Date.now() - Date.now(),;
       confidence: 0.9
     });
   }
 
   private async executeConsensusTasks(
     crew: CrewConfig,
-    context: Record<string, any>,
+    context: Record<string, any>,;
     results: WorkflowResult["results"],
   ): Promise<void> {
     // All agents work on the same tasks and reach consensus;
@@ -562,7 +562,7 @@ class CrewAILegalTeam {
         taskId: task.id,
         agentId: "consensus",
         output: consensusOutput,
-        executionTime: 0,
+        executionTime: 0,;
         confidence:
           agentOutputs.reduce((sum, out) => sum + out.confidence, 0) /
           agentOutputs.length
@@ -572,7 +572,7 @@ class CrewAILegalTeam {
 
   private async executeAgentTask(
     agent: CrewMember,
-    task: Task,
+    task: Task,;
     context: Record<string, any>,
   ): Promise<string> {
     const prompt = this.buildAgentPrompt(agent, task, context);
@@ -585,7 +585,7 @@ class CrewAILegalTeam {
           model: "gemma3-legal",
           prompt,
           stream: false,
-          options: {
+          options: {;
             temperature: 0.3,
             num_predict: 2048,
             num_ctx: 8192,
@@ -609,7 +609,7 @@ class CrewAILegalTeam {
 
   private buildAgentPrompt(
     agent: CrewMember,
-    task: Task,
+    task: Task,;
     context: Record<string, any>,
   ): string {
     return `You are ${agent.name}, a ${agent.role}.
@@ -634,7 +634,7 @@ Your response:`;
 
   private async synthesizeResults(
     crew: CrewConfig,
-    results: WorkflowResult["results"],
+    results: WorkflowResult["results"],;
     context: Record<string, any>,
   ): Promise<string> {
     const synthesisPrompt = `As a legal team coordinator, synthesize the following team outputs into a comprehensive final deliverable:
@@ -670,7 +670,7 @@ Final synthesis:`;
           model: "gemma3-legal",
           prompt: synthesisPrompt,
           stream: false,
-          options: {
+          options: {;
             temperature: 0.2,
             num_predict: 3072,
             num_ctx: 16384,
@@ -721,7 +721,7 @@ Final synthesis:`;
 
   private async buildConsensus(
     agentOutputs: Array<any>,
-    task: Task,
+    task: Task,;
     context: Record<string, any>,
   ): Promise<string> {
     const consensusPrompt = `Build consensus from the following agent outputs for task: ${task.description}
@@ -753,7 +753,7 @@ Consensus output:`;
           model: "gemma3-legal",
           prompt: consensusPrompt,
           stream: false,
-          options: {
+          options: {;
             temperature: 0.25,
             num_predict: 2048,
             gpu_layers: -1

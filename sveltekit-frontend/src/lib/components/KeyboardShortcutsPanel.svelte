@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -18,13 +18,13 @@ https://svelte.dev/e/js_parse_error -->
     setKeyboardContext,
     type KeyboardShortcut
   } from '$lib/services/keyboard-shortcuts-service';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { Switch } from '$lib/components/ui/switch';
 
@@ -83,9 +83,9 @@ https://svelte.dev/e/js_parse_error -->
     keyboardShortcutsService.executeRemoteCommand({
       id: crypto.randomUUID(),
       command: shortcut.id,
-      args: ,
-      source: 'api',
-      timestamp: Date.now()
+      args: ,;
+      source: 'api',;
+      timestamp: Date.now();
     });
   }
 
@@ -94,9 +94,9 @@ https://svelte.dev/e/js_parse_error -->
       navigation: '🧭',
       ai: '🤖',
       cases: '📁',
-      evidence: '📋',
-      system: '⚙️',
-      remote: '🎮'
+      evidence: '📋',;
+      system: '⚙️',;
+      remote: '🎮';
     };
     return icons[category] || '📌';
   }
@@ -104,9 +104,9 @@ https://svelte.dev/e/js_parse_error -->
   function getSourceIcon(source: string): string {
     const icons = {
       keyboard: '⌨️',
-      api: '🔗',
-      websocket: '📡',
-      voice: '🎤'
+      api: '🔗',;
+      websocket: '📡',;
+      voice: '🎤';
     };
     return icons[source] || '❓';
   }
@@ -134,7 +134,7 @@ helpModalVisible = false}>
             class="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400"
           />
 
-          <select
+          <select;
             bind:value={selectedCategory}
             class="px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white"
           >

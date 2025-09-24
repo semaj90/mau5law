@@ -79,7 +79,7 @@ export class LegalAIWebGPUBridge {
    * Process legal document embeddings with optimized quantization
    */
   async processLegalDocumentEmbeddings(
-    embeddings: Float32Array | number[] | ArrayBuffer,
+    embeddings: Float32Array | number[] | ArrayBuffer,;
     options: LegalDocumentProcessingOptions = {}
   ): Promise<LegalAIProcessingResult> {
     if (!this.isInitialized || !this.uploader) {
@@ -198,7 +198,7 @@ export class LegalAIWebGPUBridge {
         priority: 'medium' as const
       })),
       {
-        ...options,
+        ...options,;
         profile: 'legal_compressed' // Compressed for bulk processing
       }
     );
@@ -213,7 +213,7 @@ export class LegalAIWebGPUBridge {
       averageCorpusCompressionRatio: corpusResults.reduce((sum, r) => sum + r.compressionStats.compressionRatio, 0) / corpusResults.length,
       memoryUsage: {
         query: queryResult.compressionStats.compressedSize,
-        corpus: corpusResults.reduce((sum, r) => sum + r.compressionStats.compressedSize, 0),
+        corpus: corpusResults.reduce((sum, r) => sum + r.compressionStats.compressedSize, 0),;
         total: queryResult.compressionStats.compressedSize + corpusResults.reduce((sum, r) => sum + r.compressionStats.compressedSize, 0)
       }
     };

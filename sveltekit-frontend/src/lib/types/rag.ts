@@ -103,7 +103,7 @@ export interface RAGDocument {
   content: string;
   type: DocumentType['type'];
   embedding?: number[];
-  metadata: {
+  metadata: {;
     source: string;
     type: string;
     jurisdiction: string;

@@ -39,7 +39,7 @@ class HTTPClient implements ProtocolClient {
         'Content-Type': 'application/json',
         ...options.headers
       },
-      body: options.body ? JSON.stringify(options.body) : undefined,
+      body: options.body ? JSON.stringify(options.body) : undefined,;
       signal: AbortSignal.timeout(options.timeout || 30000)
     });
 
@@ -50,7 +50,7 @@ class HTTPClient implements ProtocolClient {
       data,
       status: response.status,
       headers: Object.fromEntries(response.headers.entries()),
-      protocol: 'http',
+      protocol: 'http',;
       service: new URL(url).host,
       latency
     };
@@ -71,7 +71,7 @@ class WebSocketClient implements ProtocolClient {
         ws.send(JSON.stringify({
           route: options.route,
           method: options.method,
-          body: options.body,
+          body: options.body,;
           headers: options.headers
         });
       };
@@ -84,7 +84,7 @@ class WebSocketClient implements ProtocolClient {
           data,
           status: 200,
           headers: {} as Record<string, any>,
-          protocol: 'websocket',
+          protocol: 'websocket',;
           service: new URL(url).host,
           latency
         });
@@ -168,7 +168,7 @@ export class ProductionAPIClient {
 
   private async executeRequest<T>(
     service: ServiceDefinition, 
-    protocol: 'http' | 'grpc' | 'quic' | 'websocket',
+    protocol: 'http' | 'grpc' | 'quic' | 'websocket',;
     options: ServiceRequest;
   ): Promise<ServiceResponse<T> {
     const baseUrl = `http://localhost:${service.port}`;
@@ -248,7 +248,7 @@ export class RAGAPIClient {
   async query(query: string, context?: unknown): Promise<ServiceResponse> {
     return this.client.request({
       route: '/api/v1/rag/query',
-      method: 'POST',
+      method: 'POST',;
       body: { query, context }
     });
   }
@@ -256,7 +256,7 @@ export class RAGAPIClient {
   async semanticSearch(query: string, filters?: unknown): Promise<ServiceResponse> {
     return this.client.request({
       route: '/api/v1/rag/semantic',
-      method: 'POST',
+      method: 'POST',;
       body: { query, filters }
     });
   }
@@ -264,7 +264,7 @@ export class RAGAPIClient {
   async embed(text: string): Promise<ServiceResponse> {
     return this.client.request({
       route: '/api/v1/rag/embed',
-      method: 'POST',
+      method: 'POST',;
       body: { text }
     });
   }
@@ -280,7 +280,7 @@ export class UploadAPIClient {
 
     return this.client.request({
       route: '/api/v1/upload/file',
-      method: 'POST',
+      method: 'POST',;
       body: formData
     });
   }
@@ -291,7 +291,7 @@ export class UploadAPIClient {
 
     return this.client.request({
       route: '/api/v1/upload/batch',
-      method: 'POST',
+      method: 'POST',;
       body: formData
     });
   }
@@ -302,21 +302,21 @@ export class ClusterAPIClient {
 
   async getHealth(): Promise<ServiceResponse> {
     return this.client.request({
-      route: '/api/v1/cluster/health',
+      route: '/api/v1/cluster/health',;
       method: 'GET'
     });
   }
 
   async getServices(): Promise<ServiceResponse> {
     return this.client.request({
-      route: '/api/v1/cluster/services',
+      route: '/api/v1/cluster/services',;
       method: 'GET'
     });
   }
 
   async getMetrics(): Promise<ServiceResponse> {
     return this.client.request({
-      route: '/api/v1/cluster/metrics',
+      route: '/api/v1/cluster/metrics',;
       method: 'GET'
     });
   }
@@ -328,14 +328,14 @@ export class XStateAPIClient {
   async sendEvent(event: any): Promise<ServiceResponse> {
     return this.client.request({
       route: '/api/v1/xstate/events',
-      method: 'POST',
+      method: 'POST',;
       body: { event }
     });
   }
 
   async getState(): Promise<ServiceResponse> {
     return this.client.request({
-      route: '/api/v1/xstate/state',
+      route: '/api/v1/xstate/state',;
       method: 'GET'
     });
   }

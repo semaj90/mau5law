@@ -9,7 +9,7 @@
   let {
     value,
     class: classNameVar = '',
-    children
+    children;
   }: Props & { children?: unknown } = $props();
 
   const { activeTab } = getContext('tabs') as any;

@@ -113,7 +113,7 @@ export class PredictivePrefetcher {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "gemma3-legal:latest", // Lightweight model for fast inference
-          prompt: "Initialize legal workflow intent prediction model",
+          prompt: "Initialize legal workflow intent prediction model",;
           stream: false
         })
       });
@@ -121,7 +121,7 @@ export class PredictivePrefetcher {
       if (modelResponse.ok) {
         this.intentModel = {
           initialized: true,
-          endpoint: "http://localhost:11434/api/generate",
+          endpoint: "http://localhost:11434/api/generate",;
           model: "gemma3-legal:latest"
         };
         console.log("🧠 Local LLM initialized for intent prediction");
@@ -190,7 +190,7 @@ export class PredictivePrefetcher {
       uiBuffers: ["analysis-panel", "document-viewer"],
       priority: "high",
       conditions: {
-        viewport: "desktop",
+        viewport: "desktop",;
         connection: "fast"
       }
     });
@@ -204,7 +204,7 @@ export class PredictivePrefetcher {
       ],
       assets: ["/assets/css/forms.css", "/assets/js/case-validator.js"],
       uiBuffers: ["case-form", "precedent-search"],
-      priority: "medium",
+      priority: "medium",;
       conditions: Record<string, any>
     });
 
@@ -221,7 +221,7 @@ export class PredictivePrefetcher {
       ],
       uiBuffers: ["search-results", "filter-panel"],
       priority: "high",
-      conditions: {
+      conditions: {;
         connection: "fast"
       }
     });
@@ -235,7 +235,7 @@ export class PredictivePrefetcher {
       ],
       assets: ["/assets/css/settings.css"],
       uiBuffers: ["/api/ui/buffers/settings"],
-      priority: "low",
+      priority: "low",;
       conditions: Record<string, any>,
       llmIntegration: {
         useLocalLLM: true,
@@ -258,7 +258,7 @@ export class PredictivePrefetcher {
         "/api/ui/buffers/evidence-viewer",
         "/api/ui/buffers/timeline"
       ],
-      priority: "critical",
+      priority: "critical",;
       conditions: {
         userRole: ["prosecutor", "detective"]
       },
@@ -284,7 +284,7 @@ export class PredictivePrefetcher {
         "/api/ui/buffers/filters"
       ],
       priority: "high",
-      conditions: {
+      conditions: {;
         connection: "fast"
       },
       llmIntegration: {
@@ -348,7 +348,7 @@ export class PredictivePrefetcher {
         preloadTiming: "immediate"
       },
       {
-        name: "AI Analysis Workflow",
+        name: "AI Analysis Workflow",;
         sequence: [
           "/upload",
           "/ai/analyze",
@@ -430,7 +430,7 @@ export class PredictivePrefetcher {
         context,
         userProfile: {
           role: "user",
-          recentActions: this.intentHistory.slice(-5).map((intent: any) => intent.action),
+          recentActions: this.intentHistory.slice(-5).map((intent: any) => intent.action),;
           preferences: Record<string, any>,
           workflowPatterns: []
         }
@@ -563,7 +563,7 @@ export class PredictivePrefetcher {
 
     try {
       const response = await fetch(route, {
-        method: "GET",
+        method: "GET",;
         headers: {
           "X-Prefetch": "true"
         }

@@ -3,69 +3,69 @@
  * Handles CRUD operations for specific gallery items
  */
 
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/database';
-import { evidence, cases } from '$lib/server/db/schema';
-import { eq, and } from 'drizzle-orm';
-import { unlink } from 'fs/promises';
-import { existsSync } from 'fs';
-import path from 'path';
+import { json, error } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { db } from '$lib/server/database'
+import { evidence, cases } from '$lib/server/db/schema'
+import { eq, and } from 'drizzle-orm'
+import { unlink } from 'fs/promises'
+import { existsSync } from 'fs'
+import path from 'path'
 }
 
 export interface GalleryItemDetail {
-  id: string;
-  type: 'evidence' | 'document' | 'image' | 'ai-generated';
-  title: string;
-  description?: string;
-  fileName: string;
-  originalFileName: string;
-  fileType: string;
-  fileSize: number;
-  filePath: string;
-  url: string;
-  thumbnailUrl?: string;
-  uploadedAt: string;
-  processedAt?: string;
-  caseId?: string;
-  caseTitle?: string;
-  tags: string[];
-  metadata: Record<string, any>;
-  isPublic: boolean;
-  ocrText?: string;
-  contentText?: string;
-  embedding?: number[];
+  id: string
+  type: 'evidence' | 'document' | 'image' | 'ai-generated'
+  title: string
+  description?: string
+  fileName: string
+  originalFileName: string
+  fileType: string
+  fileSize: number
+  filePath: string
+  url: string
+  thumbnailUrl?: string
+  uploadedAt: string
+  processedAt?: string
+  caseId?: string
+  caseTitle?: string
+  tags: string[]
+  metadata: Record<string, any>
+  isPublic: boolean
+  ocrText?: string
+  contentText?: string
+  embedding?: number[]
   processingStatus: {
-    uploaded: boolean;
-    ocrComplete: boolean;
-    embeddingComplete: boolean;
-    thumbnailComplete: boolean;
-    processed: boolean;
-  };
-  downloadUrl: string;
-  shareUrl: string;
+    uploaded: boolean
+    ocrComplete: boolean
+    embeddingComplete: boolean
+    thumbnailComplete: boolean
+    processed: boolean
+  }
+  downloadUrl: string
+  shareUrl: string
 }
 
 export interface UpdateGalleryItemRequest {
-  title?: string;
-  description?: string;
-  tags?: string[];
-  isPublic?: boolean;
-  caseId?: string;
-  metadata?: Record<string, any>;
+  title?: string
+  description?: string
+  tags?: string[]
+  isPublic?: boolean
+  caseId?: string
+  metadata?: Record<string, any>
 }
 
-// GET - Retrieve specific gallery item;
+// GET - Retrieve specific gallery item
 export const GET: RequestHandler = async ({ params, locals }) => {
   try {
-    const itemId = params.id;
+    const itemId = params.id
     
     if (!itemId) {
-      throw error(400, 'Item ID is required');
+      throw error(400, 'Item ID is required')
     }
 
     // Query evidence table first (most common case)
-    const evidenceQuery = await db;
+    const evidenceQuery = await db
       .select({
         id: evidence.id,
         title: evidence.title,
@@ -90,28 +90,28 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       .leftJoin(cases, eq(evidence.caseId, cases.id)
       .where(eq(evidence.id, itemId)
       .limit(1)
-      .execute();
+      .execute()
 
     if (evidenceQuery.length === 0) {
-      throw error(404, 'Gallery item not found');
+      throw error(404, 'Gallery item not found')
     }
 
-    const item = evidenceQuery[0];
+    const item = evidenceQuery[0]
 
     // Determine item type based on file type
-    let itemType: 'evidence' | 'document' | 'image' | 'ai-generated' = 'evidence';
+    let itemType: 'evidence' | 'document' | 'image' | 'ai-generated' = 'evidence'
     if ((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileType?.startsWith('image/')) {
-      itemType = 'image';
+      itemType = 'image'
     } else if ((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileType?.includes('document') || (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileType?.includes('pdf') || (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileType?.includes('text')) {
-      itemType = 'document';
+      itemType = 'document'
     }
     
-    // Check if it's AI-generated based on metadata;
+    // Check if it's AI-generated based on metadata
     if ((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).metadata && typeof (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).metadata === 'object' && 'aiGenerated' in (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).metadata) {
-      itemType = 'ai-generated';
+      itemType = 'ai-generated'
     }
 
-    // Build response;
+    // Build response
     const response: GalleryItemDetail = {
       id: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).id,
       type: itemType,
@@ -143,7 +143,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       },
       downloadUrl: `/api/gallery/${itemId}/download`,
       shareUrl: `/gallery/share/${itemId}`
-    };
+    }
 
     return json(response, {
       headers: {
@@ -151,64 +151,64 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         'X-File-Size': ((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileSize || 0).toString(),
         'Cache-Control': 'private, max-age=300' // Cache for 5 minutes
       }
-    });
+    })
 
   } catch (err) {
-    console.error('Gallery item fetch error:', err);
+    console.error('Gallery item fetch error:', err)
     
     if (err instanceof Error && err.message.includes('404')) {
-      throw error(404, 'Gallery item not found');
+      throw error(404, 'Gallery item not found')
     }
     
-    throw error(500, `Failed to fetch gallery item: ${err instanceof Error ? err.message: 'Unknown error'}`);
+    throw error(500, `Failed to fetch gallery item: ${err instanceof Error ? err.message: 'Unknown error'}`)
   }
-};
+}
 
-// PUT - Update gallery item;
+// PUT - Update gallery item
 export const PUT: RequestHandler = async ({ params, request, locals }) => {
   try {
-    const itemId = params.id;
-    const updateData: UpdateGalleryItemRequest = await request.json();
+    const itemId = params.id
+    const updateData: UpdateGalleryItemRequest = await request.json()
 
     if (!itemId) {
-      throw error(400, 'Item ID is required');
+      throw error(400, 'Item ID is required')
     }
 
-    // Validate case ID if provided;
+    // Validate case ID if provided
     if (updateData.caseId) {
       const caseExists = await db
         .select({ id: cases.id })
         .from(cases)
         .where(eq(cases.id, updateData.caseId)
         .limit(1)
-        .execute();
+        .execute()
 
       if (caseExists.length === 0) {
-        throw error(400, 'Case not found');
+        throw error(400, 'Case not found')
       }
     }
 
     // Build update object with only provided fields
-    const updateFields: Partial<typeof evidence.$inferInsert> = {};
+    const updateFields: Partial<typeof evidence.$inferInsert> = {}
     
     if (updateData.title !== undefined) {
-      updateFields.title = updateData.title;
+      updateFields.title = updateData.title
     }
     
     if (updateData.description !== undefined) {
-      updateFields.description = updateData.description;
+      updateFields.description = updateData.description
     }
     
     if (updateData.tags !== undefined) {
-      updateFields.tags = updateData.tags;
+      updateFields.tags = updateData.tags
     }
     
     if (updateData.isPublic !== undefined) {
-      updateFields.isPublic = updateData.isPublic;
+      updateFields.isPublic = updateData.isPublic
     }
     
     if (updateData.caseId !== undefined) {
-      updateFields.caseId = updateData.caseId;
+      updateFields.caseId = updateData.caseId
     }
     
     if (updateData.metadata !== undefined) {
@@ -218,13 +218,13 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         .from(evidence)
         .where(eq(evidence.id, itemId)
         .limit(1)
-        .execute();
+        .execute()
       
       if (currentItem.length > 0) {
-        const existingMetadata = (currentItem[0].metadata as Record<string, any>) || {};
-        updateFields.metadata = { ...existingMetadata, ...updateData.metadata };
+        const existingMetadata = (currentItem[0].metadata as Record<string, any>) || {}
+        updateFields.metadata = { ...existingMetadata, ...updateData.metadata }
       } else {
-        updateFields.metadata = updateData.metadata;
+        updateFields.metadata = updateData.metadata
       }
     }
 
@@ -233,10 +233,10 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       .update(evidence)
       .set(updateFields)
       .where(eq(evidence.id, itemId)
-      .execute();
+      .execute()
 
     if ((result as { rowCount?: any }).rowCount === 0) {
-      throw error(404, 'Gallery item not found');
+      throw error(404, 'Gallery item not found')
     }
 
     // Fetch updated item
@@ -245,36 +245,36 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       .from(evidence)
       .where(eq(evidence.id, itemId)
       .limit(1)
-      .execute();
+      .execute()
 
     return json({
       success: true,
       item: updatedItem[0],
       updated: Object.keys(updateFields)
-    });
+    })
 
   } catch (err) {
-    console.error('Gallery item update error:', err);
+    console.error('Gallery item update error:', err)
     
     if (err instanceof Error && (err.message.includes('400') || err.message.includes('404'))) {
-      throw error(parseInt(err.message.split(' ')[0]) || 500, err.message);
+      throw error(parseInt(err.message.split(' ')[0]) || 500, err.message)
     }
     
-    throw error(500, `Failed to update gallery item: ${err instanceof Error ? err.message: 'Unknown error'}`);
+    throw error(500, `Failed to update gallery item: ${err instanceof Error ? err.message: 'Unknown error'}`)
   }
-};
+}
 
-// DELETE - Remove gallery item;
+// DELETE - Remove gallery item
 export const DELETE: RequestHandler = async ({ params, locals }) => {
   try {
-    const itemId = params.id;
+    const itemId = params.id
     
     if (!itemId) {
-      throw error(400, 'Item ID is required');
+      throw error(400, 'Item ID is required')
     }
 
     // Get item details before deletion
-    const itemToDelete = await db;
+    const itemToDelete = await db
       .select({
         id: evidence.id,
         filePath: evidence.filePath,
@@ -283,42 +283,42 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       .from(evidence)
       .where(eq(evidence.id, itemId)
       .limit(1)
-      .execute();
+      .execute()
 
     if (itemToDelete.length === 0) {
-      throw error(404, 'Gallery item not found');
+      throw error(404, 'Gallery item not found')
     }
 
-    const item = itemToDelete[0];
+    const item = itemToDelete[0]
 
     // Delete from database
     const deleteResult = await db
       .delete(evidence)
       .where(eq(evidence.id, itemId)
-      .execute();
+      .execute()
 
     if (deleteResult.rowCount === 0) {
-      throw error(404, 'Gallery item not found');
+      throw error(404, 'Gallery item not found')
     }
 
-    // Delete physical file;
+    // Delete physical file
     if ((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).filePath) {
       try {
-        const fullPath = path.join(process.cwd(), 'static', (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).filePath);
+        const fullPath = path.join(process.cwd(), 'static', (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).filePath)
         if (existsSync(fullPath)) {
-          await unlink(fullPath);
+          await unlink(fullPath)
         }
 
         // Also try to delete thumbnail if it exists
-        const thumbnailPath = generateThumbnailPath((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).filePath);
+        const thumbnailPath = generateThumbnailPath((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).filePath)
         if (thumbnailPath) {
-          const fullThumbnailPath = path.join(process.cwd(), 'static', thumbnailPath);
+          const fullThumbnailPath = path.join(process.cwd(), 'static', thumbnailPath)
           if (existsSync(fullThumbnailPath)) {
-            await unlink(fullThumbnailPath);
+            await unlink(fullThumbnailPath)
           }
         }
       } catch (fileError) {
-        console.error('Failed to delete physical file:', fileError);
+        console.error('Failed to delete physical file:', fileError)
         // Continue with deletion even if file removal fails
       }
     }
@@ -330,60 +330,60 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
         fileName: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileName,
         filePath: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).filePath
       }
-    });
+    })
 
   } catch (err) {
-    console.error('Gallery item deletion error:', err);
+    console.error('Gallery item deletion error:', err)
     
     if (err instanceof Error && (err.message.includes('400') || err.message.includes('404'))) {
-      throw error(parseInt(err.message.split(' ')[0]) || 500, err.message);
+      throw error(parseInt(err.message.split(' ')[0]) || 500, err.message)
     }
     
-    throw error(500, `Failed to delete gallery item: ${err instanceof Error ? err.message: 'Unknown error'}`);
+    throw error(500, `Failed to delete gallery item: ${err instanceof Error ? err.message: 'Unknown error'}`)
   }
-};
+}
 
-// Helper functions;
+// Helper functions
 function generateThumbnailUrl(filePath: string | null, fileType: string | null): string | undefined {
-  if (!filePath || !fileType) return undefined;
+  if (!filePath || !fileType) return undefined
   
-  // For images, generate thumbnail path;
+  // For images, generate thumbnail path
   if (fileType.startsWith('image/')) {
-    const pathParts = filePath.split('/');
-    const fileName = pathParts.pop();
-    const dir = pathParts.join('/');
-    return `${dir}/thumb_${fileName}`;
+    const pathParts = filePath.split('/')
+    const fileName = pathParts.pop()
+    const dir = pathParts.join('/')
+    return `${dir}/thumb_${fileName}`
   }
   
-  // For other file types, return type-specific icons;
+  // For other file types, return type-specific icons
   if (fileType.includes('pdf')) {
-    return '/icons/pdf-thumbnail.svg';
+    return '/icons/pdf-thumbnail.svg'
   }
   
   if (fileType.includes('video')) {
-    return '/icons/video-thumbnail.svg';
+    return '/icons/video-thumbnail.svg'
   }
   
   if (fileType.includes('audio')) {
-    return '/icons/audio-thumbnail.svg';
+    return '/icons/audio-thumbnail.svg'
   }
   
   if (fileType.includes('document') || fileType.includes('text')) {
-    return '/icons/document-thumbnail.svg';
+    return '/icons/document-thumbnail.svg'
   }
   
-  return '/icons/file-thumbnail.svg';
+  return '/icons/file-thumbnail.svg'
 }
 
 function generateThumbnailPath(filePath: string): string | null {
   try {
-    const pathParts = filePath.split('/');
-    const fileName = pathParts.pop();
-    if (!fileName) return null;
+    const pathParts = filePath.split('/')
+    const fileName = pathParts.pop()
+    if (!fileName) return null
     
-    const dir = pathParts.join('/');
-    return `${dir}/thumb_${fileName}`;
+    const dir = pathParts.join('/')
+    return `${dir}/thumb_${fileName}`
   } catch (error) {
-    return null;
+    return null
   }
 }

@@ -91,7 +91,7 @@ export interface ChatResponse {
   model: string;
   timestamp: string;
   conversationId?: string;
-  performance: {
+  performance: {;
     duration: number;
     tokens: number;
     promptTokens: number;

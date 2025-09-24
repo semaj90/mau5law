@@ -67,7 +67,7 @@ class TauriNotesService {
   }
   // Save note to local file system
   async saveNoteToFile(
-    note: SavedNote,
+    note: SavedNote,;
     format: "markdown" | "html" | "json" = "markdown",
   ): Promise<string> {
     try {
@@ -130,7 +130,7 @@ class TauriNotesService {
           markdown,
           html: "",
           contentJson: null,
-          noteType: "general",
+          noteType: "general",;
           tags: [],
           userId: "desktop-user",
           savedAt: new Date()
@@ -144,7 +144,7 @@ class TauriNotesService {
   }
   // Export multiple notes to a single file
   async exportNotesToFile(
-    notes: SavedNote[],
+    notes: SavedNote[],;
     format: "markdown" | "html" | "json" = "markdown",
   ): Promise<string> {
     try {
@@ -203,7 +203,7 @@ class TauriNotesService {
         id: note.id,
         title: note.title,
         content: note.content,
-        markdown: note.markdown,
+        markdown: note.markdown,;
         tags: note.tags
       });
 
@@ -314,13 +314,13 @@ export async function renderMarkdownInTauri(markdown: string): Promise<string> {
   return await tauriNotesService.renderMarkdownToHtml(markdown);
 }
 export async function saveNoteLocally(
-  note: SavedNote,
+  note: SavedNote,;
   format: "markdown" | "html" | "json" = "markdown",
 ): Promise<string> {
   return await tauriNotesService.saveNoteToFile(note, format);
 }
 export async function exportNotesLocally(
-  notes: SavedNote[],
+  notes: SavedNote[],;
   format: "markdown" | "html" | "json" = "markdown",
 ): Promise<string> {
   return await tauriNotesService.exportNotesToFile(notes, format);

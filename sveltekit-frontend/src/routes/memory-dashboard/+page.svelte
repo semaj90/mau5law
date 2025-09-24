@@ -9,13 +9,15 @@
   let isLoading = $state(true);
   let error = $state(null);
 
-  $effect(async () => {
-    if (browser) {
+  $effect(() => {
+    (async () => {
+if (browser) {
       await loadData();
 
       // Refresh data every 30 seconds
       setInterval(loadData, 30000);
     }
+    })();
   });
 
   async function loadData() {

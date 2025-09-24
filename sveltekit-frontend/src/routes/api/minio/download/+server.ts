@@ -1,25 +1,25 @@
 // MinIO Download API Endpoint
 // Handles file downloads from MinIO Docker container
 
-import { json } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
-import { Client as MinIOClient } from 'minio';
-import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit'
+import { env } from '$env/dynamic/private'
+import { Client as MinIOClient } from 'minio'
+import type { RequestHandler } from './$types'
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const objectPath = url.searchParams.get('path');
-    const bucketName = url.searchParams.get('bucket') || env.MINIO_BUCKET_NAME || 'legal-documents';
+    const objectPath = url.searchParams.get('path')
+    const bucketName = url.searchParams.get('bucket') || env.MINIO_BUCKET_NAME || 'legal-documents'
 
     if (!objectPath) {
-      return json({ error: 'Object path is required' }, { status: 400 });
+      return json({ error: 'Object path is required' }, { status: 400 })
     }
 
     // MinIO configuration from environment
-    const minioEndpoint = env.MINIO_ENDPOINT || 'localhost:9000';
-    const accessKey = env.MINIO_ACCESS_KEY || 'minio';
-    const secretKey = env.MINIO_SECRET_KEY || 'minio123';
-    const useSSL = env.MINIO_USE_SSL === 'true';
+    const minioEndpoint = env.MINIO_ENDPOINT || 'localhost:9000'
+    const accessKey = env.MINIO_ACCESS_KEY || 'minio'
+    const secretKey = env.MINIO_SECRET_KEY || 'minio123'
+    const useSSL = env.MINIO_USE_SSL === 'true'
 
     // Initialize MinIO client
     const minioClient = new MinIOClient({
@@ -28,17 +28,17 @@ export const GET: RequestHandler = async ({ url }) => {
       useSSL,
       accessKey,
       secretKey
-    });
+    })
 
     // Check if object exists
     try {
-      await minioClient.statObject(bucketName, objectPath);
+      await minioClient.statObject(bucketName, objectPath)
     } catch (error) {
-      return json({ error: 'File not found' }, { status: 404 });
+      return json({ error: 'File not found' }, { status: 404 })
     }
 
     // Generate presigned URL for download (valid for 1 hour)
-    const presignedUrl = await minioClient.presignedGetObject(bucketName, objectPath, 3600);
+    const presignedUrl = await minioClient.presignedGetObject(bucketName, objectPath, 3600)
 
     return json({
       success: true,
@@ -47,34 +47,34 @@ export const GET: RequestHandler = async ({ url }) => {
       object_path: objectPath,
       expires_in: 3600,
       generated_at: new Date().toISOString()
-    });
+    })
 
   } catch (error) {
-    console.error('MinIO download error:', error);
+    console.error('MinIO download error:', error)
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'Download failed'
       },
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { objectPath, bucketName: requestBucket } = await request.json();
-    const bucketName = requestBucket || env.MINIO_BUCKET_NAME || 'legal-documents';
+    const { objectPath, bucketName: requestBucket } = await request.json()
+    const bucketName = requestBucket || env.MINIO_BUCKET_NAME || 'legal-documents'
 
     if (!objectPath) {
-      return json({ error: 'Object path is required' }, { status: 400 });
+      return json({ error: 'Object path is required' }, { status: 400 })
     }
 
     // MinIO configuration from environment
-    const minioEndpoint = env.MINIO_ENDPOINT || 'localhost:9000';
-    const accessKey = env.MINIO_ACCESS_KEY || 'minio';
-    const secretKey = env.MINIO_SECRET_KEY || 'minio123';
-    const useSSL = env.MINIO_USE_SSL === 'true';
+    const minioEndpoint = env.MINIO_ENDPOINT || 'localhost:9000'
+    const accessKey = env.MINIO_ACCESS_KEY || 'minio'
+    const secretKey = env.MINIO_SECRET_KEY || 'minio123'
+    const useSSL = env.MINIO_USE_SSL === 'true'
 
     // Initialize MinIO client
     const minioClient = new MinIOClient({
@@ -83,18 +83,18 @@ export const POST: RequestHandler = async ({ request }) => {
       useSSL,
       accessKey,
       secretKey
-    });
+    })
 
     // Get object and stream it
-    const objectStream = await minioClient.getObject(bucketName, objectPath);
-    const chunks: Buffer[] = [];
+    const objectStream = await minioClient.getObject(bucketName, objectPath)
+    const chunks: Buffer[] = []
 
     for await (const chunk of objectStream) {
-      chunks.push(chunk);
+      chunks.push(chunk)
     }
 
-    const fileBuffer = Buffer.concat(chunks);
-    const stat = await minioClient.statObject(bucketName, objectPath);
+    const fileBuffer = Buffer.concat(chunks)
+    const stat = await minioClient.statObject(bucketName, objectPath)
 
     return new Response(fileBuffer, {
       headers: {
@@ -105,16 +105,16 @@ export const POST: RequestHandler = async ({ request }) => {
         'x-amz-meta-case-id': stat.metaData['x-amz-meta-case-id'] || '',
         'x-amz-meta-document-type': stat.metaData['x-amz-meta-document-type'] || ''
       }
-    });
+    })
 
   } catch (error) {
-    console.error('MinIO download error:', error);
+    console.error('MinIO download error:', error)
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'Download failed'
       },
       { status: 500 }
-    );
+    )
   }
-};
+}

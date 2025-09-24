@@ -11,7 +11,7 @@
   const { form, errors, enhance, message } = superForm(data.form, {
     validators: zodClient(loginSchema),
     resetForm: true,
-    taintedMessage: null
+    taintedMessage: null;
   });
 
   // Show success banner if coming from registration
@@ -35,7 +35,7 @@
     <input
       name="email"
       type="email"
-      placeholder="Email"
+      placeholder="Email";
       bind:value={$form.email}
       aria-invalid={$errors.email ? 'true' : undefined}
       required
@@ -63,7 +63,7 @@
 </form>
 
 <style>
-  .success-banner {
+  .success-banner {;
     background: #d4edda;
     color: #155724;
     padding: 0.75rem;
@@ -112,7 +112,7 @@
     cursor: pointer;
   }
 
-  button:hover {
+  button:hover {;
     background: #0056b3;
   }
 </style>

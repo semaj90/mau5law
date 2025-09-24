@@ -10,7 +10,7 @@ export interface DimensionalArray {
   shape: number[];
   dtype: 'float32' | 'float64' | 'int32';
   kernelSplices: KernelAttentionSlice[];
-  metadata: {
+  metadata: {;
     created: number;
     lastAccessed: number;
     computationHash: string;
@@ -56,7 +56,7 @@ export class DimensionalCacheEngine {
    * Create dimensional array with kernel attention splicing
    */
   async createDimensionalArray(
-    data: number[],
+    data: number[],;
     shape: number[],
     attentionWeights: number[];
   ): Promise<DimensionalArray> {
@@ -71,7 +71,7 @@ export class DimensionalCacheEngine {
       shape,
       dtype: 'float32',
       kernelSplices,
-      metadata: {
+      metadata: {;
         created: Date.now(),
         lastAccessed: Date.now(),
         computationHash: this.generateHash(flatData, shape),
@@ -97,7 +97,7 @@ export class DimensionalCacheEngine {
     const entry: CacheEntry = {
       id: key,
       dimensionalArray,
-      ttl: Date.now() + this.defaultTTL,
+      ttl: Date.now() + this.defaultTTL,;
       priority: this.calculatePriority(dimensionalArray, userContext),
       userContext
     };
@@ -117,7 +117,7 @@ export class DimensionalCacheEngine {
    */
   private generateKernelSlices(
     data: Float32Array,
-    attention: Float32Array,
+    attention: Float32Array,;
     shape: number[];
   ): KernelAttentionSlice[] {
     const slices: KernelAttentionSlice[] = [];
@@ -227,7 +227,7 @@ export class DimensionalCacheEngine {
     );
 
     return {
-      similar: similar.slice(0, limit),
+      similar: similar.slice(0, limit),;
       suggestions: suggestions.slice(0, limit),
       didYouMean: didYouMean.slice(0, limit),
       othersSearched: othersSearched.slice(0, limit)

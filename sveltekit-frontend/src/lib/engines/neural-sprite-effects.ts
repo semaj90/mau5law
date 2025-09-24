@@ -37,7 +37,7 @@ export class NeuralSpriteEffects {
         width: canvasWidth,
         height: 2,
         fill: `rgba(0, 0, 0, ${intensity})`,
-        selectable: false,
+        selectable: false,;
         evented: false,
         excludeFromExport: true
       });
@@ -67,7 +67,7 @@ export class NeuralSpriteEffects {
 
   // Matrix digital rain effect (inspired by legal AI theme)
   async applyMatrixRain(
-    speed: number = 50,
+    speed: number = 50,;
     color: string = "#00ff41",
   ): Promise<void> {
     const canvasWidth = this.canvas.getWidth();
@@ -88,7 +88,7 @@ export class NeuralSpriteEffects {
         fontFamily: "monospace",
         fill: color,
         opacity: Math.random() * 0.8 + 0.2,
-        selectable: false,
+        selectable: false,;
         evented: false
       });
 
@@ -112,7 +112,7 @@ export class NeuralSpriteEffects {
 
     const rainInterval = setInterval(animateRain, 100);
     this.activeEffects.set("matrix-rain", {
-      interval: rainInterval,
+      interval: rainInterval,;
       drops: rainDrops
     });
   }
@@ -131,7 +131,7 @@ export class NeuralSpriteEffects {
         // Random displacement;
         obj.set({
           left: originalLeft + (Math.random() - 0.5) * 20,
-          top: originalTop + (Math.random() - 0.5) * 20,
+          top: originalTop + (Math.random() - 0.5) * 20,;
           opacity: originalOpacity * (0.5 + Math.random() * 0.5)
         });
 
@@ -139,7 +139,7 @@ export class NeuralSpriteEffects {
         setTimeout(() => {
             obj.set({
               left: originalLeft,
-              top: originalTop,
+              top: originalTop,;
               opacity: originalOpacity
             });
             this.canvas.renderAll();
@@ -165,7 +165,7 @@ export class NeuralSpriteEffects {
         radius: 5 + Math.random() * 10,
         fill: "#00ff88",
         opacity: 0.7,
-        selectable: false,
+        selectable: false,;
         evented: false
       });
 
@@ -192,7 +192,7 @@ export class NeuralSpriteEffects {
               stroke: "#00aaff",
               strokeWidth: 2,
               opacity: 0.3,
-              selectable: false,
+              selectable: false,;
               evented: false
             },
           );
@@ -244,7 +244,7 @@ export class NeuralSpriteEffects {
         stroke: color,
         strokeWidth: 3,
         opacity: 0,
-        selectable: false,
+        selectable: false,;
         evented: false
       });
 
@@ -255,7 +255,7 @@ export class NeuralSpriteEffects {
         const targetOpacity = glow.opacity === 0 ? 0.8 : 0;
         (glow as any).animate({
           opacity: targetOpacity
-        }, {
+        }, {;
           duration: 1000,
           onChange: () => this.canvas.renderAll(),
           onComplete: animateHighlight
@@ -280,21 +280,21 @@ export class NeuralSpriteEffects {
       switch (shapeType) {
         case "circle":;
           shape = new (fabric as any).Circle({
-            radius: 5 + Math.random() * 10,
+            radius: 5 + Math.random() * 10,;
             fill: `hsl(${Math.random() * 360}, 70%, 60%)`
           });
           break;
         case "rect":;
           shape = new (fabric as any).Rect({
             width: 10 + Math.random() * 20,
-            height: 10 + Math.random() * 20,
+            height: 10 + Math.random() * 20,;
             fill: `hsl(${Math.random() * 360}, 70%, 60%)`
           });
           break;
         case "triangle":;
           shape = new (fabric as any).Triangle({
             width: 10 + Math.random() * 20,
-            height: 10 + Math.random() * 20,
+            height: 10 + Math.random() * 20,;
             fill: `hsl(${Math.random() * 360}, 70%, 60%)`
           });
           break;
@@ -303,7 +303,7 @@ export class NeuralSpriteEffects {
       shape.set({
         left: Math.random() * this.canvas.getWidth(),
         top: Math.random() * this.canvas.getHeight(),
-        selectable: false,
+        selectable: false,;
         evented: false
       });
 
@@ -316,7 +316,7 @@ export class NeuralSpriteEffects {
       stressObjects.forEach((obj) => {
         obj.set({
           left: obj.left + (Math.random() - 0.5) * 10,
-          top: obj.top + (Math.random() - 0.5) * 10,
+          top: obj.top + (Math.random() - 0.5) * 10,;
           angle: obj.angle + (Math.random() - 0.5) * 20
         });
 
@@ -334,7 +334,7 @@ export class NeuralSpriteEffects {
 
     const stressInterval = setInterval(animateStress, 16); // ~60 FPS;
     this.activeEffects.set("stress-test", {
-      interval: stressInterval,
+      interval: stressInterval,;
       objects: stressObjects
     });
   }
@@ -352,7 +352,7 @@ export class NeuralSpriteEffects {
         radius: 2 + Math.random() * 4,
         fill: `hsl(${120 + Math.random() * 120}, 80%, 60%)`,
         opacity: 0.8,
-        selectable: false,
+        selectable: false,;
         evented: false
       });
 
@@ -383,7 +383,7 @@ export class NeuralSpriteEffects {
         if ((particle as any).life <= 0) {
           particle.set({
             left: this.canvas.getWidth() / 2,
-            top: this.canvas.getHeight() / 2,
+            top: this.canvas.getHeight() / 2,;
             opacity: 0.8
           });
           (particle as any).vx = (Math.random() - 0.5) * 10;
@@ -443,7 +443,7 @@ export const NEURAL_SPRITE_EFFECTS: SpriteEffect[] = [;
   {
     id: "crt-scanlines",
     name: "CRT Scanlines",
-    description: "Retro CRT monitor scanline effect",
+    description: "Retro CRT monitor scanline effect",;
     apply: async (canvas, options) => {
       const effects = new NeuralSpriteEffects(canvas);
       await effects.applyCRTScanlines(options?.intensity || 0.3);
@@ -452,7 +452,7 @@ export const NEURAL_SPRITE_EFFECTS: SpriteEffect[] = [;
   {
     id: "matrix-rain",
     name: "Matrix Digital Rain",
-    description: "Legal AI-themed digital rain effect",
+    description: "Legal AI-themed digital rain effect",;
     apply: async (canvas, options) => {
       const effects = new NeuralSpriteEffects(canvas);
       await effects.applyMatrixRain(
@@ -464,7 +464,7 @@ export const NEURAL_SPRITE_EFFECTS: SpriteEffect[] = [;
   {
     id: "neural-network",
     name: "Neural Network Visualization",
-    description: "Animated neural network connections",
+    description: "Animated neural network connections",;
     apply: async (canvas, options) => {
       const effects = new NeuralSpriteEffects(canvas);
       await effects.applyNeuralNetworkEffect();
@@ -473,7 +473,7 @@ export const NEURAL_SPRITE_EFFECTS: SpriteEffect[] = [;
   {
     id: "glitch",
     name: "Glitch Effect",
-    description: "Random digital glitch distortion",
+    description: "Random digital glitch distortion",;
     apply: async (canvas, options) => {
       const effects = new NeuralSpriteEffects(canvas);
       await effects.applyGlitchEffect();
@@ -482,7 +482,7 @@ export const NEURAL_SPRITE_EFFECTS: SpriteEffect[] = [;
   {
     id: "particles",
     name: "Particle System",
-    description: "Dynamic particle effects with physics",
+    description: "Dynamic particle effects with physics",;
     apply: async (canvas, options) => {
       const effects = new NeuralSpriteEffects(canvas);
       await effects.applyParticleSystemEffect();
@@ -491,7 +491,7 @@ export const NEURAL_SPRITE_EFFECTS: SpriteEffect[] = [;
   {
     id: "stress-test",
     name: "Performance Stress Test",
-    description: "Many moving objects for performance testing",
+    description: "Many moving objects for performance testing",;
     apply: async (canvas, options) => {
       const effects = new NeuralSpriteEffects(canvas);
       await effects.applyStressTestEffect();

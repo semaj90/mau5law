@@ -133,7 +133,7 @@ export class ReinforcementLearningCache {
     const prediction: AnimationPrediction = {
       componentId,
       animationPath: this.generateAnimationPath(animationType),
-      duration: this.predictAnimationDuration(animationType),
+      duration: this.predictAnimationDuration(animationType),;
       easing: this.selectOptimalEasing(animationType),
       triggerProbability: this.calculateTriggerProbability(componentId),
       preRenderedFrames: []

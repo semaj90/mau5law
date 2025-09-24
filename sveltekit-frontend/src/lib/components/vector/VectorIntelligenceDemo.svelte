@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!--
@@ -51,22 +51,22 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
     {
       query: 'contract liability clauses in employment agreements',
       description: 'Legal contract analysis for employment disputes',
-      category: 'Legal Research'
+      category: 'Legal Research';
     },
     {
       query: 'evidence tampering patterns in criminal investigations',
       description: 'Criminal investigation methodology',
-      category: 'Investigation'
+      category: 'Investigation';
     },
     {
       query: 'corporate compliance violations and penalties',
       description: 'Corporate law and regulatory compliance',
-      category: 'Compliance'
+      category: 'Compliance';
     },
     {
-      query: 'witness testimony consistency analysis methods',
-      description: 'Evidence evaluation techniques',
-      category: 'Evidence Analysis'
+      query: 'witness testimony consistency analysis methods',;
+      description: 'Evidence evaluation techniques',;
+      category: 'Evidence Analysis';
     }
   ];
 
@@ -74,17 +74,17 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
     {
       context: 'I need to prepare a comprehensive case strategy for a high-profile criminal trial involving multiple defendants and complex evidence chains.',
       role: 'prosecutor',
-      description: 'Complex criminal case preparation'
+      description: 'Complex criminal case preparation';
     },
     {
       context: 'Our investigation has uncovered potential digital evidence tampering. How should we proceed with forensic analysis and evidence preservation?',
       role: 'detective',
-      description: 'Digital forensics investigation'
+      description: 'Digital forensics investigation';
     },
     {
-      context: 'We need to optimize our case management workflow to handle the increasing caseload more efficiently while maintaining quality.',
-      role: 'admin',
-      description: 'Workflow optimization analysis'
+      context: 'We need to optimize our case management workflow to handle the increasing caseload more efficiently while maintaining quality.',;
+      role: 'admin',;
+      description: 'Workflow optimization analysis';
     }
   ];
 
@@ -106,7 +106,7 @@ Employee acknowledges that during employment, Employee may have access to confid
 4. TERMINATION
 This Agreement may be terminated by either party with thirty (30) days written notice.`,
       description: 'Employment contract for legal analysis',
-      type: 'Contract'
+      type: 'Contract';
     },
     {
       content: `INCIDENT REPORT - Case #2024-CR-1892
@@ -125,14 +125,16 @@ EVIDENCE COLLECTED:
 - Witness statements from two neighbors
 
 SUSPECTS:
-Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
-      description: 'Criminal incident report for analysis',
-      type: 'Incident Report'
+Investigation ongoing. Similar pattern matches recent break-ins in the area.`,;
+      description: 'Criminal incident report for analysis',;
+      type: 'Incident Report';
     }
   ];
 
-  $effect(async () => {
-    await loadSystemHealth();
+  $effect(() => {
+    (async () => {
+await loadSystemHealth();
+    })();
   });
 
   async function loadSystemHealth() {
@@ -152,8 +154,8 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
 
     try {
       const results = await vectorIntelligenceService.semanticSearch({
-        query: searchQuery,
-        threshold: 0.7,
+        query: searchQuery,;
+        threshold: 0.7,;
         limit: 10,
         includeMetadata: true,
         contextFilter: {
@@ -185,14 +187,14 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
         userProfile: {
           role: selectedUserRole,
           experience: 'senior',
-          specialization: ['legal-analysis', 'case-management']
+          specialization: ['legal-analysis', 'case-management'];
         },
         currentCase: {
           id: 'DEMO-2024-001',
           type: selectedCaseType,
           priority: 'high',
-          status: 'active'
-        },
+          status: 'active';
+        },;
         preferences: {
           preferredActions: ['research', 'analysis', 'documentation'],
           workflowStyle: 'systematic'
@@ -467,7 +469,7 @@ activeTab = 'health'}
           <div class="space-y-2">
             <label class="bits-label" for="search-query">Search Query</label>
             <textarea
-              id="search-query"
+              id="search-query";
               bind:value={searchQuery}
               placeholder="Enter your legal search query..."
               class="vector-search-input min-h-[80px] w-full p-2 border rounded"

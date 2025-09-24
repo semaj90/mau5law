@@ -27,8 +27,8 @@
 			const data = await response.json();
 			connectionStatus = 'connected';
 			modelInfo = {
-				name: 'TensorRT Bridge - Gemma3-Legal',
-				status: data.status || 'Running'
+				name: 'TensorRT Bridge - Gemma3-Legal',;
+				status: data.status || 'Running';
 			};
 		} catch (error) {
 			connectionStatus = 'disconnected';
@@ -43,8 +43,8 @@
 
 			// Set mock model info
 			modelInfo = {
-				name: 'Mock Legal AI - Offline',
-				status: 'Simulated'
+				name: 'Mock Legal AI - Offline',;
+				status: 'Simulated';
 			};
 		}
 	}
@@ -55,9 +55,9 @@
 
 		const userMessage = {
 			id: crypto.randomUUID(),
-			role: 'user' as const,
-			content: currentMessage.trim(),
-			timestamp: new Date()
+			role: 'user' as const,;
+			content: currentMessage.trim(),;
+			timestamp: new Date();
 		};
 
 		messages = [...messages, userMessage];
@@ -73,17 +73,17 @@
 
 		try {
 			const response = await fetch('http://localhost:8086/api/generate', {
-				method: 'POST',
+				method: 'POST',;
 				headers: {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
 					model: 'gemma3-legal:latest',
 					prompt: messageToSend,
-					stream: false,
-					options: {
+					stream: false,;
+					options: {;
 						temperature: 0.7,
-						max_tokens: 512
+						max_tokens: 512;
 					}
 				})
 			});
@@ -96,9 +96,9 @@
 
 			const assistantMessage = {
 				id: crypto.randomUUID(),
-				role: 'assistant' as const,
-				content: data.response || data.text || 'No response received',
-				timestamp: new Date()
+				role: 'assistant' as const,;
+				content: data.response || data.text || 'No response received',;
+				timestamp: new Date();
 			};
 
 			messages = [...messages, assistantMessage];
@@ -125,9 +125,9 @@
 
 			const mockMessage = {
 				id: crypto.randomUUID(),
-				role: 'assistant' as const,
-				content: `🤖 ${randomResponse} [Mock Response - Real AI service unavailable]`,
-				timestamp: new Date()
+				role: 'assistant' as const,;
+				content: `🤖 ${randomResponse} [Mock Response - Real AI service unavailable]`,;
+				timestamp: new Date();
 			};
 			messages = [...messages, mockMessage];
 		} finally {
@@ -150,8 +150,8 @@
 	// Format timestamp
 	function formatTime(date: Date): string {
 		return date.toLocaleTimeString('en-US', {
-			hour: '2-digit',
-			minute: '2-digit'
+			hour: '2-digit',;
+			minute: '2-digit';
 		});
 	}
 
@@ -250,7 +250,7 @@
 			<label for="chat_input">ENTER LEGAL QUERY:</label>
 			<textarea
 				id="chat_input"
-				class="nes-textarea"
+				class="nes-textarea";
 				bind:value={currentMessage}
 				onkeydown={handleKeydown}
 				placeholder="Type your legal question here..."
@@ -300,7 +300,7 @@
 
 <style>
 	/* 8-bit Retro Legal AI Chat Styling */
-	:global(body) {
+	:global(body) {;
 		background: #212529 !important;
 		font-family: 'Courier New', monospace !important;
 		color: #ffffff;
@@ -431,20 +431,20 @@
 	}
 
 	/* Scrollbar styling for dark theme */
-	.chat-area: :-webkit-scrollbar {
+	.chat-area::-webkit-scrollbar {
 		width: 8px;
 	}
 
-	.chat-area: :-webkit-scrollbar-track {
+	.chat-area::-webkit-scrollbar-track {
 		background: #333;
 	}
 
-	.chat-area: :-webkit-scrollbar-thumb {
+	.chat-area::-webkit-scrollbar-thumb {
 		background: #666;
 		border-radius: 4px;
 	}
 
-	.chat-area: :-webkit-scrollbar-thumb:hover {
+	.chat-area::-webkit-scrollbar-thumb:hover {
 		background: #888;
 	}
 
@@ -480,7 +480,7 @@
 		51%, 100% { opacity: 0; }
 	}
 
-	.nes-balloon: has-text("Processing") {
+	.nes-balloon.is-processing {
 		animation: blink 1s infinite;
 	}
 </style>

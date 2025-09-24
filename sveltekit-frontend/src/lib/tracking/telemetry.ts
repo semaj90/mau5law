@@ -71,7 +71,7 @@ export function trackUserHint(hint: string, getSession: () => string) {
   if (!browser) return;
   
   const payload: TelemetryPayload = {
-    session_id: getSession(),
+    session_id: getSession(),;
     hints: [hint]
   };
   

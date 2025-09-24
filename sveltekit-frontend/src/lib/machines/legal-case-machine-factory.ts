@@ -36,7 +36,7 @@ export function createLegalCaseMachine(options: CaseMachineOptions) {
       // RAG-enhanced case loading;
       loadCase: fromPromise(async ({ input }: { input: { caseId: string; includeEvidence: boolean } }) => {
         const response = await fetch(`/api/cases/${input.caseId}`, {
-          method: 'GET',
+          method: 'GET',;
           headers: { 'Content-Type': 'application/json' }
         });
 
@@ -55,7 +55,7 @@ export function createLegalCaseMachine(options: CaseMachineOptions) {
         }
 
         return {
-          case: caseData.case || caseData,
+          case: caseData.case || caseData,;
           evidence: caseData.evidence || []
         };
       }),
@@ -75,7 +75,7 @@ export function createLegalCaseMachine(options: CaseMachineOptions) {
             options: {
               limit: 8,
               model: 'gemma3-legal',
-              maxTokens: 800,
+              maxTokens: 800,;
               temperature: 0.1
             }
           })
@@ -98,7 +98,7 @@ export function createLegalCaseMachine(options: CaseMachineOptions) {
             query: "Find similar cases based on legal issues and evidence patterns",
             caseId: input.caseId,
             options: {
-              limit: 10,
+              limit: 10,;
               model: 'gemma3-legal',
               analysisType: 'similarity'
             }
@@ -111,7 +111,7 @@ export function createLegalCaseMachine(options: CaseMachineOptions) {
 
         const data = await response.json();
         return data.sources?.map((source: any) => ({
-          id: source.document_id,
+          id: source.document_id,;
           title: source.title,
           similarity_score: 1 - source.similarity, // Convert distance to similarity
           document_type: source.document_type

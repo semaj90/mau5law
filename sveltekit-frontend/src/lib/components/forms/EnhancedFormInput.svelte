@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -303,7 +303,7 @@ https://svelte.dev/e/js_parse_error -->
 <style>
   /* @unocss-include */
   .textarea-disabled,
-  .input-disabled {
+  .input-disabled {;
     opacity: 0.6;
     cursor: not-allowed;
 }

@@ -58,7 +58,7 @@ export async function createUser(userData: {
         hashedPassword: userData.hashedPassword,
         name: userData.name,
         firstName: userData.firstName,
-        lastName: userData.lastName,
+        lastName: userData.lastName,;
         role: userData.role || "prosecutor"
       })
       .returning();
@@ -70,7 +70,7 @@ export async function createUser(userData: {
   }
 }
 export async function updateUser(
-  id: string,
+  id: string,;
   updates: Partial<User>,
 ): Promise<User | null> {
   try {

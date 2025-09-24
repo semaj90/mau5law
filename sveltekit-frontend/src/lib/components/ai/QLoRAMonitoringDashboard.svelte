@@ -44,14 +44,14 @@
 		systemLoad: 30,
 		predictorStatus: 'initializing',
 		searchEngineStatus: 'ready',
-		webgpuEnabled: false
+		webgpuEnabled: false;
 	});
 
 	let cacheStats = $state<CacheStatistics>({
 		hitRate: 45,
 		status: 'warming',
 		memoryUsage: 65,
-		redisConnected: false
+		redisConnected: false;
 	});
 
 	let isConnected = $state(false);
@@ -61,11 +61,13 @@
 
 	let updateInterval: NodeJS.Timeout;
 
-	$effect(async () => {
-		await fetchMetrics();
+	$effect(() => {
+    (async () => {
+await fetchMetrics();
 		// Update metrics every 3 seconds
 		updateInterval = setInterval(fetchMetrics, 3000);
-	});
+    })();
+  });
 
 	onDestroy(() => {
 		if (updateInterval) {
@@ -91,14 +93,14 @@
 					systemLoad: data.systemMetrics.systemLoad || metrics.systemLoad,
 					predictorStatus: data.systemMetrics.predictorStatus || metrics.predictorStatus,
 					searchEngineStatus: data.systemMetrics.searchEngineStatus || metrics.searchEngineStatus,
-					webgpuEnabled: data.systemMetrics.webgpuEnabled || metrics.webgpuEnabled
+					webgpuEnabled: data.systemMetrics.webgpuEnabled || metrics.webgpuEnabled;
 				};
 
 				const newCacheStats: CacheStatistics = {
 					hitRate: data.cacheStatistics.hitRate || cacheStats.hitRate,
 					status: data.cacheStatistics.status || cacheStats.status,
 					memoryUsage: data.cacheStatistics.memoryUsage || cacheStats.memoryUsage,
-					redisConnected: data.cacheStatistics.redisConnected || cacheStats.redisConnected
+					redisConnected: data.cacheStatistics.redisConnected || cacheStats.redisConnected;
 				};
 
 				// Update accuracy trend (keep last 20 data points)

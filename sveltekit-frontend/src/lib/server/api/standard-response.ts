@@ -32,7 +32,7 @@ export function apiSuccess<T>(
 ) {
   const response: ApiResponse<T> = {
     success: true,
-    data,
+    data,;
     timestamp: new Date().toISOString()
   };
 
@@ -46,7 +46,7 @@ export function apiSuccess<T>(
  * Create an error API response
  */
 export function apiError(
-  message: string,
+  message: string,;
   status: number = 400,
   code?: string,
   details?: any,
@@ -54,7 +54,7 @@ export function apiError(
 ) {
   const response: ApiResponse = {
     success: false,
-    error: message,
+    error: message,;
     timestamp: new Date().toISOString()
   };
 

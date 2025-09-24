@@ -1,61 +1,61 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 /*
  * Cluster API Endpoint - Service Orchestration & Health
  * Routes to: cluster-http.exe: 8213, modular-cluster-service-production.exe:8215
  */
 
-import { productionServiceClient } from '$lib/services/productionServiceClient';
-import http from "http";
-import { URL } from "url";
+import { productionServiceClient } from '$lib/services/productionServiceClient'
+import http from "http"
+import { URL } from "url"
 
-// GET handler multiplexes sub-endpoints based on trailing path segment (health|services|metrics|root);
+// GET handler multiplexes sub-endpoints based on trailing path segment (health|services|metrics|root)
 export const GET: RequestHandler = async ({ url }) => {
-    const endpoint = url.pathname.split('/').pop();
+    const endpoint = url.pathname.split('/').pop()
     try {
         switch (endpoint) {
             case 'health':
-                return await handleHealthCheck();
+                return await handleHealthCheck()
             case 'services':
-                return await handleServicesStatus();
+                return await handleServicesStatus()
             case 'metrics':
-                return await handleMetrics();
+                return await handleMetrics()
             default:
-                return await handleClusterOverview();
+                return await handleClusterOverview()
         }
     } catch (err: any) {
-        console.error('Cluster API Error:', err);
-        return error(500, `Cluster service unavailable: ${err instanceof Error ? err.message: 'Unknown error'}`);
+        console.error('Cluster API Error:', err)
+        return error(500, `Cluster service unavailable: ${err instanceof Error ? err.message: 'Unknown error'}`)
     }
-};
+}
 
-// POST handler processes cluster management actions;
+// POST handler processes cluster management actions
 export const POST: RequestHandler = async ({ request }) => {
     try {
-        const data = await request.json();
-        const action = data.action as string | undefined;
+        const data = await request.json()
+        const action = data.action as string | undefined
         switch (action) {
             case 'restart_service':
-                return await handleServiceRestart(data.serviceName);
+                return await handleServiceRestart(data.serviceName)
             case 'scale_service':
-                return await handleServiceScaling(data.serviceName, data.instances);
+                return await handleServiceScaling(data.serviceName, data.instances)
             case 'deploy_service':
-                return await handleServiceDeployment(data.serviceConfig);
+                return await handleServiceDeployment(data.serviceConfig)
             default:
-                return error(400, 'Invalid cluster action');
+                return error(400, 'Invalid cluster action')
         }
     } catch (err: any) {
-        console.error('Cluster Action Error:', err);
-        return error(500, `Cluster action failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
+        console.error('Cluster Action Error:', err)
+        return error(500, `Cluster action failed: ${err instanceof Error ? err.message: 'Unknown error'}`)
     }
-};
+}
 
 async function handleHealthCheck(): Promise<any> {
-    const health = await productionServiceClient.checkAllServicesHealth();
-    const metrics = await productionServiceClient.getPerformanceMetrics();
-    const totalServices = Object.keys(health).length;
-    const healthyServices = Object.values(health).filter(item => item.length);
-    const healthPercentage = totalServices > 0 ? (healthyServices / totalServices) * 100 : 0;
+    const health = await productionServiceClient.checkAllServicesHealth()
+    const metrics = await productionServiceClient.getPerformanceMetrics()
+    const totalServices = Object.keys(health).length
+    const healthyServices = Object.values(health).filter(item => item.length)
+    const healthPercentage = totalServices > 0 ? (healthyServices / totalServices) * 100 : 0
     return json({
         cluster: {
             status: healthPercentage > 80 ? 'healthy' : healthPercentage > 50 ? 'degraded' : 'critical',
@@ -67,11 +67,11 @@ async function handleHealthCheck(): Promise<any> {
         services: health,
         performance: metrics,
         timestamp: new Date().toISOString()
-    });
+    })
 }
 
 async function handleServicesStatus(): Promise<any> {
-    const health = await productionServiceClient.checkAllServicesHealth();
+    const health = await productionServiceClient.checkAllServicesHealth()
     const serviceDetails = {
         tier1_core: {
             'enhanced-rag': { status: health['enhanced-rag'] ? 'running' : 'down', port: 8094, description: 'Primary AI Engine' },
@@ -85,7 +85,7 @@ async function handleServicesStatus(): Promise<any> {
             'legal-ai': { status: health['legal-ai'] ? 'running' : 'down', port: 8202, description: 'Legal Document AI' },
             'xstate-manager': { status: health['xstate-manager'] ? 'running' : 'down', port: 8212, description: 'State Management' }
         }
-    };
+    }
     return json({
         services: serviceDetails,
         summary: {
@@ -94,12 +94,12 @@ async function handleServicesStatus(): Promise<any> {
             down: Object.values(health).filter((h) => !h).length
         },
         timestamp: new Date().toISOString()
-    });
+    })
 }
 
 async function handleMetrics(): Promise<any> {
-    const performance = await productionServiceClient.getPerformanceMetrics();
-    const health = await productionServiceClient.checkAllServicesHealth();
+    const performance = await productionServiceClient.getPerformanceMetrics()
+    const health = await productionServiceClient.checkAllServicesHealth()
     return json({
         performance: {
             tiers: performance,
@@ -121,11 +121,11 @@ async function handleMetrics(): Promise<any> {
             websocket: { avg_latency: 1, success_rate: 0.95 }
         },
         timestamp: new Date().toISOString()
-    });
+    })
 }
 
 async function handleClusterOverview(): Promise<any> {
-    const health = await productionServiceClient.checkAllServicesHealth();
+    const health = await productionServiceClient.checkAllServicesHealth()
     return json({
         cluster: {
             name: 'Legal AI Production Cluster',
@@ -146,17 +146,17 @@ async function handleClusterOverview(): Promise<any> {
             metrics: '/api/v1/cluster/metrics'
         },
         timestamp: new Date().toISOString()
-    });
+    })
 }
 
 async function handleServiceRestart(serviceName: string): Promise<any> {
-    return json({ success: true, message: `Service ${serviceName} restart initiated`, timestamp: new Date().toISOString() });
+    return json({ success: true, message: `Service ${serviceName} restart initiated`, timestamp: new Date().toISOString() })
 }
 
 async function handleServiceScaling(serviceName: string, instances: number): Promise<any> {
-    return json({ success: true, message: `Service ${serviceName} scaled to ${instances} instances`, timestamp: new Date().toISOString() });
+    return json({ success: true, message: `Service ${serviceName} scaled to ${instances} instances`, timestamp: new Date().toISOString() })
 }
 
 async function handleServiceDeployment(serviceConfig: any): Promise<any> {
-    return json({ success: true, message: 'Service deployment initiated', config: serviceConfig, timestamp: new Date().toISOString() });
+    return json({ success: true, message: 'Service deployment initiated', config: serviceConfig, timestamp: new Date().toISOString() })
 }

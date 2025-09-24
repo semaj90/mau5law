@@ -201,7 +201,7 @@ export const reportFilters = writable<ReportFilters>({
   assignedTo: '',
   caseId: '',
   priority: '',
-  confidentiality: '',
+  confidentiality: '',;
   tags: []
 });
 
@@ -286,7 +286,7 @@ export const reportStats = derived(legalReports, ($reports): ReportStats => {
     byStatus: {},
     byPriority: {},
     aiGenerated: 0,
-    pendingReview: 0,
+    pendingReview: 0,;
     overdue: 0,
     recentlyCreated: 0,
     averageWordCount: 0
@@ -359,7 +359,7 @@ class LegalReportsManager {
   // Generate report using AI
   async generateReport(
     template: ReportTemplate,
-    variables: Record<string, any>,
+    variables: Record<string, any>,;
     options: {
       caseId?: string;
       clientId?: string;
@@ -404,7 +404,7 @@ class LegalReportsManager {
         markdown: true
       },
       tags: [],
-      priority: 'medium',
+      priority: 'medium',;
       confidentiality: 'confidential',
       accessLevel: 'restricted',
       createdAt: new Date(),
@@ -431,7 +431,7 @@ class LegalReportsManager {
         version: 1,
         model: report.aiModel!,
         prompt: `Generated full report using template: ${template.name}`,
-        generationType: 'full',
+        generationType: 'full',;
         changes: ['Initial report generation'],
         generatedBy: 'ai-generator'
       });
@@ -463,7 +463,7 @@ class LegalReportsManager {
       id: `section-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       title: this.processTemplate(sectionDef.title, variables),
       order: sectionDef.order,
-      type: sectionDef.type,
+      type: sectionDef.type,;
       content: sectionDef.defaultContent || '',
       aiGenerated: false,
       variables
@@ -561,7 +561,7 @@ class LegalReportsManager {
           title: report.title,
           caseId: report.caseId,
           clientId: report.clientId,
-          status: report.status,
+          status: report.status,;
           confidentiality: report.confidentiality,
           assignedTo: report.assignedTo,
           sourceCitations: report.sourceCitations,
@@ -663,7 +663,7 @@ class LegalReportsManager {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         reportId,
-        format,
+        format,;
         report: report
       })
     });
@@ -703,7 +703,7 @@ class LegalReportsManager {
       await this.addComment(reportId, {
         author: reviewer,
         content: 'Report approved',
-        type: 'approval',
+        type: 'approval',;
         resolved: true
       });
     }
@@ -718,7 +718,7 @@ class LegalReportsManager {
     try {
       const response = await fetch('/api/reports/collaborate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({
           sessionId,
           reportId,
@@ -773,7 +773,7 @@ class LegalReportsManager {
     try {
       await fetch('/api/reports/sync', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify(report)
       });
     } catch (error) {
@@ -926,7 +926,7 @@ class LegalReportsManager {
           {
             name: 'subject',
             type: 'text',
-            required: true,
+            required: true,;
             description: 'Subject line for memo'
           }
         ],
@@ -971,7 +971,7 @@ export const reportsManager = LegalReportsManager.getInstance();
 
 // Convenience functions
 export async function generateReport(
-  template: ReportTemplate,
+  template: ReportTemplate,;
   variables: Record<string, any>,
   options?: any
 ): Promise<LegalReport> {
@@ -1018,7 +1018,7 @@ export function clearReportFilters(): void {
     assignedTo: '',
     caseId: '',
     priority: '',
-    confidentiality: '',
+    confidentiality: '',;
     tags: []
   });
 }

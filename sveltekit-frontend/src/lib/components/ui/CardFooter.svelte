@@ -6,7 +6,7 @@
   }
   let {
     class: className = '',
-    children
+    children;
   }: Props & { children?: unknown } = $props();
 
   let classes = $derived(className);

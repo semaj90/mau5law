@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ cookies, getClientAddress, request 
       },
       redirectTo: '/dashboard'
     }), { 
-      status: 200,
+      status: 200,;
       headers: { 'Content-Type': 'application/json' }
     });
 
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ cookies, getClientAddress, request 
     return new Response(JSON.stringify({ 
       error: 'Auto-login failed. Please try manual login.' 
     }), { 
-      status: 500,
+      status: 500,;
       headers: { 'Content-Type': 'application/json' }
     });
   }

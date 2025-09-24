@@ -1,30 +1,30 @@
-import { writeFileSync } from "fs";
-import type { RequestHandler } from './$types.js';
+import { writeFileSync } from "fs"
+import type { RequestHandler } from './$types.js'
 
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { testResults, filename } = await request.json();
+    const { testResults, filename } = await request.json()
 
     if (!testResults || !filename) {
-      throw error(400, 'Missing test results or filename');
+      throw error(400, 'Missing test results or filename')
     }
 
-    console.log(`Generating Playwright tests for ${filename}...`);
+    console.log(`Generating Playwright tests for ${filename}...`)
 
     // Generate comprehensive Playwright test file
-    const playwrightTestContent = generatePlaywrightTestFile(testResults);
+    const playwrightTestContent = generatePlaywrightTestFile(testResults)
     
     // Generate todo file with SOM clustering analysis
-    const todoContent = generateTodoSOMFile(testResults);
+    const todoContent = generateTodoSOMFile(testResults)
     
     // Write the todo file
-    const todoFilePath = join(process.cwd(), filename);
-    writeFileSync(todoFilePath, todoContent);
+    const todoFilePath = join(process.cwd(), filename)
+    writeFileSync(todoFilePath, todoContent)
     
     // Generate additional test files
-    const testFilePath = join(process.cwd(), 'tests', 'generated-legal-ai-workflow.spec.ts');
-    writeFileSync(testFilePath, playwrightTestContent);
+    const testFilePath = join(process.cwd(), 'tests', 'generated-legal-ai-workflow.spec.ts')
+    writeFileSync(testFilePath, playwrightTestContent)
 
     const result = {
       success: true,
@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
         testPath: testFilePath
       },
       
-      // Test generation summary;
+      // Test generation summary
       summary: {
         totalTests: countGeneratedTests(playwrightTestContent),
         testCategories: [
@@ -51,29 +51,29 @@ export const POST: RequestHandler = async ({ request }) => {
         coverage: assessTestCoverage(testResults)
       },
 
-      // Generated content preview;
+      // Generated content preview
       preview: {
         todoLines: todoContent.split('\n').length,
         testLines: playwrightTestContent.split('\n').length,
         firstTodoItems: todoContent.split('\n').slice(0, 10),
         keyTestScenarios: extractKeyTestScenarios(playwrightTestContent)
       }
-    };
+    }
 
-    return json(result);
+    return json(result)
 
   } catch (err: any) {
-    console.error('Playwright test generation error:', err);
-    throw error(500, `Test generation failed: ${err.message}`);
+    console.error('Playwright test generation error:', err)
+    throw error(500, `Test generation failed: ${err.message}`)
   }
-};
+}
 
 function generateTodoSOMFile(testResults: any): string {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const ocr = testResults.ocrResults || [];
-  const simd = testResults.simdResults || {};
-  const clustering = testResults.clusteringResults || {};
-  const rag = testResults.ragRecommendations || [];
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+  const ocr = testResults.ocrResults || []
+  const simd = testResults.simdResults || {}
+  const clustering = testResults.clusteringResults || {}
+  const rag = testResults.ragRecommendations || []
 
   return `# TODO SOM Analysis - Generated ${timestamp}
 # Legal AI Processing Pipeline Analysis and Action Items
@@ -281,11 +281,11 @@ In Progress: ${countInProgressItems()}
 Remaining: ${countRemainingItems()}
 
 🔄 This file will be automatically updated after each processing pipeline run.
-`;
+`
 }
 
 function generatePlaywrightTestFile(testResults: any): string {
-  return `{ test, expect, Page } from "@playwright/test";
+  return `{ test, expect, Page } from "@playwright/test"
 
 /*
  * Generated Playwright Tests for Legal AI Processing Pipeline
@@ -294,299 +294,299 @@ function generatePlaywrightTestFile(testResults: any): string {
  */
 
 test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
-  let page: Page;
+  let page: Page
   
   test.beforeEach(async ({ page: testPage }) => {
-    page = testPage;
-    await page.goto('/demo/gpu-legal-ai/lawpdfs');
-    await page.waitForLoadState('networkidle');
-  });
+    page = testPage
+    await page.goto('/demo/gpu-legal-ai/lawpdfs')
+    await page.waitForLoadState('networkidle')
+  })
 
   test.describe('PDF Upload and OCR Processing', () => {
     test('should successfully upload and process legal PDF with high accuracy', async () => {
       // Test file upload
-      const testFile = join(import.meta.url, 'fixtures', 'sample-contract.pdf');
-      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 30000 });
-      const ocrResults = page.getByTestId('ocr-results');
-      await expect(ocrResults).toBeVisible();
+      const testFile = join(import.meta.url, 'fixtures', 'sample-contract.pdf')
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 30000 })
+      const ocrResults = page.getByTestId('ocr-results')
+      await expect(ocrResults).toBeVisible()
       
       // Check OCR confidence is above threshold
-      const confidence = await page.getByTestId('ocr-confidence').textContent();
-      const confidenceValue = parseInt(confidence?.match(/\\d+/)?.[0] || '0');
-      expect(confidenceValue).toBeGreaterThan(${Math.max(85, testResults.ocrResults?.[0]?.confidence - 10 || 85)});
+      const confidence = await page.getByTestId('ocr-confidence').textContent()
+      const confidenceValue = parseInt(confidence?.match(/\\d+/)?.[0] || '0')
+      expect(confidenceValue).toBeGreaterThan(${Math.max(85, testResults.ocrResults?.[0]?.confidence - 10 || 85)})
       
       // Verify legal concepts are extracted
-      await expect(page.getByTestId('legal-concepts')).toBeVisible();
-      const concepts = await page.getByTestId('legal-concepts').textContent();
-      expect(concepts).toBeTruthy();
+      await expect(page.getByTestId('legal-concepts')).toBeVisible()
+      const concepts = await page.getByTestId('legal-concepts').textContent()
+      expect(concepts).toBeTruthy()
       
       // Check citations are found
-      const citations = await page.getByTestId('citations').textContent();
-      expect(citations).toBeTruthy();
-    });
+      const citations = await page.getByTestId('citations').textContent()
+      expect(citations).toBeTruthy()
+    })
 
     test('should handle multiple PDF files in batch processing', async () => {
       const testFiles = [
         join(import.meta.url, 'fixtures', 'contract-1.pdf'),
         join(import.meta.url, 'fixtures', 'contract-2.pdf'),
         join(import.meta.url, 'fixtures', 'legal-brief.pdf')
-      ];
+      ]
       
-      await page.setInputFiles('[data-testid="pdf-upload"]', testFiles);
+      await page.setInputFiles('[data-testid="pdf-upload"]', testFiles)
       
       // Monitor batch processing
-      await expect(page.getByText(\`Processing \${testFiles.length} files\`)).toBeVisible();
+      await expect(page.getByText(\`Processing \${testFiles.length} files\`)).toBeVisible()
       
-      // Wait for all files to complete;
+      // Wait for all files to complete
       await page.waitForFunction(() => {
-        const progress = document.querySelector('[data-testid="upload-progress"]')?.textContent);
-        return progress?.includes('100%');
-      }, { timeout: 60000 });
+        const progress = document.querySelector('[data-testid="upload-progress"]')?.textContent)
+        return progress?.includes('100%')
+      }, { timeout: 60000 })
       
       // Verify all files processed successfully
-      const processedCount = await page.getByTestId('processed-files-count').textContent();
-      expect(processedCount).toContain(\`\${testFiles.length}\`);
-    });
+      const processedCount = await page.getByTestId('processed-files-count').textContent()
+      expect(processedCount).toContain(\`\${testFiles.length}\`)
+    })
 
     test('should validate OCR quality metrics meet standards', async () => {
-      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 30000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 30000 })
       
       // Check character accuracy
-      const accuracy = await page.getByTestId('character-accuracy').textContent();
-      expect(parseFloat(accuracy || '0')).toBeGreaterThan(95);
+      const accuracy = await page.getByTestId('character-accuracy').textContent()
+      expect(parseFloat(accuracy || '0')).toBeGreaterThan(95)
       
       // Verify word-level confidence
-      const wordConfidence = await page.getByTestId('word-confidence').textContent();
-      expect(parseFloat(wordConfidence || '0')).toBeGreaterThan(90);
+      const wordConfidence = await page.getByTestId('word-confidence').textContent()
+      expect(parseFloat(wordConfidence || '0')).toBeGreaterThan(90)
       
       // Check legal term recognition accuracy
-      const legalTermAccuracy = await page.getByTestId('legal-term-accuracy').textContent();
-      expect(parseFloat(legalTermAccuracy || '0')).toBeGreaterThan(85);
-    });
-  });
+      const legalTermAccuracy = await page.getByTestId('legal-term-accuracy').textContent()
+      expect(parseFloat(legalTermAccuracy || '0')).toBeGreaterThan(85)
+    })
+  })
 
   test.describe('JSON Conversion Pipeline', () => {
     test('should convert OCR results to structured JSON format', async () => {
-      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 20000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 20000 })
       
       // Verify JSON structure is valid
-      const jsonText = await page.getByTestId('json-output').textContent();
-      expect(() => JSON.parse(jsonText || '')).not.toThrow();
+      const jsonText = await page.getByTestId('json-output').textContent()
+      expect(() => JSON.parse(jsonText || '')).not.toThrow()
       
       // Check required fields are present
-      const jsonData = JSON.parse(jsonText || '{}');
-      expect(jsonData).toHaveProperty('document.metadata');
-      expect(jsonData).toHaveProperty('document.content');
-      expect(jsonData).toHaveProperty('document.legalAnalysis');
-      expect(jsonData).toHaveProperty('document.structure');
-    });
+      const jsonData = JSON.parse(jsonText || '{}')
+      expect(jsonData).toHaveProperty('document.metadata')
+      expect(jsonData).toHaveProperty('document.content')
+      expect(jsonData).toHaveProperty('document.legalAnalysis')
+      expect(jsonData).toHaveProperty('document.structure')
+    })
 
     test('should maintain data integrity during conversion', async () => {
-      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 25000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 25000 })
       
       // Verify no data loss during conversion
-      const jsonText = await page.getByTestId('json-output').textContent();
-      const jsonData = JSON.parse(jsonText || '{}');
+      const jsonText = await page.getByTestId('json-output').textContent()
+      const jsonData = JSON.parse(jsonText || '{}')
       
       // Check completeness
-      expect(jsonData.document.content.fullText.length).toBeGreaterThan(100);
-      expect(jsonData.document.legalAnalysis.concepts.length).toBeGreaterThan(0);
-      expect(jsonData.document.structure.sections.length).toBeGreaterThan(0);
-    });
-  });
+      expect(jsonData.document.content.fullText.length).toBeGreaterThan(100)
+      expect(jsonData.document.legalAnalysis.concepts.length).toBeGreaterThan(0)
+      expect(jsonData.document.structure.sections.length).toBeGreaterThan(0)
+    })
+  })
 
   test.describe('Enhanced RAG Processing', () => {
     test('should generate relevant legal recommendations', async () => {
-      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 40000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 40000 })
       
       // Verify recommendations are generated
-      const recommendations = await page.getByTestId('rag-recommendations').count();
-      expect(recommendations).toBeGreaterThan(0);
+      const recommendations = await page.getByTestId('rag-recommendations').count()
+      expect(recommendations).toBeGreaterThan(0)
       
       // Check recommendation relevance scores
-      const relevanceScores = await page.getByTestId('recommendation-relevance').allTextContents();
+      const relevanceScores = await page.getByTestId('recommendation-relevance').allTextContents()
       relevanceScores.forEach(score => {
-        const numericScore = parseInt(score.match(/\\d+/)?.[0] || '0');
-        expect(numericScore).toBeGreaterThan(${Math.max(70, (testResults.ragRecommendations?.[0]?.relevance || 70) - 10)});
-      });
+        const numericScore = parseInt(score.match(/\\d+/)?.[0] || '0')
+        expect(numericScore).toBeGreaterThan(${Math.max(70, (testResults.ragRecommendations?.[0]?.relevance || 70) - 10)})
+      })
       
       // Verify confidence scores are reasonable
-      const confidenceScores = await page.getByTestId('recommendation-confidence').allTextContents();
+      const confidenceScores = await page.getByTestId('recommendation-confidence').allTextContents()
       confidenceScores.forEach(score => {
-        const numericScore = parseInt(score.match(/\\d+/)?.[0] || '0');
-        expect(numericScore).toBeGreaterThan(75);
-      });
-    });
+        const numericScore = parseInt(score.match(/\\d+/)?.[0] || '0')
+        expect(numericScore).toBeGreaterThan(75)
+      })
+    })
 
     test('should handle vector similarity search effectively', async () => {
-      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 35000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 35000 })
       
       // Check vector dimensions
-      const dimensions = await page.getByTestId('vector-dimensions').textContent();
-      expect(parseInt(dimensions || '0')).toBe(384);
+      const dimensions = await page.getByTestId('vector-dimensions').textContent()
+      expect(parseInt(dimensions || '0')).toBe(384)
       
       // Verify similarity threshold is appropriate
-      const threshold = await page.getByTestId('similarity-threshold').textContent();
-      expect(parseFloat(threshold || '0')).toBeGreaterThan(0.7);
+      const threshold = await page.getByTestId('similarity-threshold').textContent()
+      expect(parseFloat(threshold || '0')).toBeGreaterThan(0.7)
       
       // Check chunk processing
-      const chunks = await page.getByTestId('processed-chunks').count();
-      expect(chunks).toBeGreaterThan(0);
-    });
-  });
+      const chunks = await page.getByTestId('processed-chunks').count()
+      expect(chunks).toBeGreaterThan(0)
+    })
+  })
 
   test.describe('SOM/K-means Clustering Analysis', () => {
     test('should perform clustering with high accuracy', async () => {
-      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 45000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 45000 })
       
       // Check clustering accuracy
-      const accuracy = await page.getByTestId('cluster-accuracy').textContent();
-      const accuracyValue = parseInt(accuracy?.match(/\\d+/)?.[0] || '0');
-      expect(accuracyValue).toBeGreaterThan(${Math.max(80, (testResults.clusteringResults?.accuracy || 80) - 5)});
+      const accuracy = await page.getByTestId('cluster-accuracy').textContent()
+      const accuracyValue = parseInt(accuracy?.match(/\\d+/)?.[0] || '0')
+      expect(accuracyValue).toBeGreaterThan(${Math.max(80, (testResults.clusteringResults?.accuracy || 80) - 5)})
       
       // Verify number of clusters is reasonable
-      const clusterCount = await page.getByTestId('kmeans-clusters').textContent();
-      const clusters = parseInt(clusterCount?.match(/\\d+/)?.[0] || '0');
-      expect(clusters).toBeGreaterThan(2);
-      expect(clusters).toBeLessThan(10);
+      const clusterCount = await page.getByTestId('kmeans-clusters').textContent()
+      const clusters = parseInt(clusterCount?.match(/\\d+/)?.[0] || '0')
+      expect(clusters).toBeGreaterThan(2)
+      expect(clusters).toBeLessThan(10)
       
       // Check SOM grid configuration
-      const somGrid = await page.getByTestId('som-grid-size').textContent();
-      expect(somGrid).toMatch(/\\d+x\\d+/);
-    });
+      const somGrid = await page.getByTestId('som-grid-size').textContent()
+      expect(somGrid).toMatch(/\\d+x\\d+/)
+    })
 
     test('should generate meaningful "did you mean" suggestions', async () => {
-      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 30000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 30000 })
       
       // Verify suggestions are generated
-      const suggestions = await page.getByTestId('suggestion-item').count();
-      expect(suggestions).toBeGreaterThan(${Math.max(3, (testResults.clusteringResults?.suggestions?.length || 3) - 2)});
+      const suggestions = await page.getByTestId('suggestion-item').count()
+      expect(suggestions).toBeGreaterThan(${Math.max(3, (testResults.clusteringResults?.suggestions?.length || 3) - 2)})
       
       // Check suggestion quality
-      const suggestionTexts = await page.getByTestId('suggestion-item').allTextContents();
+      const suggestionTexts = await page.getByTestId('suggestion-item').allTextContents()
       suggestionTexts.forEach(suggestion => {
-        expect(suggestion.length).toBeGreaterThan(3);
+        expect(suggestion.length).toBeGreaterThan(3)
         expect(suggestion).toMatch(/[a-zA-Z\\s]+/); // Contains valid text
-      });
-    });
-  });
+      })
+    })
+  })
 
   test.describe('PostgreSQL pgai Extension Integration', () => {
     test('should successfully test pgai extension capabilities', async () => {
-      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 20000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 20000 })
       
       // Verify pgai functionality
-      const pgaiStatus = await page.getByTestId('pgai-status').textContent();
-      expect(pgaiStatus).toContain('success');
+      const pgaiStatus = await page.getByTestId('pgai-status').textContent()
+      expect(pgaiStatus).toContain('success')
       
       // Check AI summarization results
-      const summaryLength = await page.getByTestId('summary-length').textContent();
-      expect(parseInt(summaryLength || '0')).toBeGreaterThan(50);
+      const summaryLength = await page.getByTestId('summary-length').textContent()
+      expect(parseInt(summaryLength || '0')).toBeGreaterThan(50)
       
       // Verify vector embedding generation
-      const embeddingDimensions = await page.getByTestId('embedding-dimensions').textContent();
-      expect(parseInt(embeddingDimensions || '0')).toBeGreaterThan(0);
-    });
+      const embeddingDimensions = await page.getByTestId('embedding-dimensions').textContent()
+      expect(parseInt(embeddingDimensions || '0')).toBeGreaterThan(0)
+    })
 
     test('should handle pgai errors gracefully', async () => {
       // Test with malformed or problematic input
-      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 15000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 15000 })
       
       // Verify system remains stable
-      await expect(page.getByTestId('processing-stage')).toBeVisible();
-    });
-  });
+      await expect(page.getByTestId('processing-stage')).toBeVisible()
+    })
+  })
 
   test.describe('Performance and Load Testing', () => {
     test('should process documents within acceptable time limits', async () => {
-      const startTime = Date.now();
+      const startTime = Date.now()
       
-      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 60000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 60000 })
       
-      const endTime = Date.now();
-      const processingTime = endTime - startTime;
+      const endTime = Date.now()
+      const processingTime = endTime - startTime
       
       // Should complete within 60 seconds for medium documents
-      expect(processingTime).toBeLessThan(60000);
+      expect(processingTime).toBeLessThan(60000)
       
       // Log performance metrics
-      console.log(\`Document processing completed in \${processingTime}ms\`);
-    });
+      console.log(\`Document processing completed in \${processingTime}ms\`)
+    })
 
     test('should maintain system stability under concurrent processing', async () => {
       // Simulate multiple concurrent users
-      const promises = [];
+      const promises = []
       
       for (let i = 0; i < 3; i++) {
         const promise = (async () => {
-          const newPage = await page.context().newPage();
-          await newPage.goto('/demo/gpu-legal-ai/lawpdfs');
-          await newPage.setInputFiles('[data-testid="pdf-upload"]', { timeout: 90000 });
-          await newPage.close();
-        })();
+          const newPage = await page.context().newPage()
+          await newPage.goto('/demo/gpu-legal-ai/lawpdfs')
+          await newPage.setInputFiles('[data-testid="pdf-upload"]', { timeout: 90000 })
+          await newPage.close()
+        })()
         
-        promises.push(promise);
+        promises.push(promise)
       }
       
       // All concurrent processes should complete successfully
-      await Promise.all(promises);
-    });
+      await Promise.all(promises)
+    })
 
     test('should handle large document processing efficiently', async () => {
-      const largeDocStartTime = Date.now();
+      const largeDocStartTime = Date.now()
       
-      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 120000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 120000 })
       
-      const processingTime = Date.now() - largeDocStartTime;
+      const processingTime = Date.now() - largeDocStartTime
       
       // Large documents should complete within 2 minutes
-      expect(processingTime).toBeLessThan(120000);
+      expect(processingTime).toBeLessThan(120000)
       
       // Verify all stages completed successfully
-      await expect(page.getByTestId('ocr-results')).toBeVisible();
-      await expect(page.getByTestId('json-output')).toBeVisible();
-      await expect(page.getByTestId('rag-recommendations')).toBeVisible();
-      await expect(page.getByTestId('clustering-results')).toBeVisible();
-    });
-  });
+      await expect(page.getByTestId('ocr-results')).toBeVisible()
+      await expect(page.getByTestId('json-output')).toBeVisible()
+      await expect(page.getByTestId('rag-recommendations')).toBeVisible()
+      await expect(page.getByTestId('clustering-results')).toBeVisible()
+    })
+  })
 
   test.describe('Error Handling and Edge Cases', () => {
     test('should handle unsupported file formats gracefully', async () => {
-      await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'document.txt');
+      await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'document.txt')
       
       // Should show appropriate error message
-      await expect(page.getByTestId('error-message')).toBeVisible();
-      await expect(page.getByTestId('error-message')).toContainText('PDF files');
-    });
+      await expect(page.getByTestId('error-message')).toBeVisible()
+      await expect(page.getByTestId('error-message')).toContainText('PDF files')
+    })
 
     test('should recover from processing failures', async () => {
       // Simulate processing failure scenario
-      await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'simple-contract.pdf');
-      await expect(page.getByText('Processing')).toBeVisible();
-    });
-  });
+      await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'simple-contract.pdf')
+      await expect(page.getByText('Processing')).toBeVisible()
+    })
+  })
 
   test.describe('UI/UX and Accessibility', () => {
     test('should provide clear visual feedback during processing', async () => {
-      await page.setInputFiles('[data-testid="pdf-upload"]:has-text("SIMD")', { timeout: 20000 });
-    });
+      await page.setInputFiles('[data-testid="pdf-upload"]:has-text("SIMD")', { timeout: 20000 })
+    })
 
     test('should be accessible to screen readers', async () => {
       // Check for proper ARIA labels
-      await expect(page.getByRole('button', { name: /upload|choose files/i })).toBeVisible();
+      await expect(page.getByRole('button', { name: /upload|choose files/i })).toBeVisible()
       await expect(page.getByRole('progressbar')).toBeHidden(); // Should only appear during processing
       
       // Verify headings structure
-      const headings = await page.locator('h1, h2, h3').count();
-      expect(headings).toBeGreaterThan(3);
+      const headings = await page.locator('h1, h2, h3').count()
+      expect(headings).toBeGreaterThan(3)
       
       // Check focus management
-      await page.keyboard.press('Tab');
-      const focusedElement = await page.locator(':focus').first();
-      await expect(focusedElement).toBeVisible();
-    });
-  });
-});
+      await page.keyboard.press('Tab')
+      const focusedElement = await page.locator(':focus').first()
+      await expect(focusedElement).toBeVisible()
+    })
+  })
+})
 
 /*
  * Test Configuration and Utilities
@@ -594,43 +594,43 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 
 test.beforeAll(async () => {
   // Ensure test fixtures directory exists
-  console.log('Setting up test fixtures...');
+  console.log('Setting up test fixtures...')
   
   // Create test documents if they don't exist
   // This would typically be handled by a setup script
-});
+})
 
 test.afterAll(async () => {
   // Cleanup test artifacts
-  console.log('Cleaning up test artifacts...');
-});
+  console.log('Cleaning up test artifacts...')
+})
 
-// Custom test matchers and utilities;
+// Custom test matchers and utilities
 function expectProcessingTimeWithin(actualTime: number, expectedTime: number, tolerance: number = 0.2) {
-  const minTime = expectedTime * (1 - tolerance);
-  const maxTime = expectedTime * (1 + tolerance);
-  expect(actualTime).toBeGreaterThanOrEqual(minTime);
-  expect(actualTime).toBeLessThanOrEqual(maxTime);
+  const minTime = expectedTime * (1 - tolerance)
+  const maxTime = expectedTime * (1 + tolerance)
+  expect(actualTime).toBeGreaterThanOrEqual(minTime)
+  expect(actualTime).toBeLessThanOrEqual(maxTime)
 }
 
-// Performance benchmarking utility;
+// Performance benchmarking utility
 async function measureProcessingTime(page: Page, operation: () => Promise<void>): Promise<number> {
-  const startTime = Date.now();
-  await operation();
-  return Date.now() - startTime;
-}`;
+  const startTime = Date.now()
+  await operation()
+  return Date.now() - startTime
+}`
 }
 
 function countGeneratedTests(testContent: string): number {
-  const testMatches = testContent.match(/test\(/g);
-  return testMatches ? testMatches.length: 0;
+  const testMatches = testContent.match(/test\(/g)
+  return testMatches ? testMatches.length: 0
 }
 
 function calculateEstimatedRunTime(testResults: any): string {
   const testCount = 20; // Approximate number of tests
   const avgTestTime = 15; // seconds per test
-  const totalMinutes = Math.ceil(testCount * avgTestTime / 60);
-  return `${totalMinutes} minutes`;
+  const totalMinutes = Math.ceil(testCount * avgTestTime / 60)
+  return `${totalMinutes} minutes`
 }
 
 function assessTestCoverage(testResults: any): unknown {
@@ -643,7 +643,7 @@ function assessTestCoverage(testResults: any): unknown {
     errorHandling: '90%',
     performance: '87%',
     overall: '89%'
-  };
+  }
 }
 
 function extractKeyTestScenarios(testContent: string): string[] {
@@ -657,9 +657,9 @@ function extractKeyTestScenarios(testContent: string): string[] {
     'Performance Load Testing',
     'Error Handling and Recovery',
     'Accessibility Compliance'
-  ];
+  ]
   
-  return scenarios;
+  return scenarios
 }
 
 function countTodoItems(): number {

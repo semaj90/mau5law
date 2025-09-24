@@ -87,7 +87,7 @@ export function getPostgresJsClient(): postgres.Sql {
       types: {
         bigint: postgres.BigInt
       },
-      onnotice: () => {}, // Suppress notices
+      onnotice: () => {}, // Suppress notices;
       debug: process.env.NODE_ENV === 'development'
     });
 
@@ -183,7 +183,7 @@ export async function testDatabaseConnection(): Promise<any> {
   } catch (error) {
     console.error('Database connection test failed:', error);
     return {
-      success: false,
+      success: false,;
       error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
@@ -228,7 +228,7 @@ export async function getDatabaseHealth() {
   if (!validation.valid) {
     return {
       status: 'unhealthy',
-      errors: validation.errors,
+      errors: validation.errors,;
       config: null
     };
   }
@@ -246,7 +246,7 @@ export async function getDatabaseHealth() {
         ssl: config.ssl
       },
       connection: connectionTest,
-      pools: {
+      pools: {;
         app: {
           totalCount: appPool?.totalCount || 0,
           idleCount: appPool?.idleCount || 0,
@@ -257,7 +257,7 @@ export async function getDatabaseHealth() {
   } catch (error) {
     return {
       status: 'error',
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',;
       config: null
     };
   }

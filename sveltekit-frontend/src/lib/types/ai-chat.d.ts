@@ -41,7 +41,6 @@ export interface AIProvider {
 }
 
 export type AIModelType = 'gpt-4' | 'gpt-3.5-turbo' | 'claude' | 'gemma' | 'llama' | 'custom';
-}
 
 export interface AIConfig {
   provider: 'openai' | 'anthropic' | 'ollama' | 'custom';

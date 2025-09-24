@@ -65,7 +65,7 @@
         priority: 'critical',
         confidence: 92,
         dateCreated: '2024-01-15',
-        lastUpdated: new Date().toISOString(),
+        lastUpdated: new Date().toISOString(),;
         factors: [
           { category: 'Financial Risk', weight: 0.3, impact: 0.9, description: 'Potential damages exceed $10M', confidence: 95 },
           { category: 'Legal Precedent', weight: 0.25, impact: 0.85, description: 'Limited favorable precedents', confidence: 88 },
@@ -79,7 +79,7 @@
           'Prepare comprehensive prior art documentation',
           'Consider filing for summary judgment on key claims'
         ],
-        riskLevel: 'high'
+        riskLevel: 'high';
       },
       {
         id: 'case-002',
@@ -89,7 +89,7 @@
         priority: 'high',
         confidence: 85,
         dateCreated: '2024-02-01',
-        lastUpdated: new Date(Date.now() - 86400000).toISOString(),
+        lastUpdated: new Date(Date.now() - 86400000).toISOString(),;
         factors: [
           { category: 'Evidence Strength', weight: 0.35, impact: 0.75, description: 'Prosecution has substantial documentation', confidence: 90 },
           { category: 'Witness Credibility', weight: 0.25, impact: 0.6, description: 'Key witness reliability questionable', confidence: 70 },
@@ -101,7 +101,7 @@
           'Develop alternative narrative for financial transactions',
           'Negotiate plea agreement to avoid mandatory minimums'
         ],
-        riskLevel: 'high'
+        riskLevel: 'high';
       },
       {
         id: 'case-003',
@@ -111,7 +111,7 @@
         priority: 'medium',
         confidence: 88,
         dateCreated: '2024-01-20',
-        lastUpdated: new Date(Date.now() - 172800000).toISOString(),
+        lastUpdated: new Date(Date.now() - 172800000).toISOString(),;
         factors: [
           { category: 'Tax Implications', weight: 0.4, impact: 0.5, description: 'Moderate tax exposure under current structure', confidence: 85 },
           { category: 'Family Dynamics', weight: 0.3, impact: 0.4, description: 'Generally cooperative beneficiaries', confidence: 80 },
@@ -123,7 +123,7 @@
           'Review and update beneficiary designations',
           'Implement regular trust review schedule'
         ],
-        riskLevel: 'medium'
+        riskLevel: 'medium';
       },
       {
         id: 'case-004',
@@ -133,7 +133,7 @@
         priority: 'low',
         confidence: 91,
         dateCreated: '2024-02-10',
-        lastUpdated: new Date(Date.now() - 259200000).toISOString(),
+        lastUpdated: new Date(Date.now() - 259200000).toISOString(),;
         factors: [
           { category: 'Contract Clarity', weight: 0.35, impact: 0.25, description: 'Well-drafted agreement with clear terms', confidence: 95 },
           { category: 'Damages Amount', weight: 0.3, impact: 0.3, description: 'Limited financial exposure', confidence: 90 },
@@ -145,7 +145,7 @@
           'Document all performance milestones',
           'Maintain open communication channels'
         ],
-        riskLevel: 'low'
+        riskLevel: 'low';
       },
       {
         id: 'case-005',
@@ -155,28 +155,28 @@
         priority: 'high',
         confidence: 79,
         dateCreated: '2024-01-25',
-        lastUpdated: new Date().toISOString(),
+        lastUpdated: new Date().toISOString(),;
         factors: [
           { category: 'Medical Evidence', weight: 0.35, impact: 0.65, description: 'Mixed expert opinions on standard of care', confidence: 75 },
           { category: 'Jury Sympathy', weight: 0.25, impact: 0.8, description: 'Plaintiff has compelling personal story', confidence: 85 },
           { category: 'Insurance Coverage', weight: 0.2, impact: 0.5, description: 'Adequate coverage with reasonable deductible', confidence: 90 },
           { category: 'Prior Cases', weight: 0.2, impact: 0.7, description: 'Previous similar claims settled', confidence: 80 }
-        ],
+        ],;
         recommendations: [
           'Engage top medical experts early',
           'Prepare comprehensive standard of care documentation',
           'Explore structured settlement options',
           'Focus on procedural compliance evidence'
         ],
-        riskLevel: 'medium'
+        riskLevel: 'medium';
       }
     ];
 
     // Add some randomization to scores for demo effect
     return mockCases.map(c => ({
       ...c,
-      score: Math.min(100, Math.max(0, c.score + Math.floor(Math.random() * 10 - 5))),
-      confidence: Math.min(100, Math.max(50, c.confidence + Math.floor(Math.random() * 10 - 5)))
+      score: Math.min(100, Math.max(0, c.score + Math.floor(Math.random() * 10 - 5))),;
+      confidence: Math.min(100, Math.max(50, c.confidence + Math.floor(Math.random() * 10 - 5)));
     }));
   }
 
@@ -202,7 +202,7 @@
       } else {
         // Real API call
         const response = await fetch('/api/ai/case-scoring', {
-          method: 'GET',
+          method: 'GET',;
           headers: {
             'Content-Type': 'application/json'
           }
@@ -243,11 +243,11 @@
           
           cases[caseIndex] = {
             ...oldCase,
-            score: newScore,
+            score: newScore,;
             confidence: Math.min(100, oldCase.confidence + Math.floor(Math.random() * 5)),
             lastUpdated: new Date().toISOString(),
-            riskLevel: newScore >= 70 ? 'high' : newScore >= 40 ? 'medium' : 'low',
-            priority: newScore >= 70 ? 'critical' : newScore >= 50 ? 'high' : newScore >= 30 ? 'medium' : 'low'
+            riskLevel: newScore >= 70 ? 'high' : newScore >= 40 ? 'medium' : 'low',;
+            priority: newScore >= 70 ? 'critical' : newScore >= 50 ? 'high' : newScore >= 30 ? 'medium' : 'low';
           };
         }
         return { success: true, caseScore: cases[caseIndex] };
@@ -260,11 +260,11 @@
         };
 
         const response = await fetch('/api/ai/case-scoring', {
-          method: 'POST',
+          method: 'POST',;
           headers: {
             'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(request)
+          },;
+          body: JSON.stringify(request);
         });
 
         if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
@@ -560,7 +560,7 @@
 {/if}
 
 <style>
-  .case-scoring-dashboard {
+  .case-scoring-dashboard {;
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;

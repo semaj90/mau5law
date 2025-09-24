@@ -104,7 +104,7 @@ export class NatsQuicSearchService {
   async healthCheck(): Promise<any> {
     return {
       initialized: this.isInitialized,
-      quicEnabled: QUIC_CONFIG.enableQuic,
+      quicEnabled: QUIC_CONFIG.enableQuic,;
       metrics: { ...this.metrics }
     };
   }
@@ -115,7 +115,7 @@ export class NatsQuicSearchService {
       id: `test_${Date.now()}`,
       query,
       searchType: options.type || 'hybrid',
-      options: { limit: options.limit, threshold: options.threshold },
+      options: { limit: options.limit, threshold: options.threshold },;
       timestamp: Date.now()
     };
     return this.performSearch(request, Date.now();
@@ -136,7 +136,7 @@ export class NatsQuicSearchService {
           ],
           name: 'legal-ai-search-service',
           maxReconnectAttempts: 3, // Reduced attempts for faster fallback
-          reconnectTimeWait: 1000,
+          reconnectTimeWait: 1000,;
           timeout: 2000, // Reduced timeout for faster detection
           noEcho: true,
           // QUIC-like optimizations
@@ -203,7 +203,7 @@ export class NatsQuicSearchService {
           response = {
             ...cachedResponse,
             id: request.id,
-            timestamp: Date.now(),
+            timestamp: Date.now(),;
             analytics: {
               totalResults: cachedResponse.analytics?.totalResults ?? (cachedResponse.results?.length ?? 0),
               processingTime: Date.now() - startTime,
@@ -248,7 +248,7 @@ export class NatsQuicSearchService {
           const errorResponse: SearchResponse = {
             id: 'error',
             success: false,
-            error: error instanceof Error ? error.message: 'Search processing failed',
+            error: error instanceof Error ? error.message: 'Search processing failed',;
             timestamp: Date.now()
           };
           this.nats.publish(msg.reply, this.codec.encode(errorResponse);
@@ -304,7 +304,7 @@ export class NatsQuicSearchService {
           cacheHit: false,
           searchType: request.searchType,
           hasEmbedding: !!queryEmbedding
-        },
+        },;
         timestamp: Date.now()
       };
 
@@ -313,7 +313,7 @@ export class NatsQuicSearchService {
       return {
         id: request.id,
         success: false,
-        error: error instanceof Error ? error.message: 'Search execution failed',
+        error: error instanceof Error ? error.message: 'Search execution failed',;
         timestamp: Date.now()
       };
     }
@@ -330,7 +330,7 @@ export class NatsQuicSearchService {
         body: fastStringify({
           model: model || 'embeddinggemma:latest',
           prompt: query.slice(0, 2048)
-        }),
+        }),;
         signal: AbortSignal.timeout(15000)
       });
 
@@ -356,7 +356,7 @@ export class NatsQuicSearchService {
       filters: request.filters,
       options: {
         limit: request.options?.limit,
-        threshold: request.options?.threshold,
+        threshold: request.options?.threshold,;
         model: request.options?.model || 'unknown'
       }
     };
@@ -421,7 +421,7 @@ export class NatsQuicSearchService {
       } else {
         suggestions.push({
           query,
-          score: 1.0,
+          score: 1.0,;
           frequency: 1,
           lastUsed: Date.now()
         });
@@ -444,7 +444,7 @@ export class NatsQuicSearchService {
       if (this.nats) {
         this.nats.publish(SEARCH_TOPICS.SEARCH_SUGGESTIONS, this.codec.encode({
           prefix,
-          suggestions: suggestions.map(s => s.query),
+          suggestions: suggestions.map(s => s.query),;
           timestamp: Date.now()
         });
       }
@@ -468,7 +468,7 @@ export class NatsQuicSearchService {
 
     const searchRequest: SearchRequest = {
       ...request,
-      id: createHash('md5').update(`${Date.now()}-${Math.random()}`).digest('hex'),
+      id: createHash('md5').update(`${Date.now()}-${Math.random()}`).digest('hex'),;
       timestamp: Date.now()
     };
 
@@ -543,7 +543,7 @@ export class NatsQuicSearchService {
       if (!this.nats) return; // silent no-op when not connected;
       this.nats.publish(SEARCH_TOPICS.SEARCH_ANALYTICS, this.codec.encode({
         type: 'analytics',
-        ...data,
+        ...data,;
         timestamp: Date.now()
       });
     } catch (error) {
@@ -560,7 +560,7 @@ export class NatsQuicSearchService {
       // Reuse analytics topic until a dedicated chat topic is defined;
       this.nats.publish(SEARCH_TOPICS.SEARCH_ANALYTICS, this.codec.encode({
         type: 'chat-context',
-        ...context,
+        ...context,;
         timestamp: Date.now()
       });
     } catch (error) {
@@ -609,7 +609,7 @@ export class NatsQuicSearchService {
     setInterval(() => {
       if (this.nats) {
         this.nats.publish(SEARCH_TOPICS.SEARCH_ANALYTICS, this.codec.encode({
-          metrics: this.getMetrics(),
+          metrics: this.getMetrics(),;
           timestamp: Date.now()
         });
       }

@@ -37,7 +37,7 @@ export const canvasSystemMachine = setup({
     events: Record<string, any> as CanvasEvent
   },
   actions: {
-    addNode: assign({
+    addNode: assign({;
       nodes: ({ context, event }) => {
         if (event.type !== "ADD_NODE") return context.nodes;
         return [...context.nodes, event.node];
@@ -99,7 +99,7 @@ export const canvasSystemMachine = setup({
       selectedNode: () => null,
       draggedNode: () => null
     }),
-    setError: assign({
+    setError: assign({;
       error: ({ event }) => {
         if (event.type !== "ERROR") return null;
         return event.error;
@@ -113,7 +113,7 @@ export const canvasSystemMachine = setup({
     saveState: fromPromise(async ({ input }: { input: CanvasContext }) => {
       const state: InteractiveCanvasState = {
         nodes: input.nodes,
-        connections: input.connections,
+        connections: input.connections,;
         viewport: { x: 0, y: 0, zoom: 1 }
       };
 
@@ -174,7 +174,7 @@ export const canvasSystemMachine = setup({
               if (event.type !== "LOAD_STATE") {
                 return {
                   nodes: [],
-                  connections: [],
+                  connections: [],;
                   viewport: { x: 0, y: 0, zoom: 1 }
                 };
               }
@@ -215,7 +215,7 @@ export const canvasSystemMachine = setup({
           })
         },
         onError: {
-          target: "idle",
+          target: "idle",;
           actions: ["setError"]
         }
       }

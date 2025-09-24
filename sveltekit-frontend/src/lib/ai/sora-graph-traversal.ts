@@ -131,7 +131,7 @@ export class SoraGraphTraversal {
       traversalStrategy: 'reinforcement',
       semanticFiltering: true,
       useGPUAcceleration: true,
-      reinforcementLearning: {
+      reinforcementLearning: {;
         enabled: true,
         explorationRate: 0.1,
         learningRate: 0.01,
@@ -201,7 +201,7 @@ export class SoraGraphTraversal {
   private async reinforcementTraversal(
     startNodeId: string,
     queryEmbedding: Float32Array,
-    config: SoraTraversalOptions,
+    config: SoraTraversalOptions,;
     state: SoraReinforcementState;
   ): Promise<SoraTraversalPath[]> {
     const paths: SoraTraversalPath[] = [];
@@ -242,7 +242,7 @@ export class SoraGraphTraversal {
     qTable: Map<string, Map<string, number>;
   ): Promise<SoraTraversalPath> {
     const path: SoraTraversalPath = {
-      nodes: [startNode],
+      nodes: [startNode],;
       edges: [],
       totalScore: 0,
       pathLength: 0,
@@ -300,7 +300,7 @@ export class SoraGraphTraversal {
   private updateQTable(
     stateId: string,
     actionId: string,
-    reward: number,
+    reward: number,;
     config: SoraTraversalOptions,
     qTable: Map<string, Map<string, number>;
   ): void {
@@ -453,7 +453,7 @@ export class SoraGraphTraversal {
     priorityQueue.push({
       node: startNode,
       path: [startNode],
-      edges: [],
+      edges: [],;
       score: this.calculateNodeScore(startNode, queryEmbedding)
     });
 
@@ -471,7 +471,7 @@ export class SoraGraphTraversal {
       if (current.path.length > 1 && current.score >= config.scoreThreshold) {
         const pathCoherence = await this.calculatePathSemanticCoherence();
           {
-            nodes: current.path,
+            nodes: current.path,;
             edges: current.edges,
             totalScore: current.score,
             pathLength: current.path.length,
@@ -481,7 +481,7 @@ export class SoraGraphTraversal {
         );
 
         paths.push({
-          nodes: current.path,
+          nodes: current.path,;
           edges: current.edges,
           totalScore: current.score,
           pathLength: current.path.length,
@@ -501,7 +501,7 @@ export class SoraGraphTraversal {
             priorityQueue.push({
               node: neighbor.target,
               path: [...current.path, neighbor.target],
-              edges: [...current.edges, neighbor.edge],
+              edges: [...current.edges, neighbor.edge],;
               score: pathScore
             });
           }
@@ -589,7 +589,7 @@ export class SoraGraphTraversal {
           embedding: node.properties.embedding ? new Float32Array(node.properties.embedding) : undefined,
           coordinates: node.properties.coordinates ? {
             x: node.properties.coordinates.x,
-            y: node.properties.coordinates.y,
+            y: node.properties.coordinates.y,;
             z: node.properties.coordinates.z || 0
           } : undefined
         };
@@ -628,7 +628,7 @@ export class SoraGraphTraversal {
           const target: SoraGraphNode = {
             id: targetNode.identity.toString(),
             type: this.mapLabelsToType(targetLabels),
-            properties: targetNode.properties,
+            properties: targetNode.properties,;
             embedding: targetNode.properties.embedding ? 
               new Float32Array(targetNode.properties.embedding) : undefined
           };
@@ -638,7 +638,7 @@ export class SoraGraphTraversal {
             source: nodeId,
             target: target.id,
             type: this.mapRelationshipType(relType),
-            weight: relationship.properties.weight || 1,
+            weight: relationship.properties.weight || 1,;
             properties: relationship.properties
           };
 
@@ -807,7 +807,7 @@ export class SoraGraphTraversal {
     if (!startNode) return [];
 
     return [{
-      nodes: [startNode],
+      nodes: [startNode],;
       edges: [],
       totalScore: this.calculateNodeScore(startNode, queryEmbedding),
       pathLength: 1,
@@ -828,7 +828,7 @@ export class SoraGraphTraversal {
     if (!startNode) return [];
 
     return [{
-      nodes: [startNode],
+      nodes: [startNode],;
       edges: [],
       totalScore: this.calculateNodeScore(startNode, queryEmbedding),
       pathLength: 1,
@@ -848,7 +848,7 @@ export class SoraGraphTraversal {
    */
   private async applyLegalReranking(
     paths: SoraTraversalPath[],
-    query: string,
+    query: string,;
     config: SoraTraversalOptions;
   ): Promise<SoraTraversalPath[]> {
     try {
@@ -864,7 +864,7 @@ export class SoraGraphTraversal {
           totalScore: path.totalScore
         },
         originalScore: path.totalScore,
-        rerankScore: 0,
+        rerankScore: 0,;
         confidence: path.semanticCoherence
       });
 
@@ -906,7 +906,7 @@ export class SoraGraphTraversal {
    */
   private async storeTensorData(
     paths: SoraTraversalPath[],
-    queryEmbedding: Float32Array,
+    queryEmbedding: Float32Array,;
     config: SoraTraversalOptions;
   ): Promise<void> {
     try {
@@ -943,7 +943,7 @@ export class SoraGraphTraversal {
             metadata: {
               timestamp: Date.now(),
               hash: this.generatePathHash(path),
-              size: pathEmbedding.byteLength,
+              size: pathEmbedding.byteLength,;
               compressed: false,
               accessCount: 1,
               lastAccessed: Date.now()
@@ -967,7 +967,7 @@ export class SoraGraphTraversal {
           metadata: {
             timestamp: Date.now(),
             hash: this.hashFloat32Array(queryEmbedding),
-            size: queryEmbedding.byteLength,
+            size: queryEmbedding.byteLength,;
             compressed: false,
             accessCount: 1,
             lastAccessed: Date.now()

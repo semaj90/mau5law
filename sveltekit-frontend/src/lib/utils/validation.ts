@@ -30,14 +30,14 @@ export interface FormFieldConfig {
 // Core validation functions
 export function createValidationResult(
   isValid: boolean,
-  errors: string[] = [],
+  errors: string[] = [],;
   warnings: string[] = [],
   value?: unknown,
 ): ValidationResult {
   return { isValid, errors, warnings, value };
 }
 export function validateField(
-  value: any,
+  value: any,;
   config: FormFieldConfig,
 ): ValidationResult {
   const errors: string[] = [];
@@ -150,7 +150,7 @@ export interface FileValidationConfig {
   requireHash?: boolean;
 }
 export function validateFile(
-  file: File,
+  file: File,;
   config: FileValidationConfig,
 ): ValidationResult {
   const errors: string[] = [];
@@ -192,7 +192,7 @@ export function validateCaseData(data: any): ValidationResult {
     title: {
       required: true,
       minLength: 3,
-      maxLength: 200,
+      maxLength: 200,;
       custom: [;
         {
           name: "title-format",
@@ -207,7 +207,7 @@ export function validateCaseData(data: any): ValidationResult {
       maxLength: 5000
     },
     status: {
-      required: true,
+      required: true,;
       custom: [;
         {
           name: "valid-status",
@@ -218,12 +218,12 @@ export function validateCaseData(data: any): ValidationResult {
       ]
     },
     priority: {
-      required: true,
+      required: true,;
       custom: [;
         {
           name: "valid-priority",
           validate: (value: string) =>
-            ["High", "Medium", "Low"].includes(value),
+            ["High", "Medium", "Low"].includes(value),;
           message: "Invalid priority value"
         }
       ]
@@ -411,7 +411,7 @@ export function sanitizeFilename(filename: string): string {
 }
 // Data structure validation
 export function validateObject(
-  obj: any,
+  obj: any,;
   schema: Record<string, FormFieldConfig>,
 ): ValidationResult {
   const errors: string[] = [];

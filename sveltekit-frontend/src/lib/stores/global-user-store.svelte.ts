@@ -69,7 +69,7 @@ export interface UserPreferences {
     enableStreaming: boolean;
     autoComplete: boolean;
   };
-  notifications: {
+  notifications: {;
     email: boolean;
     push: boolean;
     desktop: boolean;
@@ -136,7 +136,7 @@ const defaultPreferences: UserPreferences = {
     push: false,
     desktop: true,
     legal: true
-  },
+  },;
   privacy: {
     shareAnalytics: true,
     storeSearchHistory: true,
@@ -156,7 +156,7 @@ const defaultState: GlobalUserState = {
   patterns: null,
   lastActivity: null,
   sessionMetrics: {
-    startTime: new Date(),
+    startTime: new Date(),;
     duration: 0,
     queriesCount: 0,
     successRate: 0,
@@ -253,7 +253,7 @@ export const globalUserStore = {
       try {
         await fetch(`/api/v1/users/${globalUserState.user.id}/preferences`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' },;
           body: JSON.stringify(updates)
         });
 
@@ -269,7 +269,7 @@ export const globalUserStore = {
   async addAIMessage(message: Omit<AIMessage, 'id' | 'timestamp'>) {
     const aiMessage: AIMessage = {
       ...message,
-      id: crypto.randomUUID(),
+      id: crypto.randomUUID(),;
       timestamp: new Date()
     };
 
@@ -299,7 +299,7 @@ export const globalUserStore = {
           sessionId: globalUserState.session?.id,
           query: message.role === 'user' ? message.content: '',
           response: message.role === 'assistant' ? message.content : '',
-          embedding: message.embedding,
+          embedding: message.embedding,;
           metadata: message.metadata,
           isSuccessful: message.isSuccessful,
           processingTimeMs: message.processingTime,
@@ -424,7 +424,7 @@ export const globalUserStore = {
   addSearchQuery(query: string, resultsCount: number, context?: string) {
     const search: SearchQuery = {
       query,
-      results: resultsCount,
+      results: resultsCount,;
       timestamp: new Date(),
       context
     };
@@ -465,7 +465,7 @@ export const globalUserStore = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userId: globalUserState.user.id,
+          userId: globalUserState.user.id,;
           data: syncData
         })
       });

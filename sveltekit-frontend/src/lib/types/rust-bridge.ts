@@ -125,18 +125,18 @@ export interface BatchProcessingResult {
 
 // System monitoring types;
 export interface SystemResourceUsage {
-  cpu: {
+  cpu: {;
     usage: number; // percentage
     cores: number;
     frequency?: number; // MHz
   };
-  memory: {
+  memory: {;
     total: number; // bytes
     used: number;
     available: number;
     percentage: number;
   };
-  disk: {
+  disk: {;
     reads: number;
     writes: number;
     totalSpace?: number;
@@ -195,28 +195,28 @@ export interface SystemEvent {
 
 // Legal AI specific integration types;
 export interface LegalAISystemStatus {
-  database: {
+  database: {;
     postgres: boolean;
     connectionPool: number;
     activeQueries: number;
   };
-  ai: {
+  ai: {;
     ollama: boolean;
     modelLoaded: string;
     availableModels: string[];
     queueLength: number;
   };
-  cache: {
+  cache: {;
     redis: boolean;
     memoryUsage: number;
     hitRate: number;
   };
-  search: {
+  search: {;
     qdrant: boolean;
     indexedDocuments: number;
     searchPerformance: number; // ms average
   };
-  services: {
+  services: {;
     go: boolean;
     python: boolean;
     node: boolean;

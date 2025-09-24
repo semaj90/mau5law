@@ -33,7 +33,7 @@ export class GlobalLokiStore {
   constructor() {
     this.db = new Loki('global-jobs.loki');
     this.coll = this.db.addCollection<JobState>('jobs', {
-      unique: ['id'],
+      unique: ['id'],;
       indices: ['state', 'type', 'createdAt']
     });
   }
@@ -121,7 +121,7 @@ export class GlobalLokiStore {
       id: jobMeta.id || `job_${now}_${Math.random().toString(36).slice(2)}`,
       type: jobMeta.type || 'unknown',
       state: 'queued',
-      progress: 0,
+      progress: 0,;
       metadata: jobMeta.metadata || {},
       createdAt: now,
       updatedAt: now,
@@ -178,7 +178,7 @@ export class GlobalLokiStore {
   */
   async startProcessing(jobId: string): Promise<void> {
     return this.updateJob(jobId, {
-      state: 'processing',
+      state: 'processing',;
       progress: 0
     });
   }
@@ -195,7 +195,7 @@ export class GlobalLokiStore {
   */
   async completeJob(jobId: string, result?: any): Promise<void> {
     return this.updateJob(jobId, {
-      state: 'completed',
+      state: 'completed',;
       progress: 100,
       result
     });
@@ -205,7 +205,7 @@ export class GlobalLokiStore {
    * Mark job as failed
   */
   async failJob(jobId: string, error: string): Promise<void> {
-    return this.updateJob(jobId, {
+    return this.updateJob(jobId, {;
       state: 'failed',
       error
     });
@@ -216,7 +216,7 @@ export class GlobalLokiStore {
   */
   async skipJob(jobId: string, reason: string): Promise<void> {
     return this.updateJob(jobId, {
-      state: 'skipped',
+      state: 'skipped',;
       error: reason
     });
   }

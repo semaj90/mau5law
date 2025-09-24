@@ -26,7 +26,7 @@
       speed: 0.1,
       pattern: 'dots',
       opacity: 0.1,
-      offsetY: 0
+      offsetY: 0;
     },
     {
       id: 'layer-grid',
@@ -34,7 +34,7 @@
       speed: 0.3,
       pattern: 'grid',
       opacity: 0.15,
-      offsetY: 0
+      offsetY: 0;
     },
     {
       id: 'layer-circuit',
@@ -42,15 +42,15 @@
       speed: 0.5,
       pattern: 'circuit',
       opacity: 0.2,
-      offsetY: 0
+      offsetY: 0;
     },
     {
       id: 'layer-hex',
       depth: 3,
-      speed: 0.7,
-      pattern: 'hexagon',
+      speed: 0.7,;
+      pattern: 'hexagon',;
       opacity: 0.25,
-      offsetY: 0
+      offsetY: 0;
     }
   ];
 
@@ -160,7 +160,7 @@
   {#each layers as layer (layer.id)}
     <div
       class="parallax-layer"
-      style="
+      style=";
         transform: translateY({layer.offsetY}px) translateZ({layer.depth * -10}px);
         opacity: {layer.opacity};
         background-image: {generatePattern(layer.pattern || '')};

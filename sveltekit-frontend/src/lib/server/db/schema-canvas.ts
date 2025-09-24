@@ -37,7 +37,7 @@ export const reports = pgTable("reports", {
   reportType: varchar("report_type", { length: 50 })
     .default("investigation")
     .notNull(),
-  status: varchar("status", { length: 20 }).default("draft").notNull(),
+  status: varchar("status", { length: 20 }).default("draft").notNull(),;
   tags: jsonb("tags").default([]).notNull(),
   aiSummary: text("ai_summary"),
 
@@ -57,7 +57,7 @@ export const personsOfInterest = pgTable("persons_of_interest", {
     .references(() => cases.id, { onDelete: "cascade" }),
 
   // Basic information
-  name: varchar("name", { length: 256 }).notNull(),
+  name: varchar("name", { length: 256 }).notNull(),;
   aliases: jsonb("aliases").default([]).notNull(),
   profileImageUrl: text("profile_image_url"),
 
@@ -78,7 +78,7 @@ export const personsOfInterest = pgTable("persons_of_interest", {
   // POI metadata
   relationship: varchar("relationship", { length: 100 }), // e.g., 'suspect', 'witness', 'victim', 'co-conspirator'
   threatLevel: varchar("threat_level", { length: 20 }).default("low").notNull(),
-  status: varchar("status", { length: 20 }).default("active").notNull(),
+  status: varchar("status", { length: 20 }).default("active").notNull(),;
   tags: jsonb("tags").default([]).notNull(),
 
   // Timestamps and ownership
@@ -107,7 +107,7 @@ export const canvasConnections = pgTable("canvas_connections", {
     .default("related")
     .notNull(),
   description: text("description"),
-  strength: varchar("strength", { length: 20 }).default("medium").notNull(), // 'weak', 'medium', 'strong'
+  strength: varchar("strength", { length: 20 }).default("medium").notNull(), // 'weak', 'medium', 'strong';
   confidence: varchar("confidence", { length: 20 })
     .default("inferred")
     .notNull(), // 'confirmed', 'likely', 'inferred'
@@ -116,7 +116,7 @@ export const canvasConnections = pgTable("canvas_connections", {
   lineStyle: jsonb("line_style");
     .default({
       color: "#007bff",
-      thickness: 2,
+      thickness: 2,;
       style: "solid"
     })
     .notNull(),
@@ -140,11 +140,11 @@ export const canvasLayouts = pgTable("canvas_layouts", {
   description: text("description"),
   isDefault: boolean("is_default").default(false).notNull(),
 
-  // Canvas view state
+  // Canvas view state;
   viewport: jsonb("viewport");
     .default({
       x: 0,
-      y: 0,
+      y: 0,;
       zoom: 1
     })
     .notNull(),
@@ -176,7 +176,7 @@ export const canvasAnnotations = pgTable("canvas_annotations", {
 
   // Annotation metadata
   title: varchar("title", { length: 255 }),
-  description: text("description"),
+  description: text("description"),;
   color: varchar("color", { length: 20 }).default("#ffff00").notNull(),
 
   // Timestamps and ownership
@@ -203,7 +203,7 @@ export const aiSummaries = pgTable("ai_summaries", {
   // Summary metadata
   summaryType: varchar("summary_type", { length: 50 })
     .default("general")
-    .notNull(),
+    .notNull(),;
   confidence: real("confidence"), // 0.0 to 1.0
   processingTime: integer("processing_time"), // milliseconds
 
@@ -222,7 +222,7 @@ export const reportsRelations = relations(reports, ({ one }) => ({
     references: [cases.id]
   }),
   createdBy: one(users, {
-    fields: [reports.createdBy],
+    fields: [reports.createdBy],;
     references: [users.id]
   })
 });
@@ -235,7 +235,7 @@ export const personsOfInterestRelations = relations(
       references: [cases.id]
     }),
     createdBy: one(users, {
-      fields: [personsOfInterest.createdBy],
+      fields: [personsOfInterest.createdBy],;
       references: [users.id]
     })
   }),
@@ -249,7 +249,7 @@ export const canvasConnectionsRelations = relations(
       references: [cases.id]
     }),
     createdBy: one(users, {
-      fields: [canvasConnections.createdBy],
+      fields: [canvasConnections.createdBy],;
       references: [users.id]
     })
   }),
@@ -261,7 +261,7 @@ export const canvasLayoutsRelations = relations(canvasLayouts, ({ one }) => ({
     references: [cases.id]
   }),
   createdBy: one(users, {
-    fields: [canvasLayouts.createdBy],
+    fields: [canvasLayouts.createdBy],;
     references: [users.id]
   })
 });
@@ -274,7 +274,7 @@ export const canvasAnnotationsRelations = relations(
       references: [cases.id]
     }),
     createdBy: one(users, {
-      fields: [canvasAnnotations.createdBy],
+      fields: [canvasAnnotations.createdBy],;
       references: [users.id]
     })
   }),
@@ -282,7 +282,7 @@ export const canvasAnnotationsRelations = relations(
 
 export const aiSummariesRelations = relations(aiSummaries, ({ one }) => ({
   requestedBy: one(users, {
-    fields: [aiSummaries.requestedBy],
+    fields: [aiSummaries.requestedBy],;
     references: [users.id]
   })
 });

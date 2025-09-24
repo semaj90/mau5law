@@ -37,14 +37,14 @@ export class TauriAPI {
       // Fallback to web API;
       const response = await fetch("/api/cases", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },;
         body: JSON.stringify(caseData)
       });
       return response.json();
     }
     await loadTauriAPI();
     return tauriInvoke?.("create_case", {
-      title: caseData.title,
+      title: caseData.title,;
       description: caseData.description
     });
   }
@@ -63,7 +63,7 @@ export class TauriAPI {
       // Fallback to web API;
       const response = await fetch("/api/reports", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },;
         body: JSON.stringify(reportData)
       });
       return response.json();
@@ -71,7 +71,7 @@ export class TauriAPI {
     await loadTauriAPI();
     return tauriInvoke?.("create_report", {
       title: reportData.title,
-      content: reportData.content,
+      content: reportData.content,;
       summary: reportData.summary
     });
   }
@@ -103,7 +103,7 @@ export class TauriAPI {
   static async login(email: string, password: string) {
     const response = await fetch("/api/auth/login", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" },;
       body: JSON.stringify({ email, password })
     });
     return response.json();
@@ -111,7 +111,7 @@ export class TauriAPI {
   static async register(userData: any) {
     const response = await fetch("/api/auth/register", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" },;
       body: JSON.stringify(userData)
     });
     return response.json();
@@ -132,7 +132,7 @@ export class TauriAPI {
     formData.append("avatar", file);
 
     const response = await fetch("/api/user/avatar/upload", {
-      method: "POST",
+      method: "POST",;
       body: formData
     });
     return response.json();

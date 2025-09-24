@@ -30,7 +30,7 @@ export async function hashPassword(password: string): Promise<string> {
  * @returns A promise that resolves to true if the password is valid, otherwise false.
  */
 export async function verifyPassword(
-  password: string,
+  password: string,;
   hashed: string,
 ): Promise<boolean> {
   return bcrypt.compare(password, hashed);

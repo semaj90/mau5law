@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 
 // Simple validation schemas;
 const loginSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
+  email: z.string().email('Please enter a valid email address'),;
   password: z.string().min(1, 'Password is required')
 });
 
@@ -28,7 +28,7 @@ const registerSchema = z.object({
   message: "You must agree to the terms",
   path: ["agreeToTerms"]
 }).refine((data) => data.agreeToPrivacy === true, {
-  message: "You must agree to privacy policy",
+  message: "You must agree to privacy policy",;
   path: ["agreeToPrivacy"]
 });
 
@@ -57,7 +57,7 @@ export const actions: Actions = {
           password,
           confirmPassword: formData.get('confirmPassword') as string,
           role: formData.get('role') as string,
-          department: formData.get('department') as string,
+          department: formData.get('department') as string,;
           jurisdiction: formData.get('jurisdiction') as string,
           badgeNumber: formData.get('badgeNumber') as string || '',
           agreeToTerms: formData.get('agreeToTerms') as string,
@@ -81,7 +81,7 @@ export const actions: Actions = {
         cookies.set('session', `demo-register-${Date.now()}`, {
           path: '/',
           maxAge: 60 * 60 * 24 * 7, // 1 week
-          httpOnly: true,
+          httpOnly: true,;
           secure: false,
           sameSite: 'lax'
         });
@@ -108,7 +108,7 @@ export const actions: Actions = {
         cookies.set('session', `demo-login-${Date.now()}`, {
           path: '/',
           maxAge: 60 * 60 * 24 * 7, // 1 week
-          httpOnly: true,
+          httpOnly: true,;
           secure: false,
           sameSite: 'lax'
         });
