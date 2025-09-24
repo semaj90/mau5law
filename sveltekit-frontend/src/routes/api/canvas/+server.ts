@@ -54,8 +54,8 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
         error: "Failed to save canvas state",
         details: error instanceof Error ? error.message: "Unknown error"
-      },)
-      { status: 500 },
+      },
+      { status: 500 }
     )
   }
 }
@@ -68,7 +68,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const canvasState = await db
       .select()
       .from(canvasStates)
-      .where(eq(canvasStates.caseId, caseId)
+      .where(eq(canvasStates.caseId, caseId))
       .limit(1)
     return json({
       canvasState: canvasState[0] || null
@@ -78,8 +78,8 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
         error: "Failed to load canvas state",
         details: error instanceof Error ? error.message: "Unknown error"
-      },)
-      { status: 500 },
+      },
+      { status: 500 }
     )
   }
 }

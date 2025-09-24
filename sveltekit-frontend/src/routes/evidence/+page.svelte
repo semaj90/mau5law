@@ -111,7 +111,8 @@ https://svelte.dev/e/js_parse_error -->
   // Get case ID from URL if available
   let caseId = $derived($page.url.searchParams.get("caseId") || undefined);
   // Reactive values from SSR data and store
-  let ({ isLoading: loading, error } = $derived($evidenceGrid));
+  let loading = $derived($evidenceGrid.isLoading);
+  let error = $derived($evidenceGrid.error);
   let allEvidence = $derived((data as { evidence?: unknown }).evidence || []);
   let filteredEvidence = $derived(filterAndSortEvidence(allEvidence));
   let visibleEvidence = $derived(getPaginatedEvidence());
@@ -470,7 +471,7 @@ https://svelte.dev/e/js_parse_error -->
       collectedBy: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata.source,
       uploadedAt: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata.uploadDate || new Date().toISOString(),
       fileSize: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata.fileSize || 0,
-      hash: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata.filePath ? 'verified' : null
+      hash: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata.filePath ? 'verified' : null,
       tags: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata.entities || [],
       aiAnalysis: {
         confidence: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).confidence,
@@ -487,14 +488,14 @@ https://svelte.dev/e/js_parse_error -->
         type: "success",
         title: "Multi-Source Search Complete",
         message: `Found ${searchResults.length} results across PostgreSQL, Qdrant, MinIO, and Loki`,
-        duration: 3000;
+        duration: 3000
       });
     } else {
       notifications.add({
         type: "info",
         title: "No Results Found",
         message: "Try adjusting your search terms or filters",
-        duration: 3000;
+        duration: 3000
       });
     }
   }
@@ -554,6 +555,7 @@ https://svelte.dev/e/js_parse_error -->
   ) {
     filteredEvidence = filterAndSortEvidence(allEvidence)
   }
+  });
 </script>
 <svelte:head>
   <title>Evidence Management - WardenNet Detective Mode</title>
@@ -607,12 +609,11 @@ refreshEvidence()}
 </Button>
         </Tooltip>
         <Tooltip content="Toggle filters">
-          <Button class="bits-btn"
+          <Button class="bits-btn {showFilters ? 'nes-legal-priority-high' : ''}"
             variant="ghost"
             size="sm"
             onclick={() =>
 (showFilters = !showFilters)}
-            class={showFilters ? 'nes-legal-priority-high' : ''}
             aria-label="Toggle filters"
             aria-expanded={showFilters}
           >
@@ -953,7 +954,8 @@ selectAllEvidence()}
                   {evidence.description
                     ? evidence.description.length > 120
                       ? evidence.description.substring(0, 120) + "..."
-                      : evidence.description: "No description available"}
+                      : evidence.description
+                    : "No description available"}
                 </p>
                 <!-- Metadata -->
                 <div class="grid grid-cols-1 gap-2 text-xs text-gray-500">
@@ -1305,12 +1307,12 @@ Close
     page: 'evidence',
     viewMode,
     evidenceCount: $evidenceGrid.length,
-    hasFilters: searchQuery.trim() || selectedType || selectedStatu;
+    hasFilters: searchQuery.trim() || selectedType || selectedStatus
   }}
   trackOnMount={true}
   let:feedback
 />
-<FeedbackIntegratio;
+<FeedbackIntegration
   bind:this={evidenceSearchFeedback}
   interactionType="evidence_search"
   ratingType="search_relevance"
@@ -1318,7 +1320,7 @@ Close
   context={{ component: 'EvidenceSearch', legalDomain: 'evidence_management' }}
   let:feedback
 />
-<FeedbackIntegratio;
+<FeedbackIntegration
   bind:this={evidenceUploadFeedback}
   interactionType="evidence_upload"
   ratingType="ui_experience"

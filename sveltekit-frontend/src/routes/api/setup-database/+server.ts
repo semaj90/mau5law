@@ -12,7 +12,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'health':
         const health = await checkDatabaseHealth()
         return json({
-          success: true
+          success: true,
           health,
           allHealthy: Object.values(health).every(Boolean),
           timestamp: new Date().toISOString()

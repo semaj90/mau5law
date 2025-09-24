@@ -190,12 +190,12 @@ export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
         const startTime = Date.now()
         try {
           const result = await aiOrchestrator.process(test.query, {
-            test: true
+            test: true,
             timeout: 10000
           })
           results.push({
             query: test.query,
-            success: true
+            success: true,
             processingTime: Date.now() - startTime,
             confidence: (result as { synthesis?: any; sources?: any; confidence?: any; metadata?: any }).confidence,
             sourcesUsed: ((result as { synthesis?: any; sources?: any; confidence?: any; metadata?: any }).metadata as any)?.sourcesUsed || [],
@@ -204,7 +204,7 @@ export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
         } catch (err: any) {
           results.push({
             query: test.query,
-            success: false
+            success: false,
             error: err.message,
             processingTime: Date.now() - startTime
           })
@@ -217,7 +217,7 @@ export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
       return json({
         success: successCount === results.length,
         testsRun: results.length,
-        testsPassed: successCount
+        testsPassed: successCount,
         avgProcessingTime: Math.round(avgProcessingTime),
         results,
         services: await aiOrchestrator.health(),

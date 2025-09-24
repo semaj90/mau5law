@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ cookies }) => {
   cookies.delete('session', { path: '/' })
   if (sessionId) {
     try {
-      await db.delete(sessions).where(eq(sessions.id, sessionId)
+      await db.delete(sessions).where(eq(sessions.id, sessionId))
     } catch {/* ignore */}
     logger.info('dev-auth.session.cleared', { sessionId })
   }

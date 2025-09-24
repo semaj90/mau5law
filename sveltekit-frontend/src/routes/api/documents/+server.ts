@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Try cache first
     const cached = await redis.get(cacheKey)
     if (cached) {
-      return json(JSON.parse(cached)
+      return json(JSON.parse(cached))
     }
     // Build query conditions
     const conditions = []

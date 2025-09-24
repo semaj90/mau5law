@@ -27,7 +27,7 @@ const typeDefs = /* GraphQL */ `
 const resolvers = {
   Query: {
     recommendations: async (
-      _: any
+      _: any,
       { query, userContext, neo4jContext, limit = 5 }
     ) => {
       const reranked = await enhancedSearchWithNeo4j(

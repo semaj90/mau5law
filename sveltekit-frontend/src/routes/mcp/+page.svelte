@@ -54,18 +54,18 @@
   // Check server status on mount
   $effect(() => {
     (async () => {
-try {
-      const health = await mcpApi.getHealth();
-      serverStatus.set({
-        status: health.status,
-        workers: health.workers,
-        uptime: health.uptime,
-        version: health.versio;
+      try {
+        const health = await mcpApi.getHealth();
+        serverStatus.set({
+          status: health.status,
+          workers: health.workers,
+          uptime: health.uptime,
+          version: health.version
+        });
+      } catch (error) {
+        console.error('Failed to get server status:', error);
+      }
     })();
-  });
-    } catch (error) {
-      console.error('Failed to get server status:', error);
-    }
   });
   function navigateToFeature(href: string) {
     goto(href);

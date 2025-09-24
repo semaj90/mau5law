@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
 	import { onMount } from 'svelte';
 	// Svelte 5 runes - simplified for NES.css retro style
-	let messages = $state<Array<{id: string, role: 'user' | 'assistant', content: string, timestamp: Date}>([]);
+	let messages = $state<Array<{id: string, role: 'user' | 'assistant', content: string, timestamp: Date}>>([]);
 	let currentMessage = $state('');
 	let isLoading = $state(false);
 	let chatContainer: HTMLElement;
@@ -216,7 +216,7 @@
 			<label for="chat_input">ENTER LEGAL QUERY:</label>
 			<textarea
 				id="chat_input"
-				class="nes-textarea";
+				class="nes-textarea"
 				bind:value={currentMessage}
 				onkeydown={handleKeydown}
 				placeholder="Type your legal question here..."

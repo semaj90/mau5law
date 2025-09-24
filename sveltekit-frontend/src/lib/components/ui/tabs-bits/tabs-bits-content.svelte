@@ -1,5 +1,5 @@
 <!-- tabs-bits-content.svelte -->
-<script>
+<script lang="ts">
 	import { Tabs as TabsPrimitive } from 'bits-ui';
 	import { cn } from '$lib/utils';
 	let {
@@ -7,7 +7,7 @@
 		forceMount = false,
 		class: className = undefined,
 		children = undefined,
-		...restProp;
+		...restProps
 	} = $props();
 </script>
 <TabsPrimitive.Content

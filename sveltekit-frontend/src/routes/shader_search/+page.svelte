@@ -80,7 +80,7 @@ if (!browser) return;
       const tagSet = new Set<string>();
       const operationSet = new Set<string>();
       data.shaders.forEach((shader: unknown) => {
-        shader.metadata.tags?.forEach((tag: string) => tagSet.add(tag);
+        shader.metadata.tags?.forEach((tag: string) => tagSet.add(tag));
         if (shader.metadata.operation) operationSet.add(shader.metadata.operation);
       });
       availableTags = Array.from.sort();

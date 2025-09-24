@@ -29,13 +29,13 @@ export const GET: RequestHandler = async () => {
       status: 'healthy',
       services: {
         redis: {
-          connected: redisConnected
+          connected: redisConnected,
           status: redisConnected ? 'connected' : 'disconnected'
         },
         database: {
           pools: dbStats.totalPools,
           drizzleInstances: dbStats.totalDrizzleInstances,
-          health: dbHealthCheck
+          health: dbHealthCheck,
           allHealthy: Object.values(dbHealthCheck).every(h => h)
         }
       },

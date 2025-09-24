@@ -3,7 +3,7 @@ import { json } from '@sveltejs/kit'
 import { searchLocal } from '$lib/search/local-pipeline'
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json().catch(() => ({})
+    const body = await request.json().catch(() => ({}))
     const query = typeof body.query === 'string' ? body.query: ''
     const limit = Number.isFinite(body.limit) ? Math.max(1, Math.min(50, body.limit)) : 5
     if (!query) return json({ results: [] }, { status: 200 })

@@ -36,6 +36,7 @@
           size="sm"
         >
 {readOnly ? 'Enable Editing' : 'Read Only'}
+        </Button>
         <div class="space-y-4">
           {#if caseId}
             Case: {caseId}
@@ -73,7 +74,7 @@
     }}
   >
     Got it!
-</div>
+  </Button>
 <style>
   /* @unocss-include */
   .evidence-editor-page {

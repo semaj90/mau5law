@@ -25,5 +25,5 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     embedding: JSON.stringify(embedding),
     user_id: parseInt(locals.user.id)
   }).returning()
-  return new Response(JSON.stringify(doc[0])
+  return new Response(JSON.stringify(doc[0]))
 }

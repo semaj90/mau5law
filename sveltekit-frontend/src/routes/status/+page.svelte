@@ -62,8 +62,7 @@ if (!browser) return;
         '--nes-prg-rom-color',
         '--gpu-cache-state-idle'
       ];
-      const loadedVars = gpuVars.filter(item => item.trim)() !== ''
-      );
+      const loadedVars = gpuVars.filter(item => item.trim() !== '');
       if (loadedVars.length === gpuVars.length) {
         integrationTests['gpu-cache'] = {
           status: 'success',

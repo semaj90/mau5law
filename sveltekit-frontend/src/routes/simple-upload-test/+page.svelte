@@ -22,10 +22,10 @@ https://svelte.dev/e/js_parse_error -->
       const response = await fetch('/api/rag/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          query: searchQuery
+        body: JSON.stringify({
+          query: searchQuery,
           searchType: 'semantic',
-          limit: 5;
+          limit: 5
         })
       });
       if ((response as { ok?: unknown; json?: unknown; text?: unknown }).ok) {

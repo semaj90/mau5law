@@ -19,7 +19,7 @@ export const actions: Actions = {
         // Set a simple session cookie for demo purposes
         cookies.set('demo_session', 'authenticated', {
           path: '/',
-          httpOnly: true
+          httpOnly: true,
           secure: false, // Set to true in production with HTTPS
           sameSite: 'lax',
           maxAge: 60 * 60 * 24 * 30 // 30 days

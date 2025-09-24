@@ -24,16 +24,20 @@
     --font-retro: 'Press Start 2P', monospace;
     --font-gothic: 'MS Gothic', 'MS UI Gothic', monospace;
 
-    /* YoRHa Harvard Law Gaming Theme - Academic Prestige + Technological Aesthetic */
+    /* YoRHa Harvard Law Gaming Theme - Academic Prestige + NES Grey Balance */
     --enhanced-bg-primary: #0d0d0d;     /* Deep space black */
-    --enhanced-bg-secondary: #1a0f0f;   /* Harvard crimson shadow */
-    --enhanced-bg-tertiary: #2a1515;    /* Warm dark crimson */
+    --enhanced-bg-secondary: #1a1a1a;   /* Balanced dark grey (more neutral) */
+    --enhanced-bg-tertiary: #2a2a2a;    /* Medium dark grey */
+    --enhanced-bg-quaternary: #1a0f0f;  /* Harvard crimson shadow (accent) */
     --enhanced-text-primary: #f5f5f5;   /* Pristine white (academic papers) */
-    --enhanced-text-secondary: #d4af8c;  /* Harvard gold accent */
-    --enhanced-text-muted: #9d7b6b;     /* Muted crimson-brown */
+    --enhanced-text-secondary: #c0c0c0; /* Light grey (more NES-like) */
+    --enhanced-text-muted: #808080;     /* Classic NES grey */
+    --enhanced-text-crimson: #d4af8c;   /* Harvard gold accent (specialized) */
     --enhanced-accent: #c41e3a;         /* Harvard Crimson (primary) */
     --enhanced-accent-secondary: #ffd700; /* Harvard Gold (secondary) */
-    --enhanced-border: #4a2c2c;         /* Dark crimson border */
+    --enhanced-accent-grey: #6a6a6a;    /* NES-style grey accent */
+    --enhanced-border: #404040;         /* Neutral dark grey border */
+    --enhanced-border-light: #606060;   /* Lighter grey border */
     --enhanced-border-hover: #c41e3a;   /* Harvard crimson hover */
     --enhanced-success: #2d5a27;        /* Dark academic green */
     --enhanced-warning: #b8860b;        /* Dark gold warning */
@@ -65,15 +69,18 @@
   }
 
   .dark {
-    /* YoRHa Harvard Law Dark Theme */
+    /* YoRHa Harvard Law Dark Theme - NES Grey Balance */
     --enhanced-bg-primary: #0d0d0d;
-    --enhanced-bg-secondary: #1a0f0f;
-    --enhanced-bg-tertiary: #2a1515;
+    --enhanced-bg-secondary: #1a1a1a;
+    --enhanced-bg-tertiary: #2a2a2a;
+    --enhanced-bg-quaternary: #1a0f0f;
     --enhanced-text-primary: #f5f5f5;
-    --enhanced-text-secondary: #d4af8c;
-    --enhanced-text-muted: #9d7b6b;
+    --enhanced-text-secondary: #c0c0c0;
+    --enhanced-text-muted: #808080;
+    --enhanced-text-crimson: #d4af8c;
     --enhanced-accent: #c41e3a;
     --enhanced-accent-secondary: #ffd700;
+    --enhanced-accent-grey: #6a6a6a;
     --enhanced-border: #4a2c2c;
     --enhanced-border-hover: #c41e3a;
   }
@@ -188,6 +195,62 @@
 
   .enhanced-card:hover:before {
     opacity: 1;
+  }
+
+  /* NES-Style Grey Card Variants */
+  .enhanced-card-grey {
+    background: var(--enhanced-bg-secondary);
+    border: 2px solid var(--enhanced-accent-grey);
+    color: var(--enhanced-text-secondary);
+  }
+
+  .enhanced-card-grey:hover {
+    border-color: var(--enhanced-border-light);
+    box-shadow: 0 4px 12px rgba(106, 106, 106, 0.3);
+  }
+
+  .enhanced-card-grey:before {
+    background: linear-gradient(90deg, var(--enhanced-accent-grey), var(--enhanced-border-light));
+  }
+
+  .enhanced-card-crimson-grey {
+    background: var(--enhanced-bg-quaternary);
+    border: 2px solid var(--enhanced-accent-grey);
+    color: var(--enhanced-text-primary);
+  }
+
+  .enhanced-card-crimson-grey:hover {
+    border-color: var(--enhanced-accent);
+    box-shadow: 0 4px 12px rgba(196, 30, 58, 0.2);
+  }
+
+  .enhanced-card-crimson-grey:before {
+    background: linear-gradient(90deg, var(--enhanced-accent-grey), var(--enhanced-accent));
+  }
+
+  /* NES-Style Grey Button Variants */
+  .enhanced-btn-grey {
+    background: var(--enhanced-bg-secondary);
+    color: var(--enhanced-text-secondary);
+    border: 2px solid var(--enhanced-accent-grey);
+  }
+
+  .enhanced-btn-grey:hover {
+    border-color: var(--enhanced-border-light);
+    color: var(--enhanced-text-primary);
+    background: var(--enhanced-bg-tertiary);
+  }
+
+  .enhanced-btn-crimson-grey {
+    background: linear-gradient(135deg, var(--enhanced-accent-grey), var(--enhanced-bg-quaternary));
+    color: var(--enhanced-text-primary);
+    border: 2px solid var(--enhanced-accent-grey);
+  }
+
+  .enhanced-btn-crimson-grey:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 16px rgba(106, 106, 106, 0.4);
+    filter: brightness(1.2);
   }
 
   /* Enhanced-Bits Input Styles */
@@ -417,6 +480,130 @@
     background-color: var(--enhanced-danger) !important;
   }
 
+  /* New NES-style grey variants */
+  .nes-btn.is-grey {
+    color: var(--enhanced-text-primary) !important;
+    background-color: var(--enhanced-accent-grey) !important;
+    border-color: var(--enhanced-border-light) !important;
+  }
+
+  .nes-btn.is-crimson-grey {
+    color: var(--enhanced-text-primary) !important;
+    background: linear-gradient(135deg,
+      var(--enhanced-accent-grey) 0%,
+      rgba(196, 30, 58, 0.3) 100%) !important;
+    border-color: var(--enhanced-accent-grey) !important;
+  }
+
+  /* NES Diamond Patterns */
+  .nes-diamond-container {
+    background: var(--enhanced-bg-primary);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .nes-diamond-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+      repeating-linear-gradient(45deg,
+        transparent 0px,
+        transparent 8px,
+        rgba(196, 30, 58, 0.15) 8px,
+        rgba(196, 30, 58, 0.15) 16px),
+      repeating-linear-gradient(-45deg,
+        transparent 0px,
+        transparent 8px,
+        rgba(255, 215, 0, 0.15) 8px,
+        rgba(255, 215, 0, 0.15) 16px);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .nes-diamond-small {
+    background-image:
+      repeating-linear-gradient(45deg,
+        transparent 0px,
+        transparent 4px,
+        rgba(196, 30, 58, 0.2) 4px,
+        rgba(196, 30, 58, 0.2) 8px),
+      repeating-linear-gradient(-45deg,
+        transparent 0px,
+        transparent 4px,
+        rgba(255, 215, 0, 0.2) 4px,
+        rgba(255, 215, 0, 0.2) 8px);
+  }
+
+  .nes-diamond-large {
+    background-image:
+      repeating-linear-gradient(45deg,
+        transparent 0px,
+        transparent 16px,
+        rgba(196, 30, 58, 0.1) 16px,
+        rgba(196, 30, 58, 0.1) 32px),
+      repeating-linear-gradient(-45deg,
+        transparent 0px,
+        transparent 16px,
+        rgba(255, 215, 0, 0.1) 16px,
+        rgba(255, 215, 0, 0.1) 32px);
+  }
+
+  /* Diamond Gradient Variations */
+  .nes-diamond-crimson {
+    background-image:
+      repeating-linear-gradient(45deg,
+        rgba(196, 30, 58, 0.1) 0px,
+        rgba(196, 30, 58, 0.1) 8px,
+        rgba(196, 30, 58, 0.05) 8px,
+        rgba(196, 30, 58, 0.05) 16px);
+  }
+
+  .nes-diamond-gold {
+    background-image:
+      repeating-linear-gradient(45deg,
+        rgba(255, 215, 0, 0.1) 0px,
+        rgba(255, 215, 0, 0.1) 8px,
+        rgba(255, 215, 0, 0.05) 8px,
+        rgba(255, 215, 0, 0.05) 16px);
+  }
+
+  .nes-diamond-grey {
+    background-image:
+      repeating-linear-gradient(45deg,
+        rgba(106, 106, 106, 0.1) 0px,
+        rgba(106, 106, 106, 0.1) 8px,
+        rgba(106, 106, 106, 0.05) 8px,
+        rgba(106, 106, 106, 0.05) 16px);
+  }
+
+  /* Gaming Scan Lines Effect */
+  .gaming-scan-lines {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gaming-scan-lines::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(0, 255, 0, 0.03) 2px,
+      rgba(0, 255, 0, 0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
   .nes-container {
     background-color: var(--enhanced-bg-secondary) !important;
     color: var(--enhanced-text-primary) !important;
@@ -491,7 +678,15 @@
     border-color: var(--enhanced-accent);
   }
 
-  /* YoRHa Harvard Gaming Utility Classes */
+  .border-enhanced-grey {
+    border-color: var(--enhanced-accent-grey);
+  }
+
+  .border-enhanced-light {
+    border-color: var(--enhanced-border-light);
+  }
+
+  /* YoRHa Harvard Gaming Utility Classes - NES Grey Enhanced */
   .yorha-harvard-primary {
     color: var(--enhanced-accent);
   }
@@ -500,12 +695,32 @@
     color: var(--enhanced-accent-secondary);
   }
 
+  .yorha-harvard-grey {
+    color: var(--enhanced-accent-grey);
+  }
+
   .yorha-matrix-green {
     color: var(--yorha-matrix-green);
   }
 
   .yorha-cyber-blue {
     color: var(--yorha-cyber-blue);
+  }
+
+  .text-nes-grey {
+    color: var(--enhanced-text-muted);
+  }
+
+  .text-light-grey {
+    color: var(--enhanced-text-secondary);
+  }
+
+  .bg-nes-grey {
+    background-color: var(--enhanced-accent-grey);
+  }
+
+  .bg-quaternary {
+    background-color: var(--enhanced-bg-quaternary);
   }
 
   .bg-yorha-harvard {

@@ -16,13 +16,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { key, embeddings, attentionWeights, metadata } = body
         if (!key || !embeddings) {
           return json({
-            success: false
+            success: false,
             error: 'Key and embeddings are required'
           }, { status: 400 })
         }
         const result = await dimensionalCache.store(key, {
           embeddings: new Float32Array(embeddings),
-          attentionWeights: attentionWeights ? new Float32Array(attentionWeights) : undefined
+          attentionWeights: attentionWeights ? new Float32Array(attentionWeights) : undefined,
           metadata: metadata || {}
         })
         return json({

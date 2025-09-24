@@ -12,7 +12,7 @@
     documents: [] as LegalDocument[],
     evidence: [] as EvidenceItem[],
     cases: [],
-    chatMessages: [];
+    chatMessages: []
   };
   let currentView: 'dashboard' | 'evidence' | 'documents' | 'chat' | 'cases' = 'dashboard';
   let isLoading = true;
@@ -59,7 +59,7 @@
       aiAnalysis: {
         model: 'gemma3:legal-latest',
         confidence: Math.floor(Math.random() * 20) + 80,
-        riskAssessment: getRandomRisk();
+        riskAssessment: getRandomRisk()
       }
     }));
     console.log('📊 Sample legal data loaded for SPA Canvas', {

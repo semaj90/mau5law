@@ -36,7 +36,7 @@ const CONFIG = {
 const EvidenceEnhancementRequestSchema = z.object({
     evidence_text: z.string().min(10).max(50000),
     evidence_type: z.enum(['document', 'testimony', 'physical', 'digital', 'audio', 'video']),
-    case_context: z.object({,
+    case_context: z.object({
         case_id: z.string().optional(),
         jurisdiction: z.enum(['federal', 'state', 'local', 'international']).optional(),
         case_type: z.enum(['criminal', 'civil', 'administrative', 'constitutional']).optional(),

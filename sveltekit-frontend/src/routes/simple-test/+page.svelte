@@ -9,7 +9,7 @@ let formData = $state({
     caseNumber: '',
     title: '',
     description: '',
-    priority: 'medium';
+    priority: 'medium'
 });
 async function handleSubmit(event: Event) {
     event.preventDefault();

@@ -181,7 +181,7 @@ try {
               class="px-4 py-2 bg-red-500/10 border border-red-500/50 text-red-400 hover:bg-red-500/20 hover:border-red-500 transition-all duration-300 rounded-lg text-sm font-medium"
             >
               Sign Out
-          </div>
+          </Button>
         </div>
       </div>
     </header>
@@ -214,6 +214,7 @@ try {
                   <div class="text-xs text-slate-500">Monitor platform status</div>
                 </div>
               </div>
+            </Button>
             <Button class="w-full text-left px-4 py-3 bg-slate-800/50 hover:bg-amber-500/10 rounded-lg transition-all duration-300 border border-slate-600/50 hover:border-amber-500/50 group">
               <div class="flex items-center gap-3">
                 <span class="text-blue-400">💾</span>
@@ -222,6 +223,7 @@ try {
                   <div class="text-xs text-slate-500">Secure system backup</div>
                 </div>
               </div>
+            </Button>
             <Button class="w-full text-left px-4 py-3 bg-slate-800/50 hover:bg-amber-500/10 rounded-lg transition-all duration-300 border border-slate-600/50 hover:border-amber-500/50 group">
               <div class="flex items-center gap-3">
                 <span class="text-purple-400">🗑️</span>
@@ -230,6 +232,7 @@ try {
                   <div class="text-xs text-slate-500">Optimize performance</div>
                 </div>
               </div>
+            </Button>
           </div>
         </div>
       </aside>
@@ -269,6 +272,7 @@ try {
         class="px-8 py-3 bg-amber-500/10 border border-amber-500/50 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500 transition-all duration-300 rounded-lg font-medium"
       >
         Return to Dashboard
+      </Button>
     </div>
   </div>
 {/if}

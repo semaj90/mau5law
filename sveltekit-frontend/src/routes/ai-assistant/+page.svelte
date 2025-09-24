@@ -458,7 +458,7 @@ handleQuickQuery('What are the elements of negligence?')}
                 </div>
               {/if}
               <div class="flex gap-2">
-                <input;
+                <input
                   bind:value={currentMessage}
                   onkeydown={handleKeydown}
                   placeholder="Ask a legal question..."

@@ -1,5 +1,5 @@
 <!-- tabs-bits.svelte -->
-<script>
+<script lang="ts">
 	import { Tabs as TabsPrimitive } from 'bits-ui';
 	import { cn } from '$lib/utils';
 	let {
@@ -11,7 +11,7 @@
 		dir = 'ltr',
 		class: className = undefined,
 		children = undefined,
-		...restProp;
+		...restProps
 	} = $props();
 </script>
 <TabsPrimitive.Root

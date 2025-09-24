@@ -175,11 +175,13 @@
             onclick={() => currentMessage = 'What are Miranda rights?'}
           >
             Miranda Rights
+          </button>
           <button
             class="quick-question"
             onclick={() => currentMessage = 'How to file a motion?'}
           >
             Filing Motions
+          </button>
           <button
             class="quick-question"
             onclick={() => currentMessage = 'Evidence admissibility rules'}

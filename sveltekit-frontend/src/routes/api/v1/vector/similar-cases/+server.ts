@@ -4,7 +4,7 @@ import { similarCasesRequestSchema, similarCasesResponseSchema } from '$lib/sche
 import { safeFetchJson } from '$lib/server/fetch-wrapper'
 const VECTOR_BASE = process.env.VECTOR_SERVICE_URL || 'http://localhost:8095'
 export const POST: RequestHandler = async ({ request }) => {
-  const body = await request.json().catch(() => ({})
+  const body = await request.json().catch(() => ({}))
   const parsed = similarCasesRequestSchema.safeParse(body)
   if (!parsed.success) {
     return json({ error: 'Invalid request', details: parsed.error.flatten() }, { status: 400 })

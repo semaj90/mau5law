@@ -33,7 +33,7 @@
         intelligence: 80,
         strength: 70,
         speed: 85,
-        dangerousness: 90;
+        dangerousness: 90
       }
     },
     {
@@ -64,7 +64,7 @@
         intelligence: 95,
         strength: 45,
         speed: 60,
-        dangerousness: 65;
+        dangerousness: 65
       }
     },
     {
@@ -95,7 +95,7 @@
         intelligence: 85,
         strength: 55,
         speed: 70,
-        dangerousness: 30;
+        dangerousness: 30
       }
     }
   ]);

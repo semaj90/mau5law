@@ -186,6 +186,7 @@ Sign Out</ButtonBits>
                 <span class="user-role">{user.role}</span>
                 <span class="user-email">{user.email}</span>
               </div>
+            </button>
           {/each}
         </div>
         <p class="demo-note">

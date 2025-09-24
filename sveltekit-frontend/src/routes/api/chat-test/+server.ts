@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
         error: 'Failed to process chat request',
         details: error.message
-      },)
+      },
       { status: 500 }
     )
   }

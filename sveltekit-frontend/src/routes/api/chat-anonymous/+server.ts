@@ -75,7 +75,7 @@ Legal Analysis:`
       // Fallback response when Ollama is unavailable
       const responseTime = Date.now() - startTime
       return json({
-        success: true
+        success: true,
         response: `I'm YoRHa Legal AI. I understand you're asking about: "${lastUserMessage.content}"
 This appears to be a legal inquiry that would benefit from professional analysis. In a production environment, I would provide comprehensive legal analysis using:
 • Gemma 3 Legal Model (11.8B parameters)
@@ -102,8 +102,6 @@ Currently running in demo mode. For detailed legal analysis, please ensure the O
     return json({
         error: 'Failed to process chat request',
         details: error instanceof Error ? error.message: 'Unknown error'
-      }, )
-      { status: 500 }
-    )
+      }, { status: 500 })
   }
 }

@@ -95,8 +95,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Store user message in database
     const userMessageId = generateId()
     const newUserMessage: NewChatMessage = {
-      id: userMessageId
-      sessionId: currentSessionId
+      id: userMessageId,
+      sessionId: currentSessionId,
       content: lastUserMessage.content,
       role: 'user',
       embedding: null, // Will be populated by embedding worker later

@@ -25,8 +25,8 @@ export const GET: RequestHandler = async ({ url }) => {
       const llmCacheStats = await RedisLLMCache.getCacheStats()
       const queueStats = await RedisTaskQueue.getQueueStats()
       detailedStats = {
-        llm_cache_detailed: llmCacheStats
-        task_queue_detailed: queueStats
+        llm_cache_detailed: llmCacheStats,
+        task_queue_detailed: queueStats,
         performance_metrics: {
           cache_efficiency: llmCacheStats.hit_rate_estimate,
           memory_optimization: stats.redis_memory,

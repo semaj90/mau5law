@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		return json({
 				error: 'Task processing failed',
 				details: error instanceof Error ? error.message: 'Unknown error'
-			},)
+			},
 			{ status: 500 }
 		)
 	}

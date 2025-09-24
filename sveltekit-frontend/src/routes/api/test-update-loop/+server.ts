@@ -60,8 +60,8 @@ class UpdateLoopTester {
         timestamp: new Date().toISOString(),
         scenario: scenarioName || 'all',
         status: 'running',
-        steps: { [key: string]: any },
-        performance: { [key: string]: any },
+        steps: {},
+        performance: {},
         errors: []
       }
       // Step 1: Setup test environment

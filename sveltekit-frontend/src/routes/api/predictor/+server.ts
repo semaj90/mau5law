@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = await request.json() as RecordRequest
     if (!body.userId || !body.action) {
       return json(
-        { error: 'Missing required fields: userId, action' },)
+        { error: 'Missing required fields: userId, action' },
         { status: 400 }
       )
     }

@@ -27,7 +27,7 @@ async function runTypeScriptCheck(): Promise<ProcessResult> {
 		let output = ''
 		let errors = ''
 		const checkProcess = spawn('npm', ['run', 'check'], {
-			shell: true
+			shell: true,
 			cwd: process.cwd()
 		})
 		checkProcess.stdout?.on('data', (data) => {

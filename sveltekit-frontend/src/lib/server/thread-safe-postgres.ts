@@ -1,53 +1,4 @@
 /**
- * Thread-Safe PostgreSQL Integration (Simplified Implementation)
- * Basic implementation to fix import errors while maintaining functionality
- */
-import postgres from 'postgres';
-import { dev } from '$app/environment';
-// Simple PostgreSQL connection using postgres.js
-const sql = postgres({
-  host: 'localhost',
-  port: 5432,
-  username: 'postgres',
-  password: '123456',
-  database: 'legal_ai_db',
-  max: 20,
-  idle_timeout: 30,
-  connect_timeout: 10,
-  debug: dev
-});
-export interface ThreadSafePostgres {
-  query: typeof sql;
-  close: () => Promise<void>;
-  health: () => Promise<boolean>;
-  // Added lightweight stubs for higher-level cache middleware expectations
-  queryJsonbDocuments?: (table: string, criteria: any, options?: any) => Promise<any[]>;
-  storeJsonbDocument?: (table: string, doc: any) => Promise<void>;
-  healthCheck?: () => Promise<boolean>;
-}
-export const threadSafePostgres: ThreadSafePostgres = {
-  query: sql,
-  close: async () => {
-    await sql.end();
-  },
-  health: async () => {
-    try {
-      await sql`SELECT 1`;
-      return true;
-    } catch (error) {
-      console.error('PostgreSQL health check failed:', error);
-      return false;
-    }
-  },
-  queryJsonbDocuments: async (
-    table: string,
-    _criteria?: Record<string, unknown>,
-    _options?: Record<string, unknown>
-  ) => {
-    // Very naive JSONB lookup simulation: expects criteria { path, value, operator }
-    // For stabilization only; replace with real implementation later.
-    try {
-      /**
  * Thread-Safe PostgreSQL Integration with JSONB and GPU Acceleration
  * Ensures proper synchronization for concurrent database operations
  * Integrates with cognitive cache and WebGPU processing
@@ -80,14 +31,12 @@ const pool = new Pool({
   password: '123456',
   database: 'legal_ai_db',
   // Enhanced for concurrent operations
-  max: 20, // Maximum connections (20)
-  min: 1,  // Minimum connections (keeps at least one connection alive for low-latency; increase if you expect high baseline concurrency)
+  max: 20, // Maximum connections
+  min: 5,  // Minimum connections
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
   // Enable thread-safe operations
   statement_timeout: 30000,
-  // Set query_timeout to 30000ms (30 seconds) to ensure queries do not hang and match service-level expectation for legal AI workflows,
-  // which typically require sub-minute response times for database operations under concurrent load.
   query_timeout: 30000
 });
 
@@ -129,7 +78,7 @@ export class ThreadSafePostgres {
 
       const tryAcquire = () => {
         let lock = queryLocks.get(queryId);
-
+        
         if (!lock) {
           lock = {
             id: queryId,
@@ -144,7 +93,7 @@ export class ThreadSafePostgres {
           lock.acquired = true;
           lock.lastAccessed = Date.now();
           clearTimeout(timeout);
-
+          
           const release = () => {
             lock.acquired = false;
             const next = lock.waitingQueries.shift();
@@ -157,7 +106,7 @@ export class ThreadSafePostgres {
               }
             }
           };
-
+          
           resolve(release);
         } else {
           lock.waitingQueries.push(tryAcquire);
@@ -188,8 +137,8 @@ export class ThreadSafePostgres {
       // Store in cognitive cache first for performance
       if (options.cacheKey) {
         await cognitiveCache.storeJsonbDocument(
-          options.cacheKey,
-          document,
+          options.cacheKey, 
+          document, 
           options.metadata
         );
       }
@@ -205,8 +154,8 @@ export class ThreadSafePostgres {
         const query = `
           INSERT INTO ${table} (id, content, metadata, created_at, updated_at)
           VALUES ($1, $2, $3, NOW(), NOW())
-          ON CONFLICT (id)
-          DO UPDATE SET
+          ON CONFLICT (id) 
+          DO UPDATE SET 
             content = EXCLUDED.content,
             metadata = EXCLUDED.metadata,
             updated_at = NOW()
@@ -280,7 +229,7 @@ export class ThreadSafePostgres {
         if (jsonbQuery.path && jsonbQuery.value !== undefined) {
           const operator = jsonbQuery.operator || '@>';
           params.push(JSON.stringify(jsonbQuery.value));
-
+          
           if (operator === '@>') {
             conditions.push(`content @> $${params.length}`);
           } else if (operator === '@?') {
@@ -331,7 +280,7 @@ export class ThreadSafePostgres {
         }
 
         const result = await client.query(query, params);
-        const results = (result as { rows?: any }).rows as T[];
+        const results = (result.rows || []) as T[];
 
         // Cache results for future queries
         if (options.cacheResults) {
@@ -371,7 +320,7 @@ export class ThreadSafePostgres {
 
       if (totalSize > 10240) { // Only use GPU for large datasets (10KB+)
         console.log(`🎯 GPU processing ${results.length} results for query ${queryId}`);
-
+        
         // Mark as GPU processed in cognitive cache
         const cacheDoc = await cognitiveCache.retrieveJsonbDocument(queryId);
         if (cacheDoc) {
@@ -415,7 +364,7 @@ export class ThreadSafePostgres {
       try {
         const params: any[] = [JSON.stringify(embedding), threshold, limit];
         let query = `
-          SELECT
+          SELECT 
             id,
             1 - (embedding <=> $1::vector) as similarity
             ${includeMetadata ? ', content, metadata' : ''}
@@ -428,7 +377,7 @@ export class ThreadSafePostgres {
         for (const [key, value] of Object.entries(filterBy)) {
           paramIndex++;
           params.push(JSON.stringify(value));
-
+          
           if (key.startsWith('metadata.')) {
             query += ` AND metadata @> $${paramIndex}`;
           } else {
@@ -439,7 +388,7 @@ export class ThreadSafePostgres {
         query += ` ORDER BY embedding <=> $1::vector LIMIT $3`;
 
         const result = await client.query(query, params);
-        return (result as { rows?: any }).rows;
+        return result.rows || [];
       } finally {
         client.release();
         activeTxs.delete(queryId);
@@ -494,7 +443,7 @@ export class ThreadSafePostgres {
 
             case 'update':
               query = `
-                UPDATE ${op.table}
+                UPDATE ${op.table} 
                 SET content = $2, updated_at = NOW()
                 WHERE id = $1
               `;
@@ -543,10 +492,10 @@ export class ThreadSafePostgres {
   async healthCheck(): Promise<any> {
     try {
       const client = await pool.connect();
-
+      
       try {
         const result = await client.query('SELECT NOW() as timestamp');
-
+        
         return {
           connected: true,
           activeConnections: pool.totalCount,
@@ -680,7 +629,7 @@ export async function searchLegalDocuments(
   } = {}
 ): Promise<any[]> {
   const conditions: Record<string, any> = {};
-
+  
   if (params.caseId) conditions.case_id = params.caseId;
   if (params.jurisdiction) conditions.jurisdiction = params.jurisdiction;
   if (params.court) conditions.court = params.court;
@@ -718,7 +667,7 @@ export async function storeLegalDocument(
   } = {}
 ): Promise<boolean> {
   const cacheKey = `legal_doc_${document.id}`;
-
+  
   return await safeJsonbStore(
     'legal_documents',
     document.id,
@@ -735,34 +684,3 @@ export async function storeLegalDocument(
     }
   );
 }
-      const rows = await sql.unsafe(`SELECT * FROM ${table} LIMIT 25`);
-      return rows as Record<string, unknown>[];
-    } catch (e) {
-      console.warn('queryJsonbDocuments stub fallback:', e);
-      return [];
-    }
-  },
-  storeJsonbDocument: async (table: string, doc: any) => {
-    try {
-      // Attempt insert; if fails, swallow during stabilization
-      const keys = Object.keys(doc);
-      const cols = keys.map(k => `"${k}"`).join(',');
-      const vals = keys.map((_k, i) => `$${i + 1}`).join(',');
-      await sql.unsafe(`INSERT INTO ${table} (${cols}) VALUES (${vals}) ON CONFLICT DO NOTHING`, Object.values(doc));
-    } catch (e) {
-      console.warn('storeJsonbDocument stub fallback:', e);
-    }
-  },
-  healthCheck: async () => {
-    try {
-      // Primary health check using the real postgres.js connection
-      await sql`SELECT 1`;
-      return true;
-    } catch (e) {
-      console.warn('Primary postgres.js health check failed, falling back to existing health():', e);
-    return threadSafePostgres.health();
-  },
-};
-// Export for compatibility
-export { sql };
-export default threadSafePostgres;

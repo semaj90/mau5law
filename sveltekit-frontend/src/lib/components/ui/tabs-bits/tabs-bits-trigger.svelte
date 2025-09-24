@@ -1,5 +1,5 @@
 <!-- tabs-bits-trigger.svelte -->
-<script>
+<script lang="ts">
 	import { Tabs as TabsPrimitive } from 'bits-ui';
 	import { cn } from '$lib/utils';
 	let {
@@ -7,7 +7,7 @@
 		disabled = false,
 		class: className = undefined,
 		children = undefined,
-		...restProp;
+		...restProps
 	} = $props();
 </script>
 <TabsPrimitive.Trigger

@@ -426,8 +426,8 @@
         `📁 ${file.name}`,
         'Starting upload...',
         {
-          dismissible: false
-          actions: [{,
+          dismissible: false,
+          actions: [{
             label: 'Cancel',
             action: () => {
               controller.abort();

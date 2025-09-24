@@ -3,16 +3,19 @@
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   // NES UI Components
-  import Button from '$lib/components/nes/Button.svelte';
-  import Card from '$lib/components/nes/Card.svelte';
-  import Dialog from '$lib/components/nes/Dialog.svelte';
-  import Avatar from '$lib/components/nes/Avatar.svelte';
+  import MeltButton from '$lib/components/ui/MeltButton.svelte';
+  import StatsCard from '$lib/components/ui/StatsCard.svelte';
+  import Dialog from '$lib/components/ui/Dialog.svelte';
+  // Enhanced-Bits UI Components
+  // Using built-in dialog since N64Modal might be incomplete
+  import QuickActionButton from '$lib/components/ui/QuickActionButton.svelte';
   // Global Components
-  import GlobalSidebar from '$lib/components/GlobalSidebar.svelte';
+  import KeyboardShortcutProvider from '$lib/components/KeyboardShortcutProvider.svelte';
   // Stores and Utilities
   // Note: sessionStore may not be available, using mock data instead
   // import { sessionActions, user, isAuthenticated } from '$lib/stores/sessionStore.svelte'
-  import { userStats } from '$lib/stores/userDataStore.svelte.js';
+  import { auth } from '$lib/stores/auth.svelte.ts';
+  import { evidence } from '$lib/stores/evidence.ts';
   import {
     formatRelativeTime,
     formatDetailedTimestamp,
@@ -27,17 +30,23 @@
   let selectedTab = $state('buttons');
   let showSidebar = $state(true);
   let mockSessionActive = $state(false);
+
+  // Modal states
+  let showModal = $state(false);
+  let modalVariant = $state('gradient');
+  let modalSize = $state('md');
   // Mock user data for demo
   let mockUser = $state({
     id: 'demo-user-123',
     email: 'demo@legalai.com',
-    role: 'prosecutor' as const;
+    role: 'prosecutor' as const
   });
   interface TabItem { id: string; label: string }
   const tabs: TabItem[] = [
     { id: 'buttons', label: 'Buttons' },
     { id: 'avatars', label: 'Avatars' },
     { id: 'dialog', label: 'Dialog' },
+    { id: 'modals', label: 'Enhanced Modals' },
     { id: 'cards', label: 'Cards' },
     { id: 'session', label: 'Session Demo' },
     { id: 'formatting', label: 'Formatting' },
@@ -45,6 +54,14 @@
   ];
   function openDialog() { showDialog = true }
   function closeDialog() { showDialog = false }
+
+  // Modal functions
+  function openModal(variant: string = 'gradient', size: string = 'md') {
+    modalVariant = variant;
+    modalSize = size;
+    showModal = true;
+  }
+  function closeModal() { showModal = false }
   const buttonVariants = ['primary','success','warning','error','info','disabled'] as const
   type ButtonVariant = typeof buttonVariants[number]
   const avatarSizes = ['small','medium','large'] as const
@@ -53,15 +70,15 @@
   const mockSessionActions = {
     setSession: (user: any, session: any) => console.log('Mock setSession:', user, session),
     clearSession: () => console.log('Mock clearSession'),
-    init: (data: any) => console.log('Mock init:', data);
+    init: (data: any) => console.log('Mock init:', data)
   };
   // Session demo functions
   function simulateLogin() {
     mockSessionActive = true;
     mockSessionActions.setSession(mockUser, {
       id: 'demo-session-123',
-      user: mockUser
-      fresh: true;
+      user: mockUser,
+      fresh: true
     });
   }
   function simulateLogout() {
@@ -87,7 +104,7 @@
     totalEvidence: 1284,
     totalDocuments: 567,
     totalCitations: 89,
-    totalReports: 34;
+    totalReports: 34
   } : {
     totalCases: 0,
     totalEvidence: 0,
@@ -188,7 +205,7 @@
       <div class="grid buttons">
         {#each buttonVariants as v}
           <div>
-            <Button variant={v} disabled={v === 'disabled'}>{v}</Button>
+            <MeltButton disabled={v === 'disabled'}>{v}</MeltButton>
             <div class="meta">variant: {v}</div>
           </div>
         {/each}
@@ -201,7 +218,7 @@
       <div class="grid avatars">
         {#each avatarSizes as size}
           <div>
-            <Avatar size={size} />
+            <div class="avatar-placeholder" style="width: {size === 'small' ? '24px' : size === 'medium' ? '32px' : '48px'}; height: {size === 'small' ? '24px' : size === 'medium' ? '32px' : '48px'}; border-radius: 50%; background: #ccc; display: flex; align-items: center; justify-content: center;">👤</div>
             <div class="meta">size: {size}</div>
           </div>
         {/each}
@@ -211,32 +228,74 @@
   {#if selectedTab === 'dialog'}
     <section class="section-wrap">
       <h2 class="section">Dialog</h2>
-      <Button variant="primary" onclick={openDialog}>Open Dialog</Button>
+      <MeltButton onclick={openDialog}>Open Dialog</MeltButton>
       <div class="meta">Simple open/close controlled by boolean state.</div>
       {#if showDialog}
         <Dialog title="Sample Dialog" onclose={closeDialog}>
           <p>This dialog demonstrates the NES modal style and accessibility hooks.</p>
           <div class="dialog-actions">
-            <Button variant="error" onclick={closeDialog}>Cancel</Button>
-            <Button variant="success" onclick={closeDialog}>Confirm</Button>
+            <MeltButton onclick={closeDialog}>Cancel</MeltButton>
+            <MeltButton onclick={closeDialog}>Confirm</MeltButton>
           </div>
         </Dialog>
       {/if}
     </section>
   {/if}
+
+  {#if selectedTab === 'modals'}
+    <section class="section-wrap">
+      <h2 class="section">Enhanced Modals with Gradients & Diamonds</h2>
+
+      <!-- Modal Trigger Buttons -->
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+        <QuickActionButton onclick={() => openModal('gradient', 'md')}>
+          Gradient Modal
+        </QuickActionButton>
+
+        <QuickActionButton onclick={() => openModal('diamond', 'lg')}>
+          Diamond Pattern
+        </QuickActionButton>
+
+        <QuickActionButton onclick={() => openModal('gaming', 'md')}>
+          Gaming Modal
+        </QuickActionButton>
+
+        <QuickActionButton onclick={() => openModal('legal', 'xl')}>
+          Legal Modal XL
+        </QuickActionButton>
+
+        <QuickActionButton onclick={() => openModal('default', 'sm')}>
+          Default Small
+        </QuickActionButton>
+
+        <button
+          class="nes-btn is-primary"
+          onclick={() => openModal('diamond', 'md')}
+        >
+          NES Diamond
+        </button>
+      </div>
+
+      <!-- Demo Cards with Diamond Backgrounds -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <StatsCard title="Diamond Pattern Preview" value="NES-style" />
+        <StatsCard title="Gradient Variations" value="Harvard colors" />
+      </div>
+
+      <div class="meta">
+        Enhanced modals with gradient colors, diamond patterns, and NES.css integration.
+        Supports multiple sizes (sm, md, lg, xl) and themes (gradient, diamond, gaming, legal).
+      </div>
+    </section>
+  {/if}
+
   {#if selectedTab === 'cards'}
     <section class="section-wrap">
       <h2 class="section">Cards</h2>
       <div class="cards-grid">
-        <Card title="Legal Document" subtitle="Primary Source" footer="#1024A">
-          <p>Representative example of a legal primary source container with NES styling.</p>
-        </Card>
-        <Card title="Embeddings" subtitle="Vector Ops" footer="Updated">
-          <p>Showcase how vector search summaries might be wrapped in a retro card style.</p>
-        </Card>
-        <Card title="GPU Task" subtitle="Queued" footer="ETA: 3s">
-          <p>Example status card for GPU inference or preprocessing jobs.</p>
-        </Card>
+        <StatsCard title="Legal Document" value="#1024A" />
+        <StatsCard title="Embeddings" value="Updated" />
+        <StatsCard title="GPU Task" value="ETA: 3s" />
       </div>
     </section>
   {/if}
@@ -258,11 +317,11 @@
         </div>
         <div class="session-actions">
           {#if !authenticated}
-            <Button variant="primary" onclick={simulateLogin}>Simulate Login</Button>
+            <MeltButton onclick={simulateLogin}>Simulate Login</MeltButton>
           {:else}
-            <Button variant="error" onclick={simulateLogout}>Simulate Logout</Button>
+            <MeltButton onclick={simulateLogout}>Simulate Logout</MeltButton>
           {/if}
-          <Button variant="info" onclick={() => console.log('Mock refresh session')}>Refresh Session</Button>
+          <MeltButton onclick={() => console.log('Mock refresh session')}>Refresh Session</MeltButton>
         </div>
         <div class="user-stats">
           <h4>User Data Stats:</h4>
@@ -383,10 +442,114 @@
 </div>
 <!-- Conditional Global Sidebar Demo -->
 {#if selectedTab === 'sidebar' && showSidebar}
-  <GlobalSidebar
-    isOpen={showSidebar}
-    defaultSection="dashboard"
-    showQuickActions={true}
-    compactMode={false}
-  />
+  <KeyboardShortcutProvider />
+{/if}
+
+<!-- Enhanced Modal -->
+{#if showModal}
+<dialog class="nes-dialog is-dark" open>
+  <form method="dialog">
+    <p class="title">Enhanced Modal - {modalVariant.charAt(0).toUpperCase() + modalVariant.slice(1)} Style</p>
+  {#snippet children()}
+    <div class="space-y-6">
+      <!-- Modal Content based on variant -->
+      {#if modalVariant === 'gradient'}
+        <div class="space-y-4">
+          <h3 class="text-xl font-bold text-enhanced-text-primary">Gradient Modal Content</h3>
+          <p class="text-enhanced-text-secondary">
+            This modal features beautiful gradient backgrounds combining Harvard crimson, gold, and grey tones.
+            The gradients create visual depth while maintaining readability.
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="p-4 rounded-lg bg-gradient-to-r from-harvard-crimson/20 to-harvard-gold/20">
+              <h4 class="font-semibold text-enhanced-text-primary">Crimson to Gold</h4>
+              <p class="text-sm text-enhanced-text-secondary">Harvard signature colors</p>
+            </div>
+            <div class="p-4 rounded-lg bg-gradient-to-r from-enhanced-accent-grey/20 to-harvard-crimson/20">
+              <h4 class="font-semibold text-enhanced-text-primary">Grey to Crimson</h4>
+              <p class="text-sm text-enhanced-text-secondary">NES-style balance</p>
+            </div>
+          </div>
+        </div>
+      {:else if modalVariant === 'diamond'}
+        <div class="space-y-4">
+          <h3 class="text-xl font-bold text-enhanced-text-primary nes-diamond-text">Diamond Pattern Modal</h3>
+          <p class="text-enhanced-text-secondary">
+            This modal showcases NES-style diamond patterns with repeating gradients.
+            The patterns are created using CSS background images.
+          </p>
+          <div class="grid grid-cols-1 gap-4">
+            <div class="p-4 rounded-lg nes-diamond-small">
+              <h4 class="font-semibold text-enhanced-text-primary">Small Diamond Pattern</h4>
+              <p class="text-sm text-enhanced-text-secondary">Fine detail background</p>
+            </div>
+            <div class="p-4 rounded-lg nes-diamond-large">
+              <h4 class="font-semibold text-enhanced-text-primary">Large Diamond Pattern</h4>
+              <p class="text-sm text-enhanced-text-secondary">Bold pattern background</p>
+            </div>
+            <div class="p-4 rounded-lg nes-diamond-crimson">
+              <h4 class="font-semibold text-enhanced-text-primary">Crimson Diamonds</h4>
+              <p class="text-sm text-enhanced-text-secondary">Harvard-themed pattern</p>
+            </div>
+          </div>
+        </div>
+      {:else if modalVariant === 'gaming'}
+        <div class="space-y-4">
+          <h3 class="text-xl font-bold text-enhanced-text-primary" style="font-family: 'Press Start 2P', monospace;">Gaming Modal</h3>
+          <p class="text-enhanced-text-secondary">
+            A gaming-themed modal with cyberpunk aesthetics, scan lines, and terminal-style elements.
+          </p>
+          <div class="space-y-4">
+            <div class="p-4 rounded-lg bg-enhanced-bg-secondary border border-enhanced-accent gaming-scan-lines">
+              <h4 class="font-semibold text-enhanced-text-primary mb-2">Terminal Interface</h4>
+              <div class="font-mono text-green-400 text-sm">
+                <div>> System Status: ONLINE</div>
+                <div>> AI Models: LOADED</div>
+                <div>> GPU Acceleration: ENABLED</div>
+                <div>> Legal Database: CONNECTED</div>
+              </div>
+            </div>
+            <div class="flex space-x-2">
+              <QuickActionButton>Execute</QuickActionButton>
+              <QuickActionButton>Terminal</QuickActionButton>
+              <button class="nes-btn is-success">Success</button>
+            </div>
+          </div>
+        </div>
+      {:else if modalVariant === 'legal'}
+        <div class="space-y-4">
+          <h3 class="text-xl font-bold text-enhanced-text-primary">Legal Document Modal</h3>
+          <p class="text-enhanced-text-secondary">
+            Professional modal styling for legal documents, case management, and court filings.
+          </p>
+          <div class="space-y-4">
+            <StatsCard title="Case File #2024-001" value="Harvard Law" />
+          </div>
+        </div>
+      {:else}
+        <div class="space-y-4">
+          <h3 class="text-xl font-bold text-enhanced-text-primary">Default Modal Content</h3>
+          <p class="text-enhanced-text-secondary">
+            This is the default modal styling with clean, professional appearance.
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <StatsCard title="Feature Card" value="Standard" />
+            <StatsCard title="Grey Card" value="NES-style" />
+          </div>
+        </div>
+      {/if}
+
+      <!-- Common Modal Footer -->
+      <div class="flex justify-end space-x-2 pt-4 border-t border-enhanced-border">
+        <QuickActionButton onclick={closeModal}>
+          Cancel
+        </QuickActionButton>
+        <QuickActionButton onclick={closeModal}>
+          Confirm
+        </QuickActionButton>
+      </div>
+    </div>
+  {/snippet}
+  </form>
+</dialog>
 {/if}

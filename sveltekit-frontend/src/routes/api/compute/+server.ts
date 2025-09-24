@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('❌ Compute API error:', error)
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
       message: 'Failed to enqueue compute job'
     }, { status: 500 })
@@ -117,7 +117,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const [outbox] = await db
       .select()
       .from(vectorOutbox)
-      .where(eq(vectorOutbox.ownerId, job.ownerId)
+      .where(eq(vectorOutbox.ownerId, job.ownerId))
       .orderBy(vectorOutbox.createdAt)
       .limit(1)
     // Get vector entry if processing is complete

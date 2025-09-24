@@ -59,14 +59,14 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       const version = await ollamaHealth.json()
       return json({
-        success: true
+        success: true,
         status: 'healthy',
         service: 'enhanced-chat-v2',
         features: {
-          pgvectorEmbeddings: true
-          keywordFallback: true
-          streamingSupport: true
-          vectorCache: true
+          pgvectorEmbeddings: true,
+          keywordFallback: true,
+          streamingSupport: true,
+          vectorCache: true,
         },
         ollama: {
           version: version.version || 'unknown',

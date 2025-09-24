@@ -121,9 +121,9 @@ const createUserDataStore = () => {
     reports: [],
     aiConversations: [],
     recentActivity: [],
-    isLoading: false
+    isLoading: false,
     lastSyncAt: 0,
-    cachedAt: 0
+    cachedAt: 0,
   });
   return {
     // Getter for reactive access
@@ -140,9 +140,9 @@ const createUserDataStore = () => {
           reports: [],
           aiConversations: [],
           recentActivity: [],
-          isLoading: false
+          isLoading: false,
           lastSyncAt: 0,
-          cachedAt: 0
+          cachedAt: 0,
         };
         return;
       }
@@ -294,9 +294,9 @@ const createUserDataStore = () => {
         reports: [],
         aiConversations: [],
         recentActivity: [],
-        isLoading: false
+        isLoading: false,
         lastSyncAt: 0,
-        cachedAt: 0
+        cachedAt: 0,
       };
       if (browser) {
         try {
@@ -320,8 +320,8 @@ const createUserDataStore = () => {
           if (cacheAge < 10 * 60 * 1000) {
             Object.assign(userDataState, {
               ...parsedCache.data,
-              isLoading: false
-              cachedAt: parsedCache.cachedAt
+              isLoading: false,
+              cachedAt: parsedCache.cachedAt,
             });
             return true;
           }
@@ -360,8 +360,8 @@ const createUserDataStore = () => {
       }
       Object.assign(userDataState, {
         ...syncedData,
-        isLoading: false
-        lastSyncAt: Date.now()
+        isLoading: false,
+        lastSyncAt: Date.now(),
       });
       saveToCache();
     } catch (error) {
@@ -374,11 +374,14 @@ const createUserDataStore = () => {
     try {
       const currentUser = sessionStore.getCurrentUser();
       if (currentUser?.id) {
-        localStorage.setItem('legal_ai_user_data_cache', JSON.stringify({
-          userId: currentUser.id,
-          data: userDataState
-          cachedAt: Date.now()
-        }));
+        localStorage.setItem(
+          'legal_ai_user_data_cache',
+          JSON.stringify({
+            userId: currentUser.id,
+            data: userDataState,
+            cachedAt: Date.now(),
+          })
+        );
       }
     } catch (error) {
       console.warn('Failed to save user data to cache:', error);

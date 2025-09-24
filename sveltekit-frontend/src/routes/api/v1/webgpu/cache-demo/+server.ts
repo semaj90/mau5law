@@ -41,7 +41,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const stats = await webgpuRedisOptimizer.getOptimizationStats()
     return json({
-      success: true
+      success: true,
       service: 'webgpu-redis-cache-demo',
       capabilities: {
         webgpuAvailable: typeof navigator !== 'undefined' && !!navigator.gpu,

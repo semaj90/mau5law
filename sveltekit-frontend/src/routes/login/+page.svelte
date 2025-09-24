@@ -28,7 +28,7 @@
     <input
       name="email"
       type="email"
-      placeholder="Email";
+      placeholder="Email"
       bind:value={$form.email}
       aria-invalid={$errors.email ? 'true' : undefined}
       required

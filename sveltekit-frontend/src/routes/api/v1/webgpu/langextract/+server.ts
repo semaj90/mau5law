@@ -27,7 +27,7 @@ export const GET: RequestHandler = async () => {
   try {
     const stats = await getLangChainWebGPUStats()
     return json({
-      success: true
+      success: true,
       service: 'webgpu-langextract',
       capabilities: {
         webgpuOptimization: stats.webgpuOptimizer.gpuMetrics.availableComputeUnits > 0,

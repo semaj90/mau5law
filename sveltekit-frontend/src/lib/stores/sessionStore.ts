@@ -26,11 +26,11 @@ export interface SessionState {
 const createSessionStore = () => {
   // Initialize with empty state using $state
   let sessionState = $state<SessionState>({
-    user: null
-    session: null
-    isAuthenticated: false
-    isLoading: true
-    lastSyncAt: 0
+    user: null,
+    session: null,
+    isAuthenticated: false,
+    isLoading: true,
+    lastSyncAt: 0,
   });
   return {
     // Getter for reactive access
@@ -45,8 +45,8 @@ const createSessionStore = () => {
           user: pageData.user,
           session: pageData.session,
           isAuthenticated: !!pageData.user,
-          isLoading: false
-          lastSyncAt: Date.now()
+          isLoading: false,
+          lastSyncAt: Date.now(),
         };
       } else {
         // Fallback: Try to restore from persistent storage
@@ -59,8 +59,8 @@ const createSessionStore = () => {
         user,
         session,
         isAuthenticated: !!user,
-        isLoading: false
-        lastSyncAt: Date.now()
+        isLoading: false,
+        lastSyncAt: Date.now(),
       };
       // Persist to localStorage for faster subsequent loads
       if (browser && user) {
@@ -78,11 +78,11 @@ const createSessionStore = () => {
     // Clear session
     clearSession: () => {
       sessionState = {
-        user: null
-        session: null
-        isAuthenticated: false
-        isLoading: false
-        lastSyncAt: Date.now()
+        user: null,
+        session: null,
+        isAuthenticated: false,
+        isLoading: false,
+        lastSyncAt: Date.now(),
       };
       // Clear persistent storage
       if (browser) {
@@ -109,20 +109,20 @@ const createSessionStore = () => {
             sessionState = {
               user: data.user,
               session: data.session || { id: 'server', user: data.user },
-              isAuthenticated: true
-              isLoading: false
-              lastSyncAt: Date.now()
+              isAuthenticated: true,
+              isLoading: false,
+              lastSyncAt: Date.now(),
             };
             return data.user;
           }
         }
         // No valid session found
         sessionState = {
-          user: null
-          session: null
-          isAuthenticated: false
-          isLoading: false
-          lastSyncAt: Date.now()
+          user: null,
+          session: null,
+          isAuthenticated: false,
+          isLoading: false,
+          lastSyncAt: Date.now(),
         };
         return null;
       } catch (error) {

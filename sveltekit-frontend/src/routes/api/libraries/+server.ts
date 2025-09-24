@@ -16,7 +16,7 @@ export const GET: RequestHandler = async ({ url }) => {
       | undefined
     const libraries = await librarySyncService.searchLibraries(query, source)
     return json({
-      success: true
+      success: true,
       libraries,
       count: libraries.length
     })

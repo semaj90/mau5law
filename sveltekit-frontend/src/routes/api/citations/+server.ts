@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const offset = parseInt(url.searchParams.get('offset') || '0')
     if (!caseId) {
       return json({
-        success: false
+        success: false,
         error: 'caseId parameter is required'
       }, { status: 400 })
     }
@@ -79,10 +79,10 @@ export const GET: RequestHandler = async ({ url }) => {
       eq(citations.caseId, caseId)
     ]
     if (citationType) {
-      whereConditions.push(eq(citations.citationType, citationType)
+      whereConditions.push(eq(citations.citationType, citationType))
     }
     if (verified !== null && verified !== undefined) {
-      whereConditions.push(eq(citations.verified, verified === 'true')
+      whereConditions.push(eq(citations.verified, verified === 'true'))
     }
     if (search) {
       whereConditions.push(
@@ -99,8 +99,8 @@ export const GET: RequestHandler = async ({ url }) => {
     const citationsQuery = db
       .select()
       .from(citations)
-      .where(and(...whereConditions)
-      .orderBy(desc(citations.relevanceScore), desc(citations.dateCreated)
+      .where(and(...whereConditions))
+      .orderBy(desc(citations.relevanceScore), desc(citations.dateCreated))
       .limit(limit)
       .offset(offset)
     const citationResults = await citationsQuery

@@ -177,10 +177,10 @@ export const POST: RequestHandler = async (event: any) => {
         // Don't fail the case creation if worker trigger fails
       }
       return {
-        case: newCase
+        case: newCase,
         message: `Case ${newCase.caseNumber} created successfully`,
         metadata: {
-          workerTriggered: true
+          workerTriggered: true,
           timestamp: new Date().toISOString()
         }
       }
@@ -210,7 +210,7 @@ export const PUT: RequestHandler = async (event: any) => {
     try {
       const updatedCase = await CaseOperations.update(caseId, updates, user.id)
       return {
-        case: updatedCase
+        case: updatedCase,
         message: 'Case updated successfully'
       }
     } catch (error: any) {

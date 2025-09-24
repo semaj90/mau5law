@@ -184,7 +184,7 @@ https://svelte.dev/e/js_parse_error -->
               </label>
               <input
                 type="text"
-                id="lastName";
+                id="lastName"
                 bind:value={formData.lastName}
                 required
                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-yellow-400 transition-colors"
