@@ -40,13 +40,13 @@
 		systemLoad: 30,
 		predictorStatus: 'initializing',
 		searchEngineStatus: 'ready',
-		webgpuEnabled: false;
+		webgpuEnabled: false
 	});
 	let cacheStats = $state<CacheStatistics>({
 		hitRate: 45,
 		status: 'warming',
 		memoryUsage: 65,
-		redisConnected: false;
+		redisConnected: false
 	});
 	let isConnected = $state(false);
 	let lastUpdated = $state<Date | null>(null);

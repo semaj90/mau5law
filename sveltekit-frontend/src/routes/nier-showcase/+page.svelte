@@ -20,8 +20,8 @@
     role: 'admin',
     createdAt: '2025-01-01T00:00:00Z',
     updatedAt: '2025-01-01T00:00:00Z',
-    isActive: true
-    emailVerified: true;
+    isActive: true,
+    emailVerified: true
   }
   // Sample case data
   const sampleCases = [

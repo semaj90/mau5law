@@ -157,7 +157,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
       return json({ error: "Citation point not found" }, { status: 404 })
     }
     // Delete the citation point
-    await db.delete(reports).where(eq(reports.id, citationId)
+    await db.delete(reports).where(eq(reports.id, citationId))
     return json({ success: true })
   } catch (error: any) {
     console.error("Error deleting citation point:", error)

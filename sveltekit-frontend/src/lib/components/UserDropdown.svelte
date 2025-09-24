@@ -21,7 +21,7 @@
   		return () => document.removeEventListener('click', handleClickOutside);
   	});
   	function toggleDropdown() {
-  		dropdownOpen = !dropdownOpe;
+  		dropdownOpen = !dropdownOpen;
   }
   	function handleLogout() {
   		// Reset avatar store
@@ -131,7 +131,7 @@
 		font-size: 14px;
 		max-width: 120px;
 		overflow: hidden;
-		text-overflow: ellipsi;
+		text-overflow: ellipsis;
 		white-space: nowrap;
 }
 	.dropdown-arrow {
@@ -226,10 +226,10 @@
 		background: var(--bg-secondary, #f3f4f6);
 		color: var(--text-primary, #111827);
 }
-	.dropdown-.logout {
+	.dropdown-item.logout {
 		color: #dc2626;
 }
-	.dropdown-.logout:hover {
+	.dropdown-item.logout:hover {
 		background: #fef2f2;
 		color: #b91c1c;
 }

@@ -47,10 +47,10 @@
     category: 'testing',
     tags: ['test', 'authenticated', 'crud'],
     metadata: {
-      test: true
-      pgvector: true
-      authenticated: true
-      timestamp: Date.now();
+      test: true,
+      pgvector: true,
+      authenticated: true,
+      timestamp: Date.now()
     }
   });
   // Derived state for test summary
@@ -206,15 +206,15 @@
         priority: 'high',
         tags: ['updated', 'authenticated', 'pgvector'],
         metadata: {
-          updated: true
+          updated: true,
           timestamp: Date.now(),
-          updatedViaTest: true;
+          updatedViaTest: true
         }
       };
       const response = await fetch(`/api/test-cases?id=${targetId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData);
+        body: JSON.stringify(updateData)
       });
       const data = await (response as { json?: unknown; status?: unknown; ok?: unknown }).json();
       if ((response as { json?: unknown; status?: unknown; ok?: unknown }).status === 401) {
@@ -256,7 +256,7 @@
     addResult(`🗑️ Testing authenticated DELETE operation on case ${targetId}...`);
     try {
       const response = await fetch(`/api/test-cases?id=${targetId}`, {
-        method: 'DELETE';
+        method: 'DELETE'
       });
       const data = await (response as { json?: unknown; status?: unknown; ok?: unknown }).json();
       if ((response as { json?: unknown; status?: unknown; ok?: unknown }).status === 401) {

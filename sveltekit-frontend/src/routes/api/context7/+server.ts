@@ -27,11 +27,11 @@ export const GET: RequestHandler = async () => {
         clearTimeout(timeout)
         const responseTime = Date.now() - startTime
         healthChecks.push({
-          service: name
+          service: name,
           endpoint,
           status: (response as { ok?: any; status?: any; text?: any; statusText?: any; json?: any }).ok ? 'healthy' : 'unhealthy',
           response_code: (response as { ok?: any; status?: any; text?: any; statusText?: any; json?: any }).status,
-          response_time: responseTime
+          response_time: responseTime,
           last_check: new Date().toISOString()
         })
       } catch (error: any) {

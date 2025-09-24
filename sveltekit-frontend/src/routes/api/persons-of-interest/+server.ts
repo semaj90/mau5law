@@ -17,26 +17,26 @@ export const GET: RequestHandler = async ({ url, request }) => {
     // Build where conditions
     const conditions = []
     if (searchQuery) {
-      conditions.push(like(personsOfInterest.name, `%${searchQuery}%`)
+      conditions.push(like(personsOfInterest.name, `%${searchQuery}%`))
     }
     if (threatLevel) {
-      conditions.push(eq(personsOfInterest.threatLevel, threatLevel)
+      conditions.push(eq(personsOfInterest.threatLevel, threatLevel))
     }
     if (status) {
-      conditions.push(eq(personsOfInterest.status, status)
+      conditions.push(eq(personsOfInterest.status, status))
     }
     if (relationship) {
-      conditions.push(eq(personsOfInterest.relationship, relationship)
+      conditions.push(eq(personsOfInterest.relationship, relationship))
     }
     if (caseId) {
-      conditions.push(eq(personsOfInterest.caseId, caseId)
+      conditions.push(eq(personsOfInterest.caseId, caseId))
     }
     if (conditions.length > 0) {
-      query = query.where(and(...conditions)
+      query = query.where(and(...conditions))
     }
     // Apply sorting
     const sortColumn = personsOfInterest[sortBy as keyof typeof personsOfInterest] || personsOfInterest.updatedAt
-    query = query.orderBy(sortOrder === 'asc' ? asc(sortColumn) : desc(sortColumn)
+    query = query.orderBy(sortOrder === 'asc' ? asc(sortColumn) : desc(sortColumn))
     // Apply pagination
     query = query.limit(limit).offset(offset)
     const persons = await query

@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { userId } = body
         if (!userId) {
           return json({
-            success: false
+            success: false,
             error: 'userId is required'
           }, { status: 400 })
         }

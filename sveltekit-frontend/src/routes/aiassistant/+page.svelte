@@ -224,7 +224,7 @@ https://svelte.dev/e/js_parse_error -->
     const userMessage: ChatMessage = {
       id: `msg_${Date.now()}`,
       type: 'user',
-      content: currentMessage
+      content: currentMessage,
       timestamp: new Date(),
     };
     chatMessages = [...chatMessages, userMessage];
@@ -240,16 +240,16 @@ https://svelte.dev/e/js_parse_error -->
         try {
           const searchResults = await performSearch(messageToSend, {
             categories: ['cases', 'evidence', 'precedents'],
-            vectorSearch: true
+            vectorSearch: true,
             includeAI: true
           });
           enhancedContext = {
             ...enhancedContext,
             searchResults: searchResults.slice(0, 5), // Top 5 relevant results
             searchMetadata: {
-              query: messageToSend
+              query: messageToSend,
               timestamp: new Date(),
-              resultCount: searchResults.length;
+              resultCount: searchResults.length
             }
           };
         } catch (searchError) {
@@ -259,9 +259,9 @@ https://svelte.dev/e/js_parse_error -->
       const response = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          message: messageToSend
-          context: enhancedContext
+        body: JSON.stringify({
+          message: messageToSend,
+          context: enhancedContext,
           chatHistory: chatMessages.slice(-10),
         }),
       });
@@ -380,7 +380,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   async function exportChatHistory() {
     const data = {
-      messages: chatMessages
+      messages: chatMessages,
       timestamp: new Date(),
       context: getRelevantContext(),
     };

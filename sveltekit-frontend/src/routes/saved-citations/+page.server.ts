@@ -22,7 +22,7 @@ export const load: PageServerLoad = async ({ locals }) => {
         source: "U.S. Constitution, Amendment IV",
         tags: ["constitutional-law", "search-seizure", "evidence"],
         category: "constitutional",
-        isFavorite: true
+        isFavorite: true,
         notes: "Key precedent for evidence admissibility",
         savedAt: new Date("2024-01-15"),
         contextData: { reportId: "report-123", caseId: "case-456" }
@@ -35,14 +35,14 @@ export const load: PageServerLoad = async ({ locals }) => {
         source: "Miranda v. Arizona, 384 U.S. 436 (1966)",
         tags: ["miranda", "interrogation", "rights"],
         category: "case-law",
-        isFavorite: false
+        isFavorite: false,
         notes: "Must be read before custodial interrogation",
         savedAt: new Date("2024-01-10"),
         contextData: { reportId: "report-124", caseId: "case-456" }
       }
     ];
     return {
-      savedCitations: mockCitations
+      savedCitations: mockCitations,
       user: locals.user
     };
   } catch (error: any) {

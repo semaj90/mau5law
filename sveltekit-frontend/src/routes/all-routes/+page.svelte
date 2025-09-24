@@ -166,7 +166,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 		if (data.routeInventory?.fileRoutesSample) {
 			data.routeInventory.fileRoutesSample.forEach(route => {
 				routes.push({
-					path: route
+					path: route,
 					name: route.replace(/\//g, ' → '),
 					type: 'file-based',
 					icon: '🔗',

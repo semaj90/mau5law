@@ -102,7 +102,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       const response = await fetch('/api/v1/legal/session/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           user_id: 'yorha-user-001',
           case_id: `case-${Date.now()}`,
           context: {
@@ -110,7 +110,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
             practice_area: ['AI Law', 'Tech Ethics', 'Data Privacy'],
             case_type: 'Investigation',
             priority_level: 8,
-            security_classification: 'HIGH';
+            security_classification: 'HIGH'
           }
         })
       });
@@ -180,15 +180,15 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     });
     try {
       const data = await promi;
-      const remote = ((data as { results?: unknown }).results || []).map((item: unknown, index: number) => ({,
+      const remote = ((data as { results?: unknown }).results || []).map((item: unknown, index: number) => ({
         id: (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).id || index + 1,
         title: (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).title || (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).name || `Document ${index + 1}`,
         type: (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).type || 'Legal Document',
-        relevance: Math.round.relevance || Math.random()) * 100),
+        relevance: Math.round(((item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).relevance || Math.random()) * 100),
         status: (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).status || 'active',
-        metadata: item;
+        metadata: item
       }));
-      searchResults = searchMode === 'hybrid' ? mergeResults(localResults, remote) : remot;
+      searchResults = searchMode === 'hybrid' ? mergeResults(localResults, remote) : remote;
       activeSection = 'search-results';
     } catch (e) {
       if ((e as any).name !== 'AbortError') console.error('Search failed', e);

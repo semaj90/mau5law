@@ -192,6 +192,6 @@ export declare function getMemoryStats(): number;
  * @param operation `i32`
  * @param dataSize `i32`
  * @param iterations `i32`
- * @returns `f32`
+ * @returns `i32`
  */
 export declare function benchmarkOperation(operation: number, dataSize: number, iterations: number): number;

@@ -154,14 +154,14 @@ async function getUserSession(cookies: any): Promise<UserSession> {
         theme: 'dark',
         language: 'en',
         notifications: {
-          email: true
-          push: true
+          email: true,
+          push: true,
           sms: false
         }
       }
     };
     return {
-      user: mockUser
+      user: mockUser,
       isAuthenticated: true
     };
   } catch (error) {
@@ -260,7 +260,7 @@ export const load: PageServerLoad = async ({ url, cookies, depends }) => {
     return {
       systemHealth,
       userSession,
-      availableRoutes: allRoutes
+      availableRoutes: allRoutes,
       recentOperations,
       routeInventory
     } satisfies RoutePageData;

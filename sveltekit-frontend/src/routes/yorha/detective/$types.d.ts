@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types.js';
-}
+
 export interface PageData {
   systemData: {
     activeCases: number;

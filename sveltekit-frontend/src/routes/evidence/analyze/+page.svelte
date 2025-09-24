@@ -134,24 +134,43 @@ https://svelte.dev/e/js_parse_error -->
     results = null;
     progress = 0;
     try {
-      const response = await fetch('/api/evidence/analyze', {
+      const response = await fetch('/api/v1/evidence/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          caseId,
-          evidenceFile: evidenceFile?.name || 'uploaded_evidence.txt',
-          evidenceContent,
-          evidenceType,
-          priority,
+          evidenceId: crypto.randomUUID(),
+          filename: evidenceFile?.name || 'uploaded_evidence.txt',
+          content: evidenceContent,
+          type: evidenceType === 'police_report' ? 'document' : evidenceType,
         }),
       });
       if (!response.ok) {
         throw new Error(`Analysis failed: ${response.statusText}`);
       }
       const data = await response.json();
-      sessionId = data.sessionId;
-      // Start polling for results
-      pollResults();
+      // Handle real AI response directly (no polling needed)
+      analyzing = false;
+      progress = 100;
+      showResults = true;
+
+      // Transform API response to expected format
+      results = {
+        status: 'completed',
+        sessionId: data.data?.evidenceId || 'ai-session-' + Date.now(),
+        analysisResults: {
+          summary: data.data?.analysis?.summary || 'Analysis completed',
+          confidence: data.data?.analysis?.confidence || 0.5,
+          keyFactsCount: data.data?.analysis?.keyFindings?.length || 0,
+          relevantLaws: data.data?.analysis?.relevantLaws || [],
+          suggestedTags: data.data?.analysis?.suggestedTags || [],
+          prosecutionScore: data.data?.analysis?.prosecutionScore || 0,
+          legalRelevance: data.data?.analysis?.legalRelevance || 'Unknown',
+          keyFindings: data.data?.analysis?.keyFindings || [],
+          recommendations: data.data?.analysis?.recommendations || [],
+          model: data.data?.model || 'gemma3-legal',
+          processedAt: data.data?.processedAt
+        }
+      };
     } catch (err) {
       console.error('Evidence analysis error:', err);
       // Show fallback notice
@@ -168,7 +187,7 @@ https://svelte.dev/e/js_parse_error -->
         status: 'completed',
         sessionId: 'mock-session-' + Date.now(),
         analysisResults: {
-          documentType: evidenceType
+          documentType: evidenceType,
           keyFactsCount: Math.floor(Math.random() * 10) + 5,
           personsOfInterest: [
             { name: 'John Doe', role: 'witness', confidence: 0.85 },
@@ -184,83 +203,16 @@ https://svelte.dev/e/js_parse_error -->
             'Review additional witness statements',
             'Obtain security footage',
             'Examine financial records'
-          ];
+          ]
         },
         metadata: {
           source: 'mock-evidence-analyzer',
           processingTime: '45 seconds',
-          model: 'Legal Evidence AI v2.0 (Simulated)';
+          model: 'Legal Evidence AI v2.0 (Simulated)'
         }
       };
       error = '';
     }
-  }
-  // Poll for analysis results with enhanced progress tracking
-  async function pollResults() {
-    const pollInterval = setInterval(async () => {
-      try {
-        const response = await fetch(`/api/evidence/analyze/${sessionId}`);
-        const data = await response.json();
-        if (data.status === 'completed') {
-          clearInterval(pollInterval);
-          results = data;
-          analyzing = false;
-          progress = 100;
-          showResults = true;
-        } else if (data.status === 'failed') {
-          clearInterval(pollInterval);
-          error = data.error || 'Analysis failed';
-          analyzing = false;
-        } else {
-          // Enhanced progress tracking
-          const stepIndex = steps.findIndex((s) => s.key === data.step);
-          if (stepIndex !== -1) {
-            progress = Math.min((stepIndex + 0.5) * 25, 95);
-            steps[stepIndex].status = 'processing';
-            // Mark previous steps as completed
-            for (let i = 0; i < stepIndex; i++) {
-              steps[i].status = 'completed';
-            }
-          }
-        }
-      } catch (err) {
-        console.error('Polling error:', err);
-        clearInterval(pollInterval);
-        // Show fallback notice
-        const notice = document.createElement('div');
-        notice.innerHTML = '⚠️ failure default to mock';
-        notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
-        document.body.appendChild(notice);
-        setTimeout(() => notice.remove(), 3000);
-        // Complete analysis with mock results
-        analyzing = false;
-        progress = 100;
-        showResults = true;
-        results = {
-          status: 'completed',
-          sessionId: sessionId || 'mock-polling-session',
-          analysisResults: {
-            documentType: evidenceType
-            keyFactsCount: 8,
-            personsOfInterest: [
-              { name: 'Mock Witness A', role: 'witness', confidence: 0.88 },
-              { name: 'Mock Party B', role: 'involved', confidence: 0.76 }
-            ],
-            timeline: [
-              { event: 'Mock polling failure - simulated completion', date: new Date().toISOString().split('T')[0], importance: 'medium' }
-            ],
-            legalImplications: 'Mock polling result: Analysis completed locally due to service unavailability. Review manually for accuracy.',
-            confidenceScore: 0.65,
-            nextSteps: ['Verify mock results', 'Retry analysis when service available'];
-          },
-          metadata: {
-            source: 'mock-polling-fallback',
-            processingTime: 'Simulated',
-            model: 'Offline Evidence Analyzer';
-          }
-        };
-      }
-    }, 2000);
   }
   // Reset form
   function resetForm() {
@@ -276,7 +228,7 @@ https://svelte.dev/e/js_parse_error -->
     showResults = false;
     sessionId = '';
     // Reset steps
-    steps.forEach((step) => (step.status = 'pending');
+    steps.forEach((step) => (step.status = 'pending'));
   }
   // View detailed results
   function viewDetailedResults(analysisData) {

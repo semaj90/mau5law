@@ -28,10 +28,10 @@
     memoryUsage: 0,
     cpuUsage: 0,
     gpuUsage: 0,
-    webGPUActive: false
+    webGPUActive: false,
     activeOperations: 0,
     responseTime: 0,
-    timestamp: Date.now();
+    timestamp: Date.now()
   });
   let performanceObserver: PerformanceObserver | null = null;
   let frameCount = 0;
@@ -65,7 +65,7 @@
       webGPUActive,
       activeOperations: getActiveOperationsCount(),
       responseTime,
-      timestamp: now;
+      timestamp: now
     });
   }
   function getActiveOperationsCount(): number {

@@ -1,7 +1,6 @@
 import crypto from "crypto";
 // Centralized cache utilities for summarize endpoint (memory + optional Redis)
 // Provides LRU + TTL eviction and write-through to Redis if available.
-}
 export interface CachePerformanceMeta {
   duration: number;
   tokens: number;
@@ -115,19 +114,19 @@ export async function deleteCache(key: string): Promise<any> {
   }
 }
 export function memoryStats() {
+export function memoryStats() {
   return {
     size: memoryCache.size,
     keys: Array.from(memoryCache.keys()).slice(0, 20),
-    maxItems: MAX_ITEMS
+    maxItems: MAX_ITEMS,
     ttlMs: TTL_MS
   };
 }
 export async function redisHas(key: string): Promise<boolean> {
   const redis = getRedisClient();
   if (!redis) return false;
-  try { return !!(await redis.exists(REDIS_PREFIX + key); } catch { return false; }
+  try { return !!(await redis.exists(REDIS_PREFIX + key)); } catch { return false; }
 }
-export async function redisTTL(key: string): Promise<number | null> {
   const redis = getRedisClient();
   if (!redis) return null;
   try { const ttl = await redis.ttl(REDIS_PREFIX + key); return ttl >= 0 ? ttl : null; } catch { return null; }

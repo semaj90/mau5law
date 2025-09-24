@@ -106,8 +106,7 @@ export const POST: RequestHandler = async ({ request }) => {
           ...s,
           source: 'database',
           boost: 1.0
-        })
-      )
+        })))
     }
     // Add semantic suggestions
     if (semanticSuggestions.status === 'fulfilled' && semanticSuggestions.value) {
@@ -115,7 +114,7 @@ export const POST: RequestHandler = async ({ request }) => {
           ...s,
           source: 'semantic',
           boost: 0.8
-        })
+        }))
       )
     }
     // Remove duplicates and rank

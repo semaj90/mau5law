@@ -56,12 +56,12 @@ async function getSystemHealth(): Promise<SystemHealthResponse> {
   const healthyCount = serviceResults.filter(item => item.length)
   return {
     system_overview: {
-      healthy_services: healthyCount
+      healthy_services: healthyCount,
       total_services: services.length,
       uptime_hours: Math.floor(process.uptime() / 3600),
       last_updated: new Date().toISOString()
     },
-    services: serviceResults
+    services: serviceResults,
     performance: {
       cpu_usage: Math.random() * 80 + 10,
       memory_usage: Math.random() * 70 + 20,

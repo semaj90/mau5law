@@ -25,6 +25,6 @@
       "$utils/*": ["src/lib/utils/*"]
     }
   },
-  "include": ["*.ts", "*.js", "sveltekit-frontend/svelte.config.*", "types.d.ts", "scripts/**/*.ts", "scripts/**/*.js"],
+  "include": ["uno.config.ts", "playwright.config.ts", "sveltekit-frontend/svelte.config.*", "types.d.ts"],
   "exclude": ["node_modules/**", "build/**", "dist/**", "sveltekit-frontend/src/**", "sveltekit-frontend/.svelte-kit/**"]
 }

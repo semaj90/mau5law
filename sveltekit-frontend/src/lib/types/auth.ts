@@ -2,8 +2,8 @@
 /**
  * Authentication Types
  * Standardized types for user sessions and authentication
- */;
-}
+ */
+
 export interface SessionUser {
   id: string;
   email: string;

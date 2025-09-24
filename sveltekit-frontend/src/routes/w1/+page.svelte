@@ -12,7 +12,7 @@
 		avatar: '👩‍⚖️',
 		cases: 47,
 		evidenceAnalyzed: 1284,
-		convictionRate: 94.2;
+		convictionRate: 94.2
 	};
 	// Demo state
 	let activeView = $state('dashboard');
@@ -328,7 +328,7 @@
 				{#if workflowStep < prosecutionWorkflow.length}
 					<div class="current-question">
 						<h3>{prosecutionWorkflow[workflowStep].question}</h3>
-						<textarease;
+						<textarea
 							bind:value={workflowAnswers[prosecutionWorkflow[workflowStep].step]}
 							placeholder="Enter details..."
 							class="workflow-input"

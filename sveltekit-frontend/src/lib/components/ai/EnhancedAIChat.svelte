@@ -1,10 +1,10 @@
 <!-- Enhanced AI Chat Component - Svelte 5 Compatible -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy, tick } from 'svelte';
+  import { onDestroy, tick } from 'svelte';
   import { browser } from '$app/environment';
   import { ChatBubbleIcon, PaperPlaneIcon, MagnifyingGlassIcon, DocumentTextIcon } from '@radix-icons/svelte';
   import * as Dialog from '$lib/components/ui/dialog';
+  // bits-ui / enhanced-bits-ui are Svelte-only (no React). UI primitives (Button, Tooltip, Badge, Input, Textarea) are imported later in the file.
   // Card components removed - using native HTML elements
   import Button from '$lib/components/ui/Button.svelte';
   import { Badge } from '$lib/components/ui/badge';
@@ -100,13 +100,14 @@
         isTyping = data.isTyping;
         break;
       case 'analysis':
-        currentAnalysis = data.analysi;
+        currentAnalysis = data.analysis;
         break;
       case 'rag_context':
         ragContext = data.context;
         break;
       case 'metrics':
-        processingMetrics = data.metric;
+        // accept either "metrics" or "metric" from remote payloads
+        processingMetrics = data.metrics ?? data.metric ?? processingMetrics;
         break;
       case 'stream':
         streamingResponse += data.chunk;
@@ -114,12 +115,12 @@
       case 'stream_complete':
         if (streamingResponse) {
           messages = [...messages, {
-            id: Date.now.toString(),
+            id: Date.now().toString(),
             role: 'assistant',
-            content: streamingResponse
+            content: streamingResponse,
             timestamp: new Date(),
             confidence: data.confidence,
-            analysis: currentAnalysi;
+            analysis: currentAnalysis
           }];
           streamingResponse = '';
         }
@@ -127,29 +128,28 @@
         break;
     }
   }
-  // Send message to AI
   async function sendMessage() {
     if (!currentMessage.trim() || !isConnected || isTyping) return;
     const userMessage: ChatMessage = {
-      id: Date.now.toString(),
+      id: Date.now().toString(),
       role: 'user',
-      content: currentMessage
-      timestamp: new Date();
+      content: currentMessage,
+      timestamp: new Date()
     };
     messages = [...messages, userMessage];
-    const messageToSend = currentMessag;
+    const messageToSend = currentMessage;
     currentMessage = '';
     isTyping = true;
     // Send via WebSocket
     if (wsConnection && wsConnection.readyState === WebSocket.OPEN) {
       wsConnection.send(JSON.stringify({
         type: 'message',
-        content: messageToSend
+        content: messageToSend,
         sessionId,
         userId,
         caseId,
-        enableAnalysis: showAnalysisPanel
-        enableWebGPU;
+        enableAnalysis: showAnalysisPanel,
+        enableWebGPU
       }));
     }
     // Fallback to HTTP API if WebSocket not available
@@ -158,28 +158,28 @@
         const response = await fetch('/api/chat-test', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({,
+          body: JSON.stringify({
             messages: [{ role: 'user', content: messageToSend }]
           })
         });
         const data = await response.json();
         if (response.ok && data.message) {
           messages = [...messages, {
-            id: Date.now.toString(),
+            id: Date.now().toString(),
             role: 'assistant',
             content: data.message,
             timestamp: new Date(),
             confidence: data.confidence,
-            tokensPerSecond: data.tokensPerSecond;
+            tokensPerSecond: data.tokensPerSecond
           }];
         }
       } catch (error) {
         console.error('Failed to send message:', error);
         messages = [...messages, {
-          id: Date.now.toString(),
+          id: Date.now().toString(),
           role: 'assistant',
           content: 'Sorry, I encountered an error. Please try again.',
-          timestamp: new Date();
+          timestamp: new Date()
         }];
       } finally {
         isTyping = false;
@@ -262,25 +262,22 @@
             </p>
           </div>
         </div>
-        <div class="flex items-center gap-2">
           {#if showAnalysisPanel}
             <Tooltip.Root>
-              <Tooltip.Trigger asChild >
-                {#snippet children({ builder })}
-                                <Button
-                    variant="ghost"
-                    size="sm"
-                    builders={[builder]}
-                    class="p-2 bits-btn bits-btn"
-                  >
-                    <MagnifyingGlassIcon class="w-4 h-4" />
-                  </Button>
-                {/snippet}
-                            </Tooltip.Trigger>
+              <Tooltip.Trigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  class="p-2 bits-btn"
+                >
+                  <MagnifyingGlassIcon class="w-4 h-4" />
+                </Button>
+              </Tooltip.Trigger>
               <Tooltip.Content>
                 <p>View Analysis</p>
               </Tooltip.Content>
             </Tooltip.Root>
+          {/if}
           {/if}
           <Button class="bits-btn" variant="ghost" size="sm" onclick={clearChat}>
             Clear

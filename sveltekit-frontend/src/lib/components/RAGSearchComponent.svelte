@@ -23,7 +23,7 @@
   let searchConfig = $state({
     limit: 5,
     threshold: 0.7,
-    includeRAGResponse: true;
+    includeRAGResponse: true
   });
   $effect(() => {
     (async () => {
@@ -386,7 +386,7 @@
     transition: all 0.2s ease;
     box-shadow: var(--legal-ai-shadow-md);
   }
-  :global($1) {
+  :global(.legal-ai-search-btn:hover) {
     transform: translateY(-1px);
     box-shadow: var(--legal-ai-shadow-lg);
   }
@@ -394,7 +394,7 @@
     border-left: 4px solid var(--nier-accent-warm);
     transition: transform 0.2s ease;
   }
-  :global($1) {
+  :global(.legal-search-result:hover) {
     transform: translateY(-2px);
   }
   /* Custom scrollbar for results */

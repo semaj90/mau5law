@@ -25,20 +25,22 @@ https://svelte.dev/e/js_parse_error -->
       const aiSearchBtn = document.getElementById('aiSearchBtn');
       const aiSearchInputEl = document.getElementById('aiSearchInput') as HTMLInputElement;
       if (aiSearchBtn && aiSearchInputEl) {
-        aiSearchBtn.addEventListener('click', () => handleAiSearch(aiSearchInputEl.value);
+        aiSearchBtn.addEventListener('click', () => handleAiSearch(aiSearchInputEl.value));
         aiSearchInputEl.addEventListener('keypress', (e) => {
           if (e.key === 'Enter') {
             handleAiSearch(aiSearchInputEl.value);
-  }
+          }
+        });
+      }
+    }
     })();
-  });
-  }}
   });
   function handleQuickUpload(files: unknown) {
     // Handle quick upload from homepage
     if (files.length > 0) {
       window.location.href = `/upload?files=${files.length}`;
-  }}
+    }
+  }
   async function handleAiSearch(query: string) {
     if (!query.trim()) return;
     try {
@@ -46,7 +48,8 @@ https://svelte.dev/e/js_parse_error -->
       window.location.href = `/ai/search?q=${encodeURIComponent(query)}`;
     } catch (error) {
       console.error('AI search failed:', error);
-  }}
+    }
+  }
 </script>
 <svelte:head>
   <title>Dashboard - Prosecutor Case Management System</title>

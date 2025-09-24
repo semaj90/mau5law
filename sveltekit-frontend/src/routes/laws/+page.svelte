@@ -30,7 +30,7 @@ let isSearching = $state<boolean >(false);
     isSearching = true;
     try {
       const params = new URLSearchParams({
-        q: searchQuery
+        q: searchQuery,
         jurisdiction: 'all',
         category: 'all',
       });

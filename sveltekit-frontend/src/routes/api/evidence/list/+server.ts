@@ -4,7 +4,7 @@ import { desc } from 'drizzle-orm'
 import type { RequestHandler } from './$types.js'
 export const GET: RequestHandler = async () => {
   try {
-    const rows = await db.select().from(evidence).orderBy(desc(evidence.createdAt)).limit(500)
+    const rows = await db.select().from(evidence).orderBy(desc(evidence.createdAt)).limit(500);
     // Map to frontend shape (camelCase + summaryType passthrough)
     const mapped = rows.map(r => ({
       id: r.id,
@@ -14,13 +14,13 @@ export const GET: RequestHandler = async () => {
       size: r.fileSize || 0,
       uploadDate: r.createdAt,
       summary: r.summary || r.aiSummary || null,
-      prosecutionScore: (r.aiAnalysis as any)?.prosecutionScore ?? null,
-      tags: Array.isArray(r.tags) ? r.tags: [],
-      summaryType: (r as any).summaryType || null
-    })
-    return new Response(JSON.stringify({ evidence: mapped }), { status: 200 })
-  } catch (err: any) {
-    console.error('Evidence list error', err)
-    return new Response(JSON.stringify({ error: 'Failed to list evidence' }), { status: 500 })
+      prosecutionScore: (r.aiAnalysis as Record<string, unknown>)?.prosecutionScore ?? null,
+      tags: Array.isArray(r.tags) ? r.tags : [],
+      summaryType: (r as Record<string, unknown>).summaryType || null,
+    }));
+    return new Response(JSON.stringify({ evidence: mapped }), { status: 200 });
+  } catch (err: unknown) {
+    console.error('Evidence list error', err);
+    return new Response(JSON.stringify({ error: 'Failed to list evidence' }), { status: 500 });
   }
 }

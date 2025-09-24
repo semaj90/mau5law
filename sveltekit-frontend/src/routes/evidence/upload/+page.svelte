@@ -12,8 +12,8 @@
   // Initialize Superform with Zod validation
   const { form, errors, enhance, submitting, message } = superForm(data.form, {
     validators: zod(evidenceUploadSchema),
-    resetForm: false
-    invalidateAll: true
+    resetForm: false,
+    invalidateAll: true,
     onError: ({ result, message }) => {
       // Show fallback notice on upload failure
       const notice = document.createElement('div');

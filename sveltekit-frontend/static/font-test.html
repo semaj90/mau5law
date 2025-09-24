@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Font Loading Test</title>
+    <link rel="stylesheet" href="/fonts/fonts.css">
+    <style>
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            padding: 20px;
+            background: #0a0a0a;
+            color: #e0e0e0;
+        }
+        .font-test {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+        .inter { font-family: 'Inter', sans-serif; }
+        .jetbrains { font-family: 'JetBrains Mono', monospace; }
+        .ibm-plex { font-family: 'IBM Plex Sans', sans-serif; }
+        .press-start { font-family: 'Press Start 2P', monospace; font-size: 14px; }
+        .noto-sans { font-family: 'Noto Sans JP', sans-serif; }
+
+        h2 { color: #4f9eff; }
+        .success { color: #00ff00; }
+        .error { color: #ff4444; }
+    </style>
+</head>
+<body>
+    <h1>🔤 Local Font Loading Test - Legal AI Platform</h1>
+
+    <div class="font-test inter">
+        <h2>Inter Font</h2>
+        <p>This text should render in Inter font family.</p>
+        <p><strong>Bold text</strong> and <em>italic text</em> testing.</p>
+    </div>
+
+    <div class="font-test jetbrains">
+        <h2>JetBrains Mono</h2>
+        <p>const fontTest = () => { console.log('Monospace code font'); }</p>
+        <p>123456789 abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ</p>
+    </div>
+
+    <div class="font-test ibm-plex">
+        <h2>IBM Plex Sans</h2>
+        <p>IBM Plex Sans for professional legal documentation.</p>
+        <p>Professional typography for legal AI platform.</p>
+    </div>
+
+    <div class="font-test press-start">
+        <h2>Press Start 2P</h2>
+        <p>RETRO GAMING FONT FOR SPECIAL EFFECTS</p>
+        <p>NINTENDO-STYLE TYPOGRAPHY</p>
+    </div>
+
+    <div class="font-test noto-sans">
+        <h2>Noto Sans JP (MS Gothic Alternative)</h2>
+        <p>Japanese text support: こんにちは 世界</p>
+        <p>Multi-language support for international legal cases.</p>
+    </div>
+
+    <script>
+        // Font loading detection
+        const fonts = [
+            'Inter',
+            'JetBrains Mono',
+            'IBM Plex Sans',
+            'Press Start 2P',
+            'Noto Sans JP'
+        ];
+
+        function checkFont(fontName) {
+            return document.fonts.check(`12px "${fontName}"`);
+        }
+
+        function displayFontStatus() {
+            const statusDiv = document.createElement('div');
+            statusDiv.innerHTML = '<h2>Font Loading Status</h2>';
+
+            fonts.forEach(font => {
+                const isLoaded = checkFont(font);
+                const status = isLoaded ?
+                    `<span class="success">✅ ${font} - Loaded</span>` :
+                    `<span class="error">❌ ${font} - Not Loaded</span>`;
+                statusDiv.innerHTML += `<p>${status}</p>`;
+            });
+
+            document.body.appendChild(statusDiv);
+        }
+
+        // Check font loading after page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Wait a bit for fonts to load
+            setTimeout(displayFontStatus, 1000);
+        });
+
+        console.log('🔤 Font loading test initialized');
+        console.log('📁 Font files location: /fonts/');
+        console.log('🎯 Testing local font loading without Google Fonts CDN');
+    </script>
+</body>
+</html>

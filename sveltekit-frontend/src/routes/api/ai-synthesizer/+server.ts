@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       processStreamingRequest(streamId, query, context, options)
       // Return stream ID immediately
       return json({
-        success: true
+        success: true,
         streamId,
         message: 'Streaming synthesis initiated',
         streamUrl: `/api/ai-synthesizer/stream/${streamId}`
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     await monitoringService.recordMetric('api_requests_total', 1)
     // Return successful result
     return json({
-      success: true
+      success: true,
       requestId,
       result: {
         synthesis: (result as { synthesis?: any; sources?: any; confidence?: any; metadata?: any }).synthesis,
@@ -74,9 +74,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
     // Track error metrics
     await monitoringService.recordMetric('api_errors_total', 1)
     // Return error response
-    return json()
+    return json(
       {
-        success: false
+        success: false,
         error: err.message || 'An error occurred during synthesis',
         requestId,
         processingTime: Date.now() - startTime
@@ -132,13 +132,13 @@ export const GET: RequestHandler = async ({ url }) => {
         pgvector: health.services.postgres === 'healthy',
         redis: health.services.redis === 'healthy',
         ollama: health.services.ollama === 'healthy',
-        xstate: true
-        langchain: true
-        legalbert: true
-        drizzle: true
-        autosolve: true
-        streaming: true
-        caching: true
+        xstate: true,
+        langchain: true,
+        legalbert: true,
+        drizzle: true,
+        autosolve: true,
+        streaming: true,
+        caching: true,
         monitoring: true
       }
     }
@@ -155,7 +155,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(status)
   } catch (err: any) {
     logger.error('[API] Health check error:', err)
-    return json()
+    return json(
       {
         status: 'error',
         error: err.message,

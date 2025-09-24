@@ -158,7 +158,7 @@ export const chatActions = {
     };
     chatStore.update((state) => ({
       ...state,
-      currentConversation: conversation
+      currentConversation: conversation,
       conversations: [conversation, ...state.conversations],
       messages: []
     }));
@@ -176,8 +176,8 @@ export const chatActions = {
     });
   },
   // Add message
-  addMessage: (,
-    content: string
+  addMessage: (
+    content: string,
     role: "user" | "assistant" | "system",
     metadata?: Partial<ChatMessage["metadata"]>
   ) => {
@@ -354,11 +354,11 @@ export const chatActions = {
   resetChat: () => {
     chatStore.update((state) => ({
       ...state,
-      currentConversation: null
+      currentConversation: null,
       messages: [],
-      error: null
-      isLoading: false
-      isTyping: false
+      error: null,
+      isLoading: false,
+      isTyping: false,
       isStreaming: false
     }));
   },

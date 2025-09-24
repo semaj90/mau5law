@@ -1,609 +1,508 @@
+<!-- Gaming-Themed Navigation Bar with Console Theme Switching -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
+  import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import { browser } from '$app/environment';
-  import { fade } from 'svelte/transition';
-  import { Button, LinkButton, YoRHaSearchBar, ThemeToggle, Tabs, Popover, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits';
-  import AccessibilitySettings from '$lib/components/ui/AccessibilitySettings.svelte';
-  import { accessibilityService } from '$lib/services/accessibility-service';
+  import { applyConsolePalette, CONSOLE_PALETTES, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
+
   interface User {
     name?: string;
     email?: string;
     avatar?: string;
     role?: string;
   }
+
   interface Props {
-    user?: User | null;
+    user: User | null;
     sidebarOpen?: boolean;
-    variant?: 'full' | 'minimal' | 'demo' | 'admin';
+    onToggleSidebar?: () => void;
   }
+
   let {
-    user = null,
-    sidebarOpen = $bindable(false),
-    variant = 'full'
+    user,
+    sidebarOpen = false,
+    onToggleSidebar
   }: Props = $props();
-  let currentPath = $derived($page.url.pathname);
-  let isDemo = $derived(currentPath.startsWith('/demo'));
-  let isAuth = $derived(currentPath.startsWith('/auth'));
-  let isAdmin = $derived(currentPath.startsWith('/admin'));
-  let showAccessibilitySettings = $state(false);
-  let searchQuery = $state('');
-  let showSearch = $state(false);
-  let showUserMenu = $state(false);
-  let activeNavTab = $state('main');
-  // Navigation item type
-  type NavItem = {
-    path: string;
-    label: string;
-    icon: string;
-  };
-  // Main navigation items
-  const mainNavItems: NavItem[] = [
-    { path: '/', label: 'Home', icon: '🏠' },
-    { path: '/dashboard/cases', label: 'Cases', icon: '📁' },
-    { path: '/ai/dashboard', label: 'AI Hub', icon: '🤖' },
-    { path: '/evidenceboard', label: 'Evidence', icon: '🔍' },
-    { path: '/persons-of-interest', label: 'POI', icon: '👥' },
-    { path: '/citations', label: 'Citations', icon: '📚' },
-    { path: '/chat', label: 'Chat', icon: '💬' },
-  ];
-  // Demo navigation items
-  const demoNavItems: NavItem[] = [
-    { path: '/demo/bits-ui', label: 'Components', icon: '🎨' },
-    { path: '/demo/nes-bits-ui', label: 'NES UI', icon: '🎮' },
-    { path: '/demo/gpu-inference', label: 'GPU', icon: '⚡' },
-    { path: '/demo/legal-ai-complete', label: 'Legal AI', icon: '⚖️' },
-    { path: '/all-routes', label: 'All Routes', icon: '🗺️' },
-  ];
-  // Admin navigation items
-  const adminNavItems: NavItem[] = [
-    { path: '/admin', label: 'Dashboard', icon: '📊' },
-    { path: '/admin/users', label: 'Users', icon: '👤' },
-    { path: '/admin/cluster', label: 'Cluster', icon: '🖥️' },
-    { path: '/admin/performance-dashboard', label: 'Performance', icon: '📈' },
-  ];
-  function isActive(path: string): boolean {
-    if (path === '/') return currentPath === '/';
-    return currentPath.startsWith(path);
-  }
-  function toggleSidebar() {
-    sidebarOpen = !sidebarOpe;
-  }
-  function toggleAccessibilitySettings() {
-    showAccessibilitySettings = !showAccessibilitySetting;
-    if (showAccessibilitySettings) {
-      accessibilityService.announceToScreenReader('Accessibility settings opened');
+
+  // Gaming theme state
+  let selectedTheme = $state<ConsolePaletteName>('legal');
+  let showThemeDropdown = $state(false);
+
+  // Reactive values
+  let isAuthenticated = $derived(!!user);
+  let currentRoute = $derived($page.url.pathname);
+  let isAdmin = $derived(user?.role === 'admin');
+
+  // Theme switching logic
+  function switchTheme(theme: ConsolePaletteName) {
+    selectedTheme = theme;
+    applyConsolePalette(theme);
+    showThemeDropdown = false;
+
+    // Store in localStorage
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('legal-ai-theme', theme);
     }
   }
-  function toggleSearch() {
-    showSearch = !showSearch;
+
+  // Initialize theme on mount
+  $effect(() => {
+    if (typeof localStorage !== 'undefined') {
+      const stored = localStorage.getItem('legal-ai-theme') as ConsolePaletteName;
+      if (stored && CONSOLE_PALETTES[stored]) {
+        selectedTheme = stored;
+        applyConsolePalette(stored);
+      }
+    }
+  });
+
+  function handleNavigation(path: string) {
+    goto(path);
   }
-  function handleSearch(event: CustomEvent) {
-    const { query } = event.detail;
-    // Navigate to search results or trigger search
-    if (query.trim()) {
-      // For demo purposes, navigate to AI dashboard with search
-      window.location.href = `/ai/dashboard?q=${encodeURIComponent(query)}`;
-    }
-  }
-  function handleKeyboardShortcut(event: KeyboardEvent) {
-    // Alt + A: Open accessibility settings
-    if (event.altKey && event.key.toLowerCase() === 'a') {
-      event.preventDefault();
-      toggleAccessibilitySettings();
-    }
-    // Ctrl + K: Open search
-    if (event.ctrlKey && event.key.toLowerCase() === 'k') {
-      event.preventDefault();
-      toggleSearch();
-    }
+
+  function handleLogout() {
+    // Logout logic would go here
+    goto('/login');
   }
 </script>
-<header class="navbar-header" data-variant={variant}>
-  <div class="navbar-container">
-    <div class="navbar-content">
-      <!-- Logo and Sidebar Toggle -->
-      <div class="navbar-start">
-        {#if variant === 'full'}
-          <button
-            class="sidebar-toggle nes-btn"
-            onclick={toggleSidebar}
-            aria-label="Toggle sidebar"
-          >
-            {sidebarOpen ? '✕' : '☰'}
-          </button>
-        {/if}
-        <a href="/" class="navbar-logo">
-          <span class="logo-text">YoRHa Legal AI</span>
-          {#if isDemo}
-            <span class="badge badge-demo">DEMO</span>
-          {/if}
-          {#if isAdmin}
-            <span class="badge badge-admin">ADMIN</span>
-          {/if}
-        </a>
-      </div>
-      <!-- Main Navigation with Tabs -->
-      <nav class="navbar-center" aria-label="Main navigation">
-        {#if variant === 'minimal'}
-          <!-- Minimal nav for auth pages -->
-          <LinkButton href="/" variant="ghost" size="sm">Home</LinkButton>
-          <LinkButton href="/all-routes" variant="ghost" size="sm">Browse</LinkButton>
-        {:else}
-          <!-- Tabbed Navigation -->
-          <Tabs
-            bind:value={activeNavTab}
-            class="nav-tabs"
-            orientation="horizontal"
-          >
-            <div class="tabs-list">
-              <button
-                class="tab-trigger {activeNavTab === 'main' ? 'active' : ''}"
-                onclick={() => activeNavTab = 'main'}
-              >
-                🏠 Main
-              </button>
-              {#if isDemo}
-                <button
-                  class="tab-trigger {activeNavTab === 'demo' ? 'active' : ''}"
-                  onclick={() => activeNavTab = 'demo'}
-                >
-                  🎮 Demo
-                </button>
-              {/if}
-              {#if isAdmin && user?.role === 'admin'}
-                <button
-                  class="tab-trigger {activeNavTab === 'admin' ? 'active' : ''}"
-                  onclick={() => activeNavTab = 'admin'}
-                >
-                  ⚙️ Admin
-                </button>
-              {/if}
-            </div>
-            <div class="tab-content">
-              {#if activeNavTab === 'main'}
-                {#each mainNavItems as item}
-                  <LinkButton
-                    href={item.path}
-                    variant={isActive(item.path) ? 'primary' : 'ghost'}
-                    size="sm"
-                    class="nav-item"
-                  >
-                    <span class="nav-icon">{item.icon}</span>
-                    <span class="nav-label">{item.label}</span>
-                  </LinkButton>
-                {/each}
-              {:else if activeNavTab === 'demo' && isDemo}
-                {#each demoNavItems as item}
-                  <LinkButton
-                    href={item.path}
-                    variant={isActive(item.path) ? 'primary' : 'ghost'}
-                    size="sm"
-                    class="nav-item"
-                  >
-                    <span class="nav-icon">{item.icon}</span>
-                    <span class="nav-label">{item.label}</span>
-                  </LinkButton>
-                {/each}
-              {:else if activeNavTab === 'admin' && isAdmin && user?.role === 'admin'}
-                {#each adminNavItems as item}
-                  <LinkButton
-                    href={item.path}
-                    variant={isActive(item.path) ? 'primary' : 'ghost'}
-                    size="sm"
-                    class="nav-item"
-                  >
-                    <span class="nav-icon">{item.icon}</span>
-                    <span class="nav-label">{item.label}</span>
-                  </LinkButton>
-                {/each}
-              {/if}
-            </div>
-          </Tabs>
-        {/if}
-      </nav>
-      <!-- User Menu / Auth Buttons -->
-      <div class="navbar-end">
-        <!-- Search Toggle -->
-        {#if variant === 'full'}
-          <button
-            class="search-toggle nes-btn"
-            onclick={toggleSearch}
-            aria-label="Toggle search (Ctrl+K)"
-            title="Search (Ctrl+K)"
-          >
-            🔍
-          </button>
-        {/if}
-        <!-- Theme Toggle -->
-        <ThemeToggle size="sm" />
-        <!-- Accessibility Settings Button -->
+
+<nav class="navbar">
+  <div class="nav-container">
+    <!-- Left section: Logo + Sidebar Toggle -->
+    <div class="nav-left">
+      {#if onToggleSidebar}
         <button
-          class="accessibility-btn nes-btn is-primary"
-          onclick={toggleAccessibilitySettings}
-          aria-label="Open accessibility settings (Alt+A)"
-          title="Accessibility Settings (Alt+A)"
+          class="sidebar-toggle"
+          onclick={onToggleSidebar}
+          aria-label="Toggle sidebar"
         >
-          ♿
+          <span class="hamburger" class:open={sidebarOpen}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
         </button>
-        {#if user}
-          <!-- User Profile Dropdown -->
-          <Popover bind:open={showUserMenu}>
-            <button
-              class="user-profile-trigger"
-              onclick={() => showUserMenu = !showUserMenu}
-              aria-label="User menu"
-            >
-              <div class="user-avatar">
-                {user.avatar ?
-                  `<img src="${user.avatar}" alt="${user.name}" />` :
-                  (user.name?.[0] || user.email?.[0] || '👤')
-                }
-              </div>
-              <div class="user-info">
-                <span class="user-name">{user.name || user.email}</span>
-                <span class="user-role">{user.role || 'User'}</span>
-              </div>
-              <span class="dropdown-arrow">▼</span>
-            </button>
-            <Card class="user-dropdown-card">
-              <CardHeader>
-                <CardTitle class="flex items-center gap-2">
-                  <div class="user-avatar-large">
-                    {user.avatar ?
-                      `<img src="${user.avatar}" alt="${user.name}" />` :
-                      (user.name?.[0] || user.email?.[0] || '👤')
-                    }
-                  </div>
-                  <div>
-                    <div class="font-medium">{user.name || 'User'}</div>
-                    <div class="text-sm text-muted-foreground">{user.email}</div>
-                  </div>
-                </CardTitle>
-              </CardHeader>
-              <CardContent class="user-menu space-y-2">
-                <LinkButton href="/profile" variant="ghost" size="sm" class="w-full justify-start">
-                  👤 Profile
-                </LinkButton>
-                <LinkButton href="/settings" variant="ghost" size="sm" class="w-full justify-start">
-                  ⚙️ Settings
-                </LinkButton>
-                <LinkButton href="/dashboard" variant="ghost" size="sm" class="w-full justify-start">
-                  📊 Dashboard
-                </LinkButton>
-                {#if user.role === 'admin'}
-                  <LinkButton href="/admin" variant="ghost" size="sm" class="w-full justify-start">
-                    🔧 Admin Panel
-                  </LinkButton>
-                {/if}
-                <hr class="my-2" />
-                <LinkButton href="/auth/logout" variant="ghost" size="sm" class="w-full justify-start text-red-600">
-                  🚪 Logout
-                </LinkButton>
-              </CardContent>
-            </Card>
-          </Popover>
-        {:else}
-          <LinkButton href="/auth/login" variant="ghost" size="sm">
-            Login
-          </LinkButton>
-          <LinkButton href="/auth/register" variant="primary" size="sm">
-            Register
-          </LinkButton>
-        {/if}
+      {/if}
+
+      <div class="logo">
+        <button
+          class="logo-btn"
+          onclick={() => handleNavigation(isAuthenticated ? '/dashboard' : '/')}
+        >
+          <span class="logo-icon">🎮</span>
+          <span class="logo-text">Legal AI</span>
+        </button>
       </div>
     </div>
-  </div>
-</header>
-<!-- Search Overlay -->
-{#if showSearch}
-  <div class="search-overlay" transition:fade={{ duration: 200 }}>
-    <div class="search-container">
-      <YoRHaSearchBar
-        bind:value={searchQuery}
-        theme={isDemo ? 'yorha' : 'legal'}
-        placeholder="Search legal documents, cases, evidence..."
-        autofocus={true}
-        on:search={handleSearch}
-        onblur={() => setTimeout(() => showSearch = false, 100)}
-        maxSuggestions={6}
-      />
+
+    <!-- Center section: Main Navigation (if authenticated) -->
+    {#if isAuthenticated}
+      <div class="nav-center">
+        <a
+          href="/dashboard"
+          class="nav-link"
+          class:active={currentRoute === '/dashboard'}
+        >
+          🏠 Dashboard
+        </a>
+        <a
+          href="/cases"
+          class="nav-link"
+          class:active={currentRoute.startsWith('/cases')}
+        >
+          ⚖️ Cases
+        </a>
+        <a
+          href="/ai"
+          class="nav-link"
+          class:active={currentRoute.startsWith('/ai')}
+        >
+          🤖 AI Assistant
+        </a>
+        {#if isAdmin}
+          <a
+            href="/admin"
+            class="nav-link admin-link"
+            class:active={currentRoute.startsWith('/admin')}
+          >
+            🔧 Admin
+          </a>
+        {/if}
+      </div>
+    {/if}
+
+    <!-- Right section: Theme + User Menu -->
+    <div class="nav-right">
+      <!-- Gaming Theme Selector -->
+      <div class="theme-selector">
+        <button
+          class="theme-btn"
+          onclick={() => showThemeDropdown = !showThemeDropdown}
+          aria-label="Switch console theme"
+        >
+          <span class="theme-icon">🎨</span>
+          <span class="theme-name">{CONSOLE_PALETTES[selectedTheme].name}</span>
+          <span class="dropdown-arrow" class:open={showThemeDropdown}>▼</span>
+        </button>
+
+        {#if showThemeDropdown}
+          <div class="theme-dropdown">
+            {#each Object.entries(CONSOLE_PALETTES) as [key, palette]}
+              <button
+                class="theme-option"
+                class:active={key === selectedTheme}
+                onclick={() => switchTheme(key as ConsolePaletteName)}
+              >
+                <span class="theme-preview" style="background: {palette.colors.primary}"></span>
+                <span class="theme-info">
+                  <span class="theme-title">{palette.name}</span>
+                  <span class="theme-era">{palette.era}</span>
+                </span>
+                {#if key === selectedTheme}
+                  <span class="check-mark">✓</span>
+                {/if}
+              </button>
+            {/each}
+          </div>
+        {/if}
+      </div>
+
+      <!-- User Menu -->
+      {#if isAuthenticated && user}
+        <div class="user-menu">
+          <button class="user-btn" onclick={() => goto('/profile')}>
+            <span class="user-avatar">👤</span>
+            <span class="user-name">{user.email}</span>
+          </button>
+          <button class="logout-btn" onclick={handleLogout}>
+            <span>🚪</span> Logout
+          </button>
+        </div>
+      {:else}
+        <div class="auth-buttons">
+          <button class="login-btn" onclick={() => goto('/login')}>
+            Login
+          </button>
+          <button class="signup-btn" onclick={() => goto('/register')}>
+            Sign Up
+          </button>
+        </div>
+      {/if}
     </div>
   </div>
-{/if}
-<!-- Accessibility Settings Modal -->
-<AccessibilitySettings bind:isOpen={showAccessibilitySettings} />
-<!-- Global keyboard shortcut handler -->
-<svelte:window onkeydown={handleKeyboardShortcut} />
+</nav>
+
 <style>
-  .navbar-header {
+  .navbar {
     position: sticky;
-y;
     top: 0;
-    z-index: 40;
-    background: var(--color-bg-secondary, #1a1a2e);
-    border-bottom: 1px solid var(--color-border, #333);
-    backdrop-filter: blur(8px);
+    z-index: 1000;
+    background: var(--console-gradient-main, linear-gradient(45deg, #0f0f23, #1a1a2e));
+    border-bottom: 2px solid var(--console-primary, #00aa00);
+    backdrop-filter: blur(10px);
   }
-  .navbar-container {
-    max-width: 100%;
+
+  .nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    max-width: 1400px;
     margin: 0 auto;
   }
-  .navbar-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-betwee;
-    padding: 0.75rem 1.5rem;
-    gap: 1rem;
-  }
-  .navbar-start {
+
+  .nav-left {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
+
   .sidebar-toggle {
-    padding: 0.5rem;
-    background: transparent;
-    border: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: none;
     cursor: pointer;
-    font-size: 1.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
+    border-radius: 4px;
+    transition: background 0.2s;
   }
-  .navbar-logo {
+
+  .sidebar-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .hamburger {
+    display: flex;
+    flex-direction: column;
+    width: 20px;
+    height: 16px;
+    position: relative;
+  }
+
+  .hamburger span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background: var(--console-fg, white);
+    margin: 2px 0;
+    transition: 0.3s;
+    transform-origin: center;
+  }
+
+  .hamburger.open span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+
+  .hamburger.open span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hamburger.open span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+  }
+
+  .logo-btn {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    text-decoration: none;
-    color: var(--color-primary, #f59e0b);
+    padding: 0.5rem 1rem;
+    background: none;
+    border: none;
+    color: var(--console-fg, white);
+    font-size: 1.25rem;
     font-weight: bold;
-    font-size: 1.25rem;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s;
   }
-  .logo-text {
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+
+  .logo-btn:hover {
+    background: var(--console-primary, #00aa00);
+    color: var(--console-bg, #0f0f23);
   }
-  .badge {
-    padding: 0.125rem 0.5rem;
-    border-radius: 0.25rem;
-    font-size: 0.75rem;
-    font-weight: 600;
+
+  .logo-icon {
+    font-size: 1.5rem;
   }
-  .badge-demo {
-    background: rgba(74, 144, 226, 0.2);
-    color: #4a90e2;
-    border: 1px solid #4a90e2;
+
+  .nav-center {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
   }
-  .badge-admin {
-    background: rgba(208, 2, 27, 0.2);
-    color: #d0021b;
-    border: 1px solid #d0021b;
-  }
-  .navbar-center {
+
+  .nav-link {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    flex: 1;
-    justify-content: center;
+    padding: 0.75rem 1rem;
+    color: var(--console-fg, white);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.2s;
+    font-weight: 500;
   }
-  :global(.navbar-center .nav-item) {
+
+  .nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--console-primary, #00aa00);
+  }
+
+  .nav-link.active {
+    background: var(--console-primary, #00aa00);
+    color: var(--console-bg, #0f0f23);
+  }
+
+  .admin-link {
+    border: 1px solid var(--console-error, #ff5555);
+  }
+
+  .nav-right {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 1rem;
   }
-  .nav-icon {
-    font-size: 1rem;
+
+  .theme-selector {
+    position: relative;
   }
-  .nav-label {
-    display: none;
+
+  .theme-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--console-primary, #00aa00);
+    color: var(--console-fg, white);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
   }
-  @media (min-width: 768px) {
-    .nav-label {
-      display: inli;
-    }
+
+  .theme-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
   }
-  .navbar-end {
+
+  .dropdown-arrow {
+    font-size: 0.8rem;
+    transition: transform 0.2s;
+  }
+
+  .dropdown-arrow.open {
+    transform: rotate(180deg);
+  }
+
+  .theme-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    background: var(--console-bg, #0f0f23);
+    border: 2px solid var(--console-primary, #00aa00);
+    border-radius: 8px;
+    min-width: 280px;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .theme-option {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-  }
-  .user-name {
-    color: var(--color-text-secondary);
-    font-size: 0.875rem;
-    display: none;
-  }
-  .accessibility-btn {
-    padding: 0.5rem;
-    font-size: 1.25rem;
-    border-radius: 0.375rem;
-    background: transparent;
-    border: 1px solid var(--color-primary, #4a90e2);
-    color: var(--color-primary, #4a90e2);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
-  }
-  .accessibility-btn:hover {
-    background: var(--color-primary, #4a90e2);
-    color: white;
-    transform: scale(1.05);
-  }
-  .accessibility-btn:focus-visible {
-    outline: 2px solid var(--color-primary, #4a90e2);
-    outline-offset: 2px;
-  }
-  .search-toggle {
-    padding: 0.5rem;
-    background: transparent;
-    border: 1px solid var(--color-border);
-    cursor: pointer;
-    font-size: 1.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    transition: all 0.2s ease;
-  }
-  .search-toggle:hover {
-    background: var(--color-border);
-    transform: scale(1.05);
-  }
-  /* Tab Navigation */
-  .tabs-list {
-    display: flex;
-    gap: 0.25rem;
-    padding: 0.25rem;
-    background: var(--color-bg-tertiary, rgba(255, 255, 255, 0.05));
-    border-radius: 0.5rem;
-    border: 1px solid var(--color-border);
-  }
-  .tab-trigger {
-    padding: 0.375rem 0.75rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: none;
     border: none;
-    background: transparent;
-    color: var(--color-text-secondary);
+    color: var(--console-fg, white);
     cursor: pointer;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
+    transition: background 0.2s;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
-  .tab-trigger:hover {
-    background: var(--color-bg-secondary);
-    color: var(--color-text-primary);
+
+  .theme-option:hover {
+    background: rgba(255, 255, 255, 0.1);
   }
-  .tab-trigger.active {
-    background: var(--color-primary);
-    color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  .theme-option.active {
+    background: var(--console-primary, #00aa00);
+    color: var(--console-bg, #0f0f23);
   }
-  .tab-content {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  /* User Profile */
-  .user-profile-trigger {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem;
-    background: transparent;
-    border: 1px solid var(--color-border);
-    border-radius: 0.5rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    color: var(--color-text-primary);
-  }
-  .user-profile-trigger:hover {
-    background: var(--color-bg-secondary);
-    border-color: var(--color-primary);
-  }
-  .user-avatar,
-  .user-avatar-large {
-    width: 2rem;
-    height: 2rem;
+
+  .theme-preview {
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    background: var(--color-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 600;
-    font-size: 0.875rem;
-    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.3);
   }
-  .user-avatar-large {
-    width: 3rem;
-    height: 3rem;
-    font-size: 1.25rem;
-  }
-  .user-info {
+
+  .theme-info {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.125rem;
+    flex: 1;
   }
-  .user-name {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--color-text-primary);
-    display: none;
+
+  .theme-title {
+    font-weight: 600;
+    font-size: 0.95rem;
   }
-  .user-role {
-    font-size: 0.75rem;
-    color: var(--color-text-secondary);
-    display: none;
+
+  .theme-era {
+    font-size: 0.8rem;
+    opacity: 0.7;
   }
-  .dropdown-arrow {
-    font-size: 0.75rem;
-    color: var(--color-text-secondary);
-    transition: transform 0.2s ease;
+
+  .check-mark {
+    font-weight: bold;
   }
-  .user-profile-trigger:hover .dropdown-arrow {
-    transform: rotate(180deg);
-  }
-  /* Search Overlay */
-  .search-overlay {
-    position: fixed;
-d;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(4px);
-    z-index: 50;
+
+  .user-menu {
     display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding-top: 10vh;
+    align-items: center;
+    gap: 0.5rem;
   }
-  .search-container {
-    width: 100%;
-    max-width: 600px;
-    padding: 0 1rem;
+
+  .user-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid transparent;
+    color: var(--console-fg, white);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
   }
-  @media (min-width: 768px) {
-    .user-name,
-    .user-role {
-      display: block;
-    }
-    .tab-content {
-      justify-content: flex-start;
-    }
+
+  .user-btn:hover {
+    border-color: var(--console-primary, #00aa00);
   }
-  /* Variant styles */
-  [data-variant="minimal"] .navbar-center {
-    justify-content: flex-start;
+
+  .logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--console-error, #ff5555);
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
   }
-  [data-variant="demo"] {
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
-    border-bottom: 2px solid #4a90e2;
+
+  .logout-btn:hover {
+    background: var(--console-error, #cc4444);
   }
-  /* Mobile responsive */
+
+  .auth-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .login-btn, .signup-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--console-primary, #00aa00);
+    color: var(--console-fg, white);
+    background: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+
+  .signup-btn {
+    background: var(--console-primary, #00aa00);
+    color: var(--console-bg, #0f0f23);
+  }
+
+  .login-btn:hover {
+    background: var(--console-primary, #00aa00);
+    color: var(--console-bg, #0f0f23);
+  }
+
+  .signup-btn:hover {
+    background: transparent;
+    color: var(--console-primary, #00aa00);
+  }
+
+  /* Mobile Responsive */
   @media (max-width: 768px) {
-    .navbar-content {
-      padding: 0.5rem 1rem;
+    .nav-center {
+      display: none;
     }
-    .navbar-center {
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
+
+    .theme-name {
+      display: none;
     }
-    .navbar-center ::-webkit-scrollbar {
+
+    .user-name {
       display: none;
     }
   }

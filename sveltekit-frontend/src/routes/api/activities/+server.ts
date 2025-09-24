@@ -89,7 +89,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     const totalCountResult = await finalCountQuery
     const totalCount = totalCountResult[0]?.count ?? 0
     return json({
-      activities: activityResults
+      activities: activityResults,
       totalCount,
       hasMore: offset + limit < totalCount,
       pagination: {
@@ -125,8 +125,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       activityType: data.activityType,
       title: data.title.trim(),
       description: data.description?.trim() || null,
-      scheduledFor: data.scheduledFor ? new Date(data.scheduledFor) : null
-      completedAt: data.completedAt ? new Date(data.completedAt) : null
+      scheduledFor: data.scheduledFor ? new Date(data.scheduledFor) : null,
+      completedAt: data.completedAt ? new Date(data.completedAt) : null,
       status: data.status || "pending",
       priority: data.priority || "medium",
       assignedTo: data.assignedTo || null,

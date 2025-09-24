@@ -24,10 +24,10 @@ https://svelte.dev/e/js_parse_error -->
   let isLoading = $state(false);
   // Configuration state
   let optimizationConfig = $state({
-    enableContext7Boost: true
-    enableSemanticClustering: true
-    enablePatternRecognition: true
-    enablePerformanceOptimization: true
+    enableContext7Boost: true,
+    enableSemanticClustering: true,
+    enablePatternRecognition: true,
+    enablePerformanceOptimization: true,
     minRelevanceThreshold: 0.7,
     compressionRatio: 0.8,
   });

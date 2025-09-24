@@ -61,7 +61,7 @@
       title: 'New Investigation',
       description: 'Start a new legal investigation',
       href: '/cases/create',
-      icon: Folder
+      icon: Folder,
       gradient: 'from-blue-600 to-blue-700',
       stats: '+12 this month'
     },
@@ -69,7 +69,7 @@
       title: 'AI Analysis',
       description: 'Run intelligent case analysis',
       href: '/analysis',
-      icon: Brain
+      icon: Brain,
       gradient: 'from-purple-600 to-purple-700',
       stats: '567 completed'
     },
@@ -77,7 +77,7 @@
       title: 'Evidence Search',
       description: 'Search across all evidence',
       href: '/evidence',
-      icon: Search
+      icon: Search,
       gradient: 'from-green-600 to-green-700',
       stats: '892 items indexed'
     },
@@ -85,7 +85,7 @@
       title: 'Person Tracking',
       description: 'Manage persons of interest',
       href: '/persons-of-interest',
-      icon: Users
+      icon: Users,
       gradient: 'from-yellow-600 to-yellow-700',
       stats: '156 active records'
     },
@@ -93,7 +93,7 @@
       title: '🧠 AI Legal Chat',
       description: 'TensorRT-powered legal AI assistant',
       href: '/ai-chat',
-      icon: Brain
+      icon: Brain,
       gradient: 'from-blue-600 to-purple-700',
       stats: 'TensorRT Q4_K_M',
       isNew: true
@@ -102,7 +102,7 @@
       title: '🎮 SPA Canvas',
       description: 'Full-screen gaming UX with gemma3:legal-latest',
       href: '/spa',
-      icon: Brain
+      icon: Brain,
       gradient: 'from-purple-600 to-blue-700',
       stats: 'NEW',
       isNew: true
@@ -111,7 +111,7 @@
       title: 'Text Editor',
       description: 'NieR-themed rich text editor',
       href: '/text-editor',
-      icon: Pencil
+      icon: Pencil,
       gradient: 'from-red-600 to-red-700',
       stats: 'Legal documents'
     }
@@ -292,7 +292,7 @@
     console.log('New case created (event):', e.detail);
   }
   // reference to RAGAssistantChat instance for event wiring
-  let ragAssistantRef: any = null;
+  let ragAssistantRef: any = $state(null);
   // wire up caseCreated event without relying on typed on: directive
   $effect(() => {
     if (!browser) return;
@@ -383,7 +383,8 @@
             >
               <div class="relative z-10">
                 <div class="flex items-center justify-between mb-4">
-                  <svelte:component this={action.icon} class="w-8 h-8" />
+                  {@const IconComponent = action.icon}
+                  <IconComponent class="w-8 h-8" />
                   <div class="text-xs opacity-75 font-medium">{action.stats}</div>
                 </div>
                 <h3 class="font-bold text-lg mb-2">{action.title}</h3>
@@ -471,7 +472,8 @@
             {#each recentActivity as activity}
               <div class="flex items-start gap-4 p-4 bg-gray-800/50 rounded-lg border border-gray-600 hover:border-yellow-600/50 transition-colors">
                 <div class="p-2 bg-gray-700 rounded-lg">
-                  <svelte:component this={activity.icon} class="w-4 h-4 {getPriorityColor(activity.priority)}" />
+                  {@const IconComponent = activity.icon}
+                  <IconComponent class="w-4 h-4 {getPriorityColor(activity.priority)}" />
                 </div>
                 <div class="flex-1">
                   <p class="text-white text-sm font-medium mb-1">{activity.title}</p>
@@ -712,6 +714,7 @@
     </div>
   {/each}
 </div>
+      </div>
     </div>
     </section>
     <!-- AI Intelligence Summary -->
@@ -836,8 +839,7 @@
         </div>
       </div>
     </div>
-    </div>
-    </div>
+    </section>
     {/snippet}
   </EvidenceBoardLayout>
   <style>

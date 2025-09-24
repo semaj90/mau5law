@@ -17,14 +17,14 @@ export async function POST(): Promise<any> {
       ORDER BY ordinal_position
     `)
     return json({
-      success: true
+      success: true,
       message: 'Schema fixed successfully',
       columns: columns
     })
   } catch (error: any) {
     console.error('❌ Failed to fix schema:', error)
     return json({
-      success: false
+      success: false,
       error: error.message
     }, { status: 500 })
   }

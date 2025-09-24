@@ -83,7 +83,7 @@ https://svelte.dev/e/js_parse_error -->
   			const fileId = crypto.randomUUID();
   			uploadingFiles[fileId] = {
   				name: file.name,
-  				size: file.siz;
+  				size: file.size
   			};
   			uploadProgress[fileId] = 0;
   			try {
@@ -100,7 +100,7 @@ https://svelte.dev/e/js_parse_error -->
   				// Mark as completed
   				completedUploads[fileId] = {
   					name: file.name,
-  					hash: hash
+  					hash: hash,
   					id: (result as { id?: unknown; uploaded?: unknown }).id
   				};
   				uploadProgress[fileId] = 100;
@@ -139,12 +139,12 @@ https://svelte.dev/e/js_parse_error -->
   		// Simulate upload progress
   		if (onProgress) {
   			for (let i = 0; i <= 100; i += 5) {
-  				await new Promise(resolve => setTimeout(resolve, 50);
+  				await new Promise(resolve => setTimeout(resolve, 50));
   				onProgress(i / 100);
   }}
   		const response = await fetch('/api/evidence/upload', {
   			method: 'POST',
-  			body: formData;
+  			body: formData
   		});
   		if (!(response as { ok?: unknown; json?: unknown }).ok) {
   			throw new Error('Upload failed');

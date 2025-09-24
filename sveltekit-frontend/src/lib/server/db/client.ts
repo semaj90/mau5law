@@ -20,7 +20,7 @@ function createRuntimeConnection() {
 			// Enable prepared statements for better performance
 			prepare: !isDev, // Disable in isDev for better DX with schema changes
 			// SSL settings (disable for local isDev)
-			ssl: false
+			ssl: false,
 			// Transform settings for compatibility
 			transform: {
 				undefined: null
@@ -44,7 +44,7 @@ function createAdminConnection() {
 			idle_timeout: 10,
 			max_lifetime: 60 * 10, // 10 minutes
 			prepare: false, // Admin operations don't need prepared statements
-			ssl: false
+			ssl: false,
 			transform: {
 				undefined: null
 			},

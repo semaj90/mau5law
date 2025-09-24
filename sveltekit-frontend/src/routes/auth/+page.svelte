@@ -26,8 +26,8 @@ https://svelte.dev/e/js_parse_error -->
     department: '',
     jurisdiction: '',
     badgeNumber: '',
-    agreeToTerms: false
-    agreeToPrivacy: false;
+    agreeToTerms: false,
+    agreeToPrivacy: false
   });
   // Toggle between login and register
   function toggleAuthMode() {
@@ -61,7 +61,7 @@ https://svelte.dev/e/js_parse_error -->
       const endpoint = authMode === 'login' ? '/auth/login' : '/auth/register';
       const response = await fetch(endpoint, {
         method: 'POST',
-        body: form;
+        body: form
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         success = authMode === 'login' ? 'Login successful! Redirecting...' : 'Registration successful! Redirecting...';

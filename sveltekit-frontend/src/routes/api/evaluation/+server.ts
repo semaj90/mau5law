@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({ success: true, config })
       default:
         return json(
-          { success: false, error: "Invalid action. Use: metrics, benchmarks, or config" },)
+          { success: false, error: "Invalid action. Use: metrics, benchmarks, or config" },
           { status: 400 }
         )
     }

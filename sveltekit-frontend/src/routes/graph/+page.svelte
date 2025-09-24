@@ -41,10 +41,10 @@ await loadEngineData();
       queryResult = result;
       // Add to history
       queryHistory.unshift({
-        query: queryInput
+        query: queryInput,
         result,
         timestamp: new Date(),
-        executionTim;
+        executionTime
       });
       // Keep only last 5 queries in history
       if (queryHistory.length > 5) {
@@ -57,7 +57,7 @@ await loadEngineData();
         metadata: {
           source: 'error',
           queryTime: Date.now() - startTime,
-          resultCount: 0;
+          resultCount: 0
         }
       };
     } finally {

@@ -10,7 +10,7 @@ export const GET: RequestHandler = async () => {
   try {
     const status = databaseOrchestrator.getStatus()
     return json({
-      success: true
+      success: true,
       status,
       timestamp: new Date().toISOString(),
       endpoints: {

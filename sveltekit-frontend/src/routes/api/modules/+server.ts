@@ -43,7 +43,7 @@ moduleRegistry.set('advanced-contract-analyzer', {
   version: '2.1.0',
   capabilities: ['advanced-clause-detection', 'risk-assessment', 'precedent-analysis'],
   status: 'unloaded',
-  metadata: { [key: string]: any }
+  metadata: {}
 })
 export const POST: RequestHandler = async ({ request, url }) => {
   try {

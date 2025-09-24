@@ -54,7 +54,7 @@ const BoilerplateResponseSchema = z.object({
     confidence_score: z.number(),
     prosecution_strength: z.number(),
     suggested_edits: z.array(z.string()),
-    metadata: z.object({,
+    metadata: z.object({
         template_type: z.string(),
         jurisdiction: z.string().optional(),
         generation_time_ms: z.number()
@@ -96,7 +96,7 @@ export const POST: RequestHandler = async ({ request }) => {
             source_phrases: sourcePhrases.map((p: any) => p.phrase),
             confidence_score: boilerplateResult.confidence,
             prosecution_strength: boilerplateResult.prosecutionStrength,
-            suggested_edits: suggestedEdits
+            suggested_edits: suggestedEdits,
             metadata: {
                 template_type: validatedRequest.type,
                 jurisdiction: validatedRequest.jurisdiction,
@@ -121,8 +121,8 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 }
 async function getHighPerformingPhrases(
-    type: string
-    jurisdiction?: string
+    type: string,
+    jurisdiction?: string,
     context?: { case_type?: string; [key: string]: any }
 ): Promise<any> {
     const db = getDB()
@@ -198,7 +198,7 @@ Generate the boilerplate text:`
         const response = await fetch(`${CONFIG.ollama.url}/api/generate`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({,
+            body: JSON.stringify({
                 model: CONFIG.ollama?.model || "unknown", // @ts-ignore - Model property access
                 prompt: fullPrompt
                 stream: false

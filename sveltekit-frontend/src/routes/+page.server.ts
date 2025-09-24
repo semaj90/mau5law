@@ -201,7 +201,7 @@ export const actions: Actions = {
       // Mock case creation - in real app would call API
       await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
       return {
-        success: true
+        success: true,
         case: {
           id: Date.now().toString(),
           title,
@@ -226,7 +226,7 @@ export const actions: Actions = {
         throw new Error(`Health check failed: ${healthResponse.status}`);
       }
       return {
-        success: true
+        success: true,
         refreshedAt: new Date().toISOString()
       };
     } catch (err) {

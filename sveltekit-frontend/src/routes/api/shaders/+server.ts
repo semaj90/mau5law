@@ -6,8 +6,8 @@ import type { CompiledShader } from '$lib/webgpu/shader-cache-manager'
 // GET endpoint - List all cached shaders with pagination
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const page = Math.max(1, parseInt(url.searchParams.get('page') || '1')
-    const limit = Math.min(100, Math.max(1, parseInt(url.searchParams.get('limit') || '20'))
+    const page = Math.max(1, parseInt(url.searchParams.get('page') || '1'))
+    const limit = Math.min(100, Math.max(1, parseInt(url.searchParams.get('limit') || '20')))
     // Get shader index
     const shaderIndex = await cache.get<string[]>('webgpu_shader_index') || []
     const total = shaderIndex.length

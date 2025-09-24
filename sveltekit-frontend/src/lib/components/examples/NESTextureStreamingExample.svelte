@@ -26,7 +26,7 @@
       title: 'Commercial Lease Agreement',
       complexity: 0.7,
       size: { width: 1920, height: 2560 },
-      type: 'contract';
+      type: 'contract'
     },
     {
       id: 'evidence_email_2024_042',

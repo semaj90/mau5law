@@ -43,7 +43,7 @@ async function checkModels(): Promise<any> {
     const modelNames = data.models?.map((m: any) => m.name) || []
     return {
       gemma3Legal: modelNames.some((name: string) => name.includes('gemma3-legal')),
-      nomicEmbed: modelNames.some((name: string) => name.includes('nomic-embed-text')
+      nomicEmbed: modelNames.some((name: string) => name.includes('nomic-embed-text'))
     }
   } catch (error: any) {
     return { gemma3Legal: false, nomicEmbed: false }

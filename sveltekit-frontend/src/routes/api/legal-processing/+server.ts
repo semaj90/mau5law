@@ -49,11 +49,11 @@ export const GET: RequestHandler = async ({ url }) => {
           createdAt: legalDocuments.createdAt
         })
         .from(legalDocuments)
-        .where(eq(legalDocuments.sessionId, sessionId)
-        .orderBy(desc(legalDocuments.createdAt)
-        .limit(limit)
+        .where(eq(legalDocuments.sessionId, sessionId))
+        .orderBy(desc(legalDocuments.createdAt))
+        .limit(limit);
       const response: DocumentSessionResponse = {
-        id: sessionId
+        id: sessionId,
         documents: documents.map(doc => ({
           ...doc,
           createdAt: doc.createdAt?.toISOString() || new Date().toISOString()

@@ -91,7 +91,7 @@ declare module "lokijs" {
 // Tauri API module declarations (optional dependencies)
 declare module "@tauri-apps/api/tauri" {
   export function invoke<T = any>(
-    cmd: string
+    cmd: string,
     args?: { [key: string]: any }
   ): Promise<T>;
   export const convertFileSrc: (filePath: string, protocol?: string) => string;
@@ -105,11 +105,11 @@ declare module "@tauri-apps/api/fs" {
   export function readTextFile(filePath: string): Promise<string>;
   export function writeTextFile(filePath: string, data: string): Promise<void>;
   export function readDir(
-    dir: string
+    dir: string,
     options?: { recursive?: boolean }
   ): Promise<FileEntry[]>;
   export function createDir(
-    dir: string
+    dir: string,
     options?: { recursive?: boolean }
   ): Promise<void>;
   export function removeFile(file: string): Promise<void>;
@@ -117,7 +117,7 @@ declare module "@tauri-apps/api/fs" {
 }
 declare module "@tauri-apps/api/core" {
   export function invoke<T = any>(
-    cmd: string
+    cmd: string,
     args?: { [key: string]: any }
   ): Promise<T>;
 }

@@ -70,7 +70,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: searchQuery
+          query: searchQuery,
           options: { limit: 5, threshold: 0.7 },
         }),
       });

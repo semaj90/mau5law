@@ -90,7 +90,7 @@ export const load: PageServerLoad = async ({ url, locals, parent }) => {
       low: stats.low || 0
     };
     return {
-      activeCase: null
+      activeCase: null,
       caseEvidence: [],
       userCases,
       caseStats,
@@ -109,7 +109,7 @@ export const load: PageServerLoad = async ({ url, locals, parent }) => {
     const createCaseForm = await superValidate(zod(createCaseSchema));
     const addEvidenceForm = await superValidate(zod(addEvidenceSchema));
     return {
-      activeCase: null
+      activeCase: null,
       caseEvidence: [],
       userCases: [],
       caseStats: { total: 0, open: 0, closed: 0, highPriority: 0 },
@@ -169,7 +169,7 @@ export const actions: Actions = {
       }
       return {
         form,
-        success: true
+        success: true,
         case: newCase
       };
     } catch (error: any) {
@@ -233,7 +233,7 @@ export const actions: Actions = {
       }
       return {
         form,
-        success: true
+        success: true,
         evidence: newEvidence[0]
       };
     } catch (error: any) {
@@ -258,7 +258,7 @@ export const actions: Actions = {
     try {
       // Verify evidence exists and user has access
   const existingEvidence = await (db.query as any).evidence.findFirst({
-        where: helpers.eq ? helpers.eq(evidence.id, evidenceId) : undefined
+        where: helpers.eq ? helpers.eq(evidence.id, evidenceId) : undefined,
         with: {
           case: {
             columns: { createdBy: true }

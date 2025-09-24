@@ -7,20 +7,20 @@
     gpuInfo: '',
     memoryUsage: '',
     services: [],
-    port: 5173;
+    port: 5173
   });
   let performanceMetrics = $state({
     fps: 0,
     latency: 0,
     throughput: 0,
-    gpuUtilization: 0;
+    gpuUtilization: 0
   });
   $effect(() => {
     (async () => {
 // Get system information with port detection
+    let port = 5173;
     try {
       // Try primary port first
-  let port = $state(5173);
       let response = await fetch(`http://localhost:${port}/api/system-info`)
       // If primary fails, try fallbacks
       if (!response.ok) {
@@ -35,6 +35,7 @@
           } catch (error) {
             console.warn(`Failed to connect to port ${fallbackPort}:`, error);
           }
+        }
       }
       if (response.ok) {
         systemInfo = {
@@ -57,9 +58,11 @@
     try {
       await fetch(`http://localhost:${systemInfo.port}/api/health`)
       performanceMetrics.latency = Math.round(performance.now() - start);
-    } catch // Estimate throughput and GPU utilization
-    performanceMetrics.throughput = Math.round(Math.random() * 1000 + 500); // Messages/sec
-    performanceMetrics.gpuUtilization = Math.round(Math.random() * 30 + 50); // 50-80%
+    } catch (error) {
+      // Handle error silently and estimate throughput and GPU utilization
+      performanceMetrics.throughput = Math.round(Math.random() * 1000 + 500); // Messages/sec
+      performanceMetrics.gpuUtilization = Math.round(Math.random() * 30 + 50); // 50-80%
+    }
   }
 </script>
 <svelte:head>

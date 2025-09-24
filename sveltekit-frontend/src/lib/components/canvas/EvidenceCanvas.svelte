@@ -48,7 +48,7 @@
       success: '#2ed573',
       warning: '#ffa502',
       danger: '#ff4757',
-      border: '#57606f';
+      border: '#57606f'
     },
     light: {
       background: '#f1f2f6',
@@ -57,7 +57,7 @@
       success: '#2ed573',
       warning: '#ffa502',
       danger: '#ff4757',
-      border: '#ced6e0';
+      border: '#ced6e0'
     },
     yorha: {
       background: '#0a0a0a',

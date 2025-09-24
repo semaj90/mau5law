@@ -6,7 +6,7 @@
       id: '001',
       role: 'assistant',
       content: 'Hello! I\'m your Legal AI Assistant. How can I help you today?',
-      timestamp: new Date();
+      timestamp: new Date()
     }
   ]);
   let currentMessage = $state('');
@@ -17,7 +17,7 @@
       id: Date.now().toString(),
       role: 'user',
       content: currentMessage.trim(),
-      timestamp: new Date();
+      timestamp: new Date()
     };
     messages = [...messages, userMessage];
     const messageToSend = currentMessag;
@@ -30,9 +30,9 @@
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({,
-          messages: messages
-          stream: false;
+        body: JSON.stringify({
+          messages: messages,
+          stream: false
         })
       });
       const result = await response.json();
@@ -45,7 +45,7 @@
       const aiResponse = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: aiContent
+        content: aiContent,
         timestamp: new Date(),
         metadata: result.metadata || { source: 'triton-fallback' }
       };

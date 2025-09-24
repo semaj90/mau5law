@@ -37,15 +37,15 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
       const filters: any[] = []
       // Add case filter
       if (caseId) {
-        filters.push(eq(canvasLayouts.caseId, caseId)
+        filters.push(eq(canvasLayouts.caseId, caseId))
       }
       // Add search filter
       if (search) {
-        filters.push(like(canvasLayouts.name, `%${search}%`)
+        filters.push(like(canvasLayouts.name, `%${search}%`))
       }
       // Add template filter
       if (isTemplate !== null) {
-        filters.push(eq(canvasLayouts.isDefault, isTemplate === "true")
+        filters.push(eq(canvasLayouts.isDefault, isTemplate === "true"))
       }
       // Determine the column for sorting
       const orderColumn =
@@ -58,7 +58,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
         .select()
         .from(canvasLayouts)
         .where(filters.length > 0 ? and(...filters) : undefined)
-        .orderBy(sortOrder === "asc" ? orderColumn : desc(orderColumn)
+        .orderBy(sortOrder === "asc" ? orderColumn : desc(orderColumn))
         .limit(limit)
         .offset(offset)
       // Get total count for pagination

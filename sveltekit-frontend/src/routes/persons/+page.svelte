@@ -136,11 +136,12 @@
     // Search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(item => item.includes)(query) ||
-        person.aliases.some.includes(query)) ||
+      filtered = filtered.filter(person =>
+        person.name.toLowerCase().includes(query) ||
+        person.aliases.some(alias => alias.toLowerCase().includes(query)) ||
         person.relationship.toLowerCase().includes(query) ||
         person.profileData.occupation?.toLowerCase().includes(query) ||
-        person.tags.some.includes(query))
+        person.tags.some(tag => tag.toLowerCase().includes(query))
       );
     }
     // Threat level filter

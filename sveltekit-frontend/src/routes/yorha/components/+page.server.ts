@@ -16,11 +16,13 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
           variant: 'primary',
           size: 'medium',
           icon: 'terminal',
-          loading: false
-          disabled: false
-          glowEffect: true
-          hoverAnimation: true
-        }
+          loading: false,
+          disabled: false,
+          glowEffect: true,
+          hoverAnimation: true,
+          clickFeedback: true, // subtle scale on click
+          loadingState: false, // spinner when loading
+        },
       },
       panel: {
         id: 'yorha-panel-3d',
@@ -34,11 +36,11 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
           variant: 'default',
           width: 400,
           height: 300,
-          scrollable: true
-          collapsible: true
-          glitchEffect: false
-          borderGlow: true
-        }
+          scrollable: true,
+          collapsible: true,
+          glitchEffect: false,
+          borderGlow: true,
+        },
       },
       input: {
         id: 'yorha-input-3d',
@@ -53,10 +55,10 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
           type: 'text',
           variant: 'terminal',
           value: '',
-          error: false
-          autoComplete: true
-          neuralGlow: true
-        }
+          error: false,
+          autoComplete: true,
+          neuralGlow: true,
+        },
       },
       modal: {
         id: 'yorha-modal-3d',
@@ -70,10 +72,10 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
           title: 'YoRHa Modal',
           variant: 'default',
           size: 'medium',
-          closable: true
-          backdropBlur: true
-          depthEffect: true
-        }
+          closable: true,
+          backdropBlur: true,
+          depthEffect: true,
+        },
       },
       terminal: {
         id: 'yorha-terminal-3d',
@@ -86,9 +88,9 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
           theme: 'amber',
           prompt: 'YORHA:~$',
           history: [],
-          autoComplete: true
-          typewriterEffect: true
-        }
+          autoComplete: true,
+          typewriterEffect: true,
+        },
       },
       dataviz: {
         id: 'yorha-dataviz-3d',
@@ -99,11 +101,11 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         features: ['realTime', 'animation', 'interaction', 'export'],
         defaultConfig: {
           type: 'line',
-          animated: true
-          realTime: true
-          theme: 'cyberpunk'
-        }
-      }
+          animated: true,
+          realTime: true,
+          theme: 'cyberpunk',
+        },
+      },
     };
     // Generate component gallery data
     const galleryData = {
@@ -175,11 +177,11 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
 </YoRHaModal3D>`
     };
     return {
-      specs: componentSpecs
-      gallery: galleryData
+      specs: componentSpecs,
+      gallery: galleryData,
       codeSnippets,
-      initialLoad: true
-      timestamp: new Date().toISOString()
+      initialLoad: true,
+      timestamp: new Date().toISOString(),
     };
   } catch (error: any) {
     console.error('Error loading YoRHa components data:', error);
@@ -187,9 +189,9 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
       specs: {},
       gallery: { categories: [], components: [], totalComponents: 0, previewModes: [] },
       codeSnippets: {},
-      initialLoad: false
+      initialLoad: false,
       timestamp: new Date().toISOString(),
-      error: 'Failed to load components data'
+      error: 'Failed to load components data',
     };
   }
 };

@@ -71,7 +71,7 @@ export const actions: Actions = {
         .insert(users)
         .values({
           email: form.data.email,
-          hashed_password: hashedPassword
+          hashed_password: hashedPassword,
           first_name: nameValue.split(" ")[0] || "",
           last_name: nameValue.split(" ").slice(1).join(" ") || "",
           role: form.data.role,

@@ -94,8 +94,8 @@ export const actions: Actions = {
         cookies.set('session', `demo-login-${Date.now()}`, {
           path: '/',
           maxAge: 60 * 60 * 24 * 7, // 1 week
-          httpOnly: true
-          secure: false
+          httpOnly: true,
+          secure: false,
           sameSite: 'lax'
         });
         throw redirect(302, '/dashboard');

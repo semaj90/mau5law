@@ -91,8 +91,8 @@ export const POST: RequestHandler = async ({ request }) => {
           orchestrationMetadata: {
             totalProcessingTime: Date.now() - startTime,
             agentsUsed: 0,
-            context7Enhanced: false
-            autoFixApplied: false
+            context7Enhanced: false,
+            autoFixApplied: false,
             timestamp: new Date().toISOString()
           }
         },
@@ -129,12 +129,12 @@ export const POST: RequestHandler = async ({ request }) => {
             area: options.autoFixArea
           }
         })
-        .then((result: any) => ({,
+        .then((result: any) => ({
           agent: 'claude',
           ...result,
           error: undefined
         }))
-        .catch((error: any) => ({,
+        .catch((error: any) => ({
           agent: 'claude',
           output: '',
           score: 0,
@@ -156,12 +156,12 @@ export const POST: RequestHandler = async ({ request }) => {
             autoFix: options.autoFix
           }
         })
-        .then((result: any) => ({,
+        .then((result: any) => ({
           agent: 'autogen',
           ...result,
           error: undefined
         }))
-        .catch((error: any) => ({,
+        .catch((error: any) => ({
           agent: 'autogen',
           output: '',
           score: 0,
@@ -181,12 +181,12 @@ export const POST: RequestHandler = async ({ request }) => {
             autoFix: options.autoFix
           }
         })
-        .then((result: any) => ({,
+        .then((result: any) => ({
           agent: 'crewai',
           ...result,
           error: undefined
         }))
-        .catch((error: any) => ({,
+        .catch((error: any) => ({
           agent: 'crewai',
           output: '',
           score: 0,
@@ -198,7 +198,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (agents.includes('rag')) {
       const ragPromise = enhancedRAGService
         .query({
-          query: prompt
+          query: prompt,
           context,
           options: {
             caseId: options.caseId,
@@ -208,12 +208,12 @@ export const POST: RequestHandler = async ({ request }) => {
             confidenceThreshold: 0.7
           }
         })
-        .then((result: any) => ({,
+        .then((result: any) => ({
           agent: 'rag',
           ...result,
           error: undefined
         }))
-        .catch((error: any) => ({,
+        .catch((error: any) => ({
           agent: 'rag',
           output: '',
           score: 0,
@@ -287,7 +287,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const synthesis = synthesizeResults(results, prompt)
     const totalProcessingTime = Date.now() - startTime
     const response: AgentOrchestrationResponse = {
-      success: true
+      success: true,
       results,
       synthesis,
       orchestrationMetadata: {

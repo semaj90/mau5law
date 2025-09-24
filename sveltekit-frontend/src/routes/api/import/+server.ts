@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     } catch (parseError) {
       return json(
-        { error: "Invalid file format or corrupted data" },)
+        { error: "Invalid file format or corrupted data" },
         { status: 400 }
       )
     }

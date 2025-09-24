@@ -54,7 +54,7 @@ export interface SearchRequest {
 // Enhanced error handling and logging
 class QdrantAPIError extends Error {
   constructor(
-    message: string
+    message: string,
     public statusCode: number = 500,
     public details?: any
   ) {

@@ -75,9 +75,9 @@
   ];
   $effect(() => {
     const settings = {
-      autoSave: true
+      autoSave: true,
       theme: 'light' as const,
-      layout: 'dual' as const;
+      layout: 'dual' as const
     };
     reportActions.load(sampleReport);
   });

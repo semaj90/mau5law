@@ -32,11 +32,11 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
   import AutonomousEngineeringDemo from '$lib/components/copilot/AutonomousEngineeringDemo.svelte';
   // System status state
   let systemStatus = $state({
-    copilotIntegration: true
-    semanticSearch: true
-    memoryMCP: true
-    multiAgent: true
-    autonomousEngineering: true
+    copilotIntegration: true,
+    semanticSearch: true,
+    memoryMCP: true,
+    multiAgent: true,
+    autonomousEngineering: true,
     serviceWorkers: true
   });
   let showArchitecture = $state(false);

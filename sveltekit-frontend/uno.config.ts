@@ -5,7 +5,6 @@ import {
   presetAttributify,
   presetIcons,
   presetTypography,
-  presetWebFonts,
   transformerDirectives,
   transformerVariantGroup,
   transformerCompileClass,
@@ -20,12 +19,9 @@ export default defineConfig({
       scale: 1.2,
       cdn: 'https://esm.sh/',
       collections: {
-        lucide: () =>
-          import('@iconify-json/lucide/icons.json').then((i) => i.default).catch(() => ({})),
-        tabler: () =>
-          import('@iconify-json/tabler/icons.json').then((i) => i.default).catch(() => ({})),
-        heroicons: () =>
-          import('@iconify-json/heroicons/icons.json').then((i) => i.default).catch(() => ({})),
+        lucide: () => import('@iconify-json/lucide/icons.json').then(i => i.default).catch(() => ({})),
+        tabler: () => import('@iconify-json/tabler/icons.json').then(i => i.default).catch(() => ({})),
+        heroicons: () => import('@iconify-json/heroicons/icons.json').then(i => i.default).catch(() => ({})),
       },
       autoInstall: true,
     }),
@@ -46,22 +42,8 @@ export default defineConfig({
         },
       },
     }),
-    presetWebFonts({
-      fonts: {
-        mono: [
-          "JetBrains Mono",
-          "Roboto Mono",
-          "SF Mono",
-          "Monaco",
-          "Consolas",
-        ],
-        gothic: ["MS Gothic", "MS UI Gothic", "monospace"],
-        sans: ["Inter", "system-ui", "sans-serif"],
-        legal: ["Inter", "system-ui", "sans-serif"], // Legal AI primary
-        nier: ["IBM Plex Sans", "sans-serif"], // NieR theme
-        retro: ["Press Start 2P", "monospace"], // Gaming
-      },
-    }),
+    // ✅ DISABLED: Local fonts are loaded via app.css instead
+    // presetWebFonts() - Removed to prevent timeout issues
   ],
   transformers: [
     transformerDirectives(),
@@ -157,7 +139,7 @@ export default defineConfig({
         pink: '#E91E63',
         gray: '#95A5A6',
         black: '#2C3E50',
-        white: '#ECF0F1'
+        white: '#ECF0F1',
       },
       neural: {
         input: '#4f46e5',
@@ -319,8 +301,7 @@ export default defineConfig({
       'bg-justice-600 hover:bg-justice-700 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200',
     'btn-court':
       'bg-court-500 hover:bg-court-600 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200',
-    'btn-law':
-      'bg-law-600 hover:bg-law-700 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200',
+    'btn-law': 'bg-law-600 hover:bg-law-700 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200',
     'btn-gaming':
       'bg-gaming-nes hover:bg-gaming-retro text-white font-nes text-sm px-4 py-2 border-2 border-current transition-all duration-200',
 
@@ -362,8 +343,7 @@ export default defineConfig({
     // CUDA/WASM Performance Indicators
     'cuda-active': 'shadow-lg shadow-gaming-neon/50 border-2 border-gaming-neon animate-glow',
     'wasm-active': 'shadow-lg shadow-gaming-nes/50 border-2 border-gaming-nes animate-glow',
-    'intel-gpu-active':
-      'shadow-lg shadow-gaming-cyber/50 border-2 border-gaming-cyber animate-glow',
+    'intel-gpu-active': 'shadow-lg shadow-gaming-cyber/50 border-2 border-gaming-cyber animate-glow',
 
     // NieR Flexbox Layout
     'yorha-flex-container': 'flex h-full w-full',
@@ -376,8 +356,7 @@ export default defineConfig({
       'bg-nier-bg-secondary border-2 border-nier-border-primary text-foreground px-4 py-2 uppercase tracking-wider transition-all duration-150 relative overflow-hidden cursor-pointer min-h-10 flex items-center justify-center hover:bg-nier-bg-tertiary hover:-translate-y-px hover:shadow-lg active:translate-y-0 active:shadow-sm',
     'yorha-button-primary':
       'yorha-button bg-nier-text-primary text-nier-bg-primary border-nier-border-primary hover:bg-nier-text-secondary',
-    'yorha-card':
-      'bg-card border border-nier-border-secondary relative transition-all duration-300 hover:shadow-lg',
+    'yorha-card': 'bg-card border border-nier-border-secondary relative transition-all duration-300 hover:shadow-lg',
     'yorha-card-elevated': 'shadow-lg',
     'yorha-panel': 'bg-card border border-nier-border-secondary relative',
     'yorha-panel-header': 'border-b border-nier-border-secondary p-4 bg-nier-bg-tertiary',
@@ -411,8 +390,7 @@ export default defineConfig({
     'yorha-drop-zone-reject': 'border-red-500 bg-red-500 bg-opacity-10',
 
     // NieR Media
-    'yorha-media-preview':
-      'relative overflow-hidden border border-nier-border-secondary bg-nier-bg-tertiary',
+    'yorha-media-preview': 'relative overflow-hidden border border-nier-border-secondary bg-nier-bg-tertiary',
     'yorha-media-overlay':
       'absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-nier-overlay opacity-0 transition-opacity duration-300',
     'yorha-media-controls':
@@ -435,15 +413,11 @@ export default defineConfig({
 
     // Multi-Agent System Components
     'agent-card': 'yorha-card p-4 space-y-3 hover:scale-[1.02] transition-transform duration-200',
-    'agent-autogen':
-      'border-l-4 border-l-agent-autogen bg-gradient-to-r from-purple-50 to-transparent',
+    'agent-autogen': 'border-l-4 border-l-agent-autogen bg-gradient-to-r from-purple-50 to-transparent',
     'agent-crewai': 'border-l-4 border-l-agent-crewai bg-gradient-to-r from-cyan-50 to-transparent',
-    'agent-autonomous':
-      'border-l-4 border-l-agent-autonomous bg-gradient-to-r from-green-50 to-transparent',
-    'agent-semantic':
-      'border-l-4 border-l-agent-semantic bg-gradient-to-r from-blue-50 to-transparent',
-    'agent-memory':
-      'border-l-4 border-l-agent-memory bg-gradient-to-r from-amber-50 to-transparent',
+    'agent-autonomous': 'border-l-4 border-l-agent-autonomous bg-gradient-to-r from-green-50 to-transparent',
+    'agent-semantic': 'border-l-4 border-l-agent-semantic bg-gradient-to-r from-blue-50 to-transparent',
+    'agent-memory': 'border-l-4 border-l-agent-memory bg-gradient-to-r from-amber-50 to-transparent',
 
     // Copilot Integration Components
     'copilot-prompt-area': 'yorha-panel min-h-32 relative',
@@ -487,8 +461,7 @@ export default defineConfig({
     'execution-phase-sequential': 'border-l-4 border-l-orange-500',
 
     // Demo Components
-    'demo-example-card':
-      'yorha-card p-4 cursor-pointer hover:bg-nier-bg-secondary transition-colors',
+    'demo-example-card': 'yorha-card p-4 cursor-pointer hover:bg-nier-bg-secondary transition-colors',
     'demo-config-section': 'space-y-4',
     'demo-results-section': 'space-y-6 animate-slide-up',
 
@@ -497,10 +470,8 @@ export default defineConfig({
     'bits-btn':
       'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
     'bits-btn-default': 'bits-btn bg-primary text-primary-foreground hover:bg-primary/90',
-    'bits-btn-destructive':
-      'bits-btn bg-destructive text-destructive-foreground hover:bg-destructive/90',
-    'bits-btn-outline':
-      'bits-btn border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+    'bits-btn-destructive': 'bits-btn bg-destructive text-destructive-foreground hover:bg-destructive/90',
+    'bits-btn-outline': 'bits-btn border border-input bg-background hover:bg-accent hover:text-accent-foreground',
     'bits-btn-secondary': 'bits-btn bg-secondary text-secondary-foreground hover:bg-secondary/80',
     'bits-btn-ghost': 'bits-btn hover:bg-accent hover:text-accent-foreground',
     'bits-btn-link': 'bits-btn text-primary underline-offset-4 hover:underline',
@@ -537,8 +508,7 @@ export default defineConfig({
       'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
     'bits-textarea':
       'flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-    'bits-label':
-      'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
+    'bits-label': 'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
 
     // Dropdown Menu Components
     'bits-dropdown-content':
@@ -560,8 +530,7 @@ export default defineConfig({
     // Badge Components
     'bits-badge':
       'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
-    'bits-badge-default':
-      'bits-badge border-transparent bg-primary text-primary-foreground hover:bg-primary/80',
+    'bits-badge-default': 'bits-badge border-transparent bg-primary text-primary-foreground hover:bg-primary/80',
     'bits-badge-secondary':
       'bits-badge border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
     'bits-badge-destructive':
@@ -590,14 +559,12 @@ export default defineConfig({
       'bits-input w-full relative placeholder:text-muted-foreground/70 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500',
     'vector-result-item':
       'yorha-card p-4 hover:bg-accent/50 transition-all duration-200 cursor-pointer border-l-4 border-l-transparent hover:border-l-blue-500',
-    'vector-confidence-badge':
-      'bits-badge inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full',
+    'vector-confidence-badge': 'bits-badge inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full',
     'vector-confidence-high':
       'vector-confidence-badge bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
     'vector-confidence-medium':
       'vector-confidence-badge bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
-    'vector-confidence-low':
-      'vector-confidence-badge bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+    'vector-confidence-low': 'vector-confidence-badge bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
     'vector-metadata-grid': 'grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-muted-foreground',
     'vector-highlight': 'bg-yellow-200 dark:bg-yellow-800/30 px-1 py-0.5 rounded text-foreground',
 
@@ -617,16 +584,14 @@ export default defineConfig({
     // Semantic Analysis Components
     'semantic-entity-container': 'flex flex-wrap gap-2 mb-4',
     'semantic-entity-tag': 'bits-badge-secondary text-xs px-2 py-1 rounded-md',
-    'semantic-entity-person':
-      'semantic-entity-tag bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+    'semantic-entity-person': 'semantic-entity-tag bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
     'semantic-entity-organization':
       'semantic-entity-tag bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
     'semantic-entity-location':
       'semantic-entity-tag bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
     'semantic-entity-date':
       'semantic-entity-tag bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400',
-    'semantic-entity-legal':
-      'semantic-entity-tag bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+    'semantic-entity-legal': 'semantic-entity-tag bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
 
     // Theme Analysis Components
     'theme-weight-bar': 'h-2 bg-muted rounded-full overflow-hidden',
@@ -644,39 +609,49 @@ export default defineConfig({
     'relationship-strength': 'ml-auto text-xs font-mono',
 
     // Enhanced NES Gaming Components
-    'nes-button': 'bg-nes-red hover:bg-nes-orange text-white font-nes text-sm px-4 py-2 border-4 border-nes-black shadow-[4px_4px_0px_0px_theme(colors.nes.black)] active:shadow-[2px_2px_0px_0px_theme(colors.nes.black)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-100 cursor-pointer',
+    'nes-button':
+      'bg-nes-red hover:bg-nes-orange text-white font-nes text-sm px-4 py-2 border-4 border-nes-black shadow-[4px_4px_0px_0px_theme(colors.nes.black)] active:shadow-[2px_2px_0px_0px_theme(colors.nes.black)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-100 cursor-pointer',
     'nes-button-primary': 'nes-button bg-nes-blue hover:bg-nes-purple',
     'nes-button-success': 'nes-button bg-nes-green hover:bg-nes-blue',
     'nes-button-warning': 'nes-button bg-nes-yellow hover:bg-nes-orange text-nes-black',
     'nes-button-danger': 'nes-button bg-nes-red hover:bg-nes-pink',
 
     'nes-card': 'bg-nes-white border-4 border-nes-black shadow-[8px_8px_0px_0px_theme(colors.nes.black)] p-4 relative',
-    'nes-card-dark': 'bg-nes-black border-4 border-nes-white shadow-[8px_8px_0px_0px_theme(colors.nes.white)] p-4 relative text-nes-white',
+    'nes-card-dark':
+      'bg-nes-black border-4 border-nes-white shadow-[8px_8px_0px_0px_theme(colors.nes.white)] p-4 relative text-nes-white',
 
-    'nes-input': 'bg-nes-white border-4 border-nes-black px-4 py-2 font-nes text-sm focus:outline-none focus:shadow-[inset_4px_4px_0px_0px_theme(colors.nes.gray)]',
-    'nes-input-dark': 'bg-nes-black border-4 border-nes-white px-4 py-2 font-nes text-sm text-nes-white focus:outline-none focus:shadow-[inset_4px_4px_0px_0px_theme(colors.nes.gray)]',
+    'nes-input':
+      'bg-nes-white border-4 border-nes-black px-4 py-2 font-nes text-sm focus:outline-none focus:shadow-[inset_4px_4px_0px_0px_theme(colors.nes.gray)]',
+    'nes-input-dark':
+      'bg-nes-black border-4 border-nes-white px-4 py-2 font-nes text-sm text-nes-white focus:outline-none focus:shadow-[inset_4px_4px_0px_0px_theme(colors.nes.gray)]',
 
     'nes-panel': 'bg-nes-gray border-4 border-nes-black relative',
-    'nes-panel-header': 'bg-nes-blue text-nes-white p-3 border-b-4 border-nes-black font-nes text-sm uppercase tracking-wide',
+    'nes-panel-header':
+      'bg-nes-blue text-nes-white p-3 border-b-4 border-nes-black font-nes text-sm uppercase tracking-wide',
     'nes-panel-content': 'p-4',
 
-    'nes-badge': 'bg-nes-red text-nes-white px-2 py-1 font-nes text-xs border-2 border-nes-black shadow-[2px_2px_0px_0px_theme(colors.nes.black)]',
+    'nes-badge':
+      'bg-nes-red text-nes-white px-2 py-1 font-nes text-xs border-2 border-nes-black shadow-[2px_2px_0px_0px_theme(colors.nes.black)]',
     'nes-badge-success': 'nes-badge bg-nes-green',
     'nes-badge-warning': 'nes-badge bg-nes-yellow text-nes-black',
     'nes-badge-info': 'nes-badge bg-nes-blue',
 
     // NES Gaming Enhanced UI Patterns
     'nes-container': 'bg-nes-white border-4 border-nes-black p-6 shadow-[12px_12px_0px_0px_theme(colors.nes.black)]',
-    'nes-container-dark': 'bg-nes-black border-4 border-nes-white p-6 shadow-[12px_12px_0px_0px_theme(colors.nes.white)] text-nes-white',
+    'nes-container-dark':
+      'bg-nes-black border-4 border-nes-white p-6 shadow-[12px_12px_0px_0px_theme(colors.nes.white)] text-nes-white',
 
-    'nes-modal': 'nes-container fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 min-w-96 max-w-2xl',
+    'nes-modal':
+      'nes-container fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 min-w-96 max-w-2xl',
     'nes-modal-overlay': 'fixed inset-0 bg-nes-black/50 z-40',
 
     // 'nes-select': Temporarily disabled due to UnoCSS parsing issues with SVG data URL
     'nes-select': 'nes-input appearance-none pr-10',
 
-    'nes-checkbox': 'appearance-none w-6 h-6 border-4 border-nes-black bg-nes-white checked:bg-nes-green checked:shadow-[inset_2px_2px_0px_0px_theme(colors.nes.black)] cursor-pointer',
-    'nes-radio': 'appearance-none w-6 h-6 border-4 border-nes-black bg-nes-white rounded-full checked:bg-nes-blue checked:shadow-[inset_2px_2px_0px_0px_theme(colors.nes.black)] cursor-pointer',
+    'nes-checkbox':
+      'appearance-none w-6 h-6 border-4 border-nes-black bg-nes-white checked:bg-nes-green checked:shadow-[inset_2px_2px_0px_0px_theme(colors.nes.black)] cursor-pointer',
+    'nes-radio':
+      'appearance-none w-6 h-6 border-4 border-nes-black bg-nes-white rounded-full checked:bg-nes-blue checked:shadow-[inset_2px_2px_0px_0px_theme(colors.nes.black)] cursor-pointer',
 
     // NES Gaming Animation Effects
     'nes-blink': 'animate-[nes-blink_1s_step-end_infinite]',

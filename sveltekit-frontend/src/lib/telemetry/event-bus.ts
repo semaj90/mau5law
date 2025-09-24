@@ -196,14 +196,14 @@ export class TelemetryEventBus {
    * Vector encoding performance tracking
    */
   emitVectorEncodingMetrics(
-    dimensions: number
-    encodingTime: number
-    compressionRatio: number
+    dimensions: number,
+    encodingTime: number,
+    compressionRatio: number,
     success: boolean
   ): void {
     this.emitPerformanceEvent({
       type: 'vector_encoding',
-      duration: encodingTime
+      duration: encodingTime,
       operation: `vector_encode_${dimensions}d`,
       success,
     });
@@ -236,7 +236,7 @@ export class TelemetryEventBus {
       events: [...this.eventBuffer],
       environment: {
         userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
-        viewport: typeof window !== 'undefined' ? { width: window.innerWidth, height: window.innerHeight } : null
+        viewport: typeof window !== 'undefined' ? { width: window.innerWidth, height: window.innerHeight } : null,
         gpu: typeof window !== 'undefined' && window.__GPU_MANAGER__ ? await this.getGPUInfo() : null
       },
     };

@@ -96,10 +96,10 @@ export const actions: Actions = {
       });
       const processingTime = Date.now() - startTime;
       return json({
-        success: true
-        result: processingResult
+        success: true,
+        result: processingResult,
         processingTime,
-        gpuAccelerated: useGpu
+        gpuAccelerated: useGpu,
         timestamp: new Date().toISOString()
       });
     } catch (err) {
@@ -111,7 +111,7 @@ export const actions: Actions = {
 async function getGPUSystemInfo() {
   // Mock GPU info - replace with actual CUDA/GPU detection
   return {
-    gpuAvailable: true
+    gpuAvailable: true,
     gpuName: "NVIDIA GeForce RTX 4090",
     cudaVersion: "12.2",
     totalMemory: "24GB",
@@ -149,7 +149,7 @@ async function getRecentProcessingResults() {
       operation: "document_vectorization",
       documentsProcessed: 156,
       processingTime: 2340,
-      gpuAccelerated: true
+      gpuAccelerated: true,
       throughput: 667, // docs/sec
       timestamp: new Date(Date.now() - 300000).toISOString(), // 5 min ago
       status: "completed"
@@ -159,7 +159,7 @@ async function getRecentProcessingResults() {
       operation: "similarity_search",
       documentsProcessed: 89,
       processingTime: 1890,
-      gpuAccelerated: true
+      gpuAccelerated: true,
       throughput: 471,
       timestamp: new Date(Date.now() - 900000).toISOString(), // 15 min ago
       status: "completed"
@@ -214,7 +214,7 @@ async function processCudaDocument(documentData: string, options: any) {
 function getDefaultGPUData() {
   return {
     gpuInfo: {
-      gpuAvailable: false
+      gpuAvailable: false,
       gpuName: "No GPU Detected",
       cudaVersion: "N/A",
       totalMemory: "0GB",

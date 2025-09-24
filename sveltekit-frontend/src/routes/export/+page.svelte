@@ -54,10 +54,10 @@
         dateRange:
           dateFrom || dateTo
             ? {
-                from: dateFrom || undefined
+                from: dateFrom || undefined,
                 to: dateTo || undefined
   }
-            : undefined
+            : undefined,
         caseIds: selectedCaseIds.length > 0 ? selectedCaseIds : undefined
       };
       const response = await fetch("/api/export", {

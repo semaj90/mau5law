@@ -92,14 +92,14 @@ export const sessions = pgTable('sessions', {
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
   expiresAt: timestamp('expires_at', {
-    withTimezone: true
+    withTimezone: true,
     mode: 'date',
   }).notNull(),
   ipAddress: varchar('ip_address', { length: 45 }),
   userAgent: text('user_agent'),
   sessionContext: jsonb('session_context').default({}),
   createdAt: timestamp('created_at', {
-    withTimezone: true
+    withTimezone: true,
     mode: 'date',
   })
     .defaultNow()

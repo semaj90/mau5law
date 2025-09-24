@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
             // Send each chunk as a Server-Sent Event
             const data = JSON.stringify({
               type: 'token',
-              content: chunk
+              content: chunk,
               timestamp: Date.now()
             })
             controller.enqueue(new TextEncoder().encode(`data: ${data}\n\n`)

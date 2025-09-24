@@ -35,11 +35,11 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     }
     // Add threat level filter
     if (threatLevel) {
-      filters.push(eq(criminals.threatLevel, threatLevel)
+      filters.push(eq(criminals.threatLevel, threatLevel))
     }
     // Add status filter
     if (status) {
-      filters.push(eq(criminals.status, status)
+      filters.push(eq(criminals.status, status))
     }
     // Apply filters
     let finalQuery = db
@@ -72,7 +72,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     const totalCountResult = await countQuery
     const totalCount = totalCountResult[0]?.count || 0
     return json({
-      criminals: criminalResults
+      criminals: criminalResults,
       totalCount,
       hasMore: offset + limit < totalCount,
       pagination: {

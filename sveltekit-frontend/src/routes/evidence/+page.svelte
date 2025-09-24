@@ -70,14 +70,14 @@ https://svelte.dev/e/js_parse_error -->
   let { data }: { data: unknown } = $props(); // PageData
   // State management
   let validationModal = $state({
-    open: false
-    evidence: null as Evidence | null
+    open: false,
+    evidence: null as Evidence | null,
     aiEvent: null as any
   });
   let analysisModal = $state({
-    open: false
-    evidence: null as Evidence | null
-    result: null as any
+    open: false,
+    evidence: null as Evidence | null,
+    result: null as any,
     loading: false
   });
   let searchQuery = $state("");
@@ -200,14 +200,14 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const analysis = await ThinkingProcessor.analyzeEvidence(evidence.id, {
         analysisType: 'reasoning',
-        useThinkingStyle: thinkingStyleEnabled
+        useThinkingStyle: thinkingStyleEnabled,
         documentType: 'evidence'
       });
       analysisModal = {
-        open: true
+        open: true,
         evidence,
-        result: analysis
-        loading: false;
+        result: analysis,
+        loading: false
       };
       notifications.add({
         type: "success",
@@ -244,7 +244,7 @@ https://svelte.dev/e/js_parse_error -->
         try {
           await ThinkingProcessor.analyzeEvidence(evidenceId, {
             analysisType: 'classification',
-            useThinkingStyle: thinkingStyleEnabled
+            useThinkingStyle: thinkingStyleEnabled,
             documentType: 'evidence'
           });
           successCount++;
@@ -280,10 +280,10 @@ https://svelte.dev/e/js_parse_error -->
   }
   function closeAnalysisModal() {
     analysisModal = {
-      open: false
-      evidence: null
-      result: null
-      loading: false;
+      open: false,
+      evidence: null,
+      result: null,
+      loading: false
     };
   }
   function formatAnalysisForDisplay(analysis: unknown): string {
@@ -437,7 +437,7 @@ https://svelte.dev/e/js_parse_error -->
   function handleEvidenceValidation(event: CustomEvent) {
     const { evidence, aiEvent } = event.detail;
     validationModal = {
-      open: true
+      open: true,
       evidence,
       aiEvent: aiEvent || null
     };
@@ -461,7 +461,7 @@ https://svelte.dev/e/js_parse_error -->
   function handleUnifiedSearch(searchResults: unknown[]) {
     console.log('🔍 Unified search results received:', searchResults.length, 'items');
     // Convert search results to evidence format for display
-    const convertedEvidence = searchResults.map((result: any) => ({,
+    const convertedEvidence = searchResults.map((result: any) => ({
       id: result.id,
       title: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).title,
       description: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).content.substring(0, 200) + '...',

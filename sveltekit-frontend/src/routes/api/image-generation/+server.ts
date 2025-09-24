@@ -155,9 +155,9 @@ Visual Description:`
   const response = await fetch('http://localhost:11434/api/generate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({,
+    body: JSON.stringify({
       model: 'gemma3-legal',
-      prompt: descriptionPrompt
+      prompt: descriptionPrompt,
       stream: false
     }),
     signal: AbortSignal.timeout(30000)

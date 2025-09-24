@@ -59,7 +59,7 @@ class GlobalGPUManager {
       this.canvas.height = 240;
     }
     this.acceleration = {
-      isEnabled: false
+      isEnabled: false,
       contextType: 'cpu',
       nesMemory: new Map(),
     };
@@ -270,9 +270,9 @@ class GlobalGPUManager {
    * Quantize colors to NES palette using GPU acceleration
    */
   async quantizeToNESPalette(
-    imageData: Float32Array
-    width: number
-    height: number
+    imageData: Float32Array,
+    width: number,
+    height: number,
     options: {
       dithering?: boolean;
       paletteSubset?: 'background' | 'sprite' | 'full';
@@ -295,8 +295,8 @@ class GlobalGPUManager {
       const results = await (this.acceleration.hybridContext as any).runComputeShader(
         this.acceleration.colorQuantizationShader!,
         {
-          inputPixels: imageData
-          nesPalette: paletteData
+          inputPixels: imageData,
+          nesPalette: paletteData,
           config: new Float32Array([width, height, paletteSize, options.dithering ? 1.0 : 0.0]),
         }
       );
@@ -311,9 +311,9 @@ class GlobalGPUManager {
    * CPU fallback for NES color quantization
    */
   private quantizeToNESPaletteCPU(
-    imageData: Float32Array
-    width: number
-    height: number
+    imageData: Float32Array,
+    width: number,
+    height: number,
     options: { dithering?: boolean; paletteSubset?: string } = {}
   ): Float32Array {
     const output = new Float32Array(imageData.length);

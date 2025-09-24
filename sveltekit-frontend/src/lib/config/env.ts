@@ -47,13 +47,13 @@ function validateAndBuildEnv(): EnvConfig {
     GPU_ACCELERATION: coerceBoolean(RAW_ENV.VITE_GPU_ACCELERATION, true),
     WEBGPU_ENABLED: coerceBoolean(RAW_ENV.VITE_WEBGPU_ENABLED, true),
     NES_QUANTIZATION: coerceBoolean(RAW_ENV.VITE_NES_QUANTIZATION, true),
-    GPU_MEMORY_LIMIT: memoryMB
-    PERFORMANCE_PROFILE: profile
+    GPU_MEMORY_LIMIT: memoryMB,
+    PERFORMANCE_PROFILE: profile,
     GPU_DEBUG: RAW_ENV.VITE_GPU_DEBUG === 'true',
     SHADER_DEBUG: RAW_ENV.VITE_SHADER_DEBUG === 'true',
     REDUCTION_MODE:
       RAW_ENV.VITE_REDUCTION_MODE === 'gpu' || RAW_ENV.VITE_REDUCTION_MODE === 'cpu'
-        ? RAW_ENV.VITE_REDUCTION_MODE: 'auto'
+        ? RAW_ENV.VITE_REDUCTION_MODE : 'auto'
   };
   if (cfg.GPU_DEBUG) {
     console.log('[ENV] Loaded configuration', cfg);
@@ -78,12 +78,12 @@ export const CLIENT_ENV = Object.freeze({
 export const GPU_CONFIG = Object.freeze({
   // Context preferences
   preferWebGPU: CLIENT_ENV.WEBGPU_ENABLED,
-  allowWebGL2: true
-  allowWebGL1: true
-  requireCompute: false
+  allowWebGL2: true,
+  allowWebGL1: true,
+  requireCompute: false,
   // NES memory optimization
   nesMemoryOptimization: CLIENT_ENV.NES_QUANTIZATION,
-  lodSystemIntegration: true
+  lodSystemIntegration: true,
   // Performance settings
   memoryLimit: CLIENT_ENV.GPU_MEMORY_LIMIT * 1024 * 1024, // Convert MB to bytes
   performanceProfile: CLIENT_ENV.PERFORMANCE_PROFILE as 'auto' | 'mobile' | 'desktop' | 'high-end',
@@ -91,12 +91,12 @@ export const GPU_CONFIG = Object.freeze({
   enableDebug: CLIENT_ENV.GPU_DEBUG,
   enableShaderDebug: CLIENT_ENV.SHADER_DEBUG,
   // Fallback behavior
-  gracefulFallback: true
-  fallbackToSoftware: true
+  gracefulFallback: true,
+  fallbackToSoftware: true,
   // NES-specific settings
   nesColorPaletteSize: 52,
-  nesDithering: true
-  nesPixelPerfect: true
+  nesDithering: true,
+  nesPixelPerfect: true,
   reductionMode: CLIENT_ENV.REDUCTION_MODE
 });
 export default ENV_CONFIG;

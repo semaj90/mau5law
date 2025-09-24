@@ -4,29 +4,29 @@
   import { onMount } from 'svelte';
   $effect(() => {
     (async () => {
-try {
-      // Call logout API endpoint
-      const response = await fetch('/api/auth/logout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-  }
-    })();
-  });
-      if (response.ok) {
-        // Invalidate all data and redirect to home
-        await invalidateAll();
-        goto('/');
-      } else {
-        console.error('Logout failed');
+      try {
+        // Call logout API endpoint
+        const response = await fetch('/api/auth/logout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        if (response.ok) {
+          // Invalidate all data and redirect to home
+          await invalidateAll();
+          goto('/');
+        } else {
+          console.error('Logout failed');
+          // Redirect anyway for security
+          goto('/');
+        }
+      } catch (error) {
+        console.error('Logout error:', error);
         // Redirect anyway for security
         goto('/');
-  }
-    } catch (error) {
-      console.error('Logout error:', error);
-      // Redirect anyway for security
-      goto('/');
-  }
+      }
+    })();
   });
 </script>
 <svelte:head>

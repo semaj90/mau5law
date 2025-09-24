@@ -191,7 +191,7 @@
       try {
         const response = await fetch(`${model.endpoint}/api/tags`, {
           method: 'GET',
-          signal: AbortSignal.timeout(2000);
+          signal: AbortSignal.timeout(2000)
         })
         if (response.ok) {
           const data = await response.json()

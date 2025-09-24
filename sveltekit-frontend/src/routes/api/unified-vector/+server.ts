@@ -14,7 +14,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'health':
         const health = await unifiedVectorOrchestrator.healthCheck()
         return json({
-          success: true
+          success: true,
           health,
           allSystemsOperational: Object.values(health).every(status => status),
           timestamp: new Date().toISOString()

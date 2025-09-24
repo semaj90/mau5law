@@ -21,7 +21,7 @@ https://svelte.dev/e/js_parse_error -->
   let ragQuery = $state('');
   let ragResults = $state<any[]>([]);
   let systemMetrics = $state({
-    gpuAcceleration: false
+    gpuAcceleration: false,
     ollamaStatus: 'unknown',
     processingSpeed: 0,
     caseAIScore: 0,
@@ -32,7 +32,7 @@ https://svelte.dev/e/js_parse_error -->
   // Computed properties using Svelte 5 $derived runes
   let hasFiles = $derived(selectedFiles.length > 0);
   let canProcess = $derived(hasFiles && !isProcessing);
-  let totalEntities = $derived(processedDocuments.reduce((sum, doc) => sum + (doc?.entityCount || 0), 0);
+  let totalEntities = $derived(processedDocuments.reduce((sum, doc) => sum + (doc?.entityCount || 0), 0));
   let averageProsecutionScore = $derived(
     processedDocuments.length > 0
       ? processedDocuments.reduce((sum, doc) => sum + (doc?.prosecutionScore || 0), 0) / processedDocuments.length: 0
@@ -47,7 +47,7 @@ await checkSystemStatus();
   });
   function handleFileSelect(event: Event) {
     const input = event.target as HTMLInputElement;
-    const files = input?.files ? Array.from(input.files) : [];)
+    const files = input?.files ? Array.from(input.files) : [];
     selectedFiles = files.filter(
       (file) =>
         file &&
@@ -110,12 +110,12 @@ await checkSystemStatus();
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({,
-          query: ragQuery
-          jurisdiction: selectedJurisdiction
+        body: JSON.stringify({
+          query: ragQuery,
+          jurisdiction: selectedJurisdiction,
           maxResults: 5,
-          includeContext7: true
-          prioritizeFactChecked: true
+          includeContext7: true,
+          prioritizeFactChecked: true,
           minProsecutionScore: 0.5,
         }),
       });

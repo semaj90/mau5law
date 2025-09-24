@@ -11,7 +11,7 @@ class GPULiveProcessor {
   async startProcess(config: any) {
     const processId = `proc_${Date.now()}`
     const process = {
-      id: processId
+      id: processId,
       status: 'running',
       config,
       startTime: new Date(),

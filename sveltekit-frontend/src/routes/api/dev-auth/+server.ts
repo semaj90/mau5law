@@ -23,7 +23,7 @@ async function findOrCreateDevUser(): Promise<any> {
     email: 'dev@example.com',
     hashed_password: 'dev-hash',
     role: 'admin',
-    is_active: true
+    is_active: true,
     metadata: { theme: 'dev' }
   }).returning({ id: users.id })
   if (!inserted.length) throw new Error('Failed to create dev user')
@@ -54,7 +54,7 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
     const sessionId = crypto.randomUUID()
     const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 8)
     await db.insert(sessions).values({
-      id: sessionId
+      id: sessionId,
       user_id: userInfo.id,
       expires_at: expiresAt
     }).onConflictDoUpdate({ target: sessions.id, set: { expires_at: expiresAt } })

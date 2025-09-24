@@ -140,11 +140,11 @@ export class MatrixLODSystem {
     try {
       const { createHybridGPUContext } = await import('../gpu/hybrid-gpu-context');
       this.hybridGPU = await createHybridGPUContext(canvas, {
-        preferWebGPU: true
-        allowWebGL2: true
-        allowWebGL1: true
-        requireCompute: false
-        lodSystemIntegration: true
+        preferWebGPU: true,
+        allowWebGL2: true,
+        allowWebGL1: true,
+        requireCompute: false,
+        lodSystemIntegration: true,
         nesMemoryOptimization: true
       });
       console.log(`🚀 Matrix LOD System using ${this.hybridGPU.getActiveContextType()} acceleration`);
@@ -199,17 +199,17 @@ export class MatrixLODSystem {
     const highVertices = baseVertices;
     this.lodCache[componentId] = {
       low: {
-        vertices: lowVertices
+        vertices: lowVertices,
         cssClasses: this.generateLowLODClasses(metadata),
         priority: priority * 0.3,
       },
       mid: {
-        vertices: midVertices
+        vertices: midVertices,
         cssClasses: this.generateMidLODClasses(metadata),
         priority: priority * 0.7,
       },
       high: {
-        vertices: highVertices
+        vertices: highVertices,
         cssClasses: this.generateHighLODClasses(metadata),
         priority: priority
       },

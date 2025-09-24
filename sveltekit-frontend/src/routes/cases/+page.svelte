@@ -39,14 +39,14 @@
     status: z.enum(['low', 'medium', 'high']).default('open'),
     incidentDate: z.string().optional(),
     location: z.string().optional(),
-    jurisdiction: z.string().optional();
+    jurisdiction: z.string().optional()
   });
   const addEvidenceSchema = z.object({
     caseId: z.string().min(1, 'Case ID is required'),
     title: z.string().min(1).max(255, 'Title too long'),
     description: z.string().optional(),
     evidenceType: z.enum(['document', 'image', 'video']).default('document'),
-    tags: z.string().optional();
+    tags: z.string().optional()
   });
   // Props from load function
   let { data }: { data: PageData } = $props();
@@ -62,10 +62,10 @@
         invalidateAll();
         if (caseCreationFeedback) {
           caseCreationFeedback.markCompleted({
-            success: true
+            success: true,
             caseTitle: form.data.title,
             casePriority: form.data.priority,
-            caseStatus: form.data.statu;
+            caseStatus: form.data.status
           });
         }
       }
@@ -130,7 +130,7 @@
           collectedAt: new Date().toISOString(),
           evidenceType: current.evidenceType,
           tags: current.tags,
-          __optimistic: true;
+          __optimistic: true
         }
       ];
     }
@@ -209,7 +209,7 @@
     low: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
     medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
     high: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',
-    critical: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+    critical: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
   };
   // Status colors
   const statusColors = {
@@ -217,17 +217,17 @@
     investigating: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
     pending: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
     closed: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
-    archived: 'bg-gray-100 text-gray-600 dark:bg-gray-900 dark:text-gray-400';
+    archived: 'bg-gray-100 text-gray-600 dark:bg-gray-900 dark:text-gray-400'
   };
   // Vector search function
   async function performVectorSearch() {
     if (!searchQuery.trim()) return;
     // Track search interaction for feedback
     const searchInteractionId = searchFeedback?.triggerFeedback({
-      query: searchQuery
+      query: searchQuery,
       searchType: 'vector_search',
       legalDomain: 'case_management',
-      searchStartTime: Date.now();
+      searchStartTime: Date.now()
     });
     isSearching = true;
     const searchStartTime = Date.now();
@@ -235,11 +235,11 @@
       const response = await fetch('/api/cases/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          query: searchQuery
-          useVectorSearch: true
+        body: JSON.stringify({
+          query: searchQuery,
+          useVectorSearch: true,
           limit: 10,
-          threshold: 0.7;
+          threshold: 0.7
         })
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -249,7 +249,7 @@
         // Track successful search for feedback
         if (searchInteractionId && searchFeedback) {
           searchFeedback.markCompleted({
-            success: true
+            success: true,
             resultCount: vectorSearchResults.length,
             searchTime: Date.now() - searchStartTime,
             relevanceScore: vectorSearchResults.length > 0 ? 0.8 : 0.3 // Estimated relevanc
@@ -287,7 +287,7 @@
     formData.append('evidenceId', evidenceToDelete.id);
     const response = await fetch('/cases?/deleteEvidence', {
       method: 'POST',
-      body: formData;
+      body: formData
     });
     if ((response as { ok?: unknown; json?: unknown }).ok) {
       toast.success('Evidence deleted successfully');
@@ -306,7 +306,7 @@
       } else if (evidenceFormData && typeof evidenceFormData.set === 'function') {
         const current = get(evidenceFormData);
         if (current && typeof current === 'object') {
-          evidenceFormData.set(activeCase).id });
+          evidenceFormData.set({ ...current, caseId: activeCase.id });
         }
       }
     }
