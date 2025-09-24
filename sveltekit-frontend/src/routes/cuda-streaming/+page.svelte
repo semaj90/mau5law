@@ -347,6 +347,7 @@
               >
 <Zap class="w-4 h-4" />
                 Single Process
+              </Button>
             {/if}
           </div>
           <!-- Processing Progress -->

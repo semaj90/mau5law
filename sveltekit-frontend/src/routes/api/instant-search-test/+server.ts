@@ -40,10 +40,10 @@ export const GET: RequestHandler = async ({ url }) => {
           const redisInfo = await redisService.getRedisInfo()
           results.results.redis = {
             status: 'connected',
-            healthy: true
+            healthy: true,
             operations: ['set', 'get', 'del'],
-            testData: retrieved
-            info: redisInfo ? {,
+            testData: retrieved,
+            info: redisInfo ? {
               version: redisInfo.server?.redis_version || 'unknown',
               memory: redisInfo.memory?.used_memory_human || 'unknown',
               clients: redisInfo.clients?.connected_clients || 0

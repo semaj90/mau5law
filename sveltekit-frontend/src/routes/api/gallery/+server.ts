@@ -35,6 +35,7 @@ export interface GalleryResponse {
     types: string[]
     cases: Array<any>
     users: Array<any>
+  }
   pagination: {
     page: number
     pageSize: number

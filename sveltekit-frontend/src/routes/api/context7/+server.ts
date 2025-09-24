@@ -49,12 +49,12 @@ export const GET: RequestHandler = async () => {
           errorMessage = 'Cannot resolve MCP server hostname'
         }
         healthChecks.push({
-          service: name
+          service: name,
           endpoint,
           status: 'error',
-          error_type: errorType
-          error: errorMessage
-          response_time: responseTime
+          error_type: errorType,
+          error: errorMessage,
+          response_time: responseTime,
           last_check: new Date().toISOString()
         })
       }

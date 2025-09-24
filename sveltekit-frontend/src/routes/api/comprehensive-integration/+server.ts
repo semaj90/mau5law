@@ -95,7 +95,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
         break
       case 'context7_integration':
         // Simulate Context7 integration check
-        await new Promise(resolve => setTimeout(resolve, 800)
+        await new Promise(resolve => setTimeout(resolve, 800));
         result = {
           context7_status: 'active',
           library_docs_cached: 247,
@@ -106,7 +106,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
         break
       case 'real_time_analysis':
         // Simulate real-time analysis
-        await new Promise(resolve => setTimeout(resolve, 1200)
+        await new Promise(resolve => setTimeout(resolve, 1200));
         result = {
           documents_analyzed: 1247,
           active_cases: 23,
@@ -117,7 +117,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
         break
       case 'legal_research':
         // Simulate legal research operation
-        await new Promise(resolve => setTimeout(resolve, 1500)
+        await new Promise(resolve => setTimeout(resolve, 1500))
         result = {
           research_databases_online: 5,
           recent_queries: 89,

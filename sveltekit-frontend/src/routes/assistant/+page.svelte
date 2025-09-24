@@ -114,14 +114,14 @@ https://svelte.dev/e/js_parse_error -->
             <div class="yorha-panel-content">
               <div class="space-y-4">
                 <div>
-                  <label class="block text-sm font-medium mb-2" for="case-id">Case ID:</label><input id="case-id",
+                  <label class="block text-sm font-medium mb-2" for="case-id">Case ID:</label><input id="case-id"
                     bind:value={caseId}
                     class="w-full p-2 border rounded-md"
                     placeholder="Enter case identifier"
                   />
                 </div>
                 <div>
-                  <label class="block text-sm font-medium mb-2" for="additional-context">Additional Context: </label><textarea id="additional-context";
+                  <label class="block text-sm font-medium mb-2" for="additional-context">Additional Context: </label><textarea id="additional-context"
                     bind:value={evidenceText}
                     class="w-full p-2 border rounded-md h-24 text-sm"
                     placeholder="Add any additional context for the AI assistant..."

@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       body: JSON.stringify(body)
     })
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({})
+      const errorData = await response.json().catch(() => ({}))
       error(response.status, errorData.error || 'Summarization service error')
     }
     const result = await response.json()

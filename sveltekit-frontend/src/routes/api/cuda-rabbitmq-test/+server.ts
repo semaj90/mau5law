@@ -28,8 +28,8 @@ export const GET: RequestHandler = async ({ url }) => {
         const healthStatus = getBridgeStatus()
         const isHealthy = healthStatus.connected && healthStatus.cudaHealthy
         return json({
-          success: true
-          healthy: isHealthy
+          success: true,
+          healthy: isHealthy,
           status: isHealthy ? 'healthy' : 'degraded',
           details: {
             rabbitmq: healthStatus.connected,

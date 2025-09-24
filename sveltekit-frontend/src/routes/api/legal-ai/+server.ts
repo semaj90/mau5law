@@ -9,7 +9,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const { prompt, context, max_tokens = 256, temperature = 0.3, use_vector_search = true } = await request.json()
     if (!prompt || typeof prompt !== 'string') {
       return json({
-        success: false
+        success: false,
         error: 'Prompt is required and must be a string'
       }, { status: 400 })
     }

@@ -23,7 +23,10 @@
             serverAlertCounts = aData.counts || serverAlertCount;
             if (serverAlerts.some(a=>a.Level==='crit'||a.level==='crit')) highestAlertLevel='crit'; else if (serverAlerts.some(a=>a.Level==='warn'||a.level==='warn')) highestAlertLevel='warn'; else highestAlertLevel='none';
           }
-        } catch }, 3000);
+        } catch (error) {
+          console.error('Alert fetch failed:', error);
+        }
+      }, 3000);
     } else {
       if (fastAlertInterval) clearInterval(fastAlertInterval);
     }
@@ -71,7 +74,13 @@
   let profilingHistory: unknown[] = $state([]);
   let lastProfilingFetched: number | null = $state(null);
   async function fetchCudaEndpoint(path: string) {
-    try { const r = await fetch(`/api/cuda${path}`); if (r.ok) return await r.json(); } catch ; return null;
+    try {
+      const r = await fetch(`/api/cuda${path}`);
+      if (r.ok) return await r.json();
+    } catch (e) {
+      console.error('CUDA endpoint error:', e);
+    }
+    return null;
   }
   async function refreshEnginesWorkersProfiling() {
     const [eng, wrk, prof, profHist] = await Promise.all([
@@ -136,7 +145,9 @@
             }
             return;
           }
-        } catch }
+        } catch (error) {
+          console.error('Cache metrics error:', error)
+        }
       // Simulate realistic cache metrics based on performance optimization principles
       const mockData = {
         hits: Math.floor(Math.random() * 50000) + 10000,

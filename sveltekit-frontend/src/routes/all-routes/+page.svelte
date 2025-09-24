@@ -407,7 +407,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 				<!-- Section Filter -->
 				<div class="lg:w-48">
 					<label class="block text-sm font-medium text-gray-700 mb-2">📂 Section</label>
-					<select;
+					<select
 						bind:value={selectedSection}
 						class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition-colors"
 					>
@@ -422,7 +422,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 				<!-- Category Filter -->
 				<div class="lg:w-64">
 					<label class="block text-sm font-medium text-gray-700 mb-2">🎯 Category</label>
-					<select;
+					<select
 						bind:value={selectedCategory}
 						class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition-colors"
 					>

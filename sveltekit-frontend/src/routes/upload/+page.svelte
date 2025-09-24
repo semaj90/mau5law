@@ -38,7 +38,7 @@
     const notification = {
       type: 'error',
       title: 'Upload Failed',
-      message: error;
+      message: error
     };
     sessionStorage.setItem('uploadNotification', JSON.stringify(notification));
   }

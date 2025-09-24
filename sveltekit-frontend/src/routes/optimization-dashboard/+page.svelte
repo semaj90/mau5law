@@ -30,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
       systemHealth: 'healthy' as const,
       queuedJobs: 0
     } as WorkerStats,
-    recommendations: [] as string[];
+    recommendations: [] as string[]
   });
   let isMonitoring = $state(false);
   let lastUpdate = $state(new Date());
@@ -51,7 +51,7 @@ https://svelte.dev/e/js_parse_error -->
         currentUsage: enhancedRAGStore.neuralMemory.getCurrentMemoryUsage(),
         efficiency: memoryReport.memoryEfficiency,
         predictions: [],
-        lodLevel: "medium" as const;
+        lodLevel: "medium" as const
       };
       // Get caching metrics
       const ragState = enhancedRAGStore.stat;
@@ -63,14 +63,14 @@ https://svelte.dev/e/js_parse_error -->
         systemStatus.workerSystem = (data as { stats?: unknown }).stat;
       }
       // Update performance charts
-      const now = new Date());
+      const now = new Date();
       performanceChart.memoryUsage.push({
-        time: now
-        value: systemStatus.neuralMemory.currentUsag;
+        time: now,
+        value: systemStatus.neuralMemory.currentUsag
       });
       performanceChart.cacheHitRate.push({
-        time: now
-        value: systemStatus.mlCaching.hitRat;
+        time: now,
+        value: systemStatus.mlCaching.hitRat
       });
       // Keep only last 20 data points
       if (performanceChart.memoryUsage.length > 20) {
@@ -90,7 +90,7 @@ https://svelte.dev/e/js_parse_error -->
       const jobResponse = await fetch('/api/workers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           type: 'SUMMARIZE_DOCUMENT',
           document: {
             id: 'test-doc-001',
@@ -98,7 +98,7 @@ https://svelte.dev/e/js_parse_error -->
             metadata: { source: 'test' }
           },
           options: { maxLength: 100, style: 'brief' },
-          priority: 'high';
+          priority: 'high'
         })
       });
       if (jobResponse.ok) {

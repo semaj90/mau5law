@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
     try {
       await simdRedisClient.healthCheck()
     } catch (healthError) {
-      return json()
+      return json(
         {
           error: 'SIMD service unavailable',
           message: 'Go microservice not running on localhost:8080',

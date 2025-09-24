@@ -66,9 +66,9 @@
       success: '#00ff41',
       warning: '#ff6b35',
       danger: '#ff0041',
-      border: '#b0b0b0';
+      border: '#b0b0b0'
     }
-  };
+  }
   const currentTheme = $derived(themes[theme]);
   onMount(() => {
     if (!canvas) return;
@@ -290,7 +290,7 @@
       pending: caseFiles.filter(f => f.status === 'pending').length,
       disputed: caseFiles.filter(f => f.status === 'disputed').length,
       highRisk: caseFiles.filter(f => (f.riskScore || calculateRiskScore(f)) > 75).length,
-      chainOfCustody: caseFiles.filter(f => f.chainOfCustody).length;
+      chainOfCustody: caseFiles.filter(f => f.chainOfCustody).length
     };
     // Stats background
     ctx.fillStyle = currentTheme.background + 'E0';
@@ -372,10 +372,10 @@
           evidenceType: 'forensic',
           status: 'verified',
           riskScore: 25,
-          chainOfCustody: true
+          chainOfCustody: true,
           confidentialityLevel: 'restricted',
           fileSize: 15728640,
-          createdAt: new Date('2024-01-15');
+          createdAt: new Date('2024-01-15')
         },
         {
           id: 'EV002',

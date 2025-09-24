@@ -28,7 +28,7 @@
 					case: 'nes-legal-priority-high yorha-3d-button',
 					success: 'btn-nes-success',
 					yorha: 'yorha-3d-button bg-black/80 text-yellow-400 border-2 border-yellow-400',
-					neural: 'neural-sprite-active bg-gradient-to-r from-purple-600 to-blue-600 text-white border-2 border-purple-400';
+					neural: 'neural-sprite-active bg-gradient-to-r from-purple-600 to-blue-600 text-white border-2 border-purple-400'
 				},
 				size: {
 					default: 'h-10 px-4 py-2',

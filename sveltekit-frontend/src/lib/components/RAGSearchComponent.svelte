@@ -50,7 +50,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: searchQuery
+          query: searchQuery,
           limit: searchConfig.limit,
           threshold: searchConfig.threshold,
           // Optional filters can be added her

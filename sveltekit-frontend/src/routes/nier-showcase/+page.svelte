@@ -34,15 +34,15 @@
       created: new Date('2025-07-14'),
       assignee: {
         name: '2B',
-        avatar: null;
+        avatar: null
       },
       stats: {
         evidence: 24,
         witnesses: 5,
-        documents: 18;
+        documents: 18
       },
       tags: ['cybersecurity', 'data-breach', 'priority'],
-      progress: 75;
+      progress: 75
     },
     {
       id: 'CASE-2025-002',
@@ -53,15 +53,15 @@
       created: new Date('2025-07-12'),
       assignee: {
         name: '9S',
-        avatar: null;
+        avatar: null
       },
       stats: {
         evidence: 12,
         witnesses: 8,
-        documents: 15;
+        documents: 15
       },
       tags: ['civil-rights', 'android-law'],
-      progress: 45;
+      progress: 45
     },
     {
       id: 'CASE-2025-003',
@@ -72,7 +72,7 @@
       created: new Date('2025-07-10'),
       assignee: {
         name: 'A2',
-        avatar: null;
+        avatar: null
       },
       stats: {
         evidence: 8,

@@ -16,11 +16,11 @@ import { URL } from "url"
 // Configuration for the enhanced autosolve system
 const ENHANCED_AUTOSOLVE_CONFIG = {
   orchestration: {
-    enableChatRecommendations: true
-    enableReinforcementLearning: true
-    enableWebAssemblyAcceleration: true
-    enableNeo4jIntegration: true
-    enableOfflineCapability: true
+    enableChatRecommendations: true,
+    enableReinforcementLearning: true,
+    enableWebAssemblyAcceleration: true,
+    enableNeo4jIntegration: true,
+    enableOfflineCapability: true,
     nodeJSOrchestrator: true
     workerCount: 4,
     maxConcurrentTasks: 20,

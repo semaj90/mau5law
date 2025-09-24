@@ -124,13 +124,13 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     return json({
-      success: true
+      success: true,
       ...response,
       timestamp: Date.now()
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 })
@@ -183,7 +183,7 @@ export const GET: RequestHandler = async () => {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 })
@@ -224,8 +224,8 @@ async function processMultiHeadAttention(text: string, options: any) {
     processTime,
     memoryUsage: '2.4GB',
     confidence: 0.94,
-    multiHead: true
-    heads
+    multiHead: true,
+    heads: 8
   }
 }
 async function processBasicAttention(text: string, options: any) {

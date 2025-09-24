@@ -97,7 +97,7 @@ export const GET: RequestHandler = async ({ url }) => {
       error: error instanceof Error ? error.message: 'Unknown error'
     })
     return json({
-      success: false
+      success: false,
       error: 'Cache retrieval failed',
       details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const { keys, type = 'generic' } = body
         if (!keys || !Array.isArray(keys)) {
           return json({
-            success: false
+            success: false,
             error: 'Keys array is required for batch_get operation'
           }, { status: 400 })
         }

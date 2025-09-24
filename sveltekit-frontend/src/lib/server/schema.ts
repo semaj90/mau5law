@@ -50,7 +50,7 @@ export const evidenceProcessTable = pgTable(
     updated_at: timestamp('updated_at').defaultNow(),
     error: text('error')
   },
-  (table: any) => ({,
+  (table: any) => ({
     evidenceIdIdx: index('evidence_process_evidence_id_idx').on(table.evidence_id),
     statusIdx: index('evidence_process_status_idx').on(table.status),
     requestedByIdx: index('evidence_process_requested_by_idx').on(table.requested_by),
@@ -68,7 +68,7 @@ export const evidenceOcrTable = pgTable(
     metadata: jsonb('metadata'), // OCR method, page count, etc.
     created_at: timestamp('created_at').notNull().defaultNow()
   },
-  (table: any) => ({,
+  (table: any) => ({
     evidenceIdIdx: index('evidence_ocr_evidence_id_idx').on(table.evidence_id),
     createdAtIdx: index('evidence_ocr_created_at_idx').on(table.created_at)
   })
@@ -84,7 +84,7 @@ export const evidenceEmbeddingsTable = pgTable(
     metadata: jsonb('metadata'),
     created_at: timestamp('created_at').notNull().defaultNow()
   },
-  (table: any) => ({,
+  (table: any) => ({
     evidenceIdIdx: index('evidence_embeddings_evidence_id_idx').on(table.evidence_id),
     modelIdx: index('evidence_embeddings_model_idx').on(table.model)
   })
@@ -103,7 +103,7 @@ export const evidenceVectorsTable = pgTable(
     created_at: timestamp('created_at').notNull().defaultNow(),
     updated_at: timestamp('updated_at').defaultNow()
   },
-  (table: any) => ({,
+  (table: any) => ({
     evidenceIdModelIdx: index('evidence_vectors_evidence_id_model_idx').on(
       table.evidence_id,
       table.model
@@ -128,7 +128,7 @@ export const evidenceAnalysisTable = pgTable(
     metadata: jsonb('metadata'),
     created_at: timestamp('created_at').notNull().defaultNow()
   },
-  (table: any) => ({,
+  (table: any) => ({
     evidenceIdIdx: index('evidence_analysis_evidence_id_idx').on(table.evidence_id),
     createdAtIdx: index('evidence_analysis_created_at_idx').on(table.created_at)
   })
@@ -155,7 +155,7 @@ export const evidenceTable = pgTable(
       .notNull(),
     is_active: boolean('is_active').default(true)
   },
-  (table: any) => ({,
+  (table: any) => ({
     caseIdIdx: index('evidence_case_id_idx').on(table.case_id),
     uploadedByIdx: index('evidence_uploaded_by_idx').on(table.uploaded_by),
     hashIdx: index('evidence_hash_idx').on(table.hash),
@@ -179,7 +179,7 @@ export const casesTable = pgTable(
     closed_at: timestamp('closed_at'),
     metadata: jsonb('metadata')
   },
-  (table: any) => ({,
+  (table: any) => ({
     caseNumberIdx: index('cases_case_number_idx').on(table.case_number),
     statusIdx: index('cases_status_idx').on(table.status),
     createdByIdx: index('cases_created_by_idx').on(table.created_by),
@@ -202,7 +202,7 @@ export const reportsTable = pgTable(
     updated_at: timestamp('updated_at').defaultNow(),
     metadata: jsonb('metadata').default({}).notNull()
   },
-  (table: any) => ({,
+  (table: any) => ({
     caseIdIdx: index('reports_case_id_idx').on(table.case_id),
     evidenceIdIdx: index('reports_evidence_id_idx').on(table.evidence_id),
     createdByIdx: index('reports_created_by_idx').on(table.created_by),
@@ -220,7 +220,7 @@ export const systemHealthTable = pgTable(
     last_check: timestamp('last_check').notNull().defaultNow(),
     created_at: timestamp('created_at').notNull().defaultNow()
   },
-  (table: any) => ({,
+  (table: any) => ({
     serviceIdx: index('system_health_service_idx').on(table.service),
     lastCheckIdx: index('system_health_last_check_idx').on(table.last_check)
   })
@@ -237,7 +237,7 @@ export const queueStatsTable = pgTable(
     messages_failed: integer('messages_failed').default(0),
     last_updated: timestamp('last_updated').notNull().defaultNow()
   },
-  (table: any) => ({,
+  (table: any) => ({
     queueNameIdx: index('queue_stats_queue_name_idx').on(table.queue_name),
     lastUpdatedIdx: index('queue_stats_last_updated_idx').on(table.last_updated)
   })
@@ -257,7 +257,7 @@ export const chatEmbeddings = pgTable(
     metadata: jsonb('metadata'), // Additional metadata from the chat message
     legalDomain: text('legal_domain'), // Legal context category
   },
-  (table: any) => ({,
+  (table: any) => ({
     messageIdIdx: index('chat_embeddings_message_id_idx').on(table.messageId),
     sessionIdIdx: index('chat_embeddings_session_id_idx').on(table.sessionId),
     timestampIdx: index('chat_embeddings_timestamp_idx').on(table.timestamp),

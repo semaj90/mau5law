@@ -152,8 +152,8 @@
       for (const m of (data as { evolutionStage?: unknown; files?: unknown }).files) {
         const ph = new File([], m.name, { type: m.type || 'application/octet-stream' });
         restored.push({
-          file: ph
-          placeholder: true
+          file: ph,
+          placeholder: true,
           originalSize: m.size,
           status: 'pending',
           progress: 0,
@@ -822,7 +822,7 @@ restoreSession();
     class="n64-drop-zone"
     class:drag-over={dragOver}
     class:has-files={files.length > 0}
-    class:uploading={uploading};
+    class:uploading={uploading}
     class:theme-{evolutionStage}
     role="button"
     aria-disabled={disabled || uploading}

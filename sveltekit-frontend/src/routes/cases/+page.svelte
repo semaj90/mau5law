@@ -331,6 +331,7 @@
           <Plus class="h-4 w-4" />
           New Case
         {/snippet}
+      </Button>
     </div>
     <!-- Stats Overview -->
     {#if (data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseStats}
@@ -378,7 +379,7 @@
       <div class="flex flex-col gap-4 md:flex-row md:items-center">
         <div class="relative">
           <Search class="absolute left-2 top-2.5 h-4 w-4 nes-text is-disabled" />
-          <Input;
+          <Input
             bind:value={searchQuery}
             placeholder="Search cases with AI vector search..."
             class="pl-8 w-full md:w-[400px]"
@@ -400,6 +401,7 @@
               {/if}
               AI Search
             {/snippet}
+          </Button>
           <Select
             options={[
               {value: 'all', label: 'All Status'},

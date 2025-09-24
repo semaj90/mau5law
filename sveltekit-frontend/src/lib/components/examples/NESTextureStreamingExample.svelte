@@ -33,7 +33,7 @@
       title: 'Email Evidence Chain',
       complexity: 0.4,
       size: { width: 1024, height: 768 },
-      type: 'evidence';
+      type: 'evidence'
     },
     {
       id: 'motion_summary_judgment',

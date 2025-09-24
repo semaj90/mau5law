@@ -29,7 +29,7 @@ const ALLOWED_TYPES = ['application/pdf', 'text/plain', 'image/png', 'image/jpeg
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 // Upload directory
 const UPLOAD_DIR = path.join(process.cwd(), 'uploads')
-}
+
 export interface UploadResult {
   success: boolean
   documentId?: string

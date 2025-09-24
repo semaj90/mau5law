@@ -17,7 +17,7 @@
       address: '123 Main St, City',
       status: 'Person of Interest',
       caseIds: ['case-001', 'case-003'],
-      lastUpdated: new Date().toISOString();
+      lastUpdated: new Date().toISOString()
     },
     {
       id: '2',

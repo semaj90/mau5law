@@ -67,7 +67,7 @@ async function runTypeScriptCheck(): Promise<any> {
         })
         tscProcess.on('close', () => {
           const errorLines = output.split('\n').filter(line =>
-            line.includes('TS') && (line.includes('error') || line.includes('warning')
+            line.includes('TS') && (line.includes('error') || line.includes('warning'))
           )
           resolve({
             total: errorLines.length,

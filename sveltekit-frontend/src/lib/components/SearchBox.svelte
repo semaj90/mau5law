@@ -33,7 +33,7 @@
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
-					q: trimmedQuery
+					q: trimmedQuery,
 					limit: limit
 				})
 			});

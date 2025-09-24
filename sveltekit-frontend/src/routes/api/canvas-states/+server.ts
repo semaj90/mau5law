@@ -68,7 +68,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
         .where(filters.length > 0 ? and(...filters) : undefined)
       const totalCount = totalCountResult[0]?.count || 0
       return json({
-        canvasStates: canvasStateList
+        canvasStates: canvasStateList,
         totalCount,
         hasMore: offset + limit < totalCount,
         pagination: {
@@ -95,8 +95,8 @@ export async function POST({ request, locals }: RequestEvent): Promise<any> {
     // Validate required fields
     if (!data.name || !data.layoutData) {
       return json(
-        { error: "Name and layout data are required" },)
-        { status: 400 },
+        { error: "Name and layout data are required" },
+        { status: 400 }
       )
     }
     const canvasStateData = {
@@ -133,8 +133,8 @@ export async function PUT({ request, locals }: RequestEvent): Promise<any> {
     const existingCanvasState = await db
       .select()
       .from(canvasLayouts)
-      .where(eq(canvasLayouts.id, data.id)
-      .limit(1)
+      .where(eq(canvasLayouts.id, data.id))
+      .limit(1);
     if (!existingCanvasState.length) {
       return json({ error: "Canvas state not found" }, { status: 404 })
     }

@@ -200,8 +200,8 @@ Generate the boilerplate text:`
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 model: CONFIG.ollama?.model || "unknown", // @ts-ignore - Model property access
-                prompt: fullPrompt
-                stream: false
+                prompt: fullPrompt,
+                stream: false,
                 options: {
                     temperature: 0.4,
                     top_p: 0.9,
@@ -216,11 +216,11 @@ Generate the boilerplate text:`
         const data = await (response as { ok?: any; status?: any; json?: any }).json()
         const generatedText = (data as { response?: any }).response.trim()
         // Calculate confidence based on phrase usage
-        const phrasesUsed = sourcePhrases.filter((p: any) => generatedText.toLowerCase().includes(p.phrase.toLowerCase()
+        const phrasesUsed = sourcePhrases.filter((p: any) => generatedText.toLowerCase().includes(p.phrase.toLowerCase())
         ).length
         const confidence = Math.min((phrasesUsed / sourcePhrases.length) * 0.8 + 0.2, 1.0)
         return {
-            text: generatedText
+            text: generatedText,
             confidence,
             prosecutionStrength: avgProsecutionScore
         }

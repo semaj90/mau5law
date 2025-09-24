@@ -146,16 +146,14 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
           message: 'Invalid request format',
           errors: err.errors
-        },)
+        },
         { status: 400 }
       )
     }
     return json({
         message: 'Autocomplete service temporarily unavailable',
         details: err instanceof Error ? err.message: 'Unknown error'
-      },)
-      { status: 500 }
-    )
+      }, { status: 500 })
   }
 }
 async function getCachedSuggestions(query: string): Promise<any> {

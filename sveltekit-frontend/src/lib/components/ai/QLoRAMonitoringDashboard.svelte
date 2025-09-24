@@ -82,7 +82,7 @@ await fetchMetrics();
 					systemLoad: data.systemMetrics.systemLoad || metrics.systemLoad,
 					predictorStatus: data.systemMetrics.predictorStatus || metrics.predictorStatus,
 					searchEngineStatus: data.systemMetrics.searchEngineStatus || metrics.searchEngineStatus,
-					webgpuEnabled: data.systemMetrics.webgpuEnabled || metrics.webgpuEnabled;
+					webgpuEnabled: data.systemMetrics.webgpuEnabled || metrics.webgpuEnabled
 				};
 				const newCacheStats: CacheStatistics = {
 					hitRate: data.cacheStatistics.hitRate || cacheStats.hitRate,

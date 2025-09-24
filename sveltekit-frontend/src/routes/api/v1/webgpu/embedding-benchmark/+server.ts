@@ -59,11 +59,11 @@ export const GET: RequestHandler = async () => {
     const cacheStats = await embeddingCache.getCacheStats()
     const optimizerStats = await webgpuRedisOptimizer.getOptimizationStats()
     return json({
-      success: true
+      success: true,
       service: 'legal-embedding-benchmark',
       systemStatus: {
-        embeddingCache: cacheStats
-        webgpuOptimizer: optimizerStats
+        embeddingCache: cacheStats,
+        webgpuOptimizer: optimizerStats,
         sampleDocuments: {
           contracts: SAMPLE_LEGAL_DOCUMENTS.contracts.length,
           cases: SAMPLE_LEGAL_DOCUMENTS.cases.length,

@@ -44,14 +44,14 @@ export const POST: RequestHandler = async ({ request }) => {
               content: chunk,
               timestamp: Date.now()
             })
-            controller.enqueue(new TextEncoder().encode(`data: ${data}\n\n`)
+            controller.enqueue(new TextEncoder().encode(`data: ${data}\n\n`))
           }
           // Send completion event
           const completeData = JSON.stringify({
             type: 'complete',
             timestamp: Date.now()
           })
-          controller.enqueue(new TextEncoder().encode(`data: ${completeData}\n\n`)
+          controller.enqueue(new TextEncoder().encode(`data: ${completeData}\n\n`))
           controller.close()
         } catch (err) {
           console.error('Streaming error:', err)

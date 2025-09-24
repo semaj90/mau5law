@@ -226,7 +226,7 @@ Provide comprehensive legal guidance as appropriate for the query.`
       confidence -= 0.1
     }
     // Ensure confidence is between 0 and 1
-    return Math.max(0, Math.min(1, confidence)
+    return Math.max(0, Math.min(1, confidence))
   }
   private extractReasoning(response: string): string {
     // Look for explanation phrases

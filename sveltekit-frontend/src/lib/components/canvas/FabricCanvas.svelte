@@ -79,7 +79,7 @@ let uploadProgress = $state(new Map<string, number>());
       width,
       height,
       backgroundColor: '#f8fafc',
-      selection: !readOnly;
+      selection: !readOnly
     });
     if (gridEnabled) {
       drawGrid(fabric);

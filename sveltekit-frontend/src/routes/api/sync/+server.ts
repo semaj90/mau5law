@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ url }) => {
           status: 'ok',
           system: 'Neural Topology Mock API Sync',
           version: '1.0.0',
-          health: healthCheck
+          health: healthCheck,
           endpoints: {
             sync: '/api/sync?action=full',
             search: '/api/sync/search',

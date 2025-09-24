@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (!Array.isArray(queryVector) || queryVector.length === 0) {
         return json({ error: "Missing or invalid queryVector" }, { status: 400 })
     }
-    const results = await vectorSearch(queryVector, Math.min(topK, 50)
+    const results = await vectorSearch(queryVector, Math.min(topK, 50))
     return json({ results, count: results.length }, { status: 200 })
 }
 export const GET: RequestHandler = async () => json({ service: 'search-similarity', status: 'ok' })

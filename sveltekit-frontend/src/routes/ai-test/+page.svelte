@@ -146,6 +146,7 @@
               {systemStatus.ollama.error}
             </p>
           {/if}
+        {/if}
       </div>
       <!-- Database Status -->
       <div class="p-6 nes-container">
@@ -174,6 +175,7 @@
               {systemStatus.database.error}
             </p>
           {/if}
+        {/if}
       </div>
       <!-- GPU/Hardware Status -->
       <div class="p-6 nes-container">

@@ -98,8 +98,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Validate required fields
     if (!data.firstName || !data.lastName) {
       return json(
-        { error: "First name and last name are required" },)
-        { status: 400 },
+        { error: "First name and last name are required" },
+        { status: 400 }
       )
     }
     // Map frontend data to schema fields
@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       lastName: data.lastName.trim(),
       middleName: data.middleName?.trim() || null,
       aliases: data.aliases || [],
-      dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : null
+      dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : null,
       placeOfBirth: data.placeOfBirth?.trim() || null,
       address: data.address?.trim() || null,
       phone: data.phone?.trim() || null,

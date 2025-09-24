@@ -59,9 +59,9 @@ export const POST: RequestHandler = async ({ request }) => {
       // Route to CUDA service for GPU acceleration
       const cudaResult = await processCUDAVectorOperation({
         operation,
-        vectorA: normalizedVectorA
-        vectorB: normalizedVectorB
-        vectors: normalizedVectors
+        vectorA: normalizedVectorA,
+        vectorB: normalizedVectorB,
+        vectors: normalizedVectors,
         algorithm,
         requestId
       })

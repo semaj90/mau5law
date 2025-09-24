@@ -34,7 +34,7 @@
 			evidence: 23,
 			aiConfidence: 87,
 			lastActivity: '2 hours ago',
-			deadline: '3 days';
+			deadline: '3 days'
 		},
 		{
 			id: '2',
@@ -424,7 +424,7 @@
 		{/if}
 		{#if showQuickInput}
 			<div class="quick-input-panel" transition:fly={{ y: 20, duration: 300 }}>
-				<textarease;
+				<textarea
 					bind:value={quickInput}
 					placeholder="Describe what happened... (e.g., 'Urgent fraud case with missing financial records and uncooperative witness')"
 					class="quick-input"

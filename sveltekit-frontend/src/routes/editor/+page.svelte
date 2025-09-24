@@ -85,7 +85,7 @@
 <svelte:head>
   <title>Legal Report Editor - Advanced Document Creation</title>
   <meta name="description" content="Professional legal report editor with rich text editing, evidence management, and advanced search capabilities." />
-</svelte: head>
+</svelte:head>
 <div class="space-y-4">
   <ReportEditor />
 </div>
@@ -126,7 +126,7 @@
     background: var(--pico-border-color, #cbd5e1);
     border-radius: 4px;
 }
-  :global($1) {
+  :global(::-webkit-scrollbar-thumb:hover) {
     background: var(--pico-muted-color, #94a3b8);
 }
   /* Focus improvements */

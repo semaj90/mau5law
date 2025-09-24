@@ -33,24 +33,24 @@ await loadDemoData();
   				{
   					id: '1',
   					caseId,
-  					criminalId: null
+  					criminalId: null,
   					title: 'Security Camera Footage',
   					description: 'CCTV footage from main entrance',
   					evidenceType: 'video',
   					fileType: 'video/mp4',
-  					subType: null
-  					fileUrl: null
+  					subType: null,
+  					fileUrl: null,
   					fileName: 'security_footage.mp4',
-  					fileSize: null
+  					fileSize: null,
   					mimeType: 'video/mp4',
   					hash: 'abc123def456',
   					tags: [],
   					chainOfCustody: [],
-  					collectedAt: null
-  					collectedBy: null
-  					location: null
-  					labAnalysis: ,
-  					aiAnalysis: ,
+  					collectedAt: null,
+  					collectedBy: null,
+  					location: null,
+  					labAnalysis: {},
+  					aiAnalysis: {},
   					aiTags: [],
   					aiSummary: null
   					summary: null
@@ -77,11 +77,11 @@ await loadDemoData();
   					hash: 'def456ghi789',
   					tags: [],
   					chainOfCustody: [],
-  					collectedAt: null
-  					collectedBy: null
-  					location: null
-  					labAnalysis: ,
-  					aiAnalysis: ,
+  					collectedAt: null,
+  					collectedBy: null,
+  					location: null,
+  					labAnalysis: {},
+  					aiAnalysis: {},
   					aiTags: [],
   					aiSummary: null
   					summary: null
@@ -108,11 +108,11 @@ await loadDemoData();
   					hash: 'ghi789jkl012',
   					tags: [],
   					chainOfCustody: [],
-  					collectedAt: null
-  					collectedBy: null
-  					location: null
-  					labAnalysis: ,
-  					aiAnalysis: ,
+  					collectedAt: null,
+  					collectedBy: null,
+  					location: null,
+  					labAnalysis: {},
+  					aiAnalysis: {},
   					aiTags: [],
   					aiSummary: null
   					summary: null

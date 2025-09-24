@@ -20,7 +20,7 @@ export const GET: RequestHandler = async ({ url }) => {
           title: evidence.title
         })
         .from(evidence)
-        .where(eq(evidence.id, downloadId)
+        .where(eq(evidence.id, downloadId))
         .limit(1)
       if (!results.length) return json({ success: false, error: 'Not found' }, { status: 404 })
       const rec = results[0]
@@ -31,8 +31,8 @@ export const GET: RequestHandler = async ({ url }) => {
         60 * 10
       ); // 10 min expiry
       return json({
-        success: true
-        url: urlSigned
+        success: true,
+        url: urlSigned,
         fileName: rec.objectName,
         title: rec.title
       })

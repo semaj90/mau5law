@@ -86,15 +86,10 @@ Features: Case management, evidence upload, AI chat, vector search
   };
   const loadRecentEvidence = async () => {
     try {
-  let response = $state<Responsetry {
-          response  | null>(null); const data = await fetch(`/api/evidence?caseId=${selectedCaseId}&limit=10`);
-          if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
-            throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
-          }
-        } catch (error) {
-          console.error('Fetch failed:', error);
-          throw error;
-        }
+      const response = await fetch(`/api/evidence?caseId=${selectedCaseId}&limit=10`);
+      if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
+        throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
+      }
       const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
       recentEvidence = (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).data || [];
     } catch (error) {
@@ -118,10 +113,10 @@ Features: Case management, evidence upload, AI chat, vector search
         const response = await fetch('/api/search/vector', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({,
-            query: searchQuery
-            caseId: selectedCaseId
-            type: 'evidence';
+          body: JSON.stringify({
+            query: searchQuery,
+            caseId: selectedCaseId,
+            type: 'evidence'
           })
         });
         const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
@@ -190,10 +185,12 @@ selectCase(caseItem.id)}
             >
               {caseItem.caseNumber} - {caseItem.title}
               <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{caseItem.status}</span>
+            </Button>
           {/each}
           <Button class="bits-btn" variant="ghost" size="sm">
-<Plus class="w-4 h-4 mr-1" />
+            <Plus class="w-4 h-4 mr-1" />
             New Case
+          </Button>
         </div>
       </div>
     </div>
@@ -214,13 +211,14 @@ selectCase(caseItem.id)}
           </div>
           <div class="yorha-panel-content space-y-4">
             <div class="flex gap-2">
-              <Input;
+              <Input
                 bind:value={searchQuery}
                 placeholder="Search evidence, cases, precedents..."
                 class="flex-1"
               />
               <Button class="bits-btn" onclick={performVectorSearch} disabled={!searchQuery.trim()}>
-<Search class="w-4 h-4" />
+                <Search class="w-4 h-4" />
+              </Button>
             </div>
             {#if searchResults.length > 0}
               <div class="space-y-2">
@@ -241,7 +239,7 @@ selectCase(caseItem.id)}
                           </div>
                         {/if}
                       </div>
-                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round.score * 100)}% match</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round(((result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).score || 0) * 100)}% match</span>
                     </div>
                   </div>
                 {/each}
@@ -294,7 +292,8 @@ selectCase(caseItem.id)}
                         </Badge>
                       {/if}
                       <Button class="bits-btn" variant="ghost" size="sm">
-<Eye class="w-4 h-4" />
+                        <Eye class="w-4 h-4" />
+                      </Button>
                     </div>
                   </div>
                 {/each}
@@ -343,9 +342,10 @@ selectCase(caseItem.id)}
                 {/each}
               </div>
             {/if}
-            <Button variant="ghost" size="sm" class="w-full mt-3 bits-btn bits-btn">
-<Plus class="w-4 h-4 mr-1" />
+            <Button variant="ghost" size="sm" class="w-full mt-3 bits-btn">
+              <Plus class="w-4 h-4 mr-1" />
               Add Person of Interest
+            </Button>
           </div>
         </div>
         <!-- AI Chat Assistant -->

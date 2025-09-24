@@ -2,7 +2,7 @@
   import { createEventDispatcher } from 'svelte';
 
   interface YoRHaHarvardButtonProps {
-    variant?: 'primary' | 'secondary' | 'gaming' | 'terminal' | 'badge';
+    variant?: 'primary' | 'secondary' | 'gaming' | 'terminal' | 'badge' | 'grey' | 'crimson-grey';
     size?: 'sm' | 'md' | 'lg';
     disabled?: boolean;
     loading?: boolean;
@@ -40,7 +40,9 @@
     secondary: 'yorha-harvard-btn-secondary',
     gaming: 'yorha-gaming-btn',
     terminal: 'yorha-terminal-btn',
-    badge: 'harvard-gaming-badge'
+    badge: 'harvard-gaming-badge',
+    grey: 'yorha-harvard-grey enhanced-btn-grey',
+    'crimson-grey': 'enhanced-btn-crimson-grey'
   };
 
   function handleClick() {

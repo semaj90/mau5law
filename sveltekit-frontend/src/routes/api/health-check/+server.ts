@@ -102,7 +102,7 @@ export const GET: RequestHandler = async () => {
             .reduce((sum, layer) => sum + layer.hitRate, 0) / enabledLayers
           return {
             status: 'healthy',
-            layers: enabledLayers
+            layers: enabledLayers,
             avgHitRate: Math.round(avgHitRate * 100),
             stats
           }
@@ -114,7 +114,7 @@ export const GET: RequestHandler = async () => {
   ]
   // Run all health checks in parallel
   const results = await Promise.allSettled(checks.map(async ({ name, check }) => {
-      const result = await check())
+      const result = await check();
       return { name, ...result }
     })
   )

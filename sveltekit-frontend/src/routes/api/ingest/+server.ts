@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
       if (!file) {
         throw error(400, 'No file provided in form data')
       }
-      const buffer = Buffer.from(await file.arrayBuffer()
+      const buffer = Buffer.from(await file.arrayBuffer())
       const detectedContentType = detectContentType(buffer, file.name)
       // Validate content
       const validation = validateContentForIngestion(detectedContentType, buffer.length)

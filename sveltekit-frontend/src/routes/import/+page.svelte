@@ -465,11 +465,10 @@ fileInput?.click()}>
       {#if importFile}
         <div class="space-y-4">
           <div class="space-y-4">
-            <Button class="bits-btn"
+            <Button class="bits-btn space-y-4"
               onclick={() =>
 performImport()}
               disabled={isImporting}
-              class="space-y-4"
             >
               {#if isImporting}
                 <div

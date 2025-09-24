@@ -71,9 +71,9 @@ export const GET: RequestHandler = async ({ url }) => {
       alertHistory = alertHistory.slice(0, 100)
     }
     const response: any = {
-      success: true
-      current: currentMetrics
-      health: healthStatus
+      success: true,
+      current: currentMetrics,
+      health: healthStatus,
       summary: {
         uptime: process.uptime(),
         nodeVersion: process.version,

@@ -1,6 +1,6 @@
 <script lang="ts">
   interface YoRHaHarvardCardProps {
-    variant?: 'default' | 'gaming' | 'terminal' | 'legal' | 'academic';
+    variant?: 'default' | 'gaming' | 'terminal' | 'legal' | 'academic' | 'grey' | 'crimson-grey';
     title?: string;
     subtitle?: string;
     glowing?: boolean;
@@ -340,5 +340,32 @@
       opacity: 1;
       filter: brightness(1.2);
     }
+  }
+
+  /* Grey Variant Styles */
+  .yorha-harvard-card--grey {
+    background: var(--enhanced-bg-secondary);
+    border: 1px solid var(--enhanced-accent-grey);
+    color: var(--enhanced-text-primary);
+  }
+
+  .yorha-harvard-card--grey:hover {
+    border-color: var(--enhanced-border-light);
+    background: rgba(106, 106, 106, 0.1);
+  }
+
+  .yorha-harvard-card--crimson-grey {
+    background: linear-gradient(135deg,
+      var(--enhanced-bg-secondary) 0%,
+      rgba(196, 30, 58, 0.05) 100%);
+    border: 1px solid var(--enhanced-accent-grey);
+    color: var(--enhanced-text-primary);
+  }
+
+  .yorha-harvard-card--crimson-grey:hover {
+    border-color: var(--enhanced-accent);
+    background: linear-gradient(135deg,
+      rgba(106, 106, 106, 0.1) 0%,
+      rgba(196, 30, 58, 0.1) 100%);
   }
 </style>

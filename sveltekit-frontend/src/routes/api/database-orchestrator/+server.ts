@@ -24,7 +24,7 @@ export const GET: RequestHandler = async () => {
   } catch (error: any) {
     return json(
       {
-        success: false
+        success: false,
         error: error.message,
         timestamp: new Date().toISOString()
       },
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     return json()
       {
-        success: false
+        success: false,
         error: error.message,
         timestamp: new Date().toISOString()
       },

@@ -303,7 +303,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Agent orchestration failed:', error)
     return json(
       {
-        success: false
+        success: false,
         error: error instanceof Error ? error.message : 'Unknown orchestration error',
         results: [],
         synthesis: {
@@ -315,8 +315,8 @@ export const POST: RequestHandler = async ({ request }) => {
         orchestrationMetadata: {
           totalProcessingTime: Date.now() - startTime,
           agentsUsed: 0,
-          context7Enhanced: false
-          autoFixApplied: false
+          context7Enhanced: false,
+          autoFixApplied: false,
           timestamp: new Date().toISOString()
         }
       },
@@ -363,7 +363,7 @@ function synthesizeResults(results: any[], originalPrompt: string) {
   }
   return {
     bestResult: bestResult.output,
-    consensusScore: avgScore
+    consensusScore: avgScore,
     recommendations,
     nextSteps
   }
@@ -374,7 +374,7 @@ export const GET: RequestHandler = async () => {
     status: 'healthy',
     timestamp: new Date().toISOString(),
     availableAgents: ['claude', 'autogen', 'crewai', 'rag'],
-    context7Enabled: true
+    context7Enabled: true,
     autoFixEnabled: true
   })
 }

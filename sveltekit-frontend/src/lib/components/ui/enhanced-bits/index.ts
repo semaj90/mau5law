@@ -68,3 +68,10 @@ export const ENHANCED_BITS_THEMES = {
   }
 };
 export type EnhancedBitsTheme = keyof typeof ENHANCED_BITS_THEMES;
+
+// YoRHa Harvard Gaming Components
+export { default as YoRHaHarvardButton } from './YoRHaHarvardButton.svelte';
+export { default as YoRHaHarvardCard } from './YoRHaHarvardCard.svelte';
+
+// Enhanced Modal Component
+export { default as EnhancedModal } from './EnhancedModal.svelte';

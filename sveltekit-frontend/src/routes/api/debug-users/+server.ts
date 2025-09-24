@@ -33,12 +33,12 @@ export async function POST(): Promise<any> {
     // Update admin@legal.ai
     const updatedAdmin = await db.update(users)
       .set({ hashedPassword: adminHash })
-      .where(eq(users.email, 'admin@legal.ai')
+      .where(eq(users.email, 'admin@legal.ai'))
       .returning({ id: users.id, email: users.email, role: users.role })
     // Update test@legal.ai
     const updatedTest = await db.update(users)
       .set({ hashedPassword: testHash })
-      .where(eq(users.email, 'test@legal.ai')
+      .where(eq(users.email, 'test@legal.ai'))
       .returning({ id: users.id, email: users.email, role: users.role })
     return json({
       success: true

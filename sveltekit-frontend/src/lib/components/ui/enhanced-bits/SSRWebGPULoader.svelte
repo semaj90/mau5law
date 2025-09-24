@@ -79,7 +79,7 @@
   /**
    * Initialize NES-inspired texture streaming with LOD management
    */
-  async function initializeTextureStreaming() {
+  (async () => {
     try {
       // Calculate optimal LOD level based on context
       const lodContext: LODContext = {
@@ -107,8 +107,7 @@
       textureData = generateFallbackPattern();
       isLoading = false;
     }
-    })();
-  });
+  })();
   /**
    * Generate NES-style fallback pattern when WebGPU is unavailable
    */
