@@ -10,7 +10,7 @@
   		glowEffect?: boolean;
   		soundEnabled?: boolean;
   		onclick?: () => void;
-  		children: unknown
+  		children: unknown;
   	}
   	let { variant = 'primary',
   		size = 'md',
@@ -65,7 +65,7 @@
 	bind:this={buttonElement}
 	class="gaming-button {variant} {size}"
 	class:disabled
-	class:loading
+	class:loading;
 	class:pressed={isPressed}
 	class:glow={glowEffect}
 	{disabled}
@@ -86,7 +86,7 @@
 </button>
 
 <style>
-	.gaming-button {
+	.gaming-button {;
 		position: relative;
 		display: inline-flex;
 		align-items: center;

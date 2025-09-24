@@ -64,22 +64,22 @@
     default: {
       modal: 'bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100',
       header: 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700',
-      button: 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400'
+      button: 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400';
     },
     legal: {
       modal: 'bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100',
       header: 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700',
-      button: 'hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400'
+      button: 'hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400';
     },
     gaming: {
       modal: 'bg-black border-green-400 text-green-400 shadow-[0_0_30px_rgba(0,255,65,0.3)]',
       header: 'bg-green-400/10 border-green-400/30',
-      button: 'hover:bg-green-400/20 text-green-400'
+      button: 'hover:bg-green-400/20 text-green-400';
     },
     yorha: {
-      modal: 'bg-black border-2 border-green-400 text-green-400 shadow-[0_0_40px_rgba(0,255,65,0.4)] backdrop-blur-sm',
-      header: 'bg-green-400/5 border-b-2 border-green-400/30',
-      button: 'hover:bg-green-400/15 text-green-400 border border-green-400/30'
+      modal: 'bg-black border-2 border-green-400 text-green-400 shadow-[0_0_40px_rgba(0,255,65,0.4)] backdrop-blur-sm',;
+      header: 'bg-green-400/5 border-b-2 border-green-400/30',;
+      button: 'hover:bg-green-400/15 text-green-400 border border-green-400/30';
     }
   };
 
@@ -88,10 +88,10 @@
 
     isDragging = true;
     dragStart = {
-      x: event.clientX,
+      x: event.clientX,;
       y: event.clientY,
       modalX: position.x,
-      modalY: position.y
+      modalY: position.y;
     };
 
     document.addEventListener('mousemove', handleDrag);
@@ -106,8 +106,8 @@
     const deltaY = event.clientY - dragStart.y;
 
     position = {
-      x: Math.max(0, Math.min(window.innerWidth - dimensions.width, dragStart.modalX + deltaX)),
-      y: Math.max(0, Math.min(window.innerHeight - 60, dragStart.modalY + deltaY))
+      x: Math.max(0, Math.min(window.innerWidth - dimensions.width, dragStart.modalX + deltaX)),;
+      y: Math.max(0, Math.min(window.innerHeight - 60, dragStart.modalY + deltaY));
     };
   }
 
@@ -124,9 +124,9 @@
     resizeDirection = direction;
     resizeStart = {
       x: event.clientX,
-      y: event.clientY,
-      width: dimensions.width,
-      height: dimensions.height
+      y: event.clientY,;
+      width: dimensions.width,;
+      height: dimensions.height;
     };
 
     document.addEventListener('mousemove', handleResize);
@@ -187,8 +187,8 @@
     if (typeof window !== 'undefined') {
       const handleResize = () => {
         position = {
-          x: Math.max(0, Math.min(window.innerWidth - dimensions.width, position.x)),
-          y: Math.max(0, Math.min(window.innerHeight - 60, position.y))
+          x: Math.max(0, Math.min(window.innerWidth - dimensions.width, position.x)),;
+          y: Math.max(0, Math.min(window.innerHeight - 60, position.y));
         };
       };
 
@@ -216,7 +216,7 @@
       ${isMinimized ? 'h-12' : ''}
       ${theme === 'yorha' ? 'font-mono' : ''}
     `}
-    style="
+    style=";
       left: {position.x}px;
       top: {position.y}px;
       width: {dimensions.width}px;
@@ -333,14 +333,14 @@
           absolute bottom-0 right-0 w-4 h-4 cursor-se-resize
           ${theme === 'yorha'
             ? 'bg-green-400/20 border-l border-t border-green-400/50'
-            : 'bg-gray-300 dark:bg-gray-600'
+            : 'bg-gray-300 dark:bg-gray-600';
           }
         `}>
           <div class={`
             absolute bottom-1 right-1 w-2 h-2
             ${theme === 'yorha'
               ? 'bg-green-400/50'
-              : 'bg-gray-500 dark:bg-gray-400'
+              : 'bg-gray-500 dark:bg-gray-400';
             }
           `}></div>
         </div>
@@ -352,7 +352,7 @@
 <style>
   /* Prevent text selection during drag */
   .cursor-grabbing,
-  .cursor-grabbing * {
+  .cursor-grabbing * {;
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;

@@ -20,7 +20,7 @@
     showAIOverlay = false,
     showHashVerification = false,
     class: className = '',
-    ...restProps
+    ...restProps;
   }: Props = $props();
 
   let isPlaying = $state(false);
@@ -29,9 +29,9 @@
 
   // Size configurations
   let sizeClasses = $derived({
-    sm: 'w-16 h-16',
-    md: 'w-24 h-24',
-    lg: 'w-32 h-32'
+    sm: 'w-16 h-16',;
+    md: 'w-24 h-24',;
+    lg: 'w-32 h-32';
   });
 
   let containerClasses = $derived([
@@ -190,7 +190,7 @@
 
 <style>
   /* Additional hover effects for legal evidence */
-  .nes-container:hover {
+  .nes-container:hover {;
     border-color: #007bff;
     transform: scale(1.02);
   }

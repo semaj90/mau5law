@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:focus) and new syntaxes for event handling is not allowed. Use only the onfocus syntax
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:focus) and new syntaxes for event handling is not allowed. Use only the onfocus syntax;
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:focus) and new syntaxes for event handling is not allowed. Use only the onfocus syntax -->
 <script lang="ts">
@@ -69,7 +69,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     reducedMotion = false,
     // Performance defaults
     gpuAcceleration = true,
-    webgpuMode = false
+    webgpuMode = false;
   }: Props = $props();
 
   // Events now handled via props in Svelte 5
@@ -114,8 +114,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   });
 
   // Initialize audio context for spatial audio
-  $effect(async () => {
-    if (spatialAudio && typeof window !== 'undefined') {
+  $effect(() => {
+    (async () => {
+if (spatialAudio && typeof window !== 'undefined') {
       try {
         audioContext = new (window.AudioContext || (window as any).webkitAudioContext();
         spatialPanner = audioContext.createPanner();
@@ -143,6 +144,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         audioContext.close();
       }
     };
+    })();
   });
 
   async function initializeGPUContext() {
@@ -264,7 +266,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     aria-label={ariaLabel}
     aria-describedby={ariaDescribedby}
     onfocus={handleFocus}
-    onblur={oninput}
+    onblur={handleBlur}
+    oninput={handleInput}
     onchange={handleChange}
     onmouseenter={handleMouseEnter}
     onmouseleave={handleMouseLeave}
@@ -300,7 +303,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 </div>
 
 <style>
-  .n64-input-container {
+  .n64-input-container {;
     position: relative;
     display: inline-block;
     font-family: 'Press Start 2P', monospace;
@@ -621,14 +624,14 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
 
   /* Placeholder styling */
-  .n64-input: :placeholder {
+  .n64-input::placeholder {
     color: #808080;
     font-family: 'Press Start 2P', monospace;
     font-size: 10px;
   }
 
   /* Selection styling */
-  .n64-input: :selection {
+  .n64-input::selection {
     background: rgba(255, 215, 0, 0.3);
     color: #ffffff;
   }

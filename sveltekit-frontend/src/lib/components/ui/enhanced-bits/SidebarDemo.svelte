@@ -22,13 +22,13 @@
       id: 'dashboard',
       label: 'Dashboard',
       icon: '📊',
-      badge: '3'
+      badge: '3';
     },
     {
       id: 'documents',
       label: 'Documents',
       icon: '📄',
-      badge: '12',
+      badge: '12',;
       children: [
         { id: 'contracts', label: 'Contracts', icon: '📋', badge: '5' },
         { id: 'evidence', label: 'Evidence', icon: '🔍', badge: '7' },
@@ -39,34 +39,34 @@
       id: 'cases',
       label: 'Cases',
       icon: '📚',
-      badge: '8'
+      badge: '8';
     },
     {
       id: 'clients',
       label: 'Clients',
       icon: '👥',
-      badge: '24'
+      badge: '24';
     },
     {
       id: 'calendar',
       label: 'Calendar',
-      icon: '📅'
+      icon: '📅';
     },
     {
       id: 'reports',
       label: 'Reports',
-      icon: '📈'
+      icon: '📈';
     },
     {
       id: 'ai-assistant',
       label: 'AI Assistant',
       icon: '🤖',
-      badge: 'NEW'
+      badge: 'NEW';
     },
     {
-      id: 'settings',
-      label: 'Settings',
-      icon: '⚙️'
+      id: 'settings',;
+      label: 'Settings',;
+      icon: '⚙️';
     }
   ];
 
@@ -78,7 +78,7 @@
       fileSize: '2.4 MB',
       lastModified: '2024-01-15',
       tags: ['dispute', 'contract', 'commercial'],
-      confidentialityLevel: 'confidential' as const
+      confidentialityLevel: 'confidential' as const;
     },
     {
       title: 'Evidence Package - Email Discovery',
@@ -86,7 +86,7 @@
       fileSize: '1.2 MB',
       lastModified: '2024-01-14',
       tags: ['email', 'discovery', 'evidence'],
-      confidentialityLevel: 'restricted' as const
+      confidentialityLevel: 'restricted' as const;
     },
     {
       title: 'Motion for Preliminary Injunction',
@@ -94,15 +94,15 @@
       fileSize: '896 KB',
       lastModified: '2024-01-13',
       tags: ['motion', 'injunction', 'urgent'],
-      confidentialityLevel: 'public' as const
+      confidentialityLevel: 'public' as const;
     },
     {
       title: 'Case Law Research - Precedents',
       fileType: 'citation' as const,
       fileSize: '654 KB',
-      lastModified: '2024-01-12',
+      lastModified: '2024-01-12',;
       tags: ['research', 'precedent', 'analysis'],
-      confidentialityLevel: 'internal' as const
+      confidentialityLevel: 'internal' as const;
     }
   ];
 
@@ -120,68 +120,68 @@
     switch (page) {
       case 'home':
         return {
-          title: '🏠 Home Dashboard',
-          description: 'Welcome to your legal workspace'
+          title: '🏠 Home Dashboard',;
+          description: 'Welcome to your legal workspace';
         };
       case 'dashboard':
         return {
-          title: '📊 Analytics Dashboard',
-          description: 'Overview of your legal practice metrics'
+          title: '📊 Analytics Dashboard',;
+          description: 'Overview of your legal practice metrics';
         };
       case 'documents':
         return {
-          title: '📄 Document Library',
-          description: 'Manage all your legal documents'
+          title: '📄 Document Library',;
+          description: 'Manage all your legal documents';
         };
       case 'contracts':
         return {
-          title: '📋 Contracts',
-          description: 'Contract management and analysis'
+          title: '📋 Contracts',;
+          description: 'Contract management and analysis';
         };
       case 'evidence':
         return {
-          title: '🔍 Evidence Management',
-          description: 'Digital evidence and discovery tools'
+          title: '🔍 Evidence Management',;
+          description: 'Digital evidence and discovery tools';
         };
       case 'briefs':
         return {
-          title: '⚖️ Legal Briefs',
-          description: 'Brief writing and case preparation'
+          title: '⚖️ Legal Briefs',;
+          description: 'Brief writing and case preparation';
         };
       case 'cases':
         return {
-          title: '📚 Case Management',
-          description: 'Track and manage your legal cases'
+          title: '📚 Case Management',;
+          description: 'Track and manage your legal cases';
         };
       case 'clients':
         return {
-          title: '👥 Client Portal',
-          description: 'Client information and communication'
+          title: '👥 Client Portal',;
+          description: 'Client information and communication';
         };
       case 'calendar':
         return {
-          title: '📅 Legal Calendar',
-          description: 'Court dates, deadlines, and appointments'
+          title: '📅 Legal Calendar',;
+          description: 'Court dates, deadlines, and appointments';
         };
       case 'reports':
         return {
-          title: '📈 Reports & Analytics',
-          description: 'Generate insights from your legal data'
+          title: '📈 Reports & Analytics',;
+          description: 'Generate insights from your legal data';
         };
       case 'ai-assistant':
         return {
-          title: '🤖 AI Legal Assistant',
-          description: 'AI-powered legal research and analysis'
+          title: '🤖 AI Legal Assistant',;
+          description: 'AI-powered legal research and analysis';
         };
       case 'settings':
         return {
-          title: '⚙️ System Settings',
-          description: 'Configure your legal workspace'
+          title: '⚙️ System Settings',;
+          description: 'Configure your legal workspace';
         };
       default:
         return {
-          title: '📄 Page Not Found',
-          description: 'The requested page could not be found'
+          title: '📄 Page Not Found',;
+          description: 'The requested page could not be found';
         };
     }
   }
@@ -459,7 +459,7 @@
 
 <style>
   /* Ensure content shifts smoothly when sidebar expands */
-  main {
+  main {;
     transition: margin-left 0.3s ease-out;
   }
 

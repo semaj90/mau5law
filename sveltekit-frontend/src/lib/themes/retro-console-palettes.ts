@@ -1,6 +1,6 @@
 /**
  * 🎮 Retro Console Color Palettes for Legal AI
- * Authentic color palettes from classic gaming consoles
+ * Authentic color palettes from classic gaming consoles with legal AI integration
  */
 
 export interface ConsolePalette {
@@ -16,17 +16,25 @@ export interface ConsolePalette {
     background: string;
     foreground: string;
     accent: string[];
+    // Legal AI specific colors
+    evidence: string;
+    classification: string;
+    confidence: string;
+    priority: string;
   };
   gradients: {
     main: string;
     modal: string;
     card: string;
+    evidence: string;
+    priority: string;
   };
   constraints: {
     maxColors: number;
     bitDepth: number;
     memoryKB: number;
   };
+  cssVariables: Record<string, string>;
 }
 
 // NES (Nintendo Entertainment System) - 1985
@@ -42,6 +50,10 @@ export const NES_PALETTE: ConsolePalette = {
     error: '#DC3545',        // Red
     background: '#000000',   // Black
     foreground: '#FCFCFC',   // White
+    evidence: '#8B4513',     // Saddle brown
+    classification: '#6B8E23', // Olive drab
+    confidence: '#32CD32',   // Lime green
+    priority: '#FF6347',     // Tomato
     accent: [
       '#7C7C7C',  // Gray
       '#0000FC',  // Blue
@@ -56,12 +68,28 @@ export const NES_PALETTE: ConsolePalette = {
   gradients: {
     main: 'linear-gradient(0deg, #000000, #1C1C1C, #383838)',
     modal: 'linear-gradient(135deg, #000000, #0000FC, #000000)',
-    card: 'linear-gradient(45deg, #1C1C1C, #383838)'
+    card: 'linear-gradient(45deg, #1C1C1C, #383838)',
+    evidence: 'linear-gradient(90deg, #8B4513, #CD853F)',
+    priority: 'linear-gradient(45deg, #FF6347, #DC3545)'
   },
   constraints: {
     maxColors: 54,
     bitDepth: 2,
     memoryKB: 2
+  },
+  cssVariables: {
+    '--nes-primary': '#E52521',
+    '--nes-secondary': '#0084FF',
+    '--nes-tertiary': '#4CAF50',
+    '--nes-success': '#5CB85C',
+    '--nes-warning': '#FFC107',
+    '--nes-error': '#DC3545',
+    '--nes-background': '#000000',
+    '--nes-foreground': '#FCFCFC',
+    '--nes-evidence': '#8B4513',
+    '--nes-classification': '#6B8E23',
+    '--nes-confidence': '#32CD32',
+    '--nes-priority': '#FF6347'
   }
 };
 
@@ -78,6 +106,10 @@ export const SNES_PALETTE: ConsolePalette = {
     error: '#FF0066',        // Hot Pink
     background: '#1A0033',   // Deep Purple
     foreground: '#F8F8F8',   // Off White
+    evidence: '#9C88FF',     // Light purple
+    classification: '#706FD3', // Medium light purple
+    confidence: '#00D2D3',   // Cyan
+    priority: '#FF5252',     // Red
     accent: [
       '#FF6B9D',  // Pink
       '#C44569',  // Rose
@@ -92,12 +124,28 @@ export const SNES_PALETTE: ConsolePalette = {
   gradients: {
     main: 'linear-gradient(180deg, #1A0033, #524A7B, #B266FF)',
     modal: 'linear-gradient(135deg, #1A0033 0%, #524A7B 50%, #B266FF 100%)',
-    card: 'radial-gradient(circle, #524A7B, #1A0033)'
+    card: 'radial-gradient(circle, #524A7B, #1A0033)',
+    evidence: 'linear-gradient(135deg, #9C88FF, #706FD3)',
+    priority: 'linear-gradient(90deg, #FF5252, #FF0066)'
   },
   constraints: {
     maxColors: 32768,
     bitDepth: 15,
     memoryKB: 128
+  },
+  cssVariables: {
+    '--snes-primary': '#B266FF',
+    '--snes-secondary': '#00C8FF',
+    '--snes-tertiary': '#FFD700',
+    '--snes-success': '#00FF00',
+    '--snes-warning': '#FFAA00',
+    '--snes-error': '#FF0066',
+    '--snes-background': '#1A0033',
+    '--snes-foreground': '#F8F8F8',
+    '--snes-evidence': '#9C88FF',
+    '--snes-classification': '#706FD3',
+    '--snes-confidence': '#00D2D3',
+    '--snes-priority': '#FF5252'
   }
 };
 
@@ -114,6 +162,10 @@ export const PS1_PALETTE: ConsolePalette = {
     error: '#FF1744',        // Error Red
     background: '#0A0E27',   // Dark Blue
     foreground: '#E7F6F2',   // Light Cyan
+    evidence: '#8B5CF6',     // Violet
+    classification: '#EC4899', // Pink
+    confidence: '#10B981',   // Emerald
+    priority: '#F59E0B',     // Amber
     accent: [
       '#2196F3',  // Light Blue
       '#00BCD4',  // Cyan
@@ -128,12 +180,28 @@ export const PS1_PALETTE: ConsolePalette = {
   gradients: {
     main: 'linear-gradient(90deg, #0A0E27, #003791, #2196F3)',
     modal: 'linear-gradient(135deg, #003791 0%, #2196F3 50%, #00BCD4 100%)',
-    card: 'linear-gradient(180deg, #0A0E27, #003791)'
+    card: 'linear-gradient(180deg, #0A0E27, #003791)',
+    evidence: 'linear-gradient(45deg, #8B5CF6, #EC4899)',
+    priority: 'linear-gradient(90deg, #F59E0B, #FF1744)'
   },
   constraints: {
     maxColors: 16777216,
     bitDepth: 24,
     memoryKB: 2048
+  },
+  cssVariables: {
+    '--ps1-primary': '#003791',
+    '--ps1-secondary': '#FF3131',
+    '--ps1-tertiary': '#00BF63',
+    '--ps1-success': '#00D452',
+    '--ps1-warning': '#FFB800',
+    '--ps1-error': '#FF1744',
+    '--ps1-background': '#0A0E27',
+    '--ps1-foreground': '#E7F6F2',
+    '--ps1-evidence': '#8B5CF6',
+    '--ps1-classification': '#EC4899',
+    '--ps1-confidence': '#10B981',
+    '--ps1-priority': '#F59E0B'
   }
 };
 
@@ -150,6 +218,10 @@ export const N64_PALETTE: ConsolePalette = {
     error: '#FF0000',        // Pure Red
     background: '#1E1E1E',   // Dark Gray
     foreground: '#F0F0F0',   // Light Gray
+    evidence: '#CD853F',     // Peru
+    classification: '#D2691E', // Chocolate
+    confidence: '#32CD32',   // Lime green
+    priority: '#FF6347',     // Tomato
     accent: [
       '#AA00FF',  // Purple
       '#FF00AA',  // Magenta
@@ -164,12 +236,28 @@ export const N64_PALETTE: ConsolePalette = {
   gradients: {
     main: 'linear-gradient(45deg, #1E1E1E, #00AA00, #0055FF, #FF5555)',
     modal: 'conic-gradient(from 180deg, #00AA00, #0055FF, #FF5555, #AA00FF, #00AA00)',
-    card: 'linear-gradient(135deg, #1E1E1E, #00AA00, #1E1E1E)'
+    card: 'linear-gradient(135deg, #1E1E1E, #00AA00, #1E1E1E)',
+    evidence: 'linear-gradient(90deg, #CD853F, #D2691E)',
+    priority: 'linear-gradient(45deg, #FF6347, #FF0000)'
   },
   constraints: {
     maxColors: 32768,
     bitDepth: 15,
     memoryKB: 4096
+  },
+  cssVariables: {
+    '--n64-primary': '#00AA00',
+    '--n64-secondary': '#0055FF',
+    '--n64-tertiary': '#FF5555',
+    '--n64-success': '#00FF00',
+    '--n64-warning': '#FFFF00',
+    '--n64-error': '#FF0000',
+    '--n64-background': '#1E1E1E',
+    '--n64-foreground': '#F0F0F0',
+    '--n64-evidence': '#CD853F',
+    '--n64-classification': '#D2691E',
+    '--n64-confidence': '#32CD32',
+    '--n64-priority': '#FF6347'
   }
 };
 
@@ -186,6 +274,10 @@ export const PS2_PALETTE: ConsolePalette = {
     error: '#FC5C65',        // Coral
     background: '#0C1929',   // Midnight Blue
     foreground: '#DFE6ED',   // Silver
+    evidence: '#A55EEA',     // Purple
+    classification: '#8854D0', // Deep Purple
+    confidence: '#0FB9B1',   // Turquoise
+    priority: '#FC5C65',     // Red
     accent: [
       '#A55EEA',  // Purple
       '#8854D0',  // Deep Purple
@@ -200,12 +292,84 @@ export const PS2_PALETTE: ConsolePalette = {
   gradients: {
     main: 'linear-gradient(120deg, #0C1929, #1B3A6B, #3A7BC8, #67B3CC)',
     modal: 'linear-gradient(45deg, #1B3A6B 0%, #3A7BC8 25%, #67B3CC 50%, #4ECDC4 75%, #A55EEA 100%)',
-    card: 'radial-gradient(ellipse at top, #3A7BC8, #1B3A6B, #0C1929)'
+    card: 'radial-gradient(ellipse at top, #3A7BC8, #1B3A6B, #0C1929)',
+    evidence: 'linear-gradient(135deg, #A55EEA, #8854D0)',
+    priority: 'linear-gradient(90deg, #FC5C65, #F7B731)'
   },
   constraints: {
     maxColors: 16777216,
     bitDepth: 32,
     memoryKB: 32768
+  },
+  cssVariables: {
+    '--ps2-primary': '#1B3A6B',
+    '--ps2-secondary': '#3A7BC8',
+    '--ps2-tertiary': '#67B3CC',
+    '--ps2-success': '#4ECDC4',
+    '--ps2-warning': '#F7B731',
+    '--ps2-error': '#FC5C65',
+    '--ps2-background': '#0C1929',
+    '--ps2-foreground': '#DFE6ED',
+    '--ps2-evidence': '#A55EEA',
+    '--ps2-classification': '#8854D0',
+    '--ps2-confidence': '#0FB9B1',
+    '--ps2-priority': '#FC5C65'
+  }
+};
+
+// Legal AI Professional Theme
+export const LEGAL_AI_PALETTE: ConsolePalette = {
+  name: 'Legal AI Professional',
+  era: 'Modern',
+  colors: {
+    primary: '#1E293B',      // Slate 800
+    secondary: '#334155',    // Slate 700
+    tertiary: '#00FF88',     // Legal AI green
+    success: '#10B981',      // Emerald 500
+    warning: '#F59E0B',      // Amber 500
+    error: '#EF4444',        // Red 500
+    background: '#0F172A',   // Slate 900
+    foreground: '#F8FAFC',   // Slate 50
+    evidence: '#8B5CF6',     // Violet 500
+    classification: '#EC4899', // Pink 500
+    confidence: '#10B981',   // Emerald 500
+    priority: '#F59E0B',     // Amber 500
+    accent: [
+      '#06B6D4',  // Cyan 500
+      '#8B5CF6',  // Violet 500
+      '#EC4899',  // Pink 500
+      '#10B981',  // Emerald 500
+      '#F59E0B',  // Amber 500
+      '#EF4444',  // Red 500
+      '#6366F1',  // Indigo 500
+      '#84CC16',  // Lime 500
+    ]
+  },
+  gradients: {
+    main: 'linear-gradient(135deg, #0F172A, #1E293B, #00FF88)',
+    modal: 'linear-gradient(45deg, #1E293B 0%, #334155 50%, #00FF88 100%)',
+    card: 'linear-gradient(180deg, #1E293B, #0F172A)',
+    evidence: 'linear-gradient(90deg, #8B5CF6, #EC4899)',
+    priority: 'linear-gradient(45deg, #F59E0B, #EF4444)'
+  },
+  constraints: {
+    maxColors: 16777216,
+    bitDepth: 32,
+    memoryKB: 65536
+  },
+  cssVariables: {
+    '--legal-primary': '#1E293B',
+    '--legal-secondary': '#334155',
+    '--legal-tertiary': '#00FF88',
+    '--legal-success': '#10B981',
+    '--legal-warning': '#F59E0B',
+    '--legal-error': '#EF4444',
+    '--legal-background': '#0F172A',
+    '--legal-foreground': '#F8FAFC',
+    '--legal-evidence': '#8B5CF6',
+    '--legal-classification': '#EC4899',
+    '--legal-confidence': '#10B981',
+    '--legal-priority': '#F59E0B'
   }
 };
 
@@ -215,15 +379,25 @@ export const CONSOLE_PALETTES = {
   snes: SNES_PALETTE,
   ps1: PS1_PALETTE,
   n64: N64_PALETTE,
-  ps2: PS2_PALETTE
+  ps2: PS2_PALETTE,
+  legal: LEGAL_AI_PALETTE
 } as const;
 
+export type ConsolePaletteName = keyof typeof CONSOLE_PALETTES;
+
 // Helper function to apply console palette to CSS variables
-export function applyConsolePalette(consoleName: keyof typeof CONSOLE_PALETTES): void {
+export function applyConsolePalette(consoleName: ConsolePaletteName): void {
+  if (typeof document === 'undefined') return;
+
   const palette = CONSOLE_PALETTES[consoleName];
   const root = document.documentElement;
 
-  // Apply main colors
+  // Apply all CSS variables from the palette
+  Object.entries(palette.cssVariables).forEach(([key, value]) => {
+    root.style.setProperty(key, value);
+  });
+
+  // Apply generic console variables for cross-theme compatibility
   root.style.setProperty('--console-primary', palette.colors.primary);
   root.style.setProperty('--console-secondary', palette.colors.secondary);
   root.style.setProperty('--console-tertiary', palette.colors.tertiary);
@@ -232,19 +406,31 @@ export function applyConsolePalette(consoleName: keyof typeof CONSOLE_PALETTES):
   root.style.setProperty('--console-error', palette.colors.error);
   root.style.setProperty('--console-bg', palette.colors.background);
   root.style.setProperty('--console-fg', palette.colors.foreground);
+  root.style.setProperty('--console-evidence', palette.colors.evidence);
+  root.style.setProperty('--console-classification', palette.colors.classification);
+  root.style.setProperty('--console-confidence', palette.colors.confidence);
+  root.style.setProperty('--console-priority', palette.colors.priority);
 
   // Apply gradients
   root.style.setProperty('--console-gradient-main', palette.gradients.main);
   root.style.setProperty('--console-gradient-modal', palette.gradients.modal);
   root.style.setProperty('--console-gradient-card', palette.gradients.card);
+  root.style.setProperty('--console-gradient-evidence', palette.gradients.evidence);
+  root.style.setProperty('--console-gradient-priority', palette.gradients.priority);
 
   // Apply accent colors
   palette.colors.accent.forEach((color, index) => {
     root.style.setProperty(`--console-accent-${index}`, color);
   });
 
+  // Add theme class to body
+  document.body.className = document.body.className.replace(/theme-\w+/g, '');
+  document.body.classList.add(`theme-${consoleName}`);
+
   // Store current palette in localStorage
-  localStorage.setItem('console-palette', consoleName);
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem('console-palette', consoleName);
+  }
 }
 
 // Get color with bit depth constraint simulation
@@ -284,6 +470,54 @@ export function generateConstrainedGradient(
 
 // Export utility for current palette
 export function getCurrentPalette(): ConsolePalette {
-  const stored = localStorage.getItem('console-palette') as keyof typeof CONSOLE_PALETTES;
-  return CONSOLE_PALETTES[stored] || CONSOLE_PALETTES.nes;
+  if (typeof localStorage === 'undefined') return CONSOLE_PALETTES.legal;
+
+  const stored = localStorage.getItem('console-palette') as ConsolePaletteName;
+  return CONSOLE_PALETTES[stored] || CONSOLE_PALETTES.legal;
+}
+
+// Get all available palette names
+export function getPaletteNames(): ConsolePaletteName[] {
+  return Object.keys(CONSOLE_PALETTES) as ConsolePaletteName[];
+}
+
+// Get palette by name
+export function getPalette(name: ConsolePaletteName): ConsolePalette {
+  return CONSOLE_PALETTES[name];
+}
+
+// Create custom theme CSS from palette
+export function createThemeCSS(paletteName: ConsolePaletteName): string {
+  const palette = CONSOLE_PALETTES[paletteName];
+
+  return `
+/* ${palette.name} - ${palette.era} Theme */
+:root.theme-${paletteName} {
+${Object.entries(palette.cssVariables).map(([key, value]) => `  ${key}: ${value};`).join('\n')}
+
+  /* Generic console variables */
+  --console-primary: ${palette.colors.primary};
+  --console-secondary: ${palette.colors.secondary};
+  --console-tertiary: ${palette.colors.tertiary};
+  --console-success: ${palette.colors.success};
+  --console-warning: ${palette.colors.warning};
+  --console-error: ${palette.colors.error};
+  --console-bg: ${palette.colors.background};
+  --console-fg: ${palette.colors.foreground};
+  --console-evidence: ${palette.colors.evidence};
+  --console-classification: ${palette.colors.classification};
+  --console-confidence: ${palette.colors.confidence};
+  --console-priority: ${palette.colors.priority};
+
+  /* Gradients */
+  --console-gradient-main: ${palette.gradients.main};
+  --console-gradient-modal: ${palette.gradients.modal};
+  --console-gradient-card: ${palette.gradients.card};
+  --console-gradient-evidence: ${palette.gradients.evidence};
+  --console-gradient-priority: ${palette.gradients.priority};
+
+  /* Accent colors */
+${palette.colors.accent.map((color, index) => `  --console-accent-${index}: ${color};`).join('\n')}
+}
+`;
 }

@@ -91,20 +91,22 @@ let gpuMetrics = $state({
 
 
 // Check service health on mount
-$effect(async () => {
-	await checkServiceHealth();
+$effect(() => {
+    (async () => {
+await checkServiceHealth();
 
 	if (enableRealTimeUpdates) {
 		setupRealtimeUpdates();
 	}
-});
+    })();
+  });
 
 // Check backend service status
 async function checkServiceHealth() {
 	try {
 		const response = await fetch('/api/ai/rl-rag', {
-			method: 'GET',
-			signal: AbortSignal.timeout(5000)
+			method: 'GET',;
+			signal: AbortSignal.timeout(5000);
 		});
 
 		if (response.ok) {
@@ -160,7 +162,7 @@ async function performFullStackSearch() {
 
 	try {
 		const response = await fetch('/api/ai/rl-rag', {
-			method: 'POST',
+			method: 'POST',;
 			headers: {
 				'Content-Type': 'application/json',
 			},
@@ -172,10 +174,10 @@ async function performFullStackSearch() {
 				legal_filter: {
 					category: legalDomain,
 					jurisdiction: 'federal',
-					confidence_threshold: 0.7
+					confidence_threshold: 0.7;
 				}
-			}),
-			signal: AbortSignal.timeout(30000) // 30s timeout for complex operations
+			}),;
+			signal: AbortSignal.timeout(30000) // 30s timeout for complex operations;
 		});
 
 		if (!response.ok) {
@@ -196,7 +198,7 @@ async function performFullStackSearch() {
 			query,
 			results,
 			performance,
-			timestamp: Date.now()
+			timestamp: Date.now();
 		});
 
 	} catch (err) {
@@ -217,13 +219,13 @@ async function tryClientSideFallback() {
 		// For now, provide a mock response indicating fallback mode
 		results = [{
 			content: `Client-side analysis: "${query}". This is processed locally using WebAssembly Gemma3-270M model when server services are unavailable.`,
-			score: 0.6,
+			score: 0.6,;
 			metadata: {
 				document_id: 'client_fallback_001',
-				legal_category: 'client_analysis',
+				legal_category: 'client_analysis',;
 				confidence: 0.6,
 				processing_time_ms: 150,
-				gpu_accelerated: false
+				gpu_accelerated: false;
 			}
 		}];
 
@@ -516,25 +518,25 @@ $effect(() => {
 
 <style>
 	.full-stack-legal-ai {
-		/* Additional component-specific styles */
+		/* Additional component-specific styles */;
 		font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
 	}
 
 	/* Custom scrollbar for result content */
-	.full-stack-legal-ai: global(.overflow-auto::-webkit-scrollbar) {
+	.full-stack-legal-ai :global(.overflow-auto::-webkit-scrollbar) {
 		width: 6px;
 	}
 
-	.full-stack-legal-ai: global(.overflow-auto::-webkit-scrollbar-track) {
+	.full-stack-legal-ai :global(.overflow-auto::-webkit-scrollbar-track) {
 		background: rgb(var(--muted));
 	}
 
-	.full-stack-legal-ai: global(.overflow-auto::-webkit-scrollbar-thumb) {
+	.full-stack-legal-ai :global(.overflow-auto::-webkit-scrollbar-thumb) {
 		background: rgb(var(--border));
 		border-radius: 3px;
 	}
 
-	.full-stack-legal-ai: global(.overflow-auto::-webkit-scrollbar-thumb:hover) {
+	.full-stack-legal-ai :global(.overflow-auto::-webkit-scrollbar-thumb:hover) {
 		background: rgb(var(--primary));
 	}
 
@@ -544,7 +546,7 @@ $effect(() => {
 		50% { box-shadow: 0 0 20px rgb(var(--primary) / 0.6); }
 	}
 
-	.full-stack-legal-ai: global(.animate-pulse-glow) {
+	.full-stack-legal-ai :global(.animate-pulse-glow) {
 		animation: pulse-glow 2s ease-in-out infinite;
 	}
 </style>

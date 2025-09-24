@@ -23,18 +23,18 @@
   }: NESCardProps = $props();
 
   const sizeClasses = {
-    sm: 'p-3',
-    md: 'p-4',
-    lg: 'p-6'
+    sm: 'p-3',;
+    md: 'p-4',;
+    lg: 'p-6';
   };
 
   const variantClasses = {
     default: 'nes-card',
     dark: 'nes-card-dark',
     primary: 'nes-card-primary',
-    success: 'nes-card-success',
-    warning: 'nes-card-warning',
-    danger: 'nes-card-danger'
+    success: 'nes-card-success',;
+    warning: 'nes-card-warning',;
+    danger: 'nes-card-danger';
   };
 </script>
 
@@ -62,7 +62,7 @@
 </div>
 
 <style>
-  .nes-card-container {
+  .nes-card-container {;
     position: relative;
     display: flex;
     flex-direction: column;

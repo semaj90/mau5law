@@ -83,7 +83,7 @@
     // Performance defaults
     gpuAcceleration = true,
     webgpuMode = false,
-    renderQuality = 'medium'
+    renderQuality = 'medium';
    }: Props = $props();
 
   
@@ -165,8 +165,9 @@
   });
 
   // Initialize audio and GPU contexts
-  $effect(async () => {
-    if (spatialAudio && typeof window !== 'undefined') {
+  $effect(() => {
+    (async () => {
+if (spatialAudio && typeof window !== 'undefined') {
       try {
         audioContext = new (window.AudioContext || (window as any).webkitAudioContext();
         spatialPanner = audioContext.createPanner();
@@ -205,6 +206,7 @@
         audioContext.close();
       }
     };
+    })();
   });
 
   async function initializeGPUContext() {
@@ -393,25 +395,25 @@
     switch (animationType) {
       case 'fly':
         return fly(node, { 
-          duration: animationDuration, 
-          y: -50,
-          opacity: 0 
+          duration: animationDuration, ;
+          y: -50,;
+          opacity: 0 ;
         });
       case 'scale':
         return scale(node, { 
-          duration: animationDuration, 
-          start: 0.8,
-          opacity: 0 
+          duration: animationDuration, ;
+          start: 0.8,;
+          opacity: 0 ;
         });
       case 'slide':
         return fly(node, { 
-          duration: animationDuration, 
-          x: -100,
-          opacity: 0 
+          duration: animationDuration, ;
+          x: -100,;
+          opacity: 0 ;
         });
       default:
-        return fade(node, { 
-          duration: animationDuration 
+        return fade(node, { ;
+          duration: animationDuration ;
         });
     }
   }
@@ -514,7 +516,7 @@
   </dialog>
 {/if}
 
-<style>/* Dialog backdrop */ .n64-dialog-backdrop {
+<style>/* Dialog backdrop */ .n64-dialog-backdrop {;
     position: fixed;
     top: 0;
     left: 0;
@@ -601,7 +603,7 @@ background: linear-gradient( to top, rgba(var(--fog-color-rgb, 100, 150, 255), 0
     justify-content: center;
   }
 
-  .n64-dialog: :backdrop {
+  .n64-dialog::backdrop {
     display: none; /* Use custom backdrop */
   }
 

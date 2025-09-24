@@ -32,8 +32,8 @@
     analyticsLog({ event: 'ai_search_submitted', query, userContext, timestamp: Date.now() });
     try {
       const res = await fetch('/api/semantic-search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ query, userContext, neo4jContext })
       });
       const data = await res.json();

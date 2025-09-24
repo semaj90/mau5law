@@ -26,28 +26,28 @@
       title: 'Legal AI System',
       description: 'Advanced neural networks for legal analysis',
       status: 'online',
-      icon: '⚖️'
+      icon: '⚖️';
     },
     {
       id: 'evidence',
       title: 'Evidence Processing',
       description: 'Blockchain-verified evidence management',
       status: 'processing',
-      icon: '🔍'
+      icon: '🔍';
     },
     {
       id: 'knowledge',
       title: 'Knowledge Graph',
       description: 'Connected legal precedent database',
       status: 'online',
-      icon: '🧠'
+      icon: '🧠';
     },
     {
       id: 'gpu-cluster',
       title: 'GPU Cluster',
-      description: 'High-performance tensor operations',
-      status: 'warning',
-      icon: '⚡'
+      description: 'High-performance tensor operations',;
+      status: 'warning',;
+      icon: '⚡';
     }
   ];
 
@@ -265,7 +265,7 @@
 </div>
 
 <style>
-  .nes-gaming-showcase {
+  .nes-gaming-showcase {;
     padding: 2rem;
     font-family: 'Press Start 2P', cursive;
     background: linear-gradient(135deg, #1a1a2e, #16213e);

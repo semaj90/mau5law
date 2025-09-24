@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousemove) and new syntaxes for event handling is not allowed. Use only the onmousemove syntax
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousemove) and new syntaxes for event handling is not allowed. Use only the onmousemove syntax;
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousemove) and new syntaxes for event handling is not allowed. Use only the onmousemove syntax -->
 <script lang="ts">
@@ -74,7 +74,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     // Performance defaults
     gpuAcceleration = true,
     webgpuMode = false,
-    renderDistance = 'medium'
+    renderDistance = 'medium';
   }: Props = $props();
 
   // Events now handled via props in Svelte 5
@@ -159,8 +159,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
 
   // Initialize audio and GPU contexts
-  $effect(async () => {
-    if (spatialAudio && typeof window !== 'undefined') {
+  $effect(() => {
+    (async () => {
+if (spatialAudio && typeof window !== 'undefined') {
       try {
         audioContext = new (window.AudioContext || (window as any).webkitAudioContext();
         spatialPanner = audioContext.createPanner();
@@ -188,6 +189,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         audioContext.close();
       }
     };
+    })();
   });
 
   async function initializeGPUContext() {
@@ -328,18 +330,19 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   class="n64-nier-bits-card-container {className}"
   style={cardStyles()}
 >
-  <article
+  <article;
     bind:this={cardElement}
     class={cardClasses()}
     {role}
     {tabindex}
     aria-label={ariaLabel}
     aria-describedby={ariaDescribedby}
-    onMousemove={handleMouseMove}
+    onmousemove={handleMouseMove}
     onmouseenter={handleMouseEnter}
     onmouseleave={handleMouseLeave}
-    onMousedown={handleMouseDown}
-    onmouseup={onclick}
+    onmousedown={handleMouseDown}
+    onmouseup={handleMouseUp}
+    onclick={handleClick}
     onkeydown={handleKeydown}
   >
     <!-- N64 Visual Enhancement Layers -->
@@ -409,7 +412,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 </div>
 
 <style>
-  .n64-card-container {
+  .n64-card-container {;
     position: relative;
     display: inline-block;
     font-family: 'Press Start 2P', monospace;

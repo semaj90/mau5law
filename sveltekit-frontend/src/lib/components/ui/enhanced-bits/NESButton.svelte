@@ -31,17 +31,17 @@
   let isHovered = $state(false);
 
   const sizeClasses = {
-    sm: 'px-3 py-1 text-xs',
-    md: 'px-4 py-2 text-sm',
-    lg: 'px-6 py-3 text-base'
+    sm: 'px-3 py-1 text-xs',;
+    md: 'px-4 py-2 text-sm',;
+    lg: 'px-6 py-3 text-base';
   };
 
   const variantClasses = {
     default: 'nes-button',
     primary: 'nes-button-primary',
-    success: 'nes-button-success',
-    warning: 'nes-button-warning',
-    danger: 'nes-button-danger'
+    success: 'nes-button-success',;
+    warning: 'nes-button-warning',;
+    danger: 'nes-button-danger';
   };
 
   function handleClick() {
@@ -96,7 +96,7 @@
 </button>
 
 <style>
-  .nes-btn {
+  .nes-btn {;
     position: relative;
     display: inline-flex;
     align-items: center;

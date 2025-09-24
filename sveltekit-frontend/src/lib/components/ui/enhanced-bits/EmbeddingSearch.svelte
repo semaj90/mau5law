@@ -9,9 +9,9 @@
 
   // Search validation schema
   const searchSchema = z.object({
-    query: z.string().min(1, "Search query is required").max(1000, "Query too long"),
-    threshold: z.number().min(0).max(1).default(0.7),
-    limit: z.number().min(1).max(20).default(5)
+    query: z.string().min(1, "Search query is required").max(1000, "Query too long"),;
+    threshold: z.number().min(0).max(1).default(0.7),;
+    limit: z.number().min(1).max(20).default(5);
   });
 
   interface SearchResult {
@@ -50,8 +50,8 @@
     try {
       // Always try Gemma API first
       const response = await fetch('/api/embeddings/gemma?action=generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ text })
       });
 
@@ -122,9 +122,9 @@
       const searchParams = new URLSearchParams({
         action: 'search',
         query,
-        embedding: JSON.stringify(queryEmbedding),
-        limit: limit.toString(),
-        threshold: threshold.toString()
+        embedding: JSON.stringify(queryEmbedding),;
+        limit: limit.toString(),;
+        threshold: threshold.toString();
       });
 
       const response = await fetch(`/api/embeddings/enhanced?${searchParams}`);
@@ -314,7 +314,7 @@
 </div>
 
 <style>
-  .search-container {
+  .search-container {;
     max-width: 1000px;
     margin: 0 auto;
     padding: 1rem;

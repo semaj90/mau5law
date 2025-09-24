@@ -53,41 +53,41 @@
       id: '1',
       type: 'document',
       title: 'Contract Agreement',
-      content: 'Employment contract between parties',
+      content: 'Employment contract between parties',;
       position: { x: 100, y: 100 },
       size: { width: 200, height: 150 },
-      color: '#3b82f6',
+      color: '#3b82f6',;
       metadata: { fileType: 'pdf', size: '2.4MB' }
     },
     {
       id: '2',
       type: 'image',
       title: 'Signed Document',
-      content: 'Signature verification',
+      content: 'Signature verification',;
       position: { x: 350, y: 150 },
       size: { width: 180, height: 120 },
-      color: '#10b981',
+      color: '#10b981',;
       metadata: { resolution: '1920x1080', format: 'PNG' }
     },
     {
       id: '3',
       type: 'note',
       title: 'Legal Analysis',
-      content: 'Key points:\n- Clause 4.2 needs review\n- Liability section unclear\n- Termination conditions',
+      content: 'Key points:\n- Clause 4.2 needs review\n- Liability section unclear\n- Termination conditions',;
       position: { x: 150, y: 300 },
       size: { width: 250, height: 180 },
       color: '#f59e0b',
-      connections: ['1', '2']
+      connections: ['1', '2'];
     },
     {
       id: '4',
       type: 'link',
       title: 'Case Precedent',
-      content: 'Similar case: Johnson v. TechCorp (2023)',
+      content: 'Similar case: Johnson v. TechCorp (2023)',;
       position: { x: 450, y: 350 },
       size: { width: 200, height: 100 },
-      color: '#8b5cf6',
-      connections: ['3']
+      color: '#8b5cf6',;
+      connections: ['3'];
     }
   ];
 
@@ -103,25 +103,25 @@
       background: 'bg-gray-50 dark:bg-gray-900',
       grid: 'opacity-20',
       item: 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100',
-      connection: 'stroke-gray-400 dark:stroke-gray-500'
+      connection: 'stroke-gray-400 dark:stroke-gray-500';
     },
     legal: {
       background: 'bg-slate-50 dark:bg-slate-900',
       grid: 'opacity-20',
       item: 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100',
-      connection: 'stroke-slate-400 dark:stroke-slate-500'
+      connection: 'stroke-slate-400 dark:stroke-slate-500';
     },
     gaming: {
       background: 'bg-black',
       grid: 'opacity-30 stroke-green-400',
       item: 'border-green-400 bg-black text-green-400 shadow-[0_0_15px_rgba(0,255,65,0.3)]',
-      connection: 'stroke-green-400'
+      connection: 'stroke-green-400';
     },
     yorha: {
       background: 'bg-black',
-      grid: 'opacity-40 stroke-green-400',
-      item: 'border-2 border-green-400 bg-black text-green-400 shadow-[0_0_20px_rgba(0,255,65,0.4)] font-mono',
-      connection: 'stroke-green-400 stroke-2'
+      grid: 'opacity-40 stroke-green-400',;
+      item: 'border-2 border-green-400 bg-black text-green-400 shadow-[0_0_20px_rgba(0,255,65,0.4)] font-mono',;
+      connection: 'stroke-green-400 stroke-2';
     }
   };
 
@@ -130,9 +130,9 @@
       document: '📄',
       image: '🖼️',
       video: '🎥',
-      audio: '🎵',
-      note: '📝',
-      link: '🔗'
+      audio: '🎵',;
+      note: '📝',;
+      link: '🔗';
     };
     return icons[type];
   }
@@ -143,8 +143,8 @@
     const rect = boardElement.getBoundingClientRect();
     draggedItem = item;
     dragOffset = {
-      x: event.clientX - rect.left - item.position.x,
-      y: event.clientY - rect.top - item.position.y
+      x: event.clientX - rect.left - item.position.x,;
+      y: event.clientY - rect.top - item.position.y;
     };
 
     document.addEventListener('mousemove', handleDrag);
@@ -231,12 +231,12 @@
 
     const newItem: EvidenceItem = {
       id: Date.now().toString(),
-      type,
+      type,;
       title: `New ${type}`,
-      content: '',
+      content: '',;
       position: { x: 50, y: 50 },
-      size: { width: 200, height: 150 },
-      color: '#6b7280'
+      size: { width: 200, height: 150 },;
+      color: '#6b7280';
     };
 
     items = [...items, newItem];
@@ -251,13 +251,13 @@
     if (!fromItem || !toItem) return '';
 
     const fromCenter = {
-      x: fromItem.position.x + fromItem.size.width / 2,
-      y: fromItem.position.y + fromItem.size.height / 2
+      x: fromItem.position.x + fromItem.size.width / 2,;
+      y: fromItem.position.y + fromItem.size.height / 2;
     };
 
     const toCenter = {
-      x: toItem.position.x + toItem.size.width / 2,
-      y: toItem.position.y + toItem.size.height / 2
+      x: toItem.position.x + toItem.size.width / 2,;
+      y: toItem.position.y + toItem.size.height / 2;
     };
 
     return `M ${fromCenter.x} ${fromCenter.y} L ${toCenter.x} ${toCenter.y}`;
@@ -428,7 +428,7 @@
               px-1.5 py-0.5 text-xs rounded
               ${theme === 'yorha'
                 ? 'bg-green-400/10 text-green-400 border border-green-400/30'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400';
               }
             `}>
               {key}: {value}
@@ -460,7 +460,7 @@
       absolute bottom-4 left-4 flex space-x-2 p-2 rounded-lg
       ${theme === 'yorha'
         ? 'bg-black/80 border border-green-400/30 backdrop-blur-sm'
-        : 'bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 shadow-lg'
+        : 'bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 shadow-lg';
       }
     `}>
       <button
@@ -469,7 +469,7 @@
           px-3 py-1 rounded text-sm transition-colors
           ${theme === 'yorha'
             ? 'hover:bg-green-400/20 text-green-400 border border-green-400/30'
-            : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
+            : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300';
           }
         `}
         title="Add Note"
@@ -483,7 +483,7 @@
           px-3 py-1 rounded text-sm transition-colors
           ${theme === 'yorha'
             ? 'hover:bg-green-400/20 text-green-400 border border-green-400/30'
-            : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
+            : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300';
           }
         `}
         title="Add Document"
@@ -497,7 +497,7 @@
           px-3 py-1 rounded text-sm transition-colors
           ${theme === 'yorha'
             ? 'hover:bg-green-400/20 text-green-400 border border-green-400/30'
-            : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
+            : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300';
           }
         `}
         title="Add Link"
@@ -512,7 +512,7 @@
             px-3 py-1 rounded text-sm transition-colors
             ${theme === 'yorha'
               ? 'hover:bg-red-400/20 text-red-400 border border-red-400/30'
-              : 'hover:bg-red-100 dark:hover:bg-red-900 text-red-600 dark:text-red-400'
+              : 'hover:bg-red-100 dark:hover:bg-red-900 text-red-600 dark:text-red-400';
             }
           `}
           title="Delete Selected"
@@ -530,7 +530,7 @@
         text-center p-8 rounded-lg border-2 border-dashed
         ${theme === 'yorha'
           ? 'border-green-400/30 text-green-400/70 font-mono'
-          : 'border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400'
+          : 'border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400';
         }
       `}>
         <div class="text-4xl mb-4">🔍</div>
@@ -546,7 +546,7 @@
 
 <style>
   /* Smooth animations for YoRHa theme */
-  :global(.yorha-evidence-item) {
+  :global(.yorha-evidence-item) {;
     animation: yorha-item-glow 2s ease-in-out infinite alternate;
   }
 

@@ -21,7 +21,7 @@
     showRefresh = true,
     showExport = false,
     class: className = '',
-    ...restProps
+    ...restProps;
   }: Props = $props();
 
   let isRefreshing = $state(false);

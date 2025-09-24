@@ -22,7 +22,7 @@
     class: className = '',
     children,
     header,
-    footer
+    footer;
   }: CardProps = $props();
 
   let cardClasses = $derived.by(() => {
@@ -35,7 +35,7 @@
         legal: 'nes-container with-title is-rounded',
         evidence: 'nes-container with-title is-dark',
         case: 'nes-container with-title',
-        dark: 'nes-container with-title is-dark'
+        dark: 'nes-container with-title is-dark';
       };
       classes.push(nesVariants[variant] || nesVariants.default);
     } else {

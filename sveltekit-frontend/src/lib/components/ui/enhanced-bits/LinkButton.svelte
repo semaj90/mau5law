@@ -22,7 +22,7 @@
     disabled = false,
     class: className = '',
     onclick,
-    children
+    children;
   }: Props = $props();
 
   function handleClick(event: MouseEvent) {

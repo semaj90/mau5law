@@ -24,7 +24,7 @@
       lastModified: '2024-01-15',
       tags: ['employment', 'contract', 'tech'],
       confidentialityLevel: 'confidential' as const,
-      description: 'Standard employment agreement with non-compete clauses and intellectual property assignments.'
+      description: 'Standard employment agreement with non-compete clauses and intellectual property assignments.';
     },
     {
       title: 'Evidence Bundle - Email Chain',
@@ -33,7 +33,7 @@
       lastModified: '2024-01-12',
       tags: ['email', 'correspondence', 'discovery'],
       confidentialityLevel: 'restricted' as const,
-      description: 'Email correspondence between parties regarding contract negotiations.'
+      description: 'Email correspondence between parties regarding contract negotiations.';
     },
     {
       title: 'Motion for Summary Judgment',
@@ -42,16 +42,16 @@
       lastModified: '2024-01-10',
       tags: ['motion', 'summary judgment', 'litigation'],
       confidentialityLevel: 'public' as const,
-      description: 'Legal brief arguing for summary judgment based on lack of material facts.'
+      description: 'Legal brief arguing for summary judgment based on lack of material facts.';
     },
     {
       title: 'Case Citations and Precedents',
       fileType: 'citation' as const,
       fileSize: '512 KB',
-      lastModified: '2024-01-08',
+      lastModified: '2024-01-08',;
       tags: ['citations', 'precedent', 'research'],
-      confidentialityLevel: 'internal' as const,
-      description: 'Compilation of relevant case law and legal precedents for the current matter.'
+      confidentialityLevel: 'internal' as const,;
+      description: 'Compilation of relevant case law and legal precedents for the current matter.';
     }
   ];
 
@@ -269,7 +269,7 @@
 
 <style>
   /* Ensure smooth theme transitions */
-  :global(*) {
+  :global(*) {;
     transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   }
 </style>

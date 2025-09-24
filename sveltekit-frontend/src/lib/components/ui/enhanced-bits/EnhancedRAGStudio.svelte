@@ -14,7 +14,7 @@
     children,
     onSearch,
     onUpload,
-    ...restProps
+    ...restProps;
   }: Props = $props();
 
   let activeTab = $state<'search' | 'upload' | 'settings'>('search');
@@ -187,7 +187,7 @@
 </div>
 
 <style>
-  .animate-spin {
+  .animate-spin {;
     animation: spin 1s linear infinite;
   }
 

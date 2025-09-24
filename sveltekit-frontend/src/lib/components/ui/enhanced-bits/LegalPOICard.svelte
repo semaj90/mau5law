@@ -52,11 +52,11 @@
     if (poi.criminalProfile) {
       try {
         const posterBlob = await createWantedPoster(poi.id, {
-          priority: poi.metadata.riskLevel,
-          reward: 10000, // Could be dynamic
+          priority: poi.metadata.riskLevel,;
+          reward: 10000, // Could be dynamic;
           charges: poi.criminalProfile.warrants.flatMap(w => w.charges),
           dangerWarning: poi.criminalProfile.armedAndDangerous ?
-            'ARMED AND DANGEROUS - DO NOT APPROACH' : undefined
+            'ARMED AND DANGEROUS - DO NOT APPROACH' : undefined;
         });
 
         // Download the poster
@@ -88,9 +88,9 @@
         location: 'Manual entry required',
         date: new Date().toISOString(),
         description: 'Sighting reported via POI card',
-        reportedBy: 'System User',
-        reliability: 0.5,
-        verified: false
+        reportedBy: 'System User',;
+        reliability: 0.5,;
+        verified: false;
       });
     } catch (error) {
       console.error('Failed to record sighting:', error);

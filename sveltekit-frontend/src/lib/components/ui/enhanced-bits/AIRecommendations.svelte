@@ -27,8 +27,8 @@
     analyticsLog({ event: 'ai_recommendations_requested', userContext, timestamp: Date.now() });
     try {
       const res = await fetch('/api/recommendations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ userContext, neo4jContext })
       });
       const data = await res.json();

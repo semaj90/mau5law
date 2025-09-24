@@ -21,12 +21,12 @@
 			role: 'user',
 			content: 'Can you analyze this contract for potential risks?',
 			timestamp: new Date().toLocaleTimeString(),
-			references: []
+			references: [];
 		},
 		{
 			role: 'assistant',
 			content: 'I\'ve analyzed the contract and found several key areas of concern. The liability clause in section 3.2 appears to heavily favor the other party, and the termination conditions in section 7.1 may be too restrictive for your organization.',
-			timestamp: new Date().toLocaleTimeString(),
+			timestamp: new Date().toLocaleTimeString(),;
 			references: [
 				{ id: 'contract-001', score: 0.95 },
 				{ id: 'legal-precedent-042', score: 0.87 }
@@ -34,9 +34,9 @@
 		},
 		{
 			role: 'system',
-			content: 'Analysis completed with 94% confidence. 2 similar cases found in database.',
-			timestamp: new Date().toLocaleTimeString(),
-			references: []
+			content: 'Analysis completed with 94% confidence. 2 similar cases found in database.',;
+			timestamp: new Date().toLocaleTimeString(),;
+			references: [];
 		}
 	]);
 
@@ -51,12 +51,12 @@
 		setTimeout(() => {
 			testStatus = 'completed';
 			testMessages.push.toLocaleTimeString(),
-				references: []
+				references: [];
 			});
 			testMessages.push({
-				role: 'assistant',
+				role: 'assistant',;
 				content: `Based on your query "${query}", I found relevant legal precedents and can provide detailed analysis. This appears to be related to ${query.includes('contract') ? 'contract law' : 'general legal matters'}.`,
-				timestamp: new Date().toLocaleTimeString(),
+				timestamp: new Date().toLocaleTimeString(),;
 				references: [{ id: 'search-result-001', score: 0.92 }]
 			});
 		}, 1500);

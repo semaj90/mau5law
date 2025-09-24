@@ -39,7 +39,7 @@
 
   // Form validation schema
   const embeddingFormSchema = z.object({
-    content: z.string().min(1, "Content is required").max(10000, "Content too long"),
+    content: z.string().min(1, "Content is required").max(10000, "Content too long"),;
   });
 
   interface Props {
@@ -105,14 +105,14 @@
       } else {
         result = {
           success: true,
-          embedding: Array.from(data.embedding),
+          embedding: Array.from(data.embedding),;
           metadata: {
             dimensions: data.embedding.length,
             processingTime: data.processingTime,
-            source: 'wasm_worker'
+            source: 'wasm_worker';
           },
-          responseTime: `${data.processingTime}ms`,
-          timestamp: new Date().toISOString()
+          responseTime: `${data.processingTime}ms`,;
+          timestamp: new Date().toISOString();
         };
       }
       isGenerating = false;
@@ -154,15 +154,15 @@
     try {
       // Always try Gemma API first
       const response = await fetch('/api/embeddings/gemma?action=generate', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: content,
+          text: content,;
           metadata: {
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString(),;
             length: content.length,
-            variant,
-            source: 'enhanced_bits_demo'
+            variant,;
+            source: 'enhanced_bits_demo';
           }
         }),
       });
@@ -178,21 +178,21 @@
           ...data,
           metadata: {
             ...data.metadata,
-            source: 'gemma_api',
-            dimensions: data.embedding.length
+            source: 'gemma_api',;
+            dimensions: data.embedding.length;
           }
         };
 
         // Store in enhanced database
         try {
           await fetch('/api/embeddings/enhanced', {
-            method: 'POST',
+            method: 'POST',;
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               content,
-              embedding: data.embedding,
-              metadata: result.metadata,
-              source: 'gemma_api'
+              embedding: data.embedding,;
+              metadata: result.metadata,;
+              source: 'gemma_api';
             }),
           });
         } catch (storeError) {
@@ -212,8 +212,8 @@
       if (embeddingWorker) {
         error = 'Server unavailable, using client-side processing...';
         embeddingWorker.postMessage({
-          type: 'generate_embedding',
-          text: content,
+          type: 'generate_embedding',;
+          text: content,;
           options: { variant }
         });
         return; // Worker will handle completion
@@ -240,10 +240,10 @@
     try {
       // First generate embedding for search query
       const embeddingResponse = await fetch('/api/embeddings/gemma?action=generate', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: searchQuery,
+          text: searchQuery,;
           metadata: { source: 'search_query' }
         }),
       });
@@ -502,7 +502,7 @@
 </div>
 
 <style>
-  .gemma-demo-container {
+  .gemma-demo-container {;
     max-width: 1000px;
     margin: 0 auto;
     padding: 1rem;

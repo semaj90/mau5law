@@ -153,7 +153,7 @@
       <SelectContent class={selectContentClasses}>
         <BitsSelect.Viewport class="p-1">
           {#each Object.entries(groupedOptions) as [category, categoryOptions]}
-            {#if category && Object.keys.length > 1}
+            {#if category && Object.keys(errors).length > 1}
               <BitsSelect.Group>
                 <div class="px-2 py-1.5 text-xs font-semibold nes-text is-disabled uppercase tracking-wider">
                   {category}
@@ -162,7 +162,7 @@
                   {@render selectItem(option)}
                 {/each}
               </BitsSelect.Group>
-              {#if category !== Object.keys(groupedOptions)[Object.keys.length - 1]}
+              {#if category !== Object.keys(groupedOptions)[Object.keys(errors).length - 1]}
                 <div class="h-px bg-border my-1"></div>
               {/if}
             {:else}
@@ -214,7 +214,7 @@
   </SelectItem>
 {/snippet}
 
-<style>/* @unocss-include */ .select-wrapper {
+<style>/* @unocss-include */ .select-wrapper {;
     position: relative;
   }
 /* Enhanced select animations for legal AI context */ :global(.bits-select-content) {
@@ -249,7 +249,7 @@ box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.
     position: relative;
   }
 
-  :global([data-evidence-category] .bits-select-item: :before) {
+  :global([data-evidence-category] .bits-select-item::before) {
     content: '';
     position: absolute;
     left: 0;
