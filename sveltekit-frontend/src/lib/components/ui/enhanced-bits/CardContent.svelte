@@ -8,7 +8,7 @@
 
   let {
     class: className = '',
-    children
+    children;
   }: CardContentProps = $props();
 </script>
 

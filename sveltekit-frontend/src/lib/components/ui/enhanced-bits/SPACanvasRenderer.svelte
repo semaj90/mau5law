@@ -60,9 +60,9 @@
     secondary: '#cd9a5b',
     accent: '#00cc66',
     text: '#d4c5b0',
-    textSecondary: '#999999',
-    error: '#cc0000',
-    warning: '#cccc00'
+    textSecondary: '#999999',;
+    error: '#cc0000',;
+    warning: '#cccc00';
   };
 
   // Performance metrics
@@ -70,8 +70,9 @@
   let frameCount = 0;
   let lastFpsUpdate = 0;
 
-  $effect(async () => {
-    if (!canvas) return;
+  $effect(() => {
+    (async () => {
+if (!canvas) return;
 
     ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -91,6 +92,7 @@
 
     // Start game loop
     startGameLoop();
+    })();
   });
 
   onDestroy(() => {
@@ -283,9 +285,9 @@
       // Priority indicator
       const priorityColors = {
         critical: colors.error,
-        high: colors.warning,
-        medium: colors.primary,
-        low: colors.accent
+        high: colors.warning,;
+        medium: colors.primary,;
+        low: colors.accent;
       };
 
       ctx.fillStyle = priorityColors[(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).priority];
@@ -373,9 +375,9 @@
     // Chat interface mockup
     const chatArea = {
       x: 20,
-      y: y + 100,
-      width: canvasWidth - 40,
-      height: height - 150
+      y: y + 100,;
+      width: canvasWidth - 40,;
+      height: height - 150;
     };
 
     // Chat background
@@ -483,18 +485,18 @@
         currentView = navigationItems[clickedIndex].id as any;
 
         onnavigate?.({
-          view: currentView,
-          data: legalData
+          view: currentView,;
+          data: legalData;
         });
       }
     }
 
     // Content area interactions
     oninteract?.({
-      type: 'click',
+      type: 'click',;
       position: { x, y },
-      view: currentView,
-      data: legalData
+      view: currentView,;
+      data: legalData;
     });
   }
 </script>
@@ -507,7 +509,7 @@
   aria-label="Legal AI Single Page Application"
   tabindex="0"
 >
-  <canvas
+  <canvas;
     bind:this={canvas as any}
     width={canvasWidth}
     height={canvasHeight}

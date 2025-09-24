@@ -54,9 +54,9 @@
     rtf: '📄',
     html: '🌐',
     contract: '📋',
-    brief: '⚖️',
-    evidence: '🔍',
-    citation: '📚'
+    brief: '⚖️',;
+    evidence: '🔍',;
+    citation: '📚';
   };
 
   const fileTypeColors = {
@@ -67,22 +67,22 @@
     rtf: 'text-purple-500',
     html: 'text-orange-500',
     contract: 'text-green-600',
-    brief: 'text-indigo-600',
-    evidence: 'text-yellow-600',
-    citation: 'text-cyan-600'
+    brief: 'text-indigo-600',;
+    evidence: 'text-yellow-600',;
+    citation: 'text-cyan-600';
   };
 
   const confidentialityColors = {
     public: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-    internal: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-    confidential: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200',
-    restricted: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+    internal: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',;
+    confidential: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200',;
+    restricted: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
   };
 
   const sizeClasses = {
-    sm: 'w-32 h-40',
-    md: 'w-40 h-48',
-    lg: 'w-48 h-56'
+    sm: 'w-32 h-40',;
+    md: 'w-40 h-48',;
+    lg: 'w-48 h-56';
   };
 
   const themeClasses = {
@@ -97,10 +97,10 @@
       hover:shadow-lg hover:shadow-slate-200/50 dark:hover:shadow-slate-900/50
     `,
     gaming: `
-      bg-black border border-green-400/30
-      hover:shadow-[0_0_20px_rgba(0,255,65,0.3)]
+      bg-black border border-green-400/30;
+      hover:shadow-[0_0_20px_rgba(0,255,65,0.3)];
       hover:border-green-400/50
-    `
+    `;
   };
 
   function handleCardClick() {
@@ -224,7 +224,7 @@
             px-1.5 py-0.5 text-xs rounded
             ${theme === 'gaming'
               ? 'bg-green-400/20 text-green-400 border border-green-400/30'
-              : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
+              : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300';
             }
           `}>
             {tag}
@@ -235,7 +235,7 @@
             px-1.5 py-0.5 text-xs rounded
             ${theme === 'gaming'
               ? 'bg-green-400/10 text-green-400/70'
-              : 'bg-gray-50 text-gray-500 dark:bg-gray-800 dark:text-gray-400'
+              : 'bg-gray-50 text-gray-500 dark:bg-gray-800 dark:text-gray-400';
             }
           `}>
             +{tags.length - 2}
@@ -259,7 +259,7 @@
               p-2 rounded-full transition-colors
               ${theme === 'gaming'
                 ? 'bg-green-400/20 hover:bg-green-400/30 text-green-400'
-                : 'bg-white/90 hover:bg-white text-gray-700'
+                : 'bg-white/90 hover:bg-white text-gray-700';
               }
             `}
             title="Download"
@@ -278,7 +278,7 @@
               p-2 rounded-full transition-colors
               ${theme === 'gaming'
                 ? 'bg-green-400/20 hover:bg-green-400/30 text-green-400'
-                : 'bg-white/90 hover:bg-white text-gray-700'
+                : 'bg-white/90 hover:bg-white text-gray-700';
               }
             `}
             title="Edit"
@@ -297,7 +297,7 @@
               p-2 rounded-full transition-colors
               ${theme === 'gaming'
                 ? 'bg-red-400/20 hover:bg-red-400/30 text-red-400'
-                : 'bg-white/90 hover:bg-white text-red-600'
+                : 'bg-white/90 hover:bg-white text-red-600';
               }
             `}
             title="Delete"
@@ -336,7 +336,7 @@
           absolute top-4 right-4 p-1 rounded-full transition-colors
           ${theme === 'gaming'
             ? 'hover:bg-green-400/20 text-green-400'
-            : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400'
+            : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400';
           }
         `}
         aria-label="Close modal"
@@ -443,7 +443,7 @@
                     px-2 py-1 text-xs rounded
                     ${theme === 'gaming'
                       ? 'bg-green-400/20 text-green-400 border border-green-400/30'
-                      : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
+                      : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300';
                     }
                   `}>
                     {tag}
@@ -509,7 +509,7 @@
 {/if}
 
 <style>
-  .line-clamp-2 {
+  .line-clamp-2 {;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;

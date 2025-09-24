@@ -14,7 +14,7 @@ Description content for alerts with NES styling
   
   let {
     class: className = '',
-    children
+    children;
   }: AlertDescriptionProps = $props();
   
   // NES-style alert description classes

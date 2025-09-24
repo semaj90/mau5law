@@ -28,9 +28,11 @@
     cacheTest: 'Not run'
   });
 
-  $effect(async () => {
-    console.log('🔧 WebAssembly Integration Demo initialized');
+  $effect(() => {
+    (async () => {
+console.log('🔧 WebAssembly Integration Demo initialized');
     await checkAllIntegrations();
+    })();
   });
 
   async function checkAllIntegrations() {
@@ -55,12 +57,12 @@
       demoData.webassemblyTest = 'Running...';
 
       const result = await unifiedRuntime.executeInference({
-        model: 'gemma3:270m',
+        model: 'gemma3:270m',;
         prompt: testPrompt,
         useCase: 'chat',
         useCHRROMCache: true,
-        maxTokens: 100,
-        temperature: 0.7
+        maxTokens: 100,;
+        temperature: 0.7;
       });
 
       testResult = result.text || 'WebAssembly inference completed successfully!';
@@ -80,7 +82,7 @@
 
       // Test the vector search endpoint
       const response = await fetch('/api/v1/vector/search', {
-        method: 'GET',
+        method: 'GET',;
         headers: { 'Accept': 'application/json' }
       });
 
@@ -487,7 +489,7 @@
 
 <style>
   .yorha-card {
-    /* Professional card styling with gaming accents */
+    /* Professional card styling with gaming accents */;
     background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(51, 65, 85, 0.85) 100%);
     border: 1px solid rgba(148, 163, 184, 0.2);
     border-radius: 0.75rem;

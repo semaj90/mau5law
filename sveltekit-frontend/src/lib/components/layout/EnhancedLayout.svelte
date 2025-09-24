@@ -153,7 +153,7 @@
 </div>
 
 <style>
-  .enhanced-layout {
+  .enhanced-layout {;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -234,12 +234,12 @@
     color: #ffd700;
   }
 
-  .nav-.active {
+  .nav-item.active {
     background: var(--nes-primary-color, #000);
     color: #fff;
   }
 
-  .enhanced-layout[data-variant="yorha"] .nav-.active {
+  .enhanced-layout[data-variant="yorha"] .nav-item.active {
     background: #ffd700;
     color: #000;
   }

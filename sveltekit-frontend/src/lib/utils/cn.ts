@@ -3,14 +3,14 @@ import { clsx, type ClassValue } from "clsx";
 /**
  * Utility function to merge CSS classes
  * Using UnoCSS instead of Tailwind, so no merge deduplication needed
- */;
+ */
 export function cn(...inputs: ClassValue[]) {
 	return clsx(inputs);
 }
 
 /**
  * Legal-specific class name utility with YoRHa theme integration
- */;
+ */
 export function legalCn(...inputs: ClassValue[]) {
   const baseClasses = 'font-mono text-yorha-text-primary';
   return clsx(baseClasses, inputs);
@@ -18,7 +18,7 @@ export function legalCn(...inputs: ClassValue[]) {
 
 /**
  * Generate confidence-based styling classes
- */;
+ */
 export function confidenceClass(confidence: number): string {
   if (confidence >= 90) return 'text-green-400 bg-green-500/10 border-green-500/30';
   if (confidence >= 70) return 'text-blue-400 bg-blue-500/10 border-blue-500/30';
@@ -29,7 +29,7 @@ export function confidenceClass(confidence: number): string {
 
 /**
  * Generate priority-based styling classes
- */;
+ */
 export function priorityClass(priority: 'low' | 'medium' | 'high' | 'critical'): string {
   switch (priority) {
     case 'critical':

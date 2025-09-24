@@ -44,61 +44,61 @@
     default: {
       list: 'bg-muted text-muted-foreground',
       trigger: 'data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm',
-      content: 'bg-background text-foreground'
+      content: 'bg-background text-foreground';
     },
     primary: {
       list: 'bg-primary/10',
       trigger: 'data-[state=active]:bg-primary data-[state=active]:text-primary-foreground',
-      content: 'bg-background text-foreground'
+      content: 'bg-background text-foreground';
     },
     secondary: {
       list: 'bg-secondary/10',
       trigger: 'data-[state=active]:bg-secondary data-[state=active]:text-secondary-foreground',
-      content: 'bg-background text-foreground'
+      content: 'bg-background text-foreground';
     },
     gaming: {
       list: 'bg-black/80 border border-green-400/30',
       trigger: 'text-green-400 data-[state=active]:bg-green-400/20 data-[state=active]:text-green-300 data-[state=active]:shadow-[0_0_10px_rgba(34,197,94,0.3)]',
-      content: 'bg-black/60 text-green-400 border border-green-400/20'
+      content: 'bg-black/60 text-green-400 border border-green-400/20';
     },
     legal: {
-      list: 'bg-slate-100 dark:bg-slate-800',
-      trigger: 'text-slate-600 dark:text-slate-400 data-[state=active]:bg-white data-[state=active]:text-slate-900 dark:data-[state=active]:bg-slate-700 dark:data-[state=active]:text-slate-100',
-      content: 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100'
+      list: 'bg-slate-100 dark:bg-slate-800',;
+      trigger: 'text-slate-600 dark:text-slate-400 data-[state=active]:bg-white data-[state=active]:text-slate-900 dark:data-[state=active]:bg-slate-700 dark:data-[state=active]:text-slate-100',;
+      content: 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100';
     }
   };
 
   const sizeClasses = {
     sm: {
       trigger: 'h-8 px-2 text-xs',
-      content: 'p-3'
+      content: 'p-3';
     },
     md: {
       trigger: 'h-10 px-4 text-sm',
-      content: 'p-4'
+      content: 'p-4';
     },
     lg: {
-      trigger: 'h-12 px-6 text-base',
-      content: 'p-6'
+      trigger: 'h-12 px-6 text-base',;
+      content: 'p-6';
     }
   };
 
   const variantClasses = {
     default: {
       list: 'inline-flex items-center justify-center rounded-md p-1',
-      trigger: 'inline-flex items-center justify-center whitespace-nowrap rounded-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'
+      trigger: 'inline-flex items-center justify-center whitespace-nowrap rounded-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
     },
     pills: {
       list: 'inline-flex items-center justify-center rounded-full p-1',
-      trigger: 'inline-flex items-center justify-center whitespace-nowrap rounded-full font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'
+      trigger: 'inline-flex items-center justify-center whitespace-nowrap rounded-full font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
     },
     underline: {
       list: 'inline-flex items-center justify-center border-b border-border',
-      trigger: 'inline-flex items-center justify-center whitespace-nowrap border-b-2 border-transparent font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:border-primary'
+      trigger: 'inline-flex items-center justify-center whitespace-nowrap border-b-2 border-transparent font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:border-primary';
     },
     cards: {
-      list: 'grid grid-cols-auto gap-2',
-      trigger: 'inline-flex items-center justify-center whitespace-nowrap rounded-lg border border-border bg-background font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:border-primary data-[state=active]:bg-primary/5'
+      list: 'grid grid-cols-auto gap-2',;
+      trigger: 'inline-flex items-center justify-center whitespace-nowrap rounded-lg border border-border bg-background font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:border-primary data-[state=active]:bg-primary/5';
     }
   };
 
@@ -186,7 +186,7 @@
     <BitsTabs.Content
       value={item.value}
       class={`
-        ring-offset-background focus-visible:outline-none
+        ring-offset-background focus-visible:outline-none;
         focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
         ${themeClasses[theme].content}
         ${sizeClasses[size].content}
@@ -202,7 +202,7 @@
 
 <style>
   /* Gaming theme animations */
-  :global([data-bits-tabs-trigger][data-theme="gaming"]) {
+  :global([data-bits-tabs-trigger][data-theme="gaming"]) {;
     transition: all 0.3s ease;
   }
 

@@ -27,7 +27,7 @@
     class: className = '',
     children,
     onclick,
-    ...restProps
+    ...restProps;
   }: ButtonProps = $props();
 
   // Get theme context
@@ -95,7 +95,7 @@
         nes: 'bg-gaming-nes text-white hover:bg-gaming-retro font-nes',
         yorha: 'yorha-button',
         'yorha-primary': 'yorha-button-primary',
-        nier: 'bg-nier-bg-secondary border-2 border-nier-border-primary text-nier-text-primary hover:bg-nier-bg-tertiary'
+        nier: 'bg-nier-bg-secondary border-2 border-nier-border-primary text-nier-text-primary hover:bg-nier-bg-tertiary';
       };
       classes.push(variantClasses[variant] || variantClasses.default);
     }

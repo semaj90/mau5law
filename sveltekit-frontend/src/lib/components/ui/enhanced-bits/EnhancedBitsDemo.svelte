@@ -45,7 +45,7 @@
       type: 'document',
       priority: 'critical' as const,
       confidence: 'high' as const,
-      description: 'Modified terms regarding liability clauses'
+      description: 'Modified terms regarding liability clauses';
     },
     {
       id: '2',
@@ -53,15 +53,15 @@
       type: 'video',
       priority: 'high' as const,
       confidence: 'medium' as const,
-      description: 'Incident recording from 2024-01-15'
+      description: 'Incident recording from 2024-01-15';
     },
     {
       id: '3',
       title: 'Expert Witness Statement',
       type: 'document',
-      priority: 'medium' as const,
-      confidence: 'high' as const,
-      description: 'Technical analysis by Dr. Smith'
+      priority: 'medium' as const,;
+      confidence: 'high' as const,;
+      description: 'Technical analysis by Dr. Smith';
     }
   ];
 
@@ -95,7 +95,7 @@
       'px-4 py-2 text-sm font-medium border-b-2 transition-colors',
       {
         'border-nier-border-primary text-nier-text-primary bg-nier-bg-tertiary': currentTab === tab,
-        'border-transparent text-nier-text-secondary hover:text-nier-text-primary hover:border-nier-border-secondary': currentTab !== tab
+        'border-transparent text-nier-text-secondary hover:text-nier-text-primary hover:border-nier-border-secondary': currentTab !== tab;
       }
     );
   }
@@ -222,7 +222,7 @@ Low Priority
             <div class="space-y-4">
               <Input
                 variant="search"
-                placeholder="Search legal precedents..."
+                placeholder="Search legal precedents...";
                 bind:value={searchQuery}
                 evidenceSearch
                 legal
@@ -335,7 +335,7 @@ evidenceDialogOpen = true}>
 
               <div class="yorha-panel-content space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Select
+                  <Select;
                     bind:value={selectedCaseType}
                     options={caseTypes}
                     placeholder="Select case type..."
@@ -456,7 +456,7 @@ evidenceDialogOpen = false}>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {#each mockEvidenceItems as item (item.id)}
             <div
-              class="nes-container yorha-nier-bits-card p-4 cursor-pointer transition-all duration-200 hover:shadow-lg"
+              class="nes-container yorha-nier-bits-card p-4 cursor-pointer transition-all duration-200 hover:shadow-lg";
               class:ring-2={selectedEvidenceCard === item.id}
               class:ring-nier-border-primary={selectedEvidenceCard === item.id}
               onclick={() => selectEvidenceCard(item.id)}
@@ -554,7 +554,7 @@ Generate Report
 
 <style>
   /* @unocss-include */
-  .demo-content {
+  .demo-content {;
     min-height: 400px;
   }
 

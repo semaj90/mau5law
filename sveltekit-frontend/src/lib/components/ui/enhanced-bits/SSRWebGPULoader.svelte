@@ -301,7 +301,7 @@
 
 <style>
   /* NES-inspired container styling */
-  .nes-container {
+  .nes-container {;
     position: relative;
     border: 2px solid #000;
     background: #fcfcfc;

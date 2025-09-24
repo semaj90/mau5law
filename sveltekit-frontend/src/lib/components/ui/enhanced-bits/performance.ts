@@ -34,7 +34,7 @@ const performanceMetrics = new Map<string, PerformanceMetrics>();
  * Register a component for lazy loading
  */
 export function registerComponent(
-  name: string,
+  name: string,;
   loader: () => Promise<ComponentModule>,
 ): void {
   componentRegistry.set(name, loader);
@@ -181,7 +181,7 @@ export class VirtualScrollManager {
     const offset = visibleStart * itemHeight;
 
     return {
-      start: visibleStart,
+      start: visibleStart,;
       end: visibleEnd,
       offset
     };
@@ -355,7 +355,7 @@ export class ResourcePool<T> {
   getStats() {
     return {
       available: this.available.length,
-      inUse: this.inUse.size,
+      inUse: this.inUse.size,;
       total: this.available.length + this.inUse.size,
       maxSize: this.maxSize
     };
@@ -404,14 +404,14 @@ export function analyzeBundleSize(): BundleAnalysis {
         dependencies: ["Button", "Select", "Input", "Card"],
         critical: false
       }
-    ],
+    ],;
     duplicates: [;
       {
         module: "lucide-svelte",
         count: 3,
         size: 8000
       }
-    ],
+    ],;
     recommendations: [
       "Consider lazy loading VectorIntelligenceDemo component",
       "Optimize lucide-svelte imports to reduce duplication",
@@ -494,30 +494,30 @@ export const performanceMonitor = new PerformanceMonitor();
 ;
 // Register enhanced Bits UI components for lazy loading;
 registerComponent("Button", async () => ({
-  name: "Button",
+  name: "Button",;
   default: (await import("./Button.svelte")).default
 });
 registerComponent("Dialog", async () => ({
-  name: "Dialog", 
+  name: "Dialog", ;
   default: (await import("./Dialog.svelte")).default
 });
 registerComponent("Select", async () => ({
-  name: "Select",
+  name: "Select",;
   default: (await import("./Select.svelte")).default
 });
 registerComponent("Input", async () => ({
-  name: "Input",
+  name: "Input",;
   default: (await import("./Input.svelte")).default
 });
 registerComponent("Card", async () => ({
-  name: "Card",
+  name: "Card",;
   default: (await import("./Card.svelte")).default
 });
 registerComponent("EnhancedBitsDemo", async () => ({
-  name: "EnhancedBitsDemo",
+  name: "EnhancedBitsDemo",;
   default: (await import("./EnhancedBitsDemo.svelte")).default
 });
 registerComponent("VectorIntelligenceDemo", async () => ({
-  name: "VectorIntelligenceDemo", 
+  name: "VectorIntelligenceDemo", ;
   default: (await import("./VectorIntelligenceDemo.svelte")).default
 });

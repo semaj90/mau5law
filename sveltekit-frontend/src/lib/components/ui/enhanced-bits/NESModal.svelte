@@ -31,17 +31,17 @@
 
   const sizeClasses = {
     sm: 'max-w-sm',
-    md: 'max-w-md',
-    lg: 'max-w-lg',
-    xl: 'max-w-2xl'
+    md: 'max-w-md',;
+    lg: 'max-w-lg',;
+    xl: 'max-w-2xl';
   };
 
   const variantClasses = {
     default: 'nes-modal-default',
     dark: 'nes-modal-dark',
-    primary: 'nes-modal-primary',
-    warning: 'nes-modal-warning',
-    danger: 'nes-modal-danger'
+    primary: 'nes-modal-primary',;
+    warning: 'nes-modal-warning',;
+    danger: 'nes-modal-danger';
   };
 
   function closeModal() {
@@ -158,7 +158,7 @@
 {/if}
 
 <style>
-  .nes-modal-overlay {
+  .nes-modal-overlay {;
     position: fixed;
     top: 0;
     left: 0;

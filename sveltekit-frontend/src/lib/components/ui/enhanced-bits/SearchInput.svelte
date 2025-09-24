@@ -36,7 +36,7 @@
     onsearch,
     onclear,
     onfilter,
-    ...restProps
+    ...restProps;
   }: Props = $props();
 
   let isSearching = $state(false);
@@ -48,15 +48,15 @@
 
   // Size configurations
   let sizeClasses = $derived({
-    sm: 'h-8 text-sm px-8',
-    md: 'h-10 text-base px-10',
-    lg: 'h-12 text-lg px-12'
+    sm: 'h-8 text-sm px-8',;
+    md: 'h-10 text-base px-10',;
+    lg: 'h-12 text-lg px-12';
   });
 
   let iconSizes = $derived({
-    sm: 'w-3 h-3',
-    md: 'w-4 h-4',
-    lg: 'w-5 h-5'
+    sm: 'w-3 h-3',;
+    md: 'w-4 h-4',;
+    lg: 'w-5 h-5';
   });
 
   // Variant styling
@@ -98,9 +98,9 @@
       // Simulate vector search API call
       const searchParams = new URLSearchParams({
         q: query,
-        limit: maxSuggestions.toString(),
-        vector: enableVectorSearch.toString(),
-        ai: enableAISearch.toString()
+        limit: maxSuggestions.toString(),;
+        vector: enableVectorSearch.toString(),;
+        ai: enableAISearch.toString();
       });
 
       // In real implementation, this would be your vector search endpoint
@@ -246,7 +246,7 @@
       <div class="flex flex-wrap gap-2">
         {#each filters as filter, index}
           <button
-            class="nes-btn is-small"
+            class="nes-btn is-small";
             class:is-primary={filter.active}
             onclick={() => toggleFilter(index)}
           >

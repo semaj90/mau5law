@@ -9,7 +9,7 @@
 
   // Form validation schema
   const embeddingFormSchema = z.object({
-    content: z.string().min(1, "Content is required").max(10000, "Content too long"),
+    content: z.string().min(1, "Content is required").max(10000, "Content too long"),;
   });
 
   interface Props {
@@ -53,8 +53,8 @@
     try {
       // Always try Gemma API first
       const response = await fetch('/api/embeddings/gemma?action=generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ text })
       });
 
@@ -122,7 +122,7 @@
 
       // Submit to API
       const response = await fetch('/api/embeddings/enhanced', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           content,
@@ -130,9 +130,9 @@
           metadata: {
             timestamp: new Date().toISOString(),
             length: content.length,
-            variant
-          },
-          source: 'enhanced_bits_form'
+            variant;
+          },;
+          source: 'enhanced_bits_form';
         }),
       });
 
@@ -286,7 +286,7 @@
 </div>
 
 <style>
-  .embedding-form-container {
+  .embedding-form-container {;
     max-width: 800px;
     margin: 0 auto;
     padding: 1rem;

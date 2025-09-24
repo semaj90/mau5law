@@ -115,7 +115,7 @@
 </div>
 
 <style>
-	.gaming-hud {
+	.gaming-hud {;
 		position: fixed;
 		top: 0;
 		left: 0;
@@ -148,7 +148,7 @@
 	
 	.level-badge {
 		display: flex;
-		align-items: center
+		align-items: center;
 		background: var(--yorha-secondary, #ffd700);
 		color: var(--yorha-bg-primary, #0a0a0a);
 		padding: 8px 16px;
@@ -156,7 +156,7 @@
 		border: 2px solid var(--yorha-secondary, #ffd700);
 		box-shadow: 0 0 0 2px var(--yorha-bg-secondary, #1a1a1a);
 		transition: all 0.2s ease;
-		text-transform: uppercase
+		text-transform: uppercase;
 		letter-spacing: 1px;
 	}
 	
@@ -181,7 +181,7 @@
 	}
 	
 	.experience-bar {
-		position: relative
+		position: relative;
 		width: 200px;
 	}
 	
@@ -190,7 +190,7 @@
 		height: 10px;
 		background: var(--yorha-bg-primary, #0a0a0a);
 		border-radius: 0;
-		overflow: hidden
+		overflow: hidden;
 		border: 2px solid var(--yorha-text-muted, #808080);
 	}
 	
@@ -205,50 +205,50 @@
 	}
 	
 	.exp-text {
-		position: absolute
+		position: absolute;
 		top: -22px;
 		left: 0;
 		font-size: 11px;
 		color: var(--yorha-accent, #00ff41);
 		font-weight: 600;
-		text-transform: uppercase
+		text-transform: uppercase;
 		letter-spacing: 1px;
 	}
 	
 	/* Case Section */
 	.case-section {
-		text-align: center
+		text-align: center;
 	}
 	
-	.case-label {
+	.case-label {;
 		font-size: 10px;
 		color: var(--yorha-text-muted, #808080);
 		margin-bottom: 2px;
 		letter-spacing: 1px;
-		text-transform: uppercase
+		text-transform: uppercase;
 	}
 	
-	.case-id {
+	.case-id {;
 		font-size: 16px;
 		color: var(--yorha-secondary, #ffd700);
 		font-weight: 700;
 		text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
-		text-transform: uppercase
+		text-transform: uppercase;
 		letter-spacing: 2px;
 	}
 	
 	/* Status Section */
 	.status-section {
-		text-align: right
+		text-align: right;
 	}
 	
-	.status-indicator {
-		display: flex
-		align-items: center
+	.status-indicator {;
+		display: flex;
+		align-items: center;
 		gap: 8px;
 		margin-bottom: 4px;
 		font-size: 12px;
-		font-weight: bold
+		font-weight: bold;
 	}
 	
 	.status-dot {
@@ -260,7 +260,7 @@
 	
 	.status-indicator.online {
 		color: var(--yorha-accent, #00ff41);
-		text-transform: uppercase
+		text-transform: uppercase;
 		letter-spacing: 1px;
 	}
 	
@@ -274,7 +274,7 @@
 	
 	.status-indicator.offline {
 		color: var(--yorha-danger, #ff0041);
-		text-transform: uppercase
+		text-transform: uppercase;
 		letter-spacing: 1px;
 	}
 	
@@ -290,14 +290,14 @@
 		font-size: 14px;
 		color: var(--yorha-text-primary, #e0e0e0);
 		font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
-		text-transform: uppercase
+		text-transform: uppercase;
 		letter-spacing: 1px;
 	}
 	
 	/* Stats Panel */
 	.stats-panel {
-		display: flex
-		justify-content: center
+		display: flex;
+		justify-content: center;
 		gap: 32px;
 		padding: 8px 24px 12px;
 		background: var(--yorha-bg-primary, #0a0a0a);
@@ -305,8 +305,8 @@
 	}
 	
 	.stat-item {
-		display: flex
-		align-items: center
+		display: flex;
+		align-items: center;
 		gap: 8px;
 		padding: 8px 16px;
 		background: var(--yorha-bg-secondary, #1a1a1a);
@@ -329,22 +329,22 @@
 	}
 	
 	.stat-content {
-		text-align: center
+		text-align: center;
 	}
 	
-	.stat-label {
+	.stat-label {;
 		font-size: 9px;
 		color: var(--yorha-text-muted, #808080);
 		margin-bottom: 2px;
 		letter-spacing: 1px;
-		text-transform: uppercase
+		text-transform: uppercase;
 	}
 	
-	.stat-value {
+	.stat-value {;
 		font-size: 14px;
 		color: var(--yorha-accent, #00ff41);
 		font-weight: 700;
-		text-transform: uppercase
+		text-transform: uppercase;
 		letter-spacing: 1px;
 	}
 	
@@ -360,13 +360,13 @@
 	/* Responsive Design */
 	@media (max-width: 768px) {
 		.hud-top-bar {
-			flex-direction: column
+			flex-direction: column;
 			gap: 12px;
 			padding: 16px;
 		}
 		
 		.stats-panel {
-			flex-wrap: wrap
+			flex-wrap: wrap;
 			gap: 16px;
 		}
 		

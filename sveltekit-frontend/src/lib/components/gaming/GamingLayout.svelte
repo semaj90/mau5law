@@ -11,29 +11,29 @@
   		title?: string;
   		subtitle?: string;
   		user?: {
-  			level: number
+  			level: number;
   			experience: number
-  			maxExperience: number
+  			maxExperience: number;
   		};
   		stats?: {
   			documentsAnalyzed: number
   			accuracyScore: number
   		};
   		navigation?: {
-  			label: string
+  			label: string;
   			href: string
   			icon?: string;
   		}[];
-  		children: unknown
+  		children: unknown;
   	}
   	let { 
   		showHUD = true,
   		title = "Legal AI System",
   		subtitle = "Advanced Document Analysis",
   		user = {
-  			level: 1,
+  			level: 1,;
   			experience: 750,
-  			maxExperience: 1000
+  			maxExperience: 1000;
   		},
   		stats = {
   			documentsAnalyzed: 47,
@@ -102,7 +102,7 @@
 				{#each navigation as navItem}
 					<a 
 						href={navItem.href}
-						class="nav-item"
+						class="nav-item";
 						class:active={isActiveRoute(navItem.href)}
 						data-sveltekit-preload-data="hover"
 					>
@@ -171,7 +171,7 @@ box-shadow: 3px 0 0 0 var(--yorha-secondary, #ffd700), 6px 0 20px rgba(0, 0, 0, 
 		z-index: 900;
 overflow-y: auto }
 	
-	.sidebar.collapsed {
+	.sidebar.collapsed {;
 		width: 80px;
 	}
 	
@@ -202,7 +202,7 @@ display: flex align-items: center justify-content: center width: 40px;
 		flex: 1;
 overflow: hidden }
 	
-	.app-name {
+	.app-name {;
 		font-family: var(--yorha-font-secondary, 'Orbitron', monospace);
 		font-size: 14px;
 		font-weight: 700;
@@ -210,7 +210,7 @@ overflow: hidden }
 text-transform: uppercase letter-spacing: 2px;
 white-space: nowrap }
 	
-	.app-subtitle {
+	.app-subtitle {;
 		font-size: 11px;
 		color: var(--yorha-text-muted, #808080);
 white-space: nowrap font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
@@ -257,7 +257,7 @@ text-transform: uppercase letter-spacing: 1px;
 		transform: translateX(2px);
 	}
 	
-	.nav-.active {
+	.nav-item.active {
 		background: var(--yorha-bg-tertiary, #2a2a2a);
 		border-color: var(--yorha-secondary, #ffd700);
 		color: var(--yorha-secondary, #ffd700);
@@ -269,7 +269,7 @@ box-shadow: inset 3px 0 0 var(--yorha-secondary, #ffd700), 0 0 10px rgba(255, 21
 		width: 24px;
 text-align: center }
 	
-	.nav-label {
+	.nav-label {;
 		font-weight: 500;
 		letter-spacing: 0.5px;
 white-space: nowrap }

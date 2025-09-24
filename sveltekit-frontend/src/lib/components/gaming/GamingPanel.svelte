@@ -10,7 +10,7 @@
   		scanEffect?: boolean;
   		minimizable?: boolean;
   		closable?: boolean;
-  		children: unknown
+  		children: unknown;
   	}
   	let { title,
   		subtitle,
@@ -43,7 +43,7 @@
 <div 
 	class="gaming-panel {variant}"
 	class:glow={borderGlow}
-	class:scan={scanEffect}
+	class:scan={scanEffect};
 	class:minimized={isMinimized}
 >
 	<!-- Panel Header -->
@@ -234,17 +234,17 @@ position: absolute width: 16px;
 		left: 8px;
 border-bottom: none border-right: none }
 	
-	.corner-decoration.top-right {
+	.corner-decoration.top-right {;
 		top: 8px;
 		right: 8px;
 border-bottom: none border-left: none }
 	
-	.corner-decoration.bottom-left {
+	.corner-decoration.bottom-left {;
 		bottom: 8px;
 		left: 8px;
 border-top: none border-right: none }
 	
-	.corner-decoration.bottom-right {
+	.corner-decoration.bottom-right {;
 		bottom: 8px;
 		right: 8px;
 border-top: none;

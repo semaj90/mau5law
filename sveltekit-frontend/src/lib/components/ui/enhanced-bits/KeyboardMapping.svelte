@@ -57,7 +57,7 @@
       category: 'Case Management',
       action: () => goto('/cases/new'),
       global: true,
-      priority: 100
+      priority: 100;
     },
     {
       id: 'case-search',
@@ -66,7 +66,7 @@
       category: 'Case Management',
       action: () => goto('/cases/search'),
       global: true,
-      priority: 90
+      priority: 90;
     },
     
     // Evidence Management
@@ -77,7 +77,7 @@
       category: 'Evidence',
       action: () => goto('/evidence/upload'),
       global: true,
-      priority: 85
+      priority: 85;
     },
     {
       id: 'evidence-analysis',
@@ -86,7 +86,7 @@
       category: 'Evidence',
       action: () => goto('/evidence/analysis'),
       global: true,
-      priority: 80
+      priority: 80;
     },
 
     // AI Assistant
@@ -97,7 +97,7 @@
       category: 'AI Tools',
       action: () => goto('/ai-assistant'),
       global: true,
-      priority: 95
+      priority: 95;
     },
     {
       id: 'legal-research',
@@ -106,7 +106,7 @@
       category: 'AI Tools',
       action: () => goto('/research'),
       global: true,
-      priority: 85
+      priority: 85;
     },
 
     // Document Management
@@ -117,7 +117,7 @@
       category: 'Documents',
       action: () => goto('/documents/new'),
       global: true,
-      priority: 75
+      priority: 75;
     },
     {
       id: 'document-review',
@@ -126,7 +126,7 @@
       category: 'Documents',
       action: () => goto('/documents/review'),
       global: true,
-      priority: 70
+      priority: 70;
     },
 
     // Navigation
@@ -137,7 +137,7 @@
       category: 'Navigation',
       action: () => goto('/dashboard'),
       global: true,
-      priority: 60
+      priority: 60;
     },
     {
       id: 'settings',
@@ -146,7 +146,7 @@
       category: 'Navigation',
       action: () => goto('/settings'),
       global: true,
-      priority: 50
+      priority: 50;
     },
 
     // Accessibility
@@ -157,16 +157,16 @@
       category: 'Accessibility',
       action: () => document.dispatchEvent(new CustomEvent('toggle-accessibility')),
       global: true,
-      priority: 40
+      priority: 40;
     },
     {
       id: 'keyboard-help',
       keys: ['shift', '?'],
       description: 'Keyboard Shortcuts Help',
       category: 'Help',
-      action: () => document.dispatchEvent(new CustomEvent('show-keyboard-help')),
-      global: true,
-      priority: 30
+      action: () => document.dispatchEvent(new CustomEvent('show-keyboard-help')),;
+      global: true,;
+      priority: 30;
     }
   ];
 
@@ -230,7 +230,7 @@
     debugLog = [...debugLog.slice(-19), {
       timestamp: Date.now(),
       message,
-      type
+      type;
     }];
   }
 
@@ -270,13 +270,13 @@
         
         onshortcutexecuted?.({
           shortcut: matchingShortcut,
-          event
+          event;
         });
       } catch (error) {
         addDebugLog(`Error executing shortcut: ${error}`, 'error');
         onshortcutblocked?.({
-          shortcut: matchingShortcut,
-          reason: error instanceof Error ? error.message: 'Unknown error'
+          shortcut: matchingShortcut,;
+          reason: error instanceof Error ? error.message: 'Unknown error';
         });
       }
     }

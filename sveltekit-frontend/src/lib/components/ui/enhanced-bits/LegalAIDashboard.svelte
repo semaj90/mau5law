@@ -84,7 +84,7 @@
       notes: [],
       jurisdiction: 'Federal',
       court: 'District Court',
-      filingDate: new Date().toISOString(),
+      filingDate: new Date().toISOString(),;
       financials: {
         budgetAllocated: 50000,
         costToDate: 0,
@@ -98,8 +98,8 @@
         recommendedActions: [],
         precedentCases: []
       },
-      assignedTo: [],
-      tags: []
+      assignedTo: [],;
+      tags: [];
     });
   }
 
@@ -115,7 +115,7 @@
       aliases: ['Johnny D', 'JD'],
       role: 'suspect',
       entityType: 'individual',
-      status: 'wanted',
+      status: 'wanted',;
       metadata: {
         riskLevel: 'critical',
         threatLevel: 'severe',
@@ -127,7 +127,7 @@
         lastInteraction: '2024-01-15',
         interactionCount: 12,
         personality: {
-          traits: ['violent', 'unpredictable', 'anti-authority'],
+          traits: ['violent', 'unpredictable', 'anti-authority'],;
           communication: [],
           predictedBehavior: [],
           negotiationStyle: 'hostile',
@@ -136,27 +136,27 @@
             stability: 0.2,
             aggressionLevel: 0.9,
             predictability: 0.3,
-            cooperationLikelihood: 0.1
+            cooperationLikelihood: 0.1;
           }
         },
         documentReferences: [],
         network: {
           connections: [],
           centralityScore: 0.8,
-          clusterMembership: []
+          clusterMembership: [];
         }
       },
       contact: {
         emails: [],
         phones: [],
-        addresses: []
+        addresses: [];
       },
       legal: {
         criminalHistory: []
       },
       criminalProfile: {
         aliases: ['Johnny D'],
-        mugshots: [],
+        mugshots: [],;
         warrants: [
           {
             id: 'W001',
@@ -164,7 +164,7 @@
             jurisdiction: 'State of California',
             issuedDate: '2024-01-01',
             charges: ['Armed Robbery', 'Assault with Deadly Weapon'],
-            status: 'active'
+            status: 'active';
           }
         ],
         watchLists: [
@@ -172,7 +172,7 @@
             list: 'fbi_most_wanted',
             addedDate: '2024-01-01',
             reason: 'Violent felony charges',
-            priority: 'critical'
+            priority: 'critical';
           }
         ],
         knownAssociates: [],
@@ -181,7 +181,7 @@
           operatingAreas: ['Los Angeles'],
           methods: ['armed intimidation'],
           timingPatterns: ['nighttime'],
-          weaponsUsed: ['handgun']
+          weaponsUsed: ['handgun'];
         },
         dangerLevel: 'extreme',
         armedAndDangerous: true,
@@ -190,14 +190,14 @@
           address: '123 Main St, Los Angeles, CA',
           date: '2024-01-10',
           source: 'witness',
-          reliability: 0.8
+          reliability: 0.8;
         }
       },
-      relationships: [],
+      relationships: [],;
       timeline: [],
       createdAt: '2024-01-01',
       updatedAt: '2024-01-15',
-      createdBy: 'system',
+      createdBy: 'system',;
       tags: ['violent', 'armed'],
       aiProcessing: {
         lastAnalyzed: '2024-01-15',
@@ -464,7 +464,7 @@
 </div>
 
 <style>
-  .legal-dashboard {
+  .legal-dashboard {;
     min-height: 100vh;
     background: var(--enhanced-bits-background);
     color: var(--enhanced-bits-text);

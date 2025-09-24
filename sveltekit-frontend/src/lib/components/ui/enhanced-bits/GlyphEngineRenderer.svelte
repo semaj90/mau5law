@@ -60,14 +60,15 @@
     n64Yellow: '#cccc00',
     priorityColors: {
       critical: '#cc0000',
-      high: '#cccc00',
-      medium: '#0066cc',
-      low: '#00cc66'
+      high: '#cccc00',;
+      medium: '#0066cc',;
+      low: '#00cc66';
     }
   };
 
-  $effect(async () => {
-    if (!canvas) return;
+  $effect(() => {
+    (async () => {
+if (!canvas) return;
 
     ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -82,6 +83,7 @@
 
     // Start game loop
     gameLoop();
+    })();
   });
 
   function gameLoop() {
@@ -283,9 +285,9 @@
     // Hit testing for interactive elements
     // Dispatch events back to parent
     oninteract?.({
-      type: 'click',
-      position: { x, y },
-      data: data
+      type: 'click',;
+      position: { x, y },;
+      data: data;
     });
   }
 

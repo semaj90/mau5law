@@ -25,7 +25,7 @@
       priority: 'critical',
       confidence: 0.92,
       thumbnailUrl: '/api/placeholder/150/100',
-      hash: 'sha256:abc123...',
+      hash: 'sha256:abc123...',;
       metadata: { duration: '5:30', location: 'Main Entrance' },
       createdAt: new Date('2024-01-15'),
       updatedAt: new Date('2024-01-15')
@@ -36,7 +36,7 @@
       type: 'document',
       priority: 'high',
       confidence: 0.87,
-      hash: 'sha256:def456...',
+      hash: 'sha256:def456...',;
       metadata: { pages: 12, fileSize: '2.3MB' },
       createdAt: new Date('2024-01-14'),
       updatedAt: new Date('2024-01-14')
@@ -45,9 +45,9 @@
       id: 'ev-003',
       title: 'Witness Photo',
       type: 'image',
-      priority: 'medium',
+      priority: 'medium',;
       confidence: 0.76,
-      thumbnailUrl: '/api/placeholder/150/100',
+      thumbnailUrl: '/api/placeholder/150/100',;
       metadata: { resolution: '1920x1080', timestamp: '2024-01-13 14:30' },
       createdAt: new Date('2024-01-13'),
       updatedAt: new Date('2024-01-13')
@@ -67,8 +67,8 @@
       { topic: 'Contract Violation', weight: 0.78 },
       { topic: 'Financial Liability', weight: 0.65 },
       { topic: 'Corporate Governance', weight: 0.45 }
-    ],
-    summary: 'The evidence suggests a potential breach of contract involving ABC Corporation and financial obligations totaling $50,000. Key individuals identified include John Doe as a primary stakeholder. The incident appears to have occurred on January 15, 2024, with supporting documentation and witness testimony corroborating the timeline.'
+    ],;
+    summary: 'The evidence suggests a potential breach of contract involving ABC Corporation and financial obligations totaling $50,000. Key individuals identified include John Doe as a primary stakeholder. The incident appears to have occurred on January 15, 2024, with supporting documentation and witness testimony corroborating the timeline.';
   });
 
   // Board state
@@ -78,20 +78,20 @@
       x: 50,
       y: 50,
       type: 'evidence',
-      data: sampleEvidence[0]
+      data: sampleEvidence[0];
     },
     {
       id: 'item-2',
       x: 250,
       y: 100,
       type: 'evidence',
-      data: sampleEvidence[1]
+      data: sampleEvidence[1];
     },
     {
       id: 'item-3',
       x: 150,
-      y: 200,
-      type: 'note',
+      y: 200,;
+      type: 'note',;
       data: { text: 'Timeline correlation needed' }
     }
   ]);
@@ -306,4 +306,4 @@
       </div>
     </details>
   </Card>
-</div>
+</div>;

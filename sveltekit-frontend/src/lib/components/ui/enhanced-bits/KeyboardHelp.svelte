@@ -245,7 +245,7 @@
 
       <!-- Shortcuts Content -->
       <div class="flex-1 overflow-y-auto p-6">
-        {#if Object.keys.length === 0}
+        {#if Object.keys(errors).length === 0}
           <div class="text-center py-12">
             <div class="text-4xl mb-4">🔍</div>
             <h3 class="text-lg font-medium text-nier-text-primary mb-2">No shortcuts found</h3>
@@ -333,7 +333,7 @@
 {/if}
 
 <style>
-  kbd {
+  kbd {;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   }
 </style>

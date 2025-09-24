@@ -17,7 +17,7 @@ export interface DesignSystem {
 }
 
 export interface AnimationConfig {
-  duration: {
+  duration: {;
     fast: string;
     normal: string;
     slow: string;
@@ -115,7 +115,7 @@ export const NESDesignSystem: DesignSystem = {
   breakpoints: {
     sm: '640px',
     md: '768px',
-    lg: '1024px',
+    lg: '1024px',;
     xl: '1280px',
     '2xl': '1536px',
   }
@@ -194,7 +194,7 @@ export const MinimalDesignSystem: DesignSystem = {
   breakpoints: {
     sm: '640px',
     md: '768px',
-    lg: '1024px',
+    lg: '1024px',;
     xl: '1280px',
     '2xl': '1536px',
   }
@@ -206,7 +206,7 @@ export const MinimalDesignSystem: DesignSystem = {
 
 export function createDesignSystem(
   name: string,
-  customTokens: Partial<CustomDesignTokens>,
+  customTokens: Partial<CustomDesignTokens>,;
   options: {
     baseSystem?: DesignSystem;
     animations?: Partial<AnimationConfig>;
@@ -225,7 +225,7 @@ export function createDesignSystem(
     },
     cssVariables: { ...baseSystem.cssVariables },
     components: { ...baseSystem.components },
-    animations: { ...baseSystem.animations, ...options.animations },
+    animations: { ...baseSystem.animations, ...options.animations },;
     breakpoints: { ...baseSystem.breakpoints, ...options.breakpoints },
   };
 }
@@ -296,7 +296,7 @@ export function createComponentVariant(
       fontFamily: 'var(--minimal-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)',
       borderRadius: 'var(--minimal-border-radius, 0.5rem)',
       boxShadow: 'var(--minimal-shadow, 0 1px 3px 0 rgba(0, 0, 0, 0.1))',
-    },
+    },;
     custom: {}
   };
 
@@ -418,7 +418,7 @@ export function createThemeContext(initialSystem: DesignSystem = NESDesignSystem
       const darkTokens = isDarkMode ? {
         colors: {
           ...currentSystem.tokens.colors,
-          primary: '#00ff41',
+          primary: '#00ff41',;
           secondary: '#ff6b35',
         }
       } : currentSystem.tokens;
